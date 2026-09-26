@@ -156,11 +156,15 @@ class DownloadManager {
     _progressChanged.add(null);
   }
 
-  /// Local file of a plain-audio item when every file of it is verified, otherwise null.
-  Future<String?> localAudioPath(ContentItem item) async {
-    if (item.audio.isEmpty) return null;
-    final rows = {for (final r in await _rowsFor(item.id)) r.assetPath: r};
-    final row = rows[item.audio.first.path];
+  /// Local file of a plain-audio item when it is downloaded and verified, otherwise null.
+  Future<String?> localAudioPath(ContentItem item) async =>
+      item.audio.isEmpty ? null : localFilePath(item.audio.first);
+
+  /// Local copy of any verified asset (audio, PDF, game segment), otherwise null.
+  Future<String?> localFilePath(AssetRef asset) async {
+    final row = await (_db.select(
+      _db.downloads,
+    )..where((t) => t.assetPath.equals(asset.path))).getSingleOrNull();
     if (row == null || row.state != DownloadState.ready) return null;
     final path = p.join(await _transfer.directory(), row.fileName);
     return await File(path).exists() ? path : null;
@@ -281,7 +285,12 @@ class DownloadManager {
     if (await file.exists()) await file.delete();
   }
 
-  static List<AssetRef> _assetsOf(ContentItem item) => [...item.audio, ...?item.script?.assets.values];
+  /// Everything needed offline: recordings, game segments and printable case files.
+  static List<AssetRef> _assetsOf(ContentItem item) => [
+    ...item.audio,
+    ...item.pdf,
+    ...?item.script?.assets.values,
+  ];
 
   static String _fileName(AssetRef asset) => '${asset.sha256}${p.extension(asset.path)}';
   static String _taskId(AssetRef asset) => _taskIdFor(asset.sha256);

@@ -84,7 +84,6 @@
   "requirementWydrukPdf": "Wydrukowane akta sprawy (PDF)",
   "listen": "Słuchaj",
   "unlock": "Odblokuj",
-  "unlockComingSoon": "Zakupy i subskrypcja pojawią się w kolejnym etapie prac.",
   "play": "Odtwórz",
   "pause": "Pauza",
   "rewind": "Cofnij 15 sekund",
@@ -209,5 +208,102 @@
       }
     }
   },
-  "devLeaseNone": "Brak dzierżawy offline"
+  "devLeaseNone": "Brak dzierżawy offline",
+  "gateTitle": "Poproś rodzica",
+  "gateForChild": "Ta część aplikacji jest dla dorosłych.",
+  "gateForParent": "Dla rodzica: dotknij liczby",
+  "gateWrong": "To nie ta liczba. Spróbuj jeszcze raz.",
+  "gateLocked": "Zbyt wiele prób. Spróbuj ponownie za {seconds} s.",
+  "@gateLocked": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "kidsTitle": "Moje zabawy",
+  "kidsParentButton": "Dla rodzica",
+  "kidsEmpty": "Poproś rodzica, żeby przygotował zabawy.",
+  "kidsCannotPlay": "Tej zabawy nie da się teraz włączyć. Poproś rodzica.",
+  "kidsEnterTitle": "Tryb dziecka",
+  "kidsEnterSubtitle": "Duże okładki, bez zakupów i ustawień",
+  "kidsSetupHint": "Dziecko zobaczy tylko zabawy dostępne dla jego wieku, bez zakupów, linków i ustawień. Wyjście z trybu wymaga rodzica.",
+  "kidsSetupAge": "Wiek dziecka",
+  "kidsSetupOnlyDownloaded": "Tylko pobrane",
+  "kidsSetupOnlyDownloadedHint": "Na podróż: pokaż wyłącznie zabawy działające bez internetu.",
+  "kidsStart": "Włącz tryb dziecka",
+  "pdfSection": "Akta sprawy do druku",
+  "pdfOpen": "Otwórz do druku",
+  "pdfTitle": "Karta do druku",
+  "pdfLoadError": "Nie udało się otworzyć pliku. Sprawdź internet albo pobierz zabawę.",
+  "paywallTitle": "Odblokuj zabawy",
+  "paywallFor": "Chcesz słuchać: {title}",
+  "@paywallFor": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallSubscriptionHeader": "Subskrypcja",
+  "paywallSubscriptionBody": "Wszystkie audiozabawy, piosenki i nowości, na każdym urządzeniu z tym samym kontem sklepu.",
+  "paywallYearly": "Rocznie (najkorzystniej)",
+  "paywallMonthly": "Miesięcznie",
+  "paywallTrialThen": "{days} dni za darmo, potem {price} / {period}",
+  "@paywallTrialThen": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "periodMonth": "miesiąc",
+  "periodYear": "rok",
+  "paywallOneTimeHeader": "Na zawsze, bez subskrypcji",
+  "paywallOneTimeBody": "Kupujesz raz i zostaje z Wami.",
+  "paywallBundleTwo": "Wyobraźnia + Słowa i Wiedza",
+  "paywallBundleThree": "Wszystkie trzy pakiety",
+  "paywallSingle": "Tylko ta zabawa",
+  "paywallSingleHint": "Cały pakiet kosztuje {price}",
+  "@paywallSingleHint": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallRestore": "Przywróć zakupy",
+  "paywallLegalRenewal": "Subskrypcja odnawia się automatycznie po tej samej cenie, chyba że wyłączysz ją co najmniej 24 godziny przed końcem okresu. Płatność pobiera {store}.",
+  "@paywallLegalRenewal": {
+    "placeholders": {
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallLegalTrial": "Po okresie próbnym, jeśli go nie anulujesz, zaczyna się płatna subskrypcja.",
+  "paywallLegalManage": "Subskrypcją zarządzasz i anulujesz ją w ustawieniach konta {store}.",
+  "@paywallLegalManage": {
+    "placeholders": {
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallTerms": "Regulamin",
+  "paywallPrivacy": "Polityka prywatności",
+  "paywallUnavailable": "Sklep jest teraz niedostępny. Sprawdź internet i spróbuj później.",
+  "purchaseSuccess": "Gotowe! Zabawy są odblokowane.",
+  "purchasePending": "Zakup czeka na zatwierdzenie (np. przez opiekuna konta rodzinnego).",
+  "purchaseStoreError": "Sklep zgłosił błąd. Spróbuj ponownie.",
+  "purchaseVerifyLater": "Nie udało się jeszcze potwierdzić zakupu. Spróbujemy ponownie automatycznie, nie płać drugi raz.",
+  "purchaseNothingToRestore": "Nie znaleźliśmy zakupów do przywrócenia na tym koncie sklepu.",
+  "devStoreOutcome": "Wynik następnego zakupu w symulowanym sklepie",
+  "devClearPurchases": "Wyczyść symulowane zakupy"
 }

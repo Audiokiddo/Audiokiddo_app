@@ -79,6 +79,27 @@ class DevEntitlementBackend implements EntitlementBackend {
 
   Future<void> setMode(DevAccessMode mode) => _db.writeValue(_key, mode.name);
 
+  static const _purchasesKey = 'dev_purchases';
+
+  /// Development store purchases (see DevPurchaseVerifier).
+  Future<void> addPurchase(List<String> scopes, {DateTime? validUntil}) async {
+    final current = await _purchases();
+    await _db.writeValue(
+      _purchasesKey,
+      jsonEncode([
+        ...current,
+        for (final s in scopes) {'scope': s, 'valid_until': validUntil?.toIso8601String()},
+      ]),
+    );
+  }
+
+  Future<void> clearPurchases() => _db.deleteValue(_purchasesKey);
+
+  Future<List<Map<String, Object?>>> _purchases() async {
+    final raw = await _db.readValue(_purchasesKey);
+    return raw == null ? [] : (jsonDecode(raw) as List).cast<Map<String, Object?>>();
+  }
+
   @override
   Future<List<Entitlement>> fetch() async {
     Entitlement e(String scope, {DateTime? until}) => Entitlement(
@@ -87,17 +108,27 @@ class DevEntitlementBackend implements EntitlementBackend {
       source: EntitlementSource.manual,
       validUntil: until,
     );
-    return switch (await mode()) {
-      DevAccessMode.none => const [],
-      DevAccessMode.subscription => [
-        e(Scopes.allContent, until: DateTime.now().add(const Duration(days: 30))),
-      ],
-      DevAccessMode.packWyobraznia => [e(Scopes.pack('wyobraznia'))],
-      DevAccessMode.packDetektyw => [e(Scopes.pack('detektyw'))],
-      DevAccessMode.allPacks => [
-        for (final id in ['wyobraznia', 'slowa-i-wiedza', 'detektyw']) e(Scopes.pack(id)),
-      ],
-    };
+    final purchased = [
+      for (final p in await _purchases())
+        e(
+          p['scope']! as String,
+          until: p['valid_until'] == null ? null : DateTime.parse(p['valid_until']! as String),
+        ),
+    ];
+    return [
+      ...purchased,
+      ...switch (await mode()) {
+        DevAccessMode.none => const [],
+        DevAccessMode.subscription => [
+          e(Scopes.allContent, until: DateTime.now().add(const Duration(days: 30))),
+        ],
+        DevAccessMode.packWyobraznia => [e(Scopes.pack('wyobraznia'))],
+        DevAccessMode.packDetektyw => [e(Scopes.pack('detektyw'))],
+        DevAccessMode.allPacks => [
+          for (final id in ['wyobraznia', 'slowa-i-wiedza', 'detektyw']) e(Scopes.pack(id)),
+        ],
+      },
+    ];
   }
 }
 

@@ -601,8 +601,8 @@
    "pdf": [
     {
      "path": "pdf/detektyw/zlodziej-naszyjnika.pdf",
-     "bytes": 300000,
-     "sha256": "TODO"
+     "bytes": 812,
+     "sha256": "985681dd1066f0c50e221c3a3b6761ca94b39a1c886251c75a188f060c81cb89"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.zlodziej_naszyjnika"
@@ -639,8 +639,8 @@
    "pdf": [
     {
      "path": "pdf/detektyw/znikajace-dzwonki.pdf",
-     "bytes": 300000,
-     "sha256": "TODO"
+     "bytes": 819,
+     "sha256": "b5880bb2141cf134d2d703171ed2aaea3fbd91308237fec511d6cf0b3903fff4"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.znikajace_dzwonki"
@@ -677,8 +677,8 @@
    "pdf": [
     {
      "path": "pdf/detektyw/na-ratunek-budce-z-lodami.pdf",
-     "bytes": 300000,
-     "sha256": "TODO"
+     "bytes": 818,
+     "sha256": "024d3c438bbd1547132007d9e669b420681d2f9e76e944360f45bb8979fc230c"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.na_ratunek_budce_z_lodami"
@@ -715,8 +715,8 @@
    "pdf": [
     {
      "path": "pdf/detektyw/tajemnicze-znaki.pdf",
-     "bytes": 300000,
-     "sha256": "TODO"
+     "bytes": 825,
+     "sha256": "d381cb7d1c460eba8cf24c26d916cccdc9607f50d1fd2bce2c11fc79fd09ab5d"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.tajemnicze_znaki"
@@ -753,8 +753,8 @@
    "pdf": [
     {
      "path": "pdf/detektyw/gadajacy-smietnik.pdf",
-     "bytes": 300000,
-     "sha256": "TODO"
+     "bytes": 810,
+     "sha256": "78126ce2bfc04bccb8e7d809ee22f5550916f530c0fd4e1dab3fead6152248b6"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.gadajacy_smietnik"

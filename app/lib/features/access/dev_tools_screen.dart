@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
+import '../purchases/fake_store.dart';
+import '../purchases/purchase_controller.dart';
+import '../purchases/store_gateway.dart';
 import 'access_controller.dart';
 
 final _devModeProvider = FutureProvider<DevAccessMode>((ref) async {
@@ -63,8 +67,54 @@ class DevToolsScreen extends ConsumerWidget {
             onPressed: () => ref.read(accessProvider.notifier).refresh(),
             child: Text(l10n.devRefresh),
           ),
+          if (ref.watch(storeGatewayProvider) case final FakeStoreGateway store) ...[
+            const SizedBox(height: AkSpace.l),
+            Text(l10n.devStoreOutcome, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: AkSpace.s),
+            _StoreOutcomePicker(store: store),
+            const SizedBox(height: AkSpace.s),
+            OutlinedButton(
+              onPressed: () async {
+                if (backend is DevEntitlementBackend) await backend.clearPurchases();
+                await ref.read(accessProvider.notifier).refresh();
+              },
+              child: Text(l10n.devClearPurchases),
+            ),
+          ],
         ],
       ),
     );
   }
+}
+
+class _StoreOutcomePicker extends StatefulWidget {
+  const _StoreOutcomePicker({required this.store});
+
+  final FakeStoreGateway store;
+
+  @override
+  State<_StoreOutcomePicker> createState() => _StoreOutcomePickerState();
+}
+
+class _StoreOutcomePickerState extends State<_StoreOutcomePicker> {
+  static const _labels = {
+    PurchaseStatus.purchased: 'Udany',
+    PurchaseStatus.canceled: 'Anulowany',
+    PurchaseStatus.pending: 'Czeka na zgodę',
+    PurchaseStatus.error: 'Błąd sklepu',
+  };
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+    spacing: AkSpace.s,
+    children: [
+      for (final MapEntry(key: status, value: label) in _labels.entries)
+        ChoiceChip(
+          label: Text(label),
+          selected: widget.store.nextOutcome == status,
+          labelStyle: selectableChipLabel(context, selected: widget.store.nextOutcome == status),
+          onSelected: (_) => setState(() => widget.store.nextOutcome = status),
+        ),
+    ],
+  );
 }

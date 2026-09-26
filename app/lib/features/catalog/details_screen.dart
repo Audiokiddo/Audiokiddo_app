@@ -7,6 +7,8 @@ import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/format.dart';
 import '../downloads/download_button.dart';
+import '../parental_gate/parental_gate.dart';
+import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';
 import '../player/playback_controller.dart';
 import 'catalog_providers.dart';
@@ -58,10 +60,18 @@ class _DetailsContent extends ConsumerWidget {
     }
   }
 
-  void _unlock(BuildContext context) {
-    // TODO(Etap 3): paywall behind the parental gate.
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).unlockComingSoon)));
+  Future<void> _unlock(BuildContext context) async {
+    if (!await showParentalGate(context) || !context.mounted) return;
+    await context.push('/sklep?zabawa=${item.id}');
+  }
+
+  Future<void> _openPdf(BuildContext context, AssetRef asset) async {
+    if (!await showParentalGate(context) || !context.mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PdfScreen(asset: asset, title: item.title),
+      ),
+    );
   }
 
   @override
@@ -146,6 +156,18 @@ class _DetailsContent extends ConsumerWidget {
               spacing: AkSpace.s,
               runSpacing: AkSpace.s,
               children: [for (final s in item.skills) Chip(label: Text(s))],
+            ),
+          ),
+        if (item.pdf.isNotEmpty && canPlay)
+          _Section(
+            title: l10n.pdfSection,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                onPressed: () => _openPdf(context, item.pdf.first),
+                icon: const Icon(Icons.print_rounded),
+                label: Text(l10n.pdfOpen),
+              ),
             ),
           ),
         if (item.requirements.isNotEmpty)

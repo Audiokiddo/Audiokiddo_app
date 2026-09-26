@@ -6,15 +6,31 @@ import '../features/catalog/home_screen.dart';
 import '../features/catalog/library_filter.dart';
 import '../features/catalog/library_screen.dart';
 import '../features/access/dev_tools_screen.dart';
+import '../features/kids_mode/kids_home_screen.dart';
+import '../features/kids_mode/kids_mode_controller.dart';
 import '../features/personal/mine_screen.dart';
 import '../features/player/mini_player.dart';
 import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
+import '../features/purchases/paywall_screen.dart';
 import '../l10n/app_localizations.dart';
 
-// Kids mode and the parental gate hook into `redirect` here in Etap 3 (ARCHITECTURE §12).
-GoRouter buildRouter() => GoRouter(
+/// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
+/// until a parent passes the gate (ARCHITECTURE §12).
+String? kidsModeRedirect(KidsModeController kids, String location) {
+  final inKidsZone = location == '/dziecko' || location.startsWith('/dziecko/');
+  if (kids.active && !inKidsZone) return '/dziecko';
+  if (!kids.active && inKidsZone) return '/';
+  return null;
+}
+
+GoRouter buildRouter(KidsModeController kids) => GoRouter(
+  initialLocation: kids.active ? '/dziecko' : '/',
+  refreshListenable: kids,
+  redirect: (context, state) => kidsModeRedirect(kids, state.matchedLocation),
   routes: [
+    GoRoute(path: '/dziecko', builder: (context, state) => const KidsHomeScreen()),
+    GoRoute(path: '/dziecko/graj', builder: (context, state) => const NoLookScreen()),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => _ParentShell(shell: shell),
       branches: [
@@ -36,6 +52,10 @@ GoRouter buildRouter() => GoRouter(
       ],
     ),
     GoRoute(path: '/moje/narzedzia', builder: (context, state) => const DevToolsScreen()),
+    GoRoute(
+      path: '/sklep',
+      builder: (context, state) => PaywallScreen(itemId: state.uri.queryParameters['zabawa']),
+    ),
     GoRoute(
       path: '/zabawa/:id',
       builder: (context, state) => DetailsScreen(itemId: state.pathParameters['id']!),

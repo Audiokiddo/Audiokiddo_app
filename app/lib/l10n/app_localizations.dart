@@ -325,12 +325,6 @@ abstract class AppLocalizations {
   /// **'Odblokuj'**
   String get unlock;
 
-  /// No description provided for @unlockComingSoon.
-  ///
-  /// In pl, this message translates to:
-  /// **'Zakupy i subskrypcja pojawią się w kolejnym etapie prac.'**
-  String get unlockComingSoon;
-
   /// No description provided for @play.
   ///
   /// In pl, this message translates to:
@@ -666,6 +660,300 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Brak dzierżawy offline'**
   String get devLeaseNone;
+
+  /// No description provided for @gateTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poproś rodzica'**
+  String get gateTitle;
+
+  /// No description provided for @gateForChild.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ta część aplikacji jest dla dorosłych.'**
+  String get gateForChild;
+
+  /// No description provided for @gateForParent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dla rodzica: dotknij liczby'**
+  String get gateForParent;
+
+  /// No description provided for @gateWrong.
+  ///
+  /// In pl, this message translates to:
+  /// **'To nie ta liczba. Spróbuj jeszcze raz.'**
+  String get gateWrong;
+
+  /// No description provided for @gateLocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zbyt wiele prób. Spróbuj ponownie za {seconds} s.'**
+  String gateLocked(int seconds);
+
+  /// No description provided for @kidsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Moje zabawy'**
+  String get kidsTitle;
+
+  /// No description provided for @kidsParentButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dla rodzica'**
+  String get kidsParentButton;
+
+  /// No description provided for @kidsEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poproś rodzica, żeby przygotował zabawy.'**
+  String get kidsEmpty;
+
+  /// No description provided for @kidsCannotPlay.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tej zabawy nie da się teraz włączyć. Poproś rodzica.'**
+  String get kidsCannotPlay;
+
+  /// No description provided for @kidsEnterTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tryb dziecka'**
+  String get kidsEnterTitle;
+
+  /// No description provided for @kidsEnterSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Duże okładki, bez zakupów i ustawień'**
+  String get kidsEnterSubtitle;
+
+  /// No description provided for @kidsSetupHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziecko zobaczy tylko zabawy dostępne dla jego wieku, bez zakupów, linków i ustawień. Wyjście z trybu wymaga rodzica.'**
+  String get kidsSetupHint;
+
+  /// No description provided for @kidsSetupAge.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wiek dziecka'**
+  String get kidsSetupAge;
+
+  /// No description provided for @kidsSetupOnlyDownloaded.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tylko pobrane'**
+  String get kidsSetupOnlyDownloaded;
+
+  /// No description provided for @kidsSetupOnlyDownloadedHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na podróż: pokaż wyłącznie zabawy działające bez internetu.'**
+  String get kidsSetupOnlyDownloadedHint;
+
+  /// No description provided for @kidsStart.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz tryb dziecka'**
+  String get kidsStart;
+
+  /// No description provided for @pdfSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Akta sprawy do druku'**
+  String get pdfSection;
+
+  /// No description provided for @pdfOpen.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz do druku'**
+  String get pdfOpen;
+
+  /// No description provided for @pdfTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Karta do druku'**
+  String get pdfTitle;
+
+  /// No description provided for @pdfLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się otworzyć pliku. Sprawdź internet albo pobierz zabawę.'**
+  String get pdfLoadError;
+
+  /// No description provided for @paywallTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odblokuj zabawy'**
+  String get paywallTitle;
+
+  /// No description provided for @paywallFor.
+  ///
+  /// In pl, this message translates to:
+  /// **'Chcesz słuchać: {title}'**
+  String paywallFor(String title);
+
+  /// No description provided for @paywallSubscriptionHeader.
+  ///
+  /// In pl, this message translates to:
+  /// **'Subskrypcja'**
+  String get paywallSubscriptionHeader;
+
+  /// No description provided for @paywallSubscriptionBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie audiozabawy, piosenki i nowości, na każdym urządzeniu z tym samym kontem sklepu.'**
+  String get paywallSubscriptionBody;
+
+  /// No description provided for @paywallYearly.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rocznie (najkorzystniej)'**
+  String get paywallYearly;
+
+  /// No description provided for @paywallMonthly.
+  ///
+  /// In pl, this message translates to:
+  /// **'Miesięcznie'**
+  String get paywallMonthly;
+
+  /// No description provided for @paywallTrialThen.
+  ///
+  /// In pl, this message translates to:
+  /// **'{days} dni za darmo, potem {price} / {period}'**
+  String paywallTrialThen(int days, String price, String period);
+
+  /// No description provided for @periodMonth.
+  ///
+  /// In pl, this message translates to:
+  /// **'miesiąc'**
+  String get periodMonth;
+
+  /// No description provided for @periodYear.
+  ///
+  /// In pl, this message translates to:
+  /// **'rok'**
+  String get periodYear;
+
+  /// No description provided for @paywallOneTimeHeader.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na zawsze, bez subskrypcji'**
+  String get paywallOneTimeHeader;
+
+  /// No description provided for @paywallOneTimeBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kupujesz raz i zostaje z Wami.'**
+  String get paywallOneTimeBody;
+
+  /// No description provided for @paywallBundleTwo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyobraźnia + Słowa i Wiedza'**
+  String get paywallBundleTwo;
+
+  /// No description provided for @paywallBundleThree.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie trzy pakiety'**
+  String get paywallBundleThree;
+
+  /// No description provided for @paywallSingle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tylko ta zabawa'**
+  String get paywallSingle;
+
+  /// No description provided for @paywallSingleHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cały pakiet kosztuje {price}'**
+  String paywallSingleHint(String price);
+
+  /// No description provided for @paywallRestore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przywróć zakupy'**
+  String get paywallRestore;
+
+  /// No description provided for @paywallLegalRenewal.
+  ///
+  /// In pl, this message translates to:
+  /// **'Subskrypcja odnawia się automatycznie po tej samej cenie, chyba że wyłączysz ją co najmniej 24 godziny przed końcem okresu. Płatność pobiera {store}.'**
+  String paywallLegalRenewal(String store);
+
+  /// No description provided for @paywallLegalTrial.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po okresie próbnym, jeśli go nie anulujesz, zaczyna się płatna subskrypcja.'**
+  String get paywallLegalTrial;
+
+  /// No description provided for @paywallLegalManage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Subskrypcją zarządzasz i anulujesz ją w ustawieniach konta {store}.'**
+  String paywallLegalManage(String store);
+
+  /// No description provided for @paywallTerms.
+  ///
+  /// In pl, this message translates to:
+  /// **'Regulamin'**
+  String get paywallTerms;
+
+  /// No description provided for @paywallPrivacy.
+  ///
+  /// In pl, this message translates to:
+  /// **'Polityka prywatności'**
+  String get paywallPrivacy;
+
+  /// No description provided for @paywallUnavailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sklep jest teraz niedostępny. Sprawdź internet i spróbuj później.'**
+  String get paywallUnavailable;
+
+  /// No description provided for @purchaseSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowe! Zabawy są odblokowane.'**
+  String get purchaseSuccess;
+
+  /// No description provided for @purchasePending.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakup czeka na zatwierdzenie (np. przez opiekuna konta rodzinnego).'**
+  String get purchasePending;
+
+  /// No description provided for @purchaseStoreError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sklep zgłosił błąd. Spróbuj ponownie.'**
+  String get purchaseStoreError;
+
+  /// No description provided for @purchaseVerifyLater.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się jeszcze potwierdzić zakupu. Spróbujemy ponownie automatycznie, nie płać drugi raz.'**
+  String get purchaseVerifyLater;
+
+  /// No description provided for @purchaseNothingToRestore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleźliśmy zakupów do przywrócenia na tym koncie sklepu.'**
+  String get purchaseNothingToRestore;
+
+  /// No description provided for @devStoreOutcome.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wynik następnego zakupu w symulowanym sklepie'**
+  String get devStoreOutcome;
+
+  /// No description provided for @devClearPurchases.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyczyść symulowane zakupy'**
+  String get devClearPurchases;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

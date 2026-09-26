@@ -155,9 +155,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get unlock => 'Odblokuj';
 
   @override
-  String get unlockComingSoon => 'Zakupy i subskrypcja pojawią się w kolejnym etapie prac.';
-
-  @override
   String get play => 'Odtwórz';
 
   @override
@@ -352,4 +349,167 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get devLeaseNone => 'Brak dzierżawy offline';
+
+  @override
+  String get gateTitle => 'Poproś rodzica';
+
+  @override
+  String get gateForChild => 'Ta część aplikacji jest dla dorosłych.';
+
+  @override
+  String get gateForParent => 'Dla rodzica: dotknij liczby';
+
+  @override
+  String get gateWrong => 'To nie ta liczba. Spróbuj jeszcze raz.';
+
+  @override
+  String gateLocked(int seconds) {
+    return 'Zbyt wiele prób. Spróbuj ponownie za $seconds s.';
+  }
+
+  @override
+  String get kidsTitle => 'Moje zabawy';
+
+  @override
+  String get kidsParentButton => 'Dla rodzica';
+
+  @override
+  String get kidsEmpty => 'Poproś rodzica, żeby przygotował zabawy.';
+
+  @override
+  String get kidsCannotPlay => 'Tej zabawy nie da się teraz włączyć. Poproś rodzica.';
+
+  @override
+  String get kidsEnterTitle => 'Tryb dziecka';
+
+  @override
+  String get kidsEnterSubtitle => 'Duże okładki, bez zakupów i ustawień';
+
+  @override
+  String get kidsSetupHint =>
+      'Dziecko zobaczy tylko zabawy dostępne dla jego wieku, bez zakupów, linków i ustawień. Wyjście z trybu wymaga rodzica.';
+
+  @override
+  String get kidsSetupAge => 'Wiek dziecka';
+
+  @override
+  String get kidsSetupOnlyDownloaded => 'Tylko pobrane';
+
+  @override
+  String get kidsSetupOnlyDownloadedHint => 'Na podróż: pokaż wyłącznie zabawy działające bez internetu.';
+
+  @override
+  String get kidsStart => 'Włącz tryb dziecka';
+
+  @override
+  String get pdfSection => 'Akta sprawy do druku';
+
+  @override
+  String get pdfOpen => 'Otwórz do druku';
+
+  @override
+  String get pdfTitle => 'Karta do druku';
+
+  @override
+  String get pdfLoadError => 'Nie udało się otworzyć pliku. Sprawdź internet albo pobierz zabawę.';
+
+  @override
+  String get paywallTitle => 'Odblokuj zabawy';
+
+  @override
+  String paywallFor(String title) {
+    return 'Chcesz słuchać: $title';
+  }
+
+  @override
+  String get paywallSubscriptionHeader => 'Subskrypcja';
+
+  @override
+  String get paywallSubscriptionBody =>
+      'Wszystkie audiozabawy, piosenki i nowości, na każdym urządzeniu z tym samym kontem sklepu.';
+
+  @override
+  String get paywallYearly => 'Rocznie (najkorzystniej)';
+
+  @override
+  String get paywallMonthly => 'Miesięcznie';
+
+  @override
+  String paywallTrialThen(int days, String price, String period) {
+    return '$days dni za darmo, potem $price / $period';
+  }
+
+  @override
+  String get periodMonth => 'miesiąc';
+
+  @override
+  String get periodYear => 'rok';
+
+  @override
+  String get paywallOneTimeHeader => 'Na zawsze, bez subskrypcji';
+
+  @override
+  String get paywallOneTimeBody => 'Kupujesz raz i zostaje z Wami.';
+
+  @override
+  String get paywallBundleTwo => 'Wyobraźnia + Słowa i Wiedza';
+
+  @override
+  String get paywallBundleThree => 'Wszystkie trzy pakiety';
+
+  @override
+  String get paywallSingle => 'Tylko ta zabawa';
+
+  @override
+  String paywallSingleHint(String price) {
+    return 'Cały pakiet kosztuje $price';
+  }
+
+  @override
+  String get paywallRestore => 'Przywróć zakupy';
+
+  @override
+  String paywallLegalRenewal(String store) {
+    return 'Subskrypcja odnawia się automatycznie po tej samej cenie, chyba że wyłączysz ją co najmniej 24 godziny przed końcem okresu. Płatność pobiera $store.';
+  }
+
+  @override
+  String get paywallLegalTrial =>
+      'Po okresie próbnym, jeśli go nie anulujesz, zaczyna się płatna subskrypcja.';
+
+  @override
+  String paywallLegalManage(String store) {
+    return 'Subskrypcją zarządzasz i anulujesz ją w ustawieniach konta $store.';
+  }
+
+  @override
+  String get paywallTerms => 'Regulamin';
+
+  @override
+  String get paywallPrivacy => 'Polityka prywatności';
+
+  @override
+  String get paywallUnavailable => 'Sklep jest teraz niedostępny. Sprawdź internet i spróbuj później.';
+
+  @override
+  String get purchaseSuccess => 'Gotowe! Zabawy są odblokowane.';
+
+  @override
+  String get purchasePending => 'Zakup czeka na zatwierdzenie (np. przez opiekuna konta rodzinnego).';
+
+  @override
+  String get purchaseStoreError => 'Sklep zgłosił błąd. Spróbuj ponownie.';
+
+  @override
+  String get purchaseVerifyLater =>
+      'Nie udało się jeszcze potwierdzić zakupu. Spróbujemy ponownie automatycznie, nie płać drugi raz.';
+
+  @override
+  String get purchaseNothingToRestore => 'Nie znaleźliśmy zakupów do przywrócenia na tym koncie sklepu.';
+
+  @override
+  String get devStoreOutcome => 'Wynik następnego zakupu w symulowanym sklepie';
+
+  @override
+  String get devClearPurchases => 'Wyczyść symulowane zakupy';
 }

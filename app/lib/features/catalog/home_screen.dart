@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
+import '../kids_mode/kids_mode_setup.dart';
 import 'library_filter.dart';
 import 'widgets/catalog_loader.dart';
 import 'widgets/content_cover.dart';
@@ -53,6 +54,7 @@ class _HomeContent extends StatelessWidget {
             ],
           ),
         ),
+        const KidsModeEntryCard(),
         if (featured.isNotEmpty) ...[
           SectionHeader(l10n.homeFeatured),
           _FeaturedCard(item: catalog.item(featured.first.itemIds.first)!, catalog: catalog),

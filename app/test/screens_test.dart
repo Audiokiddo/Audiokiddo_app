@@ -1,6 +1,9 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
+import 'package:audiokiddo/features/parental_gate/gate_challenge.dart';
+import 'package:audiokiddo/features/parental_gate/parental_gate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,13 +61,13 @@ void main() {
     await pumpApp(tester);
     expect(find.text('Czas na zabawę!'), findsOneWidget);
     expect(find.text('Zaginiony skarb'), findsWidgets);
-    await tester.scrollUntilVisible(find.text('Pakiety'), 200, scrollable: mainScroll);
+    await tester.scrollUntilVisible(find.text('Na drogę'), 200, scrollable: mainScroll);
     expect(find.text('10 zabaw · 3+'), findsWidgets);
   });
 
   testWidgets('pack shortcut opens the filtered library', (tester) async {
     await pumpApp(tester);
-    await tester.scrollUntilVisible(find.text('Pakiety'), 200, scrollable: mainScroll);
+    await tester.scrollUntilVisible(find.text('Na drogę'), 200, scrollable: mainScroll);
     final packCard = find.text('10 zabaw · 3+').first;
     await tester.ensureVisible(packCard);
     await tester.pumpAndSettle();
@@ -135,5 +138,67 @@ void main() {
     await openLibrary(tester);
     await openItem(tester, 'Magiczny sklep');
     expect(find.textContaining('Pobierz ('), findsOneWidget);
+  });
+
+  group('parental gate', () {
+    setUp(() => debugGateChallengeFactory = () => GateChallenge.fixed(47, [74, 47, 12, 33]));
+    tearDown(() => debugGateChallengeFactory = null);
+
+    testWidgets('unlock asks an adult first, then shows store prices', (tester) async {
+      await pumpApp(tester);
+      await openLibrary(tester);
+      await openItem(tester, 'Zaginiony skarb');
+      await tester.tap(find.text('Odblokuj'));
+      await tester.pumpAndSettle();
+      expect(find.text('czterdzieści siedem'), findsOneWidget);
+
+      await tester.tap(find.text('74'));
+      await tester.pumpAndSettle();
+      expect(find.text('To nie ta liczba. Spróbuj jeszcze raz.'), findsOneWidget);
+
+      await tester.tap(find.text('47'));
+      await tester.pumpAndSettle();
+      expect(find.text('Odblokuj zabawy'), findsOneWidget);
+      expect(find.text('7 dni za darmo, potem 149,99 zł / rok'), findsOneWidget);
+      expect(find.text('49,99 zł'), findsWidgets);
+      await tester.scrollUntilVisible(find.text('Przywróć zakupy'), 200, scrollable: mainScroll);
+      expect(find.textContaining('odnawia się automatycznie'), findsOneWidget);
+    });
+
+    testWidgets('kids mode: only playable games, no escape, exit through the gate', (tester) async {
+      await pumpApp(tester);
+      await tester.tap(find.text('Tryb dziecka'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Włącz tryb dziecka'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Moje zabawy'), findsOneWidget);
+      expect(find.text('Magiczny sklep'), findsOneWidget);
+      expect(
+        find.text('Zaginiony skarb'),
+        findsNothing,
+        reason: 'locked content is hidden, not shown with a lock',
+      );
+      expect(find.byType(NavigationBar), findsNothing);
+
+      // A deep link or programmatic navigation cannot leave kids mode.
+      GoRouter.of(tester.element(find.text('Moje zabawy'))).go('/biblioteka');
+      await tester.pumpAndSettle();
+      expect(find.text('Moje zabawy'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Dla rodzica'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('74'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Anuluj'));
+      await tester.pumpAndSettle();
+      expect(find.text('Moje zabawy'), findsOneWidget, reason: 'cancelled gate keeps kids mode');
+
+      await tester.tap(find.byTooltip('Dla rodzica'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('47'));
+      await tester.pumpAndSettle();
+      expect(find.text('Czas na zabawę!'), findsOneWidget);
+    });
   });
 }

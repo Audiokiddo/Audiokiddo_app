@@ -41,6 +41,38 @@ def render(text: str, target: pathlib.Path) -> None:
         )
 
 
+def ascii_text(text: str) -> str:
+    table = str.maketrans("ąćęłńóśźżĄĆĘŁŃÓŚŹŻ", "acelnoszzACELNOSZZ")
+    return text.translate(table).replace("(", "[").replace(")", "]")
+
+
+def render_pdf(title: str, target: pathlib.Path) -> None:
+    """Minimal one-page PDF (Helvetica, ASCII only) standing in for the case files."""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    lines = ["AKTA SPRAWY - plik testowy", ascii_text(title), "",
+             "Tu bedzie prawdziwa karta pracy AudioKiddo.", "Detektywie, zapisz tutaj swoje poszlaki:"]
+    content = "BT /F1 20 Tf 60 780 Td 28 TL " + " ".join(f"({l}) Tj T*" for l in lines) + " ET"
+    content += " 60 400 m 535 400 l S 60 360 m 535 360 l S 60 320 m 535 320 l S"
+    objects = [
+        "<< /Type /Catalog /Pages 2 0 R >>",
+        "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R "
+        "/Resources << /Font << /F1 5 0 R >> >> >>",
+        f"<< /Length {len(content)} >>\nstream\n{content}\nendstream",
+        "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    ]
+    out = b"%PDF-1.4\n"
+    offsets = []
+    for i, obj in enumerate(objects, 1):
+        offsets.append(len(out))
+        out += f"{i} 0 obj\n{obj}\nendobj\n".encode("latin-1")
+    xref = len(out)
+    out += f"xref\n0 {len(objects) + 1}\n0000000000 65535 f \n".encode()
+    out += "".join(f"{o:010d} 00000 n \n" for o in offsets).encode()
+    out += f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n".encode()
+    target.write_bytes(out)
+
+
 def main() -> None:
     catalog = json.loads(CATALOG.read_text())
     for item in catalog["items"]:
@@ -52,6 +84,13 @@ def main() -> None:
                     "Tutaj będzie prawdziwa audiozabawa AudioKiddo. Teraz posłuchaj dźwięku próbnego.",
                     target,
                 )
+            data = target.read_bytes()
+            asset["bytes"] = len(data)
+            asset["sha256"] = hashlib.sha256(data).hexdigest()
+        for asset in item.get("pdf", []):
+            target = OUT / asset["path"]
+            if not target.exists():
+                render_pdf(item["title"], target)
             data = target.read_bytes()
             asset["bytes"] = len(data)
             asset["sha256"] = hashlib.sha256(data).hexdigest()
