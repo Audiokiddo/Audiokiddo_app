@@ -43,6 +43,7 @@ flutter:
   generate: true
   assets:
     - assets/mock/
+    - assets/audio/
   fonts:
     - family: Poppins
       fonts:

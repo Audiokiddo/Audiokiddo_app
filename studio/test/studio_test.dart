@@ -42,7 +42,7 @@ void main() {
     addTearDown(c.dispose);
     c.read(studioProvider.notifier).importCatalog(appCatalog);
     final v = c.read(validationProvider);
-    expect(c.read(studioProvider).items, hasLength(28));
+    expect(c.read(studioProvider).items, hasLength(32));
     expect(v.canPublish, isTrue, reason: '${v.itemErrors} ${v.otherErrors}');
   });
 

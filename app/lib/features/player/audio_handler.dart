@@ -4,6 +4,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../games/game_controller.dart' show GameAudio;
+
 const _skipInterval = Duration(seconds: 15);
 const _sleepFade = Duration(seconds: 10);
 
@@ -43,7 +45,7 @@ class SleepAtEndOfItem extends SleepTimer {
 
 /// Plays plain audio (audiozabawy, piosenki) in the background with lock-screen and
 /// headset controls. Interactive games get their own session in Etap 4.
-class AkAudioHandler extends BaseAudioHandler with SeekHandler {
+class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAudio {
   AkAudioHandler(AudioSession session) {
     _player.playbackEventStream.listen(_broadcast, onError: (Object e, StackTrace st) => _broadcastError(e));
     _player.processingStateStream.listen((state) {
@@ -90,6 +92,41 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler {
     // just_audio's play() completes only when playback stops, so it is not awaited.
     unawaited(_player.play());
   }
+
+  /// Game segment (Etap 4): plays [source] once. Returns true when it played to the end,
+  /// false when something else took over the player (stop, another item).
+  @override
+  Future<bool> playSegment(MediaItem media, Uri source) async {
+    await _player.setLoopMode(LoopMode.off);
+    await _player.setSpeed(1);
+    await _player.setVolume(1);
+    await _player.setAudioSource(AudioSource.uri(source, tag: media));
+    mediaItem.add(media);
+    unawaited(_player.play());
+    final end = await _player.processingStateStream.firstWhere(
+      (s) => s == ProcessingState.completed || s == ProcessingState.idle,
+    );
+    return end == ProcessingState.completed;
+  }
+
+  /// Loops [source] (a bed or silence) during game waits. Keeping audio running keeps the
+  /// app alive in the background and lets the lock screen pause the game.
+  @override
+  Future<void> startLoop(MediaItem media, Uri source) async {
+    await _player.setAudioSource(AudioSource.uri(source, tag: media));
+    await _player.setLoopMode(LoopMode.one);
+    mediaItem.add(media);
+    unawaited(_player.play());
+  }
+
+  @override
+  Future<void> stopLoop() async {
+    await _player.setLoopMode(LoopMode.off);
+    await _player.pause();
+  }
+
+  @override
+  bool get isPlaying => _player.playing;
 
   @override
   Future<void> play() async {

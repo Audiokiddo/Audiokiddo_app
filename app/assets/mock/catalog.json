@@ -817,6 +817,665 @@
      "sha256": "d5dda4fb37abc3a77e855328e885f0754e1cb0a385d7da46574b5929880f9631"
     }
    ]
+  },
+  {
+   "id": "zgadnij-dzwiek",
+   "kind": "interactive_game",
+   "title": "Zgadnij dźwięk (prototyp)",
+   "parent_description": "Dziecko słucha odgłosów i mówi, co to. Aplikacja nie ocenia odpowiedzi: po chwili podaje rozwiązanie. Z mikrofonem (opcjonalnie) zauważa, że dziecko coś powiedziało, i szybciej przechodzi dalej.",
+   "age_min": 3,
+   "duration_sec": 180,
+   "situations": [
+    "podroz",
+    "w_domu"
+   ],
+   "requirements": [
+    "mikrofon"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "free",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "zgadnij-dzwiek",
+    "version": 1,
+    "min_engine_version": 1,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/zgadnij-dzwiek/intro.m4a",
+      "bytes": 54020,
+      "sha256": "75d1618e099e6066f6aa592962a65caa324865c9a86805760d2d367c04523e41"
+     },
+     "heard_you": {
+      "path": "games/zgadnij-dzwiek/heard_you.m4a",
+      "bytes": 28537,
+      "sha256": "4b0f7bf552460813c80e172d714c221b344c8f839205d8f0c06a445b3ed9100e"
+     },
+     "thinking": {
+      "path": "games/zgadnij-dzwiek/thinking.m4a",
+      "bytes": 9380,
+      "sha256": "26ae42ae1d4ad5d2dba33cdd352ff7ed607b01721ee9f6271c97b87d62a263d9"
+     },
+     "outro": {
+      "path": "games/zgadnij-dzwiek/outro.m4a",
+      "bytes": 28779,
+      "sha256": "0addfc9a97dfdac5e6eefd10b6ad1779974502f6222e22e4440bb26c53ba752d"
+     },
+     "q_dzwonek": {
+      "path": "games/zgadnij-dzwiek/q_dzwonek.m4a",
+      "bytes": 32784,
+      "sha256": "b58317fa146e297fdbc5da477cdc7571ce6d51e69203e52f453812894ee6aac3"
+     },
+     "a_dzwonek": {
+      "path": "games/zgadnij-dzwiek/a_dzwonek.m4a",
+      "bytes": 28609,
+      "sha256": "df02da4b438916bfd3e4284dd1f80b7b394a921c1b2881db07b5791549717f94"
+     },
+     "q_deszcz": {
+      "path": "games/zgadnij-dzwiek/q_deszcz.m4a",
+      "bytes": 53288,
+      "sha256": "de30a8a1db58e2650cb42aa4f2c6fda1b309b057e4680a1336feea190f64fdbb"
+     },
+     "a_deszcz": {
+      "path": "games/zgadnij-dzwiek/a_deszcz.m4a",
+      "bytes": 26120,
+      "sha256": "7838c6ee4909f18e01528a07f9f08e73ffc765cac973bf1d0dbde66fa9bacc53"
+     },
+     "q_zegar": {
+      "path": "games/zgadnij-dzwiek/q_zegar.m4a",
+      "bytes": 30123,
+      "sha256": "9e0693f1d7d1f4167cbe06b72b9ae744167c6750361d1fae7b685679dd4e7f20"
+     },
+     "a_zegar": {
+      "path": "games/zgadnij-dzwiek/a_zegar.m4a",
+      "bytes": 29936,
+      "sha256": "b889caee76020ea1a38eebad8125ccf3151f19802d2ad42e9ab81c306159fc4f"
+     }
+    },
+    "variables": {},
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "q_dzwonek"
+     },
+     "q_dzwonek": {
+      "type": "play",
+      "asset": "q_dzwonek",
+      "next": "listen_dzwonek"
+     },
+     "listen_dzwonek": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 6000,
+      "on_detected": "ack_dzwonek",
+      "on_timeout": "a_dzwonek",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 6000,
+        "next": "a_dzwonek",
+        "loop_asset": "thinking"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "ack_dzwonek": {
+      "type": "play",
+      "asset": "heard_you",
+      "next": "a_dzwonek"
+     },
+     "a_dzwonek": {
+      "type": "play",
+      "asset": "a_dzwonek",
+      "next": "q_deszcz"
+     },
+     "q_deszcz": {
+      "type": "play",
+      "asset": "q_deszcz",
+      "next": "listen_deszcz"
+     },
+     "listen_deszcz": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 6000,
+      "on_detected": "ack_deszcz",
+      "on_timeout": "a_deszcz",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 6000,
+        "next": "a_deszcz",
+        "loop_asset": "thinking"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "ack_deszcz": {
+      "type": "play",
+      "asset": "heard_you",
+      "next": "a_deszcz"
+     },
+     "a_deszcz": {
+      "type": "play",
+      "asset": "a_deszcz",
+      "next": "q_zegar"
+     },
+     "q_zegar": {
+      "type": "play",
+      "asset": "q_zegar",
+      "next": "listen_zegar"
+     },
+     "listen_zegar": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 6000,
+      "on_detected": "ack_zegar",
+      "on_timeout": "a_zegar",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 6000,
+        "next": "a_zegar",
+        "loop_asset": "thinking"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "ack_zegar": {
+      "type": "play",
+      "asset": "heard_you",
+      "next": "a_zegar"
+     },
+     "a_zegar": {
+      "type": "play",
+      "asset": "a_zegar",
+      "next": "end"
+     },
+     "end": {
+      "type": "end",
+      "asset": "outro"
+     }
+    }
+   },
+   "timing_sensitive": false
+  },
+  {
+   "id": "zamrozony-taniec",
+   "kind": "interactive_game",
+   "title": "Zamrożony taniec (prototyp)",
+   "parent_description": "Gdy gra muzyka, dziecko tańczy; na „stop” zamienia się w posąg. Telefon leży, aplikacja niczego nie mierzy.",
+   "age_min": 3,
+   "duration_sec": 120,
+   "situations": [
+    "w_domu"
+   ],
+   "requirements": [
+    "miejsce_do_ruchu"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "zamrozony-taniec",
+    "version": 1,
+    "min_engine_version": 1,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/zamrozony-taniec/intro.m4a",
+      "bytes": 65312,
+      "sha256": "c0dd11f6a028706d7046611b76161b5ca8a04500682587c3ae7568eb3741adff"
+     },
+     "stop": {
+      "path": "games/zamrozony-taniec/stop.m4a",
+      "bytes": 22875,
+      "sha256": "2d61b7b07ca34c4005d0afa4db3d396745879520ece391582825ca2481bc275b"
+     },
+     "go": {
+      "path": "games/zamrozony-taniec/go.m4a",
+      "bytes": 10119,
+      "sha256": "f393a04dc24780db7b7515eddd4b28367add9b35a2885773f731095ed2c0c1a2"
+     },
+     "outro": {
+      "path": "games/zamrozony-taniec/outro.m4a",
+      "bytes": 26103,
+      "sha256": "53db03cdecc9e317f4e67e6d0fce222592a4287c6ebc7b862aea2b46161d45d2"
+     },
+     "music_1": {
+      "path": "games/zamrozony-taniec/music_1.m4a",
+      "bytes": 100287,
+      "sha256": "9848fbefcfd23fffe271e92f8d5f37214119e865eb8a50893e677f162f0d137c"
+     },
+     "music_2": {
+      "path": "games/zamrozony-taniec/music_2.m4a",
+      "bytes": 66752,
+      "sha256": "7dfeb1a0079be17284058c59cec94e63918b332217bdc29ad0d05ba83bab50b0"
+     },
+     "music_3": {
+      "path": "games/zamrozony-taniec/music_3.m4a",
+      "bytes": 125136,
+      "sha256": "506d42da100070adfab3f13e88b23ab8a61cec2a72f90a6d71c6502ed3643fdd"
+     }
+    },
+    "variables": {},
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "music_1"
+     },
+     "music_1": {
+      "type": "play",
+      "asset": "music_1",
+      "next": "stop_1"
+     },
+     "stop_1": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_1"
+     },
+     "freeze_1": {
+      "type": "wait",
+      "duration_ms": 5000,
+      "next": "go_1"
+     },
+     "go_1": {
+      "type": "play",
+      "asset": "go",
+      "next": "music_2"
+     },
+     "music_2": {
+      "type": "play",
+      "asset": "music_2",
+      "next": "stop_2"
+     },
+     "stop_2": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_2"
+     },
+     "freeze_2": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "next": "go_2"
+     },
+     "go_2": {
+      "type": "play",
+      "asset": "go",
+      "next": "music_3"
+     },
+     "music_3": {
+      "type": "play",
+      "asset": "music_3",
+      "next": "stop_3"
+     },
+     "stop_3": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_3"
+     },
+     "freeze_3": {
+      "type": "wait",
+      "duration_ms": 5000,
+      "next": "end"
+     },
+     "end": {
+      "type": "end",
+      "asset": "outro"
+     }
+    }
+   },
+   "timing_sensitive": false
+  },
+  {
+   "id": "zamrozone-raczki",
+   "kind": "interactive_game",
+   "title": "Zamrożone rączki (prototyp, w podróży)",
+   "parent_description": "Wersja do samochodu: tańczą tylko rączki i minki, bez wstawania z fotelika.",
+   "age_min": 3,
+   "duration_sec": 120,
+   "situations": [
+    "podroz"
+   ],
+   "requirements": [],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "zamrozone-raczki",
+    "version": 1,
+    "min_engine_version": 1,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/zamrozone-raczki/intro.m4a",
+      "bytes": 59789,
+      "sha256": "e9f5504948c7fd4d468a3701594459d030f526768cc170c2a5d3af3563aaf3f1"
+     },
+     "stop": {
+      "path": "games/zamrozone-raczki/stop.m4a",
+      "bytes": 22875,
+      "sha256": "2d61b7b07ca34c4005d0afa4db3d396745879520ece391582825ca2481bc275b"
+     },
+     "go": {
+      "path": "games/zamrozone-raczki/go.m4a",
+      "bytes": 10119,
+      "sha256": "f393a04dc24780db7b7515eddd4b28367add9b35a2885773f731095ed2c0c1a2"
+     },
+     "outro": {
+      "path": "games/zamrozone-raczki/outro.m4a",
+      "bytes": 26103,
+      "sha256": "53db03cdecc9e317f4e67e6d0fce222592a4287c6ebc7b862aea2b46161d45d2"
+     },
+     "music_1": {
+      "path": "games/zamrozone-raczki/music_1.m4a",
+      "bytes": 100287,
+      "sha256": "9848fbefcfd23fffe271e92f8d5f37214119e865eb8a50893e677f162f0d137c"
+     },
+     "music_2": {
+      "path": "games/zamrozone-raczki/music_2.m4a",
+      "bytes": 66752,
+      "sha256": "7dfeb1a0079be17284058c59cec94e63918b332217bdc29ad0d05ba83bab50b0"
+     },
+     "music_3": {
+      "path": "games/zamrozone-raczki/music_3.m4a",
+      "bytes": 125136,
+      "sha256": "506d42da100070adfab3f13e88b23ab8a61cec2a72f90a6d71c6502ed3643fdd"
+     }
+    },
+    "variables": {},
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "music_1"
+     },
+     "music_1": {
+      "type": "play",
+      "asset": "music_1",
+      "next": "stop_1"
+     },
+     "stop_1": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_1"
+     },
+     "freeze_1": {
+      "type": "wait",
+      "duration_ms": 5000,
+      "next": "go_1"
+     },
+     "go_1": {
+      "type": "play",
+      "asset": "go",
+      "next": "music_2"
+     },
+     "music_2": {
+      "type": "play",
+      "asset": "music_2",
+      "next": "stop_2"
+     },
+     "stop_2": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_2"
+     },
+     "freeze_2": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "next": "go_2"
+     },
+     "go_2": {
+      "type": "play",
+      "asset": "go",
+      "next": "music_3"
+     },
+     "music_3": {
+      "type": "play",
+      "asset": "music_3",
+      "next": "stop_3"
+     },
+     "stop_3": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_3"
+     },
+     "freeze_3": {
+      "type": "wait",
+      "duration_ms": 5000,
+      "next": "end"
+     },
+     "end": {
+      "type": "end",
+      "asset": "outro"
+     }
+    }
+   },
+   "timing_sensitive": false
+  },
+  {
+   "id": "echo-rytmu",
+   "kind": "interactive_game",
+   "title": "Echo rytmu (prototyp)",
+   "parent_description": "Aplikacja klaszcze rytm, dziecko go powtarza. Z mikrofonem (opcjonalnie) aplikacja słyszy klaskanie, ale nie ocenia, czy rytm był dokładny. Bez mikrofonu daje czas i przypomina rytm.",
+   "age_min": 3,
+   "duration_sec": 120,
+   "situations": [
+    "w_domu"
+   ],
+   "requirements": [
+    "mikrofon"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "echo-rytmu",
+    "version": 1,
+    "min_engine_version": 1,
+    "timing_sensitive": true,
+    "assets": {
+     "intro": {
+      "path": "games/echo-rytmu/intro.m4a",
+      "bytes": 39617,
+      "sha256": "6b84c6c9c3ef06e0386c22a1698e2bb44d4eba84e27bbaf15bb13623607ab853"
+     },
+     "your_turn": {
+      "path": "games/echo-rytmu/your_turn.m4a",
+      "bytes": 7992,
+      "sha256": "67d99b1ff23611ba08dd06257da64921fb1b9d9e10dc30e793172ea2d193d205"
+     },
+     "heard_claps": {
+      "path": "games/echo-rytmu/heard_claps.m4a",
+      "bytes": 13008,
+      "sha256": "ef0d7f05d7b1d1e30d72d81010daea364ff21bc31d6a1c1c231bf732fa322b44"
+     },
+     "again": {
+      "path": "games/echo-rytmu/again.m4a",
+      "bytes": 24143,
+      "sha256": "e0e1b9180035fd33525ce485f50a97a3cced16b7c1670402d4ea105287d2a1d1"
+     },
+     "outro": {
+      "path": "games/echo-rytmu/outro.m4a",
+      "bytes": 23088,
+      "sha256": "79cb1b5621098c6ef7d4495442d996c05651f34cd858f80661157dc107514f29"
+     },
+     "rhythm_1": {
+      "path": "games/echo-rytmu/rhythm_1.m4a",
+      "bytes": 7356,
+      "sha256": "53b9fcbc37a30a741fdd091821e8655cee60c7efc3e0fc76eaac5448064e3150"
+     },
+     "rhythm_2": {
+      "path": "games/echo-rytmu/rhythm_2.m4a",
+      "bytes": 10290,
+      "sha256": "f676eb0f359e34b39025ba7ba8267be735b3b97ac391614c74e2d7c5a7768300"
+     },
+     "rhythm_3": {
+      "path": "games/echo-rytmu/rhythm_3.m4a",
+      "bytes": 10682,
+      "sha256": "b5624b98800096445ac7e6e6f736aceee9ed67635a77103e1787e79a6c26c4d2"
+     }
+    },
+    "variables": {},
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "rhythm_1"
+     },
+     "rhythm_1": {
+      "type": "play",
+      "asset": "rhythm_1",
+      "next": "turn_1"
+     },
+     "turn_1": {
+      "type": "play",
+      "asset": "your_turn",
+      "next": "listen_1"
+     },
+     "listen_1": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 5000,
+      "min_count": 3,
+      "on_detected": "heard_1",
+      "on_timeout": "again_1",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 5000,
+        "next": "again_1"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "heard_1": {
+      "type": "play",
+      "asset": "heard_claps",
+      "next": "again_1"
+     },
+     "again_1": {
+      "type": "play",
+      "asset": "again",
+      "next": "replay_1"
+     },
+     "replay_1": {
+      "type": "play",
+      "asset": "rhythm_1",
+      "next": "rhythm_2"
+     },
+     "rhythm_2": {
+      "type": "play",
+      "asset": "rhythm_2",
+      "next": "turn_2"
+     },
+     "turn_2": {
+      "type": "play",
+      "asset": "your_turn",
+      "next": "listen_2"
+     },
+     "listen_2": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 5000,
+      "min_count": 4,
+      "on_detected": "heard_2",
+      "on_timeout": "again_2",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 5000,
+        "next": "again_2"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "heard_2": {
+      "type": "play",
+      "asset": "heard_claps",
+      "next": "again_2"
+     },
+     "again_2": {
+      "type": "play",
+      "asset": "again",
+      "next": "replay_2"
+     },
+     "replay_2": {
+      "type": "play",
+      "asset": "rhythm_2",
+      "next": "rhythm_3"
+     },
+     "rhythm_3": {
+      "type": "play",
+      "asset": "rhythm_3",
+      "next": "turn_3"
+     },
+     "turn_3": {
+      "type": "play",
+      "asset": "your_turn",
+      "next": "listen_3"
+     },
+     "listen_3": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 5000,
+      "min_count": 4,
+      "on_detected": "heard_3",
+      "on_timeout": "again_3",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 5000,
+        "next": "again_3"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "heard_3": {
+      "type": "play",
+      "asset": "heard_claps",
+      "next": "again_3"
+     },
+     "again_3": {
+      "type": "play",
+      "asset": "again",
+      "next": "replay_3"
+     },
+     "replay_3": {
+      "type": "play",
+      "asset": "rhythm_3",
+      "next": "end"
+     },
+     "end": {
+      "type": "end",
+      "asset": "outro"
+     }
+    }
+   },
+   "timing_sensitive": true
   }
  ],
  "shelves": [
@@ -860,6 +1519,17 @@
     "piosenka-1",
     "piosenka-2",
     "piosenka-3"
+   ]
+  },
+  {
+   "id": "gry",
+   "title": "Nowe gry bez ekranu (prototypy)",
+   "kind": "row",
+   "item_ids": [
+    "zgadnij-dzwiek",
+    "zamrozony-taniec",
+    "zamrozone-raczki",
+    "echo-rytmu"
    ]
   }
  ]

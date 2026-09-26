@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,7 @@ import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/catalog_loader.dart';
 import '../catalog/widgets/content_cover.dart';
 import '../downloads/download_providers.dart';
+import '../games/game_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import '../player/playback_controller.dart';
 import 'kids_mode_controller.dart';
@@ -52,7 +55,6 @@ List<ContentItem> kidsItems(
 }) => [
   for (final item in catalog.items)
     if (item.ageMin <= settings.age &&
-        item.kind != ContentKind.interactiveGame &&
         canPlay(item) &&
         (!settings.onlyDownloaded || downloaded.contains(item.id)))
       item,
@@ -109,6 +111,11 @@ class _KidsTile extends ConsumerWidget {
   final Pack? pack;
 
   Future<void> _play(BuildContext context, WidgetRef ref) async {
+    if (item.kind == ContentKind.interactiveGame) {
+      unawaited(ref.read(gameControllerProvider.notifier).start(item));
+      await context.push('/dziecko/gra');
+      return;
+    }
     try {
       await ref.read(playbackControllerProvider).start(item, album: pack?.title ?? 'AudioKiddo');
       if (context.mounted) await context.push('/dziecko/graj');

@@ -226,7 +226,7 @@ abstract class AppLocalizations {
   /// No description provided for @kindInteractiveGame.
   ///
   /// In pl, this message translates to:
-  /// **'Gry'**
+  /// **'Gry bez ekranu'**
   String get kindInteractiveGame;
 
   /// No description provided for @filterAge.
@@ -954,6 +954,42 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Wyczyść symulowane zakupy'**
   String get devClearPurchases;
+
+  /// No description provided for @playGame.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zagraj'**
+  String get playGame;
+
+  /// No description provided for @gameListen.
+  ///
+  /// In pl, this message translates to:
+  /// **'Słuchaj'**
+  String get gameListen;
+
+  /// No description provided for @gameYourTurn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twoja kolej'**
+  String get gameYourTurn;
+
+  /// No description provided for @gameTapNow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dotknij ekranu!'**
+  String get gameTapNow;
+
+  /// No description provided for @gameFinished.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koniec zabawy'**
+  String get gameFinished;
+
+  /// No description provided for @gameFailed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się uruchomić zabawy.'**
+  String get gameFailed;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

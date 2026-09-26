@@ -6,6 +6,7 @@ import '../features/catalog/home_screen.dart';
 import '../features/catalog/library_filter.dart';
 import '../features/catalog/library_screen.dart';
 import '../features/access/dev_tools_screen.dart';
+import '../features/games/game_screen.dart';
 import '../features/kids_mode/kids_home_screen.dart';
 import '../features/kids_mode/kids_mode_controller.dart';
 import '../features/personal/mine_screen.dart';
@@ -31,6 +32,8 @@ GoRouter buildRouter(KidsModeController kids) => GoRouter(
   routes: [
     GoRoute(path: '/dziecko', builder: (context, state) => const KidsHomeScreen()),
     GoRoute(path: '/dziecko/graj', builder: (context, state) => const NoLookScreen()),
+    GoRoute(path: '/dziecko/gra', builder: (context, state) => const GameScreen()),
+    GoRoute(path: '/gra', builder: (context, state) => const GameScreen()),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => _ParentShell(shell: shell),
       branches: [

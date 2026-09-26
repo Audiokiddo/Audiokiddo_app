@@ -104,7 +104,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get kindSong => 'Piosenki';
 
   @override
-  String get kindInteractiveGame => 'Gry';
+  String get kindInteractiveGame => 'Gry bez ekranu';
 
   @override
   String get filterAge => 'Wiek';
@@ -512,4 +512,22 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get devClearPurchases => 'Wyczyść symulowane zakupy';
+
+  @override
+  String get playGame => 'Zagraj';
+
+  @override
+  String get gameListen => 'Słuchaj';
+
+  @override
+  String get gameYourTurn => 'Twoja kolej';
+
+  @override
+  String get gameTapNow => 'Dotknij ekranu!';
+
+  @override
+  String get gameFinished => 'Koniec zabawy';
+
+  @override
+  String get gameFailed => 'Nie udało się uruchomić zabawy.';
 }

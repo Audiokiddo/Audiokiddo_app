@@ -67,7 +67,7 @@
   "kindAll": "Wszystko",
   "kindAudioGame": "Audiozabawy",
   "kindSong": "Piosenki",
-  "kindInteractiveGame": "Gry",
+  "kindInteractiveGame": "Gry bez ekranu",
   "filterAge": "Wiek",
   "filterPack": "Pakiet",
   "filterSituation": "Sytuacja",
@@ -305,5 +305,11 @@
   "purchaseVerifyLater": "Nie udało się jeszcze potwierdzić zakupu. Spróbujemy ponownie automatycznie, nie płać drugi raz.",
   "purchaseNothingToRestore": "Nie znaleźliśmy zakupów do przywrócenia na tym koncie sklepu.",
   "devStoreOutcome": "Wynik następnego zakupu w symulowanym sklepie",
-  "devClearPurchases": "Wyczyść symulowane zakupy"
+  "devClearPurchases": "Wyczyść symulowane zakupy",
+  "playGame": "Zagraj",
+  "gameListen": "Słuchaj",
+  "gameYourTurn": "Twoja kolej",
+  "gameTapNow": "Dotknij ekranu!",
+  "gameFinished": "Koniec zabawy",
+  "gameFailed": "Nie udało się uruchomić zabawy."
 }

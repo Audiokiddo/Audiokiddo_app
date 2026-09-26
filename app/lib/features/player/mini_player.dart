@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
+import 'playback_controller.dart';
 import 'player_providers.dart';
 
 /// Bar above the navigation showing what is loaded in the player.
@@ -22,7 +23,7 @@ class MiniPlayer extends ConsumerWidget {
     return Material(
       color: palette.surfaceMuted,
       child: InkWell(
-        onTap: () => context.push('/odtwarzacz'),
+        onTap: () => context.push(media.id.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz'),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.xs, AkSpace.xs, AkSpace.xs),
           child: Row(

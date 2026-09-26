@@ -63,6 +63,7 @@ class PlaybackController {
     final media = _handler.mediaItem.value;
     final duration = _handler.duration;
     if (media == null || duration == null || duration == Duration.zero) return;
+    if (media.id.startsWith(gameMediaPrefix)) return; // games have no resume point
     final position = completed ? duration : _handler.position;
     await _ref
         .read(personalRepositoryProvider)
@@ -81,6 +82,9 @@ class PlaybackController {
     }
   }
 }
+
+/// Media ids of game sessions start with this, so their segments are not saved as progress.
+const gameMediaPrefix = 'game:';
 
 final playbackControllerProvider = Provider<PlaybackController>((ref) {
   final controller = PlaybackController(ref);

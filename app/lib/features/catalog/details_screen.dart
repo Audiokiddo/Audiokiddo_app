@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,7 @@ import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/format.dart';
 import '../downloads/download_button.dart';
+import '../games/game_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';
@@ -43,6 +46,11 @@ class _DetailsContent extends ConsumerWidget {
   final Pack? pack;
 
   Future<void> _listen(BuildContext context, WidgetRef ref, {bool fromStart = false}) async {
+    if (item.kind == ContentKind.interactiveGame) {
+      unawaited(ref.read(gameControllerProvider.notifier).start(item));
+      await context.push('/gra');
+      return;
+    }
     try {
       await ref
           .read(playbackControllerProvider)
@@ -122,7 +130,7 @@ class _DetailsContent extends ConsumerWidget {
               FilledButton.icon(
                 onPressed: () => _listen(context, ref),
                 icon: const Icon(Icons.play_arrow_rounded),
-                label: Text(l10n.listen),
+                label: Text(item.kind == ContentKind.interactiveGame ? l10n.playGame : l10n.listen),
               ),
             const SizedBox(height: AkSpace.m),
             DownloadControl(item: item),

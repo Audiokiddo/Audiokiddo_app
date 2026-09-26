@@ -4,3 +4,6 @@ linter:
   rules:
     - prefer_final_locals
     - prefer_single_quotes
+
+formatter:
+  page_width: 110
