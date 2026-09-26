@@ -158,10 +158,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get unlockComingSoon => 'Zakupy i subskrypcja pojawią się w kolejnym etapie prac.';
 
   @override
-  String get devToneBanner =>
-      'Wersja robocza: odtwarzany jest dźwięk testowy. Prawdziwe nagrania pojawią się po dostarczeniu plików.';
-
-  @override
   String get play => 'Odtwórz';
 
   @override
@@ -194,4 +190,166 @@ class AppLocalizationsPl extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get navMine => 'Moje';
+
+  @override
+  String get mineRecent => 'Ostatnio słuchane';
+
+  @override
+  String get mineFavorites => 'Ulubione';
+
+  @override
+  String get mineDownloads => 'Pobrane';
+
+  @override
+  String get mineEmptyRecent => 'Tu pojawią się zabawy, których słuchaliście.';
+
+  @override
+  String get mineEmptyFavorites => 'Dotknij serca przy zabawie, aby dodać ją do ulubionych.';
+
+  @override
+  String get mineEmptyDownloads => 'Pobierz zabawy przed podróżą, żeby działały bez internetu.';
+
+  @override
+  String storageUsage(String used, String free) {
+    return 'Pobrane: $used · Wolne w telefonie: $free';
+  }
+
+  @override
+  String storageUsed(String used) {
+    return 'Pobrane: $used';
+  }
+
+  @override
+  String get deleteAllDownloads => 'Usuń wszystkie pobrane';
+
+  @override
+  String get deleteAllConfirmTitle => 'Usunąć wszystkie pobrane zabawy?';
+
+  @override
+  String get deleteAllConfirmBody => 'Pliki znikną z telefonu. W każdej chwili możesz pobrać je ponownie.';
+
+  @override
+  String get cancel => 'Anuluj';
+
+  @override
+  String get delete => 'Usuń';
+
+  @override
+  String download(String size) {
+    return 'Pobierz ($size)';
+  }
+
+  @override
+  String downloading(int percent) {
+    return 'Pobieranie… $percent%';
+  }
+
+  @override
+  String get downloadQueued => 'Czeka na pobranie…';
+
+  @override
+  String get verifying => 'Sprawdzanie pliku…';
+
+  @override
+  String get downloaded => 'Pobrano. Działa bez internetu.';
+
+  @override
+  String get removeDownload => 'Usuń z telefonu';
+
+  @override
+  String get cancelDownload => 'Anuluj pobieranie';
+
+  @override
+  String get downloadFailed => 'Nie udało się pobrać. Sprawdź internet i spróbuj ponownie.';
+
+  @override
+  String get retryDownload => 'Pobierz ponownie';
+
+  @override
+  String notEnoughSpace(String needed, String free) {
+    return 'Za mało miejsca w telefonie: potrzeba $needed, wolne $free.';
+  }
+
+  @override
+  String get favoriteAdd => 'Dodaj do ulubionych';
+
+  @override
+  String get favoriteRemove => 'Usuń z ulubionych';
+
+  @override
+  String resumeFrom(String time) {
+    return 'Wznów od $time';
+  }
+
+  @override
+  String get startOver => 'Od początku';
+
+  @override
+  String get playbackUnavailable =>
+      'Nie można teraz odtworzyć. Sprawdź internet albo pobierz zabawę wcześniej.';
+
+  @override
+  String get needsRefresh => 'Dostęp do płatnych zabaw trzeba odświeżyć. Połącz się z internetem.';
+
+  @override
+  String get sleepTimer => 'Timer snu';
+
+  @override
+  String get sleepOff => 'Wyłącz timer';
+
+  @override
+  String get sleepEndOfItem => 'Do końca zabawy';
+
+  @override
+  String sleepRemaining(String time) {
+    return 'Wyłączy się za $time';
+  }
+
+  @override
+  String get sleepAtEnd => 'Wyłączy się po tej zabawie';
+
+  @override
+  String get speed => 'Prędkość';
+
+  @override
+  String get speedLocked => 'W tej zabawie tempo jest stałe.';
+
+  @override
+  String get noLookMode => 'Tryb bez patrzenia';
+
+  @override
+  String get noLookHint => 'Połóż telefon i słuchajcie. Aby wyjść, przytrzymaj przycisk na dole.';
+
+  @override
+  String get noLookExit => 'Przytrzymaj, aby wyjść';
+
+  @override
+  String get nowPlaying => 'Teraz odtwarzane';
+
+  @override
+  String get devTools => 'Narzędzia deweloperskie';
+
+  @override
+  String get devToolsHint =>
+      'Widoczne tylko w wersji roboczej. Symulują zakupy do czasu podłączenia sklepów w Etapie 3.';
+
+  @override
+  String get devAccessMode => 'Symulowany dostęp';
+
+  @override
+  String get devRefresh => 'Odśwież dostęp (jak po połączeniu z internetem)';
+
+  @override
+  String get devExpireLease => 'Symuluj ponad 30 dni bez internetu';
+
+  @override
+  String devLeaseUntil(String date) {
+    return 'Dostęp offline ważny do: $date';
+  }
+
+  @override
+  String get devLeaseNone => 'Brak dzierżawy offline';
 }

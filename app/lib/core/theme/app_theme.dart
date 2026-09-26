@@ -17,6 +17,8 @@ ThemeData buildTheme(Brightness brightness) {
     surface: p.surface,
     onSurface: p.ink,
     onSurfaceVariant: p.inkMuted,
+    secondaryContainer: p.primary,
+    onSecondaryContainer: p.onPrimary,
     surfaceContainerHighest: p.surfaceMuted,
     outline: p.inkMuted,
   );
@@ -38,7 +40,7 @@ ThemeData buildTheme(Brightness brightness) {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
-      titleTextStyle: text.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+      titleTextStyle: text.titleLarge?.copyWith(fontSize: 20, fontWeight: FontWeight.w700, color: p.ink),
     ),
     cardTheme: CardThemeData(
       color: p.surface,
@@ -65,8 +67,7 @@ ThemeData buildTheme(Brightness brightness) {
     chipTheme: base.chipTheme.copyWith(
       backgroundColor: p.surface,
       selectedColor: p.primary,
-      labelStyle: text.labelLarge?.copyWith(color: p.ink),
-      secondaryLabelStyle: text.labelLarge?.copyWith(color: p.onPrimary),
+      labelStyle: _ChipLabelStyle(color: p.inkMuted, selectedColor: p.onPrimary),
       checkmarkColor: p.onPrimary,
       side: BorderSide(color: p.surfaceMuted),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -74,7 +75,34 @@ ThemeData buildTheme(Brightness brightness) {
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: p.surface,
       indicatorColor: p.surfaceMuted,
+      iconTheme: WidgetStateProperty.resolveWith(
+        (states) => IconThemeData(color: states.contains(WidgetState.selected) ? p.ink : p.inkMuted),
+      ),
       labelTextStyle: WidgetStatePropertyAll(text.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
     ),
   );
+}
+
+/// Label style for selectable chips (FilterChip/ChoiceChip): readable on the selected fill.
+TextStyle selectableChipLabel(BuildContext context, {required bool selected}) {
+  final p = Theme.of(context).extension<AkPalette>()!;
+  return TextStyle(
+    fontFamily: 'Poppins',
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: selected ? p.onPrimary : p.ink,
+  );
+}
+
+/// Chip label with a fixed colour for plain chips and [selectedColor] for selected ones.
+/// Plain chips use the style as-is; selectable chips resolve it with their state.
+class _ChipLabelStyle extends TextStyle implements WidgetStateProperty<TextStyle> {
+  const _ChipLabelStyle({required Color super.color, required this.selectedColor})
+    : super(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.w500);
+
+  final Color selectedColor;
+
+  @override
+  TextStyle resolve(Set<WidgetState> states) =>
+      states.contains(WidgetState.selected) ? copyWith(color: selectedColor) : this;
 }

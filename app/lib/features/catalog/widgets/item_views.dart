@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../downloads/download_manager.dart';
+import '../../downloads/download_providers.dart';
 import '../catalog_providers.dart';
 import 'content_cover.dart';
 import 'labels.dart';
@@ -94,6 +96,7 @@ class ItemTile extends ConsumerWidget {
     final canPlay = ref.watch(canPlayProvider(item));
     final pack = item.packId == null ? null : catalog.pack(item.packId!);
     final palette = context.palette;
+    final downloaded = ref.watch(downloadStatusProvider(item)).value?.phase == DownloadPhase.ready;
     return Semantics(
       button: true,
       label: _semanticLabel(l10n, item, canPlay),
@@ -126,6 +129,10 @@ class ItemTile extends ConsumerWidget {
                   ],
                 ),
               ),
+              if (downloaded) ...[
+                Icon(Icons.offline_pin_rounded, color: palette.primary, semanticLabel: l10n.downloaded),
+                const SizedBox(width: AkSpace.xs),
+              ],
               Icon(Icons.chevron_right_rounded, color: palette.inkMuted),
             ],
           ),

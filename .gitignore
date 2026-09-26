@@ -3,3 +3,4 @@
 *.p8
 key.properties
 .env
+dev_content/

@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../access/access_controller.dart';
+
 /// Source of the catalog manifest. Etap 1 reads the bundled mock; Etap 3 adds the
 /// server manifest with the last good version cached on the device.
 abstract interface class CatalogSource {
@@ -31,15 +33,34 @@ final catalogProvider = FutureProvider<Catalog>((ref) async {
   return result.catalog;
 });
 
-/// Entitlements known on this device. Etap 1: none (only free content plays);
-/// replaced by the verified server state in Etap 3.
-final entitlementsProvider = Provider<List<Entitlement>>((ref) => const []);
+/// Entitlements known on this device (dev source until Etap 3 — see access_controller.dart).
+final entitlementsProvider = Provider<List<Entitlement>>(
+  (ref) => ref.watch(accessProvider).value?.entitlements ?? const [],
+);
 
 final clockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
 
 final accessPolicyProvider = Provider<AccessPolicy>((ref) => AccessPolicy(ref.watch(entitlementsProvider)));
 
-/// Whether [item] can be played right now.
+/// Offline lease for paid content (ARCHITECTURE §8).
+final leaseStateProvider = Provider<LeaseState>((ref) {
+  final access = ref.watch(accessProvider).value;
+  return evaluateLease(
+    now: ref.watch(clockProvider)(),
+    validUntil: access?.leaseValidUntil,
+    lastSeenAt: access?.lastSeenAt,
+  );
+});
+
+enum ItemAccess { playable, locked, needsRefresh }
+
+/// Free content always plays; paid content needs an entitlement and a valid lease.
+final itemAccessProvider = Provider.family<ItemAccess, ContentItem>((ref, item) {
+  if (item.isFree) return ItemAccess.playable;
+  if (!ref.watch(accessPolicyProvider).canPlay(item, ref.watch(clockProvider)())) return ItemAccess.locked;
+  return ref.watch(leaseStateProvider) == LeaseState.valid ? ItemAccess.playable : ItemAccess.needsRefresh;
+});
+
 final canPlayProvider = Provider.family<bool, ContentItem>(
-  (ref, item) => ref.watch(accessPolicyProvider).canPlay(item, ref.watch(clockProvider)()),
+  (ref, item) => ref.watch(itemAccessProvider(item)) == ItemAccess.playable,
 );

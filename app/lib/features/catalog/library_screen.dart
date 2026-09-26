@@ -2,6 +2,7 @@ import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
 import 'library_filter.dart';
@@ -56,12 +57,14 @@ class _LibraryContent extends StatelessWidget {
                   ChoiceChip(
                     label: Text(l10n.kindAll),
                     selected: filter.kind == null,
+                    labelStyle: selectableChipLabel(context, selected: filter.kind == null),
                     onSelected: (_) => _set(context, filter.copyWith(kind: () => null)),
                   ),
                   for (final k in kinds)
                     ChoiceChip(
                       label: Text(l10n.kind(k)),
                       selected: filter.kind == k,
+                      labelStyle: selectableChipLabel(context, selected: filter.kind == k),
                       onSelected: (on) => _set(context, filter.copyWith(kind: () => on ? k : null)),
                     ),
                 ],
@@ -73,6 +76,7 @@ class _LibraryContent extends StatelessWidget {
                     FilterChip(
                       label: Text(p.title),
                       selected: filter.packId == p.id,
+                      labelStyle: selectableChipLabel(context, selected: filter.packId == p.id),
                       onSelected: (on) => _set(context, filter.copyWith(packId: () => on ? p.id : null)),
                     ),
                 ],
@@ -84,6 +88,7 @@ class _LibraryContent extends StatelessWidget {
                     FilterChip(
                       label: Text(l10n.ageFrom(a)),
                       selected: filter.age == a,
+                      labelStyle: selectableChipLabel(context, selected: filter.age == a),
                       onSelected: (on) => _set(context, filter.copyWith(age: () => on ? a : null)),
                     ),
                 ],
@@ -96,6 +101,7 @@ class _LibraryContent extends StatelessWidget {
                       avatar: Icon(situationIcon(s), size: 18),
                       label: Text(l10n.situation(s)),
                       selected: filter.situation == s,
+                      labelStyle: selectableChipLabel(context, selected: filter.situation == s),
                       onSelected: (on) => _set(context, filter.copyWith(situation: () => on ? s : null)),
                     ),
                 ],

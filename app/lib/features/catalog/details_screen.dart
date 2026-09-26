@@ -1,19 +1,18 @@
 import 'package:ak_core/ak_core.dart';
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
-import '../player/player_providers.dart';
+import '../../core/format.dart';
+import '../downloads/download_button.dart';
+import '../personal/personal_repository.dart';
+import '../player/playback_controller.dart';
 import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
 import 'widgets/content_cover.dart';
 import 'widgets/labels.dart';
-
-/// Until real recordings are delivered every item plays this tone (Etap 1 background-audio check).
-const devToneAsset = 'assets/dev/test_tone_90s.m4a';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key, required this.itemId});
@@ -23,7 +22,7 @@ class DetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(actions: [_FavoriteButton(itemId: itemId)]),
       body: CatalogLoader(
         builder: (context, catalog) {
           final item = catalog.item(itemId);
@@ -41,13 +40,22 @@ class _DetailsContent extends ConsumerWidget {
   final ContentItem item;
   final Pack? pack;
 
-  Future<void> _listen(BuildContext context, WidgetRef ref) async {
-    final handler = ref.read(audioHandlerProvider);
-    await handler.playAsset(
-      MediaItem(id: item.id, title: item.title, album: pack?.title ?? 'AudioKiddo'),
-      devToneAsset,
-    );
-    if (context.mounted) await context.push('/odtwarzacz');
+  Future<void> _listen(BuildContext context, WidgetRef ref, {bool fromStart = false}) async {
+    try {
+      await ref
+          .read(playbackControllerProvider)
+          .start(
+            item,
+            album: pack?.title ?? AppLocalizations.of(context).kind(item.kind),
+            fromStart: fromStart,
+          );
+      if (context.mounted) await context.push('/odtwarzacz');
+    } on Exception {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).playbackUnavailable)));
+      }
+    }
   }
 
   void _unlock(BuildContext context) {
@@ -61,7 +69,9 @@ class _DetailsContent extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final palette = context.palette;
-    final canPlay = ref.watch(canPlayProvider(item));
+    final access = ref.watch(itemAccessProvider(item));
+    final canPlay = access == ItemAccess.playable;
+    final resumeAt = resumePosition(ref.watch(progressProvider(item.id)).value);
     final players = l10n.playerCount(item);
 
     return ListView(
@@ -86,18 +96,44 @@ class _DetailsContent extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: AkSpace.l),
-        if (canPlay)
-          FilledButton.icon(
-            onPressed: () => _listen(context, ref),
-            icon: const Icon(Icons.play_arrow_rounded),
-            label: Text(l10n.listen),
-          )
-        else
-          FilledButton.icon(
-            onPressed: () => _unlock(context),
-            icon: const Icon(Icons.lock_open_rounded),
-            label: Text(l10n.unlock),
-          ),
+        ...switch (access) {
+          ItemAccess.playable => [
+            if (resumeAt > Duration.zero) ...[
+              FilledButton.icon(
+                onPressed: () => _listen(context, ref),
+                icon: const Icon(Icons.play_arrow_rounded),
+                label: Text(l10n.resumeFrom(formatClock(resumeAt))),
+              ),
+              TextButton(
+                onPressed: () => _listen(context, ref, fromStart: true),
+                child: Text(l10n.startOver),
+              ),
+            ] else
+              FilledButton.icon(
+                onPressed: () => _listen(context, ref),
+                icon: const Icon(Icons.play_arrow_rounded),
+                label: Text(l10n.listen),
+              ),
+            const SizedBox(height: AkSpace.m),
+            DownloadControl(item: item),
+          ],
+          ItemAccess.needsRefresh => [
+            FilledButton.icon(
+              onPressed: null,
+              icon: const Icon(Icons.wifi_off_rounded),
+              label: Text(l10n.listen),
+            ),
+            const SizedBox(height: AkSpace.s),
+            Text(l10n.needsRefresh, style: text.bodyMedium),
+          ],
+          ItemAccess.locked => [
+            FilledButton.icon(
+              onPressed: () => _unlock(context),
+              icon: const Icon(Icons.lock_open_rounded),
+              label: Text(l10n.unlock),
+            ),
+          ],
+        },
         const SizedBox(height: AkSpace.l),
         _Section(
           title: l10n.detailsForParent,
@@ -165,4 +201,23 @@ class _Section extends StatelessWidget {
       ],
     ),
   );
+}
+
+class _FavoriteButton extends ConsumerWidget {
+  const _FavoriteButton({required this.itemId});
+
+  final String itemId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final favorite = ref.watch(favoritesProvider).value?.contains(itemId) ?? false;
+    return IconButton(
+      tooltip: favorite ? l10n.favoriteRemove : l10n.favoriteAdd,
+      isSelected: favorite,
+      icon: const Icon(Icons.favorite_border_rounded),
+      selectedIcon: Icon(Icons.favorite_rounded, color: Theme.of(context).colorScheme.error),
+      onPressed: () => ref.read(personalRepositoryProvider).setFavorite(itemId, favorite: !favorite),
+    );
+  }
 }

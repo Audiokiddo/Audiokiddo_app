@@ -85,7 +85,6 @@
   "listen": "Słuchaj",
   "unlock": "Odblokuj",
   "unlockComingSoon": "Zakupy i subskrypcja pojawią się w kolejnym etapie prac.",
-  "devToneBanner": "Wersja robocza: odtwarzany jest dźwięk testowy. Prawdziwe nagrania pojawią się po dostarczeniu plików.",
   "play": "Odtwórz",
   "pause": "Pauza",
   "rewind": "Cofnij 15 sekund",
@@ -100,5 +99,115 @@
         "type": "int"
       }
     }
-  }
+  },
+  "navMine": "Moje",
+  "mineRecent": "Ostatnio słuchane",
+  "mineFavorites": "Ulubione",
+  "mineDownloads": "Pobrane",
+  "mineEmptyRecent": "Tu pojawią się zabawy, których słuchaliście.",
+  "mineEmptyFavorites": "Dotknij serca przy zabawie, aby dodać ją do ulubionych.",
+  "mineEmptyDownloads": "Pobierz zabawy przed podróżą, żeby działały bez internetu.",
+  "storageUsage": "Pobrane: {used} · Wolne w telefonie: {free}",
+  "@storageUsage": {
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "storageUsed": "Pobrane: {used}",
+  "@storageUsed": {
+    "placeholders": {
+      "used": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAllDownloads": "Usuń wszystkie pobrane",
+  "deleteAllConfirmTitle": "Usunąć wszystkie pobrane zabawy?",
+  "deleteAllConfirmBody": "Pliki znikną z telefonu. W każdej chwili możesz pobrać je ponownie.",
+  "cancel": "Anuluj",
+  "delete": "Usuń",
+  "download": "Pobierz ({size})",
+  "@download": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "Pobieranie… {percent}%",
+  "@downloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadQueued": "Czeka na pobranie…",
+  "verifying": "Sprawdzanie pliku…",
+  "downloaded": "Pobrano. Działa bez internetu.",
+  "removeDownload": "Usuń z telefonu",
+  "cancelDownload": "Anuluj pobieranie",
+  "downloadFailed": "Nie udało się pobrać. Sprawdź internet i spróbuj ponownie.",
+  "retryDownload": "Pobierz ponownie",
+  "notEnoughSpace": "Za mało miejsca w telefonie: potrzeba {needed}, wolne {free}.",
+  "@notEnoughSpace": {
+    "placeholders": {
+      "needed": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "favoriteAdd": "Dodaj do ulubionych",
+  "favoriteRemove": "Usuń z ulubionych",
+  "resumeFrom": "Wznów od {time}",
+  "@resumeFrom": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "startOver": "Od początku",
+  "playbackUnavailable": "Nie można teraz odtworzyć. Sprawdź internet albo pobierz zabawę wcześniej.",
+  "needsRefresh": "Dostęp do płatnych zabaw trzeba odświeżyć. Połącz się z internetem.",
+  "sleepTimer": "Timer snu",
+  "sleepOff": "Wyłącz timer",
+  "sleepEndOfItem": "Do końca zabawy",
+  "sleepRemaining": "Wyłączy się za {time}",
+  "@sleepRemaining": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepAtEnd": "Wyłączy się po tej zabawie",
+  "speed": "Prędkość",
+  "speedLocked": "W tej zabawie tempo jest stałe.",
+  "noLookMode": "Tryb bez patrzenia",
+  "noLookHint": "Połóż telefon i słuchajcie. Aby wyjść, przytrzymaj przycisk na dole.",
+  "noLookExit": "Przytrzymaj, aby wyjść",
+  "nowPlaying": "Teraz odtwarzane",
+  "devTools": "Narzędzia deweloperskie",
+  "devToolsHint": "Widoczne tylko w wersji roboczej. Symulują zakupy do czasu podłączenia sklepów w Etapie 3.",
+  "devAccessMode": "Symulowany dostęp",
+  "devRefresh": "Odśwież dostęp (jak po połączeniu z internetem)",
+  "devExpireLease": "Symuluj ponad 30 dni bez internetu",
+  "devLeaseUntil": "Dostęp offline ważny do: {date}",
+  "@devLeaseUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "devLeaseNone": "Brak dzierżawy offline"
 }

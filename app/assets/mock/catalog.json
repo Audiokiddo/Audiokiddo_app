@@ -50,8 +50,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/magiczny-sklep.m4a",
-     "bytes": 5760000,
-     "sha256": "TODO"
+     "bytes": 295850,
+     "sha256": "6c842de4933d6d6740c81089bcbdae2b5e03d971318b458c939765e652a23a57"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.magiczny_sklep"
@@ -77,8 +77,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/zaginiony-skarb.m4a",
-     "bytes": 7680000,
-     "sha256": "TODO"
+     "bytes": 296580,
+     "sha256": "98833d9a29d68bf799d85f6cc304cc13249821dc18bcc7e369e0738cbca3688a"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.zaginiony_skarb"
@@ -104,8 +104,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/podroz-na-inna-planete.m4a",
-     "bytes": 4800000,
-     "sha256": "TODO"
+     "bytes": 297779,
+     "sha256": "1e63e8cb8b99bfb1b8bdb397d3b23d3aa4ff7355132bbe8b1df76c509f17af26"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.podroz_na_inna_planete"
@@ -131,8 +131,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/wymysl-znaczenie.m4a",
-     "bytes": 6720000,
-     "sha256": "TODO"
+     "bytes": 295745,
+     "sha256": "7bed256b7a3ae974006cc36f24579bd303af8bbadd56151421f65a9009550707"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.wymysl_znaczenie"
@@ -158,8 +158,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/mikstura.m4a",
-     "bytes": 6720000,
-     "sha256": "TODO"
+     "bytes": 293242,
+     "sha256": "ff3592a39ec40790f277de42fa2a38a086fa65db92eeeab01af8997f26130885"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.mikstura"
@@ -185,8 +185,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/moj-superbohater.m4a",
-     "bytes": 7680000,
-     "sha256": "TODO"
+     "bytes": 296094,
+     "sha256": "598eb839532bba68de6ce326b1b0ec171e2910097ab785bfc3a6164d95eb9fa5"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.moj_superbohater"
@@ -212,8 +212,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/dokoncz-historie.m4a",
-     "bytes": 5760000,
-     "sha256": "TODO"
+     "bytes": 295833,
+     "sha256": "ee77cb4c68e3e8d8ca106672671ce9d858de714e3b75985f2a53c6861d4e8f67"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.dokoncz_historie"
@@ -239,8 +239,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/mistrz-kuchni.m4a",
-     "bytes": 5760000,
-     "sha256": "TODO"
+     "bytes": 294609,
+     "sha256": "d918e774ff631d7903f382acef4923c5a5071188cb440cc2d796331ec0120276"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.mistrz_kuchni"
@@ -266,8 +266,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/magiczny-teatr.m4a",
-     "bytes": 8640000,
-     "sha256": "TODO"
+     "bytes": 295014,
+     "sha256": "aa2b09cd0bc9dc70d514806d6c22cd3cf7df3d538fb4eeb5580b2b3147ad5f59"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.magiczny_teatr"
@@ -293,8 +293,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/co-oni-odpowiedzieli.m4a",
-     "bytes": 7680000,
-     "sha256": "TODO"
+     "bytes": 296225,
+     "sha256": "99b225d58ceff9901b882efea7aa1c43403d32f693b6e3f47081b4c6eca0b3ab"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.co_oni_odpowiedzieli"
@@ -320,8 +320,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-to-za-przedmiot.m4a",
-     "bytes": 6720000,
-     "sha256": "TODO"
+     "bytes": 296595,
+     "sha256": "2bb9858b9f50c932855707711d6227b2f6b72715261e94565c645e14e8a3d716"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.co_to_za_przedmiot"
@@ -347,8 +347,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-to-za-dzwiek.m4a",
-     "bytes": 6720000,
-     "sha256": "TODO"
+     "bytes": 296109,
+     "sha256": "bf06c24a60ec877fc8b0a2655138de75c9bbafd71fae13e28559aa07cb0d11a8"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.co_to_za_dzwiek"
@@ -374,8 +374,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/szybkie-skojarzenia.m4a",
-     "bytes": 3840000,
-     "sha256": "TODO"
+     "bytes": 296149,
+     "sha256": "d3160dc8b6338350d83120d7b78b032e1121a1b88001d9707f34c68e48fb157e"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.szybkie_skojarzenia"
@@ -401,8 +401,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-tu-nie-pasuje.m4a",
-     "bytes": 4800000,
-     "sha256": "TODO"
+     "bytes": 294895,
+     "sha256": "33fd04630ec6c15ecb8e94b81370e7a6b4c3bead94c1f440cac4c8e12811d162"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.co_tu_nie_pasuje"
@@ -428,8 +428,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/wymien-trzy.m4a",
-     "bytes": 5760000,
-     "sha256": "TODO"
+     "bytes": 293566,
+     "sha256": "8e8e37f3ac1ea2ae416caa22becd69a369d8e559ed0f64bd6b1eb8366d47adb7"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.wymien_trzy"
@@ -455,8 +455,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/znajdz-przeciwienstwo.m4a",
-     "bytes": 6720000,
-     "sha256": "TODO"
+     "bytes": 297991,
+     "sha256": "7d7bb3123d809ce508b9a089d1064863de7ebd4f5251138bd2d1b1df1f90a259"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.znajdz_przeciwienstwo"
@@ -482,8 +482,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/znajdz-synonimy.m4a",
-     "bytes": 4800000,
-     "sha256": "TODO"
+     "bytes": 295122,
+     "sha256": "4a6ebc669d2a3779515c475cd11d3030e064861b506bb74e8f7d74a3a0f499f6"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.znajdz_synonimy"
@@ -509,8 +509,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/uloz-zdanie.m4a",
-     "bytes": 5760000,
-     "sha256": "TODO"
+     "bytes": 294127,
+     "sha256": "6b69a95293d99eac3aff198338d0af2f98e46b4dae62e23e6563e584742af5fb"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.uloz_zdanie"
@@ -536,8 +536,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a",
-     "bytes": 6720000,
-     "sha256": "TODO"
+     "bytes": 298190,
+     "sha256": "15d6e1156aa51f732d6cd7770472f1907cc721b8f0f223e93df2b6df5c28ddcc"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.dokoncz_zgodnie_z_prawda"
@@ -563,8 +563,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/kto-to-powiedzial.m4a",
-     "bytes": 6720000,
-     "sha256": "TODO"
+     "bytes": 294992,
+     "sha256": "5125a098861522a5cf588d23eb7a60de1f8b3a590ccb23430cc9d0813b720397"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.kto_to_powiedzial"
@@ -594,8 +594,8 @@
    "audio": [
     {
      "path": "audio/detektyw/zlodziej-naszyjnika.m4a",
-     "bytes": 15360000,
-     "sha256": "TODO"
+     "bytes": 296463,
+     "sha256": "1ecff9369b0acea22f5067241cd19594fce92dffd7017a91752f0bf496caa249"
     }
    ],
    "pdf": [
@@ -632,8 +632,8 @@
    "audio": [
     {
      "path": "audio/detektyw/znikajace-dzwonki.m4a",
-     "bytes": 15360000,
-     "sha256": "TODO"
+     "bytes": 299636,
+     "sha256": "5712230ef381ee1e12ac5f16c933c811ce689fb52024c1aee00ecf502c342745"
     }
    ],
    "pdf": [
@@ -670,8 +670,8 @@
    "audio": [
     {
      "path": "audio/detektyw/na-ratunek-budce-z-lodami.m4a",
-     "bytes": 15360000,
-     "sha256": "TODO"
+     "bytes": 299088,
+     "sha256": "401a4968e47e49b969fae2160354a288e290f6849401c28aa25e704f2b930de0"
     }
    ],
    "pdf": [
@@ -708,8 +708,8 @@
    "audio": [
     {
      "path": "audio/detektyw/tajemnicze-znaki.m4a",
-     "bytes": 15360000,
-     "sha256": "TODO"
+     "bytes": 301720,
+     "sha256": "205dd38cce6eea54a0def78fa52183e443f309565e5cb34d04c61696ed74099a"
     }
    ],
    "pdf": [
@@ -746,8 +746,8 @@
    "audio": [
     {
      "path": "audio/detektyw/gadajacy-smietnik.m4a",
-     "bytes": 15360000,
-     "sha256": "TODO"
+     "bytes": 298007,
+     "sha256": "6431f323aca25058b500e86d4c0e80dc82feb4c9352cd5b6cd2317bfe9575862"
     }
    ],
    "pdf": [
@@ -774,8 +774,8 @@
    "audio": [
     {
      "path": "audio/piosenki/1.m4a",
-     "bytes": 2400000,
-     "sha256": "TODO"
+     "bytes": 303909,
+     "sha256": "d7b6de52b8e4ba551f3447e8e9ccdac5c5ecfc5663c2943dff458db8b128dea6"
     }
    ]
   },
@@ -794,8 +794,8 @@
    "audio": [
     {
      "path": "audio/piosenki/2.m4a",
-     "bytes": 2400000,
-     "sha256": "TODO"
+     "bytes": 303155,
+     "sha256": "88ce3fed7a46e8247952ab80a065901cab58fbf1d8f64e6586b7d92c360630e6"
     }
    ]
   },
@@ -813,8 +813,8 @@
    "audio": [
     {
      "path": "audio/piosenki/3.m4a",
-     "bytes": 2400000,
-     "sha256": "TODO"
+     "bytes": 300220,
+     "sha256": "d5dda4fb37abc3a77e855328e885f0754e1cb0a385d7da46574b5929880f9631"
     }
    ]
   }

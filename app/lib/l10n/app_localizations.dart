@@ -331,12 +331,6 @@ abstract class AppLocalizations {
   /// **'Zakupy i subskrypcja pojawią się w kolejnym etapie prac.'**
   String get unlockComingSoon;
 
-  /// No description provided for @devToneBanner.
-  ///
-  /// In pl, this message translates to:
-  /// **'Wersja robocza: odtwarzany jest dźwięk testowy. Prawdziwe nagrania pojawią się po dostarczeniu plików.'**
-  String get devToneBanner;
-
   /// No description provided for @play.
   ///
   /// In pl, this message translates to:
@@ -384,6 +378,294 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'{count, plural, =1{1 pozycja} few{{count} pozycje} many{{count} pozycji} other{{count} pozycji}}'**
   String resultsCount(int count);
+
+  /// No description provided for @navMine.
+  ///
+  /// In pl, this message translates to:
+  /// **'Moje'**
+  String get navMine;
+
+  /// No description provided for @mineRecent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ostatnio słuchane'**
+  String get mineRecent;
+
+  /// No description provided for @mineFavorites.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ulubione'**
+  String get mineFavorites;
+
+  /// No description provided for @mineDownloads.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobrane'**
+  String get mineDownloads;
+
+  /// No description provided for @mineEmptyRecent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tu pojawią się zabawy, których słuchaliście.'**
+  String get mineEmptyRecent;
+
+  /// No description provided for @mineEmptyFavorites.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dotknij serca przy zabawie, aby dodać ją do ulubionych.'**
+  String get mineEmptyFavorites;
+
+  /// No description provided for @mineEmptyDownloads.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobierz zabawy przed podróżą, żeby działały bez internetu.'**
+  String get mineEmptyDownloads;
+
+  /// No description provided for @storageUsage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobrane: {used} · Wolne w telefonie: {free}'**
+  String storageUsage(String used, String free);
+
+  /// No description provided for @storageUsed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobrane: {used}'**
+  String storageUsed(String used);
+
+  /// No description provided for @deleteAllDownloads.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń wszystkie pobrane'**
+  String get deleteAllDownloads;
+
+  /// No description provided for @deleteAllConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć wszystkie pobrane zabawy?'**
+  String get deleteAllConfirmTitle;
+
+  /// No description provided for @deleteAllConfirmBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pliki znikną z telefonu. W każdej chwili możesz pobrać je ponownie.'**
+  String get deleteAllConfirmBody;
+
+  /// No description provided for @cancel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Anuluj'**
+  String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń'**
+  String get delete;
+
+  /// No description provided for @download.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobierz ({size})'**
+  String download(String size);
+
+  /// No description provided for @downloading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobieranie… {percent}%'**
+  String downloading(int percent);
+
+  /// No description provided for @downloadQueued.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czeka na pobranie…'**
+  String get downloadQueued;
+
+  /// No description provided for @verifying.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdzanie pliku…'**
+  String get verifying;
+
+  /// No description provided for @downloaded.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobrano. Działa bez internetu.'**
+  String get downloaded;
+
+  /// No description provided for @removeDownload.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń z telefonu'**
+  String get removeDownload;
+
+  /// No description provided for @cancelDownload.
+  ///
+  /// In pl, this message translates to:
+  /// **'Anuluj pobieranie'**
+  String get cancelDownload;
+
+  /// No description provided for @downloadFailed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się pobrać. Sprawdź internet i spróbuj ponownie.'**
+  String get downloadFailed;
+
+  /// No description provided for @retryDownload.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobierz ponownie'**
+  String get retryDownload;
+
+  /// No description provided for @notEnoughSpace.
+  ///
+  /// In pl, this message translates to:
+  /// **'Za mało miejsca w telefonie: potrzeba {needed}, wolne {free}.'**
+  String notEnoughSpace(String needed, String free);
+
+  /// No description provided for @favoriteAdd.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj do ulubionych'**
+  String get favoriteAdd;
+
+  /// No description provided for @favoriteRemove.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń z ulubionych'**
+  String get favoriteRemove;
+
+  /// No description provided for @resumeFrom.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wznów od {time}'**
+  String resumeFrom(String time);
+
+  /// No description provided for @startOver.
+  ///
+  /// In pl, this message translates to:
+  /// **'Od początku'**
+  String get startOver;
+
+  /// No description provided for @playbackUnavailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie można teraz odtworzyć. Sprawdź internet albo pobierz zabawę wcześniej.'**
+  String get playbackUnavailable;
+
+  /// No description provided for @needsRefresh.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostęp do płatnych zabaw trzeba odświeżyć. Połącz się z internetem.'**
+  String get needsRefresh;
+
+  /// No description provided for @sleepTimer.
+  ///
+  /// In pl, this message translates to:
+  /// **'Timer snu'**
+  String get sleepTimer;
+
+  /// No description provided for @sleepOff.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyłącz timer'**
+  String get sleepOff;
+
+  /// No description provided for @sleepEndOfItem.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do końca zabawy'**
+  String get sleepEndOfItem;
+
+  /// No description provided for @sleepRemaining.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyłączy się za {time}'**
+  String sleepRemaining(String time);
+
+  /// No description provided for @sleepAtEnd.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyłączy się po tej zabawie'**
+  String get sleepAtEnd;
+
+  /// No description provided for @speed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Prędkość'**
+  String get speed;
+
+  /// No description provided for @speedLocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'W tej zabawie tempo jest stałe.'**
+  String get speedLocked;
+
+  /// No description provided for @noLookMode.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tryb bez patrzenia'**
+  String get noLookMode;
+
+  /// No description provided for @noLookHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Połóż telefon i słuchajcie. Aby wyjść, przytrzymaj przycisk na dole.'**
+  String get noLookHint;
+
+  /// No description provided for @noLookExit.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przytrzymaj, aby wyjść'**
+  String get noLookExit;
+
+  /// No description provided for @nowPlaying.
+  ///
+  /// In pl, this message translates to:
+  /// **'Teraz odtwarzane'**
+  String get nowPlaying;
+
+  /// No description provided for @devTools.
+  ///
+  /// In pl, this message translates to:
+  /// **'Narzędzia deweloperskie'**
+  String get devTools;
+
+  /// No description provided for @devToolsHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Widoczne tylko w wersji roboczej. Symulują zakupy do czasu podłączenia sklepów w Etapie 3.'**
+  String get devToolsHint;
+
+  /// No description provided for @devAccessMode.
+  ///
+  /// In pl, this message translates to:
+  /// **'Symulowany dostęp'**
+  String get devAccessMode;
+
+  /// No description provided for @devRefresh.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odśwież dostęp (jak po połączeniu z internetem)'**
+  String get devRefresh;
+
+  /// No description provided for @devExpireLease.
+  ///
+  /// In pl, this message translates to:
+  /// **'Symuluj ponad 30 dni bez internetu'**
+  String get devExpireLease;
+
+  /// No description provided for @devLeaseUntil.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostęp offline ważny do: {date}'**
+  String devLeaseUntil(String date);
+
+  /// No description provided for @devLeaseNone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak dzierżawy offline'**
+  String get devLeaseNone;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

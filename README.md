@@ -46,9 +46,25 @@ cd packages/ak_core && dart test
 cd app && flutter test
 ```
 
-## Stan (Etap 1)
+## Treści testowe (do czasu serwera w Etapie 3)
 
-- Katalog to plik przykładowy `app/assets/mock/catalog.json` (tytuły i czasy ze strony audiokiddo.pl; pliki, okładki i skład próbki tymczasowe).
-- Każda zabawa odtwarza dźwięk testowy `app/assets/dev/test_tone_90s.m4a`, dopóki nie ma prawdziwych nagrań.
-- Brak zakupów i konta: odblokowana jest tylko darmowa próbka (Etap 3).
-- Identyfikator aplikacji: `pl.audiokiddo.app` (do potwierdzenia przed pierwszym wysłaniem do sklepów).
+Nagrania zastępcze i lokalny serwer plików:
+
+```bash
+python3 tool/dev_content.py
+```
+
+```bash
+python3 -m http.server 8787 --bind 0.0.0.0 -d dev_content
+```
+
+Aplikacja w wersji debug pobiera z `http://127.0.0.1:8787` (iOS) i `http://10.0.2.2:8787` (emulator Androida). Inny adres: `flutter run --dart-define=CONTENT_BASE_URL=...`.
+
+Symulowanie zakupów: zakładka **Moje → ikona klucza** (tylko wersja debug).
+
+## Stan (Etap 2)
+
+- Katalog przykładowy `app/assets/mock/catalog.json` z tytułami i czasami ze strony; pliki to nagrania zastępcze.
+- Odtwarzacz z timerem snu, prędkością i trybem bez patrzenia; pobieranie offline z weryfikacją SHA-256; ulubione i postęp zapisywane lokalnie.
+- Zakupy symulowane (Etap 3 podłączy sklepy i serwer).
+- Identyfikator aplikacji: `pl.audiokiddo.app`.

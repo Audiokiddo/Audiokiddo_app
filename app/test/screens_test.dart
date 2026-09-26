@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'helpers.dart';
+
 /// Pumps the app with the bundled mock catalog (the same file the app ships in Etap 1).
 Future<void> pumpApp(
   WidgetTester tester, {
@@ -16,9 +18,15 @@ Future<void> pumpApp(
   tester.platformDispatcher.textScaleFactorTestValue = textScale;
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  final db = memoryDatabase();
+  addTearDown(db.close);
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [entitlementsProvider.overrideWithValue(entitlements)],
+      overrides: [
+        ...testOverrides(db),
+        entitlementsProvider.overrideWithValue(entitlements),
+        leaseStateProvider.overrideWithValue(LeaseState.valid),
+      ],
       child: const AudioKiddoApp(),
     ),
   );
@@ -106,5 +114,26 @@ void main() {
     await tester.drag(mainScroll, const Offset(0, -2000));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('favourite appears on the Moje tab', (tester) async {
+    await pumpApp(tester);
+    await openLibrary(tester);
+    await openItem(tester, 'Magiczny sklep');
+    await tester.tap(find.byTooltip('Dodaj do ulubionych'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Usuń z ulubionych'), findsOneWidget);
+    await goBack(tester);
+    await tester.tap(find.byIcon(Icons.favorite_rounded));
+    await tester.pumpAndSettle();
+    expect(find.text('Magiczny sklep'), findsOneWidget);
+    expect(find.text('Pobierz zabawy przed podróżą, żeby działały bez internetu.'), findsOneWidget);
+  });
+
+  testWidgets('playable item offers a download with its size', (tester) async {
+    await pumpApp(tester);
+    await openLibrary(tester);
+    await openItem(tester, 'Magiczny sklep');
+    expect(find.textContaining('Pobierz ('), findsOneWidget);
   });
 }
