@@ -1,0 +1,11 @@
+name: ak_core
+description: Shared AudioKiddo domain logic (catalog, access rules, offline lease, game script validation). Pure Dart, used by the app and Studio.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.4
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

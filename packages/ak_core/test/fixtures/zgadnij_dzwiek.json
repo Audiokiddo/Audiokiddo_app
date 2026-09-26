@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "zgadnij-dzwiek-zwierzeta-1",
+  "version": 3,
+  "min_engine_version": 1,
+  "timing_sensitive": false,
+  "assets": {
+    "intro":     { "path": "games/zd1/intro.m4a",         "bytes": 412331, "sha256": "a1" },
+    "q_krowa":   { "path": "games/zd1/q_krowa.m4a",       "bytes": 98211,  "sha256": "a2" },
+    "a_krowa":   { "path": "games/zd1/a_krowa.m4a",       "bytes": 120044, "sha256": "a3" },
+    "heard_you": { "path": "games/zd1/heard_you.m4a",     "bytes": 30112,  "sha256": "a4" },
+    "thinking":  { "path": "games/zd1/thinking_loop.m4a", "bytes": 60551,  "sha256": "a5" },
+    "outro":     { "path": "games/zd1/outro.m4a",         "bytes": 301222, "sha256": "a6" }
+  },
+  "variables": { "round": 0 },
+  "start": "intro",
+  "steps": {
+    "intro":   { "type": "play", "asset": "intro", "next": "q1" },
+    "q1":      { "type": "play", "asset": "q_krowa", "next": "listen1" },
+    "listen1": {
+      "type": "input", "input": "voice_activity", "window_ms": 6000,
+      "on_detected": "ack1", "on_timeout": "answer1",
+      "fallback": {
+        "no_microphone": { "type": "wait", "duration_ms": 6000, "loop_asset": "thinking", "next": "answer1" },
+        "screen_locked": "same_as_no_microphone",
+        "input_error": "same_as_no_microphone"
+      }
+    },
+    "ack1":    { "type": "play", "asset": "heard_you", "next": "answer1" },
+    "answer1": { "type": "play", "asset": "a_krowa", "next": "count" },
+    "count":   { "type": "set", "var": "round", "op": "inc", "next": "more" },
+    "more":    { "type": "branch", "if": { "var": "round", "lt": 5 }, "then": "q1", "else": "end", "max_visits": 6 },
+    "end":     { "type": "end", "asset": "outro" }
+  }
+}

@@ -1,0 +1,5 @@
+.DS_Store
+*.jks
+*.p8
+key.properties
+.env

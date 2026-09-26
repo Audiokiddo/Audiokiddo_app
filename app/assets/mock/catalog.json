@@ -1,0 +1,866 @@
+{
+ "schema_version": 1,
+ "version": 1,
+ "_comment": "Katalog przykładowy (Etap 1). Pliki, okładki, sumy kontrolne i skład próbki są tymczasowe.",
+ "packs": [
+  {
+   "id": "wyobraznia",
+   "title": "Wyobraźnia",
+   "age_min": 3,
+   "color": "lavender",
+   "description": "Profesor Fantazjusz i Czarodziejka Nela zabierają dziecko do krainy wyobraźni: tworzy własne historie, odpowiada na pytania i wykonuje zadania.",
+   "store_product_id": "pl.audiokiddo.pack.wyobraznia"
+  },
+  {
+   "id": "slowa-i-wiedza",
+   "title": "Słowa i Wiedza",
+   "age_min": 3,
+   "color": "teal",
+   "description": "Zagadki, łamigłówki i zabawy słowne: słownictwo, skojarzenia i logiczne myślenie.",
+   "store_product_id": "pl.audiokiddo.pack.slowa_i_wiedza"
+  },
+  {
+   "id": "detektyw",
+   "title": "Detektyw",
+   "age_min": 6,
+   "color": "sun",
+   "description": "Detektywistyczne przygody z Maxem i Milą oraz akta spraw do wydrukowania.",
+   "store_product_id": "pl.audiokiddo.pack.detektyw"
+  }
+ ],
+ "items": [
+  {
+   "id": "magiczny-sklep",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Magiczny sklep",
+   "parent_description": "Dziecko trafia do magicznego sklepu i wymyśla, do czego służą niezwykłe przedmioty.",
+   "age_min": 3,
+   "duration_sec": 360,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "free",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/magiczny-sklep.m4a",
+     "bytes": 5760000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.magiczny_sklep"
+  },
+  {
+   "id": "zaginiony-skarb",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Zaginiony skarb",
+   "parent_description": "Wyprawa poszukiwacza przygód: zagadki i decyzje w drodze do skarbu.",
+   "age_min": 3,
+   "duration_sec": 480,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/zaginiony-skarb.m4a",
+     "bytes": 7680000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.zaginiony_skarb"
+  },
+  {
+   "id": "podroz-na-inna-planete",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Podróż na inną planetę",
+   "parent_description": "Dziecko tworzy własną planetę: jej nazwę, mieszkańców i zwyczaje.",
+   "age_min": 3,
+   "duration_sec": 300,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/podroz-na-inna-planete.m4a",
+     "bytes": 4800000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.podroz_na_inna_planete"
+  },
+  {
+   "id": "wymysl-znaczenie",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Wymyśl znaczenie",
+   "parent_description": "Zabawa słowami: własne definicje dla nieznanych wyrazów.",
+   "age_min": 3,
+   "duration_sec": 420,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/wymysl-znaczenie.m4a",
+     "bytes": 6720000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.wymysl_znaczenie"
+  },
+  {
+   "id": "mikstura",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Mikstura",
+   "parent_description": "Młody alchemik wybiera składniki i tworzy własną miksturę.",
+   "age_min": 3,
+   "duration_sec": 420,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/mikstura.m4a",
+     "bytes": 6720000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.mikstura"
+  },
+  {
+   "id": "moj-superbohater",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Mój superbohater",
+   "parent_description": "Projektowanie wymarzonego bohatera: supermoce, wygląd, zadania.",
+   "age_min": 3,
+   "duration_sec": 480,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/moj-superbohater.m4a",
+     "bytes": 7680000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.moj_superbohater"
+  },
+  {
+   "id": "dokoncz-historie",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Dokończ historię",
+   "parent_description": "Prowadzący zaczyna opowieść, dziecko wymyśla jej ciąg dalszy.",
+   "age_min": 3,
+   "duration_sec": 360,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/dokoncz-historie.m4a",
+     "bytes": 5760000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.dokoncz_historie"
+  },
+  {
+   "id": "mistrz-kuchni",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Mistrz kuchni",
+   "parent_description": "Dziecko jako szef kuchni tworzy własne danie.",
+   "age_min": 3,
+   "duration_sec": 360,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/mistrz-kuchni.m4a",
+     "bytes": 5760000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.mistrz_kuchni"
+  },
+  {
+   "id": "magiczny-teatr",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Magiczny teatr",
+   "parent_description": "Reżyserowanie spektaklu: fabuła, postacie i scenografia.",
+   "age_min": 3,
+   "duration_sec": 540,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/magiczny-teatr.m4a",
+     "bytes": 8640000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.magiczny_teatr"
+  },
+  {
+   "id": "co-oni-odpowiedzieli",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Co oni odpowiedzieli?",
+   "parent_description": "Co powie książka albo pingwin? Zabawne odpowiedzi w różnych rolach.",
+   "age_min": 3,
+   "duration_sec": 480,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/co-oni-odpowiedzieli.m4a",
+     "bytes": 7680000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.co_oni_odpowiedzieli"
+  },
+  {
+   "id": "co-to-za-przedmiot",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Co to za przedmiot?",
+   "parent_description": "Dziecko słucha krótkich opisów i zgaduje, o jaki przedmiot chodzi.",
+   "age_min": 3,
+   "duration_sec": 420,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/co-to-za-przedmiot.m4a",
+     "bytes": 6720000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.co_to_za_przedmiot"
+  },
+  {
+   "id": "co-to-za-dzwiek",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Co to za dźwięk?",
+   "parent_description": "Rozpoznawanie odgłosów natury, zwierząt i codzienności.",
+   "age_min": 3,
+   "duration_sec": 420,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "free",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/co-to-za-dzwiek.m4a",
+     "bytes": 6720000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.co_to_za_dzwiek"
+  },
+  {
+   "id": "szybkie-skojarzenia",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Szybkie skojarzenia",
+   "parent_description": "Na usłyszane słowo dziecko odpowiada pierwszym skojarzeniem.",
+   "age_min": 3,
+   "duration_sec": 240,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/szybkie-skojarzenia.m4a",
+     "bytes": 3840000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.szybkie_skojarzenia"
+  },
+  {
+   "id": "co-tu-nie-pasuje",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Co tu nie pasuje?",
+   "parent_description": "Z trzech elementów trzeba wskazać ten, który odstaje, i powiedzieć dlaczego.",
+   "age_min": 3,
+   "duration_sec": 300,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/co-tu-nie-pasuje.m4a",
+     "bytes": 4800000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.co_tu_nie_pasuje"
+  },
+  {
+   "id": "wymien-trzy",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Wymień trzy",
+   "parent_description": "Trzy pasujące odpowiedzi na każde pytanie, np. zwierzęta z zoo.",
+   "age_min": 3,
+   "duration_sec": 360,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/wymien-trzy.m4a",
+     "bytes": 5760000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.wymien_trzy"
+  },
+  {
+   "id": "znajdz-przeciwienstwo",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Znajdź przeciwieństwo",
+   "parent_description": "Prowadzący podaje słowo, dziecko szuka jego przeciwieństwa.",
+   "age_min": 3,
+   "duration_sec": 420,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/znajdz-przeciwienstwo.m4a",
+     "bytes": 6720000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.znajdz_przeciwienstwo"
+  },
+  {
+   "id": "znajdz-synonimy",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Znajdź synonimy",
+   "parent_description": "Szukanie słów o podobnym znaczeniu.",
+   "age_min": 3,
+   "duration_sec": 300,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/znajdz-synonimy.m4a",
+     "bytes": 4800000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.znajdz_synonimy"
+  },
+  {
+   "id": "uloz-zdanie",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Ułóż zdanie",
+   "parent_description": "Z rozsypanych słów dziecko układa poprawne zdanie.",
+   "age_min": 3,
+   "duration_sec": 360,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/uloz-zdanie.m4a",
+     "bytes": 5760000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.uloz_zdanie"
+  },
+  {
+   "id": "dokoncz-zgodnie-z-prawda",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Dokończ zgodnie z prawdą",
+   "parent_description": "Prowadzący zaczyna zdanie, dziecko kończy je prawdziwie.",
+   "age_min": 3,
+   "duration_sec": 420,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a",
+     "bytes": 6720000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.dokoncz_zgodnie_z_prawda"
+  },
+  {
+   "id": "kto-to-powiedzial",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Kto to powiedział?",
+   "parent_description": "Kto mógł wypowiedzieć to zdanie: lekarz czy kucharz?",
+   "age_min": 3,
+   "duration_sec": 420,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/kto-to-powiedzial.m4a",
+     "bytes": 6720000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.kto_to_powiedzial"
+  },
+  {
+   "id": "zlodziej-naszyjnika",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Złodziej naszyjnika",
+   "subtitle": "Max i Mila",
+   "parent_description": "Max i Mila dostają ostrzeżenie o planowanej kradzieży na balu. Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 6,
+   "duration_sec": 960,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "free",
+   "audio": [
+    {
+     "path": "audio/detektyw/zlodziej-naszyjnika.m4a",
+     "bytes": 15360000,
+     "sha256": "TODO"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/zlodziej-naszyjnika.pdf",
+     "bytes": 300000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.zlodziej_naszyjnika"
+  },
+  {
+   "id": "znikajace-dzwonki",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Znikające dzwonki rowerowe",
+   "subtitle": "Max i Mila",
+   "parent_description": "Ktoś zabiera dzwonki rowerowe z całego miasta. Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 6,
+   "duration_sec": 960,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/detektyw/znikajace-dzwonki.m4a",
+     "bytes": 15360000,
+     "sha256": "TODO"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/znikajace-dzwonki.pdf",
+     "bytes": 300000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.znikajace_dzwonki"
+  },
+  {
+   "id": "na-ratunek-budce-z-lodami",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Na ratunek budce z lodami",
+   "subtitle": "Max i Mila",
+   "parent_description": "Z budki z lodami zniknęła książka z przepisami. Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 6,
+   "duration_sec": 960,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/detektyw/na-ratunek-budce-z-lodami.m4a",
+     "bytes": 15360000,
+     "sha256": "TODO"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/na-ratunek-budce-z-lodami.pdf",
+     "bytes": 300000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.na_ratunek_budce_z_lodami"
+  },
+  {
+   "id": "tajemnicze-znaki",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Tajemnicze znaki i inne poszlaki",
+   "subtitle": "Max i Mila",
+   "parent_description": "W mieście pojawiają się tajemnicze znaki. Dokąd prowadzą? Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 6,
+   "duration_sec": 960,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/detektyw/tajemnicze-znaki.m4a",
+     "bytes": 15360000,
+     "sha256": "TODO"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/tajemnicze-znaki.pdf",
+     "bytes": 300000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.tajemnicze_znaki"
+  },
+  {
+   "id": "gadajacy-smietnik",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Gadający śmietnik",
+   "subtitle": "Max i Mila",
+   "parent_description": "Max i Mila trafiają na gadający śmietnik. Kto go zbudował i po co? Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 6,
+   "duration_sec": 960,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/detektyw/gadajacy-smietnik.m4a",
+     "bytes": 15360000,
+     "sha256": "TODO"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/gadajacy-smietnik.pdf",
+     "bytes": 300000,
+     "sha256": "TODO"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.gadajacy_smietnik"
+  },
+  {
+   "id": "piosenka-1",
+   "kind": "song",
+   "title": "Piosenka na dzień dobry (przykład)",
+   "parent_description": "Przykładowa pozycja. TODO(Dawid): prawdziwe piosenki AudioKiddo.",
+   "age_min": 3,
+   "duration_sec": 150,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/piosenki/1.m4a",
+     "bytes": 2400000,
+     "sha256": "TODO"
+    }
+   ]
+  },
+  {
+   "id": "piosenka-2",
+   "kind": "song",
+   "title": "Piosenka do tańca (przykład)",
+   "parent_description": "Przykładowa pozycja. TODO(Dawid): prawdziwe piosenki AudioKiddo.",
+   "age_min": 3,
+   "duration_sec": 150,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/piosenki/2.m4a",
+     "bytes": 2400000,
+     "sha256": "TODO"
+    }
+   ]
+  },
+  {
+   "id": "piosenka-3",
+   "kind": "song",
+   "title": "Kołysanka (przykład)",
+   "parent_description": "Przykładowa pozycja. TODO(Dawid): prawdziwe piosenki AudioKiddo.",
+   "age_min": 3,
+   "duration_sec": 150,
+   "situations": [
+    "przed_snem"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/piosenki/3.m4a",
+     "bytes": 2400000,
+     "sha256": "TODO"
+    }
+   ]
+  }
+ ],
+ "shelves": [
+  {
+   "id": "featured",
+   "title": "Zabawa dnia",
+   "kind": "featured",
+   "item_ids": [
+    "zaginiony-skarb"
+   ]
+  },
+  {
+   "id": "podroz",
+   "title": "Na drogę",
+   "kind": "row",
+   "item_ids": [
+    "co-to-za-dzwiek",
+    "szybkie-skojarzenia",
+    "zaginiony-skarb",
+    "wymien-trzy",
+    "mikstura"
+   ]
+  },
+  {
+   "id": "detektywi",
+   "title": "Sprawy dla detektywów",
+   "kind": "row",
+   "item_ids": [
+    "zlodziej-naszyjnika",
+    "znikajace-dzwonki",
+    "na-ratunek-budce-z-lodami",
+    "tajemnicze-znaki",
+    "gadajacy-smietnik"
+   ]
+  },
+  {
+   "id": "piosenki",
+   "title": "Piosenki",
+   "kind": "row",
+   "item_ids": [
+    "piosenka-1",
+    "piosenka-2",
+    "piosenka-3"
+   ]
+  }
+ ]
+}

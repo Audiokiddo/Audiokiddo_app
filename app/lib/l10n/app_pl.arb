@@ -1,0 +1,104 @@
+{
+  "@@locale": "pl",
+  "appTitle": "AudioKiddo",
+  "navHome": "Start",
+  "navLibrary": "Biblioteka",
+  "homeGreeting": "Czas na zabawę!",
+  "homeSubtitle": "Słuchajcie, odpowiadajcie, wymyślajcie. Bez patrzenia w ekran.",
+  "homeFeatured": "Zabawa dnia",
+  "homeStartHere": "Zacznij tu",
+  "homeWhatAreYouDoing": "Co robicie?",
+  "homePacks": "Pakiety",
+  "ageFrom": "{age}+",
+  "@ageFrom": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "ageGroupLabel": "Dla dzieci od {age} lat",
+  "@ageGroupLabel": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "situationPodroz": "W podróży",
+  "situationPrzedSnem": "Przed snem",
+  "situationWDomu": "W domu",
+  "situationCzekanie": "Czekamy",
+  "minutes": "{count} min",
+  "@minutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "players": "{min, plural, =1{1 osoba} few{{min} osoby} many{{min} osób} other{{min} osoby}}",
+  "@players": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "playersRange": "{min}–{max} osób",
+  "@playersRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "itemsCount": "{count, plural, =1{1 zabawa} few{{count} zabawy} many{{count} zabaw} other{{count} zabawy}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "kindAll": "Wszystko",
+  "kindAudioGame": "Audiozabawy",
+  "kindSong": "Piosenki",
+  "kindInteractiveGame": "Gry",
+  "filterAge": "Wiek",
+  "filterPack": "Pakiet",
+  "filterSituation": "Sytuacja",
+  "filterClear": "Wyczyść filtry",
+  "libraryEmpty": "Nic tu nie pasuje do wybranych filtrów.",
+  "free": "Za darmo",
+  "locked": "Wymaga odblokowania",
+  "detailsForParent": "Dla rodzica",
+  "detailsPractises": "Co ćwiczy",
+  "detailsYouNeed": "Przyda się",
+  "requirementMikrofon": "Mikrofon (opcjonalnie)",
+  "requirementMiejsceDoRuchu": "Miejsce do ruchu",
+  "requirementKartkaIOlowek": "Kartka i ołówek",
+  "requirementWydrukPdf": "Wydrukowane akta sprawy (PDF)",
+  "listen": "Słuchaj",
+  "unlock": "Odblokuj",
+  "unlockComingSoon": "Zakupy i subskrypcja pojawią się w kolejnym etapie prac.",
+  "devToneBanner": "Wersja robocza: odtwarzany jest dźwięk testowy. Prawdziwe nagrania pojawią się po dostarczeniu plików.",
+  "play": "Odtwórz",
+  "pause": "Pauza",
+  "rewind": "Cofnij 15 sekund",
+  "forward": "Przewiń 15 sekund",
+  "loadError": "Nie udało się wczytać katalogu.",
+  "retry": "Spróbuj ponownie",
+  "notFound": "Nie znaleziono tej zabawy.",
+  "resultsCount": "{count, plural, =1{1 pozycja} few{{count} pozycje} many{{count} pozycji} other{{count} pozycji}}",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}
