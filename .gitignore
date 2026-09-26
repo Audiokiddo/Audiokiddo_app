@@ -4,3 +4,5 @@
 key.properties
 .env
 dev_content/
+supabase/.temp/
+supabase/.branches/

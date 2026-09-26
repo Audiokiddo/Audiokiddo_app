@@ -1,0 +1,65 @@
+// WooCommerce (audiokiddo.pl) → app entitlements (ARCHITECTURE §7a).
+
+export type WooOrderStatus = "completed" | "refunded" | "cancelled";
+
+export interface WooOrder {
+  orderId: number;
+  email: string;
+  status: WooOrderStatus;
+  /** 'woo:<product_id>' for each purchased product (mapped to scopes by store_products). */
+  productRefs: string[];
+}
+
+/** Normalised e-mail used to match shop buyers with app accounts. */
+export function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+/**
+ * WooCommerce signs webhook bodies: header `X-WC-Webhook-Signature` =
+ * base64(HMAC-SHA256(raw body, webhook secret)). Constant-time comparison.
+ */
+export async function verifyWooSignature(rawBody: string, secret: string, signature: string | null): Promise<boolean> {
+  if (!signature || !secret) return false;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const mac = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(rawBody)));
+  const expected = btoa(String.fromCharCode(...mac));
+  if (expected.length !== signature.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
+  return diff === 0;
+}
+
+/** Only final order states matter; everything else (pending, on-hold, …) is ignored. */
+export function parseWooOrder(payload: unknown): WooOrder | null {
+  if (typeof payload !== "object" || payload === null) return null;
+  const order = payload as Record<string, unknown>;
+  const status = order.status;
+  if (status !== "completed" && status !== "refunded" && status !== "cancelled") return null;
+  const billing = order.billing as Record<string, unknown> | undefined;
+  const email = typeof billing?.email === "string" ? normalizeEmail(billing.email) : "";
+  const id = order.id;
+  if (typeof id !== "number" || !email) return null;
+  const items = Array.isArray(order.line_items) ? order.line_items : [];
+  const productRefs = [
+    ...new Set(
+      items
+        .map((i) => (i as Record<string, unknown>).product_id)
+        .filter((p): p is number => typeof p === "number" && p > 0)
+        .map((p) => `woo:${p}`),
+    ),
+  ];
+  return { orderId: id, email, status, productRefs };
+}
+
+/** SHA-256 hex, used for store_events.payload_hash. */
+export async function sha256Hex(text: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
