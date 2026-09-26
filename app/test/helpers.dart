@@ -9,6 +9,7 @@ import 'package:audiokiddo/features/content/content_urls.dart';
 import 'package:audiokiddo/features/downloads/download_providers.dart';
 import 'package:audiokiddo/features/downloads/file_transfer.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
+import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
 import 'package:audiokiddo/features/player/player_providers.dart';
 import 'package:drift/drift.dart' show DatabaseConnection, driftRuntimeOptions;
 import 'package:drift/native.dart';
@@ -63,7 +64,13 @@ class FakeStorage extends DeviceStorage {
 }
 
 /// Overrides that let widget tests run without platform audio, downloads or disk.
-List<Override> testOverrides(AppDatabase db, {Directory? downloadsDir, KidsModeController? kidsMode}) => [
+List<Override> testOverrides(
+  AppDatabase db, {
+  Directory? downloadsDir,
+  KidsModeController? kidsMode,
+  bool onboardingDone = true,
+}) => [
+  onboardingProvider.overrideWithValue(OnboardingController(db, done: onboardingDone)),
   databaseProvider.overrideWithValue(db),
   kidsModeProvider.overrideWithValue(kidsMode ?? KidsModeController(db)),
   fileTransferProvider.overrideWithValue(FakeTransfer(downloadsDir ?? Directory.systemTemp)),

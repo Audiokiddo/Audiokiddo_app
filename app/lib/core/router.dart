@@ -9,6 +9,8 @@ import '../features/access/dev_tools_screen.dart';
 import '../features/games/game_screen.dart';
 import '../features/kids_mode/kids_home_screen.dart';
 import '../features/kids_mode/kids_mode_controller.dart';
+import '../features/onboarding/onboarding_controller.dart';
+import '../features/onboarding/onboarding_screen.dart';
 import '../features/personal/mine_screen.dart';
 import '../features/player/mini_player.dart';
 import '../features/player/no_look_screen.dart';
@@ -25,11 +27,19 @@ String? kidsModeRedirect(KidsModeController kids, String location) {
   return null;
 }
 
-GoRouter buildRouter(KidsModeController kids) => GoRouter(
-  initialLocation: kids.active ? '/dziecko' : '/',
-  refreshListenable: kids,
-  redirect: (context, state) => kidsModeRedirect(kids, state.matchedLocation),
+/// The welcome runs once, before anything else (kids mode can only be set up after it).
+String? appRedirect(KidsModeController kids, OnboardingController onboarding, String location) {
+  if (!onboarding.done) return location == '/powitanie' ? null : '/powitanie';
+  if (location == '/powitanie') return kids.active ? '/dziecko' : '/';
+  return kidsModeRedirect(kids, location);
+}
+
+GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) => GoRouter(
+  initialLocation: !onboarding.done ? '/powitanie' : (kids.active ? '/dziecko' : '/'),
+  refreshListenable: Listenable.merge([kids, onboarding]),
+  redirect: (context, state) => appRedirect(kids, onboarding, state.matchedLocation),
   routes: [
+    GoRoute(path: '/powitanie', builder: (context, state) => const OnboardingScreen()),
     GoRoute(path: '/dziecko', builder: (context, state) => const KidsHomeScreen()),
     GoRoute(path: '/dziecko/graj', builder: (context, state) => const NoLookScreen()),
     GoRoute(path: '/dziecko/gra', builder: (context, state) => const GameScreen()),

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'core/router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
+import 'features/onboarding/onboarding_controller.dart';
 import 'l10n/app_localizations.dart';
 
 class AudioKiddoApp extends ConsumerStatefulWidget {
@@ -19,7 +20,8 @@ class AudioKiddoApp extends ConsumerStatefulWidget {
 }
 
 class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
-  late final GoRouter _router = widget.router ?? buildRouter(ref.read(kidsModeProvider));
+  late final GoRouter _router =
+      widget.router ?? buildRouter(ref.read(kidsModeProvider), ref.read(onboardingProvider));
 
   @override
   Widget build(BuildContext context) {

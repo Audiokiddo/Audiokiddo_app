@@ -47,6 +47,10 @@ class KidsModeController extends ChangeNotifier {
   Future<void> enter({required int age, required bool onlyDownloaded}) =>
       _save(KidsModeSettings(active: true, age: age, onlyDownloaded: onlyDownloaded));
 
+  /// Age from the onboarding question: the default for kids mode, without turning it on.
+  Future<void> setPreferredAge(int age) =>
+      _save(KidsModeSettings(active: _settings.active, age: age, onlyDownloaded: _settings.onlyDownloaded));
+
   /// Call only after the parental gate.
   Future<void> exit() =>
       _save(KidsModeSettings(age: _settings.age, onlyDownloaded: _settings.onlyDownloaded));

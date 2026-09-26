@@ -990,6 +990,84 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nie udało się uruchomić zabawy.'**
   String get gameFailed;
+
+  /// No description provided for @onboardingHelloTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cześć! Tu AudioKiddo.'**
+  String get onboardingHelloTitle;
+
+  /// No description provided for @onboardingHelloBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne!'**
+  String get onboardingHelloBody;
+
+  /// No description provided for @onboardingHowTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jak to działa'**
+  String get onboardingHowTitle;
+
+  /// No description provided for @onboardingHowListen.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada na głos i wykonuje zadania. Nie trzeba patrzeć w ekran.'**
+  String get onboardingHowListen;
+
+  /// No description provided for @onboardingHowKids.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tryb dziecka pokazuje tylko duże okładki: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.'**
+  String get onboardingHowKids;
+
+  /// No description provided for @onboardingHowOffline.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobrane zabawy działają bez internetu, na przykład w samochodzie.'**
+  String get onboardingHowOffline;
+
+  /// No description provided for @onboardingHowNoAds.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez reklam i bez śledzenia.'**
+  String get onboardingHowNoAds;
+
+  /// No description provided for @onboardingAgeTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ile lat ma dziecko?'**
+  String get onboardingAgeTitle;
+
+  /// No description provided for @onboardingAgeBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opcjonalnie. Podpowiemy zabawy dla tego wieku. Odpowiedź zostaje tylko w tym telefonie.'**
+  String get onboardingAgeBody;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dalej'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaczynamy'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomiń'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingStep.
+  ///
+  /// In pl, this message translates to:
+  /// **'Krok {current} z {total}'**
+  String onboardingStep(int current, int total);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

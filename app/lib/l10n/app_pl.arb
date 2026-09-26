@@ -311,5 +311,28 @@
   "gameYourTurn": "Twoja kolej",
   "gameTapNow": "Dotknij ekranu!",
   "gameFinished": "Koniec zabawy",
-  "gameFailed": "Nie udało się uruchomić zabawy."
+  "gameFailed": "Nie udało się uruchomić zabawy.",
+  "onboardingHelloTitle": "Cześć! Tu AudioKiddo.",
+  "onboardingHelloBody": "Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne!",
+  "onboardingHowTitle": "Jak to działa",
+  "onboardingHowListen": "Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada na głos i wykonuje zadania. Nie trzeba patrzeć w ekran.",
+  "onboardingHowKids": "Tryb dziecka pokazuje tylko duże okładki: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.",
+  "onboardingHowOffline": "Pobrane zabawy działają bez internetu, na przykład w samochodzie.",
+  "onboardingHowNoAds": "Bez reklam i bez śledzenia.",
+  "onboardingAgeTitle": "Ile lat ma dziecko?",
+  "onboardingAgeBody": "Opcjonalnie. Podpowiemy zabawy dla tego wieku. Odpowiedź zostaje tylko w tym telefonie.",
+  "onboardingNext": "Dalej",
+  "onboardingStart": "Zaczynamy",
+  "onboardingSkip": "Pomiń",
+  "onboardingStep": "Krok {current} z {total}",
+  "@onboardingStep": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

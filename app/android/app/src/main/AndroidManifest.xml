@@ -51,6 +51,12 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>
         </receiver>
+        <!-- background_downloader ships a dataSync foreground service for Android 14 user-initiated
+             transfers; we do not use it, and every declared foreground service type needs a Play
+             Console justification. Downloads run through WorkManager. -->
+        <service
+            android:name="com.bbflight.background_downloader.UIDTJobService"
+            tools:node="remove"/>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

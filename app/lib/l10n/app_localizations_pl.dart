@@ -530,4 +530,49 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get gameFailed => 'Nie udało się uruchomić zabawy.';
+
+  @override
+  String get onboardingHelloTitle => 'Cześć! Tu AudioKiddo.';
+
+  @override
+  String get onboardingHelloBody =>
+      'Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne!';
+
+  @override
+  String get onboardingHowTitle => 'Jak to działa';
+
+  @override
+  String get onboardingHowListen =>
+      'Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada na głos i wykonuje zadania. Nie trzeba patrzeć w ekran.';
+
+  @override
+  String get onboardingHowKids =>
+      'Tryb dziecka pokazuje tylko duże okładki: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.';
+
+  @override
+  String get onboardingHowOffline => 'Pobrane zabawy działają bez internetu, na przykład w samochodzie.';
+
+  @override
+  String get onboardingHowNoAds => 'Bez reklam i bez śledzenia.';
+
+  @override
+  String get onboardingAgeTitle => 'Ile lat ma dziecko?';
+
+  @override
+  String get onboardingAgeBody =>
+      'Opcjonalnie. Podpowiemy zabawy dla tego wieku. Odpowiedź zostaje tylko w tym telefonie.';
+
+  @override
+  String get onboardingNext => 'Dalej';
+
+  @override
+  String get onboardingStart => 'Zaczynamy';
+
+  @override
+  String get onboardingSkip => 'Pomiń';
+
+  @override
+  String onboardingStep(int current, int total) {
+    return 'Krok $current z $total';
+  }
 }
