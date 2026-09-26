@@ -39,8 +39,8 @@ Testy wykryły i pomogły naprawić dwa realne problemy: przepełnienie kart na 
 
 | Decyzja | Wartość |
 |---|---|
-| Subskrypcja miesięczna | 24,99 zł |
-| Subskrypcja roczna | 149,99 zł (ok. 12,50 zł/mies.), 7 dni za darmo na start |
+| Subskrypcja miesięczna | 24,99 zł, 7 dni za darmo — **zatwierdzone** |
+| Subskrypcja roczna | 149,99 zł (ok. 12,50 zł/mies.), 7 dni za darmo — **zatwierdzone** |
 | Serwer | darmowy plan Supabase podczas budowy, Pro (~100 zł/mies.) dopiero przed publikacją |
 | Identyfikator aplikacji | `pl.audiokiddo.app` |
 

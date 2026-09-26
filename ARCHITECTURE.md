@@ -190,8 +190,8 @@ Przepływ:
 
 | Produkt | Typ w sklepie | Zakres | Cena |
 |---|---|---|---|
-| Subskrypcja miesięczna | auto-odnawialna | `all_content` | `TODO(Dawid)` |
-| Subskrypcja roczna | auto-odnawialna | `all_content` | `TODO(Dawid)` |
+| Subskrypcja miesięczna | auto-odnawialna | `all_content` | 24,99 zł, 7 dni za darmo |
+| Subskrypcja roczna | auto-odnawialna | `all_content` | 149,99 zł, 7 dni za darmo |
 | Pakiet Wyobraźnia | jednorazowy (non-consumable) | `pack:wyobraznia` | 49,99 zł (jak na stronie) |
 | Pakiet Słowa i Wiedza | jednorazowy | `pack:slowa-i-wiedza` | 49,99 zł |
 | Pakiet Detektyw | jednorazowy | `pack:detektyw` | 69,99 zł |
@@ -201,7 +201,7 @@ Przepływ:
 | Pojedyncza zabawa: Detektyw | jednorazowy | `item:<id>` | propozycja **19,99 zł** (pakiet o 30% taniej) [DEC] |
 
 - Ceny w sklepach wybiera się z siatki cen Apple i Google. Aplikacja zawsze pokazuje cenę zwróconą przez sklep.
-- Trial wyświetlany **tylko wtedy, gdy sklep go zwraca** dla danego użytkownika.
+- Trial 7 dni na obu planach (zatwierdzone 2026-09-26), skonfigurowany w obu sklepach jako oferta wstępna. Sklepy dają go raz na użytkownika w grupie subskrypcji, więc aplikacja pokazuje go **tylko wtedy, gdy sklep go zwraca** dla danego użytkownika.
 - Rodzic, który ma już pojedyncze zabawy, widzi pełną cenę pakietu. Sklepy nie obsługują dopłat do pakietu, więc przy zakupie pojedynczej zabawy pokazujemy uczciwą podpowiedź: „Pakiet 10 zabaw kosztuje 49,99 zł”.
 - Każda pojedyncza zabawa to osobny produkt, ręcznie zakładany w App Store Connect i Play Console (~30 produktów na start, każdy z nazwą, opisem i dla Apple ze zrzutem do review). W Studio pole `store_product_id` łączy treść z produktem. Automatyzacja przez API sklepów jest możliwa później.
 - Bez przekreślonych cen „promocyjnych” w aplikacji: zasady sklepów i przepisy o obniżkach (Omnibus) utrudniają to bez wyraźnej potrzeby.
@@ -440,7 +440,7 @@ audiokiddo-app/
 | D9 | Google Sign-In: decyzja w Etapie 3 po audycie SDK | otwarta |
 | D10 | CarPlay / Android Auto poza v1 | wstępna (brak sprzeciwu) |
 | D11 | Zakupy ze strony (WooCommerce) w v1, sekcja 7a | **zatwierdzona** |
-| D12 | Oferta: subskrypcja + pakiety + zestawy + pojedyncze zabawy, sekcja 7 | **zatwierdzona**; ceny subskrypcji i pojedynczych zabaw do ustalenia |
+| D12 | Oferta: subskrypcja + pakiety + zestawy + pojedyncze zabawy, sekcja 7 | **zatwierdzona** z cenami (24,99 zł / 149,99 zł, trial 7 dni na obu planach; pojedyncze zabawy 9,99 / 19,99 zł) |
 | D13 | Wiek: jak na stronie głównej (Wyobraźnia i Słowa i Wiedza 3+, Detektyw 6+) | **zatwierdzona** |
 | D14 | Rynek: Polska na start, docelowo cały świat; interfejs od początku w plikach lokalizacji | **zatwierdzona** |
 | D15 | Piosenki: autorskie AudioKiddo | **potwierdzone** przez Dawida (dotyczy też praw wykonawczych do nagrań) |
