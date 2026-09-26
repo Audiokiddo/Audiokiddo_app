@@ -6,7 +6,10 @@ Interaktywne audiozabawy i piosenki dla dzieci, na iOS i Androida (Flutter). Arc
 
 ```
 app/                 aplikacja Flutter (iOS + Android)
+studio/              panel treści (Flutter Web) — patrz studio/README.md
+supabase/            schemat bazy, RLS i funkcje serwerowe — patrz supabase/README.md
 packages/ak_core/    wspólna logika w czystym Darcie: katalog, dostęp, offline, skrypty zabaw
+tool/                nagrania testowe (dev_content.py), testy bazy (test_db.sh)
 docs/                raporty etapów, materiały poglądowe
 referencje/          klatki z aplikacji referencyjnych (tylko inspiracja)
 ```
@@ -44,6 +47,18 @@ cd packages/ak_core && dart test
 
 ```bash
 cd app && flutter test
+```
+
+```bash
+cd studio && flutter test
+```
+
+```bash
+tool/test_db.sh
+```
+
+```bash
+cd supabase/functions && deno test _shared/
 ```
 
 ## Treści testowe (do czasu serwera w Etapie 3)

@@ -280,3 +280,6 @@ class GameScript {
   final String start;
   final Map<String, ScriptStep> steps;
 }
+
+/// Parses a script from decoded JSON (Studio and tests). Throws [FormatError].
+GameScript parseGameScript(Map<String, Object?> json) => GameScript.fromJson(JsonReader(json));
