@@ -199,18 +199,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  FilledButton(
-                    onPressed: last ? _finish : _next,
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size.fromHeight(52),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  // Without an account the sign-in buttons are the main choice; carrying on is quiet.
+                  if (last && user == null)
+                    OutlinedButton(
+                      onPressed: _finish,
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(52),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      ),
+                      child: Text(l10n.onboardingStartWithoutAccount),
+                    )
+                  else
+                    FilledButton(
+                      onPressed: last ? _finish : _next,
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(52),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      ),
+                      child: Text(last ? l10n.onboardingStart : l10n.onboardingNext),
                     ),
-                    child: Text(
-                      last
-                          ? (user == null ? l10n.onboardingStartWithoutAccount : l10n.onboardingStart)
-                          : l10n.onboardingNext,
-                    ),
-                  ),
                   // Keeps the layout steady on the last page, where skipping makes no sense.
                   Visibility.maintain(
                     visible: !last,
@@ -249,15 +256,15 @@ class _Page extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(AkSpace.l, AkSpace.xl, AkSpace.l, AkSpace.l),
+      padding: const EdgeInsets.fromLTRB(AkSpace.l, AkSpace.l, AkSpace.l, AkSpace.m),
       children: [
         ExcludeSemantics(
           child: Center(
             child: Container(
-              width: 88,
-              height: 88,
-              decoration: BoxDecoration(color: iconColor, borderRadius: BorderRadius.circular(22)),
-              child: Icon(icon, size: 52, color: AkBrand.ink),
+              width: 76,
+              height: 76,
+              decoration: BoxDecoration(color: iconColor, borderRadius: BorderRadius.circular(19)),
+              child: Icon(icon, size: 44, color: symbolColorOn(iconColor)),
             ),
           ),
         ),
@@ -278,7 +285,7 @@ class _Page extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ],
-        const SizedBox(height: AkSpace.xl),
+        const SizedBox(height: AkSpace.l),
         ...children,
       ],
     );
@@ -298,7 +305,7 @@ class _Feature extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.only(bottom: AkSpace.l),
+      padding: const EdgeInsets.only(bottom: 20),
       child: MergeSemantics(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,7 +315,7 @@ class _Feature extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
-                child: Icon(icon, color: AkBrand.ink),
+                child: Icon(icon, color: symbolColorOn(color)),
               ),
             ),
             const SizedBox(width: AkSpace.m),
@@ -328,3 +335,7 @@ class _Feature extends StatelessWidget {
     );
   }
 }
+
+/// Symbol colour readable on a coloured tile (dark ink on light brand colours, white on dark).
+Color symbolColorOn(Color tile) =>
+    ThemeData.estimateBrightnessForColor(tile) == Brightness.dark ? Colors.white : AkBrand.ink;

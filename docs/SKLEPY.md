@@ -49,7 +49,7 @@ Stan: 2026-09-27. Deklaracje opisują aplikację **po podłączeniu serwera i za
 | Informacje kontaktowe: e-mail | Tak (tylko przy założeniu konta) | Tak | Nie | Działanie aplikacji |
 | Identyfikatory: identyfikator użytkownika (losowy, anonimowy) | Tak | Tak | Nie | Działanie aplikacji |
 | Zakupy: historia zakupów | Tak | Tak | Nie | Działanie aplikacji |
-| Dźwięk (mikrofon) | **Nie** (przetwarzanie tylko w telefonie) | nie dotyczy | nie dotyczy | nie dotyczy |
+| Dźwięk (mikrofon) | **Nie**: w zabawach wykrywamy klaśnięcia i głos w telefonie, nic nie jest nagrywane ani wysyłane | nie dotyczy | nie dotyczy | nie dotyczy |
 | Pozostałe (lokalizacja, kontakty, dane użycia, diagnostyka, reklamy) | Nie | nie dotyczy | nie dotyczy | nie dotyczy |
 
 Plik `ios/Runner/PrivacyInfo.xcprivacy` deklaruje brak śledzenia. Po Etapie 3 trzeba w nim uzupełnić zbierane typy danych.

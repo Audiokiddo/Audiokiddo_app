@@ -13,8 +13,12 @@ Stan: 2026-09-27, build release Androida (`app-release.apk`, 67 MB) i build iOS 
 | `printing` | podgląd, druk i udostępnianie PDF (za bramką) | nie (systemowe okno druku i udostępniania) | brak |
 | `in_app_purchase` (+ `_android`, `_storekit`) | zakupy w App Store i Google Play | tylko ze sklepem | transakcje: sklep, a po Etapie 3 nasz serwer |
 | `url_launcher` | otwieranie regulaminu i polityki (za bramką) | przeglądarka systemowa | brak |
+| `supabase_flutter` (+ `app_links`, `shared_preferences`) | konto rodzica, uprawnienia z serwera | tylko nasz projekt Supabase (UE) | e-mail rodzica, identyfikator konta; sesja zapisana w telefonie |
+| `sign_in_with_apple` | „Kontynuuj z Apple” (iOS) | Apple (systemowe okno) | token logowania trafia tylko do Supabase |
+| `google_sign_in` | „Kontynuuj z Google” | Google (systemowe okno) | token logowania trafia tylko do Supabase. **Do weryfikacji przed wydaniem:** zgodność z programem Families (decyzja D9) |
+| `record` | mikrofon w zabawach (klaśnięcia, głos) | nie | próbki trafiają do detektora w pamięci i są odrzucane; nic nie jest nagrywane ani wysyłane |
 
-**Brak**: SDK reklamowych, analitycznych, raportowania błędów (Crashlytics, Sentry), Facebook i Firebase. Po Etapie 3 dojdzie `supabase_flutter`, który trzeba ocenić tak samo.
+**Brak**: SDK reklamowych, analitycznych, raportowania błędów (Crashlytics, Sentry), Facebook i Firebase.
 
 ## Android: uprawnienia w buildzie release (sprawdzone narzędziem `aapt2`)
 
@@ -24,9 +28,10 @@ Stan: 2026-09-27, build release Androida (`app-release.apk`, 67 MB) i build iOS 
 | `WAKE_LOCK`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PLAYBACK` | aplikacja / audio_service | odtwarzanie w tle; typ usługi **mediaPlayback** do deklaracji w Play Console |
 | `ACCESS_NETWORK_STATE`, `RECEIVE_BOOT_COMPLETED` | background_downloader (WorkManager) | wznawianie pobrań po restarcie telefonu |
 | `com.android.vending.BILLING` | in_app_purchase | zakupy |
+| `RECORD_AUDIO` | aplikacja / record | zabawy z odpowiedzią głosem lub klaśnięciem; prośba systemowa dopiero po bramce rodzica i włączeniu przez rodzica |
 | `…DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | AndroidX (wewnętrzne) | niewidoczne dla użytkownika |
 
-Czego **nie ma** (zgodnie z Families Policy): `AD_ID` (usunięte), lokalizacji, mikrofonu, aparatu, kontaktów i pamięci zewnętrznej.
+Czego **nie ma** (zgodnie z Families Policy): `AD_ID` (usunięte), `USE_BIOMETRIC` / `USE_FINGERPRINT` (dokładane przez Google Sign-In, usunięte), lokalizacji, aparatu, kontaktów i pamięci zewnętrznej. Stan sprawdzony `aapt2` 2026-09-27.
 
 Pozostałe ustawienia:
 - **Kopia zapasowa:** wyłączona (`allowBackup=false`).
@@ -36,7 +41,8 @@ Pozostałe ustawienia:
 ## iOS
 
 - **Tryby w tle:** `audio` (odtwarzanie przy zablokowanym ekranie).
-- **Prośby o uprawnienia (`…UsageDescription`):** brak. Mikrofon dojdzie dopiero po próbach na urządzeniu, wtedy z opisem po polsku.
+- **Prośby o uprawnienia:** tylko mikrofon (`NSMicrophoneUsageDescription`, po polsku), pokazywana po bramce rodzica, gdy rodzic włączy odpowiedzi głosem w zabawie.
+- **Sign in with Apple:** wymaga dodania funkcji w Xcode po założeniu konta Apple (patrz `docs/KROKI-DLA-DAWIDA.md`).
 - **`NSAllowsLocalNetworking`:** tylko dla serwera testowego. Przed wydaniem usunąć albo ograniczyć do konfiguracji debug (Etap 6).
 - **`PrivacyInfo.xcprivacy`:** brak śledzenia i domen śledzących; typy zbieranych danych uzupełnić po Etapie 3.
 - **Pobrane pliki:** wyłączone z kopii iCloud (atrybut sprawdzony w Etapie 2).
@@ -48,7 +54,9 @@ Telefon ──HTTPS──► Supabase (UE): anonimowy ID / e-mail rodzica, upraw
 Telefon ──HTTPS──► Supabase Storage: pobieranie nagrań (adresy ważne 15 min)
 Telefon ──────────► App Store / Google Play: płatności
 audiokiddo.pl (WooCommerce) ──webhook──► Supabase: zamówienia ze strony
-Mikrofon ──► tylko pamięć telefonu (energia dźwięku), nic nie jest zapisywane ani wysyłane
+Mikrofon ──► tylko pamięć telefonu (energia dźwięku), nic nie jest zapisywane ani wysyłane.
+            Otwarty tylko w trakcie zabawy, próbki poza oknem odpowiedzi są odrzucane bez analizy.
+Logowanie Apple / Google ──► token tylko do Supabase (nie korzystamy z innych danych konta)
 ```
 
 ## Do weryfikacji przed wydaniem

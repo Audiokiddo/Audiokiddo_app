@@ -543,17 +543,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get onboardingHowListen =>
-      'Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada na głos i wykonuje zadania. Nie trzeba patrzeć w ekran.';
+      'Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada i wykonuje zadania.';
 
   @override
   String get onboardingHowKids =>
-      'Tryb dziecka pokazuje tylko duże okładki: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.';
+      'Tylko duże okładki: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.';
 
   @override
   String get onboardingHowOffline => 'Pobrane zabawy działają bez internetu, na przykład w samochodzie.';
 
   @override
-  String get onboardingHowNoAds => 'Bez reklam i bez śledzenia.';
+  String get onboardingHowNoAds => 'Żadnych reklam ani śledzenia. Nie zbieramy danych o dziecku.';
 
   @override
   String get onboardingAgeTitle => 'Ile lat ma dziecko?';

@@ -214,13 +214,38 @@ gh auth login
 
 3. Napisz mi. Utworzę **prywatne** repozytorium i wyślę kod, a testy zaczną się uruchamiać automatycznie.
 
+## Krok 14. Własna poczta dla kodów logowania (10 min) — PILNE
+
+Bez tego Supabase nie wyśle kodu nikomu poza członkami zespołu, a treści maila nie da się zmienić na polską.
+
+1. Panel LH.pl → Poczta → nowa skrzynka `no-reply@audiokiddo.pl`, hasło do aplikacji Hasła. Zanotuj serwer SMTP i port (zwykle 465).
+2. Supabase → Authentication → Emails → SMTP Settings → **Enable custom SMTP**: nadawca `no-reply@audiokiddo.pl`, nazwa `AudioKiddo`, host i port z LH.pl, użytkownik = adres skrzynki, hasło wklejone z aplikacji Hasła.
+3. Napisz mi „SMTP gotowe”. Uruchomię w terminalu `supabase config push` (polski mail z kodem), a Ty zatwierdzisz Enterem.
+
+## Krok 15. Logowanie przez Google (20 min, po kroku 4)
+
+1. console.cloud.google.com → projekt `audiokiddo` → **Interfejsy API i usługi → Ekran zgody OAuth**: typ „Zewnętrzny”, nazwa AudioKiddo, e-mail wsparcia, logo (opcjonalnie), zakresy tylko `email` i `profile`.
+2. **Dane logowania → Utwórz → Identyfikator klienta OAuth**, trzy razy:
+   - **Aplikacja internetowa** „AudioKiddo serwer” (bez adresów). To identyfikator dla Supabase i aplikacji.
+   - **iOS**: Bundle ID `pl.audiokiddo.app`.
+   - **Android**: pakiet `pl.audiokiddo.app` i odcisk SHA-1 klucza. Podam Ci komendę, która go wyświetli (klucz z kroku 5 i klucz Google Play App Signing z Play Console).
+3. Supabase → Authentication → Sign In / Providers → **Google**: włącz, wklej identyfikator klienta internetowego i jego *Client secret*. Zaznacz **Skip nonce checks** (wymagane dla iOS).
+4. **Napisz mi** identyfikatory klientów: internetowego i iOS. Nie są tajne. *Client secret* wpisujesz tylko w Supabase.
+5. Uwaga dla sklepów: przed wydaniem sprawdzimy, czy logowanie Google jest dopuszczalne w aplikacji z programu Families (Google Play). Jeśli nie, zostawimy je tylko na iOS.
+
+## Krok 16. Logowanie przez Apple (10 min, po kroku 3)
+
+1. developer.apple.com → Identifiers → `pl.audiokiddo.app` → zaznacz **Sign in with Apple** → Save.
+2. Xcode → Runner → Signing & Capabilities → **+ Capability → Sign in with Apple**. Mogę to dodać za Ciebie, gdy konto będzie w Xcode.
+3. Supabase → Authentication → Sign In / Providers → **Apple**: włącz, w polu *Client IDs* wpisz `pl.audiokiddo.app`. Dla samej aplikacji iOS klucz `.p8` nie jest potrzebny.
+
 ---
 
 ## Kolejność w skrócie
 
 | Kiedy | Co |
 |---|---|
-| **Dziś** | 0 (narzędzia), 1 (decyzja + D-U-N-S), 2 (Supabase), 3 i 4 (zapisy do Apple i Google, bo czeka się na weryfikację), 8 (ID produktów, klucz Woo), 12 (telefon z Androidem) |
+| **Dziś** | 14 (poczta dla kodów), 1 (decyzja + D-U-N-S), 2 (Supabase ✅), 3 i 4 (zapisy do Apple i Google, bo czeka się na weryfikację), 8 (ID produktów, klucz Woo), 12 (telefon z Androidem) |
 | **W tym tygodniu** | 10 (materiały), 11 (prawnik), 9 (lista testerów), 13 (GitHub) |
 | **Po weryfikacji kont** | 5 (klucz Androida), 6 (pierwszy build), 7 (produkty i klucze sklepów) |
 | **Na koniec** | 14 dni testu zamkniętego (przy koncie osobistym w Google), formularze sklepów z `docs/SKLEPY.md`, wysyłka do recenzji |

@@ -1012,13 +1012,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingHowListen.
   ///
   /// In pl, this message translates to:
-  /// **'Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada na głos i wykonuje zadania. Nie trzeba patrzeć w ekran.'**
+  /// **'Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada i wykonuje zadania.'**
   String get onboardingHowListen;
 
   /// No description provided for @onboardingHowKids.
   ///
   /// In pl, this message translates to:
-  /// **'Tryb dziecka pokazuje tylko duże okładki: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.'**
+  /// **'Tylko duże okładki: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.'**
   String get onboardingHowKids;
 
   /// No description provided for @onboardingHowOffline.
@@ -1030,7 +1030,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingHowNoAds.
   ///
   /// In pl, this message translates to:
-  /// **'Bez reklam i bez śledzenia.'**
+  /// **'Żadnych reklam ani śledzenia. Nie zbieramy danych o dziecku.'**
   String get onboardingHowNoAds;
 
   /// No description provided for @onboardingAgeTitle.
