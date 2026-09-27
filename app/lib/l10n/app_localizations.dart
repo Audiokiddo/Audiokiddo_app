@@ -760,7 +760,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfSection.
   ///
   /// In pl, this message translates to:
-  /// **'Akta sprawy do druku'**
+  /// **'Do wydrukowania'**
   String get pdfSection;
 
   /// No description provided for @pdfOpen.

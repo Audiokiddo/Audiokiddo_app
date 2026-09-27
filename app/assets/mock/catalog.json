@@ -306,7 +306,7 @@
    "title": "Co to za przedmiot?",
    "parent_description": "Dziecko słucha krótkich opisów i zgaduje, o jaki przedmiot chodzi.",
    "age_min": 3,
-   "duration_sec": 420,
+   "duration_sec": 409,
    "situations": [
     "podroz",
     "w_domu",
@@ -320,11 +320,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-to-za-przedmiot.m4a",
-     "bytes": 296595,
-     "sha256": "2bb9858b9f50c932855707711d6227b2f6b72715261e94565c645e14e8a3d716"
+     "bytes": 5150010,
+     "sha256": "ccfc22c3b67388f56e829b3ae8022f551e4ca8cfb5bcfe41467a2ac480456720"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.co_to_za_przedmiot"
+   "store_product_id": "pl.audiokiddo.item.co_to_za_przedmiot",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-co-to-za-przedmiot.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "co-to-za-dzwiek",
@@ -333,7 +340,7 @@
    "title": "Co to za dźwięk?",
    "parent_description": "Rozpoznawanie odgłosów natury, zwierząt i codzienności.",
    "age_min": 3,
-   "duration_sec": 420,
+   "duration_sec": 426,
    "situations": [
     "podroz",
     "w_domu",
@@ -347,11 +354,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-to-za-dzwiek.m4a",
-     "bytes": 296109,
-     "sha256": "bf06c24a60ec877fc8b0a2655138de75c9bbafd71fae13e28559aa07cb0d11a8"
+     "bytes": 5312596,
+     "sha256": "02671b0c5673f3aac28f2eae0bacf41c1a3c7611f21df414e849d339d4f1b7c7"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.co_to_za_dzwiek"
+   "store_product_id": "pl.audiokiddo.item.co_to_za_dzwiek",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-co-to-za-dzwiek.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "szybkie-skojarzenia",
@@ -360,7 +374,7 @@
    "title": "Szybkie skojarzenia",
    "parent_description": "Na usłyszane słowo dziecko odpowiada pierwszym skojarzeniem.",
    "age_min": 3,
-   "duration_sec": 240,
+   "duration_sec": 244,
    "situations": [
     "podroz",
     "w_domu",
@@ -374,11 +388,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/szybkie-skojarzenia.m4a",
-     "bytes": 296149,
-     "sha256": "d3160dc8b6338350d83120d7b78b032e1121a1b88001d9707f34c68e48fb157e"
+     "bytes": 3057580,
+     "sha256": "9669e9c096b29c21d1ef2b33ed854a789ac05ce2f1adbfea417aaebd5a961d9c"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.szybkie_skojarzenia"
+   "store_product_id": "pl.audiokiddo.item.szybkie_skojarzenia",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-szybkie-skojarzenia.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "co-tu-nie-pasuje",
@@ -387,7 +408,7 @@
    "title": "Co tu nie pasuje?",
    "parent_description": "Z trzech elementów trzeba wskazać ten, który odstaje, i powiedzieć dlaczego.",
    "age_min": 3,
-   "duration_sec": 300,
+   "duration_sec": 254,
    "situations": [
     "podroz",
     "w_domu",
@@ -401,11 +422,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-tu-nie-pasuje.m4a",
-     "bytes": 294895,
-     "sha256": "33fd04630ec6c15ecb8e94b81370e7a6b4c3bead94c1f440cac4c8e12811d162"
+     "bytes": 3178548,
+     "sha256": "8107577e160062b0165bc920d02dfcbd88bdc2bc1d1d93a0e112b91e30238996"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.co_tu_nie_pasuje"
+   "store_product_id": "pl.audiokiddo.item.co_tu_nie_pasuje",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-co-tu-nie-pasuje.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "wymien-trzy",
@@ -414,7 +442,7 @@
    "title": "Wymień trzy",
    "parent_description": "Trzy pasujące odpowiedzi na każde pytanie, np. zwierzęta z zoo.",
    "age_min": 3,
-   "duration_sec": 360,
+   "duration_sec": 375,
    "situations": [
     "podroz",
     "w_domu",
@@ -428,11 +456,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/wymien-trzy.m4a",
-     "bytes": 293566,
-     "sha256": "8e8e37f3ac1ea2ae416caa22becd69a369d8e559ed0f64bd6b1eb8366d47adb7"
+     "bytes": 4672040,
+     "sha256": "67c00dc6990d05b9b2afeb3556970b69d8b98d76d96ff698df6732edffd541ae"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.wymien_trzy"
+   "store_product_id": "pl.audiokiddo.item.wymien_trzy",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-wymien-trzy.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "znajdz-przeciwienstwo",
@@ -441,7 +476,7 @@
    "title": "Znajdź przeciwieństwo",
    "parent_description": "Prowadzący podaje słowo, dziecko szuka jego przeciwieństwa.",
    "age_min": 3,
-   "duration_sec": 420,
+   "duration_sec": 401,
    "situations": [
     "podroz",
     "w_domu",
@@ -455,11 +490,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/znajdz-przeciwienstwo.m4a",
-     "bytes": 297991,
-     "sha256": "7d7bb3123d809ce508b9a089d1064863de7ebd4f5251138bd2d1b1df1f90a259"
+     "bytes": 5013861,
+     "sha256": "9ffb5f9969c21ca9cf06954aeeecef9ba10eb0a004206d7e40c8d51bffd73ee7"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.znajdz_przeciwienstwo"
+   "store_product_id": "pl.audiokiddo.item.znajdz_przeciwienstwo",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-znajdz-przeciwienstwo.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "znajdz-synonimy",
@@ -468,7 +510,7 @@
    "title": "Znajdź synonimy",
    "parent_description": "Szukanie słów o podobnym znaczeniu.",
    "age_min": 3,
-   "duration_sec": 300,
+   "duration_sec": 258,
    "situations": [
     "podroz",
     "w_domu",
@@ -482,11 +524,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/znajdz-synonimy.m4a",
-     "bytes": 295122,
-     "sha256": "4a6ebc669d2a3779515c475cd11d3030e064861b506bb74e8f7d74a3a0f499f6"
+     "bytes": 3200728,
+     "sha256": "a6288883610aeba10df557306434e33e2b5c1633dd46c2767095e0cd1c676103"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.znajdz_synonimy"
+   "store_product_id": "pl.audiokiddo.item.znajdz_synonimy",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-znajdz-synonimy.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "uloz-zdanie",
@@ -495,7 +544,7 @@
    "title": "Ułóż zdanie",
    "parent_description": "Z rozsypanych słów dziecko układa poprawne zdanie.",
    "age_min": 3,
-   "duration_sec": 360,
+   "duration_sec": 361,
    "situations": [
     "podroz",
     "w_domu",
@@ -509,11 +558,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/uloz-zdanie.m4a",
-     "bytes": 294127,
-     "sha256": "6b69a95293d99eac3aff198338d0af2f98e46b4dae62e23e6563e584742af5fb"
+     "bytes": 4493246,
+     "sha256": "894383b7bde12436ad3615eabf97eb62a1cc64a2a876646157f2fb29fe8b713f"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.uloz_zdanie"
+   "store_product_id": "pl.audiokiddo.item.uloz_zdanie",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-uloz-zdanie.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "dokoncz-zgodnie-z-prawda",
@@ -522,7 +578,7 @@
    "title": "Dokończ zgodnie z prawdą",
    "parent_description": "Prowadzący zaczyna zdanie, dziecko kończy je prawdziwie.",
    "age_min": 3,
-   "duration_sec": 420,
+   "duration_sec": 423,
    "situations": [
     "podroz",
     "w_domu",
@@ -536,11 +592,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a",
-     "bytes": 298190,
-     "sha256": "15d6e1156aa51f732d6cd7770472f1907cc721b8f0f223e93df2b6df5c28ddcc"
+     "bytes": 5292276,
+     "sha256": "babf7559e0656a567e351af56df039d57440d0515aad91fece97cfc90c5ffe91"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.dokoncz_zgodnie_z_prawda"
+   "store_product_id": "pl.audiokiddo.item.dokoncz_zgodnie_z_prawda",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-dokoncz-zgodnie-z-prawda.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "kto-to-powiedzial",
@@ -549,7 +612,7 @@
    "title": "Kto to powiedział?",
    "parent_description": "Kto mógł wypowiedzieć to zdanie: lekarz czy kucharz?",
    "age_min": 3,
-   "duration_sec": 420,
+   "duration_sec": 426,
    "situations": [
     "podroz",
     "w_domu",
@@ -563,11 +626,18 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/kto-to-powiedzial.m4a",
-     "bytes": 294992,
-     "sha256": "5125a098861522a5cf588d23eb7a60de1f8b3a590ccb23430cc9d0813b720397"
+     "bytes": 5315556,
+     "sha256": "7252d54ca762ba663bfb03972dba1a2788d5201df5bdba6d2aaef81c92cafd1c"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.kto_to_powiedzial"
+   "store_product_id": "pl.audiokiddo.item.kto_to_powiedzial",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-kto-to-powiedzial.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ]
   },
   {
    "id": "zlodziej-naszyjnika",

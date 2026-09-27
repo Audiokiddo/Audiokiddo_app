@@ -402,7 +402,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get kidsStart => 'Włącz tryb dziecka';
 
   @override
-  String get pdfSection => 'Akta sprawy do druku';
+  String get pdfSection => 'Do wydrukowania';
 
   @override
   String get pdfOpen => 'Otwórz do druku';

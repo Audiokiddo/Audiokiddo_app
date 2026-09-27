@@ -122,3 +122,10 @@ do $$ begin
   assert has_table_privilege('authenticated', 'public.entitlements', 'select'), 'parents read own entitlements';
 end $$;
 select 'grant tests passed';
+
+-- 10. Real shop products are mapped (bundle of three grants all packs).
+do $$ begin
+  assert (select cardinality(scopes) from public.store_products where product_ref = 'woo:6235') = 3, 'bundle of three';
+  assert (select scopes from public.store_products where product_ref = 'woo:7339') = '{pack:detektyw}', 'detective pack';
+end $$;
+select 'shop product tests passed';
