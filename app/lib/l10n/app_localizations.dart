@@ -1488,6 +1488,42 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Dostęp przyznany!'**
   String get introGranted;
+
+  /// No description provided for @homeKiddo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo. Dotknij, a coś powie.'**
+  String get homeKiddo;
+
+  /// No description provided for @homeNew.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowość!'**
+  String get homeNew;
+
+  /// No description provided for @homeNewHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odpowiadaj klaśnięciem albo głosem!'**
+  String get homeNewHint;
+
+  /// No description provided for @kidsHello1.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hej! W co dziś zagramy?'**
+  String get kidsHello1;
+
+  /// No description provided for @kidsHello2.
+  ///
+  /// In pl, this message translates to:
+  /// **'Witaj z powrotem! Wybierz przygodę!'**
+  String get kidsHello2;
+
+  /// No description provided for @kidsHello3.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowi na zabawę? Ja jestem gotowy!'**
+  String get kidsHello3;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

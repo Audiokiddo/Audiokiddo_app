@@ -432,5 +432,11 @@
   "introPasswordListening": "(słucham…)",
   "introPasswordTap": "…i dotknij magicznej kuli",
   "introPasswordOrb": "Magiczna kula. Dotknij, aby wejść.",
-  "introGranted": "Dostęp przyznany!"
+  "introGranted": "Dostęp przyznany!",
+  "homeKiddo": "Kiddo. Dotknij, a coś powie.",
+  "homeNew": "Nowość!",
+  "homeNewHint": "Odpowiadaj klaśnięciem albo głosem!",
+  "kidsHello1": "Hej! W co dziś zagramy?",
+  "kidsHello2": "Witaj z powrotem! Wybierz przygodę!",
+  "kidsHello3": "Gotowi na zabawę? Ja jestem gotowy!"
 }

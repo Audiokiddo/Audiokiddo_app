@@ -804,4 +804,22 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get introGranted => 'Dostęp przyznany!';
+
+  @override
+  String get homeKiddo => 'Kiddo. Dotknij, a coś powie.';
+
+  @override
+  String get homeNew => 'Nowość!';
+
+  @override
+  String get homeNewHint => 'Odpowiadaj klaśnięciem albo głosem!';
+
+  @override
+  String get kidsHello1 => 'Hej! W co dziś zagramy?';
+
+  @override
+  String get kidsHello2 => 'Witaj z powrotem! Wybierz przygodę!';
+
+  @override
+  String get kidsHello3 => 'Gotowi na zabawę? Ja jestem gotowy!';
 }

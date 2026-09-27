@@ -10,6 +10,7 @@ import 'package:audiokiddo/core/storage/storage_providers.dart';
 import 'package:audiokiddo/features/content/content_urls.dart';
 import 'package:audiokiddo/features/downloads/download_providers.dart';
 import 'package:audiokiddo/features/downloads/file_transfer.dart';
+import 'package:audiokiddo/features/kids_mode/kids_home_screen.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
 import 'package:audiokiddo/features/player/player_providers.dart';
@@ -81,4 +82,5 @@ List<Override> testOverrides(
   currentMediaProvider.overrideWith((ref) => Stream<MediaItem?>.value(null)),
   kiddoVoiceProvider.overrideWithValue(const SilentKiddoVoice()),
   ambientMotionProvider.overrideWithValue(false),
+  kidsMagicEntryProvider.overrideWithValue(false),
 ];

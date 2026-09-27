@@ -1,8 +1,14 @@
+import 'dart:math' as math;
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/audio/kiddo_voice.dart';
 import '../../core/theme/tokens.dart';
+import '../../core/widgets/doodles.dart';
+import '../../core/widgets/kiddo.dart';
 import '../../l10n/app_localizations.dart';
 import '../kids_mode/kids_mode_setup.dart';
 import 'library_filter.dart';
@@ -34,26 +40,21 @@ class _HomeContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final featured = catalog.shelves.where((s) => s.kind == ShelfKind.featured && s.itemIds.isNotEmpty);
-    final rows = catalog.shelves.where((s) => s.kind == ShelfKind.row && s.itemIds.isNotEmpty);
+    // The "nowosci" shelf is shown as a banner, not as a row.
+    final rows = catalog.shelves.where(
+      (s) => s.kind == ShelfKind.row && s.itemIds.isNotEmpty && s.id != 'nowosci',
+    );
+    final news = [
+      for (final s in catalog.shelves.where((s) => s.id == 'nowosci'))
+        for (final id in s.itemIds) ?catalog.item(id),
+    ];
     final ages = {for (final p in catalog.packs) p.ageMin}.toList()..sort();
 
     return ListView(
       padding: const EdgeInsets.only(bottom: AkSpace.xl),
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(l10n.homeGreeting, style: Theme.of(context).textTheme.headlineMedium),
-              const SizedBox(height: AkSpace.xs),
-              Text(
-                l10n.homeSubtitle,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: context.palette.inkMuted),
-              ),
-            ],
-          ),
-        ),
+        const _Greeting(),
+        if (news.isNotEmpty) _NewsBanner(item: news.first),
         const KidsModeEntryCard(),
         if (featured.isNotEmpty) ...[
           SectionHeader(l10n.homeFeatured),
@@ -70,6 +71,139 @@ class _HomeContent extends StatelessWidget {
           _ShelfRow(items: [for (final id in shelf.itemIds) catalog.item(id)!], catalog: catalog),
         ],
       ],
+    );
+  }
+}
+
+/// "Czas na zabawę!" with Kiddo waving among drifting doodles. Touch Kiddo and he answers.
+class _Greeting extends ConsumerStatefulWidget {
+  const _Greeting();
+
+  @override
+  ConsumerState<_Greeting> createState() => _GreetingState();
+}
+
+class _GreetingState extends ConsumerState<_Greeting> {
+  KiddoMood _mood = KiddoMood.idle;
+  final _random = math.Random();
+
+  Future<void> _poke() async {
+    if (_mood == KiddoMood.talking) return;
+    setState(() => _mood = KiddoMood.talking);
+    await ref.read(kiddoVoiceProvider).say('kids_${1 + _random.nextInt(3)}');
+    if (!mounted) return;
+    setState(() => _mood = KiddoMood.happy);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    return Stack(
+      children: [
+        const Positioned.fill(child: FloatingDoodles(count: 10, opacity: 0.14, seed: 7)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.s, 0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.homeGreeting, style: text.headlineMedium),
+                    const SizedBox(height: AkSpace.xs),
+                    Text(l10n.homeSubtitle, style: text.bodyLarge?.copyWith(color: context.palette.inkMuted)),
+                  ],
+                ),
+              ),
+              Semantics(
+                button: true,
+                label: l10n.homeKiddo,
+                child: GestureDetector(
+                  onTap: _poke,
+                  child: Kiddo(size: 96, mood: _mood, wave: _mood == KiddoMood.idle),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Lavender "Nowość!" card like in picture-book apps: a sticker, the title, a hint.
+class _NewsBanner extends StatelessWidget {
+  const _NewsBanner({required this.item});
+
+  final ContentItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.m, 0),
+      child: Semantics(
+        button: true,
+        label: '${l10n.homeNew}: ${item.title}',
+        excludeSemantics: true,
+        child: Material(
+          color: const Color(0xFFE9DDF5),
+          borderRadius: BorderRadius.circular(AkRadius.card),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () => context.push(itemRoute(item)),
+            child: Stack(
+              children: [
+                const Positioned.fill(
+                  child: FloatingDoodles(count: 6, opacity: 0.12, color: AkBrand.lavenderDeep, seed: 11),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(AkSpace.m),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: AkBrand.orange,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                l10n.homeNew,
+                                style: text.labelLarge?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AkSpace.s),
+                            Text(
+                              item.title,
+                              style: text.titleLarge?.copyWith(
+                                color: AkBrand.ink,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(l10n.homeNewHint, style: text.bodyMedium?.copyWith(color: AkBrand.ink)),
+                          ],
+                        ),
+                      ),
+                      const Kiddo(size: 76, mood: KiddoMood.listening),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

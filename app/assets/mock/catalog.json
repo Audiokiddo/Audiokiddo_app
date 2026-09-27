@@ -2081,6 +2081,14 @@
    ]
   },
   {
+   "id": "nowosci",
+   "title": "Nowość!",
+   "kind": "row",
+   "item_ids": [
+    "prawda-czy-nie"
+   ]
+  },
+  {
    "id": "gry",
    "title": "Nowe gry bez ekranu (prototypy)",
    "kind": "row",

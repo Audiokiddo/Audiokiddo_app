@@ -315,7 +315,8 @@ def main():
     catalog = json.loads(CATALOG.read_text())
     ids = {g["id"] for g in games}
     catalog["items"] = [i for i in catalog["items"] if i["id"] not in ids] + games
-    catalog["shelves"] = [s for s in catalog["shelves"] if s["id"] != "gry"] + [
+    catalog["shelves"] = [s for s in catalog["shelves"] if s["id"] not in ("gry", "nowosci")] + [
+        {"id": "nowosci", "title": "Nowość!", "kind": "row", "item_ids": ["prawda-czy-nie"]},
         {"id": "gry", "title": "Nowe gry bez ekranu (prototypy)", "kind": "row", "item_ids": [g["id"] for g in games]}
     ]
     CATALOG.write_text(json.dumps(catalog, ensure_ascii=False, indent=1) + "\n")
