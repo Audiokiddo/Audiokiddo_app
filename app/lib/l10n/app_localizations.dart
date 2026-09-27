@@ -1524,6 +1524,366 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Gotowi na zabawę? Ja jestem gotowy!'**
   String get kidsHello3;
+
+  /// No description provided for @quizBack.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wstecz'**
+  String get quizBack;
+
+  /// No description provided for @quizYourChild.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twoje dziecko'**
+  String get quizYourChild;
+
+  /// No description provided for @quizHello.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Kiddo nie kłamie.'**
+  String get quizHello;
+
+  /// No description provided for @quizHelloPoint1.
+  ///
+  /// In pl, this message translates to:
+  /// **'Około minuty na każde dziecko.'**
+  String get quizHelloPoint1;
+
+  /// No description provided for @quizHelloPoint2.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odpowiedzi zostają tylko w tym telefonie.'**
+  String get quizHelloPoint2;
+
+  /// No description provided for @quizHelloPoint3.
+  ///
+  /// In pl, this message translates to:
+  /// **'Masz więcej dzieci? Każde dostanie własny plan.'**
+  String get quizHelloPoint3;
+
+  /// No description provided for @quizName.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jak ma na imię Twoje dziecko?'**
+  String get quizName;
+
+  /// No description provided for @quizNameHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Imię albo przezwisko (opcjonalnie)'**
+  String get quizNameHint;
+
+  /// No description provided for @quizNamePrivacy.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisujemy je tylko w tym telefonie, żeby było wiadomo, czyj to plan.'**
+  String get quizNamePrivacy;
+
+  /// No description provided for @quizAge.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ile lat ma {name}?'**
+  String quizAge(String name);
+
+  /// No description provided for @quizGoals.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co chcecie rozwijać? Możesz wybrać kilka.'**
+  String get quizGoals;
+
+  /// No description provided for @quizSituations.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiedy najczęściej słuchacie? (opcjonalnie)'**
+  String get quizSituations;
+
+  /// No description provided for @quizMinutes.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ile czasu dziennie na zabawę?'**
+  String get quizMinutes;
+
+  /// No description provided for @quizMinutesOption.
+  ///
+  /// In pl, this message translates to:
+  /// **'{minutes} min dziennie'**
+  String quizMinutesOption(int minutes);
+
+  /// No description provided for @quizMinutes5.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na rozgrzewkę. Tyle, ile stygnie kawa.'**
+  String get quizMinutes5;
+
+  /// No description provided for @quizMinutes10.
+  ///
+  /// In pl, this message translates to:
+  /// **'W sam raz. Jeden cykl wirowania pralki.'**
+  String get quizMinutes10;
+
+  /// No description provided for @quizMinutes15.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ambitnie. Pół odcinka serialu, którego i tak nie obejrzysz.'**
+  String get quizMinutes15;
+
+  /// No description provided for @quizMinutes20.
+  ///
+  /// In pl, this message translates to:
+  /// **'Z rozmachem. Prawie cały obiad bez „mamo, tato, a wiesz co?”.'**
+  String get quizMinutes20;
+
+  /// No description provided for @quizSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowe! Plan dla: {name}. Po {minutes} min dziennie, zaczynamy od łatwych zabaw.'**
+  String quizSummary(String name, int minutes);
+
+  /// No description provided for @quizSummaryAge.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zabawy dobrane do wieku: {age} lat.'**
+  String quizSummaryAge(int age);
+
+  /// No description provided for @quizSummaryLevels.
+  ///
+  /// In pl, this message translates to:
+  /// **'Codziennie jedna porcja. Nowe rzeczy pojawiają się stopniowo, poziom po poziomie.'**
+  String get quizSummaryLevels;
+
+  /// No description provided for @quizSummaryChange.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan zmienisz w każdej chwili w zakładce Plan.'**
+  String get quizSummaryChange;
+
+  /// No description provided for @quizAnotherChild.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj kolejne dziecko'**
+  String get quizAnotherChild;
+
+  /// No description provided for @quizStart.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaczynamy'**
+  String get quizStart;
+
+  /// No description provided for @quizContinue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dalej'**
+  String get quizContinue;
+
+  /// No description provided for @quizFinish.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowe'**
+  String get quizFinish;
+
+  /// No description provided for @quizSave.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz'**
+  String get quizSave;
+
+  /// No description provided for @quizProgress.
+  ///
+  /// In pl, this message translates to:
+  /// **'Postęp pytań'**
+  String get quizProgress;
+
+  /// No description provided for @goalImagination.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyobraźnia i opowiadanie'**
+  String get goalImagination;
+
+  /// No description provided for @goalLanguage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Słownictwo i mowa'**
+  String get goalLanguage;
+
+  /// No description provided for @goalLogic.
+  ///
+  /// In pl, this message translates to:
+  /// **'Logiczne myślenie'**
+  String get goalLogic;
+
+  /// No description provided for @goalListening.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uważne słuchanie i skupienie'**
+  String get goalListening;
+
+  /// No description provided for @goalMovement.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ruch i rytm'**
+  String get goalMovement;
+
+  /// No description provided for @goalCalm.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyciszenie przed snem'**
+  String get goalCalm;
+
+  /// No description provided for @reminder1Title.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo czeka'**
+  String get reminder1Title;
+
+  /// No description provided for @reminder1Body.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzień był długi? 10 minut zabawy i przez chwilę to ktoś inny odpowiada na pytania.'**
+  String get reminder1Body;
+
+  /// No description provided for @reminder2Title.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pora na przygodę'**
+  String get reminder2Title;
+
+  /// No description provided for @reminder2Body.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kawa znowu wystygła? Kawy nie uratujemy. Ciszę może tak: dzisiejsza zabawa czeka.'**
+  String get reminder2Body;
+
+  /// No description provided for @reminder3Title.
+  ///
+  /// In pl, this message translates to:
+  /// **'Seria trwa!'**
+  String get reminder3Title;
+
+  /// No description provided for @reminder3Body.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jeszcze jeden dzień, a seria będzie dłuższa niż Twój ostatni nieprzerwany sen.'**
+  String get reminder3Body;
+
+  /// No description provided for @reminder4Title.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo tu'**
+  String get reminder4Title;
+
+  /// No description provided for @reminder4Body.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziecko zadało dziś już 347 pytań? Oddaj kilka Kiddo. On to lubi. Serio.'**
+  String get reminder4Body;
+
+  /// No description provided for @reminder5Title.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cisza w domu?'**
+  String get reminder5Title;
+
+  /// No description provided for @reminder5Body.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podejrzane. Sprawdź, co się dzieje, a potem włącz dzisiejszą zabawę.'**
+  String get reminder5Body;
+
+  /// No description provided for @reminder6Title.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez ekranu, bez wyrzutów'**
+  String get reminder6Title;
+
+  /// No description provided for @reminder6Body.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oczy odpoczywają, uszy pracują, a Ty może nawet usiądziesz. Na chwilę.'**
+  String get reminder6Body;
+
+  /// No description provided for @reminder7Title.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo nie śpi'**
+  String get reminder7Title;
+
+  /// No description provided for @reminder7Body.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo nie śpi. Kiddo czeka. Kiddo trochę tęskni. Dzisiejsza porcja to kilka minut.'**
+  String get reminder7Body;
+
+  /// No description provided for @remindersAsk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Mogę przypominać o codziennej zabawie? Obiecuję nie przesadzać. Raz dziennie, z humorem.'**
+  String get remindersAsk;
+
+  /// No description provided for @remindersWhen.
+  ///
+  /// In pl, this message translates to:
+  /// **'O której przypomnieć?'**
+  String get remindersWhen;
+
+  /// No description provided for @remindersMorning.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rano'**
+  String get remindersMorning;
+
+  /// No description provided for @remindersAfternoon.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po przedszkolu'**
+  String get remindersAfternoon;
+
+  /// No description provided for @remindersEvening.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wieczorem'**
+  String get remindersEvening;
+
+  /// No description provided for @remindersBedtime.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed snem'**
+  String get remindersBedtime;
+
+  /// No description provided for @remindersEnable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz przypomnienia'**
+  String get remindersEnable;
+
+  /// No description provided for @remindersLater.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie teraz'**
+  String get remindersLater;
+
+  /// No description provided for @remindersDenied.
+  ///
+  /// In pl, this message translates to:
+  /// **'Telefon nie pozwolił na powiadomienia. Możesz to zmienić w Ustawieniach telefonu.'**
+  String get remindersDenied;
+
+  /// No description provided for @remindersNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmienisz to w każdej chwili w zakładce Plan.'**
+  String get remindersNote;
+
+  /// No description provided for @remindersPreviewApp.
+  ///
+  /// In pl, this message translates to:
+  /// **'AudioKiddo'**
+  String get remindersPreviewApp;
+
+  /// No description provided for @remindersPreviewTime.
+  ///
+  /// In pl, this message translates to:
+  /// **'teraz'**
+  String get remindersPreviewTime;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,17 +1,17 @@
-import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../account/account_service.dart';
 import '../account/sign_in.dart';
-import '../catalog/catalog_providers.dart';
+import '../family/child_quiz.dart';
+import '../family/family.dart';
 import '../intro/magic_intro.dart';
 import '../kids_mode/kids_mode_controller.dart';
 import '../parental_gate/parental_gate.dart';
+import '../reminders/reminder_offer.dart';
 import 'onboarding_controller.dart';
 
 /// First run, written for the parent in the calm style of Apple's welcome sheets: a hello
@@ -27,12 +27,11 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _pages = PageController();
   int _page = 0;
-  int? _age;
 
-  /// Kiddo's magic way in comes first; the parent pages follow.
-  bool _introDone = false;
+  /// Kiddo's magic way in, the parent pages, then the short parent quiz and reminders.
+  _Stage _stage = _Stage.intro;
 
-  static const _pageCount = 4;
+  static const _pageCount = 3;
 
   @override
   void dispose() {
@@ -42,9 +41,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _next() => _pages.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
 
-  Future<void> _finish({bool keepAge = true}) async {
-    final age = _age;
-    if (keepAge && age != null) await ref.read(kidsModeProvider).setPreferredAge(age);
+  /// End of the pages: the quiz next (skipping the pages skips the quiz too).
+  void _finish({bool skipAll = false}) {
+    if (skipAll) {
+      _complete();
+    } else {
+      setState(() => _stage = _Stage.quiz);
+    }
+  }
+
+  Future<void> _complete() async {
+    // Kids mode starts at the first child's age.
+    final first = ref.read(familyProvider).value?.children.firstOrNull;
+    if (first != null) await ref.read(kidsModeProvider).setPreferredAge(first.age);
     await ref.read(onboardingProvider).complete();
   }
 
@@ -57,12 +66,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final palette = context.palette;
-    final packs = ref.watch(catalogProvider).value?.packs ?? const <Pack>[];
-    final ages = {for (final p in packs) p.ageMin}.toList()..sort();
     final user = ref.watch(accountUserProvider).value;
     final last = _page == _pageCount - 1;
 
-    if (!_introDone) return MagicIntro(onDone: () => setState(() => _introDone = true));
+    switch (_stage) {
+      case _Stage.intro:
+        return MagicIntro(onDone: () => setState(() => _stage = _Stage.pages));
+      case _Stage.quiz:
+        return ChildQuiz(onDone: () => setState(() => _stage = _Stage.reminders));
+      case _Stage.reminders:
+        return ReminderOffer(onDone: _complete);
+      case _Stage.pages:
+        break;
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -128,28 +144,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 _openLegal(Uri.parse('https://audiokiddo.pl/polityka-prywatnosci/')),
                             child: Text(l10n.paywallPrivacy),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  _Page(
-                    icon: Icons.cake_rounded,
-                    iconColor: AkBrand.lavender,
-                    title: l10n.onboardingAgeTitle,
-                    subtitle: l10n.onboardingAgeBody,
-                    children: [
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: AkSpace.s,
-                        runSpacing: AkSpace.s,
-                        children: [
-                          for (final a in ages)
-                            ChoiceChip(
-                              label: Text(l10n.ageGroupLabel(a)),
-                              selected: _age == a,
-                              labelStyle: selectableChipLabel(context, selected: _age == a),
-                              onSelected: (on) => setState(() => _age = on ? a : null),
-                            ),
                         ],
                       ),
                     ],
@@ -228,7 +222,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   Visibility.maintain(
                     visible: !last,
                     child: TextButton(
-                      onPressed: () => _finish(keepAge: false),
+                      onPressed: () => _finish(skipAll: true),
                       child: Text(l10n.onboardingSkip),
                     ),
                   ),
@@ -345,3 +339,5 @@ class _Feature extends StatelessWidget {
 /// Symbol colour readable on a coloured tile (dark ink on light brand colours, white on dark).
 Color symbolColorOn(Color tile) =>
     ThemeData.estimateBrightnessForColor(tile) == Brightness.dark ? Colors.white : AkBrand.ink;
+
+enum _Stage { intro, pages, quiz, reminders }

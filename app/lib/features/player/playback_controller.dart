@@ -8,6 +8,7 @@ import '../downloads/download_providers.dart';
 import '../personal/personal_repository.dart';
 import 'audio_handler.dart';
 import 'player_providers.dart';
+import '../family/family.dart';
 
 /// Thrown when an item is neither downloaded nor reachable.
 class PlaybackSourceUnavailable implements Exception {
@@ -65,6 +66,10 @@ class PlaybackController {
     if (media == null || duration == null || duration == Duration.zero) return;
     if (media.id.startsWith(gameMediaPrefix)) return; // games have no resume point
     final position = completed ? duration : _handler.position;
+    if (completed) {
+      // Counts towards the listening child's plan and progress.
+      unawaited(_ref.read(familyProvider.notifier).record(itemId: media.id, seconds: duration.inSeconds));
+    }
     await _ref
         .read(personalRepositoryProvider)
         .saveProgress(

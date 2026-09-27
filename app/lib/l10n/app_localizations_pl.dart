@@ -822,4 +822,200 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get kidsHello3 => 'Gotowi na zabawę? Ja jestem gotowy!';
+
+  @override
+  String get quizBack => 'Wstecz';
+
+  @override
+  String get quizYourChild => 'Twoje dziecko';
+
+  @override
+  String get quizHello =>
+      'Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Kiddo nie kłamie.';
+
+  @override
+  String get quizHelloPoint1 => 'Około minuty na każde dziecko.';
+
+  @override
+  String get quizHelloPoint2 => 'Odpowiedzi zostają tylko w tym telefonie.';
+
+  @override
+  String get quizHelloPoint3 => 'Masz więcej dzieci? Każde dostanie własny plan.';
+
+  @override
+  String get quizName => 'Jak ma na imię Twoje dziecko?';
+
+  @override
+  String get quizNameHint => 'Imię albo przezwisko (opcjonalnie)';
+
+  @override
+  String get quizNamePrivacy => 'Zapisujemy je tylko w tym telefonie, żeby było wiadomo, czyj to plan.';
+
+  @override
+  String quizAge(String name) {
+    return 'Ile lat ma $name?';
+  }
+
+  @override
+  String get quizGoals => 'Co chcecie rozwijać? Możesz wybrać kilka.';
+
+  @override
+  String get quizSituations => 'Kiedy najczęściej słuchacie? (opcjonalnie)';
+
+  @override
+  String get quizMinutes => 'Ile czasu dziennie na zabawę?';
+
+  @override
+  String quizMinutesOption(int minutes) {
+    return '$minutes min dziennie';
+  }
+
+  @override
+  String get quizMinutes5 => 'Na rozgrzewkę. Tyle, ile stygnie kawa.';
+
+  @override
+  String get quizMinutes10 => 'W sam raz. Jeden cykl wirowania pralki.';
+
+  @override
+  String get quizMinutes15 => 'Ambitnie. Pół odcinka serialu, którego i tak nie obejrzysz.';
+
+  @override
+  String get quizMinutes20 => 'Z rozmachem. Prawie cały obiad bez „mamo, tato, a wiesz co?”.';
+
+  @override
+  String quizSummary(String name, int minutes) {
+    return 'Gotowe! Plan dla: $name. Po $minutes min dziennie, zaczynamy od łatwych zabaw.';
+  }
+
+  @override
+  String quizSummaryAge(int age) {
+    return 'Zabawy dobrane do wieku: $age lat.';
+  }
+
+  @override
+  String get quizSummaryLevels =>
+      'Codziennie jedna porcja. Nowe rzeczy pojawiają się stopniowo, poziom po poziomie.';
+
+  @override
+  String get quizSummaryChange => 'Plan zmienisz w każdej chwili w zakładce Plan.';
+
+  @override
+  String get quizAnotherChild => 'Dodaj kolejne dziecko';
+
+  @override
+  String get quizStart => 'Zaczynamy';
+
+  @override
+  String get quizContinue => 'Dalej';
+
+  @override
+  String get quizFinish => 'Gotowe';
+
+  @override
+  String get quizSave => 'Zapisz';
+
+  @override
+  String get quizProgress => 'Postęp pytań';
+
+  @override
+  String get goalImagination => 'Wyobraźnia i opowiadanie';
+
+  @override
+  String get goalLanguage => 'Słownictwo i mowa';
+
+  @override
+  String get goalLogic => 'Logiczne myślenie';
+
+  @override
+  String get goalListening => 'Uważne słuchanie i skupienie';
+
+  @override
+  String get goalMovement => 'Ruch i rytm';
+
+  @override
+  String get goalCalm => 'Wyciszenie przed snem';
+
+  @override
+  String get reminder1Title => 'Kiddo czeka';
+
+  @override
+  String get reminder1Body =>
+      'Dzień był długi? 10 minut zabawy i przez chwilę to ktoś inny odpowiada na pytania.';
+
+  @override
+  String get reminder2Title => 'Pora na przygodę';
+
+  @override
+  String get reminder2Body =>
+      'Kawa znowu wystygła? Kawy nie uratujemy. Ciszę może tak: dzisiejsza zabawa czeka.';
+
+  @override
+  String get reminder3Title => 'Seria trwa!';
+
+  @override
+  String get reminder3Body =>
+      'Jeszcze jeden dzień, a seria będzie dłuższa niż Twój ostatni nieprzerwany sen.';
+
+  @override
+  String get reminder4Title => 'Kiddo tu';
+
+  @override
+  String get reminder4Body => 'Dziecko zadało dziś już 347 pytań? Oddaj kilka Kiddo. On to lubi. Serio.';
+
+  @override
+  String get reminder5Title => 'Cisza w domu?';
+
+  @override
+  String get reminder5Body => 'Podejrzane. Sprawdź, co się dzieje, a potem włącz dzisiejszą zabawę.';
+
+  @override
+  String get reminder6Title => 'Bez ekranu, bez wyrzutów';
+
+  @override
+  String get reminder6Body => 'Oczy odpoczywają, uszy pracują, a Ty może nawet usiądziesz. Na chwilę.';
+
+  @override
+  String get reminder7Title => 'Kiddo nie śpi';
+
+  @override
+  String get reminder7Body =>
+      'Kiddo nie śpi. Kiddo czeka. Kiddo trochę tęskni. Dzisiejsza porcja to kilka minut.';
+
+  @override
+  String get remindersAsk =>
+      'Mogę przypominać o codziennej zabawie? Obiecuję nie przesadzać. Raz dziennie, z humorem.';
+
+  @override
+  String get remindersWhen => 'O której przypomnieć?';
+
+  @override
+  String get remindersMorning => 'Rano';
+
+  @override
+  String get remindersAfternoon => 'Po przedszkolu';
+
+  @override
+  String get remindersEvening => 'Wieczorem';
+
+  @override
+  String get remindersBedtime => 'Przed snem';
+
+  @override
+  String get remindersEnable => 'Włącz przypomnienia';
+
+  @override
+  String get remindersLater => 'Nie teraz';
+
+  @override
+  String get remindersDenied =>
+      'Telefon nie pozwolił na powiadomienia. Możesz to zmienić w Ustawieniach telefonu.';
+
+  @override
+  String get remindersNote => 'Zmienisz to w każdej chwili w zakładce Plan.';
+
+  @override
+  String get remindersPreviewApp => 'AudioKiddo';
+
+  @override
+  String get remindersPreviewTime => 'teraz';
 }

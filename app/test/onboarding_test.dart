@@ -1,5 +1,6 @@
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/core/router.dart';
+import 'package:audiokiddo/features/family/family.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
 import 'package:flutter/material.dart';
@@ -58,15 +59,60 @@ void main() {
     expect(find.text('Jak to działa'), findsOneWidget);
     await tester.tap(find.text('Dalej'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Dla dzieci od 6 lat'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Dalej'));
-    await tester.pumpAndSettle();
     expect(find.text('Konto rodzica'), findsOneWidget);
     expect(find.text('Kontynuuj z e-mailem'), findsOneWidget);
     await tester.tap(find.text('Zacznij bez konta'));
     await tester.pumpAndSettle();
+
+    // The short parent quiz, for two children.
+    Future<void> next() async {
+      await tester.tap(find.widgetWithText(FilledButton, 'Dalej'));
+      await tester.pumpAndSettle();
+    }
+
+    await tester.tap(find.text('Zaczynamy'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Zosia');
+    await next();
+    expect(find.text('Ile lat ma Zosia?'), findsOneWidget);
+    await tester.tap(find.text('6'));
+    await tester.pumpAndSettle();
+    await next();
+    await tester.tap(find.text('Słownictwo i mowa'));
+    await tester.pumpAndSettle();
+    await next();
+    await tester.tap(find.text('W podróży'));
+    await tester.pumpAndSettle();
+    await next();
+    await tester.tap(find.text('10 min dziennie'));
+    await tester.pumpAndSettle();
+    await next();
+    expect(find.textContaining('Plan dla: Zosia'), findsOneWidget);
+    await tester.tap(find.text('Dodaj kolejne dziecko'));
+    await tester.pumpAndSettle();
+    await next(); // no name: "Twoje dziecko"
+    expect(find.text('Ile lat ma Twoje dziecko?'), findsOneWidget);
+    await tester.tap(find.text('3'));
+    await tester.pumpAndSettle();
+    await next();
+    await tester.tap(find.text('Wyciszenie przed snem'));
+    await tester.pumpAndSettle();
+    await next();
+    await next();
+    await tester.tap(find.text('5 min dziennie'));
+    await tester.pumpAndSettle();
+    await next();
+    await tester.tap(find.text('Gotowe'));
+    await tester.pumpAndSettle();
+
+    // Reminders: offered, not forced.
+    expect(find.text('Włącz przypomnienia'), findsOneWidget);
+    await tester.tap(find.text('Nie teraz'));
+    await tester.pumpAndSettle();
     expect(find.text('Czas na zabawę!'), findsOneWidget);
+    final container = ProviderScope.containerOf(tester.element(find.text('Czas na zabawę!')));
+    final family = container.read(familyProvider).value!;
+    expect([for (final c in family.children) (c.name, c.age, c.dailyMinutes)], [('Zosia', 6, 10), ('', 3, 5)]);
     expect(kids.settings.age, 6, reason: 'age becomes the kids mode default');
     expect(kids.active, isFalse);
   });

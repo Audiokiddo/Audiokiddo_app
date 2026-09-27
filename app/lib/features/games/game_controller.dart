@@ -13,6 +13,7 @@ import '../downloads/download_providers.dart';
 import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
 import 'microphone.dart';
+import '../family/family.dart';
 
 /// Audio operations a game needs; implemented by AkAudioHandler, faked in tests.
 abstract interface class GameAudio {
@@ -103,6 +104,8 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     if (script == null) return;
     final generation = ++_generation;
     _item = item;
+    _answers = 0;
+    final startedAt = DateTime.now();
     final saved = resume ? await loadGameSnapshot(ref.read(databaseProvider), item) : null;
     if (!resume) await clearGameSnapshot(ref.read(databaseProvider), item.id);
     await _startMicrophone();
@@ -122,6 +125,15 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         if (event == null || generation != _generation) return; // stopped or replaced
         if (command is Finish) {
           await _stopMicrophone();
+          // Games that keep a `score` variable report correct answers to the parent.
+          await ref
+              .read(familyProvider.notifier)
+              .record(
+                itemId: item.id,
+                seconds: DateTime.now().difference(startedAt).inSeconds,
+                answers: _answers,
+                correct: script.variables.containsKey('score') ? runner.variables['score'] : null,
+              );
           await clearGameSnapshot(ref.read(databaseProvider), item.id);
           ref.invalidate(gameResumeProvider(item));
           state = GameUiState(phase: GamePhase.finished, itemId: item.id, title: item.title);

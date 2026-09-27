@@ -438,5 +438,96 @@
   "homeNewHint": "Odpowiadaj klaśnięciem albo głosem!",
   "kidsHello1": "Hej! W co dziś zagramy?",
   "kidsHello2": "Witaj z powrotem! Wybierz przygodę!",
-  "kidsHello3": "Gotowi na zabawę? Ja jestem gotowy!"
+  "kidsHello3": "Gotowi na zabawę? Ja jestem gotowy!",
+  "quizBack": "Wstecz",
+  "quizYourChild": "Twoje dziecko",
+  "quizHello": "Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Kiddo nie kłamie.",
+  "quizHelloPoint1": "Około minuty na każde dziecko.",
+  "quizHelloPoint2": "Odpowiedzi zostają tylko w tym telefonie.",
+  "quizHelloPoint3": "Masz więcej dzieci? Każde dostanie własny plan.",
+  "quizName": "Jak ma na imię Twoje dziecko?",
+  "quizNameHint": "Imię albo przezwisko (opcjonalnie)",
+  "quizNamePrivacy": "Zapisujemy je tylko w tym telefonie, żeby było wiadomo, czyj to plan.",
+  "quizAge": "Ile lat ma {name}?",
+  "@quizAge": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quizGoals": "Co chcecie rozwijać? Możesz wybrać kilka.",
+  "quizSituations": "Kiedy najczęściej słuchacie? (opcjonalnie)",
+  "quizMinutes": "Ile czasu dziennie na zabawę?",
+  "quizMinutesOption": "{minutes} min dziennie",
+  "@quizMinutesOption": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "quizMinutes5": "Na rozgrzewkę. Tyle, ile stygnie kawa.",
+  "quizMinutes10": "W sam raz. Jeden cykl wirowania pralki.",
+  "quizMinutes15": "Ambitnie. Pół odcinka serialu, którego i tak nie obejrzysz.",
+  "quizMinutes20": "Z rozmachem. Prawie cały obiad bez „mamo, tato, a wiesz co?”.",
+  "quizSummary": "Gotowe! Plan dla: {name}. Po {minutes} min dziennie, zaczynamy od łatwych zabaw.",
+  "@quizSummary": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "quizSummaryAge": "Zabawy dobrane do wieku: {age} lat.",
+  "@quizSummaryAge": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "quizSummaryLevels": "Codziennie jedna porcja. Nowe rzeczy pojawiają się stopniowo, poziom po poziomie.",
+  "quizSummaryChange": "Plan zmienisz w każdej chwili w zakładce Plan.",
+  "quizAnotherChild": "Dodaj kolejne dziecko",
+  "quizStart": "Zaczynamy",
+  "quizContinue": "Dalej",
+  "quizFinish": "Gotowe",
+  "quizSave": "Zapisz",
+  "quizProgress": "Postęp pytań",
+  "goalImagination": "Wyobraźnia i opowiadanie",
+  "goalLanguage": "Słownictwo i mowa",
+  "goalLogic": "Logiczne myślenie",
+  "goalListening": "Uważne słuchanie i skupienie",
+  "goalMovement": "Ruch i rytm",
+  "goalCalm": "Wyciszenie przed snem",
+  "reminder1Title": "Kiddo czeka",
+  "reminder1Body": "Dzień był długi? 10 minut zabawy i przez chwilę to ktoś inny odpowiada na pytania.",
+  "reminder2Title": "Pora na przygodę",
+  "reminder2Body": "Kawa znowu wystygła? Kawy nie uratujemy. Ciszę może tak: dzisiejsza zabawa czeka.",
+  "reminder3Title": "Seria trwa!",
+  "reminder3Body": "Jeszcze jeden dzień, a seria będzie dłuższa niż Twój ostatni nieprzerwany sen.",
+  "reminder4Title": "Kiddo tu",
+  "reminder4Body": "Dziecko zadało dziś już 347 pytań? Oddaj kilka Kiddo. On to lubi. Serio.",
+  "reminder5Title": "Cisza w domu?",
+  "reminder5Body": "Podejrzane. Sprawdź, co się dzieje, a potem włącz dzisiejszą zabawę.",
+  "reminder6Title": "Bez ekranu, bez wyrzutów",
+  "reminder6Body": "Oczy odpoczywają, uszy pracują, a Ty może nawet usiądziesz. Na chwilę.",
+  "reminder7Title": "Kiddo nie śpi",
+  "reminder7Body": "Kiddo nie śpi. Kiddo czeka. Kiddo trochę tęskni. Dzisiejsza porcja to kilka minut.",
+  "remindersAsk": "Mogę przypominać o codziennej zabawie? Obiecuję nie przesadzać. Raz dziennie, z humorem.",
+  "remindersWhen": "O której przypomnieć?",
+  "remindersMorning": "Rano",
+  "remindersAfternoon": "Po przedszkolu",
+  "remindersEvening": "Wieczorem",
+  "remindersBedtime": "Przed snem",
+  "remindersEnable": "Włącz przypomnienia",
+  "remindersLater": "Nie teraz",
+  "remindersDenied": "Telefon nie pozwolił na powiadomienia. Możesz to zmienić w Ustawieniach telefonu.",
+  "remindersNote": "Zmienisz to w każdej chwili w zakładce Plan.",
+  "remindersPreviewApp": "AudioKiddo",
+  "remindersPreviewTime": "teraz"
 }
