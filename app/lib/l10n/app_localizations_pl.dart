@@ -575,4 +575,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String onboardingStep(int current, int total) {
     return 'Krok $current z $total';
   }
+
+  @override
+  String get resumeGame => 'Wznów grę';
 }

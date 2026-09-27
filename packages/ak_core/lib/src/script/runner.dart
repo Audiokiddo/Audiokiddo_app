@@ -69,19 +69,45 @@ class InputFailed extends EngineEvent {
   final FallbackReason reason;
 }
 
-/// State needed to resume after an interruption: the current step is replayed from its start.
+/// State needed to resume after an interruption. [stepId] is replayed from its start, so the
+/// child hears the last instruction again. [scriptId]/[scriptVersion] let the app discard a
+/// snapshot when the game was updated in the meantime.
 class RunnerSnapshot {
   const RunnerSnapshot({
     required this.stepId,
     required this.variables,
     required this.visits,
     required this.executed,
+    this.scriptId = '',
+    this.scriptVersion = 0,
   });
+
+  factory RunnerSnapshot.fromJson(Map<String, Object?> json) => RunnerSnapshot(
+    stepId: json['step'] as String,
+    variables: (json['variables'] as Map).cast<String, int>(),
+    visits: (json['visits'] as Map).cast<String, int>(),
+    executed: json['executed'] as int,
+    scriptId: json['script_id'] as String? ?? '',
+    scriptVersion: json['script_version'] as int? ?? 0,
+  );
 
   final String stepId;
   final Map<String, int> variables;
   final Map<String, int> visits;
   final int executed;
+  final String scriptId;
+  final int scriptVersion;
+
+  bool matches(GameScript script) => scriptId == script.id && scriptVersion == script.version;
+
+  Map<String, Object?> toJson() => {
+    'step': stepId,
+    'variables': variables,
+    'visits': visits,
+    'executed': executed,
+    'script_id': scriptId,
+    'script_version': scriptVersion,
+  };
 }
 
 /// Interprets a validated [GameScript] (ARCHITECTURE §10).
@@ -93,8 +119,12 @@ class ScriptRunner {
   ScriptRunner(this.script, {Set<FallbackReason> unavailable = const {}, RunnerSnapshot? resumeFrom})
     : _unavailable = {...unavailable},
       _variables = {...(resumeFrom?.variables ?? script.variables)},
-      _visits = {...?resumeFrom?.visits},
-      _executed = resumeFrom?.executed ?? 0,
+      // start() resolves the current step again, which counts it once more.
+      _visits = {
+        ...?resumeFrom?.visits,
+        if (resumeFrom != null) resumeFrom.stepId: (resumeFrom.visits[resumeFrom.stepId] ?? 1) - 1,
+      },
+      _executed = resumeFrom == null ? 0 : resumeFrom.executed - 1,
       _current = resumeFrom?.stepId ?? script.start;
 
   final GameScript script;
@@ -112,8 +142,14 @@ class ScriptRunner {
   String get currentStepId => _current;
   bool get isFinished => _finished;
 
-  RunnerSnapshot snapshot() =>
-      RunnerSnapshot(stepId: _current, variables: {..._variables}, visits: {..._visits}, executed: _executed);
+  RunnerSnapshot snapshot() => RunnerSnapshot(
+    stepId: _current,
+    variables: {..._variables},
+    visits: {..._visits},
+    executed: _executed,
+    scriptId: script.id,
+    scriptVersion: script.version,
+  );
 
   /// Marks an input source as (un)available, e.g. the screen got locked or the parent
   /// denied the microphone. Affects the next input step.

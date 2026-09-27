@@ -1,6 +1,6 @@
 # AudioKiddo: aplikacja mobilna
 
-Interaktywne audiozabawy i piosenki dla dzieci, na iOS i Androida (Flutter). Architektura: [`ARCHITECTURE.md`](ARCHITECTURE.md). Raporty z etapów: [`docs/`](docs/).
+Interaktywne audiozabawy i piosenki dla dzieci, na iOS i Androida (Flutter). Architektura: [`ARCHITECTURE.md`](ARCHITECTURE.md). Raporty z etapów: [`docs/`](docs/). Wydanie w sklepach: [`docs/WYDANIE.md`](docs/WYDANIE.md).
 
 ## Struktura
 
@@ -10,6 +10,7 @@ studio/              panel treści (Flutter Web) — patrz studio/README.md
 supabase/            schemat bazy, RLS i funkcje serwerowe — patrz supabase/README.md
 packages/ak_core/    wspólna logika w czystym Darcie: katalog, dostęp, offline, skrypty zabaw
 tool/                nagrania testowe (dev_content.py), testy bazy (test_db.sh)
+.github/workflows/    automatyczne testy i buildy (GitHub Actions)
 docs/                raporty etapów, materiały poglądowe
 referencje/          klatki z aplikacji referencyjnych (tylko inspiracja)
 ```
@@ -60,6 +61,12 @@ tool/test_db.sh
 ```bash
 cd supabase/functions && deno test _shared/
 ```
+
+To samo uruchamia GitHub Actions (`.github/workflows/ci.yml`) po wysłaniu kodu do repozytorium, razem z buildem Androida i iOS.
+
+## Wersja do sklepu
+
+Podpisywanie Androida wymaga pliku `app/android/key.properties` (poza repozytorium). Klucze, konta i produkty: [`docs/WYDANIE.md`](docs/WYDANIE.md).
 
 ## Treści testowe (do czasu serwera w Etapie 3)
 

@@ -96,4 +96,40 @@ void main() {
     expect(container.read(gameControllerProvider).phase, GamePhase.idle);
     expect(audio.log.last, 'stop');
   });
+
+  test('an interrupted game resumes by replaying the last instruction', () async {
+    final item = await game('zamrozony-taniec');
+    audio.playing = false; // hold the game in the first freeze
+    unawaited(container.read(gameControllerProvider.notifier).start(item));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    await container.read(gameControllerProvider.notifier).stop();
+    expect(audio.log.where((l) => l.startsWith('play:')), ['play:intro', 'play:music_1', 'play:stop']);
+    expect(await container.read(gameResumeProvider(item).future), isTrue);
+
+    audio
+      ..log.clear()
+      ..playing = true;
+    await container.read(gameControllerProvider.notifier).start(item, resume: true);
+    expect(audio.log.first, 'play:stop', reason: '"Stop!" is heard again');
+    expect(audio.log.where((l) => l == 'play:intro'), isEmpty);
+    expect(
+      audio.log.where((l) => l == 'loop:silence_1s'),
+      hasLength(3),
+      reason: 'all three freezes still happen',
+    );
+    expect(await container.read(gameResumeProvider(item).future), isFalse, reason: 'cleared when finished');
+  });
+
+  test('"from the start" discards the saved position', () async {
+    final item = await game('zamrozony-taniec');
+    audio.playing = false;
+    unawaited(container.read(gameControllerProvider.notifier).start(item));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    await container.read(gameControllerProvider.notifier).stop();
+    audio
+      ..log.clear()
+      ..playing = true;
+    await container.read(gameControllerProvider.notifier).start(item);
+    expect(audio.log.first, 'play:intro');
+  });
 }

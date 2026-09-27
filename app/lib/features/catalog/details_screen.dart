@@ -47,8 +47,9 @@ class _DetailsContent extends ConsumerWidget {
 
   Future<void> _listen(BuildContext context, WidgetRef ref, {bool fromStart = false}) async {
     if (item.kind == ContentKind.interactiveGame) {
-      unawaited(ref.read(gameControllerProvider.notifier).start(item));
+      unawaited(ref.read(gameControllerProvider.notifier).start(item, resume: !fromStart));
       await context.push('/gra');
+      ref.invalidate(gameResumeProvider(item));
       return;
     }
     try {
@@ -89,6 +90,8 @@ class _DetailsContent extends ConsumerWidget {
     final palette = context.palette;
     final access = ref.watch(itemAccessProvider(item));
     final canPlay = access == ItemAccess.playable;
+    final isGame = item.kind == ContentKind.interactiveGame;
+    final gameSaved = isGame && (ref.watch(gameResumeProvider(item)).value ?? false);
     final resumeAt = resumePosition(ref.watch(progressProvider(item.id)).value);
     final players = l10n.playerCount(item);
 
@@ -116,7 +119,17 @@ class _DetailsContent extends ConsumerWidget {
         const SizedBox(height: AkSpace.l),
         ...switch (access) {
           ItemAccess.playable => [
-            if (resumeAt > Duration.zero) ...[
+            if (gameSaved) ...[
+              FilledButton.icon(
+                onPressed: () => _listen(context, ref),
+                icon: const Icon(Icons.play_arrow_rounded),
+                label: Text(l10n.resumeGame),
+              ),
+              TextButton(
+                onPressed: () => _listen(context, ref, fromStart: true),
+                child: Text(l10n.startOver),
+              ),
+            ] else if (!isGame && resumeAt > Duration.zero) ...[
               FilledButton.icon(
                 onPressed: () => _listen(context, ref),
                 icon: const Icon(Icons.play_arrow_rounded),

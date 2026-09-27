@@ -4,7 +4,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-PG=/opt/homebrew/opt/postgresql@17/bin
+PG="${PG_BIN:-/opt/homebrew/opt/postgresql@17/bin}"
 DATA="$(mktemp -d)"
 PORT=55432
 trap '"$PG/pg_ctl" -D "$DATA" stop -m immediate >/dev/null 2>&1 || true; rm -rf "$DATA"' EXIT

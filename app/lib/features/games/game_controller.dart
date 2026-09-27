@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:ak_core/ak_core.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/storage/database.dart';
+import '../../core/storage/storage_providers.dart';
 import '../downloads/download_providers.dart';
 import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
@@ -64,13 +67,18 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     return const GameUiState();
   }
 
-  Future<void> start(ContentItem item) async {
+  /// Starts [item]; with [resume] it continues from the last saved instruction when the
+  /// saved state belongs to the same version of the game.
+  Future<void> start(ContentItem item, {bool resume = false}) async {
     final script = item.script;
     if (script == null) return;
     final generation = ++_generation;
     _item = item;
+    final saved = resume ? await loadGameSnapshot(ref.read(databaseProvider), item) : null;
+    if (!resume) await clearGameSnapshot(ref.read(databaseProvider), item.id);
     final runner = _runner = ScriptRunner(
       script,
+      resumeFrom: saved,
       unavailable: {
         FallbackReason.noMicrophone, // until the microphone is enabled after device tests
         if (!_foreground) FallbackReason.screenLocked,
@@ -83,6 +91,8 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         final event = await _execute(command, generation);
         if (event == null || generation != _generation) return; // stopped or replaced
         if (command is Finish) {
+          await clearGameSnapshot(ref.read(databaseProvider), item.id);
+          ref.invalidate(gameResumeProvider(item));
           state = GameUiState(phase: GamePhase.finished, itemId: item.id, title: item.title);
           return;
         }
@@ -126,6 +136,10 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     switch (command) {
       case PlaySegment(:final asset):
         _set(GamePhase.playing);
+        // Save at every instruction: after any interruption the child hears it again.
+        await ref
+            .read(databaseProvider)
+            .writeValue(_snapshotKey(item.id), jsonEncode(_runner!.snapshot().toJson()));
         final completed = await _audio.playSegment(media, await _uri(asset));
         return completed ? const SegmentFinished() : null;
       case WaitFor(:final duration, :final loopAsset):
@@ -184,5 +198,26 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     return local != null ? Uri.file(local) : ref.read(contentUrlResolverProvider).urlFor(asset);
   }
 }
+
+String _snapshotKey(String itemId) => 'game_resume:$itemId';
+
+/// Saved position of an interrupted game, if it matches the current version of the script.
+Future<RunnerSnapshot?> loadGameSnapshot(AppDatabase db, ContentItem item) async {
+  final raw = await db.readValue(_snapshotKey(item.id));
+  final script = item.script;
+  if (raw == null || script == null) return null;
+  try {
+    final snapshot = RunnerSnapshot.fromJson(jsonDecode(raw) as Map<String, Object?>);
+    return snapshot.matches(script) && script.steps.containsKey(snapshot.stepId) ? snapshot : null;
+  } on Object {
+    return null; // corrupt or from an older format: start fresh
+  }
+}
+
+Future<void> clearGameSnapshot(AppDatabase db, String itemId) => db.deleteValue(_snapshotKey(itemId));
+
+final gameResumeProvider = FutureProvider.autoDispose.family<bool, ContentItem>(
+  (ref, item) async => await loadGameSnapshot(ref.watch(databaseProvider), item) != null,
+);
 
 final gameControllerProvider = NotifierProvider<GameController, GameUiState>(GameController.new);

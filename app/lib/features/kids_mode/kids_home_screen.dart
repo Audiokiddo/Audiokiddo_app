@@ -112,7 +112,7 @@ class _KidsTile extends ConsumerWidget {
 
   Future<void> _play(BuildContext context, WidgetRef ref) async {
     if (item.kind == ContentKind.interactiveGame) {
-      unawaited(ref.read(gameControllerProvider.notifier).start(item));
+      unawaited(ref.read(gameControllerProvider.notifier).start(item, resume: true));
       await context.push('/dziecko/gra');
       return;
     }

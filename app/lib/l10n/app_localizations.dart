@@ -1068,6 +1068,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Krok {current} z {total}'**
   String onboardingStep(int current, int total);
+
+  /// No description provided for @resumeGame.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wznów grę'**
+  String get resumeGame;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

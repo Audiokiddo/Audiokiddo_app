@@ -124,4 +124,21 @@ void main() {
     runner.start();
     expect((runner.next(const WaitElapsed()) as PlaySegment).asset, 'intro');
   });
+
+  test('snapshot round-trips through JSON and keeps loop counts exact', () {
+    final runner = ScriptRunner(fixture());
+    var c = runner.start();
+    // Play until the second question starts.
+    while (!(c is PlaySegment && c.asset == 'q_krowa' && runner.variables['round'] == 1)) {
+      c = runner.next(normal(c));
+    }
+    final snap = RunnerSnapshot.fromJson(runner.snapshot().toJson());
+    expect(snap.matches(fixture()), isTrue);
+    final resumed = ScriptRunner(fixture(), resumeFrom: snap);
+    final log = play(resumed, normal);
+    expect(log.first, 'play:q_krowa', reason: 'the interrupted instruction is replayed');
+    // Rounds 2..5 remain, exactly as without the interruption.
+    expect(log.where((l) => l == 'play:q_krowa'), hasLength(4));
+    expect(log.last, 'finish:outro:completed');
+  });
 }
