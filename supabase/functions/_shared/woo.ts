@@ -36,6 +36,14 @@ export async function verifyWooSignature(rawBody: string, secret: string, signat
   return diff === 0;
 }
 
+/**
+ * WooCommerce checks a new webhook with an unsigned form body `webhook_id=<n>` and only
+ * activates it after a 2xx answer. It carries no order data, so it is safe to accept.
+ */
+export function isWooPing(rawBody: string, signature: string | null): boolean {
+  return !signature && /^webhook_id=\d+$/.test(rawBody.trim());
+}
+
 /** Only final order states matter; everything else (pending, on-hold, …) is ignored. */
 export function parseWooOrder(payload: unknown): WooOrder | null {
   if (typeof payload !== "object" || payload === null) return null;

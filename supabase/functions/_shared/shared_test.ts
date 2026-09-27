@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "jsr:@std/assert@1";
-import { normalizeEmail, parseWooOrder, sha256Hex, verifyWooSignature } from "./woo.ts";
+import { isWooPing, normalizeEmail, parseWooOrder, sha256Hex, verifyWooSignature } from "./woo.ts";
 import { appleStatus, googleOneTimeStatus, googleSubscriptionStatus } from "./store_status.ts";
 
 async function sign(body: string, secret: string): Promise<string> {
@@ -76,4 +76,11 @@ Deno.test("google one-time purchases", () => {
   assertEquals(googleOneTimeStatus(1, false)?.status, "revoked");
   assertEquals(googleOneTimeStatus(2, false), null);
   assertEquals(googleOneTimeStatus(0, true)?.status, "refunded");
+});
+
+Deno.test("woo ping: unsigned creation check is accepted, anything else is not", () => {
+  assertEquals(isWooPing("webhook_id=42", null), true);
+  assertEquals(isWooPing("webhook_id=42", "abc"), false);
+  assertEquals(isWooPing('{"id":1,"status":"completed"}', null), false);
+  assertEquals(isWooPing("webhook_id=42&x=1", null), false);
 });

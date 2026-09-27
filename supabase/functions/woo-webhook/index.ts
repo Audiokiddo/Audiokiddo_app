@@ -1,19 +1,27 @@
 // WooCommerce webhook (topic `order.updated`) from audiokiddo.pl.
 // Secrets: WOO_WEBHOOK_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
-import { parseWooOrder, sha256Hex, verifyWooSignature } from "../_shared/woo.ts";
+import { isWooPing, parseWooOrder, sha256Hex, verifyWooSignature } from "../_shared/woo.ts";
 import { adminClient, env, json } from "../_shared/supabase.ts";
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "method" }, 405);
   const raw = await req.text();
-  const signed = await verifyWooSignature(raw, env("WOO_WEBHOOK_SECRET"), req.headers.get("x-wc-webhook-signature"));
-  if (!signed) return json({ error: "signature" }, 401);
+  const signature = req.headers.get("x-wc-webhook-signature");
+  if (isWooPing(raw, signature)) return json({ ok: true, ignored: "ping" });
+  if (!signature) {
+    console.warn("woo-webhook: missing signature header");
+    return json({ error: "signature" }, 401);
+  }
+  if (!(await verifyWooSignature(raw, env("WOO_WEBHOOK_SECRET"), signature))) {
+    console.warn("woo-webhook: signature mismatch (WOO_WEBHOOK_SECRET differs from the shop's webhook secret)");
+    return json({ error: "signature" }, 401);
+  }
 
   let payload: unknown;
   try {
     payload = JSON.parse(raw);
   } catch {
-    return json({ ok: true, ignored: "ping" }); // WooCommerce pings with a form body on creation
+    return json({ ok: true, ignored: "not json" });
   }
   const order = parseWooOrder(payload);
   if (!order) return json({ ok: true, ignored: "status" });
