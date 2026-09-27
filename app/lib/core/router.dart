@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/catalog/details_screen.dart';
+import '../features/family/child_quiz.dart';
+import '../features/family/family.dart';
+import '../features/family/plan_screen.dart';
+import '../features/family/progress_screen.dart';
 import '../features/catalog/home_screen.dart';
 import '../features/catalog/library_filter.dart';
 import '../features/catalog/library_screen.dart';
@@ -17,6 +22,8 @@ import '../features/player/mini_player.dart';
 import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
+import '../features/reminders/reminder_offer.dart';
+
 import '../l10n/app_localizations.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
@@ -52,6 +59,9 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
           routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
         ),
         StatefulShellBranch(
+          routes: [GoRoute(path: '/plan', builder: (context, state) => const PlanScreen())],
+        ),
+        StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/biblioteka',
@@ -66,6 +76,12 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
       ],
     ),
     GoRoute(path: '/moje/narzedzia', builder: (context, state) => const DevToolsScreen()),
+    GoRoute(path: '/plan/postep', builder: (context, state) => const ProgressScreen()),
+    GoRoute(
+      path: '/plan/dziecko',
+      builder: (context, state) =>
+          ChildQuiz(onDone: () => context.canPop() ? context.pop() : context.go('/plan')),
+    ),
     GoRoute(path: '/konto', builder: (context, state) => const AccountScreen()),
     GoRoute(
       path: '/sklep',
@@ -80,16 +96,18 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
   ],
 );
 
-class _ParentShell extends StatelessWidget {
+class _ParentShell extends ConsumerWidget {
   const _ParentShell({required this.shell});
 
   final StatefulNavigationShell shell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final child = ref.watch(familyProvider).value?.active;
+    final todayDone = child == null ? null : ref.watch(planPositionProvider(child.id))?.todayDone;
     return Scaffold(
-      body: shell,
+      body: RemindersKeeper(todayDone: todayDone, child: shell),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -99,6 +117,7 @@ class _ParentShell extends StatelessWidget {
             onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
             destinations: [
               NavigationDestination(icon: const Icon(Icons.home_rounded), label: l10n.navHome),
+              NavigationDestination(icon: const Icon(Icons.route_rounded), label: l10n.navPlan),
               NavigationDestination(icon: const Icon(Icons.library_music_rounded), label: l10n.navLibrary),
               NavigationDestination(icon: const Icon(Icons.favorite_rounded), label: l10n.navMine),
             ],

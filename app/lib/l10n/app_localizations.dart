@@ -1884,6 +1884,378 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'teraz'**
   String get remindersPreviewTime;
+
+  /// No description provided for @navPlan.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan'**
+  String get navPlan;
+
+  /// No description provided for @childNumber.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziecko {n}'**
+  String childNumber(int n);
+
+  /// No description provided for @planEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tu będzie plan zabaw na każdy dzień'**
+  String get planEmptyTitle;
+
+  /// No description provided for @planEmptyBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odpowiedz na kilka pytań (minuta), a Kiddo rozłoży zabawy na dni: po trochu, bez przytłaczania.'**
+  String get planEmptyBody;
+
+  /// No description provided for @planEmptyButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dopasuj plan'**
+  String get planEmptyButton;
+
+  /// No description provided for @planAddChild.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj dziecko'**
+  String get planAddChild;
+
+  /// No description provided for @planAge.
+  ///
+  /// In pl, this message translates to:
+  /// **'{age} l.'**
+  String planAge(int age);
+
+  /// No description provided for @planStreak.
+  ///
+  /// In pl, this message translates to:
+  /// **'dni z rzędu'**
+  String get planStreak;
+
+  /// No description provided for @planDays.
+  ///
+  /// In pl, this message translates to:
+  /// **'dni planu'**
+  String get planDays;
+
+  /// No description provided for @planAccuracy.
+  ///
+  /// In pl, this message translates to:
+  /// **'dobrych odpowiedzi'**
+  String get planAccuracy;
+
+  /// No description provided for @planTodayDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzisiejsza porcja zaliczona! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.'**
+  String get planTodayDone;
+
+  /// No description provided for @planOpensTomorrow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten dzień otworzy się jutro. Po trochu, codziennie: tak działa najlepiej.'**
+  String get planOpensTomorrow;
+
+  /// No description provided for @planLockedDay.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw skończcie dzień {day}.'**
+  String planLockedDay(int day);
+
+  /// No description provided for @planLevel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poziom {level} · dni {first}–{last}'**
+  String planLevel(int level, int first, int last);
+
+  /// No description provided for @planNodeDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzień {day}, zaliczony. Otwórz, aby powtórzyć.'**
+  String planNodeDone(int day);
+
+  /// No description provided for @planNodeToday.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzień {day}, dzisiaj. Otwórz zabawy.'**
+  String planNodeToday(int day);
+
+  /// No description provided for @planNodeLocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzień {day}, zablokowany.'**
+  String planNodeLocked(int day);
+
+  /// No description provided for @planDayTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzień {day}'**
+  String planDayTitle(int day);
+
+  /// No description provided for @planChest.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koniec tygodnia! Nagroda: pochwalcie się dziś przy kolacji, czego się nauczyliście. Kiddo pozdrawia.'**
+  String get planChest;
+
+  /// No description provided for @level1Name.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poznajemy się'**
+  String get level1Name;
+
+  /// No description provided for @level1News.
+  ///
+  /// In pl, this message translates to:
+  /// **'Krótkie zabawy i piosenki. Bez presji.'**
+  String get level1News;
+
+  /// No description provided for @level2Name.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozkręcamy się'**
+  String get level2Name;
+
+  /// No description provided for @level2News.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowość: zabawy, w których dziecko odpowiada.'**
+  String get level2News;
+
+  /// No description provided for @level3Name.
+  ///
+  /// In pl, this message translates to:
+  /// **'Małe wyzwania'**
+  String get level3Name;
+
+  /// No description provided for @level3News.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowość: dłuższe przygody i karty do druku.'**
+  String get level3News;
+
+  /// No description provided for @level4Name.
+  ///
+  /// In pl, this message translates to:
+  /// **'Mistrzowie słuchania'**
+  String get level4Name;
+
+  /// No description provided for @level4News.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystko odblokowane. Teraz Wy prowadzicie.'**
+  String get level4News;
+
+  /// No description provided for @tipPhoneDown.
+  ///
+  /// In pl, this message translates to:
+  /// **'Połóżcie telefon ekranem w dół i słuchajcie razem. Za pierwszym razem najlepiej z Tobą obok.'**
+  String get tipPhoneDown;
+
+  /// No description provided for @tipKidsMode.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz tryb dziecka na stronie Start: duże okładki i żadnych zakupów.'**
+  String get tipKidsMode;
+
+  /// No description provided for @tipDownload.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobierz zabawy na drogę: działają bez internetu, nawet w tunelu i u teściów na wsi.'**
+  String get tipDownload;
+
+  /// No description provided for @tipFavorites.
+  ///
+  /// In pl, this message translates to:
+  /// **'Serduszko przy zabawie i ulubione są zawsze pod ręką w zakładce Moje.'**
+  String get tipFavorites;
+
+  /// No description provided for @tipMicrophone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowość: dziecko może odpowiadać klaśnięciem albo głosem. Włączysz to w szczegółach zabawy.'**
+  String get tipMicrophone;
+
+  /// No description provided for @tipSleepTimer.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wieczorem ustaw w odtwarzaczu timer snu. Zabawa sama ucichnie. Ty nie musisz.'**
+  String get tipSleepTimer;
+
+  /// No description provided for @tipPrintables.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niektóre zabawy mają karty do druku, np. dyplom albo akta detektywa.'**
+  String get tipPrintables;
+
+  /// No description provided for @tipAccount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Załóż konto rodzica, żeby zakupy działały też na innych telefonach.'**
+  String get tipAccount;
+
+  /// No description provided for @progressTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Postęp'**
+  String get progressTitle;
+
+  /// No description provided for @progressOf.
+  ///
+  /// In pl, this message translates to:
+  /// **'Postęp: {name}'**
+  String progressOf(String name);
+
+  /// No description provided for @progressEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tu pojawi się postęp. Na razie jest tu cicho. Tak cicho, jak w domu, kiedy dzieci coś kombinują.'**
+  String get progressEmpty;
+
+  /// No description provided for @progressStreak.
+  ///
+  /// In pl, this message translates to:
+  /// **'dni z rzędu'**
+  String get progressStreak;
+
+  /// No description provided for @progressDays.
+  ///
+  /// In pl, this message translates to:
+  /// **'dni z zabawą'**
+  String get progressDays;
+
+  /// No description provided for @progressMinutes.
+  ///
+  /// In pl, this message translates to:
+  /// **'minut słuchania'**
+  String get progressMinutes;
+
+  /// No description provided for @progressCorrect.
+  ///
+  /// In pl, this message translates to:
+  /// **'dobre odpowiedzi'**
+  String get progressCorrect;
+
+  /// No description provided for @progressSkills.
+  ///
+  /// In pl, this message translates to:
+  /// **'Umiejętności'**
+  String get progressSkills;
+
+  /// No description provided for @progressSkillsFooter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ile razy dziecko ćwiczyło daną umiejętność. Procent pokazujemy tam, gdzie zabawa sprawdza odpowiedzi.'**
+  String get progressSkillsFooter;
+
+  /// No description provided for @progressTimes.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count, plural, =1{1 raz} few{{count} razy} many{{count} razy} other{{count} razy}}'**
+  String progressTimes(int count);
+
+  /// No description provided for @progressAdvice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podpowiedzi'**
+  String get progressAdvice;
+
+  /// No description provided for @progressSettings.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustawienia planu'**
+  String get progressSettings;
+
+  /// No description provided for @progressEditProfile.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wiek, cele i czas'**
+  String get progressEditProfile;
+
+  /// No description provided for @progressProfileSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'{age} lat · {minutes} min dziennie'**
+  String progressProfileSummary(int age, int minutes);
+
+  /// No description provided for @progressReminders.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienia'**
+  String get progressReminders;
+
+  /// No description provided for @progressRemindersAt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Codziennie o {time}. Dotknij, aby wyłączyć.'**
+  String progressRemindersAt(String time);
+
+  /// No description provided for @progressRemindersOff.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyłączone. Dotknij, aby włączyć.'**
+  String get progressRemindersOff;
+
+  /// No description provided for @progressRemoveChild.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń profil dziecka'**
+  String get progressRemoveChild;
+
+  /// No description provided for @progressRemoveBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuniemy profil i postęp tego dziecka z telefonu. Zakupy zostają.'**
+  String get progressRemoveBody;
+
+  /// No description provided for @adviceExcelling.
+  ///
+  /// In pl, this message translates to:
+  /// **'{skill}: świetnie idzie! Czas na coś trudniejszego.'**
+  String adviceExcelling(String skill);
+
+  /// No description provided for @adviceExcellingPack.
+  ///
+  /// In pl, this message translates to:
+  /// **'{skill}: świetnie idzie! Spróbujcie pakietu {pack}.'**
+  String adviceExcellingPack(String skill, String pack);
+
+  /// No description provided for @adviceNeedsPractice.
+  ///
+  /// In pl, this message translates to:
+  /// **'{skill}: warto poćwiczyć. Powtarzajcie ulubione zabawy.'**
+  String adviceNeedsPractice(String skill);
+
+  /// No description provided for @adviceNeedsPracticePack.
+  ///
+  /// In pl, this message translates to:
+  /// **'{skill}: warto poćwiczyć. Pomoże pakiet {pack}.'**
+  String adviceNeedsPracticePack(String skill, String pack);
+
+  /// No description provided for @adviceUntouched.
+  ///
+  /// In pl, this message translates to:
+  /// **'{skill}: to Wasz cel, a jeszcze go nie ćwiczyliście.'**
+  String adviceUntouched(String skill);
+
+  /// No description provided for @adviceUntouchedPack.
+  ///
+  /// In pl, this message translates to:
+  /// **'{skill}: to Wasz cel. Najwięcej takich zabaw ma pakiet {pack}.'**
+  String adviceUntouchedPack(String skill, String pack);
+
+  /// No description provided for @adviceComeBack.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kilka dni przerwy? Zdarza się najlepszym. Wystarczy 5 minut dziś, żeby wrócić do rytmu.'**
+  String get adviceComeBack;
+
+  /// No description provided for @adviceLevelUp.
+  ///
+  /// In pl, this message translates to:
+  /// **'Regularność na medal! Można dodać kilka minut dziennie.'**
+  String get adviceLevelUp;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

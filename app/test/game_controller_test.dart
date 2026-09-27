@@ -5,6 +5,7 @@ import 'package:ak_core/ak_core.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/core/storage/storage_providers.dart';
+import 'package:audiokiddo/features/family/family.dart';
 import 'package:audiokiddo/features/games/game_controller.dart';
 import 'package:audiokiddo/features/games/microphone.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -215,6 +216,10 @@ void main() {
 
     test('a clap means true, a spoken "nie" means false, and points add up', () async {
       final (mic, c) = await withMicrophone(enabled: true);
+      await c.read(familyProvider.future);
+      await c
+          .read(familyProvider.notifier)
+          .saveChild(ChildProfile(id: 'z', name: 'Zosia', age: 4, startedOn: DateTime(2026)));
       answer(c, mic, correctly: true);
       await c
           .read(gameControllerProvider.notifier)
@@ -224,6 +229,8 @@ void main() {
       expect(audio.log.where((l) => l == 'play:oops'), isEmpty);
       expect(audio.log.last, 'play:outro_great');
       expect(mic.open, isFalse, reason: 'the microphone closes with the game');
+      final result = c.read(familyProvider).value!.resultsOf('z').single;
+      expect((result.itemId, result.answers, result.correct), ('prawda-czy-nie', 6, 6));
     });
 
     test('wrong answers get a gentle correction', () async {

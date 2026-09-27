@@ -112,7 +112,10 @@ void main() {
     expect(find.text('Czas na zabawę!'), findsOneWidget);
     final container = ProviderScope.containerOf(tester.element(find.text('Czas na zabawę!')));
     final family = container.read(familyProvider).value!;
-    expect([for (final c in family.children) (c.name, c.age, c.dailyMinutes)], [('Zosia', 6, 10), ('', 3, 5)]);
+    expect(
+      [for (final c in family.children) (c.name, c.age, c.dailyMinutes)],
+      [('Zosia', 6, 10), ('', 3, 5)],
+    );
     expect(kids.settings.age, 6, reason: 'age becomes the kids mode default');
     expect(kids.active, isFalse);
   });

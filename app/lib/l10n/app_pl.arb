@@ -529,5 +529,211 @@
   "remindersDenied": "Telefon nie pozwolił na powiadomienia. Możesz to zmienić w Ustawieniach telefonu.",
   "remindersNote": "Zmienisz to w każdej chwili w zakładce Plan.",
   "remindersPreviewApp": "AudioKiddo",
-  "remindersPreviewTime": "teraz"
+  "remindersPreviewTime": "teraz",
+  "navPlan": "Plan",
+  "childNumber": "Dziecko {n}",
+  "@childNumber": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "planEmptyTitle": "Tu będzie plan zabaw na każdy dzień",
+  "planEmptyBody": "Odpowiedz na kilka pytań (minuta), a Kiddo rozłoży zabawy na dni: po trochu, bez przytłaczania.",
+  "planEmptyButton": "Dopasuj plan",
+  "planAddChild": "Dodaj dziecko",
+  "planAge": "{age} l.",
+  "@planAge": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "planStreak": "dni z rzędu",
+  "planDays": "dni planu",
+  "planAccuracy": "dobrych odpowiedzi",
+  "planTodayDone": "Dzisiejsza porcja zaliczona! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.",
+  "planOpensTomorrow": "Ten dzień otworzy się jutro. Po trochu, codziennie: tak działa najlepiej.",
+  "planLockedDay": "Najpierw skończcie dzień {day}.",
+  "@planLockedDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "planLevel": "Poziom {level} · dni {first}–{last}",
+  "@planLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "first": {
+        "type": "int"
+      },
+      "last": {
+        "type": "int"
+      }
+    }
+  },
+  "planNodeDone": "Dzień {day}, zaliczony. Otwórz, aby powtórzyć.",
+  "@planNodeDone": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "planNodeToday": "Dzień {day}, dzisiaj. Otwórz zabawy.",
+  "@planNodeToday": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "planNodeLocked": "Dzień {day}, zablokowany.",
+  "@planNodeLocked": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "planDayTitle": "Dzień {day}",
+  "@planDayTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "planChest": "Koniec tygodnia! Nagroda: pochwalcie się dziś przy kolacji, czego się nauczyliście. Kiddo pozdrawia.",
+  "level1Name": "Poznajemy się",
+  "level1News": "Krótkie zabawy i piosenki. Bez presji.",
+  "level2Name": "Rozkręcamy się",
+  "level2News": "Nowość: zabawy, w których dziecko odpowiada.",
+  "level3Name": "Małe wyzwania",
+  "level3News": "Nowość: dłuższe przygody i karty do druku.",
+  "level4Name": "Mistrzowie słuchania",
+  "level4News": "Wszystko odblokowane. Teraz Wy prowadzicie.",
+  "tipPhoneDown": "Połóżcie telefon ekranem w dół i słuchajcie razem. Za pierwszym razem najlepiej z Tobą obok.",
+  "tipKidsMode": "Włącz tryb dziecka na stronie Start: duże okładki i żadnych zakupów.",
+  "tipDownload": "Pobierz zabawy na drogę: działają bez internetu, nawet w tunelu i u teściów na wsi.",
+  "tipFavorites": "Serduszko przy zabawie i ulubione są zawsze pod ręką w zakładce Moje.",
+  "tipMicrophone": "Nowość: dziecko może odpowiadać klaśnięciem albo głosem. Włączysz to w szczegółach zabawy.",
+  "tipSleepTimer": "Wieczorem ustaw w odtwarzaczu timer snu. Zabawa sama ucichnie. Ty nie musisz.",
+  "tipPrintables": "Niektóre zabawy mają karty do druku, np. dyplom albo akta detektywa.",
+  "tipAccount": "Załóż konto rodzica, żeby zakupy działały też na innych telefonach.",
+  "progressTitle": "Postęp",
+  "progressOf": "Postęp: {name}",
+  "@progressOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "progressEmpty": "Tu pojawi się postęp. Na razie jest tu cicho. Tak cicho, jak w domu, kiedy dzieci coś kombinują.",
+  "progressStreak": "dni z rzędu",
+  "progressDays": "dni z zabawą",
+  "progressMinutes": "minut słuchania",
+  "progressCorrect": "dobre odpowiedzi",
+  "progressSkills": "Umiejętności",
+  "progressSkillsFooter": "Ile razy dziecko ćwiczyło daną umiejętność. Procent pokazujemy tam, gdzie zabawa sprawdza odpowiedzi.",
+  "progressTimes": "{count, plural, =1{1 raz} few{{count} razy} many{{count} razy} other{{count} razy}}",
+  "@progressTimes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressAdvice": "Podpowiedzi",
+  "progressSettings": "Ustawienia planu",
+  "progressEditProfile": "Wiek, cele i czas",
+  "progressProfileSummary": "{age} lat · {minutes} min dziennie",
+  "@progressProfileSummary": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "progressReminders": "Przypomnienia",
+  "progressRemindersAt": "Codziennie o {time}. Dotknij, aby wyłączyć.",
+  "@progressRemindersAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "progressRemindersOff": "Wyłączone. Dotknij, aby włączyć.",
+  "progressRemoveChild": "Usuń profil dziecka",
+  "progressRemoveBody": "Usuniemy profil i postęp tego dziecka z telefonu. Zakupy zostają.",
+  "adviceExcelling": "{skill}: świetnie idzie! Czas na coś trudniejszego.",
+  "@adviceExcelling": {
+    "placeholders": {
+      "skill": {
+        "type": "String"
+      }
+    }
+  },
+  "adviceExcellingPack": "{skill}: świetnie idzie! Spróbujcie pakietu {pack}.",
+  "@adviceExcellingPack": {
+    "placeholders": {
+      "skill": {
+        "type": "String"
+      },
+      "pack": {
+        "type": "String"
+      }
+    }
+  },
+  "adviceNeedsPractice": "{skill}: warto poćwiczyć. Powtarzajcie ulubione zabawy.",
+  "@adviceNeedsPractice": {
+    "placeholders": {
+      "skill": {
+        "type": "String"
+      }
+    }
+  },
+  "adviceNeedsPracticePack": "{skill}: warto poćwiczyć. Pomoże pakiet {pack}.",
+  "@adviceNeedsPracticePack": {
+    "placeholders": {
+      "skill": {
+        "type": "String"
+      },
+      "pack": {
+        "type": "String"
+      }
+    }
+  },
+  "adviceUntouched": "{skill}: to Wasz cel, a jeszcze go nie ćwiczyliście.",
+  "@adviceUntouched": {
+    "placeholders": {
+      "skill": {
+        "type": "String"
+      }
+    }
+  },
+  "adviceUntouchedPack": "{skill}: to Wasz cel. Najwięcej takich zabaw ma pakiet {pack}.",
+  "@adviceUntouchedPack": {
+    "placeholders": {
+      "skill": {
+        "type": "String"
+      },
+      "pack": {
+        "type": "String"
+      }
+    }
+  },
+  "adviceComeBack": "Kilka dni przerwy? Zdarza się najlepszym. Wystarczy 5 minut dziś, żeby wrócić do rytmu.",
+  "adviceLevelUp": "Regularność na medal! Można dodać kilka minut dziennie."
 }

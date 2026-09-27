@@ -1018,4 +1018,243 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get remindersPreviewTime => 'teraz';
+
+  @override
+  String get navPlan => 'Plan';
+
+  @override
+  String childNumber(int n) {
+    return 'Dziecko $n';
+  }
+
+  @override
+  String get planEmptyTitle => 'Tu będzie plan zabaw na każdy dzień';
+
+  @override
+  String get planEmptyBody =>
+      'Odpowiedz na kilka pytań (minuta), a Kiddo rozłoży zabawy na dni: po trochu, bez przytłaczania.';
+
+  @override
+  String get planEmptyButton => 'Dopasuj plan';
+
+  @override
+  String get planAddChild => 'Dodaj dziecko';
+
+  @override
+  String planAge(int age) {
+    return '$age l.';
+  }
+
+  @override
+  String get planStreak => 'dni z rzędu';
+
+  @override
+  String get planDays => 'dni planu';
+
+  @override
+  String get planAccuracy => 'dobrych odpowiedzi';
+
+  @override
+  String get planTodayDone =>
+      'Dzisiejsza porcja zaliczona! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.';
+
+  @override
+  String get planOpensTomorrow => 'Ten dzień otworzy się jutro. Po trochu, codziennie: tak działa najlepiej.';
+
+  @override
+  String planLockedDay(int day) {
+    return 'Najpierw skończcie dzień $day.';
+  }
+
+  @override
+  String planLevel(int level, int first, int last) {
+    return 'Poziom $level · dni $first–$last';
+  }
+
+  @override
+  String planNodeDone(int day) {
+    return 'Dzień $day, zaliczony. Otwórz, aby powtórzyć.';
+  }
+
+  @override
+  String planNodeToday(int day) {
+    return 'Dzień $day, dzisiaj. Otwórz zabawy.';
+  }
+
+  @override
+  String planNodeLocked(int day) {
+    return 'Dzień $day, zablokowany.';
+  }
+
+  @override
+  String planDayTitle(int day) {
+    return 'Dzień $day';
+  }
+
+  @override
+  String get planChest =>
+      'Koniec tygodnia! Nagroda: pochwalcie się dziś przy kolacji, czego się nauczyliście. Kiddo pozdrawia.';
+
+  @override
+  String get level1Name => 'Poznajemy się';
+
+  @override
+  String get level1News => 'Krótkie zabawy i piosenki. Bez presji.';
+
+  @override
+  String get level2Name => 'Rozkręcamy się';
+
+  @override
+  String get level2News => 'Nowość: zabawy, w których dziecko odpowiada.';
+
+  @override
+  String get level3Name => 'Małe wyzwania';
+
+  @override
+  String get level3News => 'Nowość: dłuższe przygody i karty do druku.';
+
+  @override
+  String get level4Name => 'Mistrzowie słuchania';
+
+  @override
+  String get level4News => 'Wszystko odblokowane. Teraz Wy prowadzicie.';
+
+  @override
+  String get tipPhoneDown =>
+      'Połóżcie telefon ekranem w dół i słuchajcie razem. Za pierwszym razem najlepiej z Tobą obok.';
+
+  @override
+  String get tipKidsMode => 'Włącz tryb dziecka na stronie Start: duże okładki i żadnych zakupów.';
+
+  @override
+  String get tipDownload =>
+      'Pobierz zabawy na drogę: działają bez internetu, nawet w tunelu i u teściów na wsi.';
+
+  @override
+  String get tipFavorites => 'Serduszko przy zabawie i ulubione są zawsze pod ręką w zakładce Moje.';
+
+  @override
+  String get tipMicrophone =>
+      'Nowość: dziecko może odpowiadać klaśnięciem albo głosem. Włączysz to w szczegółach zabawy.';
+
+  @override
+  String get tipSleepTimer => 'Wieczorem ustaw w odtwarzaczu timer snu. Zabawa sama ucichnie. Ty nie musisz.';
+
+  @override
+  String get tipPrintables => 'Niektóre zabawy mają karty do druku, np. dyplom albo akta detektywa.';
+
+  @override
+  String get tipAccount => 'Załóż konto rodzica, żeby zakupy działały też na innych telefonach.';
+
+  @override
+  String get progressTitle => 'Postęp';
+
+  @override
+  String progressOf(String name) {
+    return 'Postęp: $name';
+  }
+
+  @override
+  String get progressEmpty =>
+      'Tu pojawi się postęp. Na razie jest tu cicho. Tak cicho, jak w domu, kiedy dzieci coś kombinują.';
+
+  @override
+  String get progressStreak => 'dni z rzędu';
+
+  @override
+  String get progressDays => 'dni z zabawą';
+
+  @override
+  String get progressMinutes => 'minut słuchania';
+
+  @override
+  String get progressCorrect => 'dobre odpowiedzi';
+
+  @override
+  String get progressSkills => 'Umiejętności';
+
+  @override
+  String get progressSkillsFooter =>
+      'Ile razy dziecko ćwiczyło daną umiejętność. Procent pokazujemy tam, gdzie zabawa sprawdza odpowiedzi.';
+
+  @override
+  String progressTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count razy',
+      many: '$count razy',
+      few: '$count razy',
+      one: '1 raz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get progressAdvice => 'Podpowiedzi';
+
+  @override
+  String get progressSettings => 'Ustawienia planu';
+
+  @override
+  String get progressEditProfile => 'Wiek, cele i czas';
+
+  @override
+  String progressProfileSummary(int age, int minutes) {
+    return '$age lat · $minutes min dziennie';
+  }
+
+  @override
+  String get progressReminders => 'Przypomnienia';
+
+  @override
+  String progressRemindersAt(String time) {
+    return 'Codziennie o $time. Dotknij, aby wyłączyć.';
+  }
+
+  @override
+  String get progressRemindersOff => 'Wyłączone. Dotknij, aby włączyć.';
+
+  @override
+  String get progressRemoveChild => 'Usuń profil dziecka';
+
+  @override
+  String get progressRemoveBody => 'Usuniemy profil i postęp tego dziecka z telefonu. Zakupy zostają.';
+
+  @override
+  String adviceExcelling(String skill) {
+    return '$skill: świetnie idzie! Czas na coś trudniejszego.';
+  }
+
+  @override
+  String adviceExcellingPack(String skill, String pack) {
+    return '$skill: świetnie idzie! Spróbujcie pakietu $pack.';
+  }
+
+  @override
+  String adviceNeedsPractice(String skill) {
+    return '$skill: warto poćwiczyć. Powtarzajcie ulubione zabawy.';
+  }
+
+  @override
+  String adviceNeedsPracticePack(String skill, String pack) {
+    return '$skill: warto poćwiczyć. Pomoże pakiet $pack.';
+  }
+
+  @override
+  String adviceUntouched(String skill) {
+    return '$skill: to Wasz cel, a jeszcze go nie ćwiczyliście.';
+  }
+
+  @override
+  String adviceUntouchedPack(String skill, String pack) {
+    return '$skill: to Wasz cel. Najwięcej takich zabaw ma pakiet $pack.';
+  }
+
+  @override
+  String get adviceComeBack =>
+      'Kilka dni przerwy? Zdarza się najlepszym. Wystarczy 5 minut dziś, żeby wrócić do rytmu.';
+
+  @override
+  String get adviceLevelUp => 'Regularność na medal! Można dodać kilka minut dziennie.';
 }

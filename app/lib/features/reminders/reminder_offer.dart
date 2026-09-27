@@ -239,3 +239,44 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
     );
   }
 }
+
+/// Keeps the next week of reminders fresh whenever the parent zone opens, and skips today's
+/// once the active child's portion is done.
+class RemindersKeeper extends ConsumerStatefulWidget {
+  const RemindersKeeper({super.key, required this.child, this.todayDone});
+
+  final Widget child;
+
+  /// Whether today's plan portion is done (null while unknown).
+  final bool? todayDone;
+
+  @override
+  ConsumerState<RemindersKeeper> createState() => _RemindersKeeperState();
+}
+
+class _RemindersKeeperState extends ConsumerState<RemindersKeeper> {
+  bool? _scheduledFor;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _refresh();
+  }
+
+  @override
+  void didUpdateWidget(RemindersKeeper old) {
+    super.didUpdateWidget(old);
+    _refresh();
+  }
+
+  void _refresh() {
+    final done = widget.todayDone ?? false;
+    if (_scheduledFor == done) return;
+    _scheduledFor = done;
+    final texts = reminderTexts(AppLocalizations.of(context));
+    ref.read(remindersProvider.notifier).reschedule(texts: texts, todayDone: done);
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
