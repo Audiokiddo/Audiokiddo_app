@@ -9,15 +9,9 @@ Stan: 2026-09-27. Kolejność ma znaczenie: najpierw rzeczy, na które się czek
 ## Krok 0. Porządek na start (15 min, dzisiaj)
 
 1. **E-mail do kont:** używaj jednego, np. `kontakt.audiokiddo@gmail.com`. Włącz w nim weryfikację dwuetapową.
-2. **Menedżer haseł:** Hasła w macOS (aplikacja „Hasła”) albo 1Password. Załóż w nim folder „AudioKiddo”.
+2. **Menedżer haseł:** aplikacja **Hasła** w macOS (Cmd+Spacja → „Hasła”; to osobna aplikacja, nie Ustawienia systemowe). Plik → **Nowa udostępniona grupa** „AudioKiddo”, dodaj Nelę. Pliki kluczy (`.jks`, `.p8`, `.json`) trzymaj w zaszyfrowanym obrazie dysku (krok 5), bo aplikacja Hasła nie przechowuje plików.
 3. **Dane firmy pod ręką:** pełna nazwa, NIP, REGON, adres z CEIDG/KRS, telefon, numer konta (IBAN) i kod SWIFT banku.
-4. **Aktualizacja narzędzi Maca** (bez tego nie zainstaluję Supabase CLI ani GitHub CLI). W panelu terminala obok rozmowy wpisz i podaj hasło do Maca:
-
-```bash
-sudo rm -rf /Library/Developer/CommandLineTools && sudo xcode-select --install
-```
-
-   Pojawi się okienko: kliknij „Zainstaluj” i poczekaj kilka minut, a potem daj mi znać. Wtedy zainstaluję resztę.
+4. ✅ Narzędzia Maca zaktualizowane, Supabase CLI i GitHub CLI zainstalowane (2026-09-27).
 
 ## Krok 1. Decyzja: konto firmowe czy prywatne
 
@@ -26,9 +20,11 @@ To decyduje, czyje nazwisko zobaczą klienci w sklepie.
 | Twoja forma działalności | Apple | Google |
 |---|---|---|
 | **Spółka** (np. sp. z o.o.) | konto **organizacji**, potrzebny numer D-U-N-S | konto **organizacji**, D-U-N-S |
-| **Jednoosobowa działalność (JDG)** | konto **indywidualne** (Apple przyjmuje JDG tylko jako osobę; w sklepie widać imię i nazwisko) | spróbuj konta organizacji z D-U-N-S; jeśli Google odrzuci, konto osobiste |
+| **Jednoosobowa działalność (JDG)**, u nas: JDG Neli | konto **indywidualne** (Apple przyjmuje JDG tylko jako osobę; w sklepie widać imię i nazwisko) | spróbuj konta organizacji z D-U-N-S; jeśli Google odrzuci, konto osobiste |
 
 **D-U-N-S** (bezpłatny): sprawdź lub zamów na developer.apple.com/enroll/duns-lookup. Czeka się do ok. 2 tygodni, więc zamów od razu, jeśli go potrzebujesz.
+
+**Nasz przypadek:** działalność to JDG „Biznesowelove Nela Mariak”, więc konta sklepów zakłada **Nela** (jej Apple ID, jej dowód, konto bankowe firmy), a Ciebie dodaje jako użytkownika. Inaczej przychód ze sklepów trafiałby do Ciebie prywatnie, a nie do firmy. Do księgowej: rejestracja **VAT-UE** (wypłaty przychodzą od irlandzkich spółek Apple i Google, czyli to usługa dla firmy z UE) i dopisanie PKD wydawania oprogramowania (58.21.Z / 58.29.Z).
 
 Konto osobiste w Google ma dodatkowy wymóg: przed publikacją 12 testerów przez 14 dni bez przerwy (patrz krok 9).
 
@@ -108,7 +104,11 @@ keyAlias=upload
 storeFile=/Users/dawidkubiak/audiokiddo-upload.jks
 ```
 
-3. Skopiuj `~/audiokiddo-upload.jks` do menedżera haseł jako załącznik (albo na zaszyfrowany dysk).
+3. Zrób zaszyfrowany „sejf” na pliki kluczy (poda hasło, zapisz je w aplikacji Hasła), przenieś do niego `audiokiddo-upload.jks` i trzymaj drugą kopię na pendrivie:
+
+```bash
+hdiutil create -size 100m -encryption AES-256 -fs APFS -volname AudioKiddoKlucze ~/Documents/AudioKiddoKlucze.dmg
+```
 4. **Napisz mi:** „klucz gotowy”. Zbuduję pakiet `.aab` i sprawdzę podpis, nie zaglądając do hasła.
 
 ## Krok 6. Pierwszy build testowy w sklepach (ze mną, ok. 1 h)
