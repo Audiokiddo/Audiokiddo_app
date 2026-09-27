@@ -1,7 +1,5 @@
 -- Behavioural tests for the schema: run by tool/test_db.sh after the migrations.
 \set ON_ERROR_STOP 1
-grant all on all tables in schema public to service_role;
-grant execute on all functions in schema public to service_role;
 
 insert into auth.users (id, email, email_confirmed_at) values
   ('00000000-0000-0000-0000-000000000001', 'rodzic1@example.com', now()),
