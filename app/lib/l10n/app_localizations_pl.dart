@@ -578,4 +578,105 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get resumeGame => 'Wznów grę';
+
+  @override
+  String get accountTitle => 'Konto rodzica';
+
+  @override
+  String get accountIntro =>
+      'Konto nie jest potrzebne do słuchania. Zaloguj się, jeśli masz już pakiety przypisane do swojego adresu e-mail albo chcesz zachować dostęp po zmianie telefonu. Nie potrzebujesz hasła: wyślemy Ci kod.';
+
+  @override
+  String get accountEmailLabel => 'Adres e-mail';
+
+  @override
+  String get accountSendCode => 'Wyślij kod';
+
+  @override
+  String accountCodeSent(String email) {
+    return 'Wysłaliśmy kod na adres $email. Wpisz go poniżej. Jeśli go nie widzisz, zajrzyj do spamu.';
+  }
+
+  @override
+  String get accountCodeLabel => 'Kod z e-maila';
+
+  @override
+  String get accountVerify => 'Zaloguj się';
+
+  @override
+  String get accountResend => 'Wyślij kod ponownie';
+
+  @override
+  String accountResendIn(int seconds) {
+    return 'Nowy kod za $seconds s';
+  }
+
+  @override
+  String get accountChangeEmail => 'Zmień adres e-mail';
+
+  @override
+  String get accountSignedInAs => 'Zalogowano jako';
+
+  @override
+  String get accountAccess => 'Dostęp na tym koncie';
+
+  @override
+  String get accountNoAccess => 'Na tym koncie nie ma jeszcze zakupów.';
+
+  @override
+  String get accountAllContent => 'Wszystkie zabawy (subskrypcja)';
+
+  @override
+  String accountPack(String title) {
+    return 'Pakiet $title';
+  }
+
+  @override
+  String accountValidUntil(String date) {
+    return 'Ważne do $date';
+  }
+
+  @override
+  String get accountRefresh => 'Sprawdź zakupy ponownie';
+
+  @override
+  String get accountRefreshed => 'Zakupy sprawdzone.';
+
+  @override
+  String get accountSignOut => 'Wyloguj się';
+
+  @override
+  String get accountSignOutBody =>
+      'Pakiety z tego konta będą zablokowane do ponownego zalogowania. Pobrane pliki zostaną w telefonie.';
+
+  @override
+  String get accountDelete => 'Usuń konto';
+
+  @override
+  String get accountDeleteTitle => 'Usunąć konto?';
+
+  @override
+  String get accountDeleteBody =>
+      'Usuniemy Twój adres e-mail i informacje o dostępie z naszego serwera. Tego nie da się cofnąć. Usunięcie konta nie anuluje subskrypcji: zrobisz to w ustawieniach App Store albo Google Play.';
+
+  @override
+  String get accountDeleted => 'Konto zostało usunięte.';
+
+  @override
+  String get accountErrorInvalidEmail => 'Sprawdź adres e-mail.';
+
+  @override
+  String get accountErrorTooMany => 'Za dużo prób. Odczekaj chwilę i spróbuj ponownie.';
+
+  @override
+  String get accountErrorWrongCode => 'Kod jest nieprawidłowy albo wygasł. Wyślij nowy.';
+
+  @override
+  String get accountErrorOffline => 'Brak połączenia z internetem.';
+
+  @override
+  String get accountErrorServer => 'Coś poszło nie tak po naszej stronie. Spróbuj za chwilę.';
+
+  @override
+  String get paywallHaveAccess => 'Masz już dostęp? Zaloguj się';
 }

@@ -62,7 +62,7 @@ void main() {
     });
 
     Future<void> setMode(DevAccessMode mode) async {
-      await (container.read(entitlementBackendProvider) as DevEntitlementBackend).setMode(mode);
+      await container.read(devEntitlementBackendProvider)!.setMode(mode);
       await container.read(accessProvider.future);
       await container.read(accessProvider.notifier).refresh();
     }

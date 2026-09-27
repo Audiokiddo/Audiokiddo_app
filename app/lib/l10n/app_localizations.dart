@@ -1074,6 +1074,186 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Wznów grę'**
   String get resumeGame;
+
+  /// No description provided for @accountTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konto rodzica'**
+  String get accountTitle;
+
+  /// No description provided for @accountIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konto nie jest potrzebne do słuchania. Zaloguj się, jeśli masz już pakiety przypisane do swojego adresu e-mail albo chcesz zachować dostęp po zmianie telefonu. Nie potrzebujesz hasła: wyślemy Ci kod.'**
+  String get accountIntro;
+
+  /// No description provided for @accountEmailLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Adres e-mail'**
+  String get accountEmailLabel;
+
+  /// No description provided for @accountSendCode.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyślij kod'**
+  String get accountSendCode;
+
+  /// No description provided for @accountCodeSent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wysłaliśmy kod na adres {email}. Wpisz go poniżej. Jeśli go nie widzisz, zajrzyj do spamu.'**
+  String accountCodeSent(String email);
+
+  /// No description provided for @accountCodeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kod z e-maila'**
+  String get accountCodeLabel;
+
+  /// No description provided for @accountVerify.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaloguj się'**
+  String get accountVerify;
+
+  /// No description provided for @accountResend.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyślij kod ponownie'**
+  String get accountResend;
+
+  /// No description provided for @accountResendIn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy kod za {seconds} s'**
+  String accountResendIn(int seconds);
+
+  /// No description provided for @accountChangeEmail.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień adres e-mail'**
+  String get accountChangeEmail;
+
+  /// No description provided for @accountSignedInAs.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zalogowano jako'**
+  String get accountSignedInAs;
+
+  /// No description provided for @accountAccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostęp na tym koncie'**
+  String get accountAccess;
+
+  /// No description provided for @accountNoAccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na tym koncie nie ma jeszcze zakupów.'**
+  String get accountNoAccess;
+
+  /// No description provided for @accountAllContent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie zabawy (subskrypcja)'**
+  String get accountAllContent;
+
+  /// No description provided for @accountPack.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pakiet {title}'**
+  String accountPack(String title);
+
+  /// No description provided for @accountValidUntil.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ważne do {date}'**
+  String accountValidUntil(String date);
+
+  /// No description provided for @accountRefresh.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź zakupy ponownie'**
+  String get accountRefresh;
+
+  /// No description provided for @accountRefreshed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakupy sprawdzone.'**
+  String get accountRefreshed;
+
+  /// No description provided for @accountSignOut.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyloguj się'**
+  String get accountSignOut;
+
+  /// No description provided for @accountSignOutBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pakiety z tego konta będą zablokowane do ponownego zalogowania. Pobrane pliki zostaną w telefonie.'**
+  String get accountSignOutBody;
+
+  /// No description provided for @accountDelete.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń konto'**
+  String get accountDelete;
+
+  /// No description provided for @accountDeleteTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć konto?'**
+  String get accountDeleteTitle;
+
+  /// No description provided for @accountDeleteBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuniemy Twój adres e-mail i informacje o dostępie z naszego serwera. Tego nie da się cofnąć. Usunięcie konta nie anuluje subskrypcji: zrobisz to w ustawieniach App Store albo Google Play.'**
+  String get accountDeleteBody;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konto zostało usunięte.'**
+  String get accountDeleted;
+
+  /// No description provided for @accountErrorInvalidEmail.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź adres e-mail.'**
+  String get accountErrorInvalidEmail;
+
+  /// No description provided for @accountErrorTooMany.
+  ///
+  /// In pl, this message translates to:
+  /// **'Za dużo prób. Odczekaj chwilę i spróbuj ponownie.'**
+  String get accountErrorTooMany;
+
+  /// No description provided for @accountErrorWrongCode.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kod jest nieprawidłowy albo wygasł. Wyślij nowy.'**
+  String get accountErrorWrongCode;
+
+  /// No description provided for @accountErrorOffline.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak połączenia z internetem.'**
+  String get accountErrorOffline;
+
+  /// No description provided for @accountErrorServer.
+  ///
+  /// In pl, this message translates to:
+  /// **'Coś poszło nie tak po naszej stronie. Spróbuj za chwilę.'**
+  String get accountErrorServer;
+
+  /// No description provided for @paywallHaveAccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Masz już dostęp? Zaloguj się'**
+  String get paywallHaveAccess;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -10,8 +10,8 @@ import '../purchases/store_gateway.dart';
 import 'access_controller.dart';
 
 final _devModeProvider = FutureProvider<DevAccessMode>((ref) async {
-  final backend = ref.watch(entitlementBackendProvider);
-  return backend is DevEntitlementBackend ? backend.mode() : DevAccessMode.none;
+  final backend = ref.watch(devEntitlementBackendProvider);
+  return backend == null ? DevAccessMode.none : backend.mode();
 });
 
 /// Debug builds only: simulate purchases and the offline lease until Etap 3.
@@ -23,11 +23,11 @@ class DevToolsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final mode = ref.watch(_devModeProvider).value;
     final access = ref.watch(accessProvider).value;
-    final backend = ref.watch(entitlementBackendProvider);
+    final backend = ref.watch(devEntitlementBackendProvider);
     final lease = access?.leaseValidUntil;
 
     Future<void> setMode(DevAccessMode m) async {
-      if (backend is! DevEntitlementBackend) return;
+      if (backend == null) return;
       await backend.setMode(m);
       ref.invalidate(_devModeProvider);
       await ref.read(accessProvider.notifier).refresh();
@@ -75,7 +75,7 @@ class DevToolsScreen extends ConsumerWidget {
             const SizedBox(height: AkSpace.s),
             OutlinedButton(
               onPressed: () async {
-                if (backend is DevEntitlementBackend) await backend.clearPurchases();
+                await backend?.clearPurchases();
                 await ref.read(accessProvider.notifier).refresh();
               },
               child: Text(l10n.devClearPurchases),

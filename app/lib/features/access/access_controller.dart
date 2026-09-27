@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:ak_core/ak_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../account/account_service.dart';
 
 import '../../core/storage/database.dart';
 import '../../core/storage/storage_providers.dart';
@@ -132,9 +135,36 @@ class DevEntitlementBackend implements EntitlementBackend {
   }
 }
 
-final entitlementBackendProvider = Provider<EntitlementBackend>(
-  (ref) => DevEntitlementBackend(ref.watch(databaseProvider)),
+/// Entitlements of the signed-in parent from the server (empty when signed out).
+class AccountEntitlementBackend implements EntitlementBackend {
+  AccountEntitlementBackend(this._account);
+
+  final AccountService _account;
+
+  @override
+  Future<List<Entitlement>> fetch() => _account.entitlements();
+}
+
+/// Debug builds: developer-screen purchases on top of the server's entitlements.
+class CombinedEntitlementBackend implements EntitlementBackend {
+  CombinedEntitlementBackend(this._backends);
+
+  final List<EntitlementBackend> _backends;
+
+  @override
+  Future<List<Entitlement>> fetch() async => [for (final b in _backends) ...await b.fetch()];
+}
+
+/// Debug builds only; null in release.
+final devEntitlementBackendProvider = Provider<DevEntitlementBackend?>(
+  (ref) => kDebugMode ? DevEntitlementBackend(ref.watch(databaseProvider)) : null,
 );
+
+final entitlementBackendProvider = Provider<EntitlementBackend>((ref) {
+  final server = AccountEntitlementBackend(ref.watch(accountServiceProvider));
+  final dev = ref.watch(devEntitlementBackendProvider);
+  return dev == null ? server : CombinedEntitlementBackend([dev, server]);
+});
 
 class AccessController extends AsyncNotifier<AccessState> {
   static const _key = 'access_state';
@@ -148,6 +178,10 @@ class AccessController extends AsyncNotifier<AccessState> {
         ? const AccessState()
         : AccessState.fromJson(jsonDecode(raw) as Map<String, Object?>);
     unawaited(Future.microtask(refresh));
+    // Signing in, out or into another account changes what the device may play.
+    ref.listen(accountUserProvider, (previous, next) {
+      if (previous?.value?.id != next.value?.id) unawaited(refresh());
+    });
     return stored;
   }
 

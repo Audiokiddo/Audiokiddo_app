@@ -136,6 +136,12 @@ class _PaywallContent extends ConsumerWidget {
                 child: Text(l10n.paywallRestore),
               ),
             ),
+            Center(
+              child: TextButton(
+                onPressed: busy == null ? () => context.push('/konto') : null,
+                child: Text(l10n.paywallHaveAccess),
+              ),
+            ),
             const SizedBox(height: AkSpace.m),
             Text(
               [

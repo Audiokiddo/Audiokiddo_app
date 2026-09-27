@@ -15,9 +15,21 @@ Deno.serve(async (req) => {
   url.searchParams.set("search", email);
   url.searchParams.set("status", "completed,refunded,cancelled");
   url.searchParams.set("per_page", "100");
-  const auth = btoa(`${env("WOO_CONSUMER_KEY")}:${env("WOO_CONSUMER_SECRET")}`);
-  const response = await fetch(url, { headers: { Authorization: `Basic ${auth}` } });
-  if (!response.ok) return json({ error: "shop" }, 502);
+  const key = env("WOO_CONSUMER_KEY");
+  const secret = env("WOO_CONSUMER_SECRET");
+  let response = await fetch(url, { headers: { Authorization: `Basic ${btoa(`${key}:${secret}`)}` } });
+  if (response.status === 401) {
+    // Some hosts drop the Authorization header before PHP sees it; WooCommerce then accepts
+    // the same key as query parameters (HTTPS only).
+    const withKey = new URL(url);
+    withKey.searchParams.set("consumer_key", key);
+    withKey.searchParams.set("consumer_secret", secret);
+    response = await fetch(withKey);
+  }
+  if (!response.ok) {
+    console.warn(`sync-web-purchases: shop answered ${response.status}`);
+    return json({ error: "shop" }, 502);
+  }
 
   const orders = ((await response.json()) as unknown[])
     .map(parseWooOrder)

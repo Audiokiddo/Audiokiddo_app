@@ -6,6 +6,7 @@ import '../features/catalog/home_screen.dart';
 import '../features/catalog/library_filter.dart';
 import '../features/catalog/library_screen.dart';
 import '../features/access/dev_tools_screen.dart';
+import '../features/account/account_screen.dart';
 import '../features/games/game_screen.dart';
 import '../features/kids_mode/kids_home_screen.dart';
 import '../features/kids_mode/kids_mode_controller.dart';
@@ -65,6 +66,7 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
       ],
     ),
     GoRoute(path: '/moje/narzedzia', builder: (context, state) => const DevToolsScreen()),
+    GoRoute(path: '/konto', builder: (context, state) => const AccountScreen()),
     GoRoute(
       path: '/sklep',
       builder: (context, state) => PaywallScreen(itemId: state.uri.queryParameters['zabawa']),
