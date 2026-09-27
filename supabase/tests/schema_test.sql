@@ -113,3 +113,12 @@ begin
 end $$;
 
 select 'schema tests passed' as result;
+
+-- 9. Anonymous clients have no table privileges at all.
+do $$ begin
+  assert not has_table_privilege('anon', 'public.entitlements', 'select'), 'anon cannot read entitlements';
+  assert not has_table_privilege('anon', 'public.store_products', 'select'), 'anon cannot read products';
+  assert not has_function_privilege('anon', 'public.claim_web_purchases(uuid, text)', 'execute'), 'anon cannot claim';
+  assert has_table_privilege('authenticated', 'public.entitlements', 'select'), 'parents read own entitlements';
+end $$;
+select 'grant tests passed';
