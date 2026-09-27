@@ -11,7 +11,7 @@ Stan: 2026-09-27. Lista kroków od założenia kont do publikacji. Punkty oznacz
 | Na firmę potrzebne | numer D-U-N-S (bezpłatny, czeka się do ok. 2 tygodni), strona firmy, firmowy e-mail | numer D-U-N-S, weryfikacja firmy |
 | Nazwa sprzedawcy w sklepie | nazwa firmy (albo imię i nazwisko przy koncie prywatnym) | nazwa dewelopera z konta |
 
-**Zalecenie: konta firmowe.** Nazwa sprzedawcy będzie nazwą firmy, a nie Twoim nazwiskiem. Na Google Play nowe konto **prywatne** musi też przed publikacją przejść test zamknięty: co najmniej 12 testerów przez 14 dni bez przerwy. Konto firmowe tego nie wymaga.
+**Zalecenie:** przy spółce konta organizacji. Przy jednoosobowej działalności Apple przyjmuje tylko konto indywidualne (sprzedawca = imię i nazwisko); szczegóły w `docs/KROKI-DLA-DAWIDA.md`, krok 1. Na Google Play nowe konto **prywatne** musi też przed publikacją przejść test zamknięty: co najmniej 12 testerów przez 14 dni bez przerwy. Konto firmowe tego nie wymaga.
 
 Po założeniu kont:
 - **App Store Connect → Umowy, podatki i bankowość:** zaakceptować umowę „Paid Apps”, podać konto bankowe i formularze podatkowe. Bez tego zakupy nie działają nawet w testach.
@@ -35,7 +35,7 @@ Google Play wymaga podpisania pakietu. Używamy **Play App Signing**: Google prz
 1. Wygeneruj klucz we własnym terminalu. Program zapyta o hasło i dane (imię, firma, kraj PL):
 
 ```bash
-keytool -genkey -v -keystore ~/audiokiddo-upload.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+"/Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/keytool" -genkey -v -keystore ~/audiokiddo-upload.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
 ```
 
 2. Utwórz plik `app/android/key.properties` (jest w `.gitignore`, nie trafi do repozytorium) z czterema liniami:
