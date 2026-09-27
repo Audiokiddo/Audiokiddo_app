@@ -422,5 +422,15 @@
   "onboardingAccountTitle": "Konto rodzica",
   "onboardingAccountBody": "Opcjonalnie. Zaloguj się, jeśli masz już pakiety przypisane do adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.",
   "onboardingAccountDone": "Zalogowano",
-  "onboardingStartWithoutAccount": "Zacznij bez konta"
+  "onboardingStartWithoutAccount": "Zacznij bez konta",
+  "introSkip": "Pomiń",
+  "introVolumeTitle": "Podgłośnij!",
+  "introVolumeBody": "Żeby dobrze słyszeć Kiddo.",
+  "introPasswordTitle": "MAGICZNE HASŁO",
+  "introPasswordSay": "Powiedz głośno:",
+  "introPasswordWord": "ABRAKADABRA!",
+  "introPasswordListening": "(słucham…)",
+  "introPasswordTap": "…i dotknij magicznej kuli",
+  "introPasswordOrb": "Magiczna kula. Dotknij, aby wejść.",
+  "introGranted": "Dostęp przyznany!"
 }

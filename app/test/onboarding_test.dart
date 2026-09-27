@@ -40,6 +40,18 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    // Kiddo's magic way in: volume, hello, the magic word (touch the orb), access granted.
+    expect(find.text('Podgłośnij!'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 4));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(find.text('ABRAKADABRA!'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Magiczna kula. Dotknij, aby wejść.'));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('Dostęp przyznany!'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
     expect(find.text('Cześć! Tu AudioKiddo.'), findsOneWidget);
     await tester.tap(find.text('Dalej'));
     await tester.pumpAndSettle();

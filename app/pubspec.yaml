@@ -48,6 +48,7 @@ flutter:
   assets:
     - assets/mock/
     - assets/audio/
+    - assets/audio/kiddo/
   fonts:
     - family: Poppins
       fonts:

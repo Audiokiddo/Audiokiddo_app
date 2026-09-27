@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
+import '../../core/widgets/doodles.dart';
+import '../../core/widgets/kiddo.dart';
 import '../../l10n/app_localizations.dart';
 import '../player/player_providers.dart';
 import 'game_controller.dart';
@@ -30,14 +34,14 @@ class GameScreen extends ConsumerWidget {
     final tapToAnswer = game.tapToAnswer;
     final text = Theme.of(context).textTheme;
 
-    final (icon, label) = switch (game.phase) {
-      GamePhase.playing => (Icons.graphic_eq_rounded, l10n.gameListen),
-      GamePhase.waiting => (Icons.hourglass_bottom_rounded, l10n.gameYourTurn),
-      GamePhase.listening when game.listensToSound => (Icons.mic_rounded, l10n.gameAnswerNow),
-      GamePhase.listening => (Icons.touch_app_rounded, l10n.gameTapNow),
-      GamePhase.finished => (Icons.celebration_rounded, l10n.gameFinished),
-      GamePhase.failed => (Icons.error_outline_rounded, l10n.gameFailed),
-      GamePhase.idle => (Icons.graphic_eq_rounded, ''),
+    final label = switch (game.phase) {
+      GamePhase.playing => l10n.gameListen,
+      GamePhase.waiting => l10n.gameYourTurn,
+      GamePhase.listening when game.listensToSound => l10n.gameAnswerNow,
+      GamePhase.listening => l10n.gameTapNow,
+      GamePhase.finished => l10n.gameFinished,
+      GamePhase.failed => l10n.gameFailed,
+      GamePhase.idle => '',
     };
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -70,18 +74,7 @@ class GameScreen extends ConsumerWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: 220,
-                            height: 220,
-                            decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF1F332C)),
-                            child: Icon(
-                              game.active && !playing && game.listening.isEmpty
-                                  ? Icons.play_arrow_rounded
-                                  : icon,
-                              size: 110,
-                              color: _foreground,
-                            ),
-                          ),
+                          _GameKiddo(game: game, playing: playing),
                           const SizedBox(height: AkSpace.l),
                           Text(label, style: text.titleLarge?.copyWith(color: _foreground)),
                         ],
@@ -113,6 +106,83 @@ class GameScreen extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Kiddo plays along: talks with the narrator, listens (headphones pulsing) while the child
+/// may answer, jumps for joy when an answer is heard, dozes while paused.
+class _GameKiddo extends StatefulWidget {
+  const _GameKiddo({required this.game, required this.playing});
+
+  final GameUiState game;
+  final bool playing;
+
+  @override
+  State<_GameKiddo> createState() => _GameKiddoState();
+}
+
+class _GameKiddoState extends State<_GameKiddo> {
+  bool _cheering = false;
+  int _confetti = 0;
+  Timer? _calmDown;
+
+  @override
+  void dispose() {
+    _calmDown?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(_GameKiddo old) {
+    super.didUpdateWidget(old);
+    if (widget.game.answers > old.game.answers) {
+      setState(() {
+        _cheering = true;
+        _confetti++;
+      });
+      _calmDown?.cancel();
+      _calmDown = Timer(const Duration(milliseconds: 1400), () {
+        if (mounted) setState(() => _cheering = false);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final game = widget.game;
+    final mood = switch (game.phase) {
+      _ when _cheering => KiddoMood.happy,
+      GamePhase.finished => KiddoMood.happy,
+      _ when game.active && !widget.playing && game.listening.isEmpty => KiddoMood.sleepy,
+      GamePhase.playing => KiddoMood.talking,
+      GamePhase.listening => KiddoMood.listening,
+      _ => KiddoMood.idle,
+    };
+    return SizedBox(
+      width: 260,
+      height: 280,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 230,
+            height: 230,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: game.phase == GamePhase.listening ? const Color(0xFF274A40) : const Color(0xFF1F332C),
+            ),
+          ),
+          Kiddo(size: 170, mood: mood),
+          if (game.active && !widget.playing && game.listening.isEmpty)
+            const Positioned(
+              right: 30,
+              bottom: 30,
+              child: Icon(Icons.play_circle_fill_rounded, size: 56, color: AkBrand.sun),
+            ),
+          if (_confetti > 0) Positioned.fill(child: ConfettiBurst(key: ValueKey(_confetti), pieces: 40)),
+        ],
       ),
     );
   }

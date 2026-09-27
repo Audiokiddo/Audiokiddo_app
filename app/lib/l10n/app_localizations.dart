@@ -1428,6 +1428,66 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Zacznij bez konta'**
   String get onboardingStartWithoutAccount;
+
+  /// No description provided for @introSkip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomiń'**
+  String get introSkip;
+
+  /// No description provided for @introVolumeTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgłośnij!'**
+  String get introVolumeTitle;
+
+  /// No description provided for @introVolumeBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Żeby dobrze słyszeć Kiddo.'**
+  String get introVolumeBody;
+
+  /// No description provided for @introPasswordTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'MAGICZNE HASŁO'**
+  String get introPasswordTitle;
+
+  /// No description provided for @introPasswordSay.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiedz głośno:'**
+  String get introPasswordSay;
+
+  /// No description provided for @introPasswordWord.
+  ///
+  /// In pl, this message translates to:
+  /// **'ABRAKADABRA!'**
+  String get introPasswordWord;
+
+  /// No description provided for @introPasswordListening.
+  ///
+  /// In pl, this message translates to:
+  /// **'(słucham…)'**
+  String get introPasswordListening;
+
+  /// No description provided for @introPasswordTap.
+  ///
+  /// In pl, this message translates to:
+  /// **'…i dotknij magicznej kuli'**
+  String get introPasswordTap;
+
+  /// No description provided for @introPasswordOrb.
+  ///
+  /// In pl, this message translates to:
+  /// **'Magiczna kula. Dotknij, aby wejść.'**
+  String get introPasswordOrb;
+
+  /// No description provided for @introGranted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostęp przyznany!'**
+  String get introGranted;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

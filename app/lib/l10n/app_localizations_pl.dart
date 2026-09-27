@@ -774,4 +774,34 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get onboardingStartWithoutAccount => 'Zacznij bez konta';
+
+  @override
+  String get introSkip => 'Pomiń';
+
+  @override
+  String get introVolumeTitle => 'Podgłośnij!';
+
+  @override
+  String get introVolumeBody => 'Żeby dobrze słyszeć Kiddo.';
+
+  @override
+  String get introPasswordTitle => 'MAGICZNE HASŁO';
+
+  @override
+  String get introPasswordSay => 'Powiedz głośno:';
+
+  @override
+  String get introPasswordWord => 'ABRAKADABRA!';
+
+  @override
+  String get introPasswordListening => '(słucham…)';
+
+  @override
+  String get introPasswordTap => '…i dotknij magicznej kuli';
+
+  @override
+  String get introPasswordOrb => 'Magiczna kula. Dotknij, aby wejść.';
+
+  @override
+  String get introGranted => 'Dostęp przyznany!';
 }

@@ -9,6 +9,7 @@ import '../../l10n/app_localizations.dart';
 import '../account/account_service.dart';
 import '../account/sign_in.dart';
 import '../catalog/catalog_providers.dart';
+import '../intro/magic_intro.dart';
 import '../kids_mode/kids_mode_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import 'onboarding_controller.dart';
@@ -27,6 +28,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _pages = PageController();
   int _page = 0;
   int? _age;
+
+  /// Kiddo's magic way in comes first; the parent pages follow.
+  bool _introDone = false;
 
   static const _pageCount = 4;
 
@@ -57,6 +61,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final ages = {for (final p in packs) p.ageMin}.toList()..sort();
     final user = ref.watch(accountUserProvider).value;
     final last = _page == _pageCount - 1;
+
+    if (!_introDone) return MagicIntro(onDone: () => setState(() => _introDone = true));
 
     return Scaffold(
       body: SafeArea(

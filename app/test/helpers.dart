@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:audiokiddo/core/audio/kiddo_voice.dart';
+import 'package:audiokiddo/core/widgets/ambient_motion.dart';
 import 'package:audiokiddo/core/platform/device_storage.dart';
 import 'package:audiokiddo/core/storage/database.dart';
 import 'package:audiokiddo/core/storage/storage_providers.dart';
@@ -77,4 +79,6 @@ List<Override> testOverrides(
   contentUrlResolverProvider.overrideWithValue(const BaseUrlResolver('http://test.invalid')),
   freeBytesProvider.overrideWith((ref) async => 1 << 34),
   currentMediaProvider.overrideWith((ref) => Stream<MediaItem?>.value(null)),
+  kiddoVoiceProvider.overrideWithValue(const SilentKiddoVoice()),
+  ambientMotionProvider.overrideWithValue(false),
 ];

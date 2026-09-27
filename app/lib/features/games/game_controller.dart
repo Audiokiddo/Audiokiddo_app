@@ -35,9 +35,18 @@ enum GamePhase { idle, playing, waiting, listening, finished, failed }
 
 @immutable
 class GameUiState {
-  const GameUiState({this.phase = GamePhase.idle, this.itemId, this.title, this.listening = const {}});
+  const GameUiState({
+    this.phase = GamePhase.idle,
+    this.itemId,
+    this.title,
+    this.listening = const {},
+    this.answers = 0,
+  });
 
   final GamePhase phase;
+
+  /// Answers heard or touched so far; the screen celebrates each new one.
+  final int answers;
   final String? itemId;
   final String? title;
 
@@ -283,11 +292,24 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     _listening = const {};
     final input = _input;
     _input = null;
-    if (input != null && !input.isCompleted) input.complete(event);
+    if (input != null && !input.isCompleted) {
+      input.complete(event);
+      if (event is InputDetected) {
+        _answers++;
+        _set(state.phase);
+      }
+    }
   }
 
-  void _set(GamePhase phase, {Set<InputKind> listening = const {}}) =>
-      state = GameUiState(phase: phase, itemId: _item?.id, title: _item?.title, listening: listening);
+  int _answers = 0;
+
+  void _set(GamePhase phase, {Set<InputKind> listening = const {}}) => state = GameUiState(
+    phase: phase,
+    itemId: _item?.id,
+    title: _item?.title,
+    listening: listening,
+    answers: _answers,
+  );
 
   /// Counts only while audio plays, so pausing from the lock screen pauses the game too.
   Future<bool> _pausableDelay(Duration duration, int generation) async {
