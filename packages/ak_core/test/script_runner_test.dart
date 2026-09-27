@@ -45,7 +45,9 @@ GameScript quiz() {
     'version': 1,
     'min_engine_version': 2,
     'timing_sensitive': false,
-    'assets': {for (final a in ['question', 'yes', 'no', 'hint']) a: asset},
+    'assets': {
+      for (final a in ['question', 'yes', 'no', 'hint']) a: asset,
+    },
     'start': 'question',
     'steps': {
       'question': {'type': 'play', 'asset': 'question', 'next': 'answer'},

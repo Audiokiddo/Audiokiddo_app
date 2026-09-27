@@ -5,6 +5,7 @@ export 'src/access.dart';
 export 'src/audio/detectors.dart';
 export 'src/catalog.dart';
 export 'src/content.dart';
+export 'src/development.dart';
 export 'src/json.dart' show FormatError, wireName;
 export 'src/lease.dart';
 export 'src/script/model.dart';
