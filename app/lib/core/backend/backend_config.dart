@@ -1,3 +1,5 @@
+import 'dart:io';
+
 /// Public connection settings of the AudioKiddo server (Supabase, region EU / Frankfurt).
 ///
 /// The publishable key is meant to ship in apps: it only identifies the project, and every
@@ -13,4 +15,13 @@ abstract final class BackendConfig {
     'SUPABASE_KEY',
     defaultValue: 'sb_publishable_GfJcAHEtFYs5IvlKrNZBVw_0WeAneGQ',
   );
+
+  /// Google Sign-In OAuth clients (Google Cloud → Credentials). Until they exist the Google
+  /// button explains that it is not available yet: `--dart-define=GOOGLE_WEB_CLIENT_ID=...`
+  /// and, for iOS, `GOOGLE_IOS_CLIENT_ID` (plus its reversed ID as a URL scheme in Info.plist).
+  static const googleWebClientId = String.fromEnvironment('GOOGLE_WEB_CLIENT_ID');
+  static const googleIosClientId = String.fromEnvironment('GOOGLE_IOS_CLIENT_ID');
+
+  static bool get googleConfigured =>
+      googleWebClientId.isNotEmpty && (!Platform.isIOS || googleIosClientId.isNotEmpty);
 }

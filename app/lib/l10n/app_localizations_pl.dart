@@ -584,7 +584,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get accountIntro =>
-      'Konto nie jest potrzebne do słuchania. Zaloguj się, jeśli masz już pakiety przypisane do swojego adresu e-mail albo chcesz zachować dostęp po zmianie telefonu. Nie potrzebujesz hasła: wyślemy Ci kod.';
+      'Konto nie jest potrzebne do słuchania. Przyda się, jeśli masz już pakiety przypisane do swojego adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.';
 
   @override
   String get accountEmailLabel => 'Adres e-mail';
@@ -707,4 +707,71 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get micWithout =>
       'Bez mikrofonu zabawa podpowiada, kiedy odpowiedzieć, i czeka chwilę na odpowiedź.';
+
+  @override
+  String get signInApple => 'Kontynuuj z Apple';
+
+  @override
+  String get signInGoogle => 'Kontynuuj z Google';
+
+  @override
+  String get signInEmail => 'Kontynuuj z e-mailem';
+
+  @override
+  String get signInNotConfigured =>
+      'To logowanie będzie dostępne wkrótce. Na razie zaloguj się adresem e-mail.';
+
+  @override
+  String get signInFooter => 'Konto jest dla rodzica. Nie zbieramy danych o dziecku ani reklamowych.';
+
+  @override
+  String get signInEmailTitle => 'Logowanie e-mailem';
+
+  @override
+  String get signInEmailBody => 'Bez hasła: wyślemy Ci jednorazowy kod.';
+
+  @override
+  String get accountSignedOutTitle => 'Zaloguj się';
+
+  @override
+  String get accountSectionAccount => 'Konto';
+
+  @override
+  String get accountAccessFooter =>
+      'Pakiety przypisane do tego konta działają na każdym telefonie, na którym się zalogujesz.';
+
+  @override
+  String get accountDeleteFooter =>
+      'Usuwa adres e-mail i informacje o dostępie z naszego serwera. Subskrypcję anulujesz w ustawieniach App Store albo Google Play.';
+
+  @override
+  String get onboardingHelloSubtitle => 'Audiozabawy pełne przygód';
+
+  @override
+  String get onboardingVolumeTitle => 'Najpierw głośność';
+
+  @override
+  String get onboardingHowListenTitle => 'Słuchanie bez ekranu';
+
+  @override
+  String get onboardingHowKidsTitle => 'Tryb dziecka';
+
+  @override
+  String get onboardingHowOfflineTitle => 'Działa bez internetu';
+
+  @override
+  String get onboardingHowNoAdsTitle => 'Bez reklam';
+
+  @override
+  String get onboardingAccountTitle => 'Konto rodzica';
+
+  @override
+  String get onboardingAccountBody =>
+      'Opcjonalnie. Zaloguj się, jeśli masz już pakiety przypisane do adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.';
+
+  @override
+  String get onboardingAccountDone => 'Zalogowano';
+
+  @override
+  String get onboardingStartWithoutAccount => 'Zacznij bez konta';
 }

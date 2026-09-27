@@ -1084,7 +1084,7 @@ abstract class AppLocalizations {
   /// No description provided for @accountIntro.
   ///
   /// In pl, this message translates to:
-  /// **'Konto nie jest potrzebne do słuchania. Zaloguj się, jeśli masz już pakiety przypisane do swojego adresu e-mail albo chcesz zachować dostęp po zmianie telefonu. Nie potrzebujesz hasła: wyślemy Ci kod.'**
+  /// **'Konto nie jest potrzebne do słuchania. Przyda się, jeśli masz już pakiety przypisane do swojego adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.'**
   String get accountIntro;
 
   /// No description provided for @accountEmailLabel.
@@ -1302,6 +1302,132 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Bez mikrofonu zabawa podpowiada, kiedy odpowiedzieć, i czeka chwilę na odpowiedź.'**
   String get micWithout;
+
+  /// No description provided for @signInApple.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontynuuj z Apple'**
+  String get signInApple;
+
+  /// No description provided for @signInGoogle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontynuuj z Google'**
+  String get signInGoogle;
+
+  /// No description provided for @signInEmail.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontynuuj z e-mailem'**
+  String get signInEmail;
+
+  /// No description provided for @signInNotConfigured.
+  ///
+  /// In pl, this message translates to:
+  /// **'To logowanie będzie dostępne wkrótce. Na razie zaloguj się adresem e-mail.'**
+  String get signInNotConfigured;
+
+  /// No description provided for @signInFooter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konto jest dla rodzica. Nie zbieramy danych o dziecku ani reklamowych.'**
+  String get signInFooter;
+
+  /// No description provided for @signInEmailTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Logowanie e-mailem'**
+  String get signInEmailTitle;
+
+  /// No description provided for @signInEmailBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez hasła: wyślemy Ci jednorazowy kod.'**
+  String get signInEmailBody;
+
+  /// No description provided for @accountSignedOutTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaloguj się'**
+  String get accountSignedOutTitle;
+
+  /// No description provided for @accountSectionAccount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konto'**
+  String get accountSectionAccount;
+
+  /// No description provided for @accountAccessFooter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pakiety przypisane do tego konta działają na każdym telefonie, na którym się zalogujesz.'**
+  String get accountAccessFooter;
+
+  /// No description provided for @accountDeleteFooter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuwa adres e-mail i informacje o dostępie z naszego serwera. Subskrypcję anulujesz w ustawieniach App Store albo Google Play.'**
+  String get accountDeleteFooter;
+
+  /// No description provided for @onboardingHelloSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Audiozabawy pełne przygód'**
+  String get onboardingHelloSubtitle;
+
+  /// No description provided for @onboardingVolumeTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw głośność'**
+  String get onboardingVolumeTitle;
+
+  /// No description provided for @onboardingHowListenTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Słuchanie bez ekranu'**
+  String get onboardingHowListenTitle;
+
+  /// No description provided for @onboardingHowKidsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tryb dziecka'**
+  String get onboardingHowKidsTitle;
+
+  /// No description provided for @onboardingHowOfflineTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Działa bez internetu'**
+  String get onboardingHowOfflineTitle;
+
+  /// No description provided for @onboardingHowNoAdsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez reklam'**
+  String get onboardingHowNoAdsTitle;
+
+  /// No description provided for @onboardingAccountTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konto rodzica'**
+  String get onboardingAccountTitle;
+
+  /// No description provided for @onboardingAccountBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opcjonalnie. Zaloguj się, jeśli masz już pakiety przypisane do adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.'**
+  String get onboardingAccountBody;
+
+  /// No description provided for @onboardingAccountDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zalogowano'**
+  String get onboardingAccountDone;
+
+  /// No description provided for @onboardingStartWithoutAccount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zacznij bez konta'**
+  String get onboardingStartWithoutAccount;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

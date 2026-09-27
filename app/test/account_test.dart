@@ -48,6 +48,21 @@ class FakeAccountService implements AccountService {
   }
 
   @override
+  bool get appleAvailable => true;
+
+  bool appleCanceled = false;
+
+  @override
+  Future<void> signInWithApple() async {
+    if (appleCanceled) throw const AccountException(AccountError.canceled);
+    _user = const AccountUser(id: 'u2', email: 'abc@privaterelay.appleid.com');
+    _changes.add(_user);
+  }
+
+  @override
+  Future<void> signInWithGoogle() async => throw const AccountException(AccountError.notConfigured);
+
+  @override
   Future<int> syncWebPurchases() async {
     _entitlements = [
       for (final s in shopScopes)
@@ -167,6 +182,8 @@ void main() {
     testWidgets('sign in with an e-mail code shows the shop pack', (tester) async {
       final account = FakeAccountService(shopScopes: [Scopes.pack('detektyw')]);
       await pumpAccount(tester, account);
+      await tester.tap(find.text('Kontynuuj z e-mailem'));
+      await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), 'zly-adres');
       await tester.tap(find.text('Wyślij kod'));
@@ -182,14 +199,14 @@ void main() {
       expect(find.text('Nowy kod za 60 s'), findsOneWidget);
 
       await tester.enterText(find.byType(TextField), '000000');
-      await tester.tap(find.text('Zaloguj się'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj się'));
       await tester.pumpAndSettle();
       expect(find.text('Kod jest nieprawidłowy albo wygasł. Wyślij nowy.'), findsOneWidget);
 
       await tester.enterText(find.byType(TextField), '123456');
-      await tester.tap(find.text('Zaloguj się'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj się'));
       await tester.pumpAndSettle();
-      expect(find.text('Zalogowano jako'), findsOneWidget);
+      expect(find.text('Rodzic@Example.com'), findsOneWidget, reason: 'the sheet closed, account shown');
       expect(find.text('Pakiet Detektyw'), findsOneWidget);
 
       // The resend countdown timer must not outlive the test.
@@ -199,6 +216,8 @@ void main() {
     testWidgets('offline sending shows a clear message', (tester) async {
       final account = FakeAccountService()..offline = true;
       await pumpAccount(tester, account);
+      await tester.tap(find.text('Kontynuuj z e-mailem'));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField), 'rodzic@example.com');
       await tester.tap(find.text('Wyślij kod'));
       await tester.pumpAndSettle();
@@ -217,7 +236,26 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'Usuń konto'));
       await tester.pumpAndSettle();
       expect(account.deleted, isTrue);
-      expect(find.text('Wyślij kod'), findsOneWidget);
+      expect(find.text('Kontynuuj z e-mailem'), findsOneWidget);
+    });
+
+    testWidgets('Apple, Google and e-mail are offered; a closed Apple sheet shows nothing', (tester) async {
+      final account = FakeAccountService()..appleCanceled = true;
+      await pumpAccount(tester, account);
+      expect(find.text('Kontynuuj z Apple'), findsOneWidget);
+      expect(find.text('Kontynuuj z Google'), findsOneWidget);
+      await tester.tap(find.text('Kontynuuj z Apple'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SnackBar), findsNothing);
+
+      await tester.tap(find.text('Kontynuuj z Google'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('dostępne wkrótce'), findsOneWidget);
+
+      account.appleCanceled = false;
+      await tester.tap(find.text('Kontynuuj z Apple'));
+      await tester.pumpAndSettle();
+      expect(find.text('abc@privaterelay.appleid.com'), findsOneWidget);
     });
   });
 }

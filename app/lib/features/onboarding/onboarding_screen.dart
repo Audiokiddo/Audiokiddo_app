@@ -6,13 +6,16 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
+import '../account/account_service.dart';
+import '../account/sign_in.dart';
 import '../catalog/catalog_providers.dart';
 import '../kids_mode/kids_mode_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import 'onboarding_controller.dart';
 
-/// First run: a friendly hello with the volume reminder, how it works for the parent,
-/// and an optional age question (kept on the device only).
+/// First run, written for the parent in the calm style of Apple's welcome sheets: a hello
+/// with the volume reminder, how it works, an optional age (kept on the device only) and an
+/// optional parent account (Apple, Google or e-mail; behind the parental gate).
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -25,7 +28,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   int _page = 0;
   int? _age;
 
-  static const _pageCount = 3;
+  static const _pageCount = 4;
 
   @override
   void dispose() {
@@ -52,34 +55,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final palette = context.palette;
     final packs = ref.watch(catalogProvider).value?.packs ?? const <Pack>[];
     final ages = {for (final p in packs) p.ageMin}.toList()..sort();
+    final user = ref.watch(accountUserProvider).value;
     final last = _page == _pageCount - 1;
-
-    Widget page({required IconData icon, required String title, required List<Widget> children}) => ListView(
-      padding: const EdgeInsets.all(AkSpace.l),
-      children: [
-        const SizedBox(height: AkSpace.m),
-        ExcludeSemantics(child: Icon(icon, size: 72, color: palette.primary)),
-        const SizedBox(height: AkSpace.l),
-        Semantics(
-          header: true,
-          child: Text(title, style: text.headlineMedium, textAlign: TextAlign.center),
-        ),
-        const SizedBox(height: AkSpace.m),
-        ...children,
-      ],
-    );
-
-    Widget bullet(IconData icon, String value) => Padding(
-      padding: const EdgeInsets.only(bottom: AkSpace.m),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ExcludeSemantics(child: Icon(icon, color: palette.primary)),
-          const SizedBox(width: AkSpace.m),
-          Expanded(child: Text(value, style: text.bodyLarge)),
-        ],
-      ),
-    );
 
     return Scaffold(
       body: SafeArea(
@@ -90,21 +67,49 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 controller: _pages,
                 onPageChanged: (i) => setState(() => _page = i),
                 children: [
-                  page(
-                    icon: Icons.volume_up_rounded,
+                  _Page(
+                    icon: Icons.headphones_rounded,
+                    iconColor: AkBrand.teal,
                     title: l10n.onboardingHelloTitle,
+                    subtitle: l10n.onboardingHelloSubtitle,
                     children: [
-                      Text(l10n.onboardingHelloBody, style: text.bodyLarge, textAlign: TextAlign.center),
+                      _Feature(
+                        icon: Icons.volume_up_rounded,
+                        color: AkBrand.orange,
+                        title: l10n.onboardingVolumeTitle,
+                        body: l10n.onboardingHelloBody,
+                      ),
                     ],
                   ),
-                  page(
+                  _Page(
                     icon: Icons.family_restroom_rounded,
+                    iconColor: palette.primary,
                     title: l10n.onboardingHowTitle,
                     children: [
-                      bullet(Icons.headphones_rounded, l10n.onboardingHowListen),
-                      bullet(Icons.child_care_rounded, l10n.onboardingHowKids),
-                      bullet(Icons.offline_pin_rounded, l10n.onboardingHowOffline),
-                      bullet(Icons.block_rounded, l10n.onboardingHowNoAds),
+                      _Feature(
+                        icon: Icons.hearing_rounded,
+                        color: AkBrand.teal,
+                        title: l10n.onboardingHowListenTitle,
+                        body: l10n.onboardingHowListen,
+                      ),
+                      _Feature(
+                        icon: Icons.child_care_rounded,
+                        color: AkBrand.lavender,
+                        title: l10n.onboardingHowKidsTitle,
+                        body: l10n.onboardingHowKids,
+                      ),
+                      _Feature(
+                        icon: Icons.offline_pin_rounded,
+                        color: AkBrand.orange,
+                        title: l10n.onboardingHowOfflineTitle,
+                        body: l10n.onboardingHowOffline,
+                      ),
+                      _Feature(
+                        icon: Icons.block_rounded,
+                        color: const Color(0xFF8E8E93),
+                        title: l10n.onboardingHowNoAdsTitle,
+                        body: l10n.onboardingHowNoAds,
+                      ),
                       Wrap(
                         alignment: WrapAlignment.center,
                         children: [
@@ -121,12 +126,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ),
                     ],
                   ),
-                  page(
+                  _Page(
                     icon: Icons.cake_rounded,
+                    iconColor: AkBrand.lavender,
                     title: l10n.onboardingAgeTitle,
+                    subtitle: l10n.onboardingAgeBody,
                     children: [
-                      Text(l10n.onboardingAgeBody, style: text.bodyLarge, textAlign: TextAlign.center),
-                      const SizedBox(height: AkSpace.l),
                       Wrap(
                         alignment: WrapAlignment.center,
                         spacing: AkSpace.s,
@@ -140,6 +145,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               onSelected: (on) => setState(() => _age = on ? a : null),
                             ),
                         ],
+                      ),
+                    ],
+                  ),
+                  _Page(
+                    icon: Icons.person_rounded,
+                    iconColor: palette.primary,
+                    title: l10n.onboardingAccountTitle,
+                    subtitle: l10n.onboardingAccountBody,
+                    children: [
+                      if (user == null)
+                        const SignInOptions(askAdultFirst: true)
+                      else
+                        _Feature(
+                          icon: Icons.check_rounded,
+                          color: const Color(0xFF2E9D57),
+                          title: l10n.onboardingAccountDone,
+                          body: user.email,
+                        ),
+                      const SizedBox(height: AkSpace.m),
+                      Text(
+                        l10n.signInFooter,
+                        style: text.bodySmall?.copyWith(color: palette.inkMuted),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
@@ -167,15 +195,130 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(AkSpace.l),
+              padding: const EdgeInsets.fromLTRB(AkSpace.l, AkSpace.m, AkSpace.l, AkSpace.s),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   FilledButton(
                     onPressed: last ? _finish : _next,
-                    child: Text(last ? l10n.onboardingStart : l10n.onboardingNext),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(52),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    child: Text(
+                      last
+                          ? (user == null ? l10n.onboardingStartWithoutAccount : l10n.onboardingStart)
+                          : l10n.onboardingNext,
+                    ),
                   ),
-                  TextButton(onPressed: () => _finish(keepAge: false), child: Text(l10n.onboardingSkip)),
+                  // Keeps the layout steady on the last page, where skipping makes no sense.
+                  Visibility.maintain(
+                    visible: !last,
+                    child: TextButton(
+                      onPressed: () => _finish(keepAge: false),
+                      child: Text(l10n.onboardingSkip),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One welcome page: an app-icon-like tile, a large bold title, a quiet subtitle, content.
+class _Page extends StatelessWidget {
+  const _Page({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    this.subtitle,
+    required this.children,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String? subtitle;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(AkSpace.l, AkSpace.xl, AkSpace.l, AkSpace.l),
+      children: [
+        ExcludeSemantics(
+          child: Center(
+            child: Container(
+              width: 88,
+              height: 88,
+              decoration: BoxDecoration(color: iconColor, borderRadius: BorderRadius.circular(22)),
+              child: Icon(icon, size: 52, color: AkBrand.ink),
+            ),
+          ),
+        ),
+        const SizedBox(height: AkSpace.l),
+        Semantics(
+          header: true,
+          child: Text(
+            title,
+            style: text.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        if (subtitle case final subtitle?) ...[
+          const SizedBox(height: AkSpace.s),
+          Text(
+            subtitle,
+            style: text.bodyLarge?.copyWith(color: context.palette.inkMuted),
+            textAlign: TextAlign.center,
+          ),
+        ],
+        const SizedBox(height: AkSpace.xl),
+        ...children,
+      ],
+    );
+  }
+}
+
+/// Feature row as on Apple's "What's New" sheets: coloured symbol, bold title, plain text.
+class _Feature extends StatelessWidget {
+  const _Feature({required this.icon, required this.color, required this.title, required this.body});
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AkSpace.l),
+      child: MergeSemantics(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ExcludeSemantics(
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
+                child: Icon(icon, color: AkBrand.ink),
+              ),
+            ),
+            const SizedBox(width: AkSpace.m),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 2),
+                  Text(body, style: text.bodyMedium?.copyWith(color: context.palette.inkMuted)),
                 ],
               ),
             ),

@@ -337,25 +337,49 @@
   },
   "resumeGame": "Wznów grę",
   "accountTitle": "Konto rodzica",
-  "accountIntro": "Konto nie jest potrzebne do słuchania. Zaloguj się, jeśli masz już pakiety przypisane do swojego adresu e-mail albo chcesz zachować dostęp po zmianie telefonu. Nie potrzebujesz hasła: wyślemy Ci kod.",
+  "accountIntro": "Konto nie jest potrzebne do słuchania. Przyda się, jeśli masz już pakiety przypisane do swojego adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.",
   "accountEmailLabel": "Adres e-mail",
   "accountSendCode": "Wyślij kod",
   "accountCodeSent": "Wysłaliśmy kod na adres {email}. Wpisz go poniżej. Jeśli go nie widzisz, zajrzyj do spamu.",
-  "@accountCodeSent": {"placeholders": {"email": {"type": "String"}}},
+  "@accountCodeSent": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "accountCodeLabel": "Kod z e-maila",
   "accountVerify": "Zaloguj się",
   "accountResend": "Wyślij kod ponownie",
   "accountResendIn": "Nowy kod za {seconds} s",
-  "@accountResendIn": {"placeholders": {"seconds": {"type": "int"}}},
+  "@accountResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "accountChangeEmail": "Zmień adres e-mail",
   "accountSignedInAs": "Zalogowano jako",
   "accountAccess": "Dostęp na tym koncie",
   "accountNoAccess": "Na tym koncie nie ma jeszcze zakupów.",
   "accountAllContent": "Wszystkie zabawy (subskrypcja)",
   "accountPack": "Pakiet {title}",
-  "@accountPack": {"placeholders": {"title": {"type": "String"}}},
+  "@accountPack": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "accountValidUntil": "Ważne do {date}",
-  "@accountValidUntil": {"placeholders": {"date": {"type": "String"}}},
+  "@accountValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "accountRefresh": "Sprawdź zakupy ponownie",
   "accountRefreshed": "Zakupy sprawdzone.",
   "accountSignOut": "Wyloguj się",
@@ -377,5 +401,26 @@
   "micEnable": "Włącz mikrofon",
   "micDisable": "Wyłącz",
   "micDenied": "Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → AudioKiddo. Do tego czasu zabawy działają bez mikrofonu.",
-  "micWithout": "Bez mikrofonu zabawa podpowiada, kiedy odpowiedzieć, i czeka chwilę na odpowiedź."
+  "micWithout": "Bez mikrofonu zabawa podpowiada, kiedy odpowiedzieć, i czeka chwilę na odpowiedź.",
+  "signInApple": "Kontynuuj z Apple",
+  "signInGoogle": "Kontynuuj z Google",
+  "signInEmail": "Kontynuuj z e-mailem",
+  "signInNotConfigured": "To logowanie będzie dostępne wkrótce. Na razie zaloguj się adresem e-mail.",
+  "signInFooter": "Konto jest dla rodzica. Nie zbieramy danych o dziecku ani reklamowych.",
+  "signInEmailTitle": "Logowanie e-mailem",
+  "signInEmailBody": "Bez hasła: wyślemy Ci jednorazowy kod.",
+  "accountSignedOutTitle": "Zaloguj się",
+  "accountSectionAccount": "Konto",
+  "accountAccessFooter": "Pakiety przypisane do tego konta działają na każdym telefonie, na którym się zalogujesz.",
+  "accountDeleteFooter": "Usuwa adres e-mail i informacje o dostępie z naszego serwera. Subskrypcję anulujesz w ustawieniach App Store albo Google Play.",
+  "onboardingHelloSubtitle": "Audiozabawy pełne przygód",
+  "onboardingVolumeTitle": "Najpierw głośność",
+  "onboardingHowListenTitle": "Słuchanie bez ekranu",
+  "onboardingHowKidsTitle": "Tryb dziecka",
+  "onboardingHowOfflineTitle": "Działa bez internetu",
+  "onboardingHowNoAdsTitle": "Bez reklam",
+  "onboardingAccountTitle": "Konto rodzica",
+  "onboardingAccountBody": "Opcjonalnie. Zaloguj się, jeśli masz już pakiety przypisane do adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.",
+  "onboardingAccountDone": "Zalogowano",
+  "onboardingStartWithoutAccount": "Zacznij bez konta"
 }

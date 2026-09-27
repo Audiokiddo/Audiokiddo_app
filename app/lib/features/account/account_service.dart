@@ -1,8 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:ak_core/ak_core.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../core/backend/backend_config.dart';
 
 /// The signed-in parent. Only the e-mail is kept; there is no child data on the server.
 class AccountUser {
@@ -13,7 +20,9 @@ class AccountUser {
 }
 
 /// Why an account action failed, mapped to a message for the parent.
-enum AccountError { invalidEmail, tooManyRequests, wrongCode, offline, server }
+/// [canceled]: the parent closed the Apple/Google sheet; nothing to show.
+/// [notConfigured]: the sign-in method is not set up for this build yet.
+enum AccountError { invalidEmail, tooManyRequests, wrongCode, offline, server, canceled, notConfigured }
 
 class AccountException implements Exception {
   const AccountException(this.error);
@@ -37,6 +46,13 @@ abstract interface class AccountService {
   Future<void> sendCode(String email);
 
   Future<void> verifyCode(String email, String code);
+
+  /// Sign in with Apple is offered on iOS (App Store guideline 4.8 when Google is offered).
+  bool get appleAvailable;
+
+  Future<void> signInWithApple();
+
+  Future<void> signInWithGoogle();
 
   /// Pulls the parent's shop orders into their account; returns how many products were
   /// assigned.
@@ -77,6 +93,41 @@ class SupabaseAccountService implements AccountService {
   );
 
   @override
+  bool get appleAvailable => Platform.isIOS;
+
+  @override
+  Future<void> signInWithApple() => _guard(() async {
+    // Apple gets the hash, Supabase the raw value, so a stolen token cannot be replayed.
+    final rawNonce = _auth.generateRawNonce();
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [AppleIDAuthorizationScopes.email],
+      nonce: sha256.convert(utf8.encode(rawNonce)).toString(),
+    );
+    final idToken = credential.identityToken;
+    if (idToken == null) throw const AccountException(AccountError.server);
+    await _auth.signInWithIdToken(provider: OAuthProvider.apple, idToken: idToken, nonce: rawNonce);
+  });
+
+  bool _googleReady = false;
+
+  @override
+  Future<void> signInWithGoogle() => _guard(() async {
+    if (!BackendConfig.googleConfigured) throw const AccountException(AccountError.notConfigured);
+    final google = GoogleSignIn.instance;
+    if (!_googleReady) {
+      await google.initialize(
+        clientId: Platform.isIOS ? BackendConfig.googleIosClientId : null,
+        serverClientId: BackendConfig.googleWebClientId,
+      );
+      _googleReady = true;
+    }
+    final account = await google.authenticate();
+    final idToken = account.authentication.idToken;
+    if (idToken == null) throw const AccountException(AccountError.server);
+    await _auth.signInWithIdToken(provider: OAuthProvider.google, idToken: idToken);
+  });
+
+  @override
   Future<int> syncWebPurchases() => _guard(() async {
     final response = await _client.functions.invoke('sync-web-purchases');
     final data = response.data;
@@ -93,7 +144,11 @@ class SupabaseAccountService implements AccountService {
   }
 
   @override
-  Future<void> signOut() => _auth.signOut(scope: SignOutScope.local);
+  Future<void> signOut() async {
+    await _auth.signOut(scope: SignOutScope.local);
+    // Next time the parent picks the Google account again instead of being signed in silently.
+    if (_googleReady) await GoogleSignIn.instance.signOut();
+  }
 
   @override
   Future<void> deleteAccount() async {
@@ -114,6 +169,19 @@ class SupabaseAccountService implements AccountService {
       throw const AccountException(AccountError.server);
     } on AccountException {
       rethrow;
+    } on SignInWithAppleAuthorizationException catch (e) {
+      throw AccountException(
+        e.code == AuthorizationErrorCode.canceled ? AccountError.canceled : AccountError.server,
+      );
+    } on SignInWithAppleNotSupportedException {
+      throw const AccountException(AccountError.notConfigured);
+    } on GoogleSignInException catch (e) {
+      throw AccountException(switch (e.code) {
+        GoogleSignInExceptionCode.canceled => AccountError.canceled,
+        GoogleSignInExceptionCode.clientConfigurationError ||
+        GoogleSignInExceptionCode.providerConfigurationError => AccountError.notConfigured,
+        _ => AccountError.server,
+      });
     } on Exception {
       // Socket and TLS errors surface as plain exceptions from the HTTP client.
       throw const AccountException(AccountError.offline);
@@ -146,6 +214,15 @@ class SignedOutAccountService implements AccountService {
   @override
   Future<void> verifyCode(String email, String code) async =>
       throw const AccountException(AccountError.server);
+
+  @override
+  bool get appleAvailable => false;
+
+  @override
+  Future<void> signInWithApple() async => throw const AccountException(AccountError.notConfigured);
+
+  @override
+  Future<void> signInWithGoogle() async => throw const AccountException(AccountError.notConfigured);
 
   @override
   Future<int> syncWebPurchases() async => 0;

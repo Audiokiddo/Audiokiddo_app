@@ -1,19 +1,19 @@
-import 'dart:async';
-
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/theme/tokens.dart';
+import '../../core/widgets/grouped_list.dart';
 import '../../l10n/app_localizations.dart';
 import '../access/access_controller.dart';
 import '../catalog/catalog_providers.dart';
 import 'account_service.dart';
+import 'sign_in.dart';
 
-/// Parent account: sign in with a one-time e-mail code, see what the account unlocks,
-/// sign out, delete the account. Parent zone only — reached through the parental gate.
+/// Parent account, laid out like iOS Settings: sign in with Apple, Google or an e-mail code;
+/// see what the account unlocks; sign out; delete the account. Parent zone only — reached
+/// through the parental gate.
 ///
 /// Apple 3.1.3(b): no mention of buying outside the app, only of access the parent already has.
 class AccountScreen extends ConsumerWidget {
@@ -25,153 +25,54 @@ class AccountScreen extends ConsumerWidget {
     final user = ref.watch(accountUserProvider).value;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.accountTitle)),
-      body: SafeArea(child: user == null ? const _SignIn() : _SignedIn(user: user)),
+      body: SafeArea(child: user == null ? const _SignedOut() : _SignedIn(user: user)),
     );
   }
 }
 
-String accountErrorText(AppLocalizations l10n, AccountError error) => switch (error) {
-  AccountError.invalidEmail => l10n.accountErrorInvalidEmail,
-  AccountError.tooManyRequests => l10n.accountErrorTooMany,
-  AccountError.wrongCode => l10n.accountErrorWrongCode,
-  AccountError.offline => l10n.accountErrorOffline,
-  AccountError.server => l10n.accountErrorServer,
-};
-
-final _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-
-class _SignIn extends ConsumerStatefulWidget {
-  const _SignIn();
-
-  @override
-  ConsumerState<_SignIn> createState() => _SignInState();
-}
-
-class _SignInState extends ConsumerState<_SignIn> {
-  static const resendAfter = 60;
-
-  final _email = TextEditingController();
-  final _code = TextEditingController();
-  String? _sentTo;
-  bool _busy = false;
-  String? _error;
-  int _resendIn = 0;
-  Timer? _timer;
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _email.dispose();
-    _code.dispose();
-    super.dispose();
-  }
-
-  Future<void> _run(Future<void> Function() action) async {
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      await action();
-    } on AccountException catch (e) {
-      if (mounted) setState(() => _error = accountErrorText(AppLocalizations.of(context), e.error));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  Future<void> _sendCode() async {
-    final email = _email.text.trim();
-    if (!_emailPattern.hasMatch(email)) {
-      setState(() => _error = AppLocalizations.of(context).accountErrorInvalidEmail);
-      return;
-    }
-    await _run(() async {
-      await ref.read(accountServiceProvider).sendCode(email);
-      _code.clear();
-      setState(() => _sentTo = email);
-      _startCooldown();
-    });
-  }
-
-  void _startCooldown() {
-    _timer?.cancel();
-    setState(() => _resendIn = resendAfter);
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) return t.cancel();
-      setState(() => _resendIn--);
-      if (_resendIn <= 0) t.cancel();
-    });
-  }
-
-  Future<void> _verify() => _run(() async {
-    final account = ref.read(accountServiceProvider);
-    await account.verifyCode(_sentTo!, _code.text);
-    // Shop purchases made with this e-mail are assigned now; a failure here is not fatal,
-    // the parent can retry from the account screen.
-    try {
-      await account.syncWebPurchases();
-    } on AccountException {
-      // ignored, see above
-    }
-    await ref.read(accessProvider.notifier).refresh();
-  });
+class _SignedOut extends StatelessWidget {
+  const _SignedOut();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final sentTo = _sentTo;
+    final text = Theme.of(context).textTheme;
     return ListView(
-      padding: const EdgeInsets.all(AkSpace.m),
+      padding: const EdgeInsets.all(AkSpace.l),
       children: [
-        Text(l10n.accountIntro, style: theme.textTheme.bodyLarge),
+        ExcludeSemantics(
+          child: Center(
+            child: Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: context.palette.primary,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Icon(Icons.person_rounded, size: 44, color: context.palette.onPrimary),
+            ),
+          ),
+        ),
+        const SizedBox(height: AkSpace.m),
+        Text(
+          l10n.accountSignedOutTitle,
+          style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AkSpace.s),
+        Text(
+          l10n.accountIntro,
+          style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
+          textAlign: TextAlign.center,
+        ),
         const SizedBox(height: AkSpace.l),
-        if (sentTo == null) ...[
-          TextField(
-            controller: _email,
-            enabled: !_busy,
-            keyboardType: TextInputType.emailAddress,
-            autofillHints: const [AutofillHints.email],
-            autocorrect: false,
-            textInputAction: TextInputAction.send,
-            onSubmitted: (_) => _sendCode(),
-            decoration: InputDecoration(labelText: l10n.accountEmailLabel, errorText: _error),
-          ),
-          const SizedBox(height: AkSpace.m),
-          FilledButton(onPressed: _busy ? null : _sendCode, child: Text(l10n.accountSendCode)),
-        ] else ...[
-          Text(l10n.accountCodeSent(sentTo), style: theme.textTheme.bodyLarge),
-          const SizedBox(height: AkSpace.m),
-          TextField(
-            controller: _code,
-            enabled: !_busy,
-            keyboardType: TextInputType.number,
-            autofillHints: const [AutofillHints.oneTimeCode],
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(8)],
-            textInputAction: TextInputAction.done,
-            onSubmitted: (_) => _verify(),
-            style: theme.textTheme.headlineSmall?.copyWith(letterSpacing: 6),
-            decoration: InputDecoration(labelText: l10n.accountCodeLabel, errorText: _error),
-          ),
-          const SizedBox(height: AkSpace.m),
-          FilledButton(onPressed: _busy ? null : _verify, child: Text(l10n.accountVerify)),
-          const SizedBox(height: AkSpace.s),
-          TextButton(
-            onPressed: _busy || _resendIn > 0 ? null : _sendCode,
-            child: Text(_resendIn > 0 ? l10n.accountResendIn(_resendIn) : l10n.accountResend),
-          ),
-          TextButton(
-            onPressed: _busy
-                ? null
-                : () => setState(() {
-                    _sentTo = null;
-                    _error = null;
-                  }),
-            child: Text(l10n.accountChangeEmail),
-          ),
-        ],
-        if (_busy) ...[const SizedBox(height: AkSpace.m), const Center(child: CircularProgressIndicator())],
+        const SignInOptions(),
+        const SizedBox(height: AkSpace.l),
+        Text(
+          l10n.signInFooter,
+          style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }
@@ -249,7 +150,6 @@ class _SignedInState extends ConsumerState<_SignedIn> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     final catalog = ref.watch(catalogProvider).value;
     final now = DateTime.now();
     final active = [
@@ -257,45 +157,50 @@ class _SignedInState extends ConsumerState<_SignedIn> {
         if (e.isActiveAt(now) && e.source != EntitlementSource.manual) e,
     ];
     return ListView(
-      padding: const EdgeInsets.all(AkSpace.m),
+      padding: const EdgeInsets.only(top: AkSpace.s),
       children: [
-        Text(
-          l10n.accountSignedInAs,
-          style: theme.textTheme.bodyMedium?.copyWith(color: context.palette.inkMuted),
-        ),
-        Text(widget.user.email, style: theme.textTheme.titleLarge),
-        const SizedBox(height: AkSpace.l),
-        Text(l10n.accountAccess, style: theme.textTheme.titleMedium),
-        const SizedBox(height: AkSpace.s),
-        if (active.isEmpty)
-          Text(l10n.accountNoAccess, style: theme.textTheme.bodyMedium)
-        else
-          for (final e in active)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.check_circle_rounded),
-              title: Text(_scopeTitle(l10n, e.scope, catalog)),
-              subtitle: e.validUntil == null
-                  ? null
-                  : Text(l10n.accountValidUntil(DateFormat('d.MM.yyyy').format(e.validUntil!.toLocal()))),
+        GroupedSection(
+          header: l10n.accountSectionAccount,
+          children: [
+            GroupedRow(
+              icon: Icons.person_rounded,
+              title: widget.user.email,
+              subtitle: l10n.accountSignedInAs,
             ),
-        const SizedBox(height: AkSpace.m),
-        OutlinedButton.icon(
-          onPressed: _busy ? null : _refresh,
-          icon: const Icon(Icons.refresh_rounded),
-          label: Text(l10n.accountRefresh),
+          ],
         ),
-        const SizedBox(height: AkSpace.s),
-        OutlinedButton.icon(
-          onPressed: _busy ? null : _signOut,
-          icon: const Icon(Icons.logout_rounded),
-          label: Text(l10n.accountSignOut),
+        GroupedSection(
+          header: l10n.accountAccess,
+          footer: l10n.accountAccessFooter,
+          children: [
+            if (active.isEmpty)
+              GroupedRow(title: l10n.accountNoAccess)
+            else
+              for (final e in active)
+                GroupedRow(
+                  icon: Icons.check_rounded,
+                  iconColor: const Color(0xFF2E9D57),
+                  title: _scopeTitle(l10n, e.scope, catalog),
+                  subtitle: e.validUntil == null
+                      ? null
+                      : l10n.accountValidUntil(DateFormat('d.MM.yyyy').format(e.validUntil!.toLocal())),
+                ),
+            GroupedRow(
+              icon: Icons.refresh_rounded,
+              iconColor: const Color(0xFF2F6FDB),
+              title: l10n.accountRefresh,
+              onTap: _busy ? null : _refresh,
+            ),
+          ],
         ),
-        const SizedBox(height: AkSpace.xl),
-        TextButton(
-          onPressed: _busy ? null : _delete,
-          style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
-          child: Text(l10n.accountDelete),
+        GroupedSection(
+          children: [
+            GroupedRow(title: l10n.accountSignOut, onTap: _busy ? null : _signOut, destructive: true),
+          ],
+        ),
+        GroupedSection(
+          footer: l10n.accountDeleteFooter,
+          children: [GroupedRow(title: l10n.accountDelete, onTap: _busy ? null : _delete, destructive: true)],
         ),
         if (_busy) const Center(child: CircularProgressIndicator()),
       ],
@@ -306,8 +211,7 @@ class _SignedInState extends ConsumerState<_SignedIn> {
     if (scope == Scopes.allContent) return l10n.accountAllContent;
     if (scope.startsWith('pack:')) {
       final id = scope.substring(5);
-      final pack = catalog?.pack(id);
-      return l10n.accountPack(pack?.title ?? id);
+      return l10n.accountPack(catalog?.pack(id)?.title ?? id);
     }
     if (scope.startsWith('item:')) return catalog?.item(scope.substring(5))?.title ?? scope;
     return scope;

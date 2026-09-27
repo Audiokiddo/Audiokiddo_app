@@ -26,7 +26,7 @@ void main() {
     expect(restarted.done, isTrue);
   });
 
-  testWidgets('first run: welcome, how it works, optional age, then Start', (tester) async {
+  testWidgets('first run: welcome, how it works, optional age and account, then Start', (tester) async {
     tester.view.physicalSize = const Size(1170, 2532);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -48,7 +48,11 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Dla dzieci od 6 lat'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Zaczynamy'));
+    await tester.tap(find.text('Dalej'));
+    await tester.pumpAndSettle();
+    expect(find.text('Konto rodzica'), findsOneWidget);
+    expect(find.text('Kontynuuj z e-mailem'), findsOneWidget);
+    await tester.tap(find.text('Zacznij bez konta'));
     await tester.pumpAndSettle();
     expect(find.text('Czas na zabawę!'), findsOneWidget);
     expect(kids.settings.age, 6, reason: 'age becomes the kids mode default');
