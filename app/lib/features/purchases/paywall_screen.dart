@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/theme/tokens.dart';
+import '../../core/widgets/car_scene.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/widgets/catalog_loader.dart';
 import 'offer_catalog.dart';
@@ -89,6 +90,9 @@ class _PaywallContent extends ConsumerWidget {
         return ListView(
           padding: const EdgeInsets.fromLTRB(AkSpace.m, 0, AkSpace.m, AkSpace.xl),
           children: [
+            // A wink for the parent: the "are we there yet?" of subscriptions.
+            CarScene(line: hasTrial ? l10n.paywallCarTrial : l10n.paywallCar),
+            const SizedBox(height: AkSpace.m),
             if (item != null) Text(l10n.paywallFor(item!.title), style: text.titleMedium),
             const SizedBox(height: AkSpace.m),
             Text(l10n.paywallSubscriptionHeader, style: text.titleLarge),

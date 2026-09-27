@@ -130,7 +130,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.favorite_rounded));
     await tester.pumpAndSettle();
     expect(find.text('Magiczny sklep'), findsOneWidget);
-    expect(find.text('Pobierz zabawy przed podróżą, żeby działały bez internetu.'), findsOneWidget);
+    expect(find.text('Pobierz zabawy przed podróżą. Bez nich po 10 minutach jazdy padnie pytanie: „daleko jeszcze?”.'), findsOneWidget);
   });
 
   testWidgets('playable item offers a download with its size', (tester) async {
@@ -159,10 +159,13 @@ void main() {
       await tester.tap(find.text('47'));
       await tester.pumpAndSettle();
       expect(find.text('Odblokuj zabawy'), findsOneWidget);
+      expect(find.textContaining('7 dni za darmo, zanim dojedziemy'), findsOneWidget, reason: 'the car gag');
+      await tester.drag(mainScroll, const Offset(0, -350));
+      await tester.pumpAndSettle();
       expect(find.text('7 dni za darmo, potem 149,99 zł / rok'), findsOneWidget);
       expect(find.text('49,99 zł'), findsWidgets);
-      await tester.scrollUntilVisible(find.text('Przywróć zakupy'), 200, scrollable: mainScroll);
-      expect(find.textContaining('odnawia się automatycznie'), findsOneWidget);
+      await tester.scrollUntilVisible(find.textContaining('odnawia się automatycznie'), 200, scrollable: mainScroll);
+      expect(find.text('Przywróć zakupy'), findsOneWidget);
     });
 
     testWidgets('kids mode: only playable games, no escape, exit through the gate', (tester) async {

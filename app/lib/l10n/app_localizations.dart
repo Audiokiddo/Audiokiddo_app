@@ -400,19 +400,19 @@ abstract class AppLocalizations {
   /// No description provided for @mineEmptyRecent.
   ///
   /// In pl, this message translates to:
-  /// **'Tu pojawią się zabawy, których słuchaliście.'**
+  /// **'Tu pojawią się zabawy, których słuchaliście. Na razie cisza. Podejrzana cisza.'**
   String get mineEmptyRecent;
 
   /// No description provided for @mineEmptyFavorites.
   ///
   /// In pl, this message translates to:
-  /// **'Dotknij serca przy zabawie, aby dodać ją do ulubionych.'**
+  /// **'Dotknij serca przy zabawie, a trafi tutaj. Na razie pusto jak w lodówce w niedzielę wieczorem.'**
   String get mineEmptyFavorites;
 
   /// No description provided for @mineEmptyDownloads.
   ///
   /// In pl, this message translates to:
-  /// **'Pobierz zabawy przed podróżą, żeby działały bez internetu.'**
+  /// **'Pobierz zabawy przed podróżą. Bez nich po 10 minutach jazdy padnie pytanie: „daleko jeszcze?”.'**
   String get mineEmptyDownloads;
 
   /// No description provided for @storageUsage.
@@ -2256,6 +2256,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Regularność na medal! Można dodać kilka minut dziennie.'**
   String get adviceLevelUp;
+
+  /// No description provided for @paywallCarTrial.
+  ///
+  /// In pl, this message translates to:
+  /// **'Mamo, tato… daleko jeszcze? A może 7 dni za darmo, zanim dojedziemy?'**
+  String get paywallCarTrial;
+
+  /// No description provided for @paywallCar.
+  ///
+  /// In pl, this message translates to:
+  /// **'Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!'**
+  String get paywallCar;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

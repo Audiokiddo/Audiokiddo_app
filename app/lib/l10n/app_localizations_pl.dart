@@ -201,13 +201,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get mineDownloads => 'Pobrane';
 
   @override
-  String get mineEmptyRecent => 'Tu pojawią się zabawy, których słuchaliście.';
+  String get mineEmptyRecent =>
+      'Tu pojawią się zabawy, których słuchaliście. Na razie cisza. Podejrzana cisza.';
 
   @override
-  String get mineEmptyFavorites => 'Dotknij serca przy zabawie, aby dodać ją do ulubionych.';
+  String get mineEmptyFavorites =>
+      'Dotknij serca przy zabawie, a trafi tutaj. Na razie pusto jak w lodówce w niedzielę wieczorem.';
 
   @override
-  String get mineEmptyDownloads => 'Pobierz zabawy przed podróżą, żeby działały bez internetu.';
+  String get mineEmptyDownloads =>
+      'Pobierz zabawy przed podróżą. Bez nich po 10 minutach jazdy padnie pytanie: „daleko jeszcze?”.';
 
   @override
   String storageUsage(String used, String free) {
@@ -1257,4 +1260,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get adviceLevelUp => 'Regularność na medal! Można dodać kilka minut dziennie.';
+
+  @override
+  String get paywallCarTrial => 'Mamo, tato… daleko jeszcze? A może 7 dni za darmo, zanim dojedziemy?';
+
+  @override
+  String get paywallCar => 'Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!';
 }

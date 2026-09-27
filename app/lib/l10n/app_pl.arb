@@ -103,9 +103,9 @@
   "mineRecent": "Ostatnio słuchane",
   "mineFavorites": "Ulubione",
   "mineDownloads": "Pobrane",
-  "mineEmptyRecent": "Tu pojawią się zabawy, których słuchaliście.",
-  "mineEmptyFavorites": "Dotknij serca przy zabawie, aby dodać ją do ulubionych.",
-  "mineEmptyDownloads": "Pobierz zabawy przed podróżą, żeby działały bez internetu.",
+  "mineEmptyRecent": "Tu pojawią się zabawy, których słuchaliście. Na razie cisza. Podejrzana cisza.",
+  "mineEmptyFavorites": "Dotknij serca przy zabawie, a trafi tutaj. Na razie pusto jak w lodówce w niedzielę wieczorem.",
+  "mineEmptyDownloads": "Pobierz zabawy przed podróżą. Bez nich po 10 minutach jazdy padnie pytanie: „daleko jeszcze?”.",
   "storageUsage": "Pobrane: {used} · Wolne w telefonie: {free}",
   "@storageUsage": {
     "placeholders": {
@@ -735,5 +735,7 @@
     }
   },
   "adviceComeBack": "Kilka dni przerwy? Zdarza się najlepszym. Wystarczy 5 minut dziś, żeby wrócić do rytmu.",
-  "adviceLevelUp": "Regularność na medal! Można dodać kilka minut dziennie."
+  "adviceLevelUp": "Regularność na medal! Można dodać kilka minut dziennie.",
+  "paywallCarTrial": "Mamo, tato… daleko jeszcze? A może 7 dni za darmo, zanim dojedziemy?",
+  "paywallCar": "Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!"
 }
