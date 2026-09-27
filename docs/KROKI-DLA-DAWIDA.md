@@ -104,7 +104,7 @@ keyAlias=upload
 storeFile=/Users/dawidkubiak/audiokiddo-upload.jks
 ```
 
-3. Zrób zaszyfrowany „sejf” na pliki kluczy (poda hasło, zapisz je w aplikacji Hasła), przenieś do niego `audiokiddo-upload.jks` i trzymaj drugą kopię na pendrivie:
+3. Zrób zaszyfrowany „sejf” na pliki kluczy (poda hasło, zapisz je w aplikacji Hasła), skopiuj do niego `audiokiddo-upload.jks` (oryginał zostaje w katalogu domowym, bo korzysta z niego build) i trzymaj drugą kopię na pendrivie:
 
 ```bash
 hdiutil create -size 100m -encryption AES-256 -fs APFS -volname AudioKiddoKlucze ~/Documents/AudioKiddoKlucze.dmg
