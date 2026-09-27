@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ak_core/ak_core.dart';
 import 'package:audio_service/audio_service.dart';
@@ -11,6 +12,7 @@ import '../../core/storage/storage_providers.dart';
 import '../downloads/download_providers.dart';
 import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
+import 'microphone.dart';
 
 /// Audio operations a game needs; implemented by AkAudioHandler, faked in tests.
 abstract interface class GameAudio {
@@ -33,19 +35,23 @@ enum GamePhase { idle, playing, waiting, listening, finished, failed }
 
 @immutable
 class GameUiState {
-  const GameUiState({this.phase = GamePhase.idle, this.itemId, this.title, this.listeningFor});
+  const GameUiState({this.phase = GamePhase.idle, this.itemId, this.title, this.listening = const {}});
 
   final GamePhase phase;
   final String? itemId;
   final String? title;
-  final InputKind? listeningFor;
+
+  /// Inputs the game is waiting for right now (empty unless [phase] is listening).
+  final Set<InputKind> listening;
+
+  bool get tapToAnswer => listening.contains(InputKind.tapAnywhere);
+  bool get listensToSound =>
+      listening.contains(InputKind.clap) || listening.contains(InputKind.voiceActivity);
 
   bool get active => phase != GamePhase.idle && phase != GamePhase.finished && phase != GamePhase.failed;
 }
 
-/// Inputs available on this device right now. The microphone arrives after the Etap 4
-/// device tests; until then games run their no-microphone variant (ARCHITECTURE §10.5).
-const microphoneInputs = {InputKind.clap, InputKind.voiceActivity, InputKind.speechKeywords};
+const _soundInputs = {InputKind.clap, InputKind.voiceActivity};
 
 /// Runs one interactive game: turns [ScriptRunner] commands into audio, timers and input.
 class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
@@ -55,7 +61,20 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
   Completer<EngineEvent>? _input;
   bool _foreground = true;
 
+  // Microphone: open for the whole game when the parent enabled it (iOS may not start it
+  // from the background), but samples are looked at only while the child may answer.
+  StreamSubscription<List<double>>? _mic;
+  SoundDetector? _detector;
+  Set<InputKind> _listening = const {};
+  int _minClaps = 1;
+
   GameAudio get _audio => ref.read(gameAudioProvider);
+
+  bool get _micOn => _mic != null;
+
+  /// Android stops delivering microphone audio to backgrounded apps without a microphone
+  /// foreground service (to be decided after device tests), so answers by sound pause there.
+  bool get _micUsable => _micOn && (_foreground || !Platform.isAndroid);
 
   @override
   GameUiState build() {
@@ -63,6 +82,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     ref.onDispose(() {
       WidgetsBinding.instance.removeObserver(this);
       _generation++;
+      unawaited(_stopMicrophone());
     });
     return const GameUiState();
   }
@@ -76,11 +96,12 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     _item = item;
     final saved = resume ? await loadGameSnapshot(ref.read(databaseProvider), item) : null;
     if (!resume) await clearGameSnapshot(ref.read(databaseProvider), item.id);
+    await _startMicrophone();
     final runner = _runner = ScriptRunner(
       script,
       resumeFrom: saved,
       unavailable: {
-        FallbackReason.noMicrophone, // until the microphone is enabled after device tests
+        if (!_micUsable) FallbackReason.noMicrophone,
         if (!_foreground) FallbackReason.screenLocked,
       },
     );
@@ -91,6 +112,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         final event = await _execute(command, generation);
         if (event == null || generation != _generation) return; // stopped or replaced
         if (command is Finish) {
+          await _stopMicrophone();
           await clearGameSnapshot(ref.read(databaseProvider), item.id);
           ref.invalidate(gameResumeProvider(item));
           state = GameUiState(phase: GamePhase.finished, itemId: item.id, title: item.title);
@@ -100,6 +122,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       }
     } on Exception catch (e) {
       debugPrint('game ${item.id} failed: $e');
+      await _stopMicrophone();
       if (generation == _generation) {
         state = GameUiState(phase: GamePhase.failed, itemId: item.id, title: item.title);
       }
@@ -111,22 +134,32 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     _generation++;
     _input?.complete(const InputTimedOut());
     _input = null;
+    await _stopMicrophone();
     await _audio.stop();
     state = const GameUiState();
   }
 
-  /// Touch anywhere while a tap input is open.
+  /// Touch anywhere while a tap answer is possible.
   void tap() {
-    if (state.listeningFor == InputKind.tapAnywhere) _completeInput(const InputDetected());
+    if (_listening.contains(InputKind.tapAnywhere)) {
+      _completeInput(const InputDetected(kind: InputKind.tapAnywhere));
+    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _foreground = state == AppLifecycleState.resumed;
     _runner?.setAvailability(FallbackReason.screenLocked, available: _foreground);
-    // Touch cannot reach a locked phone: switch the open input to its fallback at once.
-    if (!_foreground && this.state.listeningFor == InputKind.tapAnywhere) {
-      _completeInput(const InputFailed(FallbackReason.screenLocked));
+    _runner?.setAvailability(FallbackReason.noMicrophone, available: _micUsable);
+    if (_listening.isEmpty || _foreground) return;
+    // Touch cannot reach a locked phone (nor sound a backgrounded Android app): keep what
+    // still works, or switch the open input to its fallback at once.
+    final still = _usable(_listening);
+    if (still.isEmpty) {
+      _completeInput(InputFailed(_whyUnusable(_listening)));
+    } else {
+      _listening = still;
+      _set(GamePhase.listening, listening: still);
     }
   }
 
@@ -148,36 +181,113 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         final done = await _pausableDelay(duration, generation);
         await _audio.stopLoop();
         return done ? const WaitElapsed() : null;
-      case Listen(:final input, :final window):
-        if (microphoneInputs.contains(input)) return const InputFailed(FallbackReason.noMicrophone);
-        if (input != InputKind.tapAnywhere || !_foreground) {
-          return const InputFailed(FallbackReason.screenLocked);
-        }
-        _set(GamePhase.listening, listeningFor: input);
-        await _audio.startLoop(media, silenceUri);
-        final completer = _input = Completer<EngineEvent>();
-        unawaited(
-          _pausableDelay(window, generation).then((done) {
-            if (done) _completeInput(const InputTimedOut());
-          }),
-        );
-        final event = await completer.future;
-        await _audio.stopLoop();
-        return generation == _generation ? event : null;
+      case Listen(:final input, :final window, :final minCount):
+        return _listen({input}, window, generation, media, minClaps: minCount ?? 1);
+      case ListenForChoice(:final inputs, :final window):
+        return _listen(inputs, window, generation, media);
       case Finish(:final asset):
         if (asset != null) await _audio.playSegment(media, await _uri(asset));
         return const SegmentFinished();
     }
   }
 
+  Set<InputKind> _usable(Set<InputKind> inputs) => {
+    for (final kind in inputs)
+      if ((kind == InputKind.tapAnywhere && _foreground) || (_soundInputs.contains(kind) && _micUsable)) kind,
+  };
+
+  FallbackReason _whyUnusable(Set<InputKind> inputs) => inputs.any(_soundInputs.contains) && !_micUsable
+      ? FallbackReason.noMicrophone
+      : FallbackReason.screenLocked;
+
+  Future<EngineEvent?> _listen(
+    Set<InputKind> inputs,
+    Duration window,
+    int generation,
+    MediaItem media, {
+    int minClaps = 1,
+  }) async {
+    final usable = _usable(inputs);
+    if (usable.isEmpty) return InputFailed(_whyUnusable(inputs));
+    // Ready for an answer before anyone can hear the prompt to give one.
+    final completer = _input = Completer<EngineEvent>();
+    _detector?.resetCounts();
+    _minClaps = minClaps;
+    _listening = usable;
+    _set(GamePhase.listening, listening: usable);
+    await _audio.startLoop(media, silenceUri);
+    unawaited(
+      _pausableDelay(window, generation).then((done) {
+        if (!done) return;
+        // Counted claps short of the target still reach the script (e.g. "you clapped twice").
+        final claps = _detector?.claps ?? 0;
+        _completeInput(
+          claps > 0 && _listening.contains(InputKind.clap)
+              ? InputDetected(count: claps, kind: InputKind.clap)
+              : const InputTimedOut(),
+        );
+      }),
+    );
+    final event = await completer.future;
+    await _audio.stopLoop();
+    return generation == _generation ? event : null;
+  }
+
+  Future<void> _startMicrophone() async {
+    await _stopMicrophone();
+    final bool enabled;
+    try {
+      enabled = await ref.read(microphoneSettingsProvider.future);
+    } on Exception {
+      return;
+    }
+    if (!enabled) return;
+    try {
+      final samples = await ref.read(microphoneInputProvider).start();
+      _detector = SoundDetector(sampleRate: micSampleRate);
+      _mic = samples.listen(_onSamples, onError: (Object _) => _onMicrophoneLost());
+    } on Exception catch (e) {
+      debugPrint('microphone unavailable: $e');
+    }
+  }
+
+  Future<void> _stopMicrophone() async {
+    final mic = _mic;
+    _mic = null;
+    _detector = null;
+    _listening = const {};
+    if (mic == null) return;
+    await mic.cancel();
+    await ref.read(microphoneInputProvider).stop();
+  }
+
+  void _onMicrophoneLost() {
+    unawaited(_stopMicrophone());
+    _runner?.setAvailability(FallbackReason.noMicrophone, available: false);
+    _completeInput(const InputFailed(FallbackReason.inputError));
+  }
+
+  /// Samples outside an answer window are dropped unread.
+  void _onSamples(List<double> samples) {
+    final detector = _detector;
+    if (detector == null || _listening.isEmpty) return;
+    detector.add(samples);
+    if (_listening.contains(InputKind.clap) && detector.claps >= _minClaps) {
+      _completeInput(InputDetected(count: detector.claps, kind: InputKind.clap));
+    } else if (_listening.contains(InputKind.voiceActivity) && detector.voiceDetected) {
+      _completeInput(const InputDetected(kind: InputKind.voiceActivity));
+    }
+  }
+
   void _completeInput(EngineEvent event) {
+    _listening = const {};
     final input = _input;
     _input = null;
     if (input != null && !input.isCompleted) input.complete(event);
   }
 
-  void _set(GamePhase phase, {InputKind? listeningFor}) =>
-      state = GameUiState(phase: phase, itemId: _item?.id, title: _item?.title, listeningFor: listeningFor);
+  void _set(GamePhase phase, {Set<InputKind> listening = const {}}) =>
+      state = GameUiState(phase: phase, itemId: _item?.id, title: _item?.title, listening: listening);
 
   /// Counts only while audio plays, so pausing from the lock screen pauses the game too.
   Future<bool> _pausableDelay(Duration duration, int generation) async {

@@ -30,6 +30,15 @@ class Listen extends EngineCommand {
   final int? minCount;
 }
 
+/// Listen for any of [inputs] (a choice); report [InputDetected] with its `kind`, or
+/// [InputTimedOut] / [InputFailed].
+class ListenForChoice extends EngineCommand {
+  const ListenForChoice(this.inputs, this.window);
+
+  final Set<InputKind> inputs;
+  final Duration window;
+}
+
 /// The session is over; play [asset] if given, then close.
 class Finish extends EngineCommand {
   const Finish({this.asset, this.reason = FinishReason.completed});
@@ -53,9 +62,12 @@ class WaitElapsed extends EngineEvent {
 }
 
 class InputDetected extends EngineEvent {
-  const InputDetected({this.count = 1});
+  const InputDetected({this.count = 1, this.kind});
 
   final int count;
+
+  /// Which input was heard; needed to answer a choice.
+  final InputKind? kind;
 }
 
 class InputTimedOut extends EngineEvent {
@@ -171,8 +183,11 @@ class ScriptRunner {
       (WaitStep(:final next), WaitElapsed()) => _resolve(next),
       (final InputStep input, InputDetected(:final count)) =>
         count >= (input.minCount ?? 1) ? _resolve(input.onDetected) : _resolve(input.onTimeout),
-      (final InputStep input, InputTimedOut()) => _resolve(input.onTimeout),
-      (final InputStep input, InputFailed(:final reason)) => _runFallback(input, reason),
+      (final ChoiceStep choice, InputDetected(:final kind)) => _resolve(
+        choice.options[kind] ?? (kind == null ? choice.options[_available(choice).first]! : choice.onTimeout),
+      ),
+      (final ListeningStep listening, InputTimedOut()) => _resolve(listening.onTimeout),
+      (final ListeningStep listening, InputFailed(:final reason)) => _runFallback(listening, reason),
       (EndStep(), _) => _finish(const Finish()),
       // An event that does not match the step (e.g. a late timer) replays the current step.
       _ => _commandFor(step),
@@ -185,7 +200,24 @@ class ScriptRunner {
     _ => _resolve(script.steps[_current]!.targets.first),
   };
 
-  EngineCommand _runFallback(InputStep step, FallbackReason reason) {
+  /// What stops [kind] from working right now, or null when it is available.
+  FallbackReason? _blocker(InputKind kind) => switch (kind) {
+    InputKind.clap || InputKind.voiceActivity || InputKind.speechKeywords
+        when _unavailable.contains(FallbackReason.noMicrophone) =>
+      FallbackReason.noMicrophone,
+    InputKind.tapAnywhere || InputKind.motionShake when _unavailable.contains(FallbackReason.screenLocked) =>
+      FallbackReason.screenLocked,
+    _ when _unavailable.contains(FallbackReason.inputError) => FallbackReason.inputError,
+    _ => null,
+  };
+
+  /// Options of [choice] the child can use right now, in script order.
+  List<InputKind> _available(ChoiceStep choice) => [
+    for (final kind in choice.options.keys)
+      if (_blocker(kind) == null) kind,
+  ];
+
+  EngineCommand _runFallback(ListeningStep step, FallbackReason reason) {
     final fallback = step.fallbacks[reason] ?? step.fallbacks[FallbackReason.noMicrophone]!;
     if (fallback is GotoStep) return _resolve(fallback.target);
     _activeFallback = fallback;
@@ -227,11 +259,10 @@ class ScriptRunner {
             return _finish(const Finish(reason: FinishReason.loopLimit));
           }
           id = target;
-        case InputStep() when _unavailable.isNotEmpty:
-          final reason = _unavailable.contains(FallbackReason.screenLocked)
-              ? FallbackReason.screenLocked
-              : _unavailable.first;
-          return _runFallback(step, reason);
+        case InputStep(:final input) when _blocker(input) != null:
+          return _runFallback(step, _blocker(input)!);
+        case ChoiceStep(:final options) when _available(step).isEmpty:
+          return _runFallback(step, _blocker(options.keys.first)!);
         default:
           return _commandFor(step);
       }
@@ -248,6 +279,10 @@ class ScriptRunner {
       input,
       Duration(milliseconds: windowMs),
       minCount: minCount,
+    ),
+    ChoiceStep(:final windowMs) => ListenForChoice(
+      _available(step).toSet(),
+      Duration(milliseconds: windowMs),
     ),
     EndStep(:final asset) => _finish(Finish(asset: asset)),
     _ => throw StateError('not an audible step: ${step.id}'),

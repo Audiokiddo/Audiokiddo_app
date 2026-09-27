@@ -4,6 +4,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <!-- Games: claps and voice are detected on the device, never recorded (asked behind the parental gate). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- Kids app: no advertising ID, even if a dependency requests it (Google Families Policy). -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
     <application

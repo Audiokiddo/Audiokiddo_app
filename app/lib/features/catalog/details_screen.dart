@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../../core/format.dart';
 import '../downloads/download_button.dart';
 import '../games/game_controller.dart';
+import '../games/microphone.dart';
 import '../parental_gate/parental_gate.dart';
 import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';
@@ -179,6 +180,8 @@ class _DetailsContent extends ConsumerWidget {
               children: [for (final s in item.skills) Chip(label: Text(s))],
             ),
           ),
+        if (item.script case final script? when scriptListensToSound(script))
+          _Section(title: AppLocalizations.of(context).micTitle, child: const _MicrophoneCard()),
         if (item.pdf.isNotEmpty && canPlay)
           _Section(
             title: l10n.pdfSection,
@@ -224,6 +227,48 @@ class _Meta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Chip(avatar: Icon(icon, size: 18), label: Text(label));
+}
+
+/// Parent zone: lets games hear claps and voice. The system prompt appears only after the
+/// parental gate (ARCHITECTURE §12).
+class _MicrophoneCard extends ConsumerWidget {
+  const _MicrophoneCard();
+
+  Future<void> _enable(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    if (!await showParentalGate(context)) return;
+    final granted = await ref.read(microphoneSettingsProvider.notifier).enable();
+    if (!granted) messenger.showSnackBar(SnackBar(content: Text(l10n.micDenied)));
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final on = ref.watch(microphoneSettingsProvider).value ?? false;
+    final text = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(on ? l10n.micOnBody : l10n.micOffBody, style: text.bodyMedium),
+        if (!on) ...[
+          const SizedBox(height: AkSpace.xs),
+          Text(l10n.micWithout, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+        ],
+        const SizedBox(height: AkSpace.s),
+        on
+            ? TextButton(
+                onPressed: () => ref.read(microphoneSettingsProvider.notifier).disable(),
+                child: Text(l10n.micDisable),
+              )
+            : OutlinedButton.icon(
+                onPressed: () => _enable(context, ref),
+                icon: const Icon(Icons.mic_rounded),
+                label: Text(l10n.micEnable),
+              ),
+      ],
+    );
+  }
 }
 
 class _Section extends StatelessWidget {

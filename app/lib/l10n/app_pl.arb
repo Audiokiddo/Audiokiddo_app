@@ -369,5 +369,13 @@
   "accountErrorWrongCode": "Kod jest nieprawidłowy albo wygasł. Wyślij nowy.",
   "accountErrorOffline": "Brak połączenia z internetem.",
   "accountErrorServer": "Coś poszło nie tak po naszej stronie. Spróbuj za chwilę.",
-  "paywallHaveAccess": "Masz już dostęp? Zaloguj się"
+  "paywallHaveAccess": "Masz już dostęp? Zaloguj się",
+  "gameAnswerNow": "Twoja odpowiedź!",
+  "micTitle": "Odpowiedzi głosem i klaśnięciem",
+  "micOffBody": "Dziecko może odpowiadać klaśnięciem albo głosem, bez dotykania telefonu. Mikrofon działa tylko w czasie zabawy, a dźwięk jest analizowany w telefonie: nic nie jest nagrywane ani wysyłane.",
+  "micOnBody": "Włączone. Zabawy słuchają klaśnięć i głosu dziecka tylko wtedy, gdy czekają na odpowiedź. Nic nie jest nagrywane ani wysyłane.",
+  "micEnable": "Włącz mikrofon",
+  "micDisable": "Wyłącz",
+  "micDenied": "Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → AudioKiddo. Do tego czasu zabawy działają bez mikrofonu.",
+  "micWithout": "Bez mikrofonu zabawa podpowiada, kiedy odpowiedzieć, i czeka chwilę na odpowiedź."
 }

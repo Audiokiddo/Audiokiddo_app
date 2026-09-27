@@ -1546,6 +1546,495 @@
     }
    },
    "timing_sensitive": true
+  },
+  {
+   "id": "prawda-czy-nie",
+   "kind": "interactive_game",
+   "title": "Prawda czy nie? (prototyp)",
+   "parent_description": "Dziecko słucha zdań i odpowiada bez dotykania telefonu: klaśnięcie to „prawda”, głośne „nie” to nieprawda. Z mikrofonem (opcjonalnie) aplikacja reaguje na odpowiedź i liczy punkty; bez mikrofonu daje czas do namysłu i podaje rozwiązanie.",
+   "age_min": 3,
+   "duration_sec": 240,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "requirements": [
+    "mikrofon"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "free",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "prawda-czy-nie",
+    "version": 1,
+    "min_engine_version": 2,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/prawda-czy-nie/intro.m4a",
+      "bytes": 94619,
+      "sha256": "0d8dc446743bb5fcba1c7b0a4b8b3b13b8bcf0f54f34f8145878a8eac3f52408"
+     },
+     "correct": {
+      "path": "games/prawda-czy-nie/correct.m4a",
+      "bytes": 16074,
+      "sha256": "f1e97048c21930b7c8a9135fd938f320bcb60f60ce8c1ed2279f9235a4cc60bf"
+     },
+     "oops": {
+      "path": "games/prawda-czy-nie/oops.m4a",
+      "bytes": 17173,
+      "sha256": "88786084ef22831c9c9cc343f482e611b53302a4db9cd3ba9eb4f9c8cc5ce48a"
+     },
+     "not_heard": {
+      "path": "games/prawda-czy-nie/not_heard.m4a",
+      "bytes": 26712,
+      "sha256": "57f4ed211158fe7616018537b4d3c54acd30028bfd0a03d3f8683ce08369b387"
+     },
+     "think": {
+      "path": "games/prawda-czy-nie/think.m4a",
+      "bytes": 18956,
+      "sha256": "9b320ed4637047a34693da58aafb70889f5c7b758e54865f172c5c22853a2279"
+     },
+     "thinking": {
+      "path": "games/prawda-czy-nie/thinking.m4a",
+      "bytes": 9380,
+      "sha256": "26ae42ae1d4ad5d2dba33cdd352ff7ed607b01721ee9f6271c97b87d62a263d9"
+     },
+     "outro_great": {
+      "path": "games/prawda-czy-nie/outro_great.m4a",
+      "bytes": 44312,
+      "sha256": "7e8305aa00fa465a0d8d132efe4245a9536adc56c0685356b852e9e865e330ee"
+     },
+     "outro_good": {
+      "path": "games/prawda-czy-nie/outro_good.m4a",
+      "bytes": 44370,
+      "sha256": "1362c3a9da6ded1f13fd3b77466fcfaef20f21dedf5abad2a47c603e70b34780"
+     },
+     "q_krowa": {
+      "path": "games/prawda-czy-nie/q_krowa.m4a",
+      "bytes": 17683,
+      "sha256": "6e07956759bbcacc10f9b675d358147ab382b6a9dcd444c4c43b15746821dbca"
+     },
+     "a_krowa": {
+      "path": "games/prawda-czy-nie/a_krowa.m4a",
+      "bytes": 19098,
+      "sha256": "e391cdd6d2d8edc6f4b5d6eec5afa87f18a754838bbf603c2a77bf3df2def189"
+     },
+     "q_ryby": {
+      "path": "games/prawda-czy-nie/q_ryby.m4a",
+      "bytes": 22480,
+      "sha256": "aa4a77a25320a7c3dc9f1c093825ee6e2419b56c984a8c2ee89afcd24388ae5d"
+     },
+     "a_ryby": {
+      "path": "games/prawda-czy-nie/a_ryby.m4a",
+      "bytes": 18819,
+      "sha256": "843d667f4ba2b09dc4a500c185dd849a7c88382d42cb91bd5b89345a03507304"
+     },
+     "q_snieg": {
+      "path": "games/prawda-czy-nie/q_snieg.m4a",
+      "bytes": 18278,
+      "sha256": "25a2cd64d12dc016a3125c9bcf5b2270d6603eacf69eb31102593ded1813a70d"
+     },
+     "a_snieg": {
+      "path": "games/prawda-czy-nie/a_snieg.m4a",
+      "bytes": 22304,
+      "sha256": "b9e69928ba48c35fd959d5114c0a3b838337c65e1e66ade9f31195d1c9a0763d"
+     },
+     "q_slon": {
+      "path": "games/prawda-czy-nie/q_slon.m4a",
+      "bytes": 23610,
+      "sha256": "fcec9b19d76c0ea80681ddaa0e3c26dae5218a545302d179b9979925014c630f"
+     },
+     "a_slon": {
+      "path": "games/prawda-czy-nie/a_slon.m4a",
+      "bytes": 28894,
+      "sha256": "ee3e0b209bc52d61ef6e33f41bc130ec7d41c1ac747eec7343443d7430b11292"
+     },
+     "q_lato": {
+      "path": "games/prawda-czy-nie/q_lato.m4a",
+      "bytes": 22656,
+      "sha256": "05581698c3cebce404ee95fe095a670b3de387d200adba5a3cfcf0424a5651c9"
+     },
+     "a_lato": {
+      "path": "games/prawda-czy-nie/a_lato.m4a",
+      "bytes": 25128,
+      "sha256": "e0cf5aacf3339880c138285a448f4dd70a80e363a28628436164d26f797f30c8"
+     },
+     "q_auta": {
+      "path": "games/prawda-czy-nie/q_auta.m4a",
+      "bytes": 23606,
+      "sha256": "fa6a85a6487338a975fcd64d5c64bc86fbc34fa16cdce1ccab49acb202febba9"
+     },
+     "a_auta": {
+      "path": "games/prawda-czy-nie/a_auta.m4a",
+      "bytes": 21884,
+      "sha256": "1d07ebf06d7299d2f4fe2ae78353ed286afe0b33c77b6142f95f0e3875f03fc9"
+     }
+    },
+    "variables": {
+     "score": 0
+    },
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "q_krowa"
+     },
+     "q_krowa": {
+      "type": "play",
+      "asset": "q_krowa",
+      "next": "answer_krowa"
+     },
+     "answer_krowa": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "right_krowa",
+       "voice_activity": "wrong_krowa"
+      },
+      "on_timeout": "missed_krowa",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_krowa"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_krowa": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_krowa"
+     },
+     "right_krowa": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_krowa"
+     },
+     "praise_krowa": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_krowa"
+     },
+     "wrong_krowa": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_krowa"
+     },
+     "missed_krowa": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_krowa"
+     },
+     "a_krowa": {
+      "type": "play",
+      "asset": "a_krowa",
+      "next": "q_ryby"
+     },
+     "q_ryby": {
+      "type": "play",
+      "asset": "q_ryby",
+      "next": "answer_ryby"
+     },
+     "answer_ryby": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "wrong_ryby",
+       "voice_activity": "right_ryby"
+      },
+      "on_timeout": "missed_ryby",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_ryby"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_ryby": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_ryby"
+     },
+     "right_ryby": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_ryby"
+     },
+     "praise_ryby": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_ryby"
+     },
+     "wrong_ryby": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_ryby"
+     },
+     "missed_ryby": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_ryby"
+     },
+     "a_ryby": {
+      "type": "play",
+      "asset": "a_ryby",
+      "next": "q_snieg"
+     },
+     "q_snieg": {
+      "type": "play",
+      "asset": "q_snieg",
+      "next": "answer_snieg"
+     },
+     "answer_snieg": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "right_snieg",
+       "voice_activity": "wrong_snieg"
+      },
+      "on_timeout": "missed_snieg",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_snieg"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_snieg": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_snieg"
+     },
+     "right_snieg": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_snieg"
+     },
+     "praise_snieg": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_snieg"
+     },
+     "wrong_snieg": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_snieg"
+     },
+     "missed_snieg": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_snieg"
+     },
+     "a_snieg": {
+      "type": "play",
+      "asset": "a_snieg",
+      "next": "q_slon"
+     },
+     "q_slon": {
+      "type": "play",
+      "asset": "q_slon",
+      "next": "answer_slon"
+     },
+     "answer_slon": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "wrong_slon",
+       "voice_activity": "right_slon"
+      },
+      "on_timeout": "missed_slon",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_slon"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_slon": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_slon"
+     },
+     "right_slon": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_slon"
+     },
+     "praise_slon": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_slon"
+     },
+     "wrong_slon": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_slon"
+     },
+     "missed_slon": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_slon"
+     },
+     "a_slon": {
+      "type": "play",
+      "asset": "a_slon",
+      "next": "q_lato"
+     },
+     "q_lato": {
+      "type": "play",
+      "asset": "q_lato",
+      "next": "answer_lato"
+     },
+     "answer_lato": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "right_lato",
+       "voice_activity": "wrong_lato"
+      },
+      "on_timeout": "missed_lato",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_lato"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_lato": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_lato"
+     },
+     "right_lato": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_lato"
+     },
+     "praise_lato": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_lato"
+     },
+     "wrong_lato": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_lato"
+     },
+     "missed_lato": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_lato"
+     },
+     "a_lato": {
+      "type": "play",
+      "asset": "a_lato",
+      "next": "q_auta"
+     },
+     "q_auta": {
+      "type": "play",
+      "asset": "q_auta",
+      "next": "answer_auta"
+     },
+     "answer_auta": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "wrong_auta",
+       "voice_activity": "right_auta"
+      },
+      "on_timeout": "missed_auta",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_auta"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_auta": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_auta"
+     },
+     "right_auta": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_auta"
+     },
+     "praise_auta": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_auta"
+     },
+     "wrong_auta": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_auta"
+     },
+     "missed_auta": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_auta"
+     },
+     "a_auta": {
+      "type": "play",
+      "asset": "a_auta",
+      "next": "score"
+     },
+     "score": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": 4
+      },
+      "then": "end_great",
+      "else": "end_good"
+     },
+     "end_great": {
+      "type": "end",
+      "asset": "outro_great"
+     },
+     "end_good": {
+      "type": "end",
+      "asset": "outro_good"
+     }
+    }
+   },
+   "timing_sensitive": false
   }
  ],
  "shelves": [
@@ -1599,7 +2088,8 @@
     "zgadnij-dzwiek",
     "zamrozony-taniec",
     "zamrozone-raczki",
-    "echo-rytmu"
+    "echo-rytmu",
+    "prawda-czy-nie"
    ]
   }
  ]

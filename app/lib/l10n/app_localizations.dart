@@ -1254,6 +1254,54 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Masz już dostęp? Zaloguj się'**
   String get paywallHaveAccess;
+
+  /// No description provided for @gameAnswerNow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twoja odpowiedź!'**
+  String get gameAnswerNow;
+
+  /// No description provided for @micTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odpowiedzi głosem i klaśnięciem'**
+  String get micTitle;
+
+  /// No description provided for @micOffBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziecko może odpowiadać klaśnięciem albo głosem, bez dotykania telefonu. Mikrofon działa tylko w czasie zabawy, a dźwięk jest analizowany w telefonie: nic nie jest nagrywane ani wysyłane.'**
+  String get micOffBody;
+
+  /// No description provided for @micOnBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włączone. Zabawy słuchają klaśnięć i głosu dziecka tylko wtedy, gdy czekają na odpowiedź. Nic nie jest nagrywane ani wysyłane.'**
+  String get micOnBody;
+
+  /// No description provided for @micEnable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz mikrofon'**
+  String get micEnable;
+
+  /// No description provided for @micDisable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyłącz'**
+  String get micDisable;
+
+  /// No description provided for @micDenied.
+  ///
+  /// In pl, this message translates to:
+  /// **'Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → AudioKiddo. Do tego czasu zabawy działają bez mikrofonu.'**
+  String get micDenied;
+
+  /// No description provided for @micWithout.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez mikrofonu zabawa podpowiada, kiedy odpowiedzieć, i czeka chwilę na odpowiedź.'**
+  String get micWithout;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

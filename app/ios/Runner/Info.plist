@@ -26,6 +26,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>W zabawach dziecko może odpowiadać klaśnięciem albo głosem. Dźwięk jest analizowany tylko w telefonie: nic nie jest nagrywane ani wysyłane.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>

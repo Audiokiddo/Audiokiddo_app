@@ -2,7 +2,8 @@ import '../content.dart' show AssetRef;
 import '../json.dart';
 
 /// Highest script engine version this build of the app understands.
-const int engineVersion = 1;
+/// 2: `choice` steps (the child answers by clapping, speaking or tapping).
+const int engineVersion = 2;
 
 /// Supported `schema_version` of the game script format.
 const int scriptSchemaVersion = 1;
@@ -38,6 +39,7 @@ sealed class ScriptStep {
         next: r.string('next'),
       ),
       'input' => InputStep.fromJson(id, r),
+      'choice' => ChoiceStep.fromJson(id, r),
       'branch' => BranchStep(
         id,
         condition: Condition.fromJson(r.object('if')),
@@ -81,7 +83,52 @@ class WaitStep extends ScriptStep {
   List<String> get targets => [next];
 }
 
-class InputStep extends ScriptStep {
+/// Parses the `fallback` object shared by input and choice steps: an inline wait/play/goto
+/// step per [FallbackReason], or `"same_as_<reason>"` to reuse another reason's step.
+Map<FallbackReason, ScriptStep> _parseFallbacks(String id, JsonReader r) {
+  final fallbackJson = r.optObject('fallback');
+  final fallbacks = <FallbackReason, ScriptStep>{};
+  if (fallbackJson != null) {
+    // First pass: inline steps; second pass: "same_as_<reason>" aliases.
+    final aliases = <FallbackReason, FallbackReason>{};
+    for (final reason in FallbackReason.values) {
+      final key = wireName(reason);
+      final value = fallbackJson.json[key];
+      if (value == null) continue;
+      if (value is String && value.startsWith('same_as_')) {
+        final target = value.substring('same_as_'.length);
+        final targetReason = FallbackReason.values.where((f) => wireName(f) == target).firstOrNull;
+        if (targetReason == null) {
+          throw FormatError('${fallbackJson.path}.$key', 'unknown alias "$value"');
+        }
+        aliases[reason] = targetReason;
+      } else {
+        final step = ScriptStep.fromJson('$id#$key', JsonReader.of(value, '${fallbackJson.path}.$key'));
+        if (step is! WaitStep && step is! PlayStep && step is! GotoStep) {
+          throw FormatError('${fallbackJson.path}.$key', 'fallback must be wait, play or goto');
+        }
+        fallbacks[reason] = step;
+      }
+    }
+    for (final MapEntry(key: reason, value: target) in aliases.entries) {
+      final step = fallbacks[target];
+      if (step == null) {
+        throw FormatError('${fallbackJson.path}.${wireName(reason)}', 'alias points to a missing fallback');
+      }
+      fallbacks[reason] = step;
+    }
+  }
+  return Map.unmodifiable(fallbacks);
+}
+
+/// A step that listens to the child and needs a non-input variant for every [FallbackReason].
+abstract interface class ListeningStep {
+  int get windowMs;
+  String get onTimeout;
+  Map<FallbackReason, ScriptStep> get fallbacks;
+}
+
+class InputStep extends ScriptStep implements ListeningStep {
   const InputStep(
     super.id, {
     required this.input,
@@ -93,38 +140,6 @@ class InputStep extends ScriptStep {
   });
 
   factory InputStep.fromJson(String id, JsonReader r) {
-    final fallbackJson = r.optObject('fallback');
-    final fallbacks = <FallbackReason, ScriptStep>{};
-    if (fallbackJson != null) {
-      // First pass: inline steps; second pass: "same_as_<reason>" aliases.
-      final aliases = <FallbackReason, FallbackReason>{};
-      for (final reason in FallbackReason.values) {
-        final key = wireName(reason);
-        final value = fallbackJson.json[key];
-        if (value == null) continue;
-        if (value is String && value.startsWith('same_as_')) {
-          final target = value.substring('same_as_'.length);
-          final targetReason = FallbackReason.values.where((f) => wireName(f) == target).firstOrNull;
-          if (targetReason == null) {
-            throw FormatError('${fallbackJson.path}.$key', 'unknown alias "$value"');
-          }
-          aliases[reason] = targetReason;
-        } else {
-          final step = ScriptStep.fromJson('$id#$key', JsonReader.of(value, '${fallbackJson.path}.$key'));
-          if (step is! WaitStep && step is! PlayStep && step is! GotoStep) {
-            throw FormatError('${fallbackJson.path}.$key', 'fallback must be wait, play or goto');
-          }
-          fallbacks[reason] = step;
-        }
-      }
-      for (final MapEntry(key: reason, value: target) in aliases.entries) {
-        final step = fallbacks[target];
-        if (step == null) {
-          throw FormatError('${fallbackJson.path}.${wireName(reason)}', 'alias points to a missing fallback');
-        }
-        fallbacks[reason] = step;
-      }
-    }
     return InputStep(
       id,
       input: r.enumValue('input', InputKind.values),
@@ -132,21 +147,71 @@ class InputStep extends ScriptStep {
       onDetected: r.string('on_detected'),
       onTimeout: r.string('on_timeout'),
       minCount: r.optInteger('min_count', min: 1),
-      fallbacks: Map.unmodifiable(fallbacks),
+      fallbacks: _parseFallbacks(id, r),
     );
   }
 
   final InputKind input;
+  @override
   final int windowMs;
   final String onDetected;
+  @override
   final String onTimeout;
 
   /// For counted inputs such as claps.
   final int? minCount;
+  @override
   final Map<FallbackReason, ScriptStep> fallbacks;
 
   @override
   List<String> get targets => [onDetected, onTimeout, for (final f in fallbacks.values) ...f.targets];
+}
+
+/// The child answers in one of several ways, e.g. clap for "yes" and say anything for "no".
+/// Each option names the input and the step it leads to (engine 2).
+///
+/// ```json
+/// {"type": "choice", "window_ms": 8000,
+///  "options": {"clap": "answer_yes", "voice_activity": "answer_no"},
+///  "on_timeout": "ask_again", "fallback": {...}}
+/// ```
+class ChoiceStep extends ScriptStep implements ListeningStep {
+  const ChoiceStep(
+    super.id, {
+    required this.options,
+    required this.windowMs,
+    required this.onTimeout,
+    required this.fallbacks,
+  });
+
+  factory ChoiceStep.fromJson(String id, JsonReader r) {
+    final optionsJson = r.object('options');
+    final options = <InputKind, String>{};
+    for (final key in optionsJson.json.keys) {
+      final kind = InputKind.values.where((k) => wireName(k) == key).firstOrNull;
+      if (kind == null) throw FormatError('${optionsJson.path}.$key', 'unknown input "$key"');
+      options[kind] = optionsJson.string(key);
+    }
+    if (options.isEmpty) throw FormatError(optionsJson.path, 'a choice needs at least one option');
+    return ChoiceStep(
+      id,
+      options: Map.unmodifiable(options),
+      windowMs: r.integer('window_ms', min: 1),
+      onTimeout: r.string('on_timeout'),
+      fallbacks: _parseFallbacks(id, r),
+    );
+  }
+
+  final Map<InputKind, String> options;
+  @override
+  final int windowMs;
+  @override
+  final String onTimeout;
+  @override
+  final Map<FallbackReason, ScriptStep> fallbacks;
+
+  @override
+  List<String> get targets => [...options.values, onTimeout, for (final f in fallbacks.values) ...f.targets];
 }
 
 class Condition {

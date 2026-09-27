@@ -27,12 +27,13 @@ class GameScreen extends ConsumerWidget {
     final game = ref.watch(gameControllerProvider);
     final playing = ref.watch(playbackStateProvider).value?.playing ?? false;
     final handler = ref.watch(audioHandlerProvider);
-    final tapToAnswer = game.listeningFor != null;
+    final tapToAnswer = game.tapToAnswer;
     final text = Theme.of(context).textTheme;
 
     final (icon, label) = switch (game.phase) {
       GamePhase.playing => (Icons.graphic_eq_rounded, l10n.gameListen),
       GamePhase.waiting => (Icons.hourglass_bottom_rounded, l10n.gameYourTurn),
+      GamePhase.listening when game.listensToSound => (Icons.mic_rounded, l10n.gameAnswerNow),
       GamePhase.listening => (Icons.touch_app_rounded, l10n.gameTapNow),
       GamePhase.finished => (Icons.celebration_rounded, l10n.gameFinished),
       GamePhase.failed => (Icons.error_outline_rounded, l10n.gameFailed),
@@ -56,7 +57,7 @@ class GameScreen extends ConsumerWidget {
                 child: Semantics(
                   button: true,
                   liveRegion: true,
-                  label: tapToAnswer ? l10n.gameTapNow : (playing ? l10n.pause : l10n.play),
+                  label: tapToAnswer ? label : (playing ? l10n.pause : l10n.play),
                   excludeSemantics: true,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -74,7 +75,9 @@ class GameScreen extends ConsumerWidget {
                             height: 220,
                             decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF1F332C)),
                             child: Icon(
-                              game.active && !playing && !tapToAnswer ? Icons.play_arrow_rounded : icon,
+                              game.active && !playing && game.listening.isEmpty
+                                  ? Icons.play_arrow_rounded
+                                  : icon,
                               size: 110,
                               color: _foreground,
                             ),

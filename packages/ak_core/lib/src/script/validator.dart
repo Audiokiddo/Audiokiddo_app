@@ -67,6 +67,22 @@ ScriptValidation validateScript(GameScript script, {int engine = engineVersion})
     }
   }
 
+  late final void Function(ScriptStep, {required String reportAs}) checkStepRef;
+
+  void checkListening(ListeningStep step, String reportAs) {
+    if (step.windowMs > ScriptLimits.maxInputWindowMs) {
+      error(reportAs, 'input window longer than ${ScriptLimits.maxInputWindowMs} ms');
+    }
+    for (final reason in FallbackReason.values) {
+      if (!step.fallbacks.containsKey(reason)) error(reportAs, 'missing fallback for "${reason.name}"');
+    }
+    // Aliased reasons share one step object; check each distinct fallback once.
+    final checked = Set<ScriptStep>.identity();
+    for (final MapEntry(key: reason, value: fallback) in step.fallbacks.entries) {
+      if (checked.add(fallback)) checkStepRef(fallback, reportAs: '$reportAs (fallback ${reason.name})');
+    }
+  }
+
   void checkStep(ScriptStep step, {required String reportAs}) {
     for (final target in step.targets) {
       if (!script.steps.containsKey(target)) error(reportAs, 'jumps to missing step "$target"');
@@ -85,17 +101,18 @@ ScriptValidation validateScript(GameScript script, {int engine = engineVersion})
         if (!_inputsSupportedInV1.contains(step.input)) {
           error(reportAs, 'input "${step.input.name}" is not supported by this engine');
         }
-        if (step.windowMs > ScriptLimits.maxInputWindowMs) {
-          error(reportAs, 'input window longer than ${ScriptLimits.maxInputWindowMs} ms');
+        checkListening(step, reportAs);
+      case ChoiceStep(:final options):
+        if (script.minEngineVersion < 2) {
+          error(reportAs, 'choice steps need "min_engine_version": 2');
         }
-        for (final reason in FallbackReason.values) {
-          if (!step.fallbacks.containsKey(reason)) error(reportAs, 'missing fallback for "${reason.name}"');
+        for (final kind in options.keys) {
+          if (!_inputsSupportedInV1.contains(kind)) {
+            error(reportAs, 'input "${kind.name}" is not supported by this engine');
+          }
         }
-        // Aliased reasons share one step object; check each distinct fallback once.
-        final checked = Set<ScriptStep>.identity();
-        for (final MapEntry(key: reason, value: fallback) in step.fallbacks.entries) {
-          if (checked.add(fallback)) checkStep(fallback, reportAs: '$reportAs (fallback ${reason.name})');
-        }
+        if (options.length < 2) warn(reportAs, 'a choice with one option works like an input step');
+        checkListening(step, reportAs);
       case BranchStep(:final condition):
         if (!script.variables.containsKey(condition.variable)) {
           error(reportAs, 'undeclared variable "${condition.variable}"');
@@ -108,6 +125,8 @@ ScriptValidation validateScript(GameScript script, {int engine = engineVersion})
         break;
     }
   }
+
+  checkStepRef = checkStep;
 
   for (final step in script.steps.values) {
     checkStep(step, reportAs: step.id);

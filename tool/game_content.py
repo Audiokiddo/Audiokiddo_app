@@ -134,12 +134,12 @@ def fallback(ms, next_step, loop=None):
     return {"no_microphone": step, "screen_locked": "same_as_no_microphone", "input_error": "same_as_no_microphone"}
 
 
-def game(id_, steps, assets, start="intro", timing=False, variables=None):
+def game(id_, steps, assets, start="intro", timing=False, variables=None, engine=1):
     return {
         "schema_version": 1,
         "id": id_,
         "version": 1,
-        "min_engine_version": 1,
+        "min_engine_version": engine,
         "timing_sensitive": timing,
         "assets": assets,
         "variables": variables or {},
@@ -227,6 +227,58 @@ def echo_rytmu():
     return game(g, steps, assets, timing=True)
 
 
+def prawda_czy_nie():
+    """Engine 2: the child answers each statement: clap = true, say "nie" = false."""
+    g = "prawda-czy-nie"
+    statements = [
+        ("krowa", True, "Krowa mówi muuu.", "To prawda! Krowa mówi muuu."),
+        ("ryby", False, "Ryby mieszkają na drzewach.", "Nie! Ryby mieszkają w wodzie."),
+        ("snieg", True, "Śnieg jest zimny.", "To prawda! Śnieg jest zimniutki."),
+        ("slon", False, "Słoń jest mniejszy od myszki.", "Nie! Słoń jest ogromny, a myszka malutka."),
+        ("lato", True, "Latem jest cieplej niż zimą.", "To prawda! Latem świeci ciepłe słońce."),
+        ("auta", False, "Samochody jeżdżą po chmurach.", "Nie! Samochody jeżdżą po drogach."),
+    ]
+    assets = {
+        "intro": segment(g, "intro",
+                         "Cześć! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, klaśnij raz! "
+                         "Jeśli to nieprawda, powiedz głośno: nie! Gotowi? Zaczynamy."),
+        "correct": segment(g, "correct", "Tak jest, brawo!"),
+        "oops": segment(g, "oops", "Hmm, posłuchaj."),
+        "not_heard": segment(g, "not_heard", "Nie usłyszałam odpowiedzi, ale nic nie szkodzi."),
+        "think": segment(g, "think", "Pomyśl chwilę. Prawda czy nie?"),
+        "thinking": segment(g, "thinking", sound=tone(220, 1.0, 0.03)),
+        "outro_great": segment(g, "outro_great", "Wow, prawie wszystko dobrze! Jesteś mistrzem prawdy. To koniec zabawy."),
+        "outro_good": segment(g, "outro_good", "Świetnie się bawiliśmy! Następnym razem zagramy znowu. To koniec zabawy."),
+    }
+    steps = {"intro": {"type": "play", "asset": "intro", "next": f"q_{statements[0][0]}"}}
+    for i, (name, true, text, answer) in enumerate(statements):
+        nxt = f"q_{statements[i + 1][0]}" if i + 1 < len(statements) else "score"
+        assets[f"q_{name}"] = segment(g, f"q_{name}", f"Uwaga! {text}")
+        assets[f"a_{name}"] = segment(g, f"a_{name}", answer)
+        steps[f"q_{name}"] = {"type": "play", "asset": f"q_{name}", "next": f"answer_{name}"}
+        right, wrong = f"right_{name}", f"wrong_{name}"
+        steps[f"answer_{name}"] = {
+            "type": "choice", "window_ms": 7000,
+            "options": {"clap": right if true else wrong, "voice_activity": wrong if true else right},
+            "on_timeout": f"missed_{name}",
+            "fallback": {
+                "no_microphone": {"type": "play", "asset": "think", "next": f"pause_{name}"},
+                "screen_locked": "same_as_no_microphone",
+                "input_error": "same_as_no_microphone",
+            },
+        }
+        steps[f"pause_{name}"] = {"type": "wait", "duration_ms": 4000, "loop_asset": "thinking", "next": f"a_{name}"}
+        steps[right] = {"type": "set", "var": "score", "op": "inc", "next": f"praise_{name}"}
+        steps[f"praise_{name}"] = {"type": "play", "asset": "correct", "next": f"a_{name}"}
+        steps[wrong] = {"type": "play", "asset": "oops", "next": f"a_{name}"}
+        steps[f"missed_{name}"] = {"type": "play", "asset": "not_heard", "next": f"a_{name}"}
+        steps[f"a_{name}"] = {"type": "play", "asset": f"a_{name}", "next": nxt}
+    steps["score"] = {"type": "branch", "if": {"var": "score", "gt": 4}, "then": "end_great", "else": "end_good"}
+    steps["end_great"] = {"type": "end", "asset": "outro_great"}
+    steps["end_good"] = {"type": "end", "asset": "outro_good"}
+    return game(g, steps, assets, variables={"score": 0}, engine=2)
+
+
 def item(id_, title, description, script, situations, requirements, minutes, access="paid"):
     return {
         "id": id_, "kind": "interactive_game", "title": title, "parent_description": description,
@@ -254,6 +306,11 @@ def main():
              "Aplikacja klaszcze rytm, dziecko go powtarza. Z mikrofonem (opcjonalnie) aplikacja słyszy klaskanie, ale nie ocenia, "
              "czy rytm był dokładny. Bez mikrofonu daje czas i przypomina rytm.",
              echo_rytmu(), ["w_domu"], ["mikrofon"], 2),
+        item("prawda-czy-nie", "Prawda czy nie? (prototyp)",
+             "Dziecko słucha zdań i odpowiada bez dotykania telefonu: klaśnięcie to „prawda”, głośne „nie” to nieprawda. "
+             "Z mikrofonem (opcjonalnie) aplikacja reaguje na odpowiedź i liczy punkty; bez mikrofonu daje czas do namysłu "
+             "i podaje rozwiązanie.",
+             prawda_czy_nie(), ["podroz", "w_domu", "czekanie"], ["mikrofon"], 4, access="free"),
     ]
     catalog = json.loads(CATALOG.read_text())
     ids = {g["id"] for g in games}

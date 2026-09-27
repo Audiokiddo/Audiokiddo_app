@@ -19,8 +19,13 @@ class BundledCatalogSource implements CatalogSource {
   final String assetPath;
 
   @override
-  Future<Map<String, Object?>> load() async =>
-      jsonDecode(await rootBundle.loadString(assetPath, cache: false)) as Map<String, Object?>;
+  Future<Map<String, Object?>> load() async {
+    // Decoded here: loadString hands files over 50 KB to a background isolate, which is
+    // slower for a file this size and never runs inside widget tests.
+    final bytes = await rootBundle.load(assetPath);
+    return jsonDecode(utf8.decode(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes)))
+        as Map<String, Object?>;
+  }
 }
 
 final catalogSourceProvider = Provider<CatalogSource>((ref) => const BundledCatalogSource());

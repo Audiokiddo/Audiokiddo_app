@@ -679,4 +679,32 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get paywallHaveAccess => 'Masz już dostęp? Zaloguj się';
+
+  @override
+  String get gameAnswerNow => 'Twoja odpowiedź!';
+
+  @override
+  String get micTitle => 'Odpowiedzi głosem i klaśnięciem';
+
+  @override
+  String get micOffBody =>
+      'Dziecko może odpowiadać klaśnięciem albo głosem, bez dotykania telefonu. Mikrofon działa tylko w czasie zabawy, a dźwięk jest analizowany w telefonie: nic nie jest nagrywane ani wysyłane.';
+
+  @override
+  String get micOnBody =>
+      'Włączone. Zabawy słuchają klaśnięć i głosu dziecka tylko wtedy, gdy czekają na odpowiedź. Nic nie jest nagrywane ani wysyłane.';
+
+  @override
+  String get micEnable => 'Włącz mikrofon';
+
+  @override
+  String get micDisable => 'Wyłącz';
+
+  @override
+  String get micDenied =>
+      'Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → AudioKiddo. Do tego czasu zabawy działają bez mikrofonu.';
+
+  @override
+  String get micWithout =>
+      'Bez mikrofonu zabawa podpowiada, kiedy odpowiedzieć, i czeka chwilę na odpowiedź.';
 }
