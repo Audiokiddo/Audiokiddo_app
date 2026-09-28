@@ -12,7 +12,11 @@ Schemat bazy, zasady dostępu (RLS) i funkcje serwerowe. Architektura: `../ARCHI
 | `functions/sync-web-purchases` | Po zalogowaniu e-mailem pobiera zamówienia z audiokiddo.pl i przypisuje pakiety | ✅ typy; ⏳ wymaga kluczy WooCommerce |
 | `functions/delete-account` | Usunięcie konta rodzica wraz z uprawnieniami | ✅ typy; ⏳ wymaga projektu |
 | `functions/_shared/store_status.ts` | Status subskrypcji z danych Apple i Google | ✅ testy jednostkowe; ⏳ do sprawdzenia na danych z sandboxa |
-| `verify-purchase`, `store-notifications`, `download-url`, `publish-catalog` | Weryfikacja zakupów w sklepach, powiadomienia, podpisane adresy plików, publikacja katalogu | ⏳ po założeniu kont sklepów |
+| `migrations/…_store_products.sql` | Produkty App Store i Google Play (subskrypcje, pakiety, zestawy, 25 zabaw) → zakresy dostępu | ✅ przetestowane lokalnie |
+| `functions/verify-purchase` | Aplikacja przysyła zakup (iOS: podpisana transakcja JWS, Android: token); serwer sprawdza go u sklepu i zapisuje dostęp. Zakup z innego konta przechodzi na bieżące („Przywróć zakupy”) | ✅ testy logiki i podpisów; ⏳ wdrożenie po `set_store_secrets.sh` |
+| `functions/store-notifications` | `/apple`: App Store Server Notifications V2 (podpis i łańcuch do Apple Root CA G3). `/google`: RTDN przez Pub/Sub push (token OIDC). Odnowienia, okres łaski, zwroty, zmiana planu, idempotencja | ✅ testy; ⏳ adresy do wpisania w sklepach (krok 7) |
+| `functions/_shared/apple_jws.ts`, `google_play.ts`, `purchases.ts` | Weryfikacja JWS Apple z przypiętym certyfikatem głównym, klient Google Play (konto usługi), reguły zakupów | ✅ 23 testy Deno |
+| `download-url`, `publish-catalog` | Podpisane adresy plików (LH.pl), publikacja katalogu ze Studia | ⏳ czeka na decyzję o hostingu plików |
 
 ## Testy lokalne (bez konta Supabase)
 

@@ -7,6 +7,8 @@ import 'package:audiokiddo/features/access/access_controller.dart';
 import 'package:audiokiddo/features/account/account_screen.dart';
 import 'package:audiokiddo/features/account/account_service.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
+import 'package:audiokiddo/features/purchases/purchase_controller.dart';
+import 'package:audiokiddo/features/purchases/store_gateway.dart';
 import 'package:audiokiddo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -89,6 +91,18 @@ class FakeAccountService implements AccountService {
     _entitlements = [];
     await signOut();
   }
+
+  final verified = <Map<String, Object?>>[];
+  ServerVerdict verdict = ServerVerdict.verified;
+
+  @override
+  Future<String?> purchaseAccountId() async => current?.id ?? 'anon-1';
+
+  @override
+  Future<ServerVerdict> verifyStorePurchase(Map<String, Object?> body) async {
+    verified.add(body);
+    return verdict;
+  }
 }
 
 Future<void> pumpAccount(WidgetTester tester, FakeAccountService account) async {
@@ -115,6 +129,44 @@ Future<void> pumpAccount(WidgetTester tester, FakeAccountService account) async 
 }
 
 void main() {
+  group('server purchase verifier', () {
+    Future<(VerificationResult, FakeAccountService)> run(
+      TargetPlatform platform,
+      ServerVerdict verdict,
+    ) async {
+      final account = FakeAccountService()..verdict = verdict;
+      final container = ProviderContainer(overrides: [accountServiceProvider.overrideWithValue(account)]);
+      addTearDown(container.dispose);
+      final verifier = container.read(Provider((ref) => ServerPurchaseVerifier(ref, platform: platform)));
+      final result = await verifier.verify(
+        const StorePurchase(
+          productId: 'pl.audiokiddo.sub.yearly',
+          status: PurchaseStatus.purchased,
+          verificationData: 'jws-or-token',
+        ),
+      );
+      return (result, account);
+    }
+
+    test('iOS sends the signed transaction, Android the product and token', () async {
+      final (ios, a) = await run(TargetPlatform.iOS, ServerVerdict.verified);
+      expect(ios, VerificationResult.verified);
+      expect(a.verified.single, {'platform': 'ios', 'signedTransaction': 'jws-or-token'});
+      final (_, b) = await run(TargetPlatform.android, ServerVerdict.verified);
+      expect(b.verified.single, {
+        'platform': 'android',
+        'productId': 'pl.audiokiddo.sub.yearly',
+        'purchaseToken': 'jws-or-token',
+      });
+    });
+
+    test('rejected stays rejected; pending and server trouble wait for a retry', () async {
+      expect((await run(TargetPlatform.iOS, ServerVerdict.rejected)).$1, VerificationResult.rejected);
+      expect((await run(TargetPlatform.iOS, ServerVerdict.pending)).$1, VerificationResult.retryLater);
+      expect((await run(TargetPlatform.iOS, ServerVerdict.retry)).$1, VerificationResult.retryLater);
+    });
+  });
+
   group('server rows', () {
     test('map to entitlements; unknown values are skipped', () {
       final e = entitlementFromRow({

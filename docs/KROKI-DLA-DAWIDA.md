@@ -125,11 +125,10 @@ Zrobimy to razem, po krokach 3–5:
 
 Ustawienia subskrypcji: grupa „AudioKiddo”, plany 24,99 zł/mies. i 149,99 zł/rok, **oferta wstępna 7 dni za darmo** na obu. Kraj: Polska.
 
-**Apple, klucz do sprawdzania zakupów:**
-1. App Store Connect → Użytkownicy i dostęp → Integracje → **Zakup w aplikacji** → Wygeneruj klucz.
-2. Pobierz plik `.p8`. Da się to zrobić **tylko raz**, więc od razu zapisz go w menedżerze.
-3. **Napisz mi:** Key ID i Issuer ID (nie są tajne). Plik `.p8` wgrasz komendą, którą Ci dam.
-4. Adres powiadomień serwera (App Store Server Notifications, wersja 2) podam, gdy funkcja będzie wdrożona.
+**Apple: klucz `.p8` nie jest już potrzebny.** Serwer sprawdza podpis Apple na samym zakupie (łańcuch certyfikatów aż do głównego certyfikatu Apple), bez logowania do API Apple.
+1. App Store Connect → Twoja aplikacja → Informacje o aplikacji → **App Store Server Notifications**: wersja 2, ten sam adres dla produkcji i sandboxa:
+   `https://ypdxofcwewwdyoelamgy.supabase.co/functions/v1/store-notifications/apple`
+2. Tamże: **Wyślij powiadomienie testowe**. Funkcja je przyjmie i pominie (to test).
 
 **Google, konto usługi do sprawdzania zakupów:**
 1. **console.cloud.google.com:** nowy projekt `audiokiddo`. Włącz „Google Play Android Developer API” i „Cloud Pub/Sub API”.
@@ -137,7 +136,19 @@ Ustawienia subskrypcji: grupa „AudioKiddo”, plany 24,99 zł/mies. i 149,99 z
 3. **Play Console → Użytkownicy i uprawnienia → Zaproś:** e-mail konta usługi (`audiokiddo-server@….iam.gserviceaccount.com`), uprawnienia „Wyświetlanie danych finansowych” i „Zarządzanie zamówieniami i subskrypcjami”.
 4. **Pub/Sub → Tematy → Utwórz** `play-notifications`. W uprawnieniach tematu dodaj `google-play-developer-notifications@system.gserviceaccount.com` z rolą „Publikujący Pub/Sub”.
 5. Play Console → Zarabianie → Konfiguracja zarabiania: wpisz pełną nazwę tematu `projects/<id-projektu>/topics/play-notifications`.
-6. **Napisz mi:** ID projektu Google Cloud i e-mail konta usługi (nie są tajne).
+6. **Pub/Sub → Subskrypcje → Utwórz** dla tematu `play-notifications`: typ **Push**, adres `https://ypdxofcwewwdyoelamgy.supabase.co/functions/v1/store-notifications/google`, zaznacz **Włącz uwierzytelnianie**, konto usługi `audiokiddo-server@…`, odbiorca (audience) = ten sam adres.
+7. W swoim terminalu wgraj klucz jedną komendą (plik JSON z punktu 2, nie wklejaj go do rozmowy):
+   `tool/set_store_secrets.sh ~/Downloads/<plik-klucza>.json`
+   Potem usuń pobrany plik; kopia zostaje tylko w Supabase i w menedżerze haseł.
+8. Play Console → Konfiguracja zarabiania → **Wyślij powiadomienie testowe**.
+
+**Serwer, jedną serią komend w Twoim terminalu** (po kroku 14, bo razem idzie konfiguracja poczty):
+```
+supabase db push
+supabase config push
+supabase functions deploy verify-purchase store-notifications
+```
+`db push` dodaje produkty sklepów do bazy, `config push` włącza konta anonimowe (zakup bez zakładania konta, bez danych osobowych), a `functions deploy` wgrywa sprawdzanie zakupów.
 
 ## Krok 8. WooCommerce na audiokiddo.pl (15 min, można już teraz)
 
@@ -239,7 +250,7 @@ Bez tego Supabase nie wyśle kodu nikomu poza członkami zespołu, a treści mai
 2. Xcode → Runner → Signing & Capabilities → **+ Capability → Sign in with Apple**. Mogę to dodać za Ciebie, gdy konto będzie w Xcode.
 3. Supabase → Authentication → Sign In / Providers → **Apple**: włącz, w polu *Client IDs* wpisz `pl.audiokiddo.app`. Dla samej aplikacji iOS klucz `.p8` nie jest potrzebny.
 
-**Widżet na ekranie telefonu (iOS):** aplikacja ma drugi element do podpisania, `pl.audiokiddo.app.widget`. Po dodaniu konta w Xcode (Settings → Accounts) zaznacz w Runner i w **AudioKiddoWidget** → Signing & Capabilities → *Automatically manage signing* i wybierz ten sam zespół. Xcode sam założy identyfikator.
+**Widżet na ekranie telefonu (iOS):** aplikacja ma drugi element do podpisania, `pl.audiokiddo.app.widget`. Oba (Runner i widżet) mają funkcję **App Groups** z grupą `group.pl.audiokiddo.app` (widżet czyta z niej postęp dziecka); przy automatycznym podpisywaniu Xcode zarejestruje ją sam, wystarczy potwierdzić. Po dodaniu konta w Xcode (Settings → Accounts) zaznacz w Runner i w **AudioKiddoWidget** → Signing & Capabilities → *Automatically manage signing* i wybierz ten sam zespół. Xcode sam założy identyfikator.
 
 ---
 

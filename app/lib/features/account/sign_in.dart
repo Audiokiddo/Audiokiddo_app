@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../access/access_controller.dart';
+import '../purchases/purchase_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import 'account_service.dart';
 
@@ -30,6 +31,9 @@ Future<void> afterSignIn(WidgetRef ref) async {
     // retried from the account screen
   }
   await ref.read(accessProvider.notifier).refresh();
+  // Store purchases made before signing in belong to an anonymous holder; restoring moves
+  // them to this account (the verification runs as the purchases come back).
+  unawaited(ref.read(purchaseControllerProvider.notifier).restoreQuietly());
 }
 
 /// "Continue with Apple / Google / e-mail", Apple-style: full-width, same height, Apple on

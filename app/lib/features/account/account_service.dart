@@ -24,6 +24,9 @@ class AccountUser {
 /// [notConfigured]: the sign-in method is not set up for this build yet.
 enum AccountError { invalidEmail, tooManyRequests, wrongCode, offline, server, canceled, notConfigured }
 
+/// The server's answer about a store purchase (verify-purchase).
+enum ServerVerdict { verified, pending, rejected, retry }
+
 class AccountException implements Exception {
   const AccountException(this.error);
 
@@ -65,6 +68,15 @@ abstract interface class AccountService {
 
   /// Deletes the account and its entitlements on the server, then signs out locally.
   Future<void> deleteAccount();
+
+  /// The server user a store purchase is tied to (appAccountToken / obfuscatedAccountId).
+  /// Without a parent account an anonymous user is created: a random id, no personal data
+  /// (ARCHITECTURE D4). Null when the server cannot be reached.
+  Future<String?> purchaseAccountId();
+
+  /// Sends a store purchase to verify-purchase ({platform, signedTransaction} on iOS,
+  /// {platform, productId, purchaseToken} on Android).
+  Future<ServerVerdict> verifyStorePurchase(Map<String, Object?> body);
 }
 
 class SupabaseAccountService implements AccountService {
@@ -74,8 +86,9 @@ class SupabaseAccountService implements AccountService {
 
   GoTrueClient get _auth => _client.auth;
 
+  // The anonymous purchase holder is not a parent account: the app shows "signed out".
   static AccountUser? _user(User? user) =>
-      user == null ? null : AccountUser(id: user.id, email: user.email ?? '');
+      user == null || user.isAnonymous ? null : AccountUser(id: user.id, email: user.email ?? '');
 
   @override
   AccountUser? get current => _user(_auth.currentUser);
@@ -154,6 +167,32 @@ class SupabaseAccountService implements AccountService {
   Future<void> deleteAccount() async {
     await _guard(() => _client.functions.invoke('delete-account'));
     await signOut();
+  }
+
+  @override
+  Future<String?> purchaseAccountId() async {
+    final existing = _auth.currentUser;
+    if (existing != null) return existing.id;
+    try {
+      return (await _auth.signInAnonymously()).user?.id;
+    } on Exception {
+      return null; // offline, or anonymous sign-ins not enabled yet: the purchase waits
+    }
+  }
+
+  @override
+  Future<ServerVerdict> verifyStorePurchase(Map<String, Object?> body) async {
+    if (await purchaseAccountId() == null) return ServerVerdict.retry;
+    try {
+      final response = await _client.functions.invoke('verify-purchase', body: body);
+      final data = response.data;
+      return data is Map && data['status'] == 'pending' ? ServerVerdict.pending : ServerVerdict.verified;
+    } on FunctionException catch (e) {
+      // 422: the store says this purchase is not valid for us; anything else: try again later.
+      return e.status == 422 ? ServerVerdict.rejected : ServerVerdict.retry;
+    } on Exception {
+      return ServerVerdict.retry;
+    }
   }
 
   static Future<T> _guard<T>(Future<T> Function() action) async {
@@ -235,6 +274,12 @@ class SignedOutAccountService implements AccountService {
 
   @override
   Future<void> deleteAccount() async {}
+
+  @override
+  Future<String?> purchaseAccountId() async => null;
+
+  @override
+  Future<ServerVerdict> verifyStorePurchase(Map<String, Object?> body) async => ServerVerdict.retry;
 }
 
 /// Overridden in main() with [SupabaseAccountService].

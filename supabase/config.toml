@@ -174,7 +174,8 @@ refresh_token_reuse_interval = 10
 # Allow/disallow new user signups to your project.
 enable_signup = true
 # Allow/disallow anonymous sign-ins to your project.
-enable_anonymous_sign_ins = false
+# D4: an anonymous user holds purchases until the parent signs in (no personal data).
+enable_anonymous_sign_ins = true
 # Allow/disallow testing manual linking of accounts
 enable_manual_linking = false
 # Passwords shorter than this value will be rejected as weak. Minimum 6, recommended 8 or more.
@@ -434,4 +435,12 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.delete-account]
+verify_jwt = false
+
+[functions.verify-purchase]
+verify_jwt = false
+
+# Apple and Google call this without a Supabase token; each request is verified in the
+# function (Apple's signed JWS chain, Google's Pub/Sub OIDC token).
+[functions.store-notifications]
 verify_jwt = false

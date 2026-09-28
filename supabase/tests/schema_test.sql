@@ -17,7 +17,8 @@ end $$;
 insert into public.store_products (product_ref, scopes) values
   ('woo:101', '{pack:wyobraznia}'),
   ('ios:pl.audiokiddo.bundle.three', '{pack:wyobraznia,pack:slowa-i-wiedza,pack:detektyw}'),
-  ('ios:pl.audiokiddo.sub.yearly', '{all_content}');
+  ('ios:pl.audiokiddo.sub.yearly', '{all_content}')
+on conflict (product_ref) do nothing; -- the store products migration may already have them
 
 -- 1. A bundle grants every pack; repeating the same transaction is idempotent.
 do $$
@@ -129,3 +130,17 @@ do $$ begin
   assert (select scopes from public.store_products where product_ref = 'woo:7339') = '{pack:detektyw}', 'detective pack';
 end $$;
 select 'shop product tests passed';
+
+-- 11. Store products: both stores, subscriptions give everything, a store purchase upserts.
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-000000000009', null);
+do $$ begin
+  assert (select scopes from public.store_products where product_ref = 'ios:pl.audiokiddo.sub.yearly') = '{all_content}', 'yearly';
+  assert (select scopes from public.store_products where product_ref = 'android:pl.audiokiddo.sub.monthly') = '{all_content}', 'monthly';
+  assert (select cardinality(scopes) from public.store_products where product_ref = 'ios:pl.audiokiddo.bundle.three') = 3, 'bundle of three';
+  assert exists (select 1 from public.store_products where product_ref = 'android:pl.audiokiddo.item.magiczny_sklep'), 'single item';
+  perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-1', 'active', now() + interval '1 year');
+  perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-1', 'refunded', null);
+  assert (select status from public.entitlements where store_original_tx_id = 'orig-1') = 'refunded', 'same purchase is updated, not duplicated';
+  assert (select count(*) from public.entitlements where store_original_tx_id = 'orig-1') = 1;
+end $$;
+select 'store product tests passed';

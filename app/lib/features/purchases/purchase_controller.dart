@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../access/access_controller.dart';
+import '../account/account_service.dart';
 import '../catalog/catalog_providers.dart';
 import 'fake_store.dart';
 import 'iap_store.dart';
@@ -18,12 +19,45 @@ abstract interface class PurchaseVerifier {
   Future<VerificationResult> verify(StorePurchase purchase);
 }
 
-/// Release builds until the server exists: never grants anything locally.
+/// Never grants anything locally (kept for builds without a server).
 class UnavailablePurchaseVerifier implements PurchaseVerifier {
   const UnavailablePurchaseVerifier();
 
   @override
   Future<VerificationResult> verify(StorePurchase purchase) async => VerificationResult.retryLater;
+}
+
+/// Store builds: the verify-purchase server function checks the purchase with Apple or
+/// Google and records the entitlement; the app then acknowledges it (ARCHITECTURE §7.3).
+class ServerPurchaseVerifier implements PurchaseVerifier {
+  ServerPurchaseVerifier(this._ref, {this.platform});
+
+  final Ref _ref;
+
+  /// The device's platform unless a test sets one.
+  final TargetPlatform? platform;
+
+  @override
+  Future<VerificationResult> verify(StorePurchase purchase) async {
+    final ios = (platform ?? defaultTargetPlatform) == TargetPlatform.iOS;
+    final verdict = await _ref
+        .read(accountServiceProvider)
+        .verifyStorePurchase(
+          ios
+              ? {'platform': 'ios', 'signedTransaction': purchase.verificationData}
+              : {
+                  'platform': 'android',
+                  'productId': purchase.productId,
+                  'purchaseToken': purchase.verificationData,
+                },
+        );
+    return switch (verdict) {
+      ServerVerdict.verified => VerificationResult.verified,
+      ServerVerdict.rejected => VerificationResult.rejected,
+      // Pending (Ask to Buy, deferred payment): the store will deliver it again when approved.
+      ServerVerdict.pending || ServerVerdict.retry => VerificationResult.retryLater,
+    };
+  }
 }
 
 /// Development: grants the product's scopes in the development backend.
@@ -64,7 +98,7 @@ final storeGatewayProvider = Provider<StoreGateway>((ref) {
 });
 
 final purchaseVerifierProvider = Provider<PurchaseVerifier>(
-  (ref) => kDebugMode && !_realStore ? DevPurchaseVerifier(ref) : const UnavailablePurchaseVerifier(),
+  (ref) => kDebugMode && !_realStore ? DevPurchaseVerifier(ref) : ServerPurchaseVerifier(ref),
 );
 
 enum PurchaseMessage { none, success, pendingApproval, canceled, storeError, verifyLater, nothingToRestore }
@@ -91,8 +125,10 @@ class PurchaseController extends Notifier<PurchaseUiState> {
   Future<void> buy(StoreProduct product) async {
     state = PurchaseUiState(busyProductId: product.id);
     try {
-      // TODO(Etap 3): pass the anonymous account UUID (appAccountToken / obfuscatedAccountId).
-      await ref.read(storeGatewayProvider).buy(product);
+      // Ties the purchase to our server user (appAccountToken / obfuscatedAccountId), so
+      // store notifications find the right account.
+      final account = await ref.read(accountServiceProvider).purchaseAccountId();
+      await ref.read(storeGatewayProvider).buy(product, accountToken: account);
     } on Exception {
       state = const PurchaseUiState(message: PurchaseMessage.storeError);
     }
@@ -109,6 +145,10 @@ class PurchaseController extends Notifier<PurchaseUiState> {
       state = const PurchaseUiState(message: PurchaseMessage.nothingToRestore);
     }
   }
+
+  /// After the parent signs in: the store redelivers its purchases and verify-purchase moves
+  /// them from the anonymous holder to the parent's account. No messages on the paywall.
+  Future<void> restoreQuietly() => ref.read(storeGatewayProvider).restore();
 
   void clearMessage() => state = const PurchaseUiState();
 

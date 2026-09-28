@@ -20,8 +20,8 @@ Stan: 2026-09-28. Punkt wyjścia: rodzice wybierają aplikację, która (1) oszc
 
 ## Propozycje: następne kroki (od największego efektu)
 
-1–4. ✅ Zrobione 2026-09-28: głos rodzica, tryb podróży, rytuał „Dobranoc”, widżet (tabela wyżej). Dalej: skrót Siri / Asystenta Google („Hej Siri, dobranoc z Kiddo”) i „Dzisiejsza nuta” w widżecie (wymaga wspólnych danych aplikacji i widżetu, App Group).
-5. **Karta dla dziadków.** Co tydzień ładna grafika: „Zosia w tym tygodniu: 5 nut, 23 dobre odpowiedzi, ulubiona zabawa…” do wysłania w komunikatorze. Darmowy marketing szeptany.
+1–4. ✅ Zrobione 2026-09-28: głos rodzica, tryb podróży, rytuał „Dobranoc”, widżet z postępem dziecka, skróty (ikona, Spotlight, Skróty, Asystent Google), Android Auto, płynne wyciszanie kołysanki.
+5. ✅ **Karta dla dziadków** (zrobione: Postęp → „Wyślij tydzień dziadkom”). Co tydzień ładna grafika: „Zosia w tym tygodniu: 5 nut, 23 dobre odpowiedzi, ulubiona zabawa…” do wysłania w komunikatorze. Darmowy marketing szeptany.
 6. **Sezonowe wydarzenia.** Adwent z Kiddo (24 krótkie zagadki), wakacyjna „Podróżna melodia”, ferie. Powód, by wracać, i materiał na posty.
 7. **Kooperacja rodzeństwa.** Zabawy na dwóch graczy: jedno klaszcze, drugie mówi. Plan uwzględnia już kilkoro dzieci.
 8. **Rekomendacje specjalistów.** Krótka rekomendacja logopedy lub psychologa dziecięcego przy każdym pakiecie (za ich zgodą). Buduje zaufanie przy zakupie.
