@@ -38,7 +38,7 @@ void main() {
     expect(summary.isEmpty, isFalse);
   });
 
-  testWidgets('card renders at its fixed size without overflow', (tester) async {
+  testWidgets('card renders without overflow', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [ambientMotionProvider.overrideWithValue(false)],

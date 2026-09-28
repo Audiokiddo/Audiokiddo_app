@@ -1601,13 +1601,43 @@ class AppLocalizationsPl extends AppLocalizations {
   String get weekCardNotes => 'nut w melodii';
 
   @override
-  String get weekCardActivities => 'zabaw';
+  String weekCardActivities(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'zabawy',
+      many: 'zabaw',
+      few: 'zabawy',
+      one: 'zabawa',
+    );
+    return '$_temp0';
+  }
 
   @override
-  String get weekCardMinutes => 'minut słuchania';
+  String weekCardMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'minuty słuchania',
+      many: 'minut słuchania',
+      few: 'minuty słuchania',
+      one: 'minuta słuchania',
+    );
+    return '$_temp0';
+  }
 
   @override
-  String get weekCardCorrect => 'dobrych odpowiedzi';
+  String weekCardCorrect(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'dobrej odpowiedzi',
+      many: 'dobrych odpowiedzi',
+      few: 'dobre odpowiedzi',
+      one: 'dobra odpowiedź',
+    );
+    return '$_temp0';
+  }
 
   @override
   String weekCardFavorite(String title) {

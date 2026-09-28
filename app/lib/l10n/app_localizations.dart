@@ -2794,20 +2794,20 @@ abstract class AppLocalizations {
   /// No description provided for @weekCardActivities.
   ///
   /// In pl, this message translates to:
-  /// **'zabaw'**
-  String get weekCardActivities;
+  /// **'{count, plural, =1{zabawa} few{zabawy} many{zabaw} other{zabawy}}'**
+  String weekCardActivities(int count);
 
   /// No description provided for @weekCardMinutes.
   ///
   /// In pl, this message translates to:
-  /// **'minut słuchania'**
-  String get weekCardMinutes;
+  /// **'{count, plural, =1{minuta słuchania} few{minuty słuchania} many{minut słuchania} other{minuty słuchania}}'**
+  String weekCardMinutes(int count);
 
   /// No description provided for @weekCardCorrect.
   ///
   /// In pl, this message translates to:
-  /// **'dobrych odpowiedzi'**
-  String get weekCardCorrect;
+  /// **'{count, plural, =1{dobra odpowiedź} few{dobre odpowiedzi} many{dobrych odpowiedzi} other{dobrej odpowiedzi}}'**
+  String weekCardCorrect(int count);
 
   /// No description provided for @weekCardFavorite.
   ///

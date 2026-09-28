@@ -73,7 +73,7 @@ WeekSummary weekSummary({
         ? 0
         : weekNotes(currentDay: position.currentDay, completedDays: position.completedDays),
     activities: progress.activities,
-    minutes: progress.minutes,
+    minutes: progress.activities > 0 && progress.minutes == 0 ? 1 : progress.minutes,
     correct: progress.correct,
     scored: progress.scored,
     favorite: favorite,
@@ -82,13 +82,13 @@ WeekSummary weekSummary({
 }
 
 /// A warm, printable-looking card: Kiddo, the week's melody, a few numbers and a question
-/// grandparents can ask on the phone. Fixed size so the shared image looks the same everywhere.
+/// grandparents can ask on the phone. Fixed width, so the shared image looks the same everywhere.
 class WeekCard extends StatelessWidget {
   const WeekCard({super.key, required this.summary});
 
   final WeekSummary summary;
 
-  static const size = Size(360, 520);
+  static const width = 360.0;
 
   @override
   Widget build(BuildContext context) {
@@ -110,8 +110,8 @@ class WeekCard extends StatelessWidget {
         ],
       ),
     );
-    return SizedBox.fromSize(
-      size: size,
+    return SizedBox(
+      width: width,
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
@@ -124,6 +124,7 @@ class WeekCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(22),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -173,12 +174,12 @@ class WeekCard extends StatelessWidget {
               Row(
                 children: [
                   stat('${summary.notes}/7', l10n.weekCardNotes),
-                  stat('${summary.activities}', l10n.weekCardActivities),
-                  stat('${summary.minutes}', l10n.weekCardMinutes),
-                  if (summary.scored > 0) stat('${summary.correct}', l10n.weekCardCorrect),
+                  stat('${summary.activities}', l10n.weekCardActivities(summary.activities)),
+                  stat('${summary.minutes}', l10n.weekCardMinutes(summary.minutes)),
+                  if (summary.scored > 0) stat('${summary.correct}', l10n.weekCardCorrect(summary.correct)),
                 ],
               ),
-              const Spacer(),
+              const SizedBox(height: 18),
               if (summary.favorite case final favorite?)
                 Text(l10n.weekCardFavorite(favorite), style: text.bodyMedium?.copyWith(color: ink)),
               if (summary.topSkill case final skill?)

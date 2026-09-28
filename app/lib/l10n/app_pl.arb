@@ -990,9 +990,30 @@
     }
   },
   "weekCardNotes": "nut w melodii",
-  "weekCardActivities": "zabaw",
-  "weekCardMinutes": "minut słuchania",
-  "weekCardCorrect": "dobrych odpowiedzi",
+  "weekCardActivities": "{count, plural, =1{zabawa} few{zabawy} many{zabaw} other{zabawy}}",
+  "@weekCardActivities": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weekCardMinutes": "{count, plural, =1{minuta słuchania} few{minuty słuchania} many{minut słuchania} other{minuty słuchania}}",
+  "@weekCardMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weekCardCorrect": "{count, plural, =1{dobra odpowiedź} few{dobre odpowiedzi} many{dobrych odpowiedzi} other{dobrej odpowiedzi}}",
+  "@weekCardCorrect": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "weekCardFavorite": "Ulubiona zabawa: {title}",
   "@weekCardFavorite": {
     "placeholders": {
