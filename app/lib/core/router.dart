@@ -124,7 +124,7 @@ class _ParentShell extends ConsumerWidget {
                 onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
                 destinations: [
                   NavigationDestination(icon: const Icon(Icons.home_rounded), label: l10n.navHome),
-                  NavigationDestination(icon: const Icon(Icons.route_rounded), label: l10n.navPlan),
+                  NavigationDestination(icon: const Icon(Icons.queue_music_rounded), label: l10n.navPlan),
                   NavigationDestination(
                     icon: const Icon(Icons.library_music_rounded),
                     label: l10n.navLibrary,

@@ -2404,13 +2404,13 @@ abstract class AppLocalizations {
   /// No description provided for @planWeek.
   ///
   /// In pl, this message translates to:
-  /// **'Tydzień {week} · melodia tygodnia'**
+  /// **'Tydzień {week}'**
   String planWeek(int week);
 
   /// No description provided for @planWeekNotes.
   ///
   /// In pl, this message translates to:
-  /// **'{done} z {total} nut'**
+  /// **'Melodia tygodnia · {done} z {total} nut'**
   String planWeekNotes(int done, int total);
 
   /// No description provided for @planPlayTune.

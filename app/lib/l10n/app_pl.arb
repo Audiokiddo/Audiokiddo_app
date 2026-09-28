@@ -794,7 +794,7 @@
   "talkLogic": "Co tu nie pasuje: łyżka, widelec, kapeć? Wymyślajcie takie zagadki na zmianę.",
   "talkImagination": "Wymyślcie razem inne zakończenie tej historii. Im dziwniejsze, tym lepsze.",
   "talkListening": "Zamknijcie oczy na 10 sekund. Kto usłyszy więcej dźwięków w pokoju?",
-  "planWeek": "Tydzień {week} · melodia tygodnia",
+  "planWeek": "Tydzień {week}",
   "@planWeek": {
     "placeholders": {
       "week": {
@@ -802,7 +802,7 @@
       }
     }
   },
-  "planWeekNotes": "{done} z {total} nut",
+  "planWeekNotes": "Melodia tygodnia · {done} z {total} nut",
   "@planWeekNotes": {
     "placeholders": {
       "done": {

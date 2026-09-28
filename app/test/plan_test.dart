@@ -47,14 +47,14 @@ void main() {
     await tester.pumpWidget(ProviderScope(overrides: testOverrides(db), child: const AudioKiddoApp()));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.route_rounded));
+    await tester.tap(find.byIcon(Icons.queue_music_rounded));
     await tester.pumpAndSettle();
     expect(find.textContaining('Zosia'), findsWidgets);
     expect(find.text('POZIOM 1 · DNI 1–7'), findsOneWidget);
     expect(find.text('Poznajemy się'), findsOneWidget);
     expect(find.text('0/30'), findsOneWidget);
 
-    expect(find.text('Tydzień 1 · melodia tygodnia'), findsOneWidget);
+    expect(find.text('Tydzień 1'), findsOneWidget);
     await tester.tap(find.bySemanticsLabel('Dzień 1, dzisiaj. Otwórz zabawy.'));
     await tester.pumpAndSettle();
     expect(find.text('Dzień 1'), findsOneWidget);

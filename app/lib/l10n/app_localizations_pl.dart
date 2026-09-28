@@ -1361,12 +1361,12 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String planWeek(int week) {
-    return 'Tydzień $week · melodia tygodnia';
+    return 'Tydzień $week';
   }
 
   @override
   String planWeekNotes(int done, int total) {
-    return '$done z $total nut';
+    return 'Melodia tygodnia · $done z $total nut';
   }
 
   @override
