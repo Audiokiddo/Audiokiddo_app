@@ -16,6 +16,7 @@ Stan: 2026-09-27, build release Androida (`app-release.apk`, 67 MB) i build iOS 
 | `supabase_flutter` (+ `app_links`, `shared_preferences`) | konto rodzica, uprawnienia z serwera | tylko nasz projekt Supabase (UE) | e-mail rodzica, identyfikator konta; sesja zapisana w telefonie |
 | `sign_in_with_apple` | „Kontynuuj z Apple” (iOS) | Apple (systemowe okno) | token logowania trafia tylko do Supabase |
 | `google_sign_in` | „Kontynuuj z Google” | Google (systemowe okno) | token logowania trafia tylko do Supabase. **Do weryfikacji przed wydaniem:** zgodność z programem Families (decyzja D9) |
+| `flutter_local_notifications`, `timezone`, `flutter_timezone` | codzienne przypomnienia dla rodzica (lokalne, bez serwera) | nie | godzina przypomnień w telefonie |
 | `record` | mikrofon w zabawach (klaśnięcia, głos) | nie | próbki trafiają do detektora w pamięci i są odrzucane; nic nie jest nagrywane ani wysyłane |
 
 **Brak**: SDK reklamowych, analitycznych, raportowania błędów (Crashlytics, Sentry), Facebook i Firebase.
@@ -28,6 +29,7 @@ Stan: 2026-09-27, build release Androida (`app-release.apk`, 67 MB) i build iOS 
 | `WAKE_LOCK`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PLAYBACK` | aplikacja / audio_service | odtwarzanie w tle; typ usługi **mediaPlayback** do deklaracji w Play Console |
 | `ACCESS_NETWORK_STATE`, `RECEIVE_BOOT_COMPLETED` | background_downloader (WorkManager) | wznawianie pobrań po restarcie telefonu |
 | `com.android.vending.BILLING` | in_app_purchase | zakupy |
+| `POST_NOTIFICATIONS` | flutter_local_notifications | przypomnienia; prośba systemowa dopiero po wyborze „Włącz przypomnienia” |
 | `RECORD_AUDIO` | aplikacja / record | zabawy z odpowiedzią głosem lub klaśnięciem; prośba systemowa dopiero po bramce rodzica i włączeniu przez rodzica |
 | `…DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | AndroidX (wewnętrzne) | niewidoczne dla użytkownika |
 

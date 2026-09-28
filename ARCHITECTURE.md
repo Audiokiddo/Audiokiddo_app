@@ -444,3 +444,10 @@ audiokiddo-app/
 | D13 | Wiek: jak na stronie głównej (Wyobraźnia i Słowa i Wiedza 3+, Detektyw 6+) | **zatwierdzona** |
 | D14 | Rynek: Polska na start, docelowo cały świat; interfejs od początku w plikach lokalizacji | **zatwierdzona** |
 | D15 | Piosenki: autorskie AudioKiddo | **potwierdzone** przez Dawida (dotyczy też praw wykonawczych do nagrań) |
+
+## Dodatki 2026-09-28: rodzina, plan, przypomnienia, Kiddo
+
+- **D16. Profile dzieci tylko w telefonie.** Imię (opcjonalne), wiek, cele, sytuacje, minuty dziennie. Kilkoro dzieci, jedno aktywne. Wyniki zabaw (ukończenia, odpowiedzi, poprawne odpowiedzi ze zmiennej `score` skryptu) zapisywane lokalnie, maks. 2000 wpisów. Nic o dzieciach nie trafia na serwer.
+- **D17. Plan rozwoju w `ak_core` (`development.dart`).** 30 dni, 4 poziomy (1: krótkie nagrania i piosenki; 2: zabawy z odpowiedziami; 3+: dłuższe przygody), jedna porcja dziennie w limicie minut, bez powtórek dzień po dniu, skrzynka co 7 dni, porady funkcji po jednej. Nowy dzień otwiera się najwcześniej następnego dnia kalendarzowego. Zablokowane treści tylko, gdy nie ma nic dostępnego; dzień zaliczają dostępne zabawy; rozpoczęte dni są „zamrażane”.
+- **D18. Przypomnienia lokalne** (`flutter_local_notifications`) o godzinie wybranej przez rodzica, na 7 dni naprzód, odnawiane przy każdym otwarciu; dzisiejsze pomijane po wykonaniu porcji. Teksty z lekkim humorem dla rodziców.
+- **D19. Kiddo i magiczne wejście.** Maskotka rysowana w kodzie; wstęp z lektorem (podgłośnij → powitanie → „Abrakadabra!” → dostęp przyznany). Głos Kiddo wbudowany (`assets/audio/kiddo`), nagrania zastępcze do podmiany przez Nelę.
