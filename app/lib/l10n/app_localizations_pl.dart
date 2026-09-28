@@ -1287,8 +1287,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onboardingDailyTitle => 'Po trochu, codziennie';
 
   @override
-  String get onboardingDailyBody =>
-      'Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania.';
+  String get onboardingDailyBody => 'Kilka minut dziennie, zabawy rozłożone na dni. Bez przytłaczania.';
 
   @override
   String get todayMorning => 'Poranna rozgrzewka';
@@ -1552,4 +1551,100 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get voiceEntryHint => 'Przywitanie, pochwała i dobranoc nagrane przez Ciebie';
+
+  @override
+  String get onboardingAnswerTitle => 'Dziecko odpowiada';
+
+  @override
+  String get onboardingAnswerBody => 'Klaśnięciem albo głosem. Kiddo słucha i prowadzi zabawę dalej.';
+
+  @override
+  String get onboardingModesTitle => 'Na drogę i na dobranoc';
+
+  @override
+  String get onboardingModesBody => 'Jeden przycisk: zabawy na całą trasę albo wieczorny rytuał.';
+
+  @override
+  String get onboardingVoiceTitle => 'Twój głos w zabawie';
+
+  @override
+  String get onboardingVoiceBody => 'Nagraj „Brawo!” i „Dobranoc”. Nagrania zostają w telefonie.';
+
+  @override
+  String get gameHintWaiting => 'Odpowiedz na głos. Za chwilę Kiddo powie, jak było.';
+
+  @override
+  String get gameHintListening => 'Kiddo słucha. Klaśnij albo odpowiedz głośno.';
+
+  @override
+  String get gameHintTap => 'Dotknij ekranu w dowolnym miejscu.';
+
+  @override
+  String widgetProgress(String name, int day, int notes) {
+    return '$name · dzień $day · $notes z 7 nut';
+  }
+
+  @override
+  String widgetDone(String name) {
+    return '$name: dzisiejsza nuta zebrana';
+  }
+
+  @override
+  String get weekCardKicker => 'AudioKiddo · ostatnie 7 dni';
+
+  @override
+  String weekCardTitle(String name) {
+    return '$name w tym tygodniu';
+  }
+
+  @override
+  String get weekCardNotes => 'nut w melodii';
+
+  @override
+  String get weekCardActivities => 'zabaw';
+
+  @override
+  String get weekCardMinutes => 'minut słuchania';
+
+  @override
+  String get weekCardCorrect => 'dobrych odpowiedzi';
+
+  @override
+  String weekCardFavorite(String title) {
+    return 'Ulubiona zabawa: $title';
+  }
+
+  @override
+  String weekCardSkill(String skill) {
+    return 'Najwięcej ćwiczyło: $skill';
+  }
+
+  @override
+  String weekCardAsk(String title) {
+    return 'Zapytajcie, o czym była „$title”. Opowie Wam wszystko!';
+  }
+
+  @override
+  String get weekCardAskGeneric => 'Zapytajcie, w co grało z Kiddo. Opowie Wam wszystko!';
+
+  @override
+  String weekCardShareText(String name) {
+    return 'Tydzień z AudioKiddo: $name';
+  }
+
+  @override
+  String get weekCardSheetTitle => 'Karta dla dziadków';
+
+  @override
+  String get weekCardSheetBody =>
+      'Obrazek z podsumowaniem tygodnia. Wyślij go w wiadomości: babcia będzie wiedziała, o co zapytać przez telefon.';
+
+  @override
+  String get weekCardSend => 'Wyślij';
+
+  @override
+  String get weekCardEntry => 'Wyślij tydzień dziadkom';
+
+  @override
+  String get weekCardEntryHint => 'Ładna karta z nutami, ulubioną zabawą i pytaniem do rozmowy';
 }

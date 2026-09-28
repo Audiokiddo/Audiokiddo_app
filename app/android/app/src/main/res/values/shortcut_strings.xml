@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_bedtime">Dobranoc</string>
+    <string name="shortcut_bedtime_long">Dobranoc z Kiddo</string>
+    <string name="shortcut_trip">W drogę</string>
+    <string name="shortcut_trip_long">W drogę z Kiddo</string>
+    <!-- What parents may say to Google Assistant for each feature. -->
+    <string-array name="shortcut_bedtime_synonyms">
+        <item>dobranoc</item>
+        <item>kołysanka</item>
+        <item>kołysanki</item>
+        <item>wieczorny rytuał</item>
+        <item>do spania</item>
+    </string-array>
+    <string-array name="shortcut_trip_synonyms">
+        <item>w drogę</item>
+        <item>podróż</item>
+        <item>tryb podróży</item>
+        <item>do samochodu</item>
+        <item>na drogę</item>
+    </string-array>
+</resources>

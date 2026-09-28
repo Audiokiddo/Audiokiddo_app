@@ -13,6 +13,7 @@ import '../reminders/reminders.dart';
 import 'child_quiz.dart';
 import 'family.dart';
 import 'plan_texts.dart';
+import 'week_card.dart';
 import '../parent_voice/parent_voice.dart';
 
 /// What the child practised and how the answers go, with plain advice the parent can act
@@ -93,6 +94,27 @@ class ProgressScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AkSpace.l),
+            GroupedSection(
+              children: [
+                GroupedRow(
+                  icon: Icons.favorite_rounded,
+                  iconColor: AkBrand.terracotta,
+                  title: l10n.weekCardEntry,
+                  subtitle: l10n.weekCardEntryHint,
+                  chevron: true,
+                  onTap: () => showWeekCard(
+                    context,
+                    weekSummary(
+                      name: childLabel(l10n, child, index),
+                      results: results,
+                      catalog: catalog,
+                      position: ref.read(planPositionProvider(child.id)),
+                      now: DateTime.now(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             GroupedSection(
               header: l10n.progressSkills,
               footer: l10n.progressSkillsFooter,

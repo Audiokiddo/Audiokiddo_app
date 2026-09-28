@@ -10,6 +10,7 @@ import 'features/downloads/download_providers.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
 import 'features/onboarding/onboarding_controller.dart';
 import 'features/player/audio_handler.dart';
+import 'features/player/car_library.dart';
 import 'features/player/playback_controller.dart';
 import 'features/player/player_providers.dart';
 
@@ -35,5 +36,10 @@ Future<void> main() async {
   // Resume interrupted downloads and start recording listening progress.
   await container.read(downloadManagerProvider).start();
   container.read(playbackControllerProvider);
+  // Android Auto shows the family's listening library on the car screen.
+  final car = CarLibrary(container);
+  audioHandler
+    ..browse = car.children
+    ..playById = car.play;
   runApp(UncontrolledProviderScope(container: container, child: const AudioKiddoApp()));
 }

@@ -220,7 +220,7 @@ class BedtimeScreen extends ConsumerWidget {
           child: Stack(
             children: [
               const Positioned.fill(
-                child: FloatingDoodles(count: 22, color: Color(0xFFFFE9A8), opacity: 0.45, seed: 42),
+                child: FloatingDoodles(count: 10, color: Color(0xFFFFE9A8), opacity: 0.25, seed: 42),
               ),
               SafeArea(
                 child: ListView(
@@ -317,7 +317,9 @@ class SessionScreen extends ConsumerWidget {
     };
     final mood = switch (session.current) {
       _ when session.finished => night ? KiddoMood.sleepy : KiddoMood.happy,
-      ItemStep() => night ? KiddoMood.sleepy : KiddoMood.listening,
+      // In the evening Kiddo stays calm and sleepy, even while it talks.
+      _ when night => KiddoMood.sleepy,
+      ItemStep() => KiddoMood.listening,
       _ => KiddoMood.talking,
     };
 

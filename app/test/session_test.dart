@@ -19,8 +19,8 @@ class FakeSessionAudio implements SessionAudio {
   Completer<void>? _item;
 
   @override
-  Future<void> playItem(ContentItem item) {
-    log.add('item:${item.id}');
+  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero}) {
+    log.add(fadeOut > Duration.zero ? 'item:${item.id}:fade' : 'item:${item.id}');
     return (_item = Completer<void>()).future;
   }
 
@@ -112,6 +112,13 @@ void main() {
     ];
     expect(items.where((i) => i.kind == ContentKind.song), hasLength(lessThanOrEqualTo(1)));
     expect(items.where((i) => i.kind == ContentKind.interactiveGame), isEmpty);
+    for (final s in steps.whereType<ItemStep>()) {
+      expect(
+        s.fadeOut,
+        s.item.kind == ContentKind.song ? bedtimeFade : Duration.zero,
+        reason: 'the lullaby fades',
+      );
+    }
     final last = steps.last as ParentStep;
     expect(last.clip, ParentClip.goodnight);
     expect(last.fallbackLine, 'goodnight');

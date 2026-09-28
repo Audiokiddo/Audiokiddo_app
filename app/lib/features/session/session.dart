@@ -17,9 +17,12 @@ sealed class SessionStep {
 
 /// A recording from the catalog, played in the normal player (lock screen, headphones).
 class ItemStep extends SessionStep {
-  const ItemStep(this.item);
+  const ItemStep(this.item, {this.fadeOut = Duration.zero});
 
   final ContentItem item;
+
+  /// Fades out over the end of the item (the last lullaby of the evening).
+  final Duration fadeOut;
 }
 
 /// One of Kiddo's bundled lines, then [pauseAfter] of quiet (time to look out of the window).
@@ -106,6 +109,9 @@ List<SessionStep> buildTrip(
   return steps;
 }
 
+/// How long the evening lullaby takes to fade away.
+const bedtimeFade = Duration(seconds: 25);
+
 /// The evening ritual behind one "Dobranoc" button: three calm breaths, one quiet
 /// activity, one lullaby, goodnight in the parent's voice (or Kiddo's).
 List<SessionStep> buildBedtime(
@@ -133,15 +139,16 @@ List<SessionStep> buildBedtime(
   return [
     const LineStep('bedtime_start'),
     if (quiet.isNotEmpty) ItemStep(quiet.first),
-    if (lullabies.isNotEmpty) ItemStep(lullabies.first),
+    if (lullabies.isNotEmpty) ItemStep(lullabies.first, fadeOut: bedtimeFade),
     const ParentStep(ParentClip.goodnight, fallbackLine: 'goodnight'),
   ];
 }
 
 /// Plays the steps; separated so the sequence logic is testable without audio.
 abstract interface class SessionAudio {
-  /// Plays [item] from the start; completes when it ends or is stopped.
-  Future<void> playItem(ContentItem item);
+  /// Plays [item] from the start, fading out over its last [fadeOut]; completes when it
+  /// ends or is stopped.
+  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero});
 
   Future<void> sayLine(String line);
 
@@ -156,9 +163,10 @@ class AppSessionAudio implements SessionAudio {
   final Ref _ref;
 
   @override
-  Future<void> playItem(ContentItem item) async {
+  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero}) async {
     final handler = _ref.read(audioHandlerProvider);
     await _ref.read(playbackControllerProvider).start(item, album: 'AudioKiddo', fromStart: true);
+    if (fadeOut > Duration.zero) handler.fadeOutAtEnd(fadeOut);
     // Wait until this item actually runs, then until it is over (or stopped).
     await handler.playbackState
         .firstWhere((s) => s.processingState == AudioProcessingState.ready)
@@ -241,8 +249,8 @@ class SessionController extends Notifier<SessionState> {
   Future<void> _play(SessionStep step, Map<ParentClip, String> clips, int generation) async {
     final audio = ref.read(sessionAudioProvider);
     switch (step) {
-      case ItemStep(:final item):
-        await audio.playItem(item);
+      case ItemStep(:final item, :final fadeOut):
+        await audio.playItem(item, fadeOut: fadeOut);
       case LineStep(:final line, :final pauseAfter):
         await audio.sayLine(line);
         await _pause(pauseAfter, generation);

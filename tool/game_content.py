@@ -290,23 +290,23 @@ def item(id_, title, description, script, situations, requirements, minutes, acc
 
 def main():
     games = [
-        item("zgadnij-dzwiek", "Zgadnij dźwięk (prototyp)",
+        item("zgadnij-dzwiek", "Zgadnij dźwięk",
              "Dziecko słucha odgłosów i mówi, co to. Aplikacja nie ocenia odpowiedzi: po chwili podaje rozwiązanie. "
              "Z mikrofonem (opcjonalnie) zauważa, że dziecko coś powiedziało, i szybciej przechodzi dalej.",
              zgadnij_dzwiek(), ["podroz", "w_domu"], ["mikrofon"], 3, access="free"),
-        item("zamrozony-taniec", "Zamrożony taniec (prototyp)",
+        item("zamrozony-taniec", "Zamrożony taniec",
              "Gdy gra muzyka, dziecko tańczy; na „stop” zamienia się w posąg. Telefon leży, aplikacja niczego nie mierzy.",
              taniec("zamrozony-taniec", "Kiedy gra muzyka, tańczymy w miejscu. Kiedy usłyszysz stop, zamieniamy się w posągi! Uwaga, zaczynamy."),
              ["w_domu"], ["miejsce_do_ruchu"], 2),
-        item("zamrozone-raczki", "Zamrożone rączki (prototyp, w podróży)",
+        item("zamrozone-raczki", "Zamrożone rączki (w podróży)",
              "Wersja do samochodu: tańczą tylko rączki i minki, bez wstawania z fotelika.",
              taniec("zamrozone-raczki", "W podróży tańczą tylko rączki i minki. Kiedy usłyszysz stop, rączki zamarzają! Uwaga, zaczynamy."),
              ["podroz"], [], 2),
-        item("echo-rytmu", "Echo rytmu (prototyp)",
+        item("echo-rytmu", "Echo rytmu",
              "Aplikacja klaszcze rytm, dziecko go powtarza. Z mikrofonem (opcjonalnie) aplikacja słyszy klaskanie, ale nie ocenia, "
              "czy rytm był dokładny. Bez mikrofonu daje czas i przypomina rytm.",
              echo_rytmu(), ["w_domu"], ["mikrofon"], 2),
-        item("prawda-czy-nie", "Prawda czy nie? (prototyp)",
+        item("prawda-czy-nie", "Prawda czy nie?",
              "Dziecko słucha zdań i odpowiada bez dotykania telefonu: klaśnięcie to „prawda”, głośne „nie” to nieprawda. "
              "Z mikrofonem (opcjonalnie) aplikacja reaguje na odpowiedź i liczy punkty; bez mikrofonu daje czas do namysłu "
              "i podaje rozwiązanie.",
@@ -317,7 +317,7 @@ def main():
     catalog["items"] = [i for i in catalog["items"] if i["id"] not in ids] + games
     catalog["shelves"] = [s for s in catalog["shelves"] if s["id"] not in ("gry", "nowosci")] + [
         {"id": "nowosci", "title": "Nowość!", "kind": "row", "item_ids": ["prawda-czy-nie"]},
-        {"id": "gry", "title": "Nowe gry bez ekranu (prototypy)", "kind": "row", "item_ids": [g["id"] for g in games]}
+        {"id": "gry", "title": "Gry bez ekranu", "kind": "row", "item_ids": [g["id"] for g in games]}
     ]
     CATALOG.write_text(json.dumps(catalog, ensure_ascii=False, indent=1) + "\n")
 

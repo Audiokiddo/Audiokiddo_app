@@ -214,29 +214,32 @@ class _MagicIntroState extends ConsumerState<MagicIntro> {
                   ),
                 ),
                 if (_stage == IntroStage.granted) const Positioned.fill(child: ConfettiBurst()),
-                SafeArea(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 450),
-                    transitionBuilder: (child, animation) => FadeTransition(
-                      opacity: animation,
-                      child: ScaleTransition(
-                        scale: Tween(begin: 0.92, end: 1.0).animate(animation),
-                        child: child,
-                      ),
-                    ),
-                    child: KeyedSubtree(
-                      key: ValueKey(_stage),
-                      child: switch (_stage) {
-                        IntroStage.volume => _VolumeScene(talking: _talking),
-                        IntroStage.hello => _HelloScene(talking: _talking),
-                        IntroStage.password => _PasswordScene(
-                          talking: _talking,
-                          byVoice: _listeningByMic,
-                          levels: _levels,
-                          onOrb: _grant,
+                // Full size, so every scene is centred (a loose Stack child hugs the left edge).
+                Positioned.fill(
+                  child: SafeArea(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 450),
+                      transitionBuilder: (child, animation) => FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(
+                          scale: Tween(begin: 0.92, end: 1.0).animate(animation),
+                          child: child,
                         ),
-                        IntroStage.granted => _GrantedScene(talking: _talking),
-                      },
+                      ),
+                      child: KeyedSubtree(
+                        key: ValueKey(_stage),
+                        child: switch (_stage) {
+                          IntroStage.volume => _VolumeScene(talking: _talking),
+                          IntroStage.hello => _HelloScene(talking: _talking),
+                          IntroStage.password => _PasswordScene(
+                            talking: _talking,
+                            byVoice: _listeningByMic,
+                            levels: _levels,
+                            onOrb: _grant,
+                          ),
+                          IntroStage.granted => _GrantedScene(talking: _talking),
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -432,6 +435,7 @@ class _HelloScene extends StatelessWidget {
           builder: (context, v, child) => Opacity(opacity: v, child: child),
           child: Text(
             l10n.onboardingHelloSubtitle,
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AkBrand.ink, letterSpacing: 2),
           ),
         ),

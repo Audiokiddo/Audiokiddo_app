@@ -84,33 +84,75 @@ extension Color {
   }
 }
 
+/// The child's week, written by the app (lib/features/home/home_widget_sync.dart) into the
+/// shared App Group. Empty until a child profile exists.
+struct ChildWeek {
+  static let appGroup = "group.pl.audiokiddo.app"
+
+  let line: String
+  let notes: Int
+  let todayDone: Bool
+
+  static func load() -> ChildWeek? {
+    let defaults = UserDefaults(suiteName: appGroup)
+    guard let line = defaults?.string(forKey: "line"), !line.isEmpty else { return nil }
+    return ChildWeek(
+      line: line,
+      notes: Int(defaults?.string(forKey: "notes") ?? "") ?? 0,
+      todayDone: defaults?.string(forKey: "done") == "1"
+    )
+  }
+}
+
 struct PartEntry: TimelineEntry {
   let date: Date
   let part: DayPart
+  var week: ChildWeek? = nil
 }
 
 struct PartProvider: TimelineProvider {
   func placeholder(in context: Context) -> PartEntry { PartEntry(date: Date(), part: .evening) }
 
   func getSnapshot(in context: Context, completion: @escaping (PartEntry) -> Void) {
-    completion(PartEntry(date: Date(), part: DayPart.of(Date())))
+    completion(PartEntry(date: Date(), part: DayPart.of(Date()), week: ChildWeek.load()))
   }
 
-  /// One entry now and one at each change of the part of the day for the next 24 hours.
+  /// One entry now and one at each change of the part of the day for the next 24 hours. The
+  /// app asks for a new timeline whenever the child's week changes.
   func getTimeline(in context: Context, completion: @escaping (Timeline<PartEntry>) -> Void) {
     let now = Date()
     let calendar = Calendar.current
-    var entries = [PartEntry(date: now, part: DayPart.of(now))]
+    let week = ChildWeek.load()
+    var entries = [PartEntry(date: now, part: DayPart.of(now), week: week)]
     for dayOffset in 0...1 {
       guard let day = calendar.date(byAdding: .day, value: dayOffset, to: calendar.startOfDay(for: now)) else { continue }
       for hour in DayPart.startHours {
         guard let date = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: day), date > now,
           date.timeIntervalSince(now) <= 24 * 3600
         else { continue }
-        entries.append(PartEntry(date: date, part: DayPart.of(date)))
+        // After midnight "today's note" is a new one; the app refreshes it when opened.
+        let sameDay = calendar.isDate(date, inSameDayAs: now)
+        entries.append(PartEntry(date: date, part: DayPart.of(date), week: sameDay ? week : nil))
       }
     }
     completion(Timeline(entries: entries, policy: .atEnd))
+  }
+}
+
+/// Seven dots: this week's melody, filled for every note collected.
+struct NotesRow: View {
+  let notes: Int
+  let color: Color
+
+  var body: some View {
+    HStack(spacing: 4) {
+      ForEach(0..<7, id: \.self) { i in
+        Circle()
+          .fill(i < notes ? color : color.opacity(0.22))
+          .frame(width: 7, height: 7)
+      }
+    }
+    .accessibilityLabel("\(notes) z 7 nut w tym tygodniu")
   }
 }
 
@@ -125,9 +167,13 @@ struct PartView: View {
         Image(systemName: part.symbol)
           .font(.system(size: 22, weight: .semibold))
         Spacer()
-        Text("AudioKiddo")
-          .font(.system(size: 11, weight: .bold))
-          .opacity(0.7)
+        if let week = entry.week {
+          NotesRow(notes: week.notes, color: part.foreground)
+        } else {
+          Text("AudioKiddo")
+            .font(.system(size: 11, weight: .bold))
+            .opacity(0.7)
+        }
       }
       Spacer(minLength: 0)
       Text(part.title)
@@ -135,8 +181,8 @@ struct PartView: View {
         .minimumScaleFactor(0.8)
         .lineLimit(2)
       if family != .systemSmall {
-        Text(part.subtitle)
-          .font(.system(size: 13))
+        Text(entry.week?.line ?? part.subtitle)
+          .font(.system(size: 13, weight: entry.week == nil ? .regular : .semibold))
           .opacity(0.85)
           .lineLimit(2)
       }

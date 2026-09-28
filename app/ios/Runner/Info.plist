@@ -67,6 +67,29 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>moon.stars.fill</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Kołysanka i spokojny rytuał</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Dobranoc</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>/dobranoc</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>car.fill</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Zabawy na całą trasę</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>W drogę</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>/podroz</string>
+		</dict>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

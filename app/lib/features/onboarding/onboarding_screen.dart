@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/theme/tokens.dart';
+import '../../core/widgets/kiddo.dart';
 import '../../l10n/app_localizations.dart';
 import '../account/account_service.dart';
 import '../account/sign_in.dart';
@@ -92,14 +93,33 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   _Page(
                     icon: Icons.headphones_rounded,
                     iconColor: AkBrand.teal,
+                    hero: const Kiddo(size: 88, mood: KiddoMood.happy, wave: true),
                     title: l10n.onboardingHelloTitle,
                     subtitle: l10n.onboardingHelloSubtitle,
                     children: [
+                      _Feature(
+                        icon: Icons.record_voice_over_rounded,
+                        color: AkBrand.teal,
+                        title: l10n.onboardingAnswerTitle,
+                        body: l10n.onboardingAnswerBody,
+                      ),
                       _Feature(
                         icon: Icons.calendar_month_rounded,
                         color: AkBrand.orange,
                         title: l10n.onboardingDailyTitle,
                         body: l10n.onboardingDailyBody,
+                      ),
+                      _Feature(
+                        icon: Icons.nightlight_round,
+                        color: AkBrand.lavenderDeep,
+                        title: l10n.onboardingModesTitle,
+                        body: l10n.onboardingModesBody,
+                      ),
+                      _Feature(
+                        icon: Icons.favorite_rounded,
+                        color: AkBrand.terracotta,
+                        title: l10n.onboardingVoiceTitle,
+                        body: l10n.onboardingVoiceBody,
                       ),
                     ],
                   ),
@@ -243,9 +263,12 @@ class _Page extends StatelessWidget {
     required this.iconColor,
     required this.title,
     this.subtitle,
+    this.hero,
     required this.children,
   });
 
+  /// Shown instead of the icon tile (Kiddo on the first page).
+  final Widget? hero;
   final IconData icon;
   final Color iconColor;
   final String title;
@@ -260,12 +283,14 @@ class _Page extends StatelessWidget {
       children: [
         ExcludeSemantics(
           child: Center(
-            child: Container(
-              width: 76,
-              height: 76,
-              decoration: BoxDecoration(color: iconColor, borderRadius: BorderRadius.circular(19)),
-              child: Icon(icon, size: 44, color: symbolColorOn(iconColor)),
-            ),
+            child:
+                hero ??
+                Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(color: iconColor, borderRadius: BorderRadius.circular(19)),
+                  child: Icon(icon, size: 44, color: symbolColorOn(iconColor)),
+                ),
           ),
         ),
         const SizedBox(height: AkSpace.l),

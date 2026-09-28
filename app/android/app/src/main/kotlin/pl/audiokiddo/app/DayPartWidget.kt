@@ -9,7 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.view.View
 import android.widget.RemoteViews
+import es.antonborri.home_widget.HomeWidgetPlugin
 import java.util.Calendar
 
 /**
@@ -43,12 +45,26 @@ class DayPartWidget : AppWidgetProvider() {
 
     private fun views(context: Context, part: Part): RemoteViews {
         val ink = if (part.night) Color.WHITE else Color.parseColor("#231A16")
+        // The child's week, written by the app (lib/features/home/home_widget_sync.dart).
+        val data = HomeWidgetPlugin.getData(context)
+        val line = data.getString("line", null).orEmpty()
+        val notes = data.getString("notes", null)?.toIntOrNull()
         return RemoteViews(context.packageName, R.layout.day_part_widget).apply {
             setInt(R.id.widget_root, "setBackgroundResource", part.background)
             setTextViewText(R.id.widget_title, context.getString(part.title))
-            setTextViewText(R.id.widget_subtitle, context.getString(part.subtitle))
+            setTextViewText(R.id.widget_subtitle, line.ifEmpty { context.getString(part.subtitle) })
             setTextViewText(R.id.widget_action, context.getString(part.action))
-            for (view in listOf(R.id.widget_brand, R.id.widget_title, R.id.widget_subtitle, R.id.widget_action)) {
+            if (notes != null && line.isNotEmpty()) {
+                // This week's melody: a filled dot for every note collected.
+                setTextViewText(R.id.widget_notes, "●".repeat(notes.coerceIn(0, 7)) + "○".repeat(7 - notes.coerceIn(0, 7)))
+                setContentDescription(R.id.widget_notes, context.getString(R.string.widget_notes, notes))
+                setViewVisibility(R.id.widget_notes, View.VISIBLE)
+                setViewVisibility(R.id.widget_brand, View.GONE)
+            } else {
+                setViewVisibility(R.id.widget_notes, View.GONE)
+                setViewVisibility(R.id.widget_brand, View.VISIBLE)
+            }
+            for (view in listOf(R.id.widget_brand, R.id.widget_notes, R.id.widget_title, R.id.widget_subtitle, R.id.widget_action)) {
                 setTextColor(view, ink)
             }
             val open = Intent(Intent.ACTION_VIEW, Uri.parse(part.url)).setPackage(context.packageName)

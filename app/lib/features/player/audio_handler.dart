@@ -78,10 +78,44 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
   Duration get position => _player.position;
   Duration? get duration => _player.duration;
 
+  /// Android Auto: folders and items for the car screen (set up in main, see CarLibrary).
+  Future<List<MediaItem>> Function(String parentId)? browse;
+  Future<void> Function(String itemId)? playById;
+
+  @override
+  Future<List<MediaItem>> getChildren(String parentMediaId, [Map<String, dynamic>? options]) async =>
+      await browse?.call(parentMediaId) ?? const [];
+
+  @override
+  Future<void> playFromMediaId(String mediaId, [Map<String, dynamic>? extras]) async =>
+      playById?.call(mediaId);
+
+  Timer? _fadeTicker;
+
+  /// Lowers the volume over the last [tail] of the current item (the lullaby at the end of
+  /// the bedtime ritual fades out instead of stopping). Cleared by the next item or stop.
+  void fadeOutAtEnd(Duration tail) {
+    _fadeTicker?.cancel();
+    _fadeTicker = Timer.periodic(const Duration(milliseconds: 250), (_) {
+      final total = _player.duration;
+      if (total == null || !_player.playing) return;
+      final left = total - _player.position;
+      if (left < tail) {
+        unawaited(_player.setVolume((left.inMilliseconds / tail.inMilliseconds).clamp(0.0, 1.0)));
+      }
+    });
+  }
+
+  void _clearFade() {
+    _fadeTicker?.cancel();
+    _fadeTicker = null;
+  }
+
   /// Plays a local file or a URL, starting at [start].
   Future<void> playItem(MediaItem media, Uri source, {Duration start = Duration.zero}) async {
     final timingSensitive = media.extras?[timingSensitiveExtra] == true;
     if (timingSensitive) await _player.setSpeed(1);
+    _clearFade();
     await _player.setVolume(1);
     // Publish the item only once it loaded, so a failed start does not linger in the mini player.
     final duration = await _player.setAudioSource(
@@ -97,6 +131,7 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
   /// false when something else took over the player (stop, another item).
   @override
   Future<bool> playSegment(MediaItem media, Uri source) async {
+    _clearFade();
     await _player.setLoopMode(LoopMode.off);
     await _player.setSpeed(1);
     await _player.setVolume(1);
@@ -149,6 +184,7 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
   @override
   Future<void> stop() async {
     cancelSleepTimer();
+    _clearFade();
     await _player.stop();
     await super.stop();
   }
@@ -218,6 +254,7 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
 
   Future<void> dispose() async {
     cancelSleepTimer();
+    _clearFade();
     for (final s in _subscriptions) {
       await s.cancel();
     }

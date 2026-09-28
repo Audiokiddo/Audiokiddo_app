@@ -891,7 +891,7 @@
   {
    "id": "zgadnij-dzwiek",
    "kind": "interactive_game",
-   "title": "Zgadnij dźwięk (prototyp)",
+   "title": "Zgadnij dźwięk",
    "parent_description": "Dziecko słucha odgłosów i mówi, co to. Aplikacja nie ocenia odpowiedzi: po chwili podaje rozwiązanie. Z mikrofonem (opcjonalnie) zauważa, że dziecko coś powiedziało, i szybciej przechodzi dalej.",
    "age_min": 3,
    "duration_sec": 180,
@@ -1080,7 +1080,7 @@
   {
    "id": "zamrozony-taniec",
    "kind": "interactive_game",
-   "title": "Zamrożony taniec (prototyp)",
+   "title": "Zamrożony taniec",
    "parent_description": "Gdy gra muzyka, dziecko tańczy; na „stop” zamienia się w posąg. Telefon leży, aplikacja niczego nie mierzy.",
    "age_min": 3,
    "duration_sec": 120,
@@ -1212,7 +1212,7 @@
   {
    "id": "zamrozone-raczki",
    "kind": "interactive_game",
-   "title": "Zamrożone rączki (prototyp, w podróży)",
+   "title": "Zamrożone rączki (w podróży)",
    "parent_description": "Wersja do samochodu: tańczą tylko rączki i minki, bez wstawania z fotelika.",
    "age_min": 3,
    "duration_sec": 120,
@@ -1342,7 +1342,7 @@
   {
    "id": "echo-rytmu",
    "kind": "interactive_game",
-   "title": "Echo rytmu (prototyp)",
+   "title": "Echo rytmu",
    "parent_description": "Aplikacja klaszcze rytm, dziecko go powtarza. Z mikrofonem (opcjonalnie) aplikacja słyszy klaskanie, ale nie ocenia, czy rytm był dokładny. Bez mikrofonu daje czas i przypomina rytm.",
    "age_min": 3,
    "duration_sec": 120,
@@ -1550,7 +1550,7 @@
   {
    "id": "prawda-czy-nie",
    "kind": "interactive_game",
-   "title": "Prawda czy nie? (prototyp)",
+   "title": "Prawda czy nie?",
    "parent_description": "Dziecko słucha zdań i odpowiada bez dotykania telefonu: klaśnięcie to „prawda”, głośne „nie” to nieprawda. Z mikrofonem (opcjonalnie) aplikacja reaguje na odpowiedź i liczy punkty; bez mikrofonu daje czas do namysłu i podaje rozwiązanie.",
    "age_min": 3,
    "duration_sec": 240,
@@ -2090,7 +2090,7 @@
   },
   {
    "id": "gry",
-   "title": "Nowe gry bez ekranu (prototypy)",
+   "title": "Gry bez ekranu",
    "kind": "row",
    "item_ids": [
     "zgadnij-dzwiek",

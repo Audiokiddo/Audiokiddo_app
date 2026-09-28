@@ -2278,7 +2278,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingDailyBody.
   ///
   /// In pl, this message translates to:
-  /// **'Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania.'**
+  /// **'Kilka minut dziennie, zabawy rozłożone na dni. Bez przytłaczania.'**
   String get onboardingDailyBody;
 
   /// No description provided for @todayMorning.
@@ -2706,6 +2706,168 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Przywitanie, pochwała i dobranoc nagrane przez Ciebie'**
   String get voiceEntryHint;
+
+  /// No description provided for @onboardingAnswerTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziecko odpowiada'**
+  String get onboardingAnswerTitle;
+
+  /// No description provided for @onboardingAnswerBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Klaśnięciem albo głosem. Kiddo słucha i prowadzi zabawę dalej.'**
+  String get onboardingAnswerBody;
+
+  /// No description provided for @onboardingModesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na drogę i na dobranoc'**
+  String get onboardingModesTitle;
+
+  /// No description provided for @onboardingModesBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jeden przycisk: zabawy na całą trasę albo wieczorny rytuał.'**
+  String get onboardingModesBody;
+
+  /// No description provided for @onboardingVoiceTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twój głos w zabawie'**
+  String get onboardingVoiceTitle;
+
+  /// No description provided for @onboardingVoiceBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagraj „Brawo!” i „Dobranoc”. Nagrania zostają w telefonie.'**
+  String get onboardingVoiceBody;
+
+  /// No description provided for @gameHintWaiting.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odpowiedz na głos. Za chwilę Kiddo powie, jak było.'**
+  String get gameHintWaiting;
+
+  /// No description provided for @gameHintListening.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo słucha. Klaśnij albo odpowiedz głośno.'**
+  String get gameHintListening;
+
+  /// No description provided for @gameHintTap.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dotknij ekranu w dowolnym miejscu.'**
+  String get gameHintTap;
+
+  /// No description provided for @widgetProgress.
+  ///
+  /// In pl, this message translates to:
+  /// **'{name} · dzień {day} · {notes} z 7 nut'**
+  String widgetProgress(String name, int day, int notes);
+
+  /// No description provided for @widgetDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'{name}: dzisiejsza nuta zebrana'**
+  String widgetDone(String name);
+
+  /// No description provided for @weekCardKicker.
+  ///
+  /// In pl, this message translates to:
+  /// **'AudioKiddo · ostatnie 7 dni'**
+  String get weekCardKicker;
+
+  /// No description provided for @weekCardTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'{name} w tym tygodniu'**
+  String weekCardTitle(String name);
+
+  /// No description provided for @weekCardNotes.
+  ///
+  /// In pl, this message translates to:
+  /// **'nut w melodii'**
+  String get weekCardNotes;
+
+  /// No description provided for @weekCardActivities.
+  ///
+  /// In pl, this message translates to:
+  /// **'zabaw'**
+  String get weekCardActivities;
+
+  /// No description provided for @weekCardMinutes.
+  ///
+  /// In pl, this message translates to:
+  /// **'minut słuchania'**
+  String get weekCardMinutes;
+
+  /// No description provided for @weekCardCorrect.
+  ///
+  /// In pl, this message translates to:
+  /// **'dobrych odpowiedzi'**
+  String get weekCardCorrect;
+
+  /// No description provided for @weekCardFavorite.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ulubiona zabawa: {title}'**
+  String weekCardFavorite(String title);
+
+  /// No description provided for @weekCardSkill.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najwięcej ćwiczyło: {skill}'**
+  String weekCardSkill(String skill);
+
+  /// No description provided for @weekCardAsk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapytajcie, o czym była „{title}”. Opowie Wam wszystko!'**
+  String weekCardAsk(String title);
+
+  /// No description provided for @weekCardAskGeneric.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapytajcie, w co grało z Kiddo. Opowie Wam wszystko!'**
+  String get weekCardAskGeneric;
+
+  /// No description provided for @weekCardShareText.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tydzień z AudioKiddo: {name}'**
+  String weekCardShareText(String name);
+
+  /// No description provided for @weekCardSheetTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Karta dla dziadków'**
+  String get weekCardSheetTitle;
+
+  /// No description provided for @weekCardSheetBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Obrazek z podsumowaniem tygodnia. Wyślij go w wiadomości: babcia będzie wiedziała, o co zapytać przez telefon.'**
+  String get weekCardSheetBody;
+
+  /// No description provided for @weekCardSend.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyślij'**
+  String get weekCardSend;
+
+  /// No description provided for @weekCardEntry.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyślij tydzień dziadkom'**
+  String get weekCardEntry;
+
+  /// No description provided for @weekCardEntryHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ładna karta z nutami, ulubioną zabawą i pytaniem do rozmowy'**
+  String get weekCardEntryHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

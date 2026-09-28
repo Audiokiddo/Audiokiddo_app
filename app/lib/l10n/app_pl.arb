@@ -739,7 +739,7 @@
   "paywallCarTrial": "Mamo, tato… daleko jeszcze? A może 7 dni za darmo, zanim dojedziemy?",
   "paywallCar": "Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!",
   "onboardingDailyTitle": "Po trochu, codziennie",
-  "onboardingDailyBody": "Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania.",
+  "onboardingDailyBody": "Kilka minut dziennie, zabawy rozłożone na dni. Bez przytłaczania.",
   "todayMorning": "Poranna rozgrzewka",
   "todayMidday": "Przygoda na dziś",
   "todayAfternoon": "W drodze i po przedszkolu",
@@ -948,5 +948,87 @@
   "voiceMicDenied": "Bez dostępu do mikrofonu nie da się nagrać. Włącz go w Ustawieniach telefonu.",
   "voicePrivacy": "Nagrania nie są wysyłane na serwer ani do kopii zapasowej. Usuniesz je tutaj albo razem z aplikacją.",
   "voiceEntry": "Twój głos w zabawie",
-  "voiceEntryHint": "Przywitanie, pochwała i dobranoc nagrane przez Ciebie"
+  "voiceEntryHint": "Przywitanie, pochwała i dobranoc nagrane przez Ciebie",
+  "onboardingAnswerTitle": "Dziecko odpowiada",
+  "onboardingAnswerBody": "Klaśnięciem albo głosem. Kiddo słucha i prowadzi zabawę dalej.",
+  "onboardingModesTitle": "Na drogę i na dobranoc",
+  "onboardingModesBody": "Jeden przycisk: zabawy na całą trasę albo wieczorny rytuał.",
+  "onboardingVoiceTitle": "Twój głos w zabawie",
+  "onboardingVoiceBody": "Nagraj „Brawo!” i „Dobranoc”. Nagrania zostają w telefonie.",
+  "gameHintWaiting": "Odpowiedz na głos. Za chwilę Kiddo powie, jak było.",
+  "gameHintListening": "Kiddo słucha. Klaśnij albo odpowiedz głośno.",
+  "gameHintTap": "Dotknij ekranu w dowolnym miejscu.",
+  "widgetProgress": "{name} · dzień {day} · {notes} z 7 nut",
+  "@widgetProgress": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "day": {
+        "type": "int"
+      },
+      "notes": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetDone": "{name}: dzisiejsza nuta zebrana",
+  "@widgetDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "weekCardKicker": "AudioKiddo · ostatnie 7 dni",
+  "weekCardTitle": "{name} w tym tygodniu",
+  "@weekCardTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "weekCardNotes": "nut w melodii",
+  "weekCardActivities": "zabaw",
+  "weekCardMinutes": "minut słuchania",
+  "weekCardCorrect": "dobrych odpowiedzi",
+  "weekCardFavorite": "Ulubiona zabawa: {title}",
+  "@weekCardFavorite": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "weekCardSkill": "Najwięcej ćwiczyło: {skill}",
+  "@weekCardSkill": {
+    "placeholders": {
+      "skill": {
+        "type": "String"
+      }
+    }
+  },
+  "weekCardAsk": "Zapytajcie, o czym była „{title}”. Opowie Wam wszystko!",
+  "@weekCardAsk": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "weekCardAskGeneric": "Zapytajcie, w co grało z Kiddo. Opowie Wam wszystko!",
+  "weekCardShareText": "Tydzień z AudioKiddo: {name}",
+  "@weekCardShareText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "weekCardSheetTitle": "Karta dla dziadków",
+  "weekCardSheetBody": "Obrazek z podsumowaniem tygodnia. Wyślij go w wiadomości: babcia będzie wiedziała, o co zapytać przez telefon.",
+  "weekCardSend": "Wyślij",
+  "weekCardEntry": "Wyślij tydzień dziadkom",
+  "weekCardEntryHint": "Ładna karta z nutami, ulubioną zabawą i pytaniem do rozmowy"
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Long-press shortcuts on the app icon and Google Assistant App Actions ("Hej Google,
+     otwórz Dobranoc w AudioKiddo"). The shortcut id is the path of the app's deep link. -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <capability android:name="actions.intent.OPEN_APP_FEATURE">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="pl.audiokiddo.app.MainActivity"
+            android:targetPackage="pl.audiokiddo.app">
+            <url-template android:value="audiokiddo://open/{feature}" />
+            <parameter
+                android:name="feature"
+                android:key="feature" />
+        </intent>
+    </capability>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_bedtime"
+        android:shortcutId="dobranoc"
+        android:shortcutLongLabel="@string/shortcut_bedtime_long"
+        android:shortcutShortLabel="@string/shortcut_bedtime">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="audiokiddo://open/dobranoc"
+            android:targetClass="pl.audiokiddo.app.MainActivity"
+            android:targetPackage="pl.audiokiddo.app" />
+        <capability-binding android:key="actions.intent.OPEN_APP_FEATURE">
+            <parameter-binding
+                android:key="feature"
+                android:value="@array/shortcut_bedtime_synonyms" />
+        </capability-binding>
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_trip"
+        android:shortcutId="podroz"
+        android:shortcutLongLabel="@string/shortcut_trip_long"
+        android:shortcutShortLabel="@string/shortcut_trip">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="audiokiddo://open/podroz"
+            android:targetClass="pl.audiokiddo.app.MainActivity"
+            android:targetPackage="pl.audiokiddo.app" />
+        <capability-binding android:key="actions.intent.OPEN_APP_FEATURE">
+            <parameter-binding
+                android:key="feature"
+                android:value="@array/shortcut_trip_synonyms" />
+        </capability-binding>
+    </shortcut>
+</shortcuts>

@@ -15,6 +15,9 @@ import UIKit
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "DeviceStoragePlugin") {
       DeviceStoragePlugin.register(with: registrar)
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "LaunchRoutePlugin") {
+      LaunchRoutePlugin.register(with: registrar)
+    }
   }
 }
 

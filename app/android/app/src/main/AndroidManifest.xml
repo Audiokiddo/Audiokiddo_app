@@ -40,6 +40,7 @@
             </intent-filter>
             <!-- audiokiddo://open/dobranoc, /podroz: the home-screen widget opens these screens. -->
             <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -91,6 +92,10 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+        <!-- Android Auto: the listening library and player on the car screen (CarLibrary). -->
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

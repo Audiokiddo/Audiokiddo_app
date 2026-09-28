@@ -13,4 +13,5 @@
     <string name="widget_play">Graj</string>
     <string name="widget_trip">W drogę</string>
     <string name="widget_bedtime">Dobranoc</string>
+    <string name="widget_notes">%1$d z 7 nut w tym tygodniu</string>
 </resources>

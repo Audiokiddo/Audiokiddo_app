@@ -43,6 +43,13 @@ class GameScreen extends ConsumerWidget {
       GamePhase.failed => l10n.gameFailed,
       GamePhase.idle => '',
     };
+    // A line for the parent: how the child answers right now.
+    final hint = switch (game.phase) {
+      GamePhase.waiting => l10n.gameHintWaiting,
+      GamePhase.listening when game.listensToSound => l10n.gameHintListening,
+      GamePhase.listening => l10n.gameHintTap,
+      _ => null,
+    };
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -77,6 +84,15 @@ class GameScreen extends ConsumerWidget {
                           _GameKiddo(game: game, playing: playing),
                           const SizedBox(height: AkSpace.l),
                           Text(label, style: text.titleLarge?.copyWith(color: _foreground)),
+                          if (hint != null)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(AkSpace.xl, AkSpace.s, AkSpace.xl, 0),
+                              child: Text(
+                                hint,
+                                textAlign: TextAlign.center,
+                                style: text.bodyLarge?.copyWith(color: _foreground.withValues(alpha: 0.7)),
+                              ),
+                            ),
                         ],
                       ),
                     ),
