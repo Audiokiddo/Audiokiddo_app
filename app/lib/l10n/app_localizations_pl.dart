@@ -892,7 +892,15 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String quizSummaryAge(int age) {
-    return 'Zabawy dobrane do wieku: $age lat.';
+    String _temp0 = intl.Intl.pluralLogic(
+      age,
+      locale: localeName,
+      other: '$age lat',
+      many: '$age lat',
+      few: '$age lata',
+      one: '1 rok',
+    );
+    return 'Zabawy dobrane do wieku: $_temp0.';
   }
 
   @override
@@ -1204,7 +1212,15 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String progressProfileSummary(int age, int minutes) {
-    return '$age lat · $minutes min dziennie';
+    String _temp0 = intl.Intl.pluralLogic(
+      age,
+      locale: localeName,
+      other: '$age lat',
+      many: '$age lat',
+      few: '$age lata',
+      one: '1 rok',
+    );
+    return '$_temp0 · $minutes min dziennie';
   }
 
   @override
@@ -1266,4 +1282,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get paywallCar => 'Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!';
+
+  @override
+  String get onboardingDailyTitle => 'Po trochu, codziennie';
+
+  @override
+  String get onboardingDailyBody =>
+      'Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania.';
 }

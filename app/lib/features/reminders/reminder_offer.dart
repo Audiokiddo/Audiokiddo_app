@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ambient_motion.dart';
 import '../../core/widgets/kiddo.dart';
@@ -164,6 +165,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
@@ -210,6 +212,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                         ChoiceChip(
                           label: Text('$label ${time.$1}:${time.$2.toString().padLeft(2, '0')}'),
                           selected: _time == time,
+                          labelStyle: selectableChipLabel(context, selected: _time == time),
                           onSelected: (_) => setState(() => _time = time),
                         ),
                     ],

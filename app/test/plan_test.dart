@@ -89,5 +89,6 @@ void main() {
     final state = container.read(familyProvider).value!;
     expect(state.resultsOf('a').single.correct, 5);
     expect(state.resultsOf('b').single.itemId, 'magiczny-sklep');
+    expect(state.frozen['a'], isNotEmpty, reason: "the day A is on keeps its activities");
   });
 }

@@ -153,6 +153,7 @@ List<PlanDay> buildPlan(
     if (child.goals.contains(DevGoal.calm) && item.situations.contains(Situation.przedSnem)) s += 3;
     if (child.goals.contains(DevGoal.movement) && item.kind == ContentKind.song) s += 2;
     if (canPlay?.call(item) ?? true) s += 4;
+    if (!(canPlay?.call(item) ?? true)) s -= 50;
     final used = lastUsed[item.id];
     if (used != null) s -= used >= day - 2 ? 100 : 6 / (day - used);
     // Stable variety between items with the same score.
@@ -172,6 +173,8 @@ List<PlanDay> buildPlan(
     final packsToday = <String?>{};
     for (final item in ranked) {
       if (picked.length == 3) break;
+      // Locked items only stand in when nothing playable fits (the parent may unlock them).
+      if (picked.isNotEmpty && !(canPlay?.call(item) ?? true)) continue;
       if (lastUsed[item.id] != null && lastUsed[item.id]! >= day - 1) continue;
       if (picked.isNotEmpty && seconds + item.durationSec > budget) continue;
       // Mix packs within a day when there is a choice.
@@ -248,30 +251,38 @@ class PlanPosition {
   final bool todayDone;
 }
 
-/// Plan days count as done in order: a day is done once all its activities were completed
-/// on or after the calendar day it opened. At most one new day opens per calendar day.
-PlanPosition planPosition(List<PlanDay> plan, List<ActivityResult> results, DateTime now) {
+/// Plan days count as done in order: a day is done once every activity the family can play
+/// ([playable], all by default) was completed on or after the calendar day it opened. At most
+/// one new day opens per calendar day. A day with nothing playable waits for the parent.
+PlanPosition planPosition(
+  List<PlanDay> plan,
+  List<ActivityResult> results,
+  DateTime now, {
+  bool Function(String itemId)? playable,
+}) {
   final today = _day(now);
   var completed = 0;
   DateTime? lastDone;
   for (final day in plan) {
+    final required = [
+      for (final id in day.itemIds)
+        if (playable?.call(id) ?? true) id,
+    ];
+    if (required.isEmpty) break;
     // The day opens the calendar day after the previous one was finished (day 1: any time).
     final opensOn = lastDone?.add(const Duration(days: 1));
-    final done = day.itemIds.every(
-      (id) => results.any(
-        (r) => r.itemId == id && r.completed && (opensOn == null || !_day(r.at).isBefore(opensOn)),
-      ),
-    );
-    if (!done) break;
-    final finishedAt = [
-      for (final id in day.itemIds)
-        results
-            .where((r) => r.itemId == id && r.completed && (opensOn == null || !_day(r.at).isBefore(opensOn)))
-            .map((r) => _day(r.at))
-            .reduce((a, b) => a.isBefore(b) ? a : b),
-    ].reduce((a, b) => a.isAfter(b) ? a : b);
+    DateTime? finishedOn(String id) {
+      final days = [
+        for (final r in results)
+          if (r.itemId == id && r.completed && (opensOn == null || !_day(r.at).isBefore(opensOn))) _day(r.at),
+      ];
+      return days.isEmpty ? null : days.reduce((a, b) => a.isBefore(b) ? a : b);
+    }
+
+    final finished = [for (final id in required) finishedOn(id)];
+    if (finished.contains(null)) break;
     completed++;
-    lastDone = finishedAt;
+    lastDone = finished.cast<DateTime>().reduce((a, b) => a.isAfter(b) ? a : b);
   }
   final todayDone = lastDone != null && !lastDone.isBefore(today);
   final current = todayDone ? completed : completed + 1;
@@ -281,6 +292,15 @@ PlanPosition planPosition(List<PlanDay> plan, List<ActivityResult> results, Date
     todayDone: todayDone,
   );
 }
+
+/// Replaces the first days of [plan] with [frozen] item lists, so days a child already
+/// started keep their activities when purchases change what the planner would pick.
+List<PlanDay> withFrozenDays(List<PlanDay> plan, List<List<String>> frozen) => [
+  for (final day in plan)
+    day.day <= frozen.length
+        ? PlanDay(day: day.day, itemIds: frozen[day.day - 1], tip: day.tip, chest: day.chest)
+        : day,
+];
 
 /// Numbers for the parent's progress screen.
 class ChildProgress {

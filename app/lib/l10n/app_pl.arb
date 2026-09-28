@@ -482,7 +482,7 @@
       }
     }
   },
-  "quizSummaryAge": "Zabawy dobrane do wieku: {age} lat.",
+  "quizSummaryAge": "Zabawy dobrane do wieku: {age, plural, =1{1 rok} few{{age} lata} many{{age} lat} other{{age} lat}}.",
   "@quizSummaryAge": {
     "placeholders": {
       "age": {
@@ -654,7 +654,7 @@
   "progressAdvice": "Podpowiedzi",
   "progressSettings": "Ustawienia planu",
   "progressEditProfile": "Wiek, cele i czas",
-  "progressProfileSummary": "{age} lat · {minutes} min dziennie",
+  "progressProfileSummary": "{age, plural, =1{1 rok} few{{age} lata} many{{age} lat} other{{age} lat}} · {minutes} min dziennie",
   "@progressProfileSummary": {
     "placeholders": {
       "age": {
@@ -737,5 +737,7 @@
   "adviceComeBack": "Kilka dni przerwy? Zdarza się najlepszym. Wystarczy 5 minut dziś, żeby wrócić do rytmu.",
   "adviceLevelUp": "Regularność na medal! Można dodać kilka minut dziennie.",
   "paywallCarTrial": "Mamo, tato… daleko jeszcze? A może 7 dni za darmo, zanim dojedziemy?",
-  "paywallCar": "Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!"
+  "paywallCar": "Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!",
+  "onboardingDailyTitle": "Po trochu, codziennie",
+  "onboardingDailyBody": "Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania."
 }

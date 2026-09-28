@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/audio/kiddo_voice.dart';
@@ -185,75 +186,78 @@ class _MagicIntroState extends ConsumerState<MagicIntro> {
       IntroStage.password => const [Color(0xFF0F1A17), Color(0xFF263B6B)],
       IntroStage.granted => const [AkBrand.sun, AkBrand.orange],
     };
-    return Scaffold(
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        // Impatient? Touch to move on (the magic word waits for the orb or the voice).
-        onTap: _stage == IntroStage.volume || _stage == IntroStage.hello ? _next : null,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 600),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: background,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        body: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          // Impatient? Touch to move on (the magic word waits for the orb or the voice).
+          onTap: _stage == IntroStage.volume || _stage == IntroStage.hello ? _next : null,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 600),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: background,
+              ),
             ),
-          ),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: FloatingDoodles(
-                  key: ValueKey(dark),
-                  color: dark ? AkBrand.sun : AkBrand.ink,
-                  opacity: dark ? 0.55 : 0.18,
-                  count: dark ? 26 : 14,
-                  seed: _index + 3,
-                ),
-              ),
-              if (_stage == IntroStage.granted) const Positioned.fill(child: ConfettiBurst()),
-              SafeArea(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 450),
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: ScaleTransition(
-                      scale: Tween(begin: 0.92, end: 1.0).animate(animation),
-                      child: child,
-                    ),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: FloatingDoodles(
+                    key: ValueKey(dark),
+                    color: dark ? AkBrand.sun : AkBrand.ink,
+                    opacity: dark ? 0.55 : 0.18,
+                    count: dark ? 26 : 14,
+                    seed: _index + 3,
                   ),
-                  child: KeyedSubtree(
-                    key: ValueKey(_stage),
-                    child: switch (_stage) {
-                      IntroStage.volume => _VolumeScene(talking: _talking),
-                      IntroStage.hello => _HelloScene(talking: _talking),
-                      IntroStage.password => _PasswordScene(
-                        talking: _talking,
-                        byVoice: _listeningByMic,
-                        levels: _levels,
-                        onOrb: _grant,
+                ),
+                if (_stage == IntroStage.granted) const Positioned.fill(child: ConfettiBurst()),
+                SafeArea(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 450),
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: animation,
+                      child: ScaleTransition(
+                        scale: Tween(begin: 0.92, end: 1.0).animate(animation),
+                        child: child,
                       ),
-                      IntroStage.granted => _GrantedScene(talking: _talking),
-                    },
-                  ),
-                ),
-              ),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(AkSpace.s),
-                    child: TextButton(
-                      onPressed: () {
-                        _generation++;
-                        widget.onDone();
+                    ),
+                    child: KeyedSubtree(
+                      key: ValueKey(_stage),
+                      child: switch (_stage) {
+                        IntroStage.volume => _VolumeScene(talking: _talking),
+                        IntroStage.hello => _HelloScene(talking: _talking),
+                        IntroStage.password => _PasswordScene(
+                          talking: _talking,
+                          byVoice: _listeningByMic,
+                          levels: _levels,
+                          onOrb: _grant,
+                        ),
+                        IntroStage.granted => _GrantedScene(talking: _talking),
                       },
-                      style: TextButton.styleFrom(foregroundColor: dark ? Colors.white70 : AkBrand.ink),
-                      child: Text(l10n.introSkip),
                     ),
                   ),
                 ),
-              ),
-            ],
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(AkSpace.s),
+                      child: TextButton(
+                        onPressed: () {
+                          _generation++;
+                          widget.onDone();
+                        },
+                        style: TextButton.styleFrom(foregroundColor: dark ? Colors.white70 : AkBrand.ink),
+                        child: Text(l10n.introSkip),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

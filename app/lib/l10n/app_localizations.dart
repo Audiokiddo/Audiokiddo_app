@@ -1642,7 +1642,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizSummaryAge.
   ///
   /// In pl, this message translates to:
-  /// **'Zabawy dobrane do wieku: {age} lat.'**
+  /// **'Zabawy dobrane do wieku: {age, plural, =1{1 rok} few{{age} lata} many{{age} lat} other{{age} lat}}.'**
   String quizSummaryAge(int age);
 
   /// No description provided for @quizSummaryLevels.
@@ -2176,7 +2176,7 @@ abstract class AppLocalizations {
   /// No description provided for @progressProfileSummary.
   ///
   /// In pl, this message translates to:
-  /// **'{age} lat · {minutes} min dziennie'**
+  /// **'{age, plural, =1{1 rok} few{{age} lata} many{{age} lat} other{{age} lat}} · {minutes} min dziennie'**
   String progressProfileSummary(int age, int minutes);
 
   /// No description provided for @progressReminders.
@@ -2268,6 +2268,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!'**
   String get paywallCar;
+
+  /// No description provided for @onboardingDailyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po trochu, codziennie'**
+  String get onboardingDailyTitle;
+
+  /// No description provided for @onboardingDailyBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania.'**
+  String get onboardingDailyBody;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

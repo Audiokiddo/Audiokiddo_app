@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/kiddo.dart';
 import '../../l10n/app_localizations.dart';
@@ -177,6 +178,8 @@ class _ChildSwitcher extends ConsumerWidget {
                 ),
                 label: Text('${childLabel(l10n, c, i)} · ${l10n.planAge(c.age)}'),
                 selected: c.id == active?.id,
+                showCheckmark: false,
+                labelStyle: selectableChipLabel(context, selected: c.id == active?.id),
                 onSelected: (_) => ref.read(familyProvider.notifier).setActive(c.id),
               ),
             ),

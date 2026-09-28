@@ -58,8 +58,10 @@ class _CarSceneState extends ConsumerState<CarScene> with SingleTickerProviderSt
               alignment: const Alignment(-0.32, 0),
               child: AnimatedBuilder(
                 animation: _drive,
-                builder: (context, child) =>
-                    Transform.translate(offset: Offset(0, -math.sin(_drive.value * math.pi * 2) * 2), child: child),
+                builder: (context, child) => Transform.translate(
+                  offset: Offset(0, -math.sin(_drive.value * math.pi * 2) * 2),
+                  child: child,
+                ),
                 child: const Kiddo(size: 58, mood: KiddoMood.talking),
               ),
             ),

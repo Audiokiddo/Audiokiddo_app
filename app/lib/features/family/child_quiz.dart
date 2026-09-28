@@ -163,6 +163,9 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
                   Expanded(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
+                      // Short questions stay next to Kiddo instead of floating to the middle.
+                      layoutBuilder: (current, previous) =>
+                          Stack(alignment: Alignment.bottomLeft, children: [...previous, ?current]),
                       child: _Bubble(key: ValueKey(question), text: question),
                     ),
                   ),

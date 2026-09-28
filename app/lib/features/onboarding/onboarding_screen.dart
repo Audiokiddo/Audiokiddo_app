@@ -96,10 +96,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     subtitle: l10n.onboardingHelloSubtitle,
                     children: [
                       _Feature(
-                        icon: Icons.volume_up_rounded,
+                        icon: Icons.calendar_month_rounded,
                         color: AkBrand.orange,
-                        title: l10n.onboardingVolumeTitle,
-                        body: l10n.onboardingHelloBody,
+                        title: l10n.onboardingDailyTitle,
+                        body: l10n.onboardingDailyBody,
                       ),
                     ],
                   ),

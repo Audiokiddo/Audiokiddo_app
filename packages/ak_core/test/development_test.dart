@@ -154,4 +154,38 @@ void main() {
       expect(back.situations, kid.situations);
     });
   });
+
+  group('locked content', () {
+    final free = {
+      for (final i in catalog.items)
+        if (i.access == ContentAccess.free) i.id,
+    };
+
+    test('locked items appear only when nothing playable fits', () {
+      final plan = buildPlan(catalog, child(), days: 10, canPlay: (i) => free.contains(i.id));
+      for (final day in plan) {
+        final locked = day.itemIds.where((id) => !free.contains(id));
+        if (locked.isNotEmpty) expect(day.itemIds, hasLength(1), reason: 'day ${day.day}');
+      }
+    });
+
+    test('a day counts once the playable activities are done', () {
+      final plan = [
+        const PlanDay(day: 1, itemIds: ['magiczny-sklep', 'zaginiony-skarb']),
+        const PlanDay(day: 2, itemIds: ['co-to-za-dzwiek']),
+      ];
+      final now = DateTime(2026, 9, 7, 18);
+      final pos = planPosition(plan, [done('magiczny-sklep', now)], now, playable: free.contains);
+      expect((pos.completedDays, pos.todayDone), (1, true));
+    });
+
+    test('started days keep their activities', () {
+      final plan = buildPlan(catalog, child(), days: 3);
+      final frozen = withFrozenDays(plan, [
+        ['magiczny-sklep'],
+      ]);
+      expect(frozen.first.itemIds, ['magiczny-sklep']);
+      expect(frozen[1].itemIds, plan[1].itemIds);
+    });
+  });
 }
