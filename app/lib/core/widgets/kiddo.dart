@@ -164,7 +164,7 @@ class _KiddoPainter extends CustomPainter {
 
   static const _body = AkBrand.sun;
   static const _bodyShade = Color(0xFFF2A900);
-  static const _band = AkBrand.forest;
+  static const _band = Color(0xFF4A3228);
   static const _cup = AkBrand.teal;
   static const _ink = AkBrand.ink;
   static const _cheek = Color(0xFFFF8A65);

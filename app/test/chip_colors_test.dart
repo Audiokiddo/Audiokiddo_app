@@ -76,6 +76,6 @@ void main() {
     final icon = tester.widget<IconTheme>(
       find.ancestor(of: find.byIcon(Icons.home_rounded), matching: find.byType(IconTheme)).first,
     );
-    expect(icon.data.color, AkPalette.light.ink);
+    expect(icon.data.color, AkPalette.light.primary);
   });
 }

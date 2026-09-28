@@ -47,6 +47,19 @@ def chime():
     return out + mix(tone(1047, 0.8, 0.25, 3), tone(1568, 0.8, 0.1, 4))
 
 
+def note(freq):
+    """A soft glockenspiel-ish tone: fundamental plus a bright partial, quick attack."""
+    n = int(RATE * 0.9)
+    out = []
+    for i in range(n):
+        t = i / RATE
+        attack = min(1.0, t / 0.008)
+        out.append(attack * (0.32 * math.sin(2 * math.pi * freq * t) * math.exp(-4.5 * t)
+                             + 0.12 * math.sin(2 * math.pi * freq * 2.76 * t) * math.exp(-9 * t)
+                             + 0.05 * math.sin(2 * math.pi * freq * 5.4 * t) * math.exp(-14 * t)))
+    return out
+
+
 def pop():
     return [0.5 * math.sin(2 * math.pi * (600 + 900 * i / 2000) * i / RATE) * math.exp(-40 * i / RATE) for i in range(2600)]
 
@@ -88,7 +101,10 @@ def main():
             aiff = pathlib.Path(tmp) / f"{name}.aiff"
             subprocess.run(["say", "-v", "Zosia", "-r", "185", "-o", str(aiff), text], check=True)
             encode(aiff, target)
-        for name, samples in {"chime": chime(), "pop": pop(), "whoosh": whoosh()}.items():
+        # Melody notes for the weekly plan (C4..E5), soft bell-like tones.
+        scale = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25]
+        notes = {f"note_{i}": note(f) for i, f in enumerate(scale)}
+        for name, samples in {"chime": chime(), "pop": pop(), "whoosh": whoosh(), **notes}.items():
             wav = pathlib.Path(tmp) / f"{name}.wav"
             write_wav(samples, wav)
             encode(wav, OUT / f"{name}.m4a")

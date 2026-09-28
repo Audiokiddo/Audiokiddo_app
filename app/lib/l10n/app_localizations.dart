@@ -1936,7 +1936,7 @@ abstract class AppLocalizations {
   /// No description provided for @planDays.
   ///
   /// In pl, this message translates to:
-  /// **'dni planu'**
+  /// **'nut w melodii'**
   String get planDays;
 
   /// No description provided for @planAccuracy.
@@ -1948,7 +1948,7 @@ abstract class AppLocalizations {
   /// No description provided for @planTodayDone.
   ///
   /// In pl, this message translates to:
-  /// **'Dzisiejsza porcja zaliczona! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.'**
+  /// **'Dzisiejsza nuta dopisana do melodii! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.'**
   String get planTodayDone;
 
   /// No description provided for @planOpensTomorrow.
@@ -1996,7 +1996,7 @@ abstract class AppLocalizations {
   /// No description provided for @planChest.
   ///
   /// In pl, this message translates to:
-  /// **'Koniec tygodnia! Nagroda: pochwalcie się dziś przy kolacji, czego się nauczyliście. Kiddo pozdrawia.'**
+  /// **'Cały tydzień zagrany! Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.'**
   String get planChest;
 
   /// No description provided for @level1Name.
@@ -2280,6 +2280,144 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania.'**
   String get onboardingDailyBody;
+
+  /// No description provided for @todayMorning.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poranna rozgrzewka'**
+  String get todayMorning;
+
+  /// No description provided for @todayMidday.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przygoda na dziś'**
+  String get todayMidday;
+
+  /// No description provided for @todayAfternoon.
+  ///
+  /// In pl, this message translates to:
+  /// **'W drodze i po przedszkolu'**
+  String get todayAfternoon;
+
+  /// No description provided for @todayEvening.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wieczorne wyciszenie'**
+  String get todayEvening;
+
+  /// No description provided for @todayNoPlan.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odpowiedz na kilka pytań, a Kiddo ułoży zabawy na każdy dzień.'**
+  String get todayNoPlan;
+
+  /// No description provided for @todayDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Porcja zaliczona ({name}). Nowa nuta w melodii tygodnia!'**
+  String todayDone(String name);
+
+  /// No description provided for @todayListenMelody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Posłuchaj melodii'**
+  String get todayListenMelody;
+
+  /// No description provided for @todayPortion.
+  ///
+  /// In pl, this message translates to:
+  /// **'{name} · dzień {day} · {minutes} min'**
+  String todayPortion(String name, int day, int minutes);
+
+  /// No description provided for @todayStart.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaczynamy'**
+  String get todayStart;
+
+  /// No description provided for @talkTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Porozmawiajcie'**
+  String get talkTitle;
+
+  /// No description provided for @talkDinner.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pytanie przy kolacji'**
+  String get talkDinner;
+
+  /// No description provided for @talkAfter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po zabawie „{title}”.'**
+  String talkAfter(String title);
+
+  /// No description provided for @talkBefore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na później, po zabawie „{title}”.'**
+  String talkBefore(String title);
+
+  /// No description provided for @talkSong.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaśpiewajcie refren razem w kąpieli albo w samochodzie. Kto głośniej?'**
+  String get talkSong;
+
+  /// No description provided for @talkGame.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada!'**
+  String get talkGame;
+
+  /// No description provided for @talkDetective.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kto był winny i po czym to poznaliście? Niech dziecko wszystko wyjaśni. Ty udawaj, że nie wiesz.'**
+  String get talkDetective;
+
+  /// No description provided for @talkWords.
+  ///
+  /// In pl, this message translates to:
+  /// **'Każdy mówi słowo na tę samą literę. Kto się zatnie, opowiada żart.'**
+  String get talkWords;
+
+  /// No description provided for @talkLogic.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co tu nie pasuje: łyżka, widelec, kapeć? Wymyślajcie takie zagadki na zmianę.'**
+  String get talkLogic;
+
+  /// No description provided for @talkImagination.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wymyślcie razem inne zakończenie tej historii. Im dziwniejsze, tym lepsze.'**
+  String get talkImagination;
+
+  /// No description provided for @talkListening.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamknijcie oczy na 10 sekund. Kto usłyszy więcej dźwięków w pokoju?'**
+  String get talkListening;
+
+  /// No description provided for @planWeek.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tydzień {week} · melodia tygodnia'**
+  String planWeek(int week);
+
+  /// No description provided for @planWeekNotes.
+  ///
+  /// In pl, this message translates to:
+  /// **'{done} z {total} nut'**
+  String planWeekNotes(int done, int total);
+
+  /// No description provided for @planPlayTune.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zagraj zebrane nuty'**
+  String get planPlayTune;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

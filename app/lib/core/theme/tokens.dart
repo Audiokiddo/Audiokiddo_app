@@ -16,6 +16,14 @@ abstract final class AkBrand {
   static const forestDeep = Color(0xFF16241F);
   static const cream = Color(0xFFF4EDE7);
   static const ink = Color(0xFF1E2B28);
+
+  /// Warm app chrome (2026-09-28): terracotta, peach and sand around the pack colours.
+  static const terracotta = Color(0xFFB8431C);
+  static const coral = Color(0xFFFF9A6B);
+  static const peach = Color(0xFFFFE3CC);
+  static const sand = Color(0xFFF7EADB);
+  static const cocoa = Color(0xFF231A16);
+  static const night = Color(0xFF17120F);
 }
 
 /// Semantic colours for one brightness, exposed as a theme extension.
@@ -34,27 +42,27 @@ class AkPalette extends ThemeExtension<AkPalette> {
   });
 
   static const light = AkPalette(
-    background: Color(0xFFFBF7F2),
+    background: Color(0xFFFFF7EE),
     surface: Colors.white,
-    surfaceMuted: AkBrand.cream,
-    ink: AkBrand.ink,
-    inkMuted: Color(0xFF55625E),
-    primary: AkBrand.forest,
+    surfaceMuted: AkBrand.sand,
+    ink: AkBrand.cocoa,
+    inkMuted: Color(0xFF6B5A50),
+    primary: AkBrand.terracotta,
     onPrimary: Colors.white,
     accent: AkBrand.orange,
-    lock: Color(0xFF55625E),
+    lock: Color(0xFF6B5A50),
   );
 
   static const dark = AkPalette(
-    background: AkBrand.forestDeep,
-    surface: Color(0xFF1F332C),
-    surfaceMuted: Color(0xFF294139),
-    ink: AkBrand.cream,
-    inkMuted: Color(0xFFB9C4BF),
-    primary: AkBrand.sun,
-    onPrimary: AkBrand.ink,
+    background: AkBrand.night,
+    surface: Color(0xFF241C17),
+    surfaceMuted: Color(0xFF33281F),
+    ink: Color(0xFFFFF3E6),
+    inkMuted: Color(0xFFC9B8AA),
+    primary: AkBrand.coral,
+    onPrimary: AkBrand.cocoa,
     accent: AkBrand.orange,
-    lock: Color(0xFFB9C4BF),
+    lock: Color(0xFFC9B8AA),
   );
 
   final Color background;
@@ -92,9 +100,20 @@ abstract final class AkSpace {
 }
 
 abstract final class AkRadius {
-  static const card = 20.0;
+  static const card = 24.0;
   static const button = 28.0;
 }
+
+/// Soft, wide shadow for floating cards (Apple-style depth without hard edges).
+List<BoxShadow> akSoftShadow(BuildContext context) => [
+  BoxShadow(
+    color: Theme.of(context).brightness == Brightness.dark
+        ? const Color(0x66000000)
+        : const Color(0x1A8A4B2A),
+    blurRadius: 30,
+    offset: const Offset(0, 12),
+  ),
+];
 
 /// Minimum touch target in kids mode (logical pixels), ARCHITECTURE §12.
 const double kKidsTouchTarget = 64;

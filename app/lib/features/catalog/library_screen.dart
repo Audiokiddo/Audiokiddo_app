@@ -143,7 +143,7 @@ class _LibraryContent extends StatelessWidget {
             itemCount: items.length,
             itemBuilder: (context, i) => ItemTile(item: items[i], catalog: catalog),
           ),
-        const SliverToBoxAdapter(child: SizedBox(height: AkSpace.xl)),
+        SliverToBoxAdapter(child: SizedBox(height: AkSpace.xl + MediaQuery.paddingOf(context).bottom)),
       ],
     );
   }

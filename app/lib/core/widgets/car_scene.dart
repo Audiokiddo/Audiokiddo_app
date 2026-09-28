@@ -147,7 +147,7 @@ class _CarPainter extends CustomPainter {
       math.pi,
       math.pi,
       true,
-      Paint()..color = AkBrand.forest,
+      Paint()..color = const Color(0xFF4A3228),
     );
     final eye = Paint()
       ..color = AkBrand.ink

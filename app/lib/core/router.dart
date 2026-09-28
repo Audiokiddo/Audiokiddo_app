@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -107,22 +109,32 @@ class _ParentShell extends ConsumerWidget {
     final child = ref.watch(familyProvider).value?.active;
     final todayDone = child == null ? null : ref.watch(planPositionProvider(child.id))?.todayDone;
     return Scaffold(
+      // Content scrolls under a frosted bar, as in Apple's apps.
+      extendBody: true,
       body: RemindersKeeper(todayDone: todayDone, child: shell),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const MiniPlayer(),
-          NavigationBar(
-            selectedIndex: shell.currentIndex,
-            onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
-            destinations: [
-              NavigationDestination(icon: const Icon(Icons.home_rounded), label: l10n.navHome),
-              NavigationDestination(icon: const Icon(Icons.route_rounded), label: l10n.navPlan),
-              NavigationDestination(icon: const Icon(Icons.library_music_rounded), label: l10n.navLibrary),
-              NavigationDestination(icon: const Icon(Icons.favorite_rounded), label: l10n.navMine),
+      bottomNavigationBar: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const MiniPlayer(),
+              NavigationBar(
+                selectedIndex: shell.currentIndex,
+                onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
+                destinations: [
+                  NavigationDestination(icon: const Icon(Icons.home_rounded), label: l10n.navHome),
+                  NavigationDestination(icon: const Icon(Icons.route_rounded), label: l10n.navPlan),
+                  NavigationDestination(
+                    icon: const Icon(Icons.library_music_rounded),
+                    label: l10n.navLibrary,
+                  ),
+                  NavigationDestination(icon: const Icon(Icons.favorite_rounded), label: l10n.navMine),
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

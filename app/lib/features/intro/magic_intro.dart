@@ -323,7 +323,7 @@ class _VolumeSceneState extends ConsumerState<_VolumeScene> with SingleTickerPro
                     width: 150,
                     height: 280,
                     decoration: BoxDecoration(
-                      color: AkBrand.forest,
+                      color: const Color(0xFF4A3228),
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: const [
                         BoxShadow(blurRadius: 24, color: Color(0x33000000), offset: Offset(0, 10)),
@@ -348,7 +348,7 @@ class _VolumeSceneState extends ConsumerState<_VolumeScene> with SingleTickerPro
                   Positioned(
                     left: 75 - 4,
                     top: 136,
-                    child: Container(width: 6, height: 38, color: AkBrand.forest),
+                    child: Container(width: 6, height: 38, color: const Color(0xFF4A3228)),
                   ),
                   Positioned(
                     left: 2 + push * 12,
@@ -383,7 +383,7 @@ class _HelloScene extends StatelessWidget {
   final bool talking;
 
   static const _letters = 'AUDIOKIDDO';
-  static const _colors = [AkBrand.ink, AkBrand.forest];
+  static const _colors = [AkBrand.cocoa, AkBrand.terracotta];
 
   @override
   Widget build(BuildContext context) {

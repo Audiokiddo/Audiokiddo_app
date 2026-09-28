@@ -60,6 +60,7 @@ void main() {
   testWidgets('home shows greeting, featured game and packs', (tester) async {
     await pumpApp(tester);
     expect(find.text('Czas na zabawę!'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Zabawa dnia'), 200, scrollable: mainScroll);
     expect(find.text('Zaginiony skarb'), findsWidgets);
     await tester.scrollUntilVisible(find.text('Na drogę'), 200, scrollable: mainScroll);
     expect(find.text('10 zabaw · 3+'), findsWidgets);
@@ -170,6 +171,8 @@ void main() {
 
     testWidgets('kids mode: only playable games, no escape, exit through the gate', (tester) async {
       await pumpApp(tester);
+      // Scroll a section further, so the card is out from under the floating tab bar.
+      await tester.scrollUntilVisible(find.text('Zabawa dnia'), 200, scrollable: mainScroll);
       await tester.tap(find.text('Tryb dziecka'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Włącz tryb dziecka'));

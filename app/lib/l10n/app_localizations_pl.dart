@@ -1060,14 +1060,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get planStreak => 'dni z rzędu';
 
   @override
-  String get planDays => 'dni planu';
+  String get planDays => 'nut w melodii';
 
   @override
   String get planAccuracy => 'dobrych odpowiedzi';
 
   @override
   String get planTodayDone =>
-      'Dzisiejsza porcja zaliczona! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.';
+      'Dzisiejsza nuta dopisana do melodii! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.';
 
   @override
   String get planOpensTomorrow => 'Ten dzień otworzy się jutro. Po trochu, codziennie: tak działa najlepiej.';
@@ -1104,7 +1104,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get planChest =>
-      'Koniec tygodnia! Nagroda: pochwalcie się dziś przy kolacji, czego się nauczyliście. Kiddo pozdrawia.';
+      'Cały tydzień zagrany! Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.';
 
   @override
   String get level1Name => 'Poznajemy się';
@@ -1289,4 +1289,86 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get onboardingDailyBody =>
       'Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania.';
+
+  @override
+  String get todayMorning => 'Poranna rozgrzewka';
+
+  @override
+  String get todayMidday => 'Przygoda na dziś';
+
+  @override
+  String get todayAfternoon => 'W drodze i po przedszkolu';
+
+  @override
+  String get todayEvening => 'Wieczorne wyciszenie';
+
+  @override
+  String get todayNoPlan => 'Odpowiedz na kilka pytań, a Kiddo ułoży zabawy na każdy dzień.';
+
+  @override
+  String todayDone(String name) {
+    return 'Porcja zaliczona ($name). Nowa nuta w melodii tygodnia!';
+  }
+
+  @override
+  String get todayListenMelody => 'Posłuchaj melodii';
+
+  @override
+  String todayPortion(String name, int day, int minutes) {
+    return '$name · dzień $day · $minutes min';
+  }
+
+  @override
+  String get todayStart => 'Zaczynamy';
+
+  @override
+  String get talkTitle => 'Porozmawiajcie';
+
+  @override
+  String get talkDinner => 'Pytanie przy kolacji';
+
+  @override
+  String talkAfter(String title) {
+    return 'Po zabawie „$title”.';
+  }
+
+  @override
+  String talkBefore(String title) {
+    return 'Na później, po zabawie „$title”.';
+  }
+
+  @override
+  String get talkSong => 'Zaśpiewajcie refren razem w kąpieli albo w samochodzie. Kto głośniej?';
+
+  @override
+  String get talkGame => 'Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada!';
+
+  @override
+  String get talkDetective =>
+      'Kto był winny i po czym to poznaliście? Niech dziecko wszystko wyjaśni. Ty udawaj, że nie wiesz.';
+
+  @override
+  String get talkWords => 'Każdy mówi słowo na tę samą literę. Kto się zatnie, opowiada żart.';
+
+  @override
+  String get talkLogic => 'Co tu nie pasuje: łyżka, widelec, kapeć? Wymyślajcie takie zagadki na zmianę.';
+
+  @override
+  String get talkImagination => 'Wymyślcie razem inne zakończenie tej historii. Im dziwniejsze, tym lepsze.';
+
+  @override
+  String get talkListening => 'Zamknijcie oczy na 10 sekund. Kto usłyszy więcej dźwięków w pokoju?';
+
+  @override
+  String planWeek(int week) {
+    return 'Tydzień $week · melodia tygodnia';
+  }
+
+  @override
+  String planWeekNotes(int done, int total) {
+    return '$done z $total nut';
+  }
+
+  @override
+  String get planPlayTune => 'Zagraj zebrane nuty';
 }

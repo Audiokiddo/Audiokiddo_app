@@ -552,9 +552,9 @@
     }
   },
   "planStreak": "dni z rzędu",
-  "planDays": "dni planu",
+  "planDays": "nut w melodii",
   "planAccuracy": "dobrych odpowiedzi",
-  "planTodayDone": "Dzisiejsza porcja zaliczona! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.",
+  "planTodayDone": "Dzisiejsza nuta dopisana do melodii! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.",
   "planOpensTomorrow": "Ten dzień otworzy się jutro. Po trochu, codziennie: tak działa najlepiej.",
   "planLockedDay": "Najpierw skończcie dzień {day}.",
   "@planLockedDay": {
@@ -610,7 +610,7 @@
       }
     }
   },
-  "planChest": "Koniec tygodnia! Nagroda: pochwalcie się dziś przy kolacji, czego się nauczyliście. Kiddo pozdrawia.",
+  "planChest": "Cały tydzień zagrany! Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.",
   "level1Name": "Poznajemy się",
   "level1News": "Krótkie zabawy i piosenki. Bez presji.",
   "level2Name": "Rozkręcamy się",
@@ -739,5 +739,79 @@
   "paywallCarTrial": "Mamo, tato… daleko jeszcze? A może 7 dni za darmo, zanim dojedziemy?",
   "paywallCar": "Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!",
   "onboardingDailyTitle": "Po trochu, codziennie",
-  "onboardingDailyBody": "Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania."
+  "onboardingDailyBody": "Kiddo rozłoży zabawy na dni: kilka minut dziennie wystarczy, żeby ćwiczyć słuchanie, mowę i wyobraźnię. Bez przytłaczania.",
+  "todayMorning": "Poranna rozgrzewka",
+  "todayMidday": "Przygoda na dziś",
+  "todayAfternoon": "W drodze i po przedszkolu",
+  "todayEvening": "Wieczorne wyciszenie",
+  "todayNoPlan": "Odpowiedz na kilka pytań, a Kiddo ułoży zabawy na każdy dzień.",
+  "todayDone": "Porcja zaliczona ({name}). Nowa nuta w melodii tygodnia!",
+  "@todayDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "todayListenMelody": "Posłuchaj melodii",
+  "todayPortion": "{name} · dzień {day} · {minutes} min",
+  "@todayPortion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "day": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "todayStart": "Zaczynamy",
+  "talkTitle": "Porozmawiajcie",
+  "talkDinner": "Pytanie przy kolacji",
+  "talkAfter": "Po zabawie „{title}”.",
+  "@talkAfter": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "talkBefore": "Na później, po zabawie „{title}”.",
+  "@talkBefore": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "talkSong": "Zaśpiewajcie refren razem w kąpieli albo w samochodzie. Kto głośniej?",
+  "talkGame": "Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada!",
+  "talkDetective": "Kto był winny i po czym to poznaliście? Niech dziecko wszystko wyjaśni. Ty udawaj, że nie wiesz.",
+  "talkWords": "Każdy mówi słowo na tę samą literę. Kto się zatnie, opowiada żart.",
+  "talkLogic": "Co tu nie pasuje: łyżka, widelec, kapeć? Wymyślajcie takie zagadki na zmianę.",
+  "talkImagination": "Wymyślcie razem inne zakończenie tej historii. Im dziwniejsze, tym lepsze.",
+  "talkListening": "Zamknijcie oczy na 10 sekund. Kto usłyszy więcej dźwięków w pokoju?",
+  "planWeek": "Tydzień {week} · melodia tygodnia",
+  "@planWeek": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "planWeekNotes": "{done} z {total} nut",
+  "@planWeekNotes": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "planPlayTune": "Zagraj zebrane nuty"
 }

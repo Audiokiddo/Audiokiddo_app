@@ -65,7 +65,7 @@ class _MineContent extends ConsumerWidget {
     final free = ref.watch(freeBytesProvider).value;
 
     return ListView(
-      padding: const EdgeInsets.only(bottom: AkSpace.xl),
+      padding: EdgeInsets.only(bottom: AkSpace.xl + MediaQuery.paddingOf(context).bottom),
       children: [
         SectionHeader(l10n.mineRecent),
         if (recent.isEmpty) _Empty(l10n.mineEmptyRecent) else _Row(items: recent, catalog: catalog),

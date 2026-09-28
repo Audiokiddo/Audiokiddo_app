@@ -67,3 +67,18 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 | `a_lato` | To prawda! Latem świeci ciepłe słońce. |
 | `q_auta` | Uwaga! Samochody jeżdżą po chmurach. |
 | `a_auta` | Nie! Samochody jeżdżą po drogach. |
+
+## Głos Kiddo (aplikacja)
+
+Krótkie kwestie maskotki Kiddo, wbudowane w aplikację (`app/assets/audio/kiddo/`). Radośnie, z uśmiechem, bez muzyki pod spodem.
+
+| Plik | Tekst |
+|---|---|
+| `volume.m4a` | Hej! Podgłośnij telefon, żeby dobrze mnie słyszeć! |
+| `hello.m4a` | Cześć! Jestem Kiddo. Razem wymyślimy mnóstwo przygód. I to bez patrzenia w ekran! |
+| `password_voice.m4a` | Żeby wejść do świata AudioKiddo, powiedz głośno magiczne hasło: Abrakadabra! |
+| `password_tap.m4a` | Żeby wejść do świata AudioKiddo, powiedz głośno: Abrakadabra! I dotknij magicznej kuli! |
+| `granted.m4a` | Hurra! Dostęp przyznany! Wchodzimy! |
+| `kids_1.m4a` | Hej! W co dziś zagramy? |
+| `kids_2.m4a` | Witaj z powrotem! Wybierz przygodę! |
+| `kids_3.m4a` | Gotowi na zabawę? Ja jestem gotowy! |

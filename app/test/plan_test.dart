@@ -54,15 +54,15 @@ void main() {
     expect(find.text('Poznajemy się'), findsOneWidget);
     expect(find.text('0/30'), findsOneWidget);
 
-    expect(find.bySemanticsLabel('Dzień 1, dzisiaj. Otwórz zabawy.'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.play_arrow_rounded));
+    expect(find.text('Tydzień 1 · melodia tygodnia'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Dzień 1, dzisiaj. Otwórz zabawy.'));
     await tester.pumpAndSettle();
     expect(find.text('Dzień 1'), findsOneWidget);
     expect(find.textContaining('ekranem w dół'), findsOneWidget, reason: 'the tip of day 1');
     await tester.tapAt(const Offset(20, 40)); // close the sheet
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.lock_rounded).first);
+    await tester.tap(find.bySemanticsLabel('Dzień 2, zablokowany.'));
     await tester.pump();
     expect(find.textContaining('Najpierw skończcie dzień 1'), findsOneWidget);
     await tester.pumpAndSettle();

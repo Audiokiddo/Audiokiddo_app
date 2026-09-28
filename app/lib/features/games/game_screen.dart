@@ -17,8 +17,8 @@ import 'game_controller.dart';
 class GameScreen extends ConsumerWidget {
   const GameScreen({super.key});
 
-  static const _background = Color(0xFF0B1210);
-  static const _foreground = Color(0xFFB9C4BF);
+  static const _background = Color(0xFF140E0B);
+  static const _foreground = Color(0xFFE9D9CB);
 
   Future<void> _exit(BuildContext context, WidgetRef ref) async {
     await ref.read(gameControllerProvider.notifier).stop();
@@ -171,7 +171,7 @@ class _GameKiddoState extends State<_GameKiddo> {
             height: 230,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: game.phase == GamePhase.listening ? const Color(0xFF274A40) : const Color(0xFF1F332C),
+              color: game.phase == GamePhase.listening ? const Color(0xFF3A2A1F) : const Color(0xFF2A1E17),
             ),
           ),
           Kiddo(size: 170, mood: mood),

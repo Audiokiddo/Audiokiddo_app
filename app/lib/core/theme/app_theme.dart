@@ -29,10 +29,28 @@ ThemeData buildTheme(Brightness brightness) {
   return base.copyWith(
     scaffoldBackgroundColor: p.background,
     extensions: [p],
+    // Apple-style type: big, bold, tightly tracked headlines; calm body text.
     textTheme: text.copyWith(
-      headlineMedium: text.headlineMedium?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.5),
-      titleLarge: text.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+      displaySmall: text.displaySmall?.copyWith(
+        fontWeight: FontWeight.w800,
+        letterSpacing: -1.2,
+        height: 1.05,
+      ),
+      headlineLarge: text.headlineLarge?.copyWith(
+        fontWeight: FontWeight.w800,
+        letterSpacing: -1,
+        height: 1.1,
+      ),
+      headlineMedium: text.headlineMedium?.copyWith(
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.8,
+        height: 1.1,
+      ),
+      headlineSmall: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.5),
+      titleLarge: text.titleLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.3),
       titleMedium: text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+      bodyLarge: text.bodyLarge?.copyWith(height: 1.45),
+      bodyMedium: text.bodyMedium?.copyWith(height: 1.4),
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: p.background,
@@ -40,7 +58,12 @@ ThemeData buildTheme(Brightness brightness) {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
-      titleTextStyle: text.titleLarge?.copyWith(fontSize: 20, fontWeight: FontWeight.w700, color: p.ink),
+      titleTextStyle: text.titleLarge?.copyWith(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.3,
+        color: p.ink,
+      ),
     ),
     cardTheme: CardThemeData(
       color: p.surface,
@@ -51,8 +74,10 @@ ThemeData buildTheme(Brightness brightness) {
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         minimumSize: const Size(64, 56),
-        textStyle: text.titleMedium,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AkRadius.button)),
+        textStyle: text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        backgroundColor: p.primary,
+        foregroundColor: p.onPrimary,
+        shape: const StadiumBorder(),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -60,9 +85,23 @@ ThemeData buildTheme(Brightness brightness) {
         minimumSize: const Size(64, 56),
         foregroundColor: p.ink,
         textStyle: text.titleMedium,
-        side: BorderSide(color: p.inkMuted),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AkRadius.button)),
+        side: BorderSide(color: p.inkMuted.withValues(alpha: 0.5)),
+        shape: const StadiumBorder(),
       ),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: p.background,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: p.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: p.ink,
+      contentTextStyle: text.bodyMedium?.copyWith(color: p.background),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     chipTheme: base.chipTheme.copyWith(
       backgroundColor: p.surface,
@@ -73,10 +112,12 @@ ThemeData buildTheme(Brightness brightness) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: p.surface,
-      indicatorColor: p.surfaceMuted,
+      // Translucent: the shell blurs what scrolls underneath (Apple's frosted bar).
+      backgroundColor: p.surface.withValues(alpha: 0.78),
+      elevation: 0,
+      indicatorColor: p.primary.withValues(alpha: 0.14),
       iconTheme: WidgetStateProperty.resolveWith(
-        (states) => IconThemeData(color: states.contains(WidgetState.selected) ? p.ink : p.inkMuted),
+        (states) => IconThemeData(color: states.contains(WidgetState.selected) ? p.primary : p.inkMuted),
       ),
       labelTextStyle: WidgetStatePropertyAll(text.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
     ),

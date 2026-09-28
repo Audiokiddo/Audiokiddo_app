@@ -14,8 +14,8 @@ import 'player_providers.dart';
 class NoLookScreen extends ConsumerWidget {
   const NoLookScreen({super.key});
 
-  static const _background = Color(0xFF0B1210);
-  static const _foreground = Color(0xFFB9C4BF);
+  static const _background = Color(0xFF140E0B);
+  static const _foreground = Color(0xFFE9D9CB);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,7 +50,7 @@ class NoLookScreen extends ConsumerWidget {
                       child: Container(
                         width: 220,
                         height: 220,
-                        decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF1F332C)),
+                        decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF2A1E17)),
                         child: Icon(
                           playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
                           size: 120,

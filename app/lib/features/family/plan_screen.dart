@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'dart:async';
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +10,9 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/kiddo.dart';
+import '../../core/widgets/motion.dart';
+import '../../core/widgets/ambient_motion.dart';
+import '../../core/audio/kiddo_voice.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/item_views.dart';
@@ -96,27 +101,30 @@ class _Path extends ConsumerWidget {
     final progress = ref.watch(progressProvider(child.id));
     if (plan.isEmpty || position == null) return const Center(child: CircularProgressIndicator());
 
-    final rows = <Widget>[];
-    for (final day in plan) {
-      if (day.day == day.level.firstDay) rows.add(_LevelHeader(level: day.level));
-      final state = day.day <= position.completedDays
-          ? _NodeState.done
-          : day.day == position.currentDay && !position.todayDone
-          ? _NodeState.today
-          : _NodeState.locked;
-      rows.add(
-        _Node(
-          day: day,
-          state: state,
-          // A gentle zig-zag, like a path on a map.
-          offset: math.sin(day.day * 0.9) * 90,
-          onTap: () => _openDay(context, ref, day, state, position),
+    _NodeState stateOf(PlanDay day) => day.day <= position.completedDays
+        ? _NodeState.done
+        : day.day == position.currentDay && !position.todayDone
+        ? _NodeState.today
+        : _NodeState.locked;
+
+    final sections = <Widget>[];
+    for (var start = 0; start < plan.length; start += 7) {
+      final week = plan.sublist(start, math.min(start + 7, plan.length));
+      if (week.first.day == week.first.level.firstDay) sections.add(_LevelHeader(level: week.first.level));
+      sections.add(
+        ScrollReveal(
+          child: _WeekStaff(
+            week: start ~/ 7 + 1,
+            days: week,
+            states: [for (final d in week) stateOf(d)],
+            onOpen: (day, state) => _openDay(context, ref, day, state, position),
+          ),
         ),
       );
     }
 
     return ListView(
-      padding: const EdgeInsets.only(bottom: AkSpace.xl),
+      padding: EdgeInsets.only(bottom: AkSpace.xl + MediaQuery.paddingOf(context).bottom),
       children: [
         _ChildSwitcher(family: family),
         _Stats(progress: progress, position: position, days: plan.length),
@@ -125,7 +133,7 @@ class _Path extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(AkSpace.m, 0, AkSpace.m, AkSpace.s),
             child: _Note(icon: Icons.celebration_rounded, text: l10n.planTodayDone),
           ),
-        ...rows,
+        ...sections,
       ],
     );
   }
@@ -204,6 +212,7 @@ class _Stats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
     final accuracy = progress?.accuracy;
     Widget stat(IconData icon, Color color, String value, String label) => Expanded(
       child: Semantics(
@@ -211,40 +220,44 @@ class _Stats extends StatelessWidget {
         excludeSemantics: true,
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: color),
-                const SizedBox(width: 4),
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-                ),
-              ],
+            Icon(icon, color: color, size: 22),
+            const SizedBox(height: 4),
+            Text(value, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+            Text(
+              label,
+              style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+              textAlign: TextAlign.center,
             ),
-            Text(label, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
           ],
         ),
       ),
     );
     return Padding(
-      padding: const EdgeInsets.all(AkSpace.m),
-      child: Row(
-        children: [
-          stat(
-            Icons.local_fire_department_rounded,
-            AkBrand.orange,
-            '${progress?.streak ?? 0}',
-            l10n.planStreak,
-          ),
-          stat(Icons.flag_rounded, AkBrand.teal, '${position.completedDays}/$days', l10n.planDays),
-          stat(
-            Icons.star_rounded,
-            AkBrand.sunDeep,
-            accuracy == null ? '–' : '${(accuracy * 100).round()}%',
-            l10n.planAccuracy,
-          ),
-        ],
+      padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, AkSpace.s),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: AkSpace.m),
+        decoration: BoxDecoration(
+          color: context.palette.surface,
+          borderRadius: BorderRadius.circular(AkRadius.card),
+          boxShadow: akSoftShadow(context),
+        ),
+        child: Row(
+          children: [
+            stat(
+              Icons.music_note_rounded,
+              AkBrand.terracotta,
+              '${position.completedDays}/$days',
+              l10n.planDays,
+            ),
+            stat(Icons.wb_sunny_rounded, AkBrand.orange, '${progress?.streak ?? 0}', l10n.planStreak),
+            stat(
+              Icons.star_rounded,
+              AkBrand.sunDeep,
+              accuracy == null ? '–' : '${(accuracy * 100).round()}%',
+              l10n.planAccuracy,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -258,15 +271,10 @@ class _LevelHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final colors = [AkBrand.teal, AkBrand.lavender, AkBrand.orange, AkBrand.sun];
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.l, AkSpace.m, AkSpace.m),
-      child: Container(
-        padding: const EdgeInsets.all(AkSpace.m),
-        decoration: BoxDecoration(
-          color: colors[(level.number - 1) % colors.length],
-          borderRadius: BorderRadius.circular(18),
-        ),
+    final text = Theme.of(context).textTheme;
+    return ScrollReveal(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(AkSpace.l, AkSpace.xl, AkSpace.l, AkSpace.m),
         child: Semantics(
           header: true,
           child: Column(
@@ -274,15 +282,19 @@ class _LevelHeader extends StatelessWidget {
             children: [
               Text(
                 l10n.planLevel(level.number, level.firstDay, level.lastDay).toUpperCase(),
-                style: Theme.of(context).textTheme.labelMedium
-                    ?.copyWith(color: AkBrand.ink, letterSpacing: 1),
+                style: text.labelMedium?.copyWith(
+                  color: context.palette.primary,
+                  letterSpacing: 1.4,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
+              const SizedBox(height: 2),
+              Text(levelName(l10n, level.number), style: text.headlineMedium),
+              const SizedBox(height: 4),
               Text(
-                levelName(l10n, level.number),
-                style: Theme.of(context).textTheme.titleLarge
-                    ?.copyWith(color: AkBrand.ink, fontWeight: FontWeight.w800),
+                levelNews(l10n, level.number),
+                style: text.bodyLarge?.copyWith(color: context.palette.inkMuted),
               ),
-              Text(levelNews(l10n, level.number), style: const TextStyle(color: AkBrand.ink)),
             ],
           ),
         ),
@@ -293,70 +305,281 @@ class _LevelHeader extends StatelessWidget {
 
 enum _NodeState { done, today, locked }
 
-class _Node extends StatelessWidget {
-  const _Node({required this.day, required this.state, required this.offset, required this.onTap});
+/// Each week is a short tune: seven notes, one per day. Finishing a day adds its note;
+/// touching a finished note plays it, and the play button plays the tune collected so far.
+/// The whole week together is "Melodia tygodnia", the child's own little song.
+class _WeekStaff extends ConsumerStatefulWidget {
+  const _WeekStaff({required this.week, required this.days, required this.states, required this.onOpen});
 
-  final PlanDay day;
-  final _NodeState state;
-  final double offset;
-  final VoidCallback onTap;
+  final int week;
+  final List<PlanDay> days;
+  final List<_NodeState> states;
+  final void Function(PlanDay day, _NodeState state) onOpen;
+
+  /// Pitches (0 = C4 … 9 = E5) of each week's tune.
+  static const motifs = [
+    [0, 2, 4, 5, 4, 2, 0],
+    [4, 5, 7, 5, 4, 2, 4],
+    [2, 4, 5, 7, 8, 7, 5],
+    [7, 5, 4, 2, 4, 5, 7],
+    [0, 4, 7, 9, 7, 4, 0],
+  ];
+
+  @override
+  ConsumerState<_WeekStaff> createState() => _WeekStaffState();
+}
+
+class _WeekStaffState extends ConsumerState<_WeekStaff> with SingleTickerProviderStateMixin {
+  late final _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
+  int? _playing;
+  Timer? _timer;
+
+  List<int> get _motif => _WeekStaff.motifs[(widget.week - 1) % _WeekStaff.motifs.length];
+
+  @override
+  void initState() {
+    super.initState();
+    if (ref.read(ambientMotionProvider)) _pulse.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  void _playNote(int i) {
+    ref.read(kiddoVoiceProvider).effect('note_${_motif[i]}');
+    setState(() => _playing = i);
+  }
+
+  void _playTune() {
+    final done = [
+      for (var i = 0; i < widget.states.length; i++)
+        if (widget.states[i] == _NodeState.done) i,
+    ];
+    if (done.isEmpty) return;
+    _timer?.cancel();
+    var step = 0;
+    _playNote(done[step]);
+    _timer = Timer.periodic(const Duration(milliseconds: 420), (t) {
+      step++;
+      if (!mounted || step >= done.length) {
+        t.cancel();
+        if (mounted) setState(() => _playing = null);
+        return;
+      }
+      _playNote(done[step]);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final (color, icon) = switch (state) {
-      _NodeState.done => (AkBrand.teal, day.chest ? Icons.redeem_rounded : Icons.check_rounded),
-      _NodeState.today => (AkBrand.sun, day.chest ? Icons.redeem_rounded : Icons.play_arrow_rounded),
-      _NodeState.locked => (
-        context.palette.surfaceMuted,
-        day.chest ? Icons.inventory_2_rounded : Icons.lock_rounded,
-      ),
-    };
-    final label = switch (state) {
-      _NodeState.done => l10n.planNodeDone(day.day),
-      _NodeState.today => l10n.planNodeToday(day.day),
-      _NodeState.locked => l10n.planNodeLocked(day.day),
-    };
-    return SizedBox(
-      height: state == _NodeState.today ? 170 : 96,
-      child: Transform.translate(
-        offset: Offset(offset, 0),
+    final text = Theme.of(context).textTheme;
+    final done = widget.states.where((s) => s == _NodeState.done).length;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AkSpace.m, 0, AkSpace.m, AkSpace.m),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.s, AkSpace.m),
+        decoration: BoxDecoration(
+          color: context.palette.surface,
+          borderRadius: BorderRadius.circular(AkRadius.card),
+          boxShadow: akSoftShadow(context),
+        ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (state == _NodeState.today) const Kiddo(size: 70, mood: KiddoMood.idle, wave: true),
-            Semantics(
-              button: true,
-              label: label,
-              onTap: onTap,
-              excludeSemantics: true,
-              child: GestureDetector(
-                onTap: onTap,
-                child: Container(
-                  width: 74,
-                  height: 68,
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                    // A thick lower edge makes the step look pressable (Duolingo's trick).
-                    boxShadow: [
-                      BoxShadow(color: Color.lerp(color, Colors.black, 0.25)!, offset: const Offset(0, 6)),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.planWeek(widget.week), style: text.titleLarge),
+                      Text(
+                        l10n.planWeekNotes(done, widget.days.length),
+                        style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+                      ),
                     ],
                   ),
-                  child: Icon(
-                    icon,
-                    size: 34,
-                    color: state == _NodeState.locked ? context.palette.inkMuted : AkBrand.ink,
+                ),
+                if (widget.days.any((d) => d.chest))
+                  Tooltip(
+                    message: l10n.planChest,
+                    child: Icon(
+                      Icons.redeem_rounded,
+                      color: done == widget.days.length ? AkBrand.terracotta : context.palette.inkMuted,
+                    ),
                   ),
+                IconButton(
+                  tooltip: l10n.planPlayTune,
+                  onPressed: done == 0 ? null : _playTune,
+                  icon: const Icon(Icons.play_circle_fill_rounded, size: 36),
+                  color: context.palette.primary,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 150,
+              child: AnimatedBuilder(
+                animation: _pulse,
+                builder: (context, _) => Stack(
+                  children: [
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: _StaffPainter(
+                          motif: _motif,
+                          states: widget.states,
+                          playing: _playing,
+                          pulse: _pulse.value,
+                          ink: context.palette.ink,
+                          faint: context.palette.inkMuted.withValues(alpha: 0.35),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        for (final (i, day) in widget.days.indexed)
+                          Expanded(child: _noteCell(context, l10n, i, day, widget.states[i])),
+                        for (var i = widget.days.length; i < 7; i++) const Expanded(child: SizedBox()),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 10),
           ],
         ),
       ),
     );
   }
+
+  Widget _noteCell(BuildContext context, AppLocalizations l10n, int i, PlanDay day, _NodeState state) {
+    final label = switch (state) {
+      _NodeState.done => l10n.planNodeDone(day.day),
+      _NodeState.today => l10n.planNodeToday(day.day),
+      _NodeState.locked => l10n.planNodeLocked(day.day),
+    };
+    void open() {
+      if (state == _NodeState.done) _playNote(i);
+      widget.onOpen(day, state);
+    }
+
+    return Semantics(
+      button: true,
+      label: label,
+      onTap: open,
+      excludeSemantics: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: open,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 44,
+              child: state == _NodeState.today
+                  ? const FittedBox(child: Kiddo(size: 44, mood: KiddoMood.idle, wave: true))
+                  : null,
+            ),
+            const Spacer(),
+            Text(
+              '${day.day}',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: state == _NodeState.today ? context.palette.primary : context.palette.inkMuted,
+                fontWeight: state == _NodeState.today ? FontWeight.w800 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StaffPainter extends CustomPainter {
+  _StaffPainter({
+    required this.motif,
+    required this.states,
+    required this.playing,
+    required this.pulse,
+    required this.ink,
+    required this.faint,
+  });
+
+  final List<int> motif;
+  final List<_NodeState> states;
+  final int? playing;
+  final double pulse;
+  final Color ink;
+  final Color faint;
+
+  static const _noteColors = [
+    AkBrand.terracotta,
+    AkBrand.orange,
+    AkBrand.sunDeep,
+    AkBrand.tealDeep,
+    AkBrand.lavenderDeep,
+    AkBrand.terracotta,
+    AkBrand.orange,
+  ];
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const gap = 11.0;
+    const bottomLine = 112.0; // E4
+    final line = Paint()
+      ..color = faint
+      ..strokeWidth = 1.2;
+    for (var i = 0; i < 5; i++) {
+      final y = bottomLine - i * gap;
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), line);
+    }
+    final cell = size.width / 7;
+    for (var i = 0; i < states.length; i++) {
+      final pitch = motif[i];
+      // C4 sits a step below the bottom line (E4), on its own ledger line.
+      final y = bottomLine + gap - pitch * gap / 2;
+      final x = cell * (i + 0.5);
+      final state = states[i];
+      if (pitch == 0) canvas.drawLine(Offset(x - 14, y), Offset(x + 14, y), line);
+      final color = _noteColors[i % _noteColors.length];
+      final lift = playing == i ? -6.0 : 0.0;
+      final head = Rect.fromCenter(center: Offset(x, y + lift), width: 18, height: 13);
+      canvas.save();
+      canvas.translate(head.center.dx, head.center.dy);
+      canvas.rotate(-0.35);
+      canvas.translate(-head.center.dx, -head.center.dy);
+      if (state == _NodeState.today) {
+        canvas.drawOval(
+          head.inflate(6 + pulse * 5),
+          Paint()..color = AkBrand.sun.withValues(alpha: 0.45 * (1 - pulse * 0.6)),
+        );
+      }
+      canvas.drawOval(
+        head,
+        state == _NodeState.locked
+            ? (Paint()
+                ..color = faint
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 2)
+            : (Paint()..color = state == _NodeState.today ? AkBrand.sun : color),
+      );
+      canvas.restore();
+      // Stem up for low notes, down for high ones, like real notation.
+      final up = pitch < 6;
+      final stem = Paint()
+        ..color = state == _NodeState.locked ? faint : (state == _NodeState.today ? AkBrand.sunDeep : color)
+        ..strokeWidth = 2;
+      final sx = up ? x + 8 : x - 8;
+      canvas.drawLine(Offset(sx, y + lift - 1), Offset(sx, y + lift + (up ? -34 : 34)), stem);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_StaffPainter old) =>
+      old.pulse != pulse || old.playing != playing || old.states != states || old.ink != ink;
 }
 
 class _Note extends StatelessWidget {

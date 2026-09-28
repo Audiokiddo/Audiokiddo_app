@@ -1,13 +1,11 @@
-import 'dart:math' as math;
-
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/audio/kiddo_voice.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/doodles.dart';
+import '../../core/widgets/motion.dart';
+import '../home/today.dart';
 import '../../core/widgets/kiddo.dart';
 import '../../l10n/app_localizations.dart';
 import '../kids_mode/kids_mode_setup.dart';
@@ -51,83 +49,71 @@ class _HomeContent extends StatelessWidget {
     final ages = {for (final p in catalog.packs) p.ageMin}.toList()..sort();
 
     return ListView(
-      padding: const EdgeInsets.only(bottom: AkSpace.xl),
+      // The frosted tab bar floats over the list: leave room under the last shelf.
+      padding: EdgeInsets.only(bottom: AkSpace.xl + MediaQuery.paddingOf(context).bottom),
       children: [
-        const _Greeting(),
-        if (news.isNotEmpty) _NewsBanner(item: news.first),
-        const KidsModeEntryCard(),
-        if (featured.isNotEmpty) ...[
-          SectionHeader(l10n.homeFeatured),
-          _FeaturedCard(item: catalog.item(featured.first.itemIds.first)!, catalog: catalog),
-        ],
-        SectionHeader(l10n.homeStartHere),
-        _AgeGroups(ages: ages),
-        SectionHeader(l10n.homeWhatAreYouDoing),
-        const _Situations(),
-        SectionHeader(l10n.homePacks),
-        _Packs(catalog: catalog),
-        for (final shelf in rows) ...[
-          SectionHeader(shelf.title),
-          _ShelfRow(items: [for (final id in shelf.itemIds) catalog.item(id)!], catalog: catalog),
-        ],
-      ],
-    );
-  }
-}
-
-/// "Czas na zabawę!" with Kiddo waving among drifting doodles. Touch Kiddo and he answers.
-class _Greeting extends ConsumerStatefulWidget {
-  const _Greeting();
-
-  @override
-  ConsumerState<_Greeting> createState() => _GreetingState();
-}
-
-class _GreetingState extends ConsumerState<_Greeting> {
-  KiddoMood _mood = KiddoMood.idle;
-  final _random = math.Random();
-
-  Future<void> _poke() async {
-    if (_mood == KiddoMood.talking) return;
-    setState(() => _mood = KiddoMood.talking);
-    await ref.read(kiddoVoiceProvider).say('kids_${1 + _random.nextInt(3)}');
-    if (!mounted) return;
-    setState(() => _mood = KiddoMood.happy);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final text = Theme.of(context).textTheme;
-    return Stack(
-      children: [
-        const Positioned.fill(child: FloatingDoodles(count: 10, opacity: 0.14, seed: 7)),
         Padding(
-          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.s, 0),
-          child: Row(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.l, AkSpace.m, AkSpace.m),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.homeGreeting, style: text.headlineMedium),
-                    const SizedBox(height: AkSpace.xs),
-                    Text(l10n.homeSubtitle, style: text.bodyLarge?.copyWith(color: context.palette.inkMuted)),
-                  ],
-                ),
-              ),
-              Semantics(
-                button: true,
-                label: l10n.homeKiddo,
-                child: GestureDetector(
-                  onTap: _poke,
-                  child: Kiddo(size: 96, mood: _mood, wave: _mood == KiddoMood.idle),
-                ),
+              Text(l10n.homeGreeting, style: Theme.of(context).textTheme.displaySmall),
+              const SizedBox(height: AkSpace.xs),
+              Text(
+                l10n.homeSubtitle,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: context.palette.inkMuted),
               ),
             ],
           ),
         ),
+        const TodayHero(),
+        const TalkCard(),
+        if (news.isNotEmpty) ScrollReveal(child: _NewsBanner(item: news.first)),
+        const ScrollReveal(child: KidsModeEntryCard()),
+        if (featured.isNotEmpty)
+          ScrollReveal(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SectionHeader(l10n.homeFeatured),
+                _FeaturedCard(item: catalog.item(featured.first.itemIds.first)!, catalog: catalog),
+              ],
+            ),
+          ),
+        ScrollReveal(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SectionHeader(l10n.homeStartHere),
+              _AgeGroups(ages: ages),
+            ],
+          ),
+        ),
+        ScrollReveal(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [SectionHeader(l10n.homeWhatAreYouDoing), const _Situations()],
+          ),
+        ),
+        ScrollReveal(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SectionHeader(l10n.homePacks),
+              _Packs(catalog: catalog),
+            ],
+          ),
+        ),
+        for (final shelf in rows)
+          ScrollReveal(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SectionHeader(shelf.title),
+                _ShelfRow(items: [for (final id in shelf.itemIds) catalog.item(id)!], catalog: catalog),
+              ],
+            ),
+          ),
       ],
     );
   }
