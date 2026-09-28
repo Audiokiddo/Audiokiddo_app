@@ -26,33 +26,22 @@ Deno.serve(async (req) => {
   const order = parseWooOrder(payload);
   if (!order) return json({ ok: true, ignored: "status" });
 
-  const admin = adminClient();
+  // One database transaction: the event mark, the order rows and (when the buyer already has
+  // an account) the entitlements. A failure rolls everything back, so WooCommerce's retry
+  // is processed again instead of being ignored as a duplicate (audit P1-5).
   const hash = await sha256Hex(raw);
   const delivery = req.headers.get("x-wc-webhook-delivery-id") ?? hash;
-  const { data: isNew, error: eventError } = await admin.rpc("record_store_event", {
+  const { data: result, error } = await adminClient().rpc("apply_woo_order", {
     p_event_id: `woo:${delivery}`,
-    p_source: "woocommerce",
     p_payload_hash: hash,
+    p_order_id: order.orderId,
+    p_email: order.email,
+    p_status: order.status,
+    p_product_refs: order.productRefs,
   });
-  if (eventError) return json({ error: "event" }, 500); // WooCommerce retries
-  if (!isNew) return json({ ok: true, duplicate: true });
-
-  const rows = order.productRefs.map((product_ref) => ({
-    woo_order_id: order.orderId,
-    product_ref,
-    email_normalized: order.email,
-    order_status: order.status,
-  }));
-  if (rows.length) {
-    const { error } = await admin.from("web_purchases_pending").upsert(rows);
-    if (error) return json({ error: "store" }, 500);
+  if (error) {
+    console.error("woo-webhook: apply_woo_order failed:", error.message);
+    return json({ error: "store" }, 500); // WooCommerce retries
   }
-
-  // Buyer already has an app account with this confirmed e-mail: apply now (grant or revoke).
-  const { data: userId } = await admin.rpc("user_id_for_email", { p_email: order.email });
-  if (userId) {
-    const { error } = await admin.rpc("claim_web_purchases", { p_user_id: userId, p_email: order.email });
-    if (error) return json({ error: "claim" }, 500);
-  }
-  return json({ ok: true });
+  return json({ ok: true, result });
 });

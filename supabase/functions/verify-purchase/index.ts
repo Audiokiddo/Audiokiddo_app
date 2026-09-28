@@ -1,10 +1,12 @@
 // The app sends a fresh or restored store purchase; we verify it with the store and record
 // the entitlement. Only then does the app acknowledge the purchase (ARCHITECTURE §7.3).
 // Body: { platform: "ios", signedTransaction } | { platform: "android", productId, purchaseToken }
-// Secrets: APPLE_BUNDLE_ID, GOOGLE_SERVICE_ACCOUNT_JSON, GOOGLE_PACKAGE_NAME (+ Supabase ones).
+// Secrets: APPLE_BUNDLE_ID, APPLE_ENVIRONMENTS ("Production" by default; add "Sandbox" for
+// TestFlight and App Review), GOOGLE_SERVICE_ACCOUNT_JSON, GOOGLE_PACKAGE_NAME (+ Supabase ones).
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
 import { googlePlayFromEnv } from "../_shared/google_play.ts";
 import {
+  appleEnvironmentsFrom,
   PurchaseRejected,
   SupabaseEntitlementStore,
   verifyApplePurchase,
@@ -30,7 +32,11 @@ Deno.serve(async (req) => {
   try {
     if (body.platform === "ios" && typeof body.signedTransaction === "string") {
       const outcome = await verifyApplePurchase(
-        { store, bundleId: Deno.env.get("APPLE_BUNDLE_ID") ?? "pl.audiokiddo.app" },
+        {
+          store,
+          bundleId: Deno.env.get("APPLE_BUNDLE_ID") ?? "pl.audiokiddo.app",
+          environments: appleEnvironmentsFrom(Deno.env.get("APPLE_ENVIRONMENTS")),
+        },
         user.id,
         body.signedTransaction,
       );

@@ -444,3 +444,7 @@ verify_jwt = false
 # function (Apple's signed JWS chain, Google's Pub/Sub OIDC token).
 [functions.store-notifications]
 verify_jwt = false
+
+# Free files need no account; paid ones are checked in the function (can_download).
+[functions.download-url]
+verify_jwt = false

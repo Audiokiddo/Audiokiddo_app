@@ -1,6 +1,8 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../account/account_service.dart';
+
 import '../../core/storage/storage_providers.dart';
 import '../content/content_urls.dart';
 import 'download_manager.dart';
@@ -8,7 +10,9 @@ import 'file_transfer.dart';
 
 final fileTransferProvider = Provider<FileTransfer>((ref) => BackgroundFileTransfer());
 
-final contentUrlResolverProvider = Provider<ContentUrlResolver>((ref) => defaultContentUrlResolver());
+final contentUrlResolverProvider = Provider<ContentUrlResolver>(
+  (ref) => defaultContentUrlResolver(ref.watch(accountServiceProvider).signedFileUrl),
+);
 
 final downloadManagerProvider = Provider<DownloadManager>((ref) {
   final manager = DownloadManager(

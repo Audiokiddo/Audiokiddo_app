@@ -25,6 +25,9 @@ key, out, ref, email = sys.argv[1:]
 compact = json.dumps(json.load(open(key)), separators=(",", ":"))
 with open(out, "w") as f:
     f.write("APPLE_BUNDLE_ID=pl.audiokiddo.app\n")
+    # App Review and TestFlight buy in Sandbox. Remove ",Sandbox" once the app is live
+    # if testers should no longer unlock anything (audit 2026-09-28, P1-2).
+    f.write("APPLE_ENVIRONMENTS=Production,Sandbox\n")
     f.write("GOOGLE_PACKAGE_NAME=pl.audiokiddo.app\n")
     f.write(f"GOOGLE_SERVICE_ACCOUNT_JSON='{compact}'\n")
     f.write(f"GOOGLE_PUBSUB_AUDIENCE=https://{ref}.supabase.co/functions/v1/store-notifications/google\n")

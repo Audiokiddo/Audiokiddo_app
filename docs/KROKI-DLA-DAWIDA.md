@@ -150,6 +150,14 @@ supabase functions deploy verify-purchase store-notifications
 ```
 `db push` dodaje produkty sklepów do bazy, `config push` włącza konta anonimowe (zakup bez zakładania konta, bez danych osobowych), a `functions deploy` wgrywa sprawdzanie zakupów.
 
+**Pliki nagrań na LH.pl** (żeby wersja sklepowa mogła je pobierać; płatne nie są publiczne):
+1. W panelu LH.pl dodaj subdomenę `pliki.audiokiddo.pl` z certyfikatem SSL.
+2. Nagrania (ten sam układ folderów co w katalogu: `audio/…`, `games/…`, `pdf/…`) wgraj do folderu **poza** `public_html`, np. `~/audiokiddo-pliki`.
+3. Do katalogu subdomeny wgraj `tool/lhpl/get.php` i `tool/lhpl/config.example.php` (zmień nazwę na `config.php`).
+4. W swoim terminalu: `tool/set_files_secrets.sh https://pliki.audiokiddo.pl`. Klucz trafi do schowka: wklej go w `config.php` i wpisz ścieżkę folderu z punktu 2.
+5. `supabase functions deploy download-url` i `supabase db push` (lista plików i zasady dostępu).
+6. Płatnych MP3 z `wp-content/uploads` nie linkuj już publicznie (sklep może wydawać je przez ten sam mechanizm).
+
 ## Krok 8. WooCommerce na audiokiddo.pl (15 min, można już teraz)
 
 1. **ID produktów:** WordPress → Produkty. Po najechaniu na produkt widać „ID: 1234”. **Napisz mi** ID trzech pakietów i dwóch zestawów, z nazwami. Nie są tajne.

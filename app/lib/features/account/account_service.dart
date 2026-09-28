@@ -77,6 +77,9 @@ abstract interface class AccountService {
   /// Sends a store purchase to verify-purchase ({platform, signedTransaction} on iOS,
   /// {platform, productId, purchaseToken} on Android).
   Future<ServerVerdict> verifyStorePurchase(Map<String, Object?> body);
+
+  /// A short-lived link to one catalog file, or null (no access, offline).
+  Future<Uri?> signedFileUrl(String path);
 }
 
 class SupabaseAccountService implements AccountService {
@@ -195,6 +198,17 @@ class SupabaseAccountService implements AccountService {
     }
   }
 
+  @override
+  Future<Uri?> signedFileUrl(String path) async {
+    try {
+      final response = await _client.functions.invoke('download-url', body: {'path': path});
+      final url = response.data is Map ? (response.data as Map)['url'] : null;
+      return url is String ? Uri.tryParse(url) : null;
+    } on Exception {
+      return null;
+    }
+  }
+
   static Future<T> _guard<T>(Future<T> Function() action) async {
     try {
       return await action();
@@ -280,6 +294,9 @@ class SignedOutAccountService implements AccountService {
 
   @override
   Future<ServerVerdict> verifyStorePurchase(Map<String, Object?> body) async => ServerVerdict.retry;
+
+  @override
+  Future<Uri?> signedFileUrl(String path) async => null;
 }
 
 /// Overridden in main() with [SupabaseAccountService].

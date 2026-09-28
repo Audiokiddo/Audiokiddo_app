@@ -103,6 +103,9 @@ class FakeAccountService implements AccountService {
     verified.add(body);
     return verdict;
   }
+
+  @override
+  Future<Uri?> signedFileUrl(String path) async => Uri.parse('https://files.test/$path');
 }
 
 Future<void> pumpAccount(WidgetTester tester, FakeAccountService account) async {

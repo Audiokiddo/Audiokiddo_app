@@ -16,7 +16,9 @@ Schemat bazy, zasady dostępu (RLS) i funkcje serwerowe. Architektura: `../ARCHI
 | `functions/verify-purchase` | Aplikacja przysyła zakup (iOS: podpisana transakcja JWS, Android: token); serwer sprawdza go u sklepu i zapisuje dostęp. Zakup z innego konta przechodzi na bieżące („Przywróć zakupy”) | ✅ testy logiki i podpisów; ⏳ wdrożenie po `set_store_secrets.sh` |
 | `functions/store-notifications` | `/apple`: App Store Server Notifications V2 (podpis i łańcuch do Apple Root CA G3). `/google`: RTDN przez Pub/Sub push (token OIDC). Odnowienia, okres łaski, zwroty, zmiana planu, idempotencja | ✅ testy; ⏳ adresy do wpisania w sklepach (krok 7) |
 | `functions/_shared/apple_jws.ts`, `google_play.ts`, `purchases.ts` | Weryfikacja JWS Apple z przypiętym certyfikatem głównym, klient Google Play (konto usługi), reguły zakupów | ✅ 23 testy Deno |
-| `download-url`, `publish-catalog` | Podpisane adresy plików (LH.pl), publikacja katalogu ze Studia | ⏳ czeka na decyzję o hostingu plików |
+| `functions/download-url` + `tool/lhpl/get.php` | Link do pliku ważny 15 min, po sprawdzeniu dostępu (`content_files`, `can_download`); PHP na LH.pl sprawdza podpis i wydaje plik spoza `public_html` | ✅ testy (baza, podpis, PHP lokalnie); ⏳ konfiguracja LH.pl |
+| `migrations/…_store_state_order.sql` | Kolejność stanów sklepu, zdarzenia atomowo, webhook Woo atomowo, rozpoznanie gościa (audyt 28.09) | ✅ testy lokalne |
+| `publish-catalog` | Publikacja katalogu ze Studia | ⏳ osobny etap |
 
 ## Testy lokalne (bez konta Supabase)
 

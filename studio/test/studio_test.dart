@@ -42,7 +42,11 @@ void main() {
     addTearDown(c.dispose);
     c.read(studioProvider.notifier).importCatalog(appCatalog);
     final v = c.read(validationProvider);
-    expect(c.read(studioProvider).items, hasLength(32));
+    // Every item of the catalog comes in (the count changes whenever an activity is added).
+    expect(
+      c.read(studioProvider).items,
+      hasLength(((jsonDecode(appCatalog) as Map<String, Object?>)['items']! as List).length),
+    );
     expect(v.canPublish, isTrue, reason: '${v.itemErrors} ${v.otherErrors}');
   });
 

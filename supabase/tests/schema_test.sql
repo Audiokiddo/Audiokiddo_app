@@ -144,3 +144,59 @@ do $$ begin
   assert (select count(*) from public.entitlements where store_original_tx_id = 'orig-1') = 1;
 end $$;
 select 'store product tests passed';
+
+-- 12. Audit 2026-09-28: newer store state wins, events are atomic, guests are recognised.
+insert into auth.users (id, email, is_anonymous) values ('00000000-0000-0000-0000-00000000000a', null, true);
+do $$
+declare
+  v text;
+begin
+  -- A refund signed later survives a replay of the older purchase document.
+  perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.pack.wyobraznia', 'orig-2', 'active', null, '2026-09-01');
+  v := public.apply_store_event('apple:refund-2', 'app_store', 'h', 'orig-2', 'refunded', '2026-09-10');
+  assert v = 'updated', 'refund applied: ' || v;
+  perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.pack.wyobraznia', 'orig-2', 'active', null, '2026-09-01');
+  assert (select status from public.entitlements where store_original_tx_id = 'orig-2') = 'refunded', 'old document does not win';
+
+  -- The same event twice: the second changes nothing, even after other changes.
+  v := public.apply_store_event('apple:renew-3', 'app_store', 'h', 'orig-2', 'active', '2026-09-05',
+    '00000000-0000-0000-0000-000000000009', 'ios:pl.audiokiddo.pack.wyobraznia', null);
+  assert v = 'stale', 'older than the refund: ' || v;
+  v := public.apply_store_event('apple:renew-3', 'app_store', 'h', 'orig-2', 'active', '2026-09-20',
+    '00000000-0000-0000-0000-000000000009', 'ios:pl.audiokiddo.pack.wyobraznia', null);
+  assert v = 'duplicate', 'redelivery: ' || v;
+  assert (select status from public.entitlements where store_original_tx_id = 'orig-2') = 'refunded';
+
+  -- A failing event (unknown product) leaves no mark, so the store's retry is processed.
+  begin
+    perform public.apply_store_event('apple:bad-4', 'app_store', 'h', 'orig-3', 'active', now(),
+      '00000000-0000-0000-0000-000000000009', 'ios:nope', null);
+  exception when sqlstate 'P0002' then null;
+  end;
+  assert not exists (select 1 from public.store_events where event_id = 'apple:bad-4'), 'rolled back';
+
+  assert public.is_anonymous_user('00000000-0000-0000-0000-00000000000a'), 'guest';
+  assert not public.is_anonymous_user('00000000-0000-0000-0000-000000000009'), 'parent';
+
+  -- WooCommerce: one call applies the order for an existing account; a retry is a duplicate.
+  v := public.apply_woo_order('woo:d-1', 'h', 7001, ' Rodzic1@Example.com ', 'completed', '{woo:372}');
+  assert v = 'applied', 'woo: ' || v;
+  assert exists (select 1 from public.entitlements where store_original_tx_id = 'woo:7001:woo:372'
+    and user_id = '00000000-0000-0000-0000-000000000001' and status = 'active'), 'woo granted';
+  assert public.apply_woo_order('woo:d-1', 'h', 7001, 'rodzic1@example.com', 'completed', '{woo:372}') = 'duplicate';
+  assert public.apply_woo_order('woo:d-2', 'h', 7002, 'nikt@example.com', 'completed', '{woo:372}') = 'pending';
+  assert not has_function_privilege('authenticated', 'public.apply_store_event(text, public.entitlement_source, text, text, public.entitlement_status, timestamptz, uuid, text, timestamptz)', 'execute');
+end $$;
+select 'store order tests passed';
+
+-- 13. Downloads: free files for anyone, paid files only with a live entitlement.
+do $$ begin
+  assert public.can_download(null, 'audio/wyobraznia/magiczny-sklep.m4a'), 'free item';
+  assert not public.can_download(null, 'audio/wyobraznia/zaginiony-skarb.m4a'), 'paid item without account';
+  assert not public.can_download('00000000-0000-0000-0000-000000000009', 'audio/wyobraznia/zaginiony-skarb.m4a'), 'refunded subscription';
+  perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-5', 'active', now() + interval '1 year', now());
+  assert public.can_download('00000000-0000-0000-0000-000000000009', 'audio/wyobraznia/zaginiony-skarb.m4a'), 'yearly subscription covers all';
+  assert not public.can_download('00000000-0000-0000-0000-000000000009', 'audio/../secret.m4a'), 'unknown path';
+  assert not public.can_download('00000000-0000-0000-0000-00000000000a', 'audio/detektyw/tajemnicze-znaki.m4a'), 'guest without purchase';
+end $$;
+select 'download tests passed';

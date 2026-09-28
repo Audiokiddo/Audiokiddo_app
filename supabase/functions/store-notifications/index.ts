@@ -2,12 +2,13 @@
 // Google Real-time Developer Notifications (Pub/Sub push) at …/store-notifications/google.
 // Every event is verified (Apple: signed JWS chain to Apple's root; Google: OIDC token of our
 // push subscription), applied from the store's own record, and recorded for idempotency.
-// Secrets: APPLE_BUNDLE_ID, GOOGLE_SERVICE_ACCOUNT_JSON, GOOGLE_PACKAGE_NAME,
+// Secrets: APPLE_BUNDLE_ID, APPLE_ENVIRONMENTS ("Production" by default; add "Sandbox" for
+// TestFlight and App Review), GOOGLE_SERVICE_ACCOUNT_JSON, GOOGLE_PACKAGE_NAME,
 // GOOGLE_PUBSUB_AUDIENCE, GOOGLE_PUBSUB_EMAIL (+ Supabase ones).
 import { adminClient, env, json } from "../_shared/supabase.ts";
 import { sha256Hex } from "../_shared/woo.ts";
 import { googlePlayFromEnv, parsePubSubPush, verifyPubSubToken } from "../_shared/google_play.ts";
-import { handleAppleNotification, handleGoogleNotification, SupabaseEntitlementStore } from "../_shared/purchases.ts";
+import { appleEnvironmentsFrom, handleAppleNotification, handleGoogleNotification, SupabaseEntitlementStore } from "../_shared/purchases.ts";
 import { AppleJwsError } from "../_shared/apple_jws.ts";
 
 const SUBSCRIPTIONS = new Set(["pl.audiokiddo.sub.monthly", "pl.audiokiddo.sub.yearly"]);
@@ -24,7 +25,11 @@ Deno.serve(async (req) => {
       const signedPayload = (JSON.parse(raw) as { signedPayload?: string }).signedPayload;
       if (!signedPayload) return json({ error: "body" }, 400);
       const result = await handleAppleNotification(
-        { store, bundleId: Deno.env.get("APPLE_BUNDLE_ID") ?? "pl.audiokiddo.app" },
+        {
+          store,
+          bundleId: Deno.env.get("APPLE_BUNDLE_ID") ?? "pl.audiokiddo.app",
+          environments: appleEnvironmentsFrom(Deno.env.get("APPLE_ENVIRONMENTS")),
+        },
         signedPayload,
         hash,
       );

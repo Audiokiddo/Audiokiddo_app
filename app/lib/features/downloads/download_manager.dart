@@ -124,7 +124,13 @@ class DownloadManager {
               updatedAt: DateTime.now(),
             ),
           );
-      final url = await _urls.urlFor(asset);
+      final Uri url;
+      try {
+        url = await _urls.urlFor(asset);
+      } on ContentUnavailable {
+        await _setState(asset.path, DownloadState.failed, error: 'url');
+        continue;
+      }
       final queued = await _transfer.enqueue(taskId: _taskId(asset), url: url, fileName: fileName);
       if (!queued) await _setState(asset.path, DownloadState.failed, error: 'enqueue');
     }
