@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Kiddo na dziś</string>
+    <string name="widget_description">Zabawa na tę porę dnia: rano rozgrzewka, po południu droga, wieczorem kołysanka.</string>
+    <string name="widget_morning_title">Poranna rozgrzewka</string>
+    <string name="widget_morning_subtitle">Zagadka do śniadania. Kawa poczeka.</string>
+    <string name="widget_midday_title">Czas na przygodę</string>
+    <string name="widget_midday_subtitle">Zabawa dnia czeka. Ekran w kieszeni.</string>
+    <string name="widget_afternoon_title">W drogę z Kiddo</string>
+    <string name="widget_afternoon_subtitle">Zanim padnie „daleko jeszcze?”.</string>
+    <string name="widget_evening_title">Czas się wyciszyć</string>
+    <string name="widget_evening_subtitle">Kołysanka dla dziecka, cisza dla Ciebie.</string>
+    <string name="widget_play">Graj</string>
+    <string name="widget_trip">W drogę</string>
+    <string name="widget_bedtime">Dobranoc</string>
+</resources>

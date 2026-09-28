@@ -13,6 +13,7 @@ import 'package:audiokiddo/features/downloads/file_transfer.dart';
 import 'package:audiokiddo/features/kids_mode/kids_home_screen.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
+import 'package:audiokiddo/features/parent_voice/parent_voice.dart';
 import 'package:audiokiddo/features/player/player_providers.dart';
 import 'package:drift/drift.dart' show DatabaseConnection, driftRuntimeOptions;
 import 'package:drift/native.dart';
@@ -83,4 +84,42 @@ List<Override> testOverrides(
   kiddoVoiceProvider.overrideWithValue(const SilentKiddoVoice()),
   ambientMotionProvider.overrideWithValue(false),
   kidsMagicEntryProvider.overrideWithValue(false),
+  parentVoiceStoreProvider.overrideWithValue(FakeParentVoiceStore()),
 ];
+
+/// Parent recordings in memory: [clipsByChild] is what "was recorded", [played] what played.
+class FakeParentVoiceStore implements ParentVoiceStore {
+  FakeParentVoiceStore([Map<String, Map<ParentClip, String>>? clips]) : clipsByChild = clips ?? {};
+
+  final Map<String, Map<ParentClip, String>> clipsByChild;
+  final played = <String>[];
+  (String, ParentClip)? _recording;
+
+  @override
+  Future<Map<ParentClip, String>> clips(String childId) async => {...?clipsByChild[childId]};
+
+  @override
+  Future<bool> requestMicrophone() async => true;
+
+  @override
+  Future<void> startRecording(String childId, ParentClip clip) async => _recording = (childId, clip);
+
+  @override
+  Future<String?> stopRecording() async {
+    final r = _recording;
+    _recording = null;
+    if (r == null) return null;
+    final path = '/fake/${r.$1}_${r.$2.name}.m4a';
+    (clipsByChild[r.$1] ??= {})[r.$2] = path;
+    return path;
+  }
+
+  @override
+  Future<void> delete(String childId, ParentClip clip) async => clipsByChild[childId]?.remove(clip);
+
+  @override
+  Future<void> play(String path) async => played.add(path);
+
+  @override
+  Future<void> stopPlayback() async {}
+}

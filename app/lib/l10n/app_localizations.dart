@@ -2418,6 +2418,294 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Zagraj zebrane nuty'**
   String get planPlayTune;
+
+  /// No description provided for @tripTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'W drogę'**
+  String get tripTitle;
+
+  /// No description provided for @tripBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiedz, ile jedziecie. Kiddo ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.'**
+  String get tripBody;
+
+  /// No description provided for @tripHowLong.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ile jedziecie?'**
+  String get tripHowLong;
+
+  /// No description provided for @tripMinutes.
+  ///
+  /// In pl, this message translates to:
+  /// **'{minutes} min'**
+  String tripMinutes(int minutes);
+
+  /// No description provided for @tripPlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count, plural, =1{1 zabawa} few{{count} zabawy} many{{count} zabaw} other{{count} zabawy}} · ok. {minutes} min'**
+  String tripPlanned(int count, int minutes);
+
+  /// No description provided for @tripBreaks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co kwadrans Kiddo zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.'**
+  String get tripBreaks;
+
+  /// No description provided for @tripMore.
+  ///
+  /// In pl, this message translates to:
+  /// **'i jeszcze {count}…'**
+  String tripMore(int count);
+
+  /// No description provided for @tripDownload.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobierz na drogę ({count})'**
+  String tripDownload(int count);
+
+  /// No description provided for @tripGo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ruszamy'**
+  String get tripGo;
+
+  /// No description provided for @tripEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie ma jeszcze zabaw do słuchania w drodze. Odblokuj pakiet albo wybierz darmowe.'**
+  String get tripEmpty;
+
+  /// No description provided for @bedtimeTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dobranoc'**
+  String get bedtimeTitle;
+
+  /// No description provided for @bedtimeBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zawsze ta sama kolejność, bo dzieci lubią rytuały. Zgaś światło, połóż telefon ekranem w dół.'**
+  String get bedtimeBody;
+
+  /// No description provided for @bedtimeBreaths.
+  ///
+  /// In pl, this message translates to:
+  /// **'Trzy spokojne oddechy z Kiddo'**
+  String get bedtimeBreaths;
+
+  /// No description provided for @bedtimeQuiet.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cicha zabawa: {title}'**
+  String bedtimeQuiet(String title);
+
+  /// No description provided for @bedtimeSong.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kołysanka: {title}'**
+  String bedtimeSong(String title);
+
+  /// No description provided for @bedtimeParentGoodnight.
+  ///
+  /// In pl, this message translates to:
+  /// **'„Dobranoc” Twoim głosem'**
+  String get bedtimeParentGoodnight;
+
+  /// No description provided for @bedtimeKiddoGoodnight.
+  ///
+  /// In pl, this message translates to:
+  /// **'„Dobranoc” od Kiddo'**
+  String get bedtimeKiddoGoodnight;
+
+  /// No description provided for @bedtimeRecordHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagraj swoje „dobranoc”'**
+  String get bedtimeRecordHint;
+
+  /// No description provided for @bedtimeGo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaczynamy'**
+  String get bedtimeGo;
+
+  /// No description provided for @todayTrip.
+  ///
+  /// In pl, this message translates to:
+  /// **'W drogę'**
+  String get todayTrip;
+
+  /// No description provided for @todayBedtime.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dobranoc'**
+  String get todayBedtime;
+
+  /// No description provided for @sessionWindow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co widzisz za oknem?'**
+  String get sessionWindow;
+
+  /// No description provided for @sessionKiddo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo mówi'**
+  String get sessionKiddo;
+
+  /// No description provided for @sessionParent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twoja wiadomość'**
+  String get sessionParent;
+
+  /// No description provided for @sessionNext.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potem: {title}'**
+  String sessionNext(String title);
+
+  /// No description provided for @sessionLeft.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jeszcze ok. {minutes} min'**
+  String sessionLeft(int minutes);
+
+  /// No description provided for @sessionSkip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dalej'**
+  String get sessionSkip;
+
+  /// No description provided for @sessionStop.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakończ'**
+  String get sessionStop;
+
+  /// No description provided for @sessionDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowe'**
+  String get sessionDone;
+
+  /// No description provided for @sessionArrived.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dojechaliście!'**
+  String get sessionArrived;
+
+  /// No description provided for @sessionSleepWell.
+  ///
+  /// In pl, this message translates to:
+  /// **'Śpij dobrze'**
+  String get sessionSleepWell;
+
+  /// No description provided for @voiceTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twój głos'**
+  String get voiceTitle;
+
+  /// No description provided for @voiceBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagraj trzy krótkie wiadomości dla: {name}. Kiddo wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.'**
+  String voiceBody(String name);
+
+  /// No description provided for @voiceHello.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przywitanie'**
+  String get voiceHello;
+
+  /// No description provided for @voiceHelloHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na przykład: „Cześć, {name}! Kiddo już czeka. Baw się dobrze!”'**
+  String voiceHelloHint(String name);
+
+  /// No description provided for @voicePraise.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pochwała'**
+  String get voicePraise;
+
+  /// No description provided for @voicePraiseHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na przykład: „Brawo, {name}! Jestem z Ciebie dumna!”'**
+  String voicePraiseHint(String name);
+
+  /// No description provided for @voiceGoodnight.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dobranoc'**
+  String get voiceGoodnight;
+
+  /// No description provided for @voiceGoodnightHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na przykład: „Dobranoc, {name}. Kocham Cię. Do jutra!”'**
+  String voiceGoodnightHint(String name);
+
+  /// No description provided for @voiceRecord.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagraj'**
+  String get voiceRecord;
+
+  /// No description provided for @voiceRerecord.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagraj ponownie'**
+  String get voiceRerecord;
+
+  /// No description provided for @voiceStop.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatrzymaj'**
+  String get voiceStop;
+
+  /// No description provided for @voicePlay.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odsłuchaj'**
+  String get voicePlay;
+
+  /// No description provided for @voiceDelete.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń nagranie'**
+  String get voiceDelete;
+
+  /// No description provided for @voiceMicDenied.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez dostępu do mikrofonu nie da się nagrać. Włącz go w Ustawieniach telefonu.'**
+  String get voiceMicDenied;
+
+  /// No description provided for @voicePrivacy.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagrania nie są wysyłane na serwer ani do kopii zapasowej. Usuniesz je tutaj albo razem z aplikacją.'**
+  String get voicePrivacy;
+
+  /// No description provided for @voiceEntry.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twój głos w zabawie'**
+  String get voiceEntry;
+
+  /// No description provided for @voiceEntryHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przywitanie, pochwała i dobranoc nagrane przez Ciebie'**
+  String get voiceEntryHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

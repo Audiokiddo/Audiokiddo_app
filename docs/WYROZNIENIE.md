@@ -13,13 +13,14 @@ Stan: 2026-09-28. Punkt wyjścia: rodzice wybierają aplikację, która (1) oszc
 | **Kiddo i magiczne wejście** („Abrakadabra!”) | Rytuał wejścia, który dzieci chcą powtarzać. |
 | **Przypomnienia z humorem dla rodziców** | Przypomnienie nie brzmi jak wyrzut, tylko jak mrugnięcie okiem. |
 | **Plan w minutę, kilkoro dzieci, postęp i porady** | Rodzic wie, co ćwiczy dziecko i co zmienić. |
+| **Twój głos** (przywitanie, pochwała, dobranoc nagrane przez rodzica, tylko w telefonie) | Kiddo wplata je w tryb dziecka, koniec zabawy, koniec podróży i rytuał „Dobranoc”. |
+| **W drogę** (15–90 min, pobrane najpierw, przerwy „Co widzisz za oknem?”) | Cała trasa z jednego przycisku, telefon w schowku. |
+| **Dobranoc** (oddechy → cicha zabawa → kołysanka → „dobranoc” głosem rodzica) | Stały rytuał wieczorny; w karcie dnia wieczorem. |
+| **Widżet „Kiddo na dziś”** (iOS i Android) | Zmienia się z porą dnia: rano rozgrzewka, po południu „W drogę”, wieczorem „Dobranoc”. Jedno dotknięcie otwiera właściwy tryb. |
 
 ## Propozycje: następne kroki (od największego efektu)
 
-1. **Głos rodzica w zabawie.** Rodzic nagrywa krótkie wstawki (imię dziecka, „brawo, Zosiu!”), które Kiddo wplata w zabawę. Działa tylko lokalnie. Silny powód, by wybrać tę aplikację, i trudny do skopiowania.
-2. **Tryb podróży.** „Jedziemy 40 minut” → aplikacja układa pobrane zabawy i piosenki na całą trasę, z przerwami na „Co widzisz za oknem?”. Rodzice w aucie to nasz główny moment.
-3. **Wieczorny rytuał.** Stała kolejność: wyciszająca zabawa, kołysanka, „dobranoc” od Kiddo z imieniem, timer snu. Jeden przycisk „Dobranoc” w karcie wieczornej.
-4. **Widżet na ekranie telefonu** („Dzisiejsza nuta” + przycisk start) i skrót Siri / Asystenta Google („Hej Siri, zabawa z Kiddo”). Aplikacja jest wtedy o krok bliżej niż YouTube. Wymaga kodu natywnego (iOS WidgetKit, Android Glance).
+1–4. ✅ Zrobione 2026-09-28: głos rodzica, tryb podróży, rytuał „Dobranoc”, widżet (tabela wyżej). Dalej: skrót Siri / Asystenta Google („Hej Siri, dobranoc z Kiddo”) i „Dzisiejsza nuta” w widżecie (wymaga wspólnych danych aplikacji i widżetu, App Group).
 5. **Karta dla dziadków.** Co tydzień ładna grafika: „Zosia w tym tygodniu: 5 nut, 23 dobre odpowiedzi, ulubiona zabawa…” do wysłania w komunikatorze. Darmowy marketing szeptany.
 6. **Sezonowe wydarzenia.** Adwent z Kiddo (24 krótkie zagadki), wakacyjna „Podróżna melodia”, ferie. Powód, by wracać, i materiał na posty.
 7. **Kooperacja rodzeństwa.** Zabawy na dwóch graczy: jedno klaszcze, drugie mówi. Plan uwzględnia już kilkoro dzieci.

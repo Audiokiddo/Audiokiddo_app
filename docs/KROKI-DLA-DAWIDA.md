@@ -239,6 +239,8 @@ Bez tego Supabase nie wyśle kodu nikomu poza członkami zespołu, a treści mai
 2. Xcode → Runner → Signing & Capabilities → **+ Capability → Sign in with Apple**. Mogę to dodać za Ciebie, gdy konto będzie w Xcode.
 3. Supabase → Authentication → Sign In / Providers → **Apple**: włącz, w polu *Client IDs* wpisz `pl.audiokiddo.app`. Dla samej aplikacji iOS klucz `.p8` nie jest potrzebny.
 
+**Widżet na ekranie telefonu (iOS):** aplikacja ma drugi element do podpisania, `pl.audiokiddo.app.widget`. Po dodaniu konta w Xcode (Settings → Accounts) zaznacz w Runner i w **AudioKiddoWidget** → Signing & Capabilities → *Automatically manage signing* i wybierz ten sam zespół. Xcode sam założy identyfikator.
+
 ---
 
 ## Kolejność w skrócie

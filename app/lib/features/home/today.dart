@@ -134,33 +134,83 @@ class TodayHero extends ConsumerWidget {
                           const SizedBox(height: AkSpace.s),
                           Text(subtitle, style: text.bodyLarge?.copyWith(color: fg.withValues(alpha: 0.9))),
                           const SizedBox(height: AkSpace.m),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                            decoration: BoxDecoration(
-                              color: night ? Colors.white : AkBrand.cocoa,
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.play_arrow_rounded,
-                                  color: night ? AkBrand.cocoa : Colors.white,
-                                  size: 22,
+                          Wrap(
+                            spacing: AkSpace.s,
+                            runSpacing: AkSpace.s,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: night ? Colors.white : AkBrand.cocoa,
+                                  borderRadius: BorderRadius.circular(40),
                                 ),
-                                const SizedBox(width: 6),
-                                Flexible(
-                                  child: Text(
-                                    action,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: text.titleMedium?.copyWith(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.play_arrow_rounded,
                                       color: night ? AkBrand.cocoa : Colors.white,
-                                      fontWeight: FontWeight.w700,
+                                      size: 22,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Flexible(
+                                      child: Text(
+                                        action,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: text.titleMedium?.copyWith(
+                                          color: night ? AkBrand.cocoa : Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // The mode that fits this part of the day: the bedtime ritual in
+                              // the evening, the car before and after nursery.
+                              if (switch (part) {
+                                    DayPart.evening => (
+                                      Icons.bedtime_rounded,
+                                      l10n.todayBedtime,
+                                      '/dobranoc',
+                                    ),
+                                    DayPart.morning || DayPart.afternoon => (
+                                      Icons.directions_car_rounded,
+                                      l10n.todayTrip,
+                                      '/podroz',
+                                    ),
+                                    DayPart.midday => null,
+                                  }
+                                  case (final icon, final label, final route))
+                                Pressable(
+                                  onTap: () => context.push(route),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                                    decoration: BoxDecoration(
+                                      color: fg.withValues(alpha: 0.14),
+                                      border: Border.all(color: fg.withValues(alpha: 0.35)),
+                                      borderRadius: BorderRadius.circular(40),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(icon, color: fg, size: 20),
+                                        const SizedBox(width: 6),
+                                        Flexible(
+                                          child: Text(
+                                            label,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: text.titleMedium?.copyWith(
+                                              color: fg,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                            ],
                           ),
                         ],
                       ),

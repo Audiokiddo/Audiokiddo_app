@@ -14,6 +14,7 @@ import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
 import 'microphone.dart';
 import '../family/family.dart';
+import '../parent_voice/parent_voice.dart';
 
 /// Audio operations a game needs; implemented by AkAudioHandler, faked in tests.
 abstract interface class GameAudio {
@@ -137,6 +138,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
           await clearGameSnapshot(ref.read(databaseProvider), item.id);
           ref.invalidate(gameResumeProvider(item));
           state = GameUiState(phase: GamePhase.finished, itemId: item.id, title: item.title);
+          await _praise(generation);
           return;
         }
         command = runner.next(event);
@@ -150,9 +152,19 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     }
   }
 
+  /// "Brawo!" in the parent's own voice after a finished game, when they recorded one.
+  Future<void> _praise(int generation) async {
+    final child = ref.read(familyProvider).value?.active;
+    if (child == null) return;
+    final store = ref.read(parentVoiceStoreProvider);
+    final clip = (await store.clips(child.id))[ParentClip.praise];
+    if (clip != null && generation == _generation) await store.play(clip);
+  }
+
   /// Leaves the game (long press on the game screen).
   Future<void> stop() async {
     _generation++;
+    await ref.read(parentVoiceStoreProvider).stopPlayback();
     _input?.complete(const InputTimedOut());
     _input = null;
     await _stopMicrophone();

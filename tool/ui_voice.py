@@ -26,6 +26,13 @@ LINES = {
     "kids_1": "Hej! W co dziś zagramy?",
     "kids_2": "Witaj z powrotem! Wybierz przygodę!",
     "kids_3": "Gotowi na zabawę? Ja jestem gotowy!",
+    "trip_start": "Ruszamy w drogę! Zapnijcie pasy, a Kiddo zajmie się resztą.",
+    "window_1": "Przerwa na okno! Policz, ile czerwonych samochodów zobaczysz, zanim wrócimy do zabawy.",
+    "window_2": "Przerwa na okno! Czy widzisz jakieś zwierzę? Opowiedz o nim rodzicom.",
+    "window_3": "Przerwa na okno! Znajdź coś zielonego, coś okrągłego i coś bardzo dużego.",
+    "trip_end": "Brawo, podróżnicy! Kiddo robi sobie przerwę. Do usłyszenia!",
+    "bedtime_start": "Czas na wyciszenie. Zróbmy razem trzy spokojne oddechy. Wdech. I wydech. Wdech. I wydech. Wdech. I wydech.",
+    "goodnight": "Dobranoc! Kiddo też już ziewa. Śpij dobrze i do jutra.",
 }
 
 

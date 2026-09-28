@@ -1371,4 +1371,185 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get planPlayTune => 'Zagraj zebrane nuty';
+
+  @override
+  String get tripTitle => 'W drogę';
+
+  @override
+  String get tripBody =>
+      'Powiedz, ile jedziecie. Kiddo ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.';
+
+  @override
+  String get tripHowLong => 'Ile jedziecie?';
+
+  @override
+  String tripMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String tripPlanned(int count, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zabawy',
+      many: '$count zabaw',
+      few: '$count zabawy',
+      one: '1 zabawa',
+    );
+    return '$_temp0 · ok. $minutes min';
+  }
+
+  @override
+  String get tripBreaks =>
+      'Co kwadrans Kiddo zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.';
+
+  @override
+  String tripMore(int count) {
+    return 'i jeszcze $count…';
+  }
+
+  @override
+  String tripDownload(int count) {
+    return 'Pobierz na drogę ($count)';
+  }
+
+  @override
+  String get tripGo => 'Ruszamy';
+
+  @override
+  String get tripEmpty => 'Nie ma jeszcze zabaw do słuchania w drodze. Odblokuj pakiet albo wybierz darmowe.';
+
+  @override
+  String get bedtimeTitle => 'Dobranoc';
+
+  @override
+  String get bedtimeBody =>
+      'Zawsze ta sama kolejność, bo dzieci lubią rytuały. Zgaś światło, połóż telefon ekranem w dół.';
+
+  @override
+  String get bedtimeBreaths => 'Trzy spokojne oddechy z Kiddo';
+
+  @override
+  String bedtimeQuiet(String title) {
+    return 'Cicha zabawa: $title';
+  }
+
+  @override
+  String bedtimeSong(String title) {
+    return 'Kołysanka: $title';
+  }
+
+  @override
+  String get bedtimeParentGoodnight => '„Dobranoc” Twoim głosem';
+
+  @override
+  String get bedtimeKiddoGoodnight => '„Dobranoc” od Kiddo';
+
+  @override
+  String get bedtimeRecordHint => 'Nagraj swoje „dobranoc”';
+
+  @override
+  String get bedtimeGo => 'Zaczynamy';
+
+  @override
+  String get todayTrip => 'W drogę';
+
+  @override
+  String get todayBedtime => 'Dobranoc';
+
+  @override
+  String get sessionWindow => 'Co widzisz za oknem?';
+
+  @override
+  String get sessionKiddo => 'Kiddo mówi';
+
+  @override
+  String get sessionParent => 'Twoja wiadomość';
+
+  @override
+  String sessionNext(String title) {
+    return 'Potem: $title';
+  }
+
+  @override
+  String sessionLeft(int minutes) {
+    return 'Jeszcze ok. $minutes min';
+  }
+
+  @override
+  String get sessionSkip => 'Dalej';
+
+  @override
+  String get sessionStop => 'Zakończ';
+
+  @override
+  String get sessionDone => 'Gotowe';
+
+  @override
+  String get sessionArrived => 'Dojechaliście!';
+
+  @override
+  String get sessionSleepWell => 'Śpij dobrze';
+
+  @override
+  String get voiceTitle => 'Twój głos';
+
+  @override
+  String voiceBody(String name) {
+    return 'Nagraj trzy krótkie wiadomości dla: $name. Kiddo wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.';
+  }
+
+  @override
+  String get voiceHello => 'Przywitanie';
+
+  @override
+  String voiceHelloHint(String name) {
+    return 'Na przykład: „Cześć, $name! Kiddo już czeka. Baw się dobrze!”';
+  }
+
+  @override
+  String get voicePraise => 'Pochwała';
+
+  @override
+  String voicePraiseHint(String name) {
+    return 'Na przykład: „Brawo, $name! Jestem z Ciebie dumna!”';
+  }
+
+  @override
+  String get voiceGoodnight => 'Dobranoc';
+
+  @override
+  String voiceGoodnightHint(String name) {
+    return 'Na przykład: „Dobranoc, $name. Kocham Cię. Do jutra!”';
+  }
+
+  @override
+  String get voiceRecord => 'Nagraj';
+
+  @override
+  String get voiceRerecord => 'Nagraj ponownie';
+
+  @override
+  String get voiceStop => 'Zatrzymaj';
+
+  @override
+  String get voicePlay => 'Odsłuchaj';
+
+  @override
+  String get voiceDelete => 'Usuń nagranie';
+
+  @override
+  String get voiceMicDenied =>
+      'Bez dostępu do mikrofonu nie da się nagrać. Włącz go w Ustawieniach telefonu.';
+
+  @override
+  String get voicePrivacy =>
+      'Nagrania nie są wysyłane na serwer ani do kopii zapasowej. Usuniesz je tutaj albo razem z aplikacją.';
+
+  @override
+  String get voiceEntry => 'Twój głos w zabawie';
+
+  @override
+  String get voiceEntryHint => 'Przywitanie, pochwała i dobranoc nagrane przez Ciebie';
 }

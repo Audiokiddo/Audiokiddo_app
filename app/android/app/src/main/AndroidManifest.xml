@@ -4,7 +4,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
-    <!-- Games: claps and voice are detected on the device, never recorded (asked behind the parental gate). -->
+    <!-- Games: claps and voice are detected on the device, never recorded (asked behind the parental gate).
+         Also the parent's own short messages for the child, kept only on this phone. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- Kids app: no advertising ID, even if a dependency requests it (Google Families Policy). -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
@@ -37,7 +38,26 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- audiokiddo://open/dobranoc, /podroz: the home-screen widget opens these screens. -->
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="audiokiddo" android:host="open"/>
+            </intent-filter>
         </activity>
+        <!-- Home-screen widget: the activity for this part of the day (see DayPartWidget.kt). -->
+        <receiver
+            android:name=".DayPartWidget"
+            android:exported="false"
+            android:label="@string/widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/day_part_widget_info"/>
+        </receiver>
         <!-- Background playback with lock-screen controls (audio_service). -->
         <service
             android:name="com.ryanheise.audioservice.AudioService"

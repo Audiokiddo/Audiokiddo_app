@@ -25,6 +25,7 @@ import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
 import '../features/reminders/reminder_offer.dart';
+import '../features/session/session_screens.dart';
 
 import '../l10n/app_localizations.dart';
 
@@ -84,6 +85,11 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
       builder: (context, state) =>
           ChildQuiz(onDone: () => context.canPop() ? context.pop() : context.go('/plan')),
     ),
+    GoRoute(path: '/plan/glos', builder: (context, state) => const ParentVoiceScreen()),
+    // The home-screen widget opens these through audiokiddo://open/dobranoc and /podroz.
+    GoRoute(path: '/podroz', builder: (context, state) => const TripScreen()),
+    GoRoute(path: '/dobranoc', builder: (context, state) => const BedtimeScreen()),
+    GoRoute(path: '/sesja', builder: (context, state) => const SessionScreen()),
     GoRoute(path: '/konto', builder: (context, state) => const AccountScreen()),
     GoRoute(
       path: '/sklep',

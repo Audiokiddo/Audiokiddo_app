@@ -813,5 +813,140 @@
       }
     }
   },
-  "planPlayTune": "Zagraj zebrane nuty"
+  "planPlayTune": "Zagraj zebrane nuty",
+  "tripTitle": "W drogę",
+  "tripBody": "Powiedz, ile jedziecie. Kiddo ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.",
+  "tripHowLong": "Ile jedziecie?",
+  "tripMinutes": "{minutes} min",
+  "@tripMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tripPlanned": "{count, plural, =1{1 zabawa} few{{count} zabawy} many{{count} zabaw} other{{count} zabawy}} · ok. {minutes} min",
+  "@tripPlanned": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tripBreaks": "Co kwadrans Kiddo zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.",
+  "tripMore": "i jeszcze {count}…",
+  "@tripMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripDownload": "Pobierz na drogę ({count})",
+  "@tripDownload": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripGo": "Ruszamy",
+  "tripEmpty": "Nie ma jeszcze zabaw do słuchania w drodze. Odblokuj pakiet albo wybierz darmowe.",
+  "bedtimeTitle": "Dobranoc",
+  "bedtimeBody": "Zawsze ta sama kolejność, bo dzieci lubią rytuały. Zgaś światło, połóż telefon ekranem w dół.",
+  "bedtimeBreaths": "Trzy spokojne oddechy z Kiddo",
+  "bedtimeQuiet": "Cicha zabawa: {title}",
+  "@bedtimeQuiet": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "bedtimeSong": "Kołysanka: {title}",
+  "@bedtimeSong": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "bedtimeParentGoodnight": "„Dobranoc” Twoim głosem",
+  "bedtimeKiddoGoodnight": "„Dobranoc” od Kiddo",
+  "bedtimeRecordHint": "Nagraj swoje „dobranoc”",
+  "bedtimeGo": "Zaczynamy",
+  "todayTrip": "W drogę",
+  "todayBedtime": "Dobranoc",
+  "sessionWindow": "Co widzisz za oknem?",
+  "sessionKiddo": "Kiddo mówi",
+  "sessionParent": "Twoja wiadomość",
+  "sessionNext": "Potem: {title}",
+  "@sessionNext": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionLeft": "Jeszcze ok. {minutes} min",
+  "@sessionLeft": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSkip": "Dalej",
+  "sessionStop": "Zakończ",
+  "sessionDone": "Gotowe",
+  "sessionArrived": "Dojechaliście!",
+  "sessionSleepWell": "Śpij dobrze",
+  "voiceTitle": "Twój głos",
+  "voiceBody": "Nagraj trzy krótkie wiadomości dla: {name}. Kiddo wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.",
+  "@voiceBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceHello": "Przywitanie",
+  "voiceHelloHint": "Na przykład: „Cześć, {name}! Kiddo już czeka. Baw się dobrze!”",
+  "@voiceHelloHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voicePraise": "Pochwała",
+  "voicePraiseHint": "Na przykład: „Brawo, {name}! Jestem z Ciebie dumna!”",
+  "@voicePraiseHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceGoodnight": "Dobranoc",
+  "voiceGoodnightHint": "Na przykład: „Dobranoc, {name}. Kocham Cię. Do jutra!”",
+  "@voiceGoodnightHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceRecord": "Nagraj",
+  "voiceRerecord": "Nagraj ponownie",
+  "voiceStop": "Zatrzymaj",
+  "voicePlay": "Odsłuchaj",
+  "voiceDelete": "Usuń nagranie",
+  "voiceMicDenied": "Bez dostępu do mikrofonu nie da się nagrać. Włącz go w Ustawieniach telefonu.",
+  "voicePrivacy": "Nagrania nie są wysyłane na serwer ani do kopii zapasowej. Usuniesz je tutaj albo razem z aplikacją.",
+  "voiceEntry": "Twój głos w zabawie",
+  "voiceEntryHint": "Przywitanie, pochwała i dobranoc nagrane przez Ciebie"
 }

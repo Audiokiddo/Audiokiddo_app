@@ -13,6 +13,7 @@ import '../reminders/reminders.dart';
 import 'child_quiz.dart';
 import 'family.dart';
 import 'plan_texts.dart';
+import '../parent_voice/parent_voice.dart';
 
 /// What the child practised and how the answers go, with plain advice the parent can act
 /// on (change goals, minutes, try a pack), plus reminders. Everything stays on the phone.
@@ -152,6 +153,13 @@ class ProgressScreen extends ConsumerWidget {
                   ),
                 ),
               ),
+              GroupedRow(
+                icon: Icons.mic_rounded,
+                title: l10n.voiceEntry,
+                subtitle: l10n.voiceEntryHint,
+                chevron: true,
+                onTap: () => context.push('/plan/glos'),
+              ),
               _ReminderRow(),
               GroupedRow(
                 title: l10n.progressRemoveChild,
@@ -180,6 +188,10 @@ class ProgressScreen extends ConsumerWidget {
     );
     if (ok ?? false) {
       await ref.read(familyProvider.notifier).removeChild(child.id);
+      final voice = ref.read(parentVoiceStoreProvider);
+      for (final clip in ParentClip.values) {
+        await voice.delete(child.id, clip);
+      }
       if (context.mounted && context.canPop()) context.pop();
     }
   }

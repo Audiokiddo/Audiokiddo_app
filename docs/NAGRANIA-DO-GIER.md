@@ -82,3 +82,10 @@ Krótkie kwestie maskotki Kiddo, wbudowane w aplikację (`app/assets/audio/kiddo
 | `kids_1.m4a` | Hej! W co dziś zagramy? |
 | `kids_2.m4a` | Witaj z powrotem! Wybierz przygodę! |
 | `kids_3.m4a` | Gotowi na zabawę? Ja jestem gotowy! |
+| `trip_start.m4a` | Ruszamy w drogę! Zapnijcie pasy, a Kiddo zajmie się resztą. |
+| `window_1.m4a` | Przerwa na okno! Policz, ile czerwonych samochodów zobaczysz, zanim wrócimy do zabawy. |
+| `window_2.m4a` | Przerwa na okno! Czy widzisz jakieś zwierzę? Opowiedz o nim rodzicom. |
+| `window_3.m4a` | Przerwa na okno! Znajdź coś zielonego, coś okrągłego i coś bardzo dużego. |
+| `trip_end.m4a` | Brawo, podróżnicy! Kiddo robi sobie przerwę. Do usłyszenia! |
+| `bedtime_start.m4a` | Czas na wyciszenie. Zróbmy razem trzy spokojne oddechy. Wdech. I wydech. Wdech. I wydech. Wdech. I wydech. |
+| `goodnight.m4a` | Dobranoc! Kiddo też już ziewa. Śpij dobrze i do jutra. |

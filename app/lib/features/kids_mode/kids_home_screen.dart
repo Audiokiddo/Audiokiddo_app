@@ -20,7 +20,9 @@ import 'dart:math' as math;
 
 import '../../core/audio/kiddo_voice.dart';
 import '../../core/widgets/kiddo.dart';
+import '../family/family.dart';
 import '../intro/magic_intro.dart';
+import '../parent_voice/parent_voice.dart';
 
 /// Kids mode: big covers of what the child may play. No prices, locks, links or settings.
 /// Whether entering kids mode starts with the magic word (off in tests).
@@ -90,18 +92,33 @@ class _KiddoHelloState extends ConsumerState<_KiddoHello> {
   final _random = math.Random();
   late int _line = 1 + _random.nextInt(3);
   bool _talking = false;
-  late final KiddoVoice _voice = ref.read(kiddoVoiceProvider);
+  late final KiddoVoice _voice;
+  late final ParentVoiceStore _parent;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _say());
+    // Read now: dispose() must not touch ref.
+    _voice = ref.read(kiddoVoiceProvider);
+    _parent = ref.read(parentVoiceStoreProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _hello());
   }
 
   @override
   void dispose() {
     unawaited(_voice.stop());
+    unawaited(_parent.stopPlayback());
     super.dispose();
+  }
+
+  /// The first hello is the parent's own recording when there is one.
+  Future<void> _hello() async {
+    final child = ref.read(familyProvider).value?.active;
+    final clip = child == null ? null : (await _parent.clips(child.id))[ParentClip.hello];
+    if (clip == null || !mounted) return _say();
+    setState(() => _talking = true);
+    await _parent.play(clip);
+    if (mounted) setState(() => _talking = false);
   }
 
   Future<void> _say() async {

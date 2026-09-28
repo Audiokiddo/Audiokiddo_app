@@ -131,7 +131,12 @@ void main() {
     await tester.tap(find.byIcon(Icons.favorite_rounded));
     await tester.pumpAndSettle();
     expect(find.text('Magiczny sklep'), findsOneWidget);
-    expect(find.text('Pobierz zabawy przed podróżą. Bez nich po 10 minutach jazdy padnie pytanie: „daleko jeszcze?”.'), findsOneWidget);
+    expect(
+      find.text(
+        'Pobierz zabawy przed podróżą. Bez nich po 10 minutach jazdy padnie pytanie: „daleko jeszcze?”.',
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('playable item offers a download with its size', (tester) async {
@@ -165,7 +170,11 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('7 dni za darmo, potem 149,99 zł / rok'), findsOneWidget);
       expect(find.text('49,99 zł'), findsWidgets);
-      await tester.scrollUntilVisible(find.textContaining('odnawia się automatycznie'), 200, scrollable: mainScroll);
+      await tester.scrollUntilVisible(
+        find.textContaining('odnawia się automatycznie'),
+        200,
+        scrollable: mainScroll,
+      );
       expect(find.text('Przywróć zakupy'), findsOneWidget);
     });
 

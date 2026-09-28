@@ -17,7 +17,7 @@ Stan: 2026-09-27, build release Androida (`app-release.apk`, 67 MB) i build iOS 
 | `sign_in_with_apple` | „Kontynuuj z Apple” (iOS) | Apple (systemowe okno) | token logowania trafia tylko do Supabase |
 | `google_sign_in` | „Kontynuuj z Google” | Google (systemowe okno) | token logowania trafia tylko do Supabase. **Do weryfikacji przed wydaniem:** zgodność z programem Families (decyzja D9) |
 | `flutter_local_notifications`, `timezone`, `flutter_timezone` | codzienne przypomnienia dla rodzica (lokalne, bez serwera) | nie | godzina przypomnień w telefonie |
-| `record` | mikrofon w zabawach (klaśnięcia, głos) | nie | próbki trafiają do detektora w pamięci i są odrzucane; nic nie jest nagrywane ani wysyłane |
+| `record` | mikrofon w zabawach (klaśnięcia, głos) oraz „Twój głos” (nagrania rodzica) | nie | w zabawach próbki trafiają do detektora w pamięci i są odrzucane. Nagrania rodzica (do 12 s, AAC) zapisywane są tylko w telefonie, wyłączone z kopii zapasowej, nigdy nie są wysyłane; usuwane z profilem dziecka. Dane nie opuszczają urządzenia, więc w etykietach prywatności sklepów nie są „zbierane” |
 
 **Brak**: SDK reklamowych, analitycznych, raportowania błędów (Crashlytics, Sentry), Facebook i Firebase.
 
@@ -30,8 +30,10 @@ Stan: 2026-09-27, build release Androida (`app-release.apk`, 67 MB) i build iOS 
 | `ACCESS_NETWORK_STATE`, `RECEIVE_BOOT_COMPLETED` | background_downloader (WorkManager) | wznawianie pobrań po restarcie telefonu |
 | `com.android.vending.BILLING` | in_app_purchase | zakupy |
 | `POST_NOTIFICATIONS` | flutter_local_notifications | przypomnienia; prośba systemowa dopiero po wyborze „Włącz przypomnienia” |
-| `RECORD_AUDIO` | aplikacja / record | zabawy z odpowiedzią głosem lub klaśnięciem; prośba systemowa dopiero po bramce rodzica i włączeniu przez rodzica |
+| `RECORD_AUDIO` | aplikacja / record | zabawy z odpowiedzią głosem lub klaśnięciem (prośba po bramce rodzica) oraz nagrania rodzica w strefie rodzica (Postęp → Twój głos w zabawie) |
 | `…DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | AndroidX (wewnętrzne) | niewidoczne dla użytkownika |
+
+Widżet na ekranie głównym (`DayPartWidget`, niewyeksportowany odbiornik) nie potrzebuje uprawnień: odświeża się niedokładnym alarmem o zmianie pory dnia (bez `SCHEDULE_EXACT_ALARM`).
 
 Czego **nie ma** (zgodnie z Families Policy): `AD_ID` (usunięte), `USE_BIOMETRIC` / `USE_FINGERPRINT` (dokładane przez Google Sign-In, usunięte), lokalizacji, aparatu, kontaktów i pamięci zewnętrznej. Stan sprawdzony `aapt2` 2026-09-27.
 
@@ -43,7 +45,9 @@ Pozostałe ustawienia:
 ## iOS
 
 - **Tryby w tle:** `audio` (odtwarzanie przy zablokowanym ekranie).
-- **Prośby o uprawnienia:** tylko mikrofon (`NSMicrophoneUsageDescription`, po polsku), pokazywana po bramce rodzica, gdy rodzic włączy odpowiedzi głosem w zabawie.
+- **Prośby o uprawnienia:** tylko mikrofon (`NSMicrophoneUsageDescription`, po polsku; opis wymienia zabawy i nagrania rodzica), pokazywana po bramce rodzica albo w strefie rodzica przy pierwszym nagraniu.
+- **Widżet (`AudioKiddoWidget`, WidgetKit):** bez sieci i bez danych, tylko tekst według pory dnia i link `audiokiddo://open/...` do aplikacji. Osobny identyfikator `pl.audiokiddo.app.widget` (tworzony automatycznie przy podpisywaniu).
+- **Schemat adresów `audiokiddo://`:** otwiera tylko ekrany strefy rodzica (`/dobranoc`, `/podroz`); w trybie dziecka przekierowanie i tak zostawia dziecko w jego strefie.
 - **Sign in with Apple:** wymaga dodania funkcji w Xcode po założeniu konta Apple (patrz `docs/KROKI-DLA-DAWIDA.md`).
 - **`NSAllowsLocalNetworking`:** tylko dla serwera testowego. Przed wydaniem usunąć albo ograniczyć do konfiguracji debug (Etap 6).
 - **`PrivacyInfo.xcprivacy`:** brak śledzenia i domen śledzących; typy zbieranych danych uzupełnić po Etapie 3.
