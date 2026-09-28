@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../core/audio/kiddo_voice.dart';
+import '../../core/widgets/golden_hello.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/doodles.dart';
 import '../../core/widgets/kiddo.dart';
@@ -196,28 +196,17 @@ class _PokeKiddo extends ConsumerStatefulWidget {
 }
 
 class _PokeKiddoState extends ConsumerState<_PokeKiddo> {
-  bool _talking = false;
-  int _line = 0;
-
-  Future<void> _poke() async {
-    if (_talking) return;
-    setState(() {
-      _talking = true;
-      _line = _line % 3 + 1;
-    });
-    await ref.read(kiddoVoiceProvider).say('kids_$_line');
-    if (mounted) setState(() => _talking = false);
-  }
-
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
-    label: AppLocalizations.of(context).homeKiddo,
+    label: 'Golden von Ekran. Poznaj mnie.',
     child: GestureDetector(
-      onTap: _poke,
+      onTap: () => showGoldenHello(context),
       child: Kiddo(
-        size: 92,
-        mood: _talking ? KiddoMood.talking : widget.mood,
+        size: 104,
+        mood: widget.mood,
+        outfit: goldenOutfitAt(ref.watch(clockProvider)()),
+        cheeky: true,
         wave: widget.mood == KiddoMood.happy,
       ),
     ),

@@ -1,0 +1,70 @@
+Resolving dependencies...
+Downloading packages...
+Got dependencies!
+00:00 +0: loading /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart
+00:00 +0: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: plays five rounds and finishes with the outro
+00:00 +1: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: plays five rounds and finishes with the outro
+00:00 +2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: plays five rounds and finishes with the outro
+00:00 +3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: plays five rounds and finishes with the outro
+00:00 +4: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: example script from ARCHITECTURE is valid
+00:00 +5: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: example script from ARCHITECTURE is valid
+00:00 +6: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: example script from ARCHITECTURE is valid
+00:00 +7: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: example script from ARCHITECTURE is valid
+00:00 +8: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: example script from ARCHITECTURE is valid
+00:00 +9: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: example script from ARCHITECTURE is valid
+00:00 +10: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/catalog_access_lease_test.dart: catalog interactive game with an invalid script is hidden
+00:00 +11: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/catalog_access_lease_test.dart: catalog interactive game with an invalid script is hidden
+00:00 +12: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: silence and faint noise trigger nothing
+00:00 +13: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: same_as_ fallback aliases resolve to the same step
+00:00 +14: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: same_as_ fallback aliases resolve to the same step
+00:00 +15: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/catalog_access_lease_test.dart: catalog unsupported schema version rejects the whole manifest
+00:00 +16: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/catalog_access_lease_test.dart: catalog unsupported schema version rejects the whole manifest
+00:00 +17: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: goto over its limit ends the session
+00:00 +18: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: missing step reference is an error
+00:00 +19: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: missing step reference is an error
+00:00 +20: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: resetting a window keeps the noise floor
+00:00 +21: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: clap count below the minimum counts as no answer
+00:00 +22: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/catalog_access_lease_test.dart: access pack purchase unlocks only its pack
+00:00 +23: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: unknown asset is an error
+00:00 +24: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +25: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +26: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +27: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +28: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +29: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +30: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +31: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +32: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +33: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +34: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +35: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +36: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +37: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +38: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +39: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +40: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +41: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) clap rhythms are counted exactly
+00:00 +42: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: choice no answer asks again, then stops at the loop limit
+00:00 +43: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: unreachable step is only a warning
+00:00 +44: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/detectors_test.dart: real recordings (placeholder game audio) narrator speech is voice, never claps
+00:00 +45: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: choice without a microphone the child can still answer by touch
+00:00 +46: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: script for a newer engine is rejected
+00:00 +47: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: choice with no usable input the fallback plays
+00:00 +48: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: choice with no usable input the fallback plays
+00:00 +49: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: unknown step type fails parsing
+00:00 +50: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_validator_test.dart: unknown step type fails parsing
+00:00 +51: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: choice a choice is valid only in scripts that require engine 2
+00:00 +52: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/script_runner_test.dart: choice a choice is valid only in scripts that require engine 2
+00:00 +53: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: plan a portion every day, within the daily minutes, no repeats on consecutive days
+00:00 +54: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: plan level 1 is gentle: no interactive games and nothing over 8 minutes
+00:00 +55: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: plan goals steer the choice and the age is respected
+00:00 +56: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: plan what the family can play comes first
+00:00 +57: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: plan features are introduced one at a time and each week ends with a chest
+00:00 +58: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: position on the path one new day per calendar day, even if the child binges
+00:00 +59: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: progress streak, minutes and accuracy per skill
+00:00 +60: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: progress advice praises, suggests a pack for an untouched goal and brings the family back
+00:00 +61: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: progress profiles survive a JSON round trip
+00:00 +62: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: locked content locked items appear only when nothing playable fits
+00:00 +63: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: locked content a day counts once the playable activities are done
+00:00 +64: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-app/packages/ak_core/test/development_test.dart: locked content started days keep their activities
+00:00 +65: All tests passed!

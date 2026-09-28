@@ -79,7 +79,9 @@ class _TripScreenState extends ConsumerState<TripScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.xl),
         children: [
-          const Center(child: Kiddo(size: 110, mood: KiddoMood.happy, wave: true)),
+          const Center(
+            child: Kiddo(size: 110, mood: KiddoMood.happy, wave: true, outfit: GoldenOutfit.adventure),
+          ),
           const SizedBox(height: AkSpace.m),
           Text(l10n.tripTitle, style: text.displaySmall, textAlign: TextAlign.center),
           const SizedBox(height: AkSpace.s),

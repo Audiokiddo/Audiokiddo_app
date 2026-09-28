@@ -22,17 +22,17 @@ enum DayPart: CaseIterable {
     switch self {
     case .morning: return "Poranna rozgrzewka"
     case .midday: return "Czas na przygodę"
-    case .afternoon: return "W drogę z Kiddo"
+    case .afternoon: return "W drogę z Goldenem"
     case .evening: return "Czas się wyciszyć"
     }
   }
 
   var subtitle: String {
     switch self {
-    case .morning: return "Zagadka do śniadania. Kawa poczeka."
-    case .midday: return "Zabawa dnia czeka. Ekran w kieszeni."
+    case .morning: return "Ty ratuj kawę. Ja ogarnę zagadki."
+    case .midday: return "Mam plan. Tym razem nie zjadłem notatek."
     case .afternoon: return "Zanim padnie „daleko jeszcze?”."
-    case .evening: return "Kołysanka dla dziecka, cisza dla Ciebie."
+    case .evening: return "Nos pod koc. Przygody poczekają."
     }
   }
 
@@ -68,6 +68,14 @@ enum DayPart: CaseIterable {
     case .midday: return [Color(hex: 0x7FD3D6), Color(hex: 0xFFD27A)]
     case .afternoon: return [Color(hex: 0xFFB38A), Color(hex: 0xC9A6E0)]
     case .evening: return [Color(hex: 0x3B2E5A), Color(hex: 0x1E2A4A)]
+    }
+  }
+
+  var mascot: String {
+    switch self {
+    case .morning: return "golden_day"
+    case .midday, .afternoon: return "golden_adventure"
+    case .evening: return "golden_pajamas"
     }
   }
 
@@ -162,35 +170,36 @@ struct PartView: View {
 
   var body: some View {
     let part = entry.part
-    let content = VStack(alignment: .leading, spacing: 6) {
-      HStack {
-        Image(systemName: part.symbol)
-          .font(.system(size: 22, weight: .semibold))
-        Spacer()
-        if let week = entry.week {
-          NotesRow(notes: week.notes, color: part.foreground)
-        } else {
-          Text("AudioKiddo")
-            .font(.system(size: 11, weight: .bold))
-            .opacity(0.7)
+    let content = HStack(spacing: 8) {
+      VStack(alignment: .leading, spacing: 5) {
+        HStack {
+          if family == .systemSmall {
+            Image(part.mascot).resizable().scaledToFit().frame(width: 38, height: 42)
+              .accessibilityLabel("Golden von Ekran")
+          }
+          if let week = entry.week {
+            NotesRow(notes: week.notes, color: part.foreground)
+          } else {
+            Text("AudioKiddo").font(.system(size: 11, weight: .bold))
+          }
         }
+        Spacer(minLength: 0)
+        Text(part.title)
+          .font(.system(size: family == .systemSmall ? 16 : 19, weight: .heavy))
+          .minimumScaleFactor(0.8).lineLimit(2)
+        if family != .systemSmall {
+          Text(entry.week?.line ?? part.subtitle)
+            .font(.system(size: 12)).lineLimit(2)
+        }
+        Text(part.action)
+          .font(.system(size: 13, weight: .bold))
+          .padding(.horizontal, 12).padding(.vertical, 5)
+          .background(Capsule().fill(part.foreground.opacity(0.16)))
       }
-      Spacer(minLength: 0)
-      Text(part.title)
-        .font(.system(size: family == .systemSmall ? 17 : 20, weight: .heavy))
-        .minimumScaleFactor(0.8)
-        .lineLimit(2)
       if family != .systemSmall {
-        Text(entry.week?.line ?? part.subtitle)
-          .font(.system(size: 13, weight: entry.week == nil ? .regular : .semibold))
-          .opacity(0.85)
-          .lineLimit(2)
+        Image(part.mascot).resizable().scaledToFit().frame(width: 88)
+          .accessibilityLabel("Golden von Ekran")
       }
-      Text(part.action)
-        .font(.system(size: 14, weight: .bold))
-        .padding(.horizontal, 14)
-        .padding(.vertical, 7)
-        .background(Capsule().fill(part.foreground.opacity(0.16)))
     }
     .foregroundColor(part.foreground)
     .widgetURL(part.url)
@@ -210,7 +219,7 @@ struct AudioKiddoWidget: Widget {
     StaticConfiguration(kind: "AudioKiddoWidget", provider: PartProvider()) { entry in
       PartView(entry: entry)
     }
-    .configurationDisplayName("Kiddo na dziś")
+    .configurationDisplayName("Golden na dziś")
     .description("Zabawa na tę porę dnia: rano rozgrzewka, po południu droga, wieczorem kołysanka.")
     .supportedFamilies([.systemSmall, .systemMedium])
   }

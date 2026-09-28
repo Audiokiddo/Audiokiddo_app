@@ -8,6 +8,24 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/widget_golden"
+            android:layout_width="36dp"
+            android:layout_height="42dp"
+            android:src="@drawable/golden_pajamas"
+            android:contentDescription="@string/widget_golden"
+            android:scaleType="fitCenter" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
     <TextView
         android:id="@+id/widget_brand"
         android:layout_width="wrap_content"
@@ -25,6 +43,9 @@
         android:letterSpacing="0.2"
         android:textSize="11sp"
         android:visibility="gone" />
+
+        </LinearLayout>
+    </LinearLayout>
 
     <!-- Plain View is not allowed in RemoteViews before Android 12. -->
     <FrameLayout
@@ -51,7 +72,7 @@
         android:layout_marginTop="2dp"
         android:alpha="0.85"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:textSize="13sp" />
 
     <TextView

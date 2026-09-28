@@ -1,0 +1,9 @@
+Check docs/audyt-2026-09-28/purchase-audit.test.ts
+running 4 tests from ./docs/audyt-2026-09-28/purchase-audit.test.ts
+AUDIT: an old valid transaction reactivates a refunded Apple purchase ... ok (73ms)
+AUDIT: Sandbox purchase grants access without an environment setting ... ok (12ms)
+AUDIT: another caller can reassign a transaction bound to parent-a ... ok (14ms)
+AUDIT: duplicate old Apple notification mutates state before deduplication ... ok (24ms)
+
+ok | 4 passed | 0 failed (127ms)
+

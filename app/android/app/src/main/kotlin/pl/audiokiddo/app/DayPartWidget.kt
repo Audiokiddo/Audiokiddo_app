@@ -51,6 +51,11 @@ class DayPartWidget : AppWidgetProvider() {
         val notes = data.getString("notes", null)?.toIntOrNull()
         return RemoteViews(context.packageName, R.layout.day_part_widget).apply {
             setInt(R.id.widget_root, "setBackgroundResource", part.background)
+            setImageViewResource(R.id.widget_golden, when (part) {
+                Part.MORNING -> R.drawable.golden_day
+                Part.MIDDAY, Part.AFTERNOON -> R.drawable.golden_adventure
+                Part.EVENING -> R.drawable.golden_pajamas
+            })
             setTextViewText(R.id.widget_title, context.getString(part.title))
             setTextViewText(R.id.widget_subtitle, line.ifEmpty { context.getString(part.subtitle) })
             setTextViewText(R.id.widget_action, context.getString(part.action))

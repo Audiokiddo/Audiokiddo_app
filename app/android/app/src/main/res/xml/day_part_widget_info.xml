@@ -5,7 +5,7 @@
     android:initialLayout="@layout/day_part_widget"
     android:previewLayout="@layout/day_part_widget"
     android:minWidth="140dp"
-    android:minHeight="110dp"
+    android:minHeight="180dp"
     android:targetCellWidth="2"
     android:targetCellHeight="2"
     android:resizeMode="horizontal|vertical"

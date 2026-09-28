@@ -127,8 +127,8 @@ class GameScreen extends ConsumerWidget {
   }
 }
 
-/// Kiddo plays along: talks with the narrator, listens (headphones pulsing) while the child
-/// may answer, jumps for joy when an answer is heard, dozes while paused.
+/// Golden accompanies the narrator without pretending to speak their lines.
+/// His head tilts while listening; his friendly expression celebrates participation.
 class _GameKiddo extends StatefulWidget {
   const _GameKiddo({required this.game, required this.playing});
 
@@ -172,7 +172,7 @@ class _GameKiddoState extends State<_GameKiddo> {
       _ when _cheering => KiddoMood.happy,
       GamePhase.finished => KiddoMood.happy,
       _ when game.active && !widget.playing && game.listening.isEmpty => KiddoMood.sleepy,
-      GamePhase.playing => KiddoMood.talking,
+      GamePhase.playing => KiddoMood.listening,
       GamePhase.listening => KiddoMood.listening,
       _ => KiddoMood.idle,
     };
@@ -190,7 +190,7 @@ class _GameKiddoState extends State<_GameKiddo> {
               color: game.phase == GamePhase.listening ? const Color(0xFF3A2A1F) : const Color(0xFF2A1E17),
             ),
           ),
-          Kiddo(size: 170, mood: mood),
+          Kiddo(size: 170, mood: mood, outfit: GoldenOutfit.adventure),
           if (game.active && !widget.playing && game.listening.isEmpty)
             const Positioned(
               right: 30,

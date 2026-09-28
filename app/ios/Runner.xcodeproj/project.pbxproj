@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ABCE20260928000100000001 /* Golden Assets in Resources */ = {isa = PBXBuildFile; fileRef = ABCE20260928000100000002 /* Assets.xcassets */; };
 		1412B17A33150EBD642230B9 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8828627A92235A1AAAB192AF /* SwiftUI.framework */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		2B902FF49E30E6649DEABBE2 /* AudioKiddoWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7348602FD3E2150A93B27D5 /* AudioKiddoWidget.swift */; };
@@ -66,6 +67,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		ABCE20260928000100000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0CF212C222995BB8BBCD5F76 /* AudioKiddoWidget.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = AudioKiddoWidget.entitlements; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 		CEF93DD6C0C9054C971A5D39 /* AudioKiddoWidget */ = {
 			isa = PBXGroup;
 			children = (
+				ABCE20260928000100000002 /* Assets.xcassets */,
 				C7348602FD3E2150A93B27D5 /* AudioKiddoWidget.swift */,
 				B28555E24CA3D85C3FC8320F /* Info.plist */,
 				0CF212C222995BB8BBCD5F76 /* AudioKiddoWidget.entitlements */,
@@ -322,6 +325,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABCE20260928000100000001 /* Golden Assets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

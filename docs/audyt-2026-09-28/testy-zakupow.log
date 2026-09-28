@@ -1,0 +1,40 @@
+Download https://registry.npmjs.org/@peculiar/asn1-csr/-/asn1-csr-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-rsa/-/asn1-rsa-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-ecc/-/asn1-ecc-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-schema/-/asn1-schema-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-cms/-/asn1-cms-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-pkcs9/-/asn1-pkcs9-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-x509/-/asn1-x509-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-x509-attr/-/asn1-x509-attr-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-pkcs8/-/asn1-pkcs8-2.10.0.tgz
+Download https://registry.npmjs.org/@peculiar/asn1-pfx/-/asn1-pfx-2.10.0.tgz
+running 6 tests from ./_shared/apple_jws_test.ts
+apple jws: valid chain and signature decode the payload ... ok (57ms)
+apple jws: someone else's root is rejected (default is Apple's G3) ... ok (14ms)
+apple jws: tampered payload fails the signature ... ok (15ms)
+apple jws: chain without App Store OIDs is rejected ... ok (13ms)
+apple jws: signed outside the certificates' validity is rejected ... ok (13ms)
+apple jws: a leaf signed by a stranger is rejected ... ok (60ms)
+running 3 tests from ./_shared/google_play_test.ts
+google: service-account token request is a signed JWT for androidpublisher, cached ... ok (205ms)
+google: Pub/Sub push token must match audience and service account ... ok (58ms)
+google: Pub/Sub push body decodes the developer notification ... ok (138µs)
+running 7 tests from ./_shared/purchases_test.ts
+apple purchase: verified yearly subscription is granted to the caller ... ok (35ms)
+apple purchase: another app's bundle, unknown product and bad signature are rejected ... ok (24ms)
+apple purchase: restore on another account moves the purchase there ... ok (15ms)
+apple notification: refund revokes, redelivery is a duplicate, unknown purchase is ignored ... ok (39ms)
+apple notification: grace period keeps access after the renewal failed ... ok (25ms)
+google purchase: subscription and one-time pack; pending grants nothing ... ok (13ms)
+google notifications: renewal, upgrade replaces the old token, voided purchase is refunded ... ok (227µs)
+running 7 tests from ./_shared/shared_test.ts
+woo signature: valid, tampered body, wrong secret, missing header ... ok (944µs)
+woo order parsing ... ok (440µs)
+payload hash is stable ... ok (339µs)
+apple: one-time, active, grace, billing retry, expired, refund, family revoke ... ok (129µs)
+google subscriptions: states and cancelled-but-paid ... ok (152µs)
+google one-time purchases ... ok (52µs)
+woo ping: unsigned creation check is accepted, anything else is not ... ok (88µs)
+
+ok | 23 passed | 0 failed (989ms)
+
