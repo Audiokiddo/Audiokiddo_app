@@ -18,6 +18,12 @@ Stan: 2026-09-28. Punkt wyjścia: rodzice wybierają aplikację, która (1) oszc
 | **Dobranoc** (oddechy → cicha zabawa → kołysanka → „dobranoc” głosem rodzica) | Stały rytuał wieczorny; w karcie dnia wieczorem. |
 | **Widżet „Kiddo na dziś”** (iOS i Android) | Zmienia się z porą dnia: rano rozgrzewka, po południu „W drogę”, wieczorem „Dobranoc”. Jedno dotknięcie otwiera właściwy tryb. |
 
+| **„Mam chwilę”** (gdzie, ile czasu, rozruszać czy wyciszyć → jedna zabawa, „Włącz”) | Koniec przeglądania katalogu w poczekalni; jedna decyzja zamiast dziesięciu. |
+| **Czas bez ekranu** na Starcie („84 min… to jak 4 odcinki bajki mniej”) | Rodzic widzi sens w liczbach, bez poczucia winy. |
+| **Pierwsze kroki** (plan, pierwsza zabawa, pobieranie, głos, przypomnienia, widżet) | Nowy rodzic odkrywa najlepsze funkcje w pierwszym tygodniu. |
+
+Tekst i sekcja na stronę: `docs/strona/WYROZNIKI.md`, `docs/strona/sekcja-aplikacja.html`.
+
 ## Propozycje: następne kroki (od największego efektu)
 
 1–4. ✅ Zrobione 2026-09-28: głos rodzica, tryb podróży, rytuał „Dobranoc”, widżet z postępem dziecka, skróty (ikona, Spotlight, Skróty, Asystent Google), Android Auto, płynne wyciszanie kołysanki.

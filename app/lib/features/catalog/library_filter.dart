@@ -20,6 +20,9 @@ class LibraryFilter {
 
   bool get isEmpty => kind == null && packId == null && age == null && situation == null;
 
+  /// Filters behind the "Filtry" button (all but the type row).
+  int get extraCount => [packId, age, situation].where((f) => f != null).length;
+
   Map<String, String> toQuery() => {
     if (kind != null) 'typ': wireName(kind!),
     'pakiet': ?packId,

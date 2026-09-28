@@ -166,50 +166,6 @@ class TodayHero extends ConsumerWidget {
                                   ],
                                 ),
                               ),
-                              // The mode that fits this part of the day: the bedtime ritual in
-                              // the evening, the car before and after nursery.
-                              if (switch (part) {
-                                    DayPart.evening => (
-                                      Icons.bedtime_rounded,
-                                      l10n.todayBedtime,
-                                      '/dobranoc',
-                                    ),
-                                    DayPart.morning || DayPart.afternoon => (
-                                      Icons.directions_car_rounded,
-                                      l10n.todayTrip,
-                                      '/podroz',
-                                    ),
-                                    DayPart.midday => null,
-                                  }
-                                  case (final icon, final label, final route))
-                                Pressable(
-                                  onTap: () => context.push(route),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                                    decoration: BoxDecoration(
-                                      color: fg.withValues(alpha: 0.14),
-                                      border: Border.all(color: fg.withValues(alpha: 0.35)),
-                                      borderRadius: BorderRadius.circular(40),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(icon, color: fg, size: 20),
-                                        const SizedBox(width: 6),
-                                        Flexible(
-                                          child: Text(
-                                            label,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: text.titleMedium?.copyWith(
-                                              color: fg,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
                             ],
                           ),
                         ],

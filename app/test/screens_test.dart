@@ -57,18 +57,32 @@ Future<void> goBack(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('home shows greeting, featured game and packs', (tester) async {
+  testWidgets('home: today, four ways to play, first steps, all activities', (tester) async {
     await pumpApp(tester);
     expect(find.text('Czas na zabawę!'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Zabawa dnia'), 200, scrollable: mainScroll);
-    expect(find.text('Zaginiony skarb'), findsWidgets);
-    await tester.scrollUntilVisible(find.text('Na drogę'), 200, scrollable: mainScroll);
-    expect(find.text('10 zabaw · 3+'), findsWidgets);
+    expect(find.text('Co teraz?'), findsOneWidget);
+    for (final mode in ['Mam chwilę', 'W drogę', 'Dobranoc', 'Tryb dziecka']) {
+      expect(find.text(mode), findsOneWidget);
+    }
+    await tester.scrollUntilVisible(find.text('Pierwsze kroki'), 200, scrollable: mainScroll);
+    await tester.scrollUntilVisible(find.textContaining('Wszystkie zabawy'), 200, scrollable: mainScroll);
+  });
+
+  testWidgets('"Mam chwilę" suggests one activity for where you are', (tester) async {
+    await pumpApp(tester);
+    await tester.tap(find.text('Mam chwilę'));
+    await tester.pumpAndSettle();
+    expect(find.text('Gdzie jesteście?'), findsOneWidget);
+    await tester.tap(find.text('W aucie'));
+    await tester.pumpAndSettle();
+    expect(find.text('KIDDO PROPONUJE'), findsOneWidget);
+    expect(find.text('Włącz'), findsOneWidget);
+    expect(find.text('Ułóż zabawy na całą trasę'), findsOneWidget);
   });
 
   testWidgets('pack shortcut opens the filtered library', (tester) async {
     await pumpApp(tester);
-    await tester.scrollUntilVisible(find.text('Na drogę'), 200, scrollable: mainScroll);
+    await openLibrary(tester);
     final packCard = find.text('10 zabaw · 3+').first;
     await tester.ensureVisible(packCard);
     await tester.pumpAndSettle();
@@ -180,8 +194,9 @@ void main() {
 
     testWidgets('kids mode: only playable games, no escape, exit through the gate', (tester) async {
       await pumpApp(tester);
-      // Scroll a section further, so the card is out from under the floating tab bar.
-      await tester.scrollUntilVisible(find.text('Zabawa dnia'), 200, scrollable: mainScroll);
+      // Lift the tile out from under the floating tab bar.
+      await tester.drag(mainScroll, const Offset(0, -250));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Tryb dziecka'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Włącz tryb dziecka'));

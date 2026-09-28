@@ -151,6 +151,8 @@ class _Path extends ConsumerWidget {
     }
     showModalBottomSheet<void>(
       context: context,
+      // Above the tab bar, not inside the tab.
+      useRootNavigator: true,
       showDragHandle: true,
       isScrollControlled: true,
       builder: (sheet) => _DaySheet(day: day),

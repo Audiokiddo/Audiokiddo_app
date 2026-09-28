@@ -1,20 +1,25 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/doodles.dart';
-import '../../core/widgets/motion.dart';
-import '../home/today.dart';
 import '../../core/widgets/kiddo.dart';
+import '../../core/widgets/motion.dart';
 import '../../l10n/app_localizations.dart';
+import '../family/family.dart';
+import '../home/first_steps.dart';
+import '../home/quick_pick.dart';
+import '../home/today.dart';
 import '../kids_mode/kids_mode_setup.dart';
-import 'library_filter.dart';
+import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
-import 'widgets/content_cover.dart';
 import 'widgets/item_views.dart';
-import 'widgets/labels.dart';
 
+/// Start answers one question: what do we put on now? Today's portion, four ways to play,
+/// first steps for a new parent, a question for the dinner table. Browsing lives in the
+/// library.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -37,19 +42,13 @@ class _HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final featured = catalog.shelves.where((s) => s.kind == ShelfKind.featured && s.itemIds.isNotEmpty);
-    // The "nowosci" shelf is shown as a banner, not as a row.
-    final rows = catalog.shelves.where(
-      (s) => s.kind == ShelfKind.row && s.itemIds.isNotEmpty && s.id != 'nowosci',
-    );
     final news = [
       for (final s in catalog.shelves.where((s) => s.id == 'nowosci'))
         for (final id in s.itemIds) ?catalog.item(id),
     ];
-    final ages = {for (final p in catalog.packs) p.ageMin}.toList()..sort();
 
     return ListView(
-      // The frosted tab bar floats over the list: leave room under the last shelf.
+      // The frosted tab bar floats over the list: leave room under the last card.
       padding: EdgeInsets.only(bottom: AkSpace.xl + MediaQuery.paddingOf(context).bottom),
       children: [
         Padding(
@@ -59,62 +58,181 @@ class _HomeContent extends StatelessWidget {
             children: [
               Text(l10n.homeGreeting, style: Theme.of(context).textTheme.displaySmall),
               const SizedBox(height: AkSpace.xs),
-              Text(
-                l10n.homeSubtitle,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: context.palette.inkMuted),
-              ),
+              const _ScreenFreeLine(),
             ],
           ),
         ),
         const TodayHero(),
+        const _Modes(),
+        const FirstStepsCard(),
         const TalkCard(),
         if (news.isNotEmpty) ScrollReveal(child: _NewsBanner(item: news.first)),
-        const ScrollReveal(child: KidsModeEntryCard()),
-        if (featured.isNotEmpty)
-          ScrollReveal(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SectionHeader(l10n.homeFeatured),
-                _FeaturedCard(item: catalog.item(featured.first.itemIds.first)!, catalog: catalog),
-              ],
-            ),
-          ),
-        ScrollReveal(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SectionHeader(l10n.homeStartHere),
-              _AgeGroups(ages: ages),
-            ],
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, 0),
+          child: OutlinedButton.icon(
+            onPressed: () => context.go('/biblioteka'),
+            icon: const Icon(Icons.grid_view_rounded),
+            label: Text(l10n.homeAllActivities(catalog.items.length)),
           ),
         ),
-        ScrollReveal(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [SectionHeader(l10n.homeWhatAreYouDoing), const _Situations()],
-          ),
-        ),
-        ScrollReveal(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SectionHeader(l10n.homePacks),
-              _Packs(catalog: catalog),
-            ],
-          ),
-        ),
-        for (final shelf in rows)
-          ScrollReveal(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SectionHeader(shelf.title),
-                _ShelfRow(items: [for (final id in shelf.itemIds) catalog.item(id)!], catalog: catalog),
-              ],
-            ),
-          ),
       ],
+    );
+  }
+}
+
+/// Minutes of play instead of a screen in the last seven days, all children together.
+final screenFreeMinutesProvider = Provider<int>((ref) {
+  final family = ref.watch(familyProvider).value;
+  if (family == null) return 0;
+  final since = ref.watch(clockProvider)().subtract(const Duration(days: 7));
+  var seconds = 0;
+  for (final child in family.children) {
+    for (final r in family.resultsOf(child.id)) {
+      if (r.at.isAfter(since)) seconds += r.seconds;
+    }
+  }
+  // Rounded up: the first short activity already counts.
+  return (seconds + 59) ~/ 60;
+});
+
+/// "84 min without a screen this week (like 4 cartoon episodes)", or the plain promise.
+class _ScreenFreeLine extends ConsumerWidget {
+  const _ScreenFreeLine();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final minutes = ref.watch(screenFreeMinutesProvider);
+    final style = Theme.of(context).textTheme.bodyLarge?.copyWith(color: context.palette.inkMuted);
+    if (minutes == 0) return Text(l10n.homeSubtitle, style: style);
+    // A cartoon episode is about 20 minutes: the comparison parents count in.
+    final episodes = minutes ~/ 20;
+    return Row(
+      children: [
+        const Icon(Icons.visibility_off_rounded, size: 20, color: AkBrand.teal),
+        const SizedBox(width: AkSpace.s),
+        Expanded(
+          child: Text(
+            episodes > 0 ? l10n.screenFreeEpisodes(minutes, episodes) : l10n.screenFree(minutes),
+            style: style?.copyWith(color: context.palette.ink, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Four big ways to play, the one that fits this part of the day first.
+class _Modes extends ConsumerWidget {
+  const _Modes();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final part = dayPartOf(ref.watch(clockProvider)());
+    final quick = _Mode(
+      Icons.timer_rounded,
+      l10n.modeQuick,
+      l10n.modeQuickHint,
+      AkBrand.teal,
+      () => showQuickPick(context),
+    );
+    final trip = _Mode(
+      Icons.directions_car_rounded,
+      l10n.modeTrip,
+      l10n.modeTripHint,
+      AkBrand.terracotta,
+      () => context.push('/podroz'),
+    );
+    final bed = _Mode(
+      Icons.bedtime_rounded,
+      l10n.modeBedtime,
+      l10n.modeBedtimeHint,
+      const Color(0xFF3B2E5A),
+      () => context.push('/dobranoc'),
+    );
+    final kids = _Mode(
+      Icons.child_care_rounded,
+      l10n.modeKids,
+      l10n.modeKidsHint,
+      AkBrand.lavenderDeep,
+      () => showKidsModeSetup(context, ref),
+    );
+    final modes = switch (part) {
+      DayPart.evening => [bed, quick, kids, trip],
+      DayPart.afternoon => [trip, quick, kids, bed],
+      _ => [quick, trip, kids, bed],
+    };
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: AkSpace.xs, bottom: AkSpace.s),
+            child: Text(l10n.modesTitle, style: Theme.of(context).textTheme.titleLarge),
+          ),
+          for (var row = 0; row < 2; row++)
+            Padding(
+              padding: EdgeInsets.only(bottom: row == 0 ? AkSpace.s : 0),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: modes[row * 2]),
+                    const SizedBox(width: AkSpace.s),
+                    Expanded(child: modes[row * 2 + 1]),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Mode extends StatelessWidget {
+  const _Mode(this.icon, this.title, this.hint, this.color, this.onTap);
+
+  final IconData icon;
+  final String title;
+  final String hint;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Semantics(
+      button: true,
+      label: '$title. $hint',
+      excludeSemantics: true,
+      child: Pressable(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(AkSpace.m),
+          decoration: BoxDecoration(
+            color: context.palette.surface,
+            borderRadius: BorderRadius.circular(AkRadius.card),
+            boxShadow: akSoftShadow(context),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
+                child: Icon(icon, color: Colors.white),
+              ),
+              const SizedBox(height: AkSpace.s),
+              Text(title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              Text(hint, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -189,230 +307,6 @@ class _NewsBanner extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _FeaturedCard extends StatelessWidget {
-  const _FeaturedCard({required this.item, required this.catalog});
-
-  final ContentItem item;
-  final Catalog catalog;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final pack = item.packId == null ? null : catalog.pack(item.packId!);
-    final color = pack == null ? AkBrand.cream : AkPalette.packColor(pack.colorToken);
-    final text = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-      child: Semantics(
-        button: true,
-        label: '${l10n.homeFeatured}: ${item.title}, ${l10n.duration(item.durationSec)}',
-        excludeSemantics: true,
-        child: Material(
-          color: color,
-          borderRadius: BorderRadius.circular(AkRadius.card),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(AkRadius.card),
-            onTap: () => context.push(itemRoute(item)),
-            child: Padding(
-              padding: const EdgeInsets.all(AkSpace.m),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (pack != null)
-                          Text(pack.title, style: text.labelLarge?.copyWith(color: AkBrand.ink)),
-                        const SizedBox(height: AkSpace.xs),
-                        Text(
-                          item.title,
-                          style: text.headlineSmall?.copyWith(
-                            color: AkBrand.ink,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: AkSpace.s),
-                        Text(
-                          '${l10n.duration(item.durationSec)} · ${l10n.ageFrom(item.ageMin)}',
-                          style: text.bodyMedium?.copyWith(color: AkBrand.ink),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: AkSpace.m),
-                  ContentCover(item: item, pack: pack, size: 96),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AgeGroups extends StatelessWidget {
-  const _AgeGroups({required this.ages});
-
-  final List<int> ages;
-
-  static const _colors = [AkBrand.lavender, AkBrand.teal, AkBrand.sun, AkBrand.orange];
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return SizedBox(
-      height: 88 + MediaQuery.textScalerOf(context).scale(24),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-        itemCount: ages.length,
-        separatorBuilder: (_, _) => const SizedBox(width: AkSpace.m),
-        itemBuilder: (context, i) => Semantics(
-          button: true,
-          label: l10n.ageGroupLabel(ages[i]),
-          excludeSemantics: true,
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: () => context.go(LibraryFilter(age: ages[i]).toLocation()),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: _colors[i % _colors.length],
-                  child: Text(
-                    l10n.ageFrom(ages[i]),
-                    style: Theme.of(context).textTheme.headlineSmall
-                        ?.copyWith(color: AkBrand.ink, fontWeight: FontWeight.w700),
-                  ),
-                ),
-                const SizedBox(height: AkSpace.xs),
-                Text(l10n.ageGroupLabel(ages[i]), style: Theme.of(context).textTheme.labelSmall),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Situations extends StatelessWidget {
-  const _Situations();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final palette = context.palette;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-      child: GridView.count(
-        crossAxisCount: 2,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        mainAxisSpacing: AkSpace.s,
-        crossAxisSpacing: AkSpace.s,
-        childAspectRatio: 2.4,
-        children: [
-          for (final s in Situation.values)
-            Material(
-              color: palette.surface,
-              borderRadius: BorderRadius.circular(AkRadius.card),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(AkRadius.card),
-                onTap: () => context.go(LibraryFilter(situation: s).toLocation()),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-                  child: Row(
-                    children: [
-                      Icon(situationIcon(s), color: palette.primary),
-                      const SizedBox(width: AkSpace.s),
-                      Expanded(child: Text(l10n.situation(s), style: Theme.of(context).textTheme.titleSmall)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Packs extends StatelessWidget {
-  const _Packs({required this.catalog});
-
-  final Catalog catalog;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final text = Theme.of(context).textTheme;
-    return SizedBox(
-      height: 84 + MediaQuery.textScalerOf(context).scale(56),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-        itemCount: catalog.packs.length,
-        separatorBuilder: (_, _) => const SizedBox(width: AkSpace.s),
-        itemBuilder: (context, i) {
-          final pack = catalog.packs[i];
-          final count = catalog.itemsInPack(pack.id).length;
-          return Material(
-            color: AkPalette.packColor(pack.colorToken),
-            borderRadius: BorderRadius.circular(AkRadius.card),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(AkRadius.card),
-              onTap: () => context.go(LibraryFilter(packId: pack.id).toLocation()),
-              child: SizedBox(
-                width: 190,
-                child: Padding(
-                  padding: const EdgeInsets.all(AkSpace.m),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        pack.title,
-                        style: text.titleLarge?.copyWith(color: AkBrand.ink, fontWeight: FontWeight.w700),
-                      ),
-                      Text(
-                        '${l10n.itemsCount(count)} · ${l10n.ageFrom(pack.ageMin)}',
-                        style: text.bodyMedium?.copyWith(color: AkBrand.ink),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _ShelfRow extends StatelessWidget {
-  const _ShelfRow({required this.items, required this.catalog});
-
-  final List<ContentItem> items;
-  final Catalog catalog;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: itemCardShelfHeight(context),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-        itemCount: items.length,
-        separatorBuilder: (_, _) => const SizedBox(width: AkSpace.m),
-        itemBuilder: (context, i) => ItemCard(item: items[i], catalog: catalog),
       ),
     );
   }

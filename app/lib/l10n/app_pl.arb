@@ -1051,5 +1051,93 @@
   "weekCardSheetBody": "Obrazek z podsumowaniem tygodnia. Wyślij go w wiadomości: babcia będzie wiedziała, o co zapytać przez telefon.",
   "weekCardSend": "Wyślij",
   "weekCardEntry": "Wyślij tydzień dziadkom",
-  "weekCardEntryHint": "Ładna karta z nutami, ulubioną zabawą i pytaniem do rozmowy"
+  "weekCardEntryHint": "Ładna karta z nutami, ulubioną zabawą i pytaniem do rozmowy",
+  "homeAllActivities": "Wszystkie zabawy ({count})",
+  "@homeAllActivities": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "screenFree": "{minutes} min zabawy bez ekranu w tym tygodniu",
+  "@screenFree": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "screenFreeEpisodes": "{minutes} min zabawy bez ekranu w tym tygodniu. To jak {episodes, plural, =1{1 odcinek} few{{episodes} odcinki} many{{episodes} odcinków} other{{episodes} odcinka}} bajki mniej.",
+  "@screenFreeEpisodes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "episodes": {
+        "type": "int"
+      }
+    }
+  },
+  "modesTitle": "Co teraz?",
+  "modeQuick": "Mam chwilę",
+  "modeQuickHint": "3 pytania, 1 zabawa",
+  "modeTrip": "W drogę",
+  "modeTripHint": "Zabawy na całą trasę",
+  "modeBedtime": "Dobranoc",
+  "modeBedtimeHint": "Wieczorny rytuał",
+  "modeKids": "Tryb dziecka",
+  "modeKidsHint": "Dziecko wybiera samo",
+  "stepsTitle": "Pierwsze kroki",
+  "stepsCount": "{done} z {total}",
+  "@stepsCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "stepsHide": "Ukryj pierwsze kroki",
+  "stepPlan": "Dopasuj plan do dziecka",
+  "stepPlanHint": "Minuta pytań: wiek, cele, czas",
+  "stepPlay": "Włącz pierwszą zabawę",
+  "stepPlayHint": "Kiddo podpowie, co pasuje teraz",
+  "stepDownload": "Pobierz coś na drogę",
+  "stepDownloadHint": "Zabawy działają bez internetu",
+  "stepVoice": "Nagraj swoje „Brawo!”",
+  "stepVoiceHint": "Kiddo wplecie Twój głos w zabawę",
+  "stepReminders": "Włącz przypomnienia",
+  "stepRemindersHint": "Raz dziennie, z humorem",
+  "stepWidget": "Dodaj widżet na ekran",
+  "stepWidgetHint": "Właściwa zabawa o każdej porze dnia",
+  "widgetHowToIos": "1. Przytrzymaj palcem ikonę AudioKiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → AudioKiddo.",
+  "widgetHowToAndroid": "1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź AudioKiddo i dotknij „Dodaj”.",
+  "pickTitle": "Co teraz?",
+  "pickWhere": "Gdzie jesteście?",
+  "pickHome": "W domu",
+  "pickCar": "W aucie",
+  "pickOut": "Czekamy",
+  "pickBed": "W łóżku",
+  "pickHowLong": "Ile macie czasu?",
+  "pickMood": "Czego trzeba?",
+  "pickMove": "Rozruszać",
+  "pickCalm": "Wyciszyć",
+  "pickResult": "KIDDO PROPONUJE",
+  "pickStart": "Włącz",
+  "pickOr": "Albo:",
+  "pickNothing": "Nic tu nie pasuje. Zmień odpowiedź albo zajrzyj do Biblioteki.",
+  "pickWholeTrip": "Ułóż zabawy na całą trasę",
+  "pickWholeRitual": "Cały wieczorny rytuał",
+  "filtersButton": "{count, plural, =0{Filtry} other{Filtry ({count})}}",
+  "@filtersButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filtersDone": "Pokaż zabawy"
 }

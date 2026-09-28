@@ -1,0 +1,124 @@
+<!--
+  AudioKiddo: sekcja „Aplikacja” na audiokiddo.pl.
+  Wklej całość w WordPressie do bloku „Własny HTML” (albo do szablonu strony).
+  Style są zamknięte w klasie .akx, więc nie ruszają reszty strony. Bez zewnętrznych skryptów.
+  Do podmiany przed publikacją: linki do sklepów (href="#appstore", "#googleplay") i adres zapisu.
+-->
+<section class="akx" id="aplikacja" aria-labelledby="akx-title">
+<style>
+.akx{--ink:#231A16;--muted:#6B5A50;--bg:#FFF7EE;--sand:#F7EADB;--terra:#B8431C;--teal:#1D7478;--lav:#6B4C8A;--sun:#FAC119;
+  background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding:64px 16px;line-height:1.5}
+.akx *{box-sizing:border-box}
+.akx .w{max-width:1080px;margin:0 auto}
+.akx .kicker{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);margin:0 0 8px}
+.akx h2{font-size:clamp(30px,5vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0 0 16px;font-weight:800}
+.akx h3{font-size:20px;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
+.akx p{margin:0}
+.akx .lead{font-size:clamp(17px,2.2vw,20px);color:var(--muted);max-width:640px}
+.akx .hero{display:grid;grid-template-columns:1.3fr .7fr;gap:32px;align-items:center;margin-bottom:48px}
+.akx .kiddo{width:100%;max-width:260px;justify-self:center}
+.akx .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.akx .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:999px;font-weight:700;text-decoration:none;font-size:16px}
+.akx .btn-main{background:var(--terra);color:#fff}
+.akx .btn-ghost{border:1.5px solid rgba(35,26,22,.25);color:var(--ink)}
+.akx .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.akx .card{background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 30px rgba(138,75,42,.10)}
+.akx .ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;font-size:22px;margin-bottom:14px}
+.akx .card p{color:var(--muted)}
+.akx .band{margin:48px 0;border-radius:28px;padding:32px;background:linear-gradient(135deg,#FFD27A,#FF9A6B);display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+.akx .band .big{font-size:clamp(44px,8vw,72px);font-weight:800;letter-spacing:-.03em;line-height:1}
+.akx .band p{font-size:18px;max-width:560px}
+.akx table{width:100%;border-collapse:collapse;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 12px 30px rgba(138,75,42,.10);font-size:15px}
+.akx th,.akx td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--sand);vertical-align:top}
+.akx th{background:var(--sand);font-weight:700}
+.akx td.yes{color:var(--teal);font-weight:700}
+.akx td.no{color:var(--muted)}
+.akx .tablewrap{overflow-x:auto;margin-top:16px}
+.akx details{background:#fff;border-radius:18px;padding:16px 20px;margin-top:10px;box-shadow:0 6px 18px rgba(138,75,42,.08)}
+.akx summary{font-weight:700;cursor:pointer}
+.akx details p{color:var(--muted);margin-top:8px}
+.akx .sec{margin-top:56px}
+@media (max-width:820px){.akx .hero{grid-template-columns:1fr}.akx .kiddo{max-width:180px;grid-row:1}.akx .grid{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.akx{padding:48px 16px}.akx .grid{grid-template-columns:1fr}.akx .band{grid-template-columns:1fr;padding:24px}}
+</style>
+<div class="w">
+
+  <div class="hero">
+    <div>
+      <p class="kicker">Aplikacja AudioKiddo</p>
+      <h2 id="akx-title">Zabawy, które dziecko słyszy, a nie ogląda</h2>
+      <p class="lead">Kiddo prowadzi zabawę, a dziecko odpowiada klaśnięciem albo głosem. Telefon może leżeć w kieszeni. Kilka minut dziennie, rozłożone na dni, żeby ćwiczyć słuchanie, mowę i wyobraźnię.</p>
+      <div class="cta">
+        <a class="btn btn-main" href="#appstore">Pobierz na iPhone’a</a>
+        <a class="btn btn-main" href="#googleplay">Pobierz na Androida</a>
+        <a class="btn btn-ghost" href="#akx-faq">Jak to działa?</a>
+      </div>
+    </div>
+    <svg class="kiddo" viewBox="0 0 200 200" role="img" aria-label="Kiddo, maskotka AudioKiddo">
+      <ellipse cx="100" cy="186" rx="44" ry="7" fill="#231A16" opacity=".12"/>
+      <path d="M40 96a60 60 0 0 1 120 0" fill="none" stroke="#4A3228" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="100" cy="108" r="58" fill="#FAC119"/>
+      <circle cx="100" cy="108" r="58" fill="url(#akxg)"/>
+      <defs><radialGradient id="akxg" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE38A"/><stop offset="1" stop-color="#FFB000" stop-opacity=".2"/></radialGradient></defs>
+      <rect x="30" y="86" width="24" height="42" rx="11" fill="#1FA9AE"/>
+      <rect x="146" y="86" width="24" height="42" rx="11" fill="#1FA9AE"/>
+      <circle cx="80" cy="104" r="9" fill="#fff"/><circle cx="120" cy="104" r="9" fill="#fff"/>
+      <circle cx="82" cy="105" r="5" fill="#231A16"/><circle cx="122" cy="105" r="5" fill="#231A16"/>
+      <circle cx="68" cy="122" r="7" fill="#FF9A6B" opacity=".6"/><circle cx="132" cy="122" r="7" fill="#FF9A6B" opacity=".6"/>
+      <path d="M84 128q16 14 32 0" fill="none" stroke="#231A16" stroke-width="5" stroke-linecap="round"/>
+      <path d="M150 40l6-14M162 48l12-8M166 60l14-2" stroke="#1D3B36" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="ico" style="background:var(--teal)"><svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" aria-hidden="true"><path d="M9 13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm7.76-9.64-1.68 1.69c.84 1.18.84 2.71 0 3.89l1.68 1.69c2.02-2.02 2.02-5.07 0-7.27zM20.07 2l-1.63 1.63c2.77 3.02 2.77 7.56 0 10.74L20.07 16c3.9-3.89 3.91-9.95 0-14z"/></svg></div><h3>Dziecko odpowiada</h3><p>Klaśnięcie to „tak”, głośne „nie” to „nie”. Kiddo słucha i prowadzi zabawę dalej. To nie jest bajka do przesłuchania, tylko rozmowa.</p></div>
+    <div class="card"><div class="ico" style="background:var(--terra)"><svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div><h3>Twój głos w zabawie</h3><p>Nagraj „Brawo, Zosiu!” i „Dobranoc”. Kiddo wplecie Twój głos w zabawę. Nagrania zostają w telefonie, nie trafiają na żaden serwer.</p></div>
+    <div class="card"><div class="ico" style="background:#B8431C"><svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" aria-hidden="true"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div><h3>W drogę jednym przyciskiem</h3><p>Powiedz, ile jedziecie. Kiddo ułoży zabawy i piosenki na całą trasę, z przerwami na „Co widzisz za oknem?”. Pobrane działają bez internetu.</p></div>
+    <div class="card"><div class="ico" style="background:#3B2E5A"><svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" aria-hidden="true"><path d="M12.34 2.02C6.59 1.82 2 6.42 2 12c0 5.52 4.48 10 10 10 3.71 0 6.93-2.02 8.66-5.02-7.51-.25-12.09-8.43-8.32-14.96z"/></svg></div><h3>Wieczorny rytuał</h3><p>Trzy spokojne oddechy, cicha zabawa, kołysanka, która sama łagodnie cichnie, i „dobranoc” Twoim głosem. Zawsze w tej samej kolejności.</p></div>
+    <div class="card"><div class="ico" style="background:var(--lav)"><svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><h3>Po trochu, codziennie</h3><p>Minutowy test dopasuje plan do wieku i celów dziecka. Każdy dzień to nuta, po tygodniu dziecko słyszy swoją melodię. Bez punktów i presji.</p></div>
+    <div class="card"><div class="ico" style="background:#2F5249"><svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" aria-hidden="true"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg></div><h3>Bez reklam i śledzenia</h3><p>Tryb dziecka pokazuje tylko duże okładki zabaw: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.</p></div>
+  </div>
+
+  <div class="band" role="note">
+    <div class="big">84 min</div>
+    <p><strong>zabawy bez ekranu w tym tygodniu.</strong> Aplikacja liczy, ile czasu dziecko bawiło się słuchając, zamiast patrzeć. To jak cztery odcinki bajki mniej. <em>(Przykład z ekranu Start.)</em></p>
+  </div>
+
+  <div class="grid">
+    <div class="card"><h3>„Mam chwilę”</h3><p>Poczekalnia, kolejka, 10 minut przed wyjściem? Trzy dotknięcia: gdzie jesteście, ile macie czasu, rozruszać czy wyciszyć. Kiddo poda jedną zabawę.</p></div>
+    <div class="card"><h3>Karta dla dziadków</h3><p>Co tydzień ładny obrazek: nuty tygodnia, ulubiona zabawa i pytanie do rozmowy. Wyślij babci, niech zapyta o „Magiczny sklep”.</p></div>
+    <div class="card"><h3>Kupione tu działa tam</h3><p>Pakiety kupione na audiokiddo.pl odblokują się w aplikacji po zalogowaniu tym samym adresem e-mail. Nie płacisz dwa razy.</p></div>
+  </div>
+
+  <div class="sec">
+    <p class="kicker">Czym się różnimy</p>
+    <h2 style="font-size:clamp(26px,4vw,36px)">Nie kolejny ekran</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>AudioKiddo</th><th>Bajki audio</th><th>Bajki na tablecie</th><th>Aplikacje edukacyjne na ekranie</th></tr></thead>
+        <tbody>
+          <tr><td>Dziecko odpowiada i ma wpływ na zabawę</td><td class="yes">tak, głosem i klaśnięciem</td><td class="no">nie, tylko słucha</td><td class="no">nie</td><td class="no">tak, dotykając ekranu</td></tr>
+          <tr><td>Oczy wolne od ekranu</td><td class="yes">tak</td><td class="yes">tak</td><td class="no">nie</td><td class="no">nie</td></tr>
+          <tr><td>Plan rozwoju dopasowany do dziecka</td><td class="yes">tak, na każdy dzień</td><td class="no">nie</td><td class="no">nie</td><td class="yes">często</td></tr>
+          <tr><td>Głos rodzica w zabawie</td><td class="yes">tak</td><td class="no">nie</td><td class="no">nie</td><td class="no">nie</td></tr>
+          <tr><td>Tryb podróży i wieczorny rytuał</td><td class="yes">tak, jednym przyciskiem</td><td class="no">playlista</td><td class="no">nie</td><td class="no">nie</td></tr>
+          <tr><td>Reklamy i śledzenie</td><td class="yes">brak</td><td class="no">różnie</td><td class="no">często</td><td class="no">różnie</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec" id="akx-faq">
+    <p class="kicker">Pytania rodziców</p>
+    <h2 style="font-size:clamp(26px,4vw,36px)">Jak to działa?</h2>
+    <details><summary>Czy dziecko musi patrzeć w telefon?</summary><p>Nie. Włączasz zabawę i odkładasz telefon. Dziecko słucha i odpowiada klaśnięciem albo głosem, a bez mikrofonu Kiddo daje chwilę do namysłu i podaje rozwiązanie.</p></details>
+    <details><summary>Czy mikrofon coś nagrywa?</summary><p>Nie. Dźwięk jest analizowany tylko w telefonie, żeby rozpoznać klaśnięcie albo głos, i od razu odrzucany. Mikrofon włącza rodzic, za bramką rodzica.</p></details>
+    <details><summary>Dla dzieci w jakim wieku?</summary><p>Zabawy są od 3 i od 6 lat. Krótki test na początku dopasuje plan do wieku i do tego, co chcecie ćwiczyć.</p></details>
+    <details><summary>Czy działa bez internetu?</summary><p>Tak, po pobraniu. Przed podróżą jeden przycisk pobiera wszystkie zabawy na trasę.</p></details>
+    <details><summary>Kupiłam pakiet na stronie. Czy mam go w aplikacji?</summary><p>Tak. Zaloguj się w aplikacji tym samym adresem e-mail, którego użyłaś przy zakupie. Pakiet odblokuje się sam.</p></details>
+    <details><summary>Czy dziecko może coś kupić albo wyjść z aplikacji?</summary><p>W trybie dziecka nie ma zakupów, linków ani ustawień. Wyjście, zakupy i ustawienia są za bramką rodzica.</p></details>
+  </div>
+
+</div>
+</section>

@@ -2868,6 +2868,288 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Ładna karta z nutami, ulubioną zabawą i pytaniem do rozmowy'**
   String get weekCardEntryHint;
+
+  /// No description provided for @homeAllActivities.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie zabawy ({count})'**
+  String homeAllActivities(int count);
+
+  /// No description provided for @screenFree.
+  ///
+  /// In pl, this message translates to:
+  /// **'{minutes} min zabawy bez ekranu w tym tygodniu'**
+  String screenFree(int minutes);
+
+  /// No description provided for @screenFreeEpisodes.
+  ///
+  /// In pl, this message translates to:
+  /// **'{minutes} min zabawy bez ekranu w tym tygodniu. To jak {episodes, plural, =1{1 odcinek} few{{episodes} odcinki} many{{episodes} odcinków} other{{episodes} odcinka}} bajki mniej.'**
+  String screenFreeEpisodes(int minutes, int episodes);
+
+  /// No description provided for @modesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co teraz?'**
+  String get modesTitle;
+
+  /// No description provided for @modeQuick.
+  ///
+  /// In pl, this message translates to:
+  /// **'Mam chwilę'**
+  String get modeQuick;
+
+  /// No description provided for @modeQuickHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'3 pytania, 1 zabawa'**
+  String get modeQuickHint;
+
+  /// No description provided for @modeTrip.
+  ///
+  /// In pl, this message translates to:
+  /// **'W drogę'**
+  String get modeTrip;
+
+  /// No description provided for @modeTripHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zabawy na całą trasę'**
+  String get modeTripHint;
+
+  /// No description provided for @modeBedtime.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dobranoc'**
+  String get modeBedtime;
+
+  /// No description provided for @modeBedtimeHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wieczorny rytuał'**
+  String get modeBedtimeHint;
+
+  /// No description provided for @modeKids.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tryb dziecka'**
+  String get modeKids;
+
+  /// No description provided for @modeKidsHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziecko wybiera samo'**
+  String get modeKidsHint;
+
+  /// No description provided for @stepsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pierwsze kroki'**
+  String get stepsTitle;
+
+  /// No description provided for @stepsCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'{done} z {total}'**
+  String stepsCount(int done, int total);
+
+  /// No description provided for @stepsHide.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ukryj pierwsze kroki'**
+  String get stepsHide;
+
+  /// No description provided for @stepPlan.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dopasuj plan do dziecka'**
+  String get stepPlan;
+
+  /// No description provided for @stepPlanHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Minuta pytań: wiek, cele, czas'**
+  String get stepPlanHint;
+
+  /// No description provided for @stepPlay.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz pierwszą zabawę'**
+  String get stepPlay;
+
+  /// No description provided for @stepPlayHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo podpowie, co pasuje teraz'**
+  String get stepPlayHint;
+
+  /// No description provided for @stepDownload.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobierz coś na drogę'**
+  String get stepDownload;
+
+  /// No description provided for @stepDownloadHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zabawy działają bez internetu'**
+  String get stepDownloadHint;
+
+  /// No description provided for @stepVoice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagraj swoje „Brawo!”'**
+  String get stepVoice;
+
+  /// No description provided for @stepVoiceHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kiddo wplecie Twój głos w zabawę'**
+  String get stepVoiceHint;
+
+  /// No description provided for @stepReminders.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz przypomnienia'**
+  String get stepReminders;
+
+  /// No description provided for @stepRemindersHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Raz dziennie, z humorem'**
+  String get stepRemindersHint;
+
+  /// No description provided for @stepWidget.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj widżet na ekran'**
+  String get stepWidget;
+
+  /// No description provided for @stepWidgetHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Właściwa zabawa o każdej porze dnia'**
+  String get stepWidgetHint;
+
+  /// No description provided for @widgetHowToIos.
+  ///
+  /// In pl, this message translates to:
+  /// **'1. Przytrzymaj palcem ikonę AudioKiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → AudioKiddo.'**
+  String get widgetHowToIos;
+
+  /// No description provided for @widgetHowToAndroid.
+  ///
+  /// In pl, this message translates to:
+  /// **'1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź AudioKiddo i dotknij „Dodaj”.'**
+  String get widgetHowToAndroid;
+
+  /// No description provided for @pickTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co teraz?'**
+  String get pickTitle;
+
+  /// No description provided for @pickWhere.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gdzie jesteście?'**
+  String get pickWhere;
+
+  /// No description provided for @pickHome.
+  ///
+  /// In pl, this message translates to:
+  /// **'W domu'**
+  String get pickHome;
+
+  /// No description provided for @pickCar.
+  ///
+  /// In pl, this message translates to:
+  /// **'W aucie'**
+  String get pickCar;
+
+  /// No description provided for @pickOut.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czekamy'**
+  String get pickOut;
+
+  /// No description provided for @pickBed.
+  ///
+  /// In pl, this message translates to:
+  /// **'W łóżku'**
+  String get pickBed;
+
+  /// No description provided for @pickHowLong.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ile macie czasu?'**
+  String get pickHowLong;
+
+  /// No description provided for @pickMood.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czego trzeba?'**
+  String get pickMood;
+
+  /// No description provided for @pickMove.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozruszać'**
+  String get pickMove;
+
+  /// No description provided for @pickCalm.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyciszyć'**
+  String get pickCalm;
+
+  /// No description provided for @pickResult.
+  ///
+  /// In pl, this message translates to:
+  /// **'KIDDO PROPONUJE'**
+  String get pickResult;
+
+  /// No description provided for @pickStart.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz'**
+  String get pickStart;
+
+  /// No description provided for @pickOr.
+  ///
+  /// In pl, this message translates to:
+  /// **'Albo:'**
+  String get pickOr;
+
+  /// No description provided for @pickNothing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nic tu nie pasuje. Zmień odpowiedź albo zajrzyj do Biblioteki.'**
+  String get pickNothing;
+
+  /// No description provided for @pickWholeTrip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ułóż zabawy na całą trasę'**
+  String get pickWholeTrip;
+
+  /// No description provided for @pickWholeRitual.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cały wieczorny rytuał'**
+  String get pickWholeRitual;
+
+  /// No description provided for @filtersButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count, plural, =0{Filtry} other{Filtry ({count})}}'**
+  String filtersButton(int count);
+
+  /// No description provided for @filtersDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokaż zabawy'**
+  String get filtersDone;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

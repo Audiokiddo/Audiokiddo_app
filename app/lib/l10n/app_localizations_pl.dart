@@ -1677,4 +1677,171 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get weekCardEntryHint => 'Ładna karta z nutami, ulubioną zabawą i pytaniem do rozmowy';
+
+  @override
+  String homeAllActivities(int count) {
+    return 'Wszystkie zabawy ($count)';
+  }
+
+  @override
+  String screenFree(int minutes) {
+    return '$minutes min zabawy bez ekranu w tym tygodniu';
+  }
+
+  @override
+  String screenFreeEpisodes(int minutes, int episodes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      episodes,
+      locale: localeName,
+      other: '$episodes odcinka',
+      many: '$episodes odcinków',
+      few: '$episodes odcinki',
+      one: '1 odcinek',
+    );
+    return '$minutes min zabawy bez ekranu w tym tygodniu. To jak $_temp0 bajki mniej.';
+  }
+
+  @override
+  String get modesTitle => 'Co teraz?';
+
+  @override
+  String get modeQuick => 'Mam chwilę';
+
+  @override
+  String get modeQuickHint => '3 pytania, 1 zabawa';
+
+  @override
+  String get modeTrip => 'W drogę';
+
+  @override
+  String get modeTripHint => 'Zabawy na całą trasę';
+
+  @override
+  String get modeBedtime => 'Dobranoc';
+
+  @override
+  String get modeBedtimeHint => 'Wieczorny rytuał';
+
+  @override
+  String get modeKids => 'Tryb dziecka';
+
+  @override
+  String get modeKidsHint => 'Dziecko wybiera samo';
+
+  @override
+  String get stepsTitle => 'Pierwsze kroki';
+
+  @override
+  String stepsCount(int done, int total) {
+    return '$done z $total';
+  }
+
+  @override
+  String get stepsHide => 'Ukryj pierwsze kroki';
+
+  @override
+  String get stepPlan => 'Dopasuj plan do dziecka';
+
+  @override
+  String get stepPlanHint => 'Minuta pytań: wiek, cele, czas';
+
+  @override
+  String get stepPlay => 'Włącz pierwszą zabawę';
+
+  @override
+  String get stepPlayHint => 'Kiddo podpowie, co pasuje teraz';
+
+  @override
+  String get stepDownload => 'Pobierz coś na drogę';
+
+  @override
+  String get stepDownloadHint => 'Zabawy działają bez internetu';
+
+  @override
+  String get stepVoice => 'Nagraj swoje „Brawo!”';
+
+  @override
+  String get stepVoiceHint => 'Kiddo wplecie Twój głos w zabawę';
+
+  @override
+  String get stepReminders => 'Włącz przypomnienia';
+
+  @override
+  String get stepRemindersHint => 'Raz dziennie, z humorem';
+
+  @override
+  String get stepWidget => 'Dodaj widżet na ekran';
+
+  @override
+  String get stepWidgetHint => 'Właściwa zabawa o każdej porze dnia';
+
+  @override
+  String get widgetHowToIos =>
+      '1. Przytrzymaj palcem ikonę AudioKiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → AudioKiddo.';
+
+  @override
+  String get widgetHowToAndroid =>
+      '1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź AudioKiddo i dotknij „Dodaj”.';
+
+  @override
+  String get pickTitle => 'Co teraz?';
+
+  @override
+  String get pickWhere => 'Gdzie jesteście?';
+
+  @override
+  String get pickHome => 'W domu';
+
+  @override
+  String get pickCar => 'W aucie';
+
+  @override
+  String get pickOut => 'Czekamy';
+
+  @override
+  String get pickBed => 'W łóżku';
+
+  @override
+  String get pickHowLong => 'Ile macie czasu?';
+
+  @override
+  String get pickMood => 'Czego trzeba?';
+
+  @override
+  String get pickMove => 'Rozruszać';
+
+  @override
+  String get pickCalm => 'Wyciszyć';
+
+  @override
+  String get pickResult => 'KIDDO PROPONUJE';
+
+  @override
+  String get pickStart => 'Włącz';
+
+  @override
+  String get pickOr => 'Albo:';
+
+  @override
+  String get pickNothing => 'Nic tu nie pasuje. Zmień odpowiedź albo zajrzyj do Biblioteki.';
+
+  @override
+  String get pickWholeTrip => 'Ułóż zabawy na całą trasę';
+
+  @override
+  String get pickWholeRitual => 'Cały wieczorny rytuał';
+
+  @override
+  String filtersButton(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Filtry ($count)',
+      zero: 'Filtry',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get filtersDone => 'Pokaż zabawy';
 }

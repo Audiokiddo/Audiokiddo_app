@@ -62,6 +62,8 @@ Future<void> showKidsModeSetup(BuildContext context, WidgetRef ref) async {
   final controller = ref.read(kidsModeProvider);
   await showModalBottomSheet<void>(
     context: context,
+    // Above the tab bar, not inside the tab.
+    useRootNavigator: true,
     showDragHandle: true,
     isScrollControlled: true,
     builder: (sheet) => _KidsSetupSheet(
