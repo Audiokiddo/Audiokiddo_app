@@ -159,8 +159,13 @@ class FamilyController extends AsyncNotifier<FamilyState> {
     if (ref.mounted) {
       state = AsyncData(s.copyWith(results: kept));
       // The day the child is on now stays as it is, whatever gets unlocked later.
-      final catalog = ref.read(catalogProvider).value;
-      if (catalog != null) {
+      final Catalog catalog;
+      try {
+        catalog = await ref.read(catalogProvider.future);
+      } on Object {
+        return; // no catalog, nothing to freeze
+      }
+      if (ref.mounted) {
         bool canPlay(ContentItem item) => ref.read(canPlayProvider(item));
         final plan = composePlan(catalog, child, s.frozen[child.id], canPlay);
         final position = composePosition(catalog, plan, [
