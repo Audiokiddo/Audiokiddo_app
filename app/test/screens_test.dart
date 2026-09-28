@@ -51,6 +51,16 @@ Future<void> openItem(WidgetTester tester, String title) async {
   await tester.pumpAndSettle();
 }
 
+/// Scrolls Start until [text] is clear of the floating tab bar, then taps it.
+Future<void> tapOnStart(WidgetTester tester, String text) async {
+  await tester.scrollUntilVisible(find.text(text), 100, scrollable: mainScroll);
+  // Up to the top of the list, well above the tab bar.
+  await tester.ensureVisible(find.text(text));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(text));
+  await tester.pumpAndSettle();
+}
+
 Future<void> goBack(WidgetTester tester) async {
   await tester.tap(find.byTooltip('Wstecz'));
   await tester.pumpAndSettle();
@@ -70,12 +80,11 @@ void main() {
 
   testWidgets('"Mam chwilę" suggests one activity for where you are', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.text('Mam chwilę'));
-    await tester.pumpAndSettle();
+    await tapOnStart(tester, 'Mam chwilę');
     expect(find.text('Gdzie jesteście?'), findsOneWidget);
     await tester.tap(find.text('W aucie'));
     await tester.pumpAndSettle();
-    expect(find.text('KIDDO PROPONUJE'), findsOneWidget);
+    expect(find.text('LORD PROPONUJE'), findsOneWidget);
     expect(find.text('Włącz'), findsOneWidget);
     expect(find.text('Ułóż zabawy na całą trasę'), findsOneWidget);
   });
@@ -194,11 +203,7 @@ void main() {
 
     testWidgets('kids mode: only playable games, no escape, exit through the gate', (tester) async {
       await pumpApp(tester);
-      // Lift the tile out from under the floating tab bar.
-      await tester.drag(mainScroll, const Offset(0, -250));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Tryb dziecka'));
-      await tester.pumpAndSettle();
+      await tapOnStart(tester, 'Tryb dziecka');
       await tester.tap(find.text('Włącz tryb dziecka'));
       await tester.pumpAndSettle();
 

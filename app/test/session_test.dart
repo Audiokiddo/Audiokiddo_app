@@ -212,10 +212,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Evening: the "Dobranoc" mode comes first; bring it above the tab bar.
+    await tester.ensureVisible(find.text('Dobranoc').first);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Dobranoc').first);
     await tester.pumpAndSettle();
-    expect(find.text('Trzy spokojne oddechy z Kiddo'), findsOneWidget);
-    expect(find.text('„Dobranoc” od Kiddo'), findsOneWidget);
+    expect(find.text('Trzy spokojne oddechy z Lordem'), findsOneWidget);
+    expect(find.text('„Dobranoc” od Lorda'), findsOneWidget);
     expect(find.text('Nagraj swoje „dobranoc”'), findsOneWidget);
 
     await tester.scrollUntilVisible(find.text('Zaczynamy'), 200);

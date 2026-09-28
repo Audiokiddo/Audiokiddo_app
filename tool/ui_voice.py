@@ -2,7 +2,7 @@
 """Kiddo's voice lines and interface sounds bundled with the app (app/assets/audio/kiddo/).
 
 Placeholder speech: macOS `say` (voice Zosia). Nela records the real lines listed in
-docs/NAGRANIA-DO-GIER.md ("Głos Kiddo"); the files keep the same names. Sounds are
+docs/NAGRANIA-DO-GIER.md ("Głos Lorda"); the files keep the same names. Sounds are
 synthesised here. Short files, bundled so the welcome works offline on the first launch.
 """
 import math
@@ -19,20 +19,20 @@ RATE = 44100
 
 LINES = {
     "volume": "Hej! Podgłośnij telefon, żeby dobrze mnie słyszeć!",
-    "hello": "Cześć! Jestem Kiddo. Razem wymyślimy mnóstwo przygód. I to bez patrzenia w ekran!",
+    "hello": "Cześć! Jestem Lord. Mam duże uszy i jeszcze większą ochotę na przygody. Gramy bez patrzenia w ekran!",
     "password_voice": "Żeby wejść do świata AudioKiddo, powiedz głośno magiczne hasło: Abrakadabra!",
     "password_tap": "Żeby wejść do świata AudioKiddo, powiedz głośno: Abrakadabra! I dotknij magicznej kuli!",
     "granted": "Hurra! Dostęp przyznany! Wchodzimy!",
-    "kids_1": "Hej! W co dziś zagramy?",
-    "kids_2": "Witaj z powrotem! Wybierz przygodę!",
-    "kids_3": "Gotowi na zabawę? Ja jestem gotowy!",
-    "trip_start": "Ruszamy w drogę! Zapnijcie pasy, a Kiddo zajmie się resztą.",
+    "kids_1": "Uszy gotowe? Moje są duże. To trochę nie fair.",
+    "kids_2": "Potrzebuję kogoś z wyobraźnią. Ja mam głównie sierść. Wchodzisz w to?",
+    "kids_3": "Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy. Wybierz zabawę!",
+    "trip_start": "Ruszamy w drogę! Zapnijcie pasy. Ja pilnuję zagadek, a ty wypatruj czerwonego auta.",
     "window_1": "Przerwa na okno! Policz, ile czerwonych samochodów zobaczysz, zanim wrócimy do zabawy.",
     "window_2": "Przerwa na okno! Czy widzisz jakieś zwierzę? Opowiedz o nim rodzicom.",
     "window_3": "Przerwa na okno! Znajdź coś zielonego, coś okrągłego i coś bardzo dużego.",
-    "trip_end": "Brawo, podróżnicy! Kiddo robi sobie przerwę. Do usłyszenia!",
+    "trip_end": "Dojechaliśmy! Mój ogon mówi, że to była świetna podróż. Do usłyszenia!",
     "bedtime_start": "Czas na wyciszenie. Zróbmy razem trzy spokojne oddechy. Wdech. I wydech. Wdech. I wydech. Wdech. I wydech.",
-    "goodnight": "Dobranoc! Kiddo też już ziewa. Śpij dobrze i do jutra.",
+    "goodnight": "Dobranoc. Nos pod koc, uszy na poduszkę. Resztę przygód zostawimy na jutro.",
 }
 
 
@@ -120,8 +120,8 @@ def main():
 
     doc = ROOT / "docs/NAGRANIA-DO-GIER.md"
     text = doc.read_text()
-    marker = "## Głos Kiddo (aplikacja)"
-    section = [marker, "", "Krótkie kwestie maskotki Kiddo, wbudowane w aplikację (`app/assets/audio/kiddo/`). "
+    marker = "## Głos Lorda (aplikacja)"
+    section = [marker, "", "Krótkie kwestie Lorda Von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). "
                "Radośnie, z uśmiechem, bez muzyki pod spodem.", "", "| Plik | Tekst |", "|---|---|"]
     section += [f"| `{name}.m4a` | {line} |" for name, line in LINES.items()]
     if marker in text:

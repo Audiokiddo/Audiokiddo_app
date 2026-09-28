@@ -62,7 +62,7 @@ final class LaunchRoutePlugin: NSObject, FlutterPlugin {
 // speak Polish, so the Polish phrases work in Spotlight and Shortcuts; the English ones by voice.
 @available(iOS 16.0, *)
 struct BedtimeIntent: AppIntent {
-  static var title: LocalizedStringResource = "Dobranoc z Kiddo"
+  static var title: LocalizedStringResource = "Dobranoc z Lordem"
   static var description = IntentDescription("Wieczorny rytuał: oddechy, cicha zabawa, kołysanka i dobranoc.")
   static var openAppWhenRun = true
 
@@ -75,7 +75,7 @@ struct BedtimeIntent: AppIntent {
 
 @available(iOS 16.0, *)
 struct TripIntent: AppIntent {
-  static var title: LocalizedStringResource = "W drogę z Kiddo"
+  static var title: LocalizedStringResource = "W drogę z Lordem"
   static var description = IntentDescription("Zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno.")
   static var openAppWhenRun = true
 

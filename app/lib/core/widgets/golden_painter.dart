@@ -2,7 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-enum GoldenOutfit { day, adventure, pajamas }
+/// Child-facing outfits follow the day ([day], [adventure], [pajamas]). [official] is Lord Von
+/// Ekran for the parent: officer of the Home Affairs Office (trench coat, tie, hat, monocle).
+enum GoldenOutfit { day, adventure, pajamas, official }
 
 enum KiddoMood { idle, talking, listening, happy, sleepy }
 
@@ -34,6 +36,9 @@ class GoldenPainter extends CustomPainter {
   static const ear = Color(0xFFC58637);
   static const muzzle = Color(0xFFFFE2A3);
   static const teal = Color(0xFF247F83);
+  static const trench = Color(0xFFC4A472);
+  static const trenchDark = Color(0xFFA7864F);
+  static const hat = Color(0xFF5B4838);
 
   void _shape(Canvas c, Path path, Color color, {double line = 2.1}) {
     c.drawPath(path, Paint()..color = color);
@@ -98,7 +103,11 @@ class GoldenPainter extends CustomPainter {
     );
     canvas.restore();
 
-    final clothes = outfit == GoldenOutfit.pajamas ? const Color(0xFF9082BD) : teal;
+    final clothes = switch (outfit) {
+      GoldenOutfit.pajamas => const Color(0xFF9082BD),
+      GoldenOutfit.official => trench,
+      _ => teal,
+    };
     _shape(
       canvas,
       Path()
@@ -139,6 +148,43 @@ class GoldenPainter extends CustomPainter {
           ..lineTo(101, 200),
         width: 1.5,
       );
+    } else if (outfit == GoldenOutfit.official) {
+      // Trench coat: lapels, a belt with a buckle, two rows of buttons.
+      for (final right in [false, true]) {
+        final sx = right ? -1.0 : 1.0;
+        _shape(
+          canvas,
+          Path()
+            ..moveTo(100 - 30 * sx, 126)
+            ..lineTo(100 - 5 * sx, 162)
+            ..lineTo(100 - 22 * sx, 150)
+            ..close(),
+          trenchDark,
+          line: 1.5,
+        );
+      }
+      _shape(
+        canvas,
+        Path()
+          ..addRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(53, 172, 95, 11), const Radius.circular(3))),
+        trenchDark,
+        line: 1.5,
+      );
+      _shape(
+        canvas,
+        Path()
+          ..addRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(92, 170, 16, 15), const Radius.circular(2))),
+        const Color(0xFFE2C68A),
+        line: 1.5,
+      );
+      for (final p in [
+        const Offset(88, 160),
+        const Offset(112, 160),
+        const Offset(88, 195),
+        const Offset(112, 195),
+      ]) {
+        _oval(canvas, Rect.fromCenter(center: p, width: 5.5, height: 5.5), const Color(0xFF6E5537), line: 0);
+      }
     } else if (outfit == GoldenOutfit.pajamas) {
       for (final p in [
         const Offset(70, 159),
@@ -208,19 +254,48 @@ class GoldenPainter extends CustomPainter {
       }
     }
 
-    // Neckerchief stays recognisable across all costumes.
-    _shape(
-      canvas,
-      Path()
-        ..moveTo(64, 125)
-        ..quadraticBezierTo(100, 146, 137, 125)
-        ..lineTo(112, 152)
-        ..lineTo(98, 145)
-        ..lineTo(86, 151)
-        ..close(),
-      outfit == GoldenOutfit.day ? const Color(0xFFF6CB56) : teal,
-    );
-    _oval(canvas, const Rect.fromLTWH(97, 141, 11, 11), const Color(0xFFFFD87D), line: 1.5);
+    if (outfit == GoldenOutfit.official) {
+      // White collar and a tie instead of the neckerchief.
+      _shape(
+        canvas,
+        Path()
+          ..moveTo(78, 124)
+          ..lineTo(100, 138)
+          ..lineTo(122, 124)
+          ..lineTo(113, 140)
+          ..lineTo(100, 144)
+          ..lineTo(87, 140)
+          ..close(),
+        const Color(0xFFFFFBEE),
+        line: 1.5,
+      );
+      _shape(
+        canvas,
+        Path()
+          ..moveTo(95, 139)
+          ..lineTo(105, 139)
+          ..lineTo(108, 164)
+          ..lineTo(100, 172)
+          ..lineTo(92, 164)
+          ..close(),
+        const Color(0xFF7A2E2A),
+        line: 1.5,
+      );
+    } else {
+      // Neckerchief stays recognisable across all children's costumes.
+      _shape(
+        canvas,
+        Path()
+          ..moveTo(64, 125)
+          ..quadraticBezierTo(100, 146, 137, 125)
+          ..lineTo(112, 152)
+          ..lineTo(98, 145)
+          ..lineTo(86, 151)
+          ..close(),
+        outfit == GoldenOutfit.day ? const Color(0xFFF6CB56) : teal,
+      );
+      _oval(canvas, const Rect.fromLTWH(97, 141, 11, 11), const Color(0xFFFFD87D), line: 1.5);
+    }
 
     // Articulated head and floppy ears.
     canvas.save();
@@ -372,24 +447,36 @@ class GoldenPainter extends CustomPainter {
       muzzle,
       line: 1.7,
     );
-    final opening = mood == KiddoMood.talking
-        ? (animated ? .5 + .5 * math.sin(t * 9) : .6)
-        : mood == KiddoMood.happy
-        ? .85
-        : .15;
-    _shape(
-      canvas,
-      Path()
-        ..moveTo(79, 111)
-        ..quadraticBezierTo(101, 120, 128, 108)
-        ..quadraticBezierTo(114, 133 + opening * 9, 99, 132 + opening * 9)
-        ..quadraticBezierTo(83, 128 + opening * 6, 79, 111)
-        ..close(),
-      ink,
-      line: 1.3,
-    );
-    if (opening > .3) {
-      _oval(canvas, Rect.fromLTWH(96, 128, 19, 7 + opening * 3), const Color(0xFFE58A7F), line: 0);
+    if (outfit == GoldenOutfit.official && mood != KiddoMood.talking && mood != KiddoMood.happy) {
+      // Deadpan: a crooked half-smile instead of the open mouth.
+      _stroke(
+        canvas,
+        Path()
+          ..moveTo(84, 115)
+          ..quadraticBezierTo(104, 120, 124, 109)
+          ..quadraticBezierTo(128, 107, 129, 104),
+        width: 3,
+      );
+    } else {
+      final opening = mood == KiddoMood.talking
+          ? (animated ? .5 + .5 * math.sin(t * 9) : .6)
+          : mood == KiddoMood.happy
+          ? .85
+          : .15;
+      _shape(
+        canvas,
+        Path()
+          ..moveTo(79, 111)
+          ..quadraticBezierTo(101, 120, 128, 108)
+          ..quadraticBezierTo(114, 133 + opening * 9, 99, 132 + opening * 9)
+          ..quadraticBezierTo(83, 128 + opening * 6, 79, 111)
+          ..close(),
+        ink,
+        line: 1.3,
+      );
+      if (opening > .3) {
+        _oval(canvas, Rect.fromLTWH(96, 128, 19, 7 + opening * 3), const Color(0xFFE58A7F), line: 0);
+      }
     }
     _shape(
       canvas,
@@ -451,8 +538,72 @@ class GoldenPainter extends CustomPainter {
       _oval(canvas, const Rect.fromLTWH(157, 61, 17, 17), const Color(0xFFD9D0EF), line: 1.7);
       _star(canvas, const Offset(104, 18), 5);
     }
+    if (outfit == GoldenOutfit.official) _officialHead(canvas, sleepy);
     canvas.restore();
     canvas.restore();
+  }
+
+  /// Hat and monocle of Lord Von Ekran, drawn in the head's frame so they tilt with it.
+  void _officialHead(Canvas canvas, bool sleepy) {
+    // Monocle over the right eye, on a thin chain.
+    if (!sleepy) {
+      canvas.drawCircle(const Offset(119, 74), 17, Paint()..color = const Color(0x33FFFFFF));
+      _stroke(
+        canvas,
+        Path()..addOval(Rect.fromCircle(center: const Offset(119, 74), radius: 17)),
+        color: const Color(0xFFC9962F),
+        width: 3,
+      );
+      _stroke(
+        canvas,
+        Path()
+          ..moveTo(134, 82)
+          ..quadraticBezierTo(150, 100, 146, 126),
+        color: const Color(0xFFC9962F),
+        width: 1.3,
+      );
+    }
+    // Fedora: brim, crown with a pinch, dark band.
+    _shape(
+      canvas,
+      Path()
+        ..moveTo(40, 46)
+        ..quadraticBezierTo(100, 30, 160, 46)
+        ..quadraticBezierTo(166, 53, 156, 55)
+        ..quadraticBezierTo(100, 43, 44, 55)
+        ..quadraticBezierTo(34, 53, 40, 46)
+        ..close(),
+      hat,
+    );
+    _shape(
+      canvas,
+      Path()
+        ..moveTo(62, 46)
+        ..cubicTo(60, 20, 70, 6, 100, 8)
+        ..cubicTo(130, 6, 140, 20, 138, 46)
+        ..quadraticBezierTo(100, 36, 62, 46)
+        ..close(),
+      hat,
+    );
+    _stroke(
+      canvas,
+      Path()
+        ..moveTo(86, 12)
+        ..quadraticBezierTo(100, 22, 114, 12),
+      color: const Color(0xFF3F3127),
+      width: 2,
+    );
+    _shape(
+      canvas,
+      Path()
+        ..moveTo(62, 40)
+        ..quadraticBezierTo(100, 30, 138, 40)
+        ..lineTo(138, 46)
+        ..quadraticBezierTo(100, 36, 62, 46)
+        ..close(),
+      const Color(0xFF2E231B),
+      line: 0,
+    );
   }
 
   void _star(Canvas c, Offset center, double radius) {

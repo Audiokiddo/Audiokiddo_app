@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="widget_golden">Golden von Ekran</string>
-    <string name="widget_name">Golden na dziś</string>
+    <string name="widget_name">Lord na dziś</string>
     <string name="widget_description">Zabawa na tę porę dnia: rano rozgrzewka, po południu droga, wieczorem kołysanka.</string>
     <string name="widget_morning_title">Poranna rozgrzewka</string>
-    <string name="widget_morning_subtitle">Ty ratuj kawę. Ja ogarnę zagadki.</string>
+    <string name="widget_morning_subtitle">Ty ogarnij kawę. Ja ogarnę zagadki.</string>
     <string name="widget_midday_title">Czas na przygodę</string>
-    <string name="widget_midday_subtitle">Mam plan. Tym razem nie zjadłem notatek.</string>
-    <string name="widget_afternoon_title">W drogę z Goldenem</string>
+    <string name="widget_midday_subtitle">Cisza w domu? Sprawdź, co robi pisak.</string>
+    <string name="widget_afternoon_title">W drogę z Lordem</string>
     <string name="widget_afternoon_subtitle">Zanim padnie „daleko jeszcze?”.</string>
     <string name="widget_evening_title">Czas się wyciszyć</string>
-    <string name="widget_evening_subtitle">Nos pod koc. Przygody poczekają.</string>
+    <string name="widget_evening_subtitle">Kołysanka dla dziecka, cisza dla ciebie.</string>
     <string name="widget_play">Graj</string>
     <string name="widget_trip">W drogę</string>
     <string name="widget_bedtime">Dobranoc</string>

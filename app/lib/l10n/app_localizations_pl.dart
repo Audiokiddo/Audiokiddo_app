@@ -785,7 +785,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get introVolumeTitle => 'Podgłośnij!';
 
   @override
-  String get introVolumeBody => 'Żeby dobrze słyszeć Kiddo.';
+  String get introVolumeBody => 'Żeby dobrze słyszeć Lorda.';
 
   @override
   String get introPasswordTitle => 'MAGICZNE HASŁO';
@@ -809,7 +809,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get introGranted => 'Dostęp przyznany!';
 
   @override
-  String get homeKiddo => 'Kiddo. Dotknij, a coś powie.';
+  String get homeKiddo => 'Lord Von Ekran. Dotknij, a coś powie.';
 
   @override
   String get homeNew => 'Nowość!';
@@ -818,13 +818,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get homeNewHint => 'Odpowiadaj klaśnięciem albo głosem!';
 
   @override
-  String get kidsHello1 => 'Hej! W co dziś zagramy?';
+  String get kidsHello1 => 'Uszy gotowe? Moje są duże. To trochę nie fair.';
 
   @override
-  String get kidsHello2 => 'Witaj z powrotem! Wybierz przygodę!';
+  String get kidsHello2 => 'Potrzebuję kogoś z wyobraźnią. Ja mam głównie sierść. Wchodzisz w to?';
 
   @override
-  String get kidsHello3 => 'Gotowi na zabawę? Ja jestem gotowy!';
+  String get kidsHello3 => 'Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy.';
 
   @override
   String get quizBack => 'Wstecz';
@@ -834,7 +834,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get quizHello =>
-      'Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Kiddo nie kłamie.';
+      'Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Lord nie kłamie.';
 
   @override
   String get quizHelloPoint1 => 'Około minuty na każde dziecko.';
@@ -947,7 +947,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get goalCalm => 'Wyciszenie przed snem';
 
   @override
-  String get reminder1Title => 'Kiddo czeka';
+  String get reminder1Title => 'Lord czeka';
 
   @override
   String get reminder1Body =>
@@ -968,10 +968,10 @@ class AppLocalizationsPl extends AppLocalizations {
       'Jeszcze jeden dzień, a seria będzie dłuższa niż Twój ostatni nieprzerwany sen.';
 
   @override
-  String get reminder4Title => 'Kiddo tu';
+  String get reminder4Title => 'Lord melduje';
 
   @override
-  String get reminder4Body => 'Dziecko zadało dziś już 347 pytań? Oddaj kilka Kiddo. On to lubi. Serio.';
+  String get reminder4Body => 'Dziecko zadało dziś już 347 pytań? Oddaj kilka Lordowi. On to lubi. Serio.';
 
   @override
   String get reminder5Title => 'Cisza w domu?';
@@ -986,11 +986,11 @@ class AppLocalizationsPl extends AppLocalizations {
   String get reminder6Body => 'Oczy odpoczywają, uszy pracują, a Ty może nawet usiądziesz. Na chwilę.';
 
   @override
-  String get reminder7Title => 'Kiddo nie śpi';
+  String get reminder7Title => 'Lord nie śpi';
 
   @override
   String get reminder7Body =>
-      'Kiddo nie śpi. Kiddo czeka. Kiddo trochę tęskni. Dzisiejsza porcja to kilka minut.';
+      'Lord nie śpi. Lord czeka. Lord trochę tęskni. Dzisiejsza porcja to kilka minut.';
 
   @override
   String get remindersAsk =>
@@ -1043,7 +1043,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get planEmptyBody =>
-      'Odpowiedz na kilka pytań (minuta), a Kiddo rozłoży zabawy na dni: po trochu, bez przytłaczania.';
+      'Odpowiedz na kilka pytań (minuta), a Lord rozłoży zabawy na dni: po trochu, bez przytłaczania.';
 
   @override
   String get planEmptyButton => 'Dopasuj plan';
@@ -1302,7 +1302,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get todayEvening => 'Wieczorne wyciszenie';
 
   @override
-  String get todayNoPlan => 'Odpowiedz na kilka pytań, a Kiddo ułoży zabawy na każdy dzień.';
+  String get todayNoPlan => 'Odpowiedz na kilka pytań, a Lord ułoży zabawy na każdy dzień.';
 
   @override
   String todayDone(String name) {
@@ -1376,7 +1376,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tripBody =>
-      'Powiedz, ile jedziecie. Kiddo ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.';
+      'Powiedz, ile jedziecie. Lord ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.';
 
   @override
   String get tripHowLong => 'Ile jedziecie?';
@@ -1401,7 +1401,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tripBreaks =>
-      'Co kwadrans Kiddo zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.';
+      'Co kwadrans Lord zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.';
 
   @override
   String tripMore(int count) {
@@ -1427,7 +1427,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Zawsze ta sama kolejność, bo dzieci lubią rytuały. Zgaś światło, połóż telefon ekranem w dół.';
 
   @override
-  String get bedtimeBreaths => 'Trzy spokojne oddechy z Kiddo';
+  String get bedtimeBreaths => 'Trzy spokojne oddechy z Lordem';
 
   @override
   String bedtimeQuiet(String title) {
@@ -1443,7 +1443,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get bedtimeParentGoodnight => '„Dobranoc” Twoim głosem';
 
   @override
-  String get bedtimeKiddoGoodnight => '„Dobranoc” od Kiddo';
+  String get bedtimeKiddoGoodnight => '„Dobranoc” od Lorda';
 
   @override
   String get bedtimeRecordHint => 'Nagraj swoje „dobranoc”';
@@ -1461,7 +1461,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get sessionWindow => 'Co widzisz za oknem?';
 
   @override
-  String get sessionKiddo => 'Kiddo mówi';
+  String get sessionKiddo => 'Lord mówi';
 
   @override
   String get sessionParent => 'Twoja wiadomość';
@@ -1496,7 +1496,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String voiceBody(String name) {
-    return 'Nagraj trzy krótkie wiadomości dla: $name. Kiddo wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.';
+    return 'Nagraj trzy krótkie wiadomości dla: $name. Lord wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.';
   }
 
   @override
@@ -1504,7 +1504,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String voiceHelloHint(String name) {
-    return 'Na przykład: „Cześć, $name! Kiddo już czeka. Baw się dobrze!”';
+    return 'Na przykład: „Cześć, $name! Lord już czeka. Baw się dobrze!”';
   }
 
   @override
@@ -1556,7 +1556,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onboardingAnswerTitle => 'Dziecko odpowiada';
 
   @override
-  String get onboardingAnswerBody => 'Klaśnięciem albo głosem. Kiddo słucha i prowadzi zabawę dalej.';
+  String get onboardingAnswerBody => 'Klaśnięciem albo głosem. Lord słucha i prowadzi zabawę dalej.';
 
   @override
   String get onboardingModesTitle => 'Na drogę i na dobranoc';
@@ -1571,10 +1571,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onboardingVoiceBody => 'Nagraj „Brawo!” i „Dobranoc”. Nagrania zostają w telefonie.';
 
   @override
-  String get gameHintWaiting => 'Odpowiedz na głos. Za chwilę Kiddo powie, jak było.';
+  String get gameHintWaiting => 'Odpowiedz na głos. Za chwilę Lord powie, jak było.';
 
   @override
-  String get gameHintListening => 'Kiddo słucha. Klaśnij albo odpowiedz głośno.';
+  String get gameHintListening => 'Lord słucha. Klaśnij albo odpowiedz głośno.';
 
   @override
   String get gameHintTap => 'Dotknij ekranu w dowolnym miejscu.';
@@ -1655,7 +1655,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get weekCardAskGeneric => 'Zapytajcie, w co grało z Kiddo. Opowie Wam wszystko!';
+  String get weekCardAskGeneric => 'Zapytajcie, w co grało z Lordem. Opowie Wam wszystko!';
 
   @override
   String weekCardShareText(String name) {
@@ -1749,7 +1749,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get stepPlay => 'Włącz pierwszą zabawę';
 
   @override
-  String get stepPlayHint => 'Kiddo podpowie, co pasuje teraz';
+  String get stepPlayHint => 'Lord podpowie, co pasuje teraz';
 
   @override
   String get stepDownload => 'Pobierz coś na drogę';
@@ -1761,7 +1761,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get stepVoice => 'Nagraj swoje „Brawo!”';
 
   @override
-  String get stepVoiceHint => 'Kiddo wplecie Twój głos w zabawę';
+  String get stepVoiceHint => 'Lord wplecie Twój głos w zabawę';
 
   @override
   String get stepReminders => 'Włącz przypomnienia';
@@ -1814,7 +1814,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pickCalm => 'Wyciszyć';
 
   @override
-  String get pickResult => 'KIDDO PROPONUJE';
+  String get pickResult => 'LORD PROPONUJE';
 
   @override
   String get pickStart => 'Włącz';

@@ -7,6 +7,7 @@ import 'package:home_widget/home_widget.dart';
 import '../../l10n/app_localizations.dart';
 import '../family/family.dart';
 import '../family/plan_texts.dart';
+import '../lord/lord_lines.dart';
 
 /// What the home-screen widget shows under the part of the day: the active child's week.
 @immutable
@@ -50,6 +51,17 @@ final homeWidgetDataProvider = Provider<HomeWidgetData?>((ref) {
   );
 });
 
+/// Lord's widget line for each part of the day, a different one every day.
+Map<String, String> widgetJokes(DateTime day) {
+  final dayOfYear = day.difference(DateTime(day.year)).inDays;
+  return {
+    'joke_morning': lordLine(LordPool.widgetMorning, dayOfYear),
+    'joke_midday': lordLine(LordPool.widgetMidday, dayOfYear),
+    'joke_afternoon': lordLine(LordPool.widgetAfternoon, dayOfYear),
+    'joke_evening': lordLine(LordPool.widgetEvening, dayOfYear),
+  };
+}
+
 /// Writes widget data where the widgets read it (iOS App Group, Android shared preferences).
 abstract interface class HomeWidgetSink {
   Future<void> push(HomeWidgetData? data);
@@ -69,6 +81,9 @@ class PlatformHomeWidgetSink implements HomeWidgetSink {
       await HomeWidget.saveWidgetData<String>('line', data?.line ?? '');
       await HomeWidget.saveWidgetData<String>('notes', data == null ? '' : '${data.notes}');
       await HomeWidget.saveWidgetData<String>('done', data?.todayDone ?? false ? '1' : '');
+      for (final MapEntry(:key, :value) in widgetJokes(DateTime.now()).entries) {
+        await HomeWidget.saveWidgetData<String>(key, value);
+      }
       await HomeWidget.updateWidget(
         iOSName: 'AudioKiddoWidget',
         qualifiedAndroidName: 'pl.audiokiddo.app.DayPartWidget',

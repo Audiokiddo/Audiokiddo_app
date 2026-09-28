@@ -68,24 +68,24 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 | `q_auta` | Uwaga! Samochody jeżdżą po chmurach. |
 | `a_auta` | Nie! Samochody jeżdżą po drogach. |
 
-## Głos Kiddo (aplikacja)
+## Głos Lorda (aplikacja)
 
-Krótkie kwestie maskotki Kiddo, wbudowane w aplikację (`app/assets/audio/kiddo/`). Radośnie, z uśmiechem, bez muzyki pod spodem.
+Krótkie kwestie Lorda Von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). Radośnie, z uśmiechem, bez muzyki pod spodem.
 
 | Plik | Tekst |
 |---|---|
 | `volume.m4a` | Hej! Podgłośnij telefon, żeby dobrze mnie słyszeć! |
-| `hello.m4a` | Cześć! Jestem Kiddo. Razem wymyślimy mnóstwo przygód. I to bez patrzenia w ekran! |
+| `hello.m4a` | Cześć! Jestem Lord. Mam duże uszy i jeszcze większą ochotę na przygody. Gramy bez patrzenia w ekran! |
 | `password_voice.m4a` | Żeby wejść do świata AudioKiddo, powiedz głośno magiczne hasło: Abrakadabra! |
 | `password_tap.m4a` | Żeby wejść do świata AudioKiddo, powiedz głośno: Abrakadabra! I dotknij magicznej kuli! |
 | `granted.m4a` | Hurra! Dostęp przyznany! Wchodzimy! |
-| `kids_1.m4a` | Hej! W co dziś zagramy? |
-| `kids_2.m4a` | Witaj z powrotem! Wybierz przygodę! |
-| `kids_3.m4a` | Gotowi na zabawę? Ja jestem gotowy! |
-| `trip_start.m4a` | Ruszamy w drogę! Zapnijcie pasy, a Kiddo zajmie się resztą. |
+| `kids_1.m4a` | Uszy gotowe? Moje są duże. To trochę nie fair. |
+| `kids_2.m4a` | Potrzebuję kogoś z wyobraźnią. Ja mam głównie sierść. Wchodzisz w to? |
+| `kids_3.m4a` | Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy. Wybierz zabawę! |
+| `trip_start.m4a` | Ruszamy w drogę! Zapnijcie pasy. Ja pilnuję zagadek, a ty wypatruj czerwonego auta. |
 | `window_1.m4a` | Przerwa na okno! Policz, ile czerwonych samochodów zobaczysz, zanim wrócimy do zabawy. |
 | `window_2.m4a` | Przerwa na okno! Czy widzisz jakieś zwierzę? Opowiedz o nim rodzicom. |
 | `window_3.m4a` | Przerwa na okno! Znajdź coś zielonego, coś okrągłego i coś bardzo dużego. |
-| `trip_end.m4a` | Brawo, podróżnicy! Kiddo robi sobie przerwę. Do usłyszenia! |
+| `trip_end.m4a` | Dojechaliśmy! Mój ogon mówi, że to była świetna podróż. Do usłyszenia! |
 | `bedtime_start.m4a` | Czas na wyciszenie. Zróbmy razem trzy spokojne oddechy. Wdech. I wydech. Wdech. I wydech. Wdech. I wydech. |
-| `goodnight.m4a` | Dobranoc! Kiddo też już ziewa. Śpij dobrze i do jutra. |
+| `goodnight.m4a` | Dobranoc. Nos pod koc, uszy na poduszkę. Resztę przygód zostawimy na jutro. |

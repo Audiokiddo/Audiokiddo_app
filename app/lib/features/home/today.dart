@@ -199,13 +199,14 @@ class _PokeKiddoState extends ConsumerState<_PokeKiddo> {
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
-    label: 'Golden von Ekran. Poznaj mnie.',
+    label: 'Lord Von Ekran. Poznaj mnie.',
     child: GestureDetector(
       onTap: () => showGoldenHello(context),
       child: Kiddo(
         size: 104,
         mood: widget.mood,
-        outfit: goldenOutfitAt(ref.watch(clockProvider)()),
+        // The parent's Start: Lord in his officer's coat.
+        outfit: GoldenOutfit.official,
         cheeky: true,
         wave: widget.mood == KiddoMood.happy,
       ),

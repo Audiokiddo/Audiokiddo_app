@@ -1,4 +1,6 @@
-# Golden von Ekran — pierwsze wdrożenie
+# Golden (dziś: Lord Von Ekran) — pierwsze wdrożenie
+
+> 29.09.2026: postać nazywa się **Lord Von Ekran** i ma drugie wcielenie dla rodzica. Aktualny opis: `LORD-VON-EKRAN.md`.
 
 ## Gotowe
 

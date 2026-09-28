@@ -90,7 +90,7 @@ void main() {
     );
     await t.tap(find.text('Golden'));
     await t.pumpAndSettle();
-    expect(find.text('Golden von Ekran'), findsOneWidget);
+    expect(find.text('Lord Von Ekran'), findsOneWidget);
     await t.ensureVisible(find.text('Masz coś jeszcze?'));
     await t.tap(find.text('Masz coś jeszcze?'));
     await t.pumpAndSettle();
@@ -98,6 +98,6 @@ void main() {
     await t.ensureVisible(find.text('Wybieram zabawę'));
     await t.tap(find.text('Wybieram zabawę'));
     await t.pumpAndSettle();
-    expect(find.text('Golden von Ekran'), findsNothing);
+    expect(find.text('Lord Von Ekran'), findsNothing);
   });
 }

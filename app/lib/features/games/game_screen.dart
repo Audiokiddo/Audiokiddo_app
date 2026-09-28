@@ -10,6 +10,8 @@ import '../../core/widgets/doodles.dart';
 import '../../core/widgets/kiddo.dart';
 import '../../l10n/app_localizations.dart';
 import '../player/player_providers.dart';
+import '../lord/lord_lines.dart';
+import '../lord/lord_widgets.dart';
 import 'game_controller.dart';
 
 /// Nothing to watch: the whole screen is one tap target when the game waits for a touch,
@@ -98,6 +100,15 @@ class GameScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+              ),
+              // Lord is gentle with the child; the parent gets his dry aside on the screen.
+              ParentAside(
+                dark: true,
+                pool: switch (game.phase) {
+                  GamePhase.finished => LordPool.gameFinished,
+                  GamePhase.waiting => LordPool.gameWaiting,
+                  _ => LordPool.gameListening,
+                },
               ),
               Semantics(
                 button: true,

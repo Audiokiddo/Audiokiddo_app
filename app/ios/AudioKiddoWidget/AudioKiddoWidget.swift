@@ -22,17 +22,17 @@ enum DayPart: CaseIterable {
     switch self {
     case .morning: return "Poranna rozgrzewka"
     case .midday: return "Czas na przygodę"
-    case .afternoon: return "W drogę z Goldenem"
+    case .afternoon: return "W drogę z Lordem"
     case .evening: return "Czas się wyciszyć"
     }
   }
 
   var subtitle: String {
     switch self {
-    case .morning: return "Ty ratuj kawę. Ja ogarnę zagadki."
-    case .midday: return "Mam plan. Tym razem nie zjadłem notatek."
+    case .morning: return "Ty ogarnij kawę. Ja ogarnę zagadki."
+    case .midday: return "Cisza w domu? Sprawdź, co robi pisak."
     case .afternoon: return "Zanim padnie „daleko jeszcze?”."
-    case .evening: return "Nos pod koc. Przygody poczekają."
+    case .evening: return "Kołysanka dla dziecka, cisza dla ciebie."
     }
   }
 
@@ -73,8 +73,8 @@ enum DayPart: CaseIterable {
 
   var mascot: String {
     switch self {
-    case .morning: return "golden_day"
-    case .midday, .afternoon: return "golden_adventure"
+    // Lord Von Ekran in his officer's coat for the parent; in pajamas at night.
+    case .morning, .midday, .afternoon: return "golden_official"
     case .evening: return "golden_pajamas"
     }
   }
@@ -112,10 +112,27 @@ struct ChildWeek {
   }
 }
 
+/// Lord's line for the parent in each part of the day, written by the app every day
+/// (lib/features/home/home_widget_sync.dart); the built-in subtitle until the app has run.
+enum LordJoke {
+  static func load(_ part: DayPart) -> String? {
+    let key: String
+    switch part {
+    case .morning: key = "joke_morning"
+    case .midday: key = "joke_midday"
+    case .afternoon: key = "joke_afternoon"
+    case .evening: key = "joke_evening"
+    }
+    guard let joke = UserDefaults(suiteName: ChildWeek.appGroup)?.string(forKey: key), !joke.isEmpty else { return nil }
+    return joke
+  }
+}
+
 struct PartEntry: TimelineEntry {
   let date: Date
   let part: DayPart
   var week: ChildWeek? = nil
+  var joke: String { LordJoke.load(part) ?? part.subtitle }
 }
 
 struct PartProvider: TimelineProvider {
@@ -175,7 +192,7 @@ struct PartView: View {
         HStack {
           if family == .systemSmall {
             Image(part.mascot).resizable().scaledToFit().frame(width: 38, height: 42)
-              .accessibilityLabel("Golden von Ekran")
+              .accessibilityLabel("Lord Von Ekran")
           }
           if let week = entry.week {
             NotesRow(notes: week.notes, color: part.foreground)
@@ -184,12 +201,18 @@ struct PartView: View {
           }
         }
         Spacer(minLength: 0)
-        Text(part.title)
-          .font(.system(size: family == .systemSmall ? 16 : 19, weight: .heavy))
-          .minimumScaleFactor(0.8).lineLimit(2)
-        if family != .systemSmall {
-          Text(entry.week?.line ?? part.subtitle)
-            .font(.system(size: 12)).lineLimit(2)
+        if family == .systemSmall {
+          // Small widget: Lord's line is the headline.
+          Text(entry.joke)
+            .font(.system(size: 13, weight: .semibold)).italic()
+            .minimumScaleFactor(0.8).lineLimit(3)
+        } else {
+          Text(part.title)
+            .font(.system(size: 18, weight: .heavy))
+            .minimumScaleFactor(0.8).lineLimit(1)
+          Text("„\(entry.joke)”")
+            .font(.system(size: 13)).italic()
+            .minimumScaleFactor(0.85).lineLimit(2)
         }
         Text(part.action)
           .font(.system(size: 13, weight: .bold))
@@ -198,7 +221,7 @@ struct PartView: View {
       }
       if family != .systemSmall {
         Image(part.mascot).resizable().scaledToFit().frame(width: 88)
-          .accessibilityLabel("Golden von Ekran")
+          .accessibilityLabel("Lord Von Ekran")
       }
     }
     .foregroundColor(part.foreground)
@@ -219,7 +242,7 @@ struct AudioKiddoWidget: Widget {
     StaticConfiguration(kind: "AudioKiddoWidget", provider: PartProvider()) { entry in
       PartView(entry: entry)
     }
-    .configurationDisplayName("Golden na dziś")
+    .configurationDisplayName("Lord na dziś")
     .description("Zabawa na tę porę dnia: rano rozgrzewka, po południu droga, wieczorem kołysanka.")
     .supportedFamilies([.systemSmall, .systemMedium])
   }

@@ -9,7 +9,9 @@ import '../../core/widgets/kiddo.dart';
 import '../../core/widgets/motion.dart';
 import '../../l10n/app_localizations.dart';
 import '../family/family.dart';
+import '../../core/widgets/golden_hello.dart';
 import '../home/first_steps.dart';
+import '../lord/lord_widgets.dart';
 import '../home/quick_pick.dart';
 import '../home/today.dart';
 import '../kids_mode/kids_mode_setup.dart';
@@ -62,6 +64,7 @@ class _HomeContent extends StatelessWidget {
             ],
           ),
         ),
+        LordNote(onTap: () => showGoldenHello(context)),
         const TodayHero(),
         const _Modes(),
         const FirstStepsCard(),

@@ -1,43 +1,31 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../features/lord/lord_lines.dart';
+import '../../features/lord/lord_widgets.dart';
 import '../theme/tokens.dart';
 import 'kiddo.dart';
-
-/// Deliberately separate audiences. No generated text or microphone is needed.
-abstract final class GoldenLines {
-  static const parent = [
-    'Golden von Ekran. „Von” brzmi drogo. Reszta reaguje na szynkę.',
-    'Ty zrób kawę, ja ogarnę zagadki. Zamienilibyśmy się, ale ekspres ma do mnie zakaz zbliżania.',
-    'Wybierz zabawę. Tylko nie róbmy z tego wieczoru pod tytułem „co obejrzymy”.',
-    'Mam plan. Poprzedni też był dobry, tylko kanapa się nie zgodziła.',
-    'Pięć minut spokoju? Rozumiem. Pakiet luksusowy.',
-  ];
-  static const child = [
-    'Uszy gotowe? Moje są duże. To trochę nie fair.',
-    'Potrzebuję kogoś z wyobraźnią. Ja mam głównie sierść. Wchodzisz w to?',
-    'Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy jako zagadki.',
-    'Przybij łapę! Tę czystą. Nie, czekaj… obie są podejrzane.',
-  ];
-}
-
-int _nextParentLine = 0;
 
 /// A user-requested, silent encounter: never talks over an audio activity.
 Future<void> showGoldenHello(BuildContext context) => showModalBottomSheet<void>(
   context: context,
+  // Above the tab bar, not inside the tab.
+  useRootNavigator: true,
   showDragHandle: true,
   isScrollControlled: true,
   builder: (_) => const _GoldenHello(),
 );
 
-class _GoldenHello extends StatefulWidget {
+/// Lord Von Ekran introduces himself to the parent: officer's coat, dry lines, no voice.
+class _GoldenHello extends ConsumerStatefulWidget {
   const _GoldenHello();
   @override
-  State<_GoldenHello> createState() => _GoldenHelloState();
+  ConsumerState<_GoldenHello> createState() => _GoldenHelloState();
 }
 
-class _GoldenHelloState extends State<_GoldenHello> {
-  late int _line = _nextParentLine++ % GoldenLines.parent.length;
+class _GoldenHelloState extends ConsumerState<_GoldenHello> {
+  late String _line = ref.read(lordCursorProvider).next(LordPool.hello);
   @override
   Widget build(BuildContext context) => SafeArea(
     child: SingleChildScrollView(
@@ -45,20 +33,16 @@ class _GoldenHelloState extends State<_GoldenHello> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Kiddo(size: 160, cheeky: true, wave: true),
+          const Kiddo(size: 160, cheeky: true, wave: true, outfit: GoldenOutfit.official),
           Text(
-            'Golden von Ekran',
+            'Lord Von Ekran',
             style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
           Semantics(
             liveRegion: true,
-            child: Text(
-              GoldenLines.parent[_line],
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
+            child: Text(_line, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyLarge),
           ),
           const SizedBox(height: 20),
           Wrap(
@@ -67,10 +51,7 @@ class _GoldenHelloState extends State<_GoldenHello> {
             alignment: WrapAlignment.center,
             children: [
               OutlinedButton(
-                onPressed: () => setState(() {
-                  _line = (_line + 1) % GoldenLines.parent.length;
-                  _nextParentLine = _line + 1;
-                }),
+                onPressed: () => setState(() => _line = ref.read(lordCursorProvider).next(LordPool.hello)),
                 child: const Text('Masz coś jeszcze?'),
               ),
               FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Wybieram zabawę')),

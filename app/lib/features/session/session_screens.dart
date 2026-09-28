@@ -16,6 +16,8 @@ import '../downloads/download_providers.dart';
 import '../family/family.dart';
 import '../family/plan_texts.dart';
 import '../parent_voice/parent_voice.dart';
+import '../lord/lord_lines.dart';
+import '../lord/lord_widgets.dart';
 import 'session.dart';
 
 int _ageOf(WidgetRef ref) => ref.watch(familyProvider).value?.active?.age ?? 6;
@@ -352,7 +354,7 @@ class SessionScreen extends ConsumerWidget {
                   style: text.labelLarge?.copyWith(color: fg.withValues(alpha: 0.7), letterSpacing: 1.6),
                 ),
                 const Spacer(),
-                Kiddo(size: 180, mood: mood),
+                Kiddo(size: MediaQuery.sizeOf(context).height < 700 ? 120 : 180, mood: mood),
                 const SizedBox(height: AkSpace.l),
                 Semantics(
                   liveRegion: true,
@@ -380,6 +382,8 @@ class SessionScreen extends ConsumerWidget {
                     ),
                   ),
                 const Spacer(),
+                ParentAside(dark: true, pool: night ? LordPool.bedtime : LordPool.trip),
+                const SizedBox(height: AkSpace.s),
                 if (!session.finished)
                   OutlinedButton.icon(
                     onPressed: () => ref.read(sessionProvider.notifier).skip(),

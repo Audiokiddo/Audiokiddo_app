@@ -52,12 +52,15 @@ class DayPartWidget : AppWidgetProvider() {
         return RemoteViews(context.packageName, R.layout.day_part_widget).apply {
             setInt(R.id.widget_root, "setBackgroundResource", part.background)
             setImageViewResource(R.id.widget_golden, when (part) {
-                Part.MORNING -> R.drawable.golden_day
-                Part.MIDDAY, Part.AFTERNOON -> R.drawable.golden_adventure
+                // Lord Von Ekran in his officer's coat for the parent; in pajamas at night.
+                Part.MORNING, Part.MIDDAY, Part.AFTERNOON -> R.drawable.golden_official
                 Part.EVENING -> R.drawable.golden_pajamas
             })
             setTextViewText(R.id.widget_title, context.getString(part.title))
-            setTextViewText(R.id.widget_subtitle, line.ifEmpty { context.getString(part.subtitle) })
+            // Lord's line of the day (written by the app); the built-in one until the app has run.
+            val joke = data.getString("joke_${part.name.lowercase()}", null).orEmpty()
+                .ifEmpty { context.getString(part.subtitle) }
+            setTextViewText(R.id.widget_subtitle, "„$joke”")
             setTextViewText(R.id.widget_action, context.getString(part.action))
             if (notes != null && line.isNotEmpty()) {
                 // This week's melody: a filled dot for every note collected.

@@ -22,6 +22,8 @@ import '../../core/audio/kiddo_voice.dart';
 import '../../core/widgets/kiddo.dart';
 import '../family/family.dart';
 import '../intro/magic_intro.dart';
+import '../lord/lord_lines.dart';
+import '../lord/lord_widgets.dart';
 import '../parent_voice/parent_voice.dart';
 
 /// Kids mode: big covers of what the child may play. No prices, locks, links or settings.
@@ -74,6 +76,8 @@ class KidsHomeScreen extends ConsumerWidget {
           Expanded(
             child: CatalogLoader(builder: (context, catalog) => _KidsGrid(catalog: catalog)),
           ),
+          // Small print for the parent; the child sees the big covers.
+          const SafeArea(top: false, child: ParentAside(pool: LordPool.kidsHome)),
         ],
       ),
     );

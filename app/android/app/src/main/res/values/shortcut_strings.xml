@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="shortcut_bedtime">Dobranoc</string>
-    <string name="shortcut_bedtime_long">Dobranoc z Kiddo</string>
+    <string name="shortcut_bedtime_long">Dobranoc z Lordem</string>
     <string name="shortcut_trip">W drogę</string>
-    <string name="shortcut_trip_long">W drogę z Kiddo</string>
+    <string name="shortcut_trip_long">W drogę z Lordem</string>
     <!-- What parents may say to Google Assistant for each feature. -->
     <string-array name="shortcut_bedtime_synonyms">
         <item>dobranoc</item>
