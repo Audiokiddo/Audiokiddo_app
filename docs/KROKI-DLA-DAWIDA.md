@@ -233,7 +233,9 @@ gh auth login
 
 3. Napisz mi. Utworzę **prywatne** repozytorium i wyślę kod, a testy zaczną się uruchamiać automatycznie.
 
-## Krok 14. Własna poczta dla kodów logowania (10 min) — PILNE
+## Krok 14. Własna poczta dla kodów logowania — ZROBIONE 2026-09-29
+
+Skrzynka `no-reply@audiokiddo.pl` (SMTP `mail-serwer335689.lh.pl:465`), polski szablon wysłany, mail z kodem dochodzi do Gmaila.
 
 Bez tego Supabase nie wyśle kodu nikomu poza członkami zespołu, a treści maila nie da się zmienić na polską.
 
