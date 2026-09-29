@@ -28,7 +28,12 @@ echo "Zespół $team, identyfikator testowy $app_id, telefon $device"
 
 cleanup() { rm -f ios/Flutter/Local.xcconfig; }
 trap cleanup EXIT
-flutter build ios --release --dart-define=AK_APP_GROUP="group.$app_id"
-xcrun devicectl device install app --device "$device" build/ios/iphoneos/Runner.app
+# Flutter writes the release settings, xcodebuild signs for this very iPhone: a free team
+# needs the phone registered, which only a build aimed at the connected device does.
+flutter build ios --release --config-only --dart-define=AK_APP_GROUP="group.$app_id"
+xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release \
+  -destination "id=$device" -derivedDataPath build/ios/phone \
+  -allowProvisioningUpdates -allowProvisioningDeviceRegistration build -quiet
+xcrun devicectl device install app --device "$device" build/ios/phone/Build/Products/Release-iphoneos/Runner.app
 echo
 echo "Zainstalowane. Przy pierwszym uruchomieniu: Ustawienia → Ogólne → VPN i zarządzanie urządzeniem → Zaufaj."
