@@ -74,6 +74,10 @@ class GoldenPainter extends CustomPainter {
     final t = phase * math.pi * 2;
     final sleepy = mood == KiddoMood.sleepy;
     final motion = animated ? 1.0 : 0.0;
+    // A held look, then a raised eyebrow: a punchline needs a pause.
+    final reaction = animated && cheeky
+        ? math.pow(math.sin(math.pi * ((phase - .32) / .36).clamp(0.0, 1.0)), 2).toDouble()
+        : 0.0;
     final breath = math.sin(t) * 1.4 * motion;
     final wag = math.sin(t * 4) * (mood == KiddoMood.happy || wave ? .24 : .10) * motion;
     canvas.drawOval(const Rect.fromLTWH(39, 215, 122, 9), Paint()..color = const Color(0x1850321F));
@@ -112,9 +116,9 @@ class GoldenPainter extends CustomPainter {
       canvas,
       Path()
         ..moveTo(68, 122)
-        ..cubicTo(48, 140, 45, 186, 58, 205)
+        ..cubicTo(43, 140, 39, 189, 55, 205)
         ..quadraticBezierTo(100, 225, 143, 204)
-        ..cubicTo(156, 178, 149, 141, 132, 122)
+        ..cubicTo(163, 183, 154, 141, 132, 122)
         ..close(),
       outfit == GoldenOutfit.adventure ? const Color(0xFF9B9259) : clothes,
     );
@@ -303,7 +307,7 @@ class GoldenPainter extends CustomPainter {
     final tilt = mood == KiddoMood.listening
         ? -.10
         : cheeky
-        ? .035
+        ? -.065 - reaction * .045
         : 0.0;
     canvas.rotate(tilt + (mood == KiddoMood.talking ? math.sin(t * 2) * .025 * motion : 0));
     canvas.translate(-100, -97);
@@ -314,7 +318,7 @@ class GoldenPainter extends CustomPainter {
         canvas.scale(-1, 1);
       }
       canvas.translate(54, 63);
-      canvas.rotate(math.sin(t * 2) * .025 * motion);
+      canvas.rotate((right ? -.13 : .08) + math.sin(t * 2 + (right ? 1.2 : 0)) * .035 * motion);
       _shape(
         canvas,
         Path()
@@ -386,14 +390,14 @@ class GoldenPainter extends CustomPainter {
       } else {
         _oval(
           canvas,
-          Rect.fromCenter(center: Offset(x, 74), width: 28, height: 31),
+          Rect.fromCenter(center: Offset(x, 74), width: right ? 29 : 32, height: right ? 34 : 32),
           const Color(0xFFFFFBEE),
           line: 1.8,
         );
         final pupilX =
             x +
             (cheeky
-                ? 3
+                ? 4 - reaction * 6
                 : mood == KiddoMood.listening
                 ? -3
                 : 1);
@@ -425,7 +429,7 @@ class GoldenPainter extends CustomPainter {
           );
         }
       }
-      final brow = right && cheeky ? 49.0 : 54.0;
+      final brow = right && cheeky ? 48.0 - reaction * 7 : 54.0;
       _stroke(
         canvas,
         Path()
@@ -448,14 +452,42 @@ class GoldenPainter extends CustomPainter {
       line: 1.7,
     );
     if (outfit == GoldenOutfit.official && mood != KiddoMood.talking && mood != KiddoMood.happy) {
-      // Deadpan: a crooked half-smile instead of the open mouth.
+      // A lopsided, toothy grin: confident enough to be caught stealing toast.
+      _shape(
+        canvas,
+        Path()
+          ..moveTo(78, 112)
+          ..quadraticBezierTo(103, 124, 136, 105)
+          ..quadraticBezierTo(127, 139, 102, 132)
+          ..quadraticBezierTo(88, 130, 78, 112)
+          ..close(),
+        ink,
+        line: 1.5,
+      );
+      _shape(
+        canvas,
+        Path()
+          ..moveTo(99, 118)
+          ..quadraticBezierTo(116, 117, 129, 111)
+          ..lineTo(123, 122)
+          ..quadraticBezierTo(110, 128, 102, 124)
+          ..close(),
+        const Color(0xFFFFFBEE),
+        line: 0,
+      );
       _stroke(
         canvas,
         Path()
-          ..moveTo(84, 115)
-          ..quadraticBezierTo(104, 120, 124, 109)
-          ..quadraticBezierTo(128, 107, 129, 104),
-        width: 3,
+          ..moveTo(115, 117)
+          ..lineTo(114, 124),
+        width: 1.2,
+      );
+      _stroke(
+        canvas,
+        Path()
+          ..moveTo(132, 102)
+          ..quadraticBezierTo(140, 104, 139, 111),
+        width: 2,
       );
     } else {
       final opening = mood == KiddoMood.talking
@@ -481,10 +513,10 @@ class GoldenPainter extends CustomPainter {
     _shape(
       canvas,
       Path()
-        ..moveTo(83, 90)
-        ..quadraticBezierTo(100, 84, 117, 90)
-        ..quadraticBezierTo(118, 101, 102, 107)
-        ..quadraticBezierTo(87, 104, 83, 90)
+        ..moveTo(77, 88)
+        ..quadraticBezierTo(96, 78, 119, 87)
+        ..quadraticBezierTo(124, 103, 102, 109)
+        ..quadraticBezierTo(80, 108, 77, 88)
         ..close(),
       const Color(0xFF352820),
       line: 1.5,
@@ -563,6 +595,12 @@ class GoldenPainter extends CustomPainter {
         width: 1.3,
       );
     }
+    // The too-small hat sits askew, undermining his very official attitude.
+    canvas.save();
+    canvas.translate(101, 40);
+    canvas.rotate(-.12);
+    canvas.scale(.82, .86);
+    canvas.translate(-101, -40);
     // Fedora: brim, crown with a pinch, dark band.
     _shape(
       canvas,
@@ -604,6 +642,7 @@ class GoldenPainter extends CustomPainter {
       const Color(0xFF2E231B),
       line: 0,
     );
+    canvas.restore();
   }
 
   void _star(Canvas c, Offset center, double radius) {

@@ -27,7 +27,7 @@ void main() {
       final name = 'golden_${outfit.name}';
       final painter = GoldenPainter(
         outfit: outfit,
-        cheeky: true,
+        cheeky: outfit == GoldenOutfit.official,
         mood: outfit == GoldenOutfit.pajamas ? KiddoMood.sleepy : KiddoMood.idle,
       );
       await export('android/app/src/main/res/drawable-nodpi/$name.png', painter, width: 240, height: 276);
@@ -40,7 +40,7 @@ void main() {
     for (var i = 0; i < 40; i++) {
       await export(
         '../docs/golden/frames/golden_${i.toString().padLeft(3, '0')}.png',
-        GoldenPainter(phase: i / 40, animated: true, wave: true, cheeky: true),
+        GoldenPainter(outfit: GoldenOutfit.official, phase: i / 40, animated: true, wave: true, cheeky: true),
         width: 400,
         height: 460,
       );
