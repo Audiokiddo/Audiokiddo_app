@@ -153,9 +153,9 @@ supabase functions deploy verify-purchase store-notifications
 **Pliki nagrań na LH.pl** (żeby wersja sklepowa mogła je pobierać; płatne nie są publiczne):
 1. W panelu LH.pl: Serwery → Strony WWW → Dodaj nową stronę → **Subdomena** `pliki` w `.audiokiddo.pl`, katalog `pliki.audiokiddo.pl`, z certyfikatem SSL Let's Encrypt. (Zrobione 2026-09-29.)
 2. W swoim terminalu: `tool/set_files_secrets.sh https://pliki.audiokiddo.pl`. Klucz trafia do Supabase i od razu do `config.php`; kopię ze schowka zapisz w aplikacji Hasła.
-3. Skrypt przygotowuje folder `Desktop/claude folder/AudioKiddo-na-serwer` w takim układzie jak konto na LH.pl. Wgraj go przez FTP (np. FileZilla) albo Menedżer plików: `public_html/pliki.audiokiddo.pl/` (get.php + config.php) do katalogu subdomeny, `audiokiddo-pliki/` obok `public_html` (poza stronami).
-4. Napisz mi „pliki wgrane”: sprawdzę pobieranie przez podpisany link od początku do końca.
-5. Po wgraniu usuń folder `AudioKiddo-na-serwer` z komputera (klucz zostaje w aplikacji Hasła i w Supabase).
+3. Skrypt tworzy `Desktop/claude folder/AudioKiddo-na-serwer/paczka-na-serwer.zip` (get.php, config.php i folder `nagrania/` zamknięty dla przeglądarki przez `.htaccess`). W panelu LH.pl otwórz **Menedżer plików** strony `pliki.audiokiddo.pl`, wgraj ZIP do jej katalogu, rozpakuj go tam i usuń ZIP.
+4. Napisz mi „pliki wgrane”: sprawdzę pobieranie przez podpisany link od początku do końca i to, że nagrań nie da się pobrać bezpośrednio.
+5. Usuń folder `AudioKiddo-na-serwer` z komputera (klucz zostaje w aplikacji Hasła i w Supabase).
 6. Płatnych MP3 z `wp-content/uploads` nie linkuj już publicznie (sklep może wydawać je przez ten sam mechanizm).
 
 ## Krok 8. WooCommerce na audiokiddo.pl (15 min, można już teraz)
