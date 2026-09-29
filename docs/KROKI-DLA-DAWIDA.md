@@ -239,6 +239,7 @@ Bez tego Supabase nie wyśle kodu nikomu poza członkami zespołu, a treści mai
 
 1. Panel LH.pl → Poczta → nowa skrzynka `no-reply@audiokiddo.pl`, hasło do aplikacji Hasła. Zanotuj serwer SMTP i port (zwykle 465).
 2. Supabase → Authentication → Emails → SMTP Settings → **Enable custom SMTP**: nadawca `no-reply@audiokiddo.pl`, nazwa `AudioKiddo`, host i port z LH.pl, użytkownik = adres skrzynki, hasło wklejone z aplikacji Hasła.
+Do tego czasu ustawienia logowania (konta anonimowe, adres strony, 6-cyfrowy kod) wysyłasz bez szablonu maila: `tool/push_config_no_templates.sh`. Zwykłe `supabase config push` na planie Free odrzuca całość przez szablon.
 3. Napisz mi „SMTP gotowe”. Uruchomię w terminalu `supabase config push` (polski mail z kodem), a Ty zatwierdzisz Enterem.
 
 ## Krok 15. Logowanie przez Google (20 min, po kroku 4)
