@@ -95,7 +95,8 @@ extension Color {
 /// The child's week, written by the app (lib/features/home/home_widget_sync.dart) into the
 /// shared App Group. Empty until a child profile exists.
 struct ChildWeek {
-  static let appGroup = "group.pl.audiokiddo.app"
+  /// From Info.plist (AK_APP_GROUP in Flutter/AppIds.xcconfig): a personal test build uses its own.
+  static let appGroup = Bundle.main.object(forInfoDictionaryKey: "AKAppGroup") as? String ?? "group.pl.audiokiddo.app"
 
   let line: String
   let notes: Int

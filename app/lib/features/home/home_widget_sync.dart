@@ -70,8 +70,9 @@ abstract interface class HomeWidgetSink {
 class PlatformHomeWidgetSink implements HomeWidgetSink {
   const PlatformHomeWidgetSink();
 
-  /// Shared with the iOS widget extension (both targets carry this App Group).
-  static const appGroup = 'group.pl.audiokiddo.app';
+  /// Shared with the iOS widget extension (both targets carry this App Group). A personal
+  /// test build on a phone passes its own (tool/phone_build.sh).
+  static const appGroup = String.fromEnvironment('AK_APP_GROUP', defaultValue: 'group.pl.audiokiddo.app');
 
   @override
   Future<void> push(HomeWidgetData? data) async {
