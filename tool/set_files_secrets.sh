@@ -1,32 +1,39 @@
 #!/usr/bin/env bash
 # Sets up signed download links for recordings on the LH.pl hosting. Run it yourself:
-#   tool/set_files_secrets.sh https://pliki.audiokiddo.pl
+#   tool/set_files_secrets.sh                              WordPress plugin on audiokiddo.pl
+#   tool/set_files_secrets.sh https://pliki.audiokiddo.pl  folder for a subdomain
 # A new signing key is generated here, stored in Supabase and written straight into
-# config.php of a ready-to-upload folder (never printed); a copy goes to the clipboard for
-# the password manager. Running it again creates a NEW key: upload config.php again.
+# config.php inside the ready ZIP (never printed); a copy goes to the clipboard for the
+# password manager. Running it again creates a NEW key: upload the new ZIP too.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-base=${1:-}
-[[ $base == https://* ]] || { echo "Podaj adres folderu z get.php, np. tool/set_files_secrets.sh https://pliki.audiokiddo.pl"; exit 1; }
+slug=audiokiddo-pliki
+base=${1:-https://audiokiddo.pl/wp-content/plugins/$slug}
+base=${base%/}
+[[ $base == https://* ]] || { echo "Adres musi zaczynać się od https://"; exit 1; }
 [[ -d dev_content/audio ]] || { echo "Brak folderu dev_content z nagraniami. Nic nie zapisano."; exit 1; }
+plugin=false
+[[ $base == */wp-content/plugins/$slug ]] && plugin=true
 key=$(openssl rand -hex 32)
 
 env_file=$(mktemp)
 chmod 600 "$env_file"
 trap 'rm -f "$env_file"' EXIT
-printf 'FILES_BASE_URL=%s\nDOWNLOAD_SIGNING_KEY=%s\n' "${base%/}" "$key" > "$env_file"
+printf 'FILES_BASE_URL=%s\nDOWNLOAD_SIGNING_KEY=%s\n' "$base" "$key" > "$env_file"
 supabase secrets set --env-file "$env_file"
 
-# One folder for the subdomain's directory (public_html/<subdomain>) and the same as a ZIP for
-# the LH.pl file manager: get.php, config.php and nagrania/ with the recordings, which its
-# .htaccess closes to the web (only get.php reads them, after checking the signed link).
-host=${base#https://}; host=${host%%/*}
+# get.php, config.php and nagrania/ with the recordings, which its .htaccess closes to the
+# web (only get.php reads them, after checking the signed link). As a plugin, the ZIP holds
+# the folder itself (WordPress → Wtyczki → Dodaj nową → Wyślij wtyczkę on the server);
+# for a subdomain, its contents (unpacked in the subdomain's directory).
 out="../AudioKiddo-na-serwer"
-site="$out/$host"
 rm -rf "$out"
+if $plugin; then name=$slug; else name=${base#https://}; name=${name%%/*}; fi
+site="$out/$name"
 mkdir -p "$site/nagrania"
 cp tool/lhpl/get.php "$site/"
+$plugin && cp tool/lhpl/wp-plugin.php "$site/$slug.php"
 cp -R dev_content/audio dev_content/games dev_content/pdf "$site/nagrania/"
 printf 'Require all denied\n' > "$site/nagrania/.htaccess"
 printf '<Files "config.php">\n  Require all denied\n</Files>\nOptions -Indexes\n' > "$site/.htaccess"
@@ -40,11 +47,23 @@ return [
     'FILES_ROOT' => __DIR__ . '/nagrania',
 ];
 PHP
-(cd "$site" && zip -qr -X "../paczka-na-serwer.zip" . -x '.DS_Store' '*/.DS_Store')
+if $plugin; then
+  zip_name="$slug.zip"
+  (cd "$out" && zip -qr -X "$zip_name" "$slug" -x '*.DS_Store')
+else
+  zip_name="paczka-na-serwer.zip"
+  (cd "$site" && zip -qr -X "../$zip_name" . -x '*.DS_Store')
+fi
+rm -rf "$site"
 
 printf '%s' "$key" | pbcopy
+zip_path="$(cd "$out" && pwd)/$zip_name"
 echo
-echo "Gotowe. Klucz jest w Supabase, w config.php i w schowku (nigdzie nie wyświetlony)."
+echo "Gotowe. Klucz jest w Supabase, w ZIP-ie i w schowku (nigdzie nie wyświetlony)."
 echo "1. Zapisz klucz ze schowka w aplikacji Hasła jako „AudioKiddo – klucz linków do plików”."
-echo "2. Wgraj $(cd "$out" && pwd)/paczka-na-serwer.zip do katalogu public_html/$host"
-echo "   (Menedżer plików LH.pl) i rozpakuj go tam. Potem usuń ZIP z serwera i folder AudioKiddo-na-serwer z komputera."
+if $plugin; then
+  echo "2. audiokiddo.pl/wp-admin → Wtyczki → Dodaj nową → Wyślij wtyczkę → $zip_path → Zainstaluj → Włącz."
+else
+  echo "2. Wgraj $zip_path do katalogu public_html/$name i rozpakuj go tam; potem usuń ZIP z serwera."
+fi
+echo "3. Usuń folder AudioKiddo-na-serwer z komputera."

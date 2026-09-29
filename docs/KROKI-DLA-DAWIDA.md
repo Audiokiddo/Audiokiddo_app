@@ -150,12 +150,12 @@ supabase functions deploy verify-purchase store-notifications
 ```
 `db push` dodaje produkty sklepów do bazy, `config push` włącza konta anonimowe (zakup bez zakładania konta, bez danych osobowych), a `functions deploy` wgrywa sprawdzanie zakupów.
 
-**Pliki nagrań na LH.pl** (żeby wersja sklepowa mogła je pobierać; płatne nie są publiczne):
-1. W panelu LH.pl: Serwery → Strony WWW → Dodaj nową stronę → **Subdomena** `pliki` w `.audiokiddo.pl`, katalog `pliki.audiokiddo.pl`, z certyfikatem SSL Let's Encrypt. (Zrobione 2026-09-29.)
-2. W swoim terminalu: `tool/set_files_secrets.sh https://pliki.audiokiddo.pl`. Klucz trafia do Supabase i od razu do `config.php`; kopię ze schowka zapisz w aplikacji Hasła.
-3. Skrypt tworzy `Desktop/claude folder/AudioKiddo-na-serwer/paczka-na-serwer.zip` (get.php, config.php i folder `nagrania/` zamknięty dla przeglądarki przez `.htaccess`). W panelu LH.pl otwórz **Menedżer plików** strony `pliki.audiokiddo.pl`, wgraj ZIP do jej katalogu, rozpakuj go tam i usuń ZIP.
-4. Napisz mi „pliki wgrane”: sprawdzę pobieranie przez podpisany link od początku do końca i to, że nagrań nie da się pobrać bezpośrednio.
-5. Usuń folder `AudioKiddo-na-serwer` z komputera (klucz zostaje w aplikacji Hasła i w Supabase).
+**Pliki nagrań na LH.pl** (żeby wersja sklepowa mogła je pobierać; płatne nie są publiczne). Wybrana droga: **wtyczka WordPress na audiokiddo.pl** (2026-09-29):
+1. W swoim terminalu: `tool/set_files_secrets.sh` (bez adresu). Klucz trafia do Supabase i do ZIP-a; kopię ze schowka zapisz w aplikacji Hasła.
+2. audiokiddo.pl/wp-admin → Wtyczki → Dodaj nową → **Wyślij wtyczkę** → `Desktop/claude folder/AudioKiddo-na-serwer/audiokiddo-pliki.zip` → Zainstaluj → Włącz. Na liście wtyczek pod „AudioKiddo – pliki aplikacji” ma być „Pliki: 95 · klucz: ustawiony”.
+3. Napisz mi „wtyczka wgrana”: sprawdzę pobieranie przez podpisany link i to, że nagrań nie da się pobrać bezpośrednio.
+4. Usuń folder `AudioKiddo-na-serwer` z komputera. Nowe nagrania: uruchom skrypt ponownie i wgraj nowy ZIP (WordPress zapyta, czy zastąpić obecną wersję — tak).
+5. Alternatywa bez WordPressa: subdomena `pliki.audiokiddo.pl` (już dodana) i `tool/set_files_secrets.sh https://pliki.audiokiddo.pl` — ZIP rozpakowujesz w jej katalogu.
 6. Płatnych MP3 z `wp-content/uploads` nie linkuj już publicznie (sklep może wydawać je przez ten sam mechanizm).
 
 ## Krok 8. WooCommerce na audiokiddo.pl (15 min, można już teraz)
