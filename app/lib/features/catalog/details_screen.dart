@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
+import '../purchases/shop.dart';
 import '../../core/format.dart';
 import '../downloads/download_button.dart';
 import '../games/game_controller.dart';
@@ -74,7 +75,7 @@ class _DetailsContent extends ConsumerWidget {
 
   Future<void> _unlock(BuildContext context) async {
     if (!await showParentalGate(context) || !context.mounted) return;
-    await context.push('/sklep?zabawa=${item.id}');
+    await context.push('/oferta?zabawa=${item.id}');
   }
 
   Future<void> _openPdf(BuildContext context, AssetRef asset) async {
@@ -185,6 +186,11 @@ class _DetailsContent extends ConsumerWidget {
               icon: const Icon(Icons.lock_open_rounded),
               label: Text(l10n.unlock),
             ),
+            if (pack != null)
+              TextButton(
+                onPressed: () => openPack(context, pack!.id),
+                child: Text('Zobacz cały pakiet ${pack!.title}'),
+              ),
           ],
         },
         const SizedBox(height: AkSpace.l),

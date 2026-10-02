@@ -247,43 +247,48 @@ class AudioRow extends ConsumerWidget {
   final String? subtitle;
   final Widget? trailing;
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 7),
-    child: Row(
-      children: [
-        InkWell(
-          onTap: () => context.push('/zabawa/${item.id}'),
-          child: ContentCover(item: item, size: 64),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: InkWell(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playable = ref.watch(canPlayProvider(item));
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      child: Row(
+        children: [
+          InkWell(
             onTap: () => context.push('/zabawa/${item.id}'),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(item.title, style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle ??
-                      '${(item.durationSec / 60).ceil()} min · ${item.ageMin}${item.ageMax == null ? '+' : '–${item.ageMax}'} lat',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
+            child: ContentCover(item: item, size: 64, locked: !playable),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: InkWell(
+              onTap: () => context.push('/zabawa/${item.id}'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.title, style: Theme.of(context).textTheme.titleSmall),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle ??
+                        '${(item.durationSec / 60).ceil()} min · ${item.ageMin}${item.ageMax == null ? '+' : '–${item.ageMax}'} lat',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        trailing ??
-            IconButton.filled(
-              tooltip: ref.watch(canPlayProvider(item))
-                  ? 'Odtwórz ${item.title}'
-                  : 'Zobacz dostęp do ${item.title}',
-              onPressed: () => ref.read(canPlayProvider(item))
-                  ? startItem(context, item)
-                  : context.push('/zabawa/${item.id}'),
-              icon: const Icon(Icons.play_arrow_rounded, size: 24),
-            ),
-      ],
-    ),
-  );
+          trailing ??
+              (playable
+                  ? IconButton.filled(
+                      tooltip: 'Odtwórz ${item.title}',
+                      onPressed: () => startItem(context, item),
+                      icon: const Icon(Icons.play_arrow_rounded, size: 24),
+                    )
+                  : IconButton.outlined(
+                      tooltip: 'Zobacz dostęp do ${item.title}',
+                      onPressed: () => context.push('/zabawa/${item.id}'),
+                      icon: const Icon(Icons.lock_outline_rounded, size: 22),
+                    )),
+        ],
+      ),
+    );
+  }
 }

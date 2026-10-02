@@ -4,7 +4,6 @@ import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/car_scene.dart';
@@ -12,11 +11,8 @@ import '../../l10n/app_localizations.dart';
 import '../catalog/widgets/catalog_loader.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
+import 'shop.dart';
 import 'store_gateway.dart';
-
-/// TODO(Dawid): app-specific terms and privacy policy (drafts in Etap 5); the shop's pages for now.
-final _termsUrl = Uri.parse('https://audiokiddo.pl/regulamin/');
-final _privacyUrl = Uri.parse('https://audiokiddo.pl/polityka-prywatnosci/');
 
 /// Parent zone only — reached through the parental gate.
 class PaywallScreen extends ConsumerWidget {
@@ -27,19 +23,13 @@ class PaywallScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    ref.listen(purchaseControllerProvider.select((s) => s.message), (_, message) {
-      final text = switch (message) {
-        PurchaseMessage.success => l10n.purchaseSuccess,
-        PurchaseMessage.pendingApproval => l10n.purchasePending,
-        PurchaseMessage.storeError => l10n.purchaseStoreError,
-        PurchaseMessage.verifyLater => l10n.purchaseVerifyLater,
-        PurchaseMessage.nothingToRestore => l10n.purchaseNothingToRestore,
-        PurchaseMessage.canceled || PurchaseMessage.none => null,
-      };
-      if (text != null) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
-      if (message == PurchaseMessage.success && context.canPop()) context.pop();
-      if (message != PurchaseMessage.none) ref.read(purchaseControllerProvider.notifier).clearMessage();
-    });
+    listenPurchaseMessages(
+      context,
+      ref,
+      onSuccess: () {
+        if (context.canPop()) context.pop();
+      },
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.paywallTitle)),
@@ -157,8 +147,11 @@ class _PaywallContent extends ConsumerWidget {
             ),
             Wrap(
               children: [
-                TextButton(onPressed: () => launchUrl(_termsUrl), child: Text(l10n.paywallTerms)),
-                TextButton(onPressed: () => launchUrl(_privacyUrl), child: Text(l10n.paywallPrivacy)),
+                TextButton(onPressed: () => openWithGate(context, termsUrl), child: Text(l10n.paywallTerms)),
+                TextButton(
+                  onPressed: () => openWithGate(context, privacyUrl),
+                  child: Text(l10n.paywallPrivacy),
+                ),
               ],
             ),
           ],

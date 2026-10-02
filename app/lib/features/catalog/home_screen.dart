@@ -15,6 +15,8 @@ import '../player/player_providers.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../lord/lord_lines.dart';
+import '../purchases/shop.dart';
+import '../purchases/shop_screen.dart';
 import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
 
@@ -124,6 +126,7 @@ class HomeScreen extends ConsumerWidget {
                 )
               else
                 for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
+              _NextPackCard(catalog: catalog),
               const _QuietSzopen(),
               RefSection('Na co dzień', action: 'Wszystkie tryby', onTap: () => context.push('/rutyny')),
               ListTile(
@@ -257,6 +260,82 @@ class _QuietSzopenState extends ConsumerState<_QuietSzopen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// After the child finished a free taste of a pack, its other plays are the natural next step.
+/// One quiet card for the parent, closable for a week; never in kids mode, never a modal.
+class _NextPackCard extends ConsumerWidget {
+  const _NextPackCard({required this.catalog});
+
+  final Catalog catalog;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final family = ref.watch(familyProvider).value;
+    final child = family?.active;
+    if (family == null || child == null) return const SizedBox.shrink();
+    final next = nextPackSuggestion(
+      results: family.resultsOf(child.id),
+      catalog: catalog,
+      scopes: ref.watch(activeScopesProvider),
+    );
+    final hidden = ref.watch(hiddenPackSuggestionProvider).value;
+    if (next == null || !ref.watch(hiddenPackSuggestionProvider).hasValue) return const SizedBox.shrink();
+    if (hidden != null &&
+        hidden.packId == next.pack.pack.id &&
+        hidden.until.isAfter(ref.watch(clockProvider)())) {
+      return const SizedBox.shrink();
+    }
+    final paid = next.pack.items.where((i) => !i.isFree).toList();
+    final minutes = paid.fold(0, (s, i) => s + i.durationSec) ~/ 60;
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 12, 6, 12),
+        decoration: BoxDecoration(
+          color: referenceLilac.withValues(alpha: .55),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          children: [
+            SizedBox.square(dimension: 64, child: PackArt(summary: next.pack, radius: 14)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Chcecie więcej takich zabaw?',
+                    style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '„${next.tried.title}” jest z pakietu ${next.pack.pack.title}. '
+                    'W środku czeka jeszcze ${playsCount(paid.length)}, razem $minutes min bez ekranu.',
+                    style: text.bodySmall,
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    onPressed: () => openPack(context, next.pack.pack.id),
+                    child: const Text('Zobacz pakiet'),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              tooltip: 'Nie teraz',
+              onPressed: () => hidePackSuggestion(ref, next.pack.pack.id),
+              icon: const Icon(Icons.close_rounded, size: 20),
+            ),
+          ],
+        ),
       ),
     );
   }

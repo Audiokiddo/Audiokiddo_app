@@ -11,6 +11,8 @@ class StoreProduct {
     required this.kind,
     this.period,
     this.freeTrialDays,
+    this.rawPrice,
+    this.currencyCode,
   });
 
   final String id;
@@ -23,6 +25,10 @@ class StoreProduct {
 
   /// Set only when the store offers a free trial to *this* user.
   final int? freeTrialDays;
+
+  /// The same price as a number and its ISO currency, for comparisons such as bundle savings.
+  final double? rawPrice;
+  final String? currencyCode;
 }
 
 enum PurchaseStatus { pending, purchased, restored, canceled, error }

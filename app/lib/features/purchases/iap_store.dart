@@ -41,9 +41,20 @@ class InAppPurchaseGateway implements gw.StoreGateway {
             ? (d.id == ProductIds.yearly ? gw.BillingPeriod.year : gw.BillingPeriod.month)
             : null,
         freeTrialDays: trial,
+        rawPrice: _baseRawPrice(d),
+        currencyCode: d.currencyCode,
       );
     }
     return result.values.toList();
+  }
+
+  /// [_basePrice] as a number.
+  static double _baseRawPrice(ProductDetails d) {
+    if (d is GooglePlayProductDetails && d.subscriptionIndex != null) {
+      final phase = d.productDetails.subscriptionOfferDetails![d.subscriptionIndex!].pricingPhases.last;
+      return phase.priceAmountMicros / 1e6;
+    }
+    return d.rawPrice;
   }
 
   /// The regular (after-trial) price.

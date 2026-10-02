@@ -25,6 +25,7 @@ import '../features/player/mini_player.dart';
 import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
+import '../features/purchases/shop_screen.dart';
 import '../features/reminders/reminder_offer.dart';
 import '../features/session/session_screens.dart';
 
@@ -70,6 +71,9 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
           ],
         ),
         StatefulShellBranch(
+          routes: [GoRoute(path: '/sklep', builder: (context, state) => const ShopScreen())],
+        ),
+        StatefulShellBranch(
           routes: [GoRoute(path: '/ulubione', builder: (context, state) => const CollectionScreen())],
         ),
         StatefulShellBranch(
@@ -98,8 +102,12 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
     GoRoute(path: '/sesja', builder: (context, state) => const SessionScreen()),
     GoRoute(path: '/konto', builder: (context, state) => const AccountScreen()),
     GoRoute(
-      path: '/sklep',
+      path: '/oferta',
       builder: (context, state) => PaywallScreen(itemId: state.uri.queryParameters['zabawa']),
+    ),
+    GoRoute(
+      path: '/pakiet/:id',
+      builder: (context, state) => PackScreen(packId: state.pathParameters['id']!),
     ),
     GoRoute(
       path: '/zabawa/:id',
@@ -139,6 +147,11 @@ class _ParentShell extends ConsumerWidget {
                 icon: Icon(Icons.library_music_outlined),
                 selectedIcon: Icon(Icons.library_music_rounded),
                 label: 'Biblioteka',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.shopping_bag_outlined),
+                selectedIcon: Icon(Icons.shopping_bag_rounded),
+                label: 'Sklep',
               ),
               NavigationDestination(
                 icon: Icon(Icons.favorite_border_rounded),

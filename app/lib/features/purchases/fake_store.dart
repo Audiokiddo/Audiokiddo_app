@@ -53,6 +53,8 @@ class FakeStoreGateway implements StoreGateway {
           kind: StoreProductKind.subscription,
           period: id.endsWith('yearly') ? BillingPeriod.year : BillingPeriod.month,
           freeTrialDays: trialDays,
+          rawPrice: _raw(_prices[id]!),
+          currencyCode: 'PLN',
         )
       else
         StoreProduct(
@@ -61,8 +63,13 @@ class FakeStoreGateway implements StoreGateway {
           // Single games: 19,99 zł for Detektyw, 9,99 zł otherwise (approved 2026-09-26).
           price: _prices[id] ?? (_isDetektywItem(id) ? '19,99 zł' : '9,99 zł'),
           kind: StoreProductKind.oneTime,
+          rawPrice: _raw(_prices[id] ?? (_isDetektywItem(id) ? '19,99 zł' : '9,99 zł')),
+          currencyCode: 'PLN',
         ),
   ];
+
+  static double _raw(String price) =>
+      double.parse(price.replaceAll(RegExp(r'[^0-9,]'), '').replaceAll(',', '.'));
 
   static bool _isDetektywItem(String id) => const [
     'zlodziej_naszyjnika',
