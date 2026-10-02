@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'ambient_motion.dart';
 import 'golden_painter.dart';
+import 'raccoon_painter.dart';
 export 'golden_painter.dart' show GoldenOutfit, KiddoMood, goldenOutfitAt;
 
-/// Golden von Ekran. Keeps the existing Kiddo API so every established surface
-/// uses the same dog, including onboarding, travel, bedtime and interactive games.
+/// AudioKiddo raccoon. Keeps the existing Kiddo API so every established surface
+/// uses the same raccoon, including onboarding, travel, bedtime and interactive games.
 class Kiddo extends ConsumerStatefulWidget {
   const Kiddo({
     super.key,
@@ -83,7 +84,7 @@ class _KiddoState extends ConsumerState<Kiddo> with SingleTickerProviderStateMix
           child: AnimatedBuilder(
             animation: _motion,
             builder: (context, _) => CustomPaint(
-              painter: GoldenPainter(
+              painter: RaccoonPainter(
                 mood: widget.mood,
                 outfit: outfit,
                 phase: _enabled ? _motion.value : 0,

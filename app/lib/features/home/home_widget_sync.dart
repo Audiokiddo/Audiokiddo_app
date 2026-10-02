@@ -51,7 +51,7 @@ final homeWidgetDataProvider = Provider<HomeWidgetData?>((ref) {
   );
 });
 
-/// Lord's widget line for each part of the day, a different one every day.
+/// Szop’en's widget line for each part of the day, a different one every day.
 Map<String, String> widgetJokes(DateTime day) {
   final dayOfYear = day.difference(DateTime(day.year)).inDays;
   return {

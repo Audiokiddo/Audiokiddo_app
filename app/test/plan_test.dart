@@ -47,7 +47,9 @@ void main() {
     await tester.pumpWidget(ProviderScope(overrides: testOverrides(db), child: const AudioKiddoApp()));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.queue_music_rounded));
+    await tester.tap(find.byIcon(Icons.menu_rounded));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Plan rozwoju'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Zosia'), findsWidgets);
     expect(find.text('POZIOM 1 · DNI 1–7'), findsOneWidget);

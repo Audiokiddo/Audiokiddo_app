@@ -17,7 +17,9 @@ import '../personal/personal_repository.dart';
 import '../player/playback_controller.dart';
 import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
-import 'widgets/content_cover.dart';
+import '../discovery/reference_widgets.dart';
+import '../discovery/discovery_model.dart';
+import '../discovery/queue_controller.dart';
 import 'widgets/labels.dart';
 
 class DetailsScreen extends StatelessWidget {
@@ -99,8 +101,9 @@ class _DetailsContent extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(AkSpace.m, 0, AkSpace.m, AkSpace.xl),
       children: [
-        Center(
-          child: ContentCover(item: item, pack: pack, size: 220, locked: !canPlay),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(26),
+          child: SizedBox(height: 230, child: ArtScene(category: itemCategory(item))),
         ),
         const SizedBox(height: AkSpace.l),
         Text(pack?.title ?? l10n.kind(item.kind), style: text.labelLarge?.copyWith(color: palette.inkMuted)),
@@ -117,6 +120,8 @@ class _DetailsContent extends ConsumerWidget {
             if (item.isFree) _Meta(icon: Icons.card_giftcard_rounded, label: l10n.free),
           ],
         ),
+        const SizedBox(height: AkSpace.m),
+        Text(item.parentDescription, style: text.bodyMedium),
         const SizedBox(height: AkSpace.l),
         ...switch (access) {
           ItemAccess.playable => [
@@ -148,6 +153,22 @@ class _DetailsContent extends ConsumerWidget {
               ),
             const SizedBox(height: AkSpace.m),
             DownloadControl(item: item),
+            if (!isGame)
+              TextButton.icon(
+                onPressed: ref.watch(queueRunnerProvider).running ? null : () async {
+                  await ref.read(discoveryProvider.notifier).add(item.id);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Dodano do kolejki'),
+                        action: SnackBarAction(label: 'Otwórz', onPressed: () => context.push('/kolejka')),
+                      ),
+                    );
+                  }
+                },
+                icon: const Icon(Icons.playlist_add_rounded),
+                label: const Text('Dodaj do kolejki'),
+              ),
           ],
           ItemAccess.needsRefresh => [
             FilledButton.icon(
@@ -167,10 +188,7 @@ class _DetailsContent extends ConsumerWidget {
           ],
         },
         const SizedBox(height: AkSpace.l),
-        _Section(
-          title: l10n.detailsForParent,
-          child: Text(item.parentDescription, style: text.bodyLarge),
-        ),
+
         if (item.skills.isNotEmpty)
           _Section(
             title: l10n.detailsPractises,

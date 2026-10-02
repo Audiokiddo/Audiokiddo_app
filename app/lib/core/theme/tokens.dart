@@ -42,24 +42,24 @@ class AkPalette extends ThemeExtension<AkPalette> {
   });
 
   static const light = AkPalette(
-    background: Color(0xFFFFF7EE),
+    background: Color(0xFFFFFBF2),
     surface: Colors.white,
-    surfaceMuted: AkBrand.sand,
-    ink: AkBrand.cocoa,
+    surfaceMuted: Color(0xFFE6F2EF),
+    ink: Color(0xFF211C35),
     inkMuted: Color(0xFF6B5A50),
-    primary: AkBrand.terracotta,
+    primary: AkBrand.tealDeep,
     onPrimary: Colors.white,
     accent: AkBrand.orange,
     lock: Color(0xFF6B5A50),
   );
 
   static const dark = AkPalette(
-    background: AkBrand.night,
-    surface: Color(0xFF241C17),
-    surfaceMuted: Color(0xFF33281F),
+    background: Color(0xFF201B30),
+    surface: Color(0xFF2C243E),
+    surfaceMuted: Color(0xFF3A3150),
     ink: Color(0xFFFFF3E6),
     inkMuted: Color(0xFFC9B8AA),
-    primary: AkBrand.coral,
+    primary: Color(0xFF8CD5D5),
     onPrimary: AkBrand.cocoa,
     accent: AkBrand.orange,
     lock: Color(0xFFC9B8AA),

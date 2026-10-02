@@ -73,6 +73,7 @@ List<Override> testOverrides(
   Directory? downloadsDir,
   KidsModeController? kidsMode,
   bool onboardingDone = true,
+  MediaItem? media,
 }) => [
   onboardingProvider.overrideWithValue(OnboardingController(db, done: onboardingDone)),
   databaseProvider.overrideWithValue(db),
@@ -80,7 +81,7 @@ List<Override> testOverrides(
   fileTransferProvider.overrideWithValue(FakeTransfer(downloadsDir ?? Directory.systemTemp)),
   contentUrlResolverProvider.overrideWithValue(const BaseUrlResolver('http://test.invalid')),
   freeBytesProvider.overrideWith((ref) async => 1 << 34),
-  currentMediaProvider.overrideWith((ref) => Stream<MediaItem?>.value(null)),
+  currentMediaProvider.overrideWith((ref) => Stream<MediaItem?>.value(media)),
   kiddoVoiceProvider.overrideWithValue(const SilentKiddoVoice()),
   ambientMotionProvider.overrideWithValue(false),
   kidsMagicEntryProvider.overrideWithValue(false),

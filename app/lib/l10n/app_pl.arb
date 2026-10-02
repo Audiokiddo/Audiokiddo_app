@@ -425,7 +425,7 @@
   "onboardingStartWithoutAccount": "Zacznij bez konta",
   "introSkip": "Pomiń",
   "introVolumeTitle": "Podgłośnij!",
-  "introVolumeBody": "Żeby dobrze słyszeć Lorda.",
+  "introVolumeBody": "Żeby dobrze słyszeć Szop’ena.",
   "introPasswordTitle": "MAGICZNE HASŁO",
   "introPasswordSay": "Powiedz głośno:",
   "introPasswordWord": "ABRAKADABRA!",
@@ -433,7 +433,7 @@
   "introPasswordTap": "…i dotknij magicznej kuli",
   "introPasswordOrb": "Magiczna kula. Dotknij, aby wejść.",
   "introGranted": "Dostęp przyznany!",
-  "homeKiddo": "Lord Von Ekran. Dotknij, a coś powie.",
+  "homeKiddo": "Szop’en von Ekran. Dotknij, a coś powie.",
   "homeNew": "Nowość!",
   "homeNewHint": "Odpowiadaj klaśnięciem albo głosem!",
   "kidsHello1": "Uszy gotowe? Moje są duże. To trochę nie fair.",
@@ -441,7 +441,7 @@
   "kidsHello3": "Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy.",
   "quizBack": "Wstecz",
   "quizYourChild": "Twoje dziecko",
-  "quizHello": "Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Lord nie kłamie.",
+  "quizHello": "Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Szop’en nie kłamie.",
   "quizHelloPoint1": "Około minuty na każde dziecko.",
   "quizHelloPoint2": "Odpowiedzi zostają tylko w tym telefonie.",
   "quizHelloPoint3": "Masz więcej dzieci? Każde dostanie własny plan.",
@@ -504,20 +504,20 @@
   "goalListening": "Uważne słuchanie i skupienie",
   "goalMovement": "Ruch i rytm",
   "goalCalm": "Wyciszenie przed snem",
-  "reminder1Title": "Lord czeka",
+  "reminder1Title": "Szop’en czeka",
   "reminder1Body": "Dzień był długi? 10 minut zabawy i przez chwilę to ktoś inny odpowiada na pytania.",
   "reminder2Title": "Pora na przygodę",
   "reminder2Body": "Kawa znowu wystygła? Kawy nie uratujemy. Ciszę może tak: dzisiejsza zabawa czeka.",
   "reminder3Title": "Seria trwa!",
   "reminder3Body": "Jeszcze jeden dzień, a seria będzie dłuższa niż Twój ostatni nieprzerwany sen.",
-  "reminder4Title": "Lord melduje",
-  "reminder4Body": "Dziecko zadało dziś już 347 pytań? Oddaj kilka Lordowi. On to lubi. Serio.",
+  "reminder4Title": "Szop’en melduje",
+  "reminder4Body": "Dziecko zadało dziś już 347 pytań? Oddaj kilka Szop’enowi. On to lubi. Serio.",
   "reminder5Title": "Cisza w domu?",
   "reminder5Body": "Podejrzane. Sprawdź, co się dzieje, a potem włącz dzisiejszą zabawę.",
   "reminder6Title": "Bez ekranu, bez wyrzutów",
   "reminder6Body": "Oczy odpoczywają, uszy pracują, a Ty może nawet usiądziesz. Na chwilę.",
-  "reminder7Title": "Lord nie śpi",
-  "reminder7Body": "Lord nie śpi. Lord czeka. Lord trochę tęskni. Dzisiejsza porcja to kilka minut.",
+  "reminder7Title": "Szop’en nie śpi",
+  "reminder7Body": "Szop’en nie śpi. Szop’en czeka. Szop’en trochę tęskni. Dzisiejsza porcja to kilka minut.",
   "remindersAsk": "Mogę przypominać o codziennej zabawie? Obiecuję nie przesadzać. Raz dziennie, z humorem.",
   "remindersWhen": "O której przypomnieć?",
   "remindersMorning": "Rano",
@@ -540,7 +540,7 @@
     }
   },
   "planEmptyTitle": "Tu będzie plan zabaw na każdy dzień",
-  "planEmptyBody": "Odpowiedz na kilka pytań (minuta), a Lord rozłoży zabawy na dni: po trochu, bez przytłaczania.",
+  "planEmptyBody": "Odpowiedz na kilka pytań (minuta), a Szop’en rozłoży zabawy na dni: po trochu, bez przytłaczania.",
   "planEmptyButton": "Dopasuj plan",
   "planAddChild": "Dodaj dziecko",
   "planAge": "{age} l.",
@@ -744,7 +744,7 @@
   "todayMidday": "Przygoda na dziś",
   "todayAfternoon": "W drodze i po przedszkolu",
   "todayEvening": "Wieczorne wyciszenie",
-  "todayNoPlan": "Odpowiedz na kilka pytań, a Lord ułoży zabawy na każdy dzień.",
+  "todayNoPlan": "Odpowiedz na kilka pytań, a Szop’en ułoży zabawy na każdy dzień.",
   "todayDone": "Porcja zaliczona ({name}). Nowa nuta w melodii tygodnia!",
   "@todayDone": {
     "placeholders": {
@@ -815,7 +815,7 @@
   },
   "planPlayTune": "Zagraj zebrane nuty",
   "tripTitle": "W drogę",
-  "tripBody": "Powiedz, ile jedziecie. Lord ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.",
+  "tripBody": "Powiedz, ile jedziecie. Szop’en ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.",
   "tripHowLong": "Ile jedziecie?",
   "tripMinutes": "{minutes} min",
   "@tripMinutes": {
@@ -836,7 +836,7 @@
       }
     }
   },
-  "tripBreaks": "Co kwadrans Lord zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.",
+  "tripBreaks": "Co kwadrans Szop’en zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.",
   "tripMore": "i jeszcze {count}…",
   "@tripMore": {
     "placeholders": {
@@ -857,7 +857,7 @@
   "tripEmpty": "Nie ma jeszcze zabaw do słuchania w drodze. Odblokuj pakiet albo wybierz darmowe.",
   "bedtimeTitle": "Dobranoc",
   "bedtimeBody": "Zawsze ta sama kolejność, bo dzieci lubią rytuały. Zgaś światło, połóż telefon ekranem w dół.",
-  "bedtimeBreaths": "Trzy spokojne oddechy z Lordem",
+  "bedtimeBreaths": "Trzy spokojne oddechy z Szop’enem",
   "bedtimeQuiet": "Cicha zabawa: {title}",
   "@bedtimeQuiet": {
     "placeholders": {
@@ -875,13 +875,13 @@
     }
   },
   "bedtimeParentGoodnight": "„Dobranoc” Twoim głosem",
-  "bedtimeKiddoGoodnight": "„Dobranoc” od Lorda",
+  "bedtimeKiddoGoodnight": "„Dobranoc” od Szop’ena",
   "bedtimeRecordHint": "Nagraj swoje „dobranoc”",
   "bedtimeGo": "Zaczynamy",
   "todayTrip": "W drogę",
   "todayBedtime": "Dobranoc",
   "sessionWindow": "Co widzisz za oknem?",
-  "sessionKiddo": "Lord mówi",
+  "sessionKiddo": "Szop’en mówi",
   "sessionParent": "Twoja wiadomość",
   "sessionNext": "Potem: {title}",
   "@sessionNext": {
@@ -905,7 +905,7 @@
   "sessionArrived": "Dojechaliście!",
   "sessionSleepWell": "Śpij dobrze",
   "voiceTitle": "Twój głos",
-  "voiceBody": "Nagraj trzy krótkie wiadomości dla: {name}. Lord wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.",
+  "voiceBody": "Nagraj trzy krótkie wiadomości dla: {name}. Szop’en wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.",
   "@voiceBody": {
     "placeholders": {
       "name": {
@@ -914,7 +914,7 @@
     }
   },
   "voiceHello": "Przywitanie",
-  "voiceHelloHint": "Na przykład: „Cześć, {name}! Lord już czeka. Baw się dobrze!”",
+  "voiceHelloHint": "Na przykład: „Cześć, {name}! Szop’en już czeka. Baw się dobrze!”",
   "@voiceHelloHint": {
     "placeholders": {
       "name": {
@@ -950,13 +950,13 @@
   "voiceEntry": "Twój głos w zabawie",
   "voiceEntryHint": "Przywitanie, pochwała i dobranoc nagrane przez Ciebie",
   "onboardingAnswerTitle": "Dziecko odpowiada",
-  "onboardingAnswerBody": "Klaśnięciem albo głosem. Lord słucha i prowadzi zabawę dalej.",
+  "onboardingAnswerBody": "Klaśnięciem albo głosem. Szop’en słucha i prowadzi zabawę dalej.",
   "onboardingModesTitle": "Na drogę i na dobranoc",
   "onboardingModesBody": "Jeden przycisk: zabawy na całą trasę albo wieczorny rytuał.",
   "onboardingVoiceTitle": "Twój głos w zabawie",
   "onboardingVoiceBody": "Nagraj „Brawo!” i „Dobranoc”. Nagrania zostają w telefonie.",
-  "gameHintWaiting": "Odpowiedz na głos. Za chwilę Lord powie, jak było.",
-  "gameHintListening": "Lord słucha. Klaśnij albo odpowiedz głośno.",
+  "gameHintWaiting": "Odpowiedz na głos. Za chwilę Szop’en powie, jak było.",
+  "gameHintListening": "Szop’en słucha. Klaśnij albo odpowiedz głośno.",
   "gameHintTap": "Dotknij ekranu w dowolnym miejscu.",
   "widgetProgress": "{name} · dzień {day} · {notes} z 7 nut",
   "@widgetProgress": {
@@ -1038,7 +1038,7 @@
       }
     }
   },
-  "weekCardAskGeneric": "Zapytajcie, w co grało z Lordem. Opowie Wam wszystko!",
+  "weekCardAskGeneric": "Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko!",
   "weekCardShareText": "Tydzień z AudioKiddo: {name}",
   "@weekCardShareText": {
     "placeholders": {
@@ -1104,11 +1104,11 @@
   "stepPlan": "Dopasuj plan do dziecka",
   "stepPlanHint": "Minuta pytań: wiek, cele, czas",
   "stepPlay": "Włącz pierwszą zabawę",
-  "stepPlayHint": "Lord podpowie, co pasuje teraz",
+  "stepPlayHint": "Szop’en podpowie, co pasuje teraz",
   "stepDownload": "Pobierz coś na drogę",
   "stepDownloadHint": "Zabawy działają bez internetu",
   "stepVoice": "Nagraj swoje „Brawo!”",
-  "stepVoiceHint": "Lord wplecie Twój głos w zabawę",
+  "stepVoiceHint": "Szop’en wplecie Twój głos w zabawę",
   "stepReminders": "Włącz przypomnienia",
   "stepRemindersHint": "Raz dziennie, z humorem",
   "stepWidget": "Dodaj widżet na ekran",
@@ -1125,7 +1125,7 @@
   "pickMood": "Czego trzeba?",
   "pickMove": "Rozruszać",
   "pickCalm": "Wyciszyć",
-  "pickResult": "LORD PROPONUJE",
+  "pickResult": "SZOP’EN PROPONUJE",
   "pickStart": "Włącz",
   "pickOr": "Albo:",
   "pickNothing": "Nic tu nie pasuje. Zmień odpowiedź albo zajrzyj do Biblioteki.",

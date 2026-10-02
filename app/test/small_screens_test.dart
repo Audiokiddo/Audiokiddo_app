@@ -29,6 +29,12 @@ const routes = [
   '/dobranoc',
   '/sesja',
   '/moje',
+  '/ratunku',
+  '/rutyny',
+  '/kolejka',
+  '/profil',
+  '/pobrane',
+  '/ulubione',
 ];
 
 Future<void> pumpDevice(
@@ -78,7 +84,8 @@ void main() {
 
     testWidgets('$name: welcome pages fit', (tester) async {
       await pumpDevice(tester, device, onboardingDone: false);
-      await tester.tap(find.text('Pomiń').first);
+      await tester.ensureVisible(find.text('Zaczynamy'));
+      await tester.tap(find.text('Zaczynamy'));
       await tester.pumpAndSettle();
       for (var page = 0; page < 3; page++) {
         expect(tester.takeException(), isNull, reason: 'welcome page ${page + 1} on $name');

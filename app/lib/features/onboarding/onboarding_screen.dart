@@ -9,7 +9,7 @@ import '../account/account_service.dart';
 import '../account/sign_in.dart';
 import '../family/child_quiz.dart';
 import '../family/family.dart';
-import '../intro/magic_intro.dart';
+import '../discovery/reference_widgets.dart';
 import '../kids_mode/kids_mode_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import '../reminders/reminder_offer.dart';
@@ -72,7 +72,43 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     switch (_stage) {
       case _Stage.intro:
-        return MagicIntro(onDone: () => setState(() => _stage = _Stage.pages));
+        return Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('AudioKiddo', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 40),
+                  Text(
+                    'Więcej\nniż\nsłuchanie.',
+                    style: text.displaySmall?.copyWith(fontSize: 44, height: 1.12),
+                  ),
+                  const SizedBox(height: 18),
+                  const Text(
+                    'Interaktywne audiozabawy, które angażują wyobraźnię i dają Wam chwilę oddechu.',
+                  ),
+                  const SizedBox(height: 28),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(color: referenceMint, borderRadius: BorderRadius.circular(32)),
+                    child: const Center(child: Kiddo(size: 200, mood: KiddoMood.happy, wave: true)),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: () => setState(() => _stage = _Stage.pages),
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      label: const Text('Zaczynamy'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       case _Stage.quiz:
         return ChildQuiz(onDone: () => setState(() => _stage = _Stage.reminders));
       case _Stage.reminders:

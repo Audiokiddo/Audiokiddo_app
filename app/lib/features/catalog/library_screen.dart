@@ -3,244 +3,191 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
-import '../../core/theme/tokens.dart';
-import '../../l10n/app_localizations.dart';
+import '../discovery/discovery_model.dart';
+import '../discovery/reference_widgets.dart';
 import 'library_filter.dart';
 import 'widgets/catalog_loader.dart';
-import 'widgets/item_views.dart';
-import 'widgets/labels.dart';
-import 'widgets/pack_row.dart';
 
-class LibraryScreen extends StatelessWidget {
-  const LibraryScreen({super.key, required this.filter});
-
+class LibraryScreen extends StatefulWidget {
+  const LibraryScreen({super.key, this.filter = const LibraryFilter()});
   final LibraryFilter filter;
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context).navLibrary,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-        ),
-      ),
-      body: CatalogLoader(
-        builder: (context, catalog) => _LibraryContent(catalog: catalog, filter: filter),
-      ),
-    );
-  }
+  State<LibraryScreen> createState() => _LibraryScreenState();
 }
 
-class _LibraryContent extends StatelessWidget {
-  const _LibraryContent({required this.catalog, required this.filter});
-
-  final Catalog catalog;
-  final LibraryFilter filter;
-
-  void _set(BuildContext context, LibraryFilter next) => context.go(next.toLocation());
-
+class _LibraryScreenState extends State<LibraryScreen> {
+  String _search = '';
+  bool _searching = false;
+  bool _series = false;
+  void _set(LibraryFilter f) => context.go(f.toLocation());
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final items = filter.apply(catalog.items);
-    final kinds = {for (final i in catalog.items) i.kind}.toList()..sort((a, b) => a.index - b.index);
-
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    final f = widget.filter;
+    final category = f.category;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(category?.label.replaceAll('\n', ' ') ?? 'Biblioteka'),
+        leading: category == null
+            ? null
+            : IconButton(
+                tooltip: 'Wszystkie kategorie',
+                icon: const Icon(Icons.arrow_back_rounded),
+                onPressed: () => _set(const LibraryFilter()),
+              ),
+        actions: [
+          IconButton(
+            tooltip: 'Szukaj',
+            onPressed: () => setState(() => _searching = !_searching),
+            icon: const Icon(Icons.search_rounded),
+          ),
+        ],
+      ),
+      body: CatalogLoader(
+        builder: (context, catalog) {
+          final items = f
+              .apply(catalog.items)
+              .where((i) => i.title.toLowerCase().contains(_search.toLowerCase()))
+              .toList();
+          final search = _searching || GoRouterState.of(context).uri.queryParameters['szukaj'] == '1';
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
             children: [
-              if (filter.isEmpty && catalog.packs.isNotEmpty) ...[
-                SectionHeader(l10n.homePacks),
-                PackRow(catalog: catalog),
-                const SizedBox(height: AkSpace.s),
-              ],
-              _ChipRow(
-                children: [
-                  ChoiceChip(
-                    label: Text(l10n.kindAll),
-                    selected: filter.kind == null,
-                    labelStyle: selectableChipLabel(context, selected: filter.kind == null),
-                    onSelected: (_) => _set(context, filter.copyWith(kind: () => null)),
+              if (search)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: TextField(
+                    autofocus: true,
+                    decoration: const InputDecoration(
+                      hintText: 'Tytuł zabawy lub piosenki',
+                      prefixIcon: Icon(Icons.search_rounded),
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (s) => setState(() => _search = s),
                   ),
-                  for (final k in kinds)
+                ),
+              if (category == null)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (final choice in [
+                        (null, 'Wszystkie'),
+                        (ContentKind.audioGame, 'Audiozabawy'),
+                        (ContentKind.song, 'Piosenki'),
+                      ])
+                        Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: ChoiceChip(
+                            label: Text(choice.$2),
+                            selected: !_series && f.kind == choice.$1,
+                            showCheckmark: false,
+                            labelStyle: selectableChipLabel(
+                              context,
+                              selected: !_series && f.kind == choice.$1,
+                            ),
+                            onSelected: (_) {
+                              setState(() => _series = false);
+                              _set(f.copyWith(kind: () => choice.$1));
+                            },
+                          ),
+                        ),
+                      ChoiceChip(
+                        label: const Text('Serie'),
+                        selected: _series,
+                        onSelected: (v) => setState(() => _series = v),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: [
+                  for (final a in [(4, '3–4'), (6, '5–6'), (9, '7–9'), (null, 'Wszystkie')])
                     ChoiceChip(
-                      label: Text(l10n.kind(k)),
-                      selected: filter.kind == k,
-                      labelStyle: selectableChipLabel(context, selected: filter.kind == k),
-                      onSelected: (on) => _set(context, filter.copyWith(kind: () => on ? k : null)),
+                      label: Text(a.$2),
+                      selected: f.age == a.$1,
+                      labelStyle: selectableChipLabel(context, selected: f.age == a.$1),
+                      showCheckmark: false,
+                      onSelected: (_) => _set(
+                        f.copyWith(
+                          age: () => a.$1,
+                          ageFrom: () => switch (a.$1) {
+                            4 => 3,
+                            6 => 5,
+                            9 => 7,
+                            _ => null,
+                          },
+                        ),
+                      ),
+                    ),
+                  if (category != null)
+                    DropdownButton<int>(
+                      hint: const Text('Czas trwania'),
+                      value: f.maxMinutes,
+                      items: [
+                        for (final m in ({
+                          10,
+                          20,
+                          30,
+                          60,
+                          if (f.maxMinutes != null) f.maxMinutes!,
+                        }.toList()..sort()))
+                          DropdownMenuItem(value: m, child: Text('Do $m min')),
+                      ],
+                      onChanged: (v) => _set(f.copyWith(maxMinutes: () => v)),
+                    ),
+                  if (f.maxMinutes != null)
+                    ActionChip(
+                      label: const Text('Dowolny czas'),
+                      onPressed: () => _set(f.copyWith(maxMinutes: () => null)),
                     ),
                 ],
               ),
-              // One row always visible; the rest waits behind "Filtry" and shows as chips when used.
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-                child: Wrap(
-                  spacing: AkSpace.s,
-                  runSpacing: AkSpace.xs,
-                  crossAxisAlignment: WrapCrossAlignment.center,
+              if (_series && category == null) ...[
+                const RefSection('Serie audiozabaw'),
+                for (final pack in catalog.packs)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(pack.title),
+                    subtitle: Text(pack.description),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () {
+                      setState(() => _series = false);
+                      _set(f.copyWith(packId: () => pack.id));
+                    },
+                  ),
+              ] else if (category == null && f.kind == null && f.packId == null && !search) ...[
+                const RefSection('Kategorie'),
+                TwoColumns(
                   children: [
-                    OutlinedButton.icon(
-                      onPressed: () => _showFilters(context, catalog, filter, (next) => _set(context, next)),
-                      style: OutlinedButton.styleFrom(minimumSize: const Size(0, 40)),
-                      icon: const Icon(Icons.tune_rounded, size: 20),
-                      label: Text(l10n.filtersButton(filter.extraCount)),
-                    ),
-                    if (filter.packId case final id?)
-                      InputChip(
-                        label: Text(catalog.pack(id)?.title ?? id),
-                        onDeleted: () => _set(context, filter.copyWith(packId: () => null)),
-                      ),
-                    if (filter.age case final age?)
-                      InputChip(
-                        label: Text(l10n.ageFrom(age)),
-                        onDeleted: () => _set(context, filter.copyWith(age: () => null)),
-                      ),
-                    if (filter.situation case final situation?)
-                      InputChip(
-                        avatar: Icon(situationIcon(situation), size: 18),
-                        label: Text(l10n.situation(situation)),
-                        onDeleted: () => _set(context, filter.copyWith(situation: () => null)),
+                    for (final c in PlayCategory.values)
+                      CategoryTile(
+                        category: c,
+                        onTap: () => _set(f.copyWith(category: () => c)),
                       ),
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.m, 0),
-                child: Semantics(
-                  liveRegion: true,
-                  child: Text(
-                    l10n.resultsCount(items.length),
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(color: context.palette.inkMuted),
-                  ),
+                RefSection(
+                  'Wszystkie zabawy',
+                  action: 'Przeglądaj',
+                  onTap: () => setState(() => _searching = true),
                 ),
-              ),
+                for (final item in items.take(3)) AudioRow(item: item),
+              ] else ...[
+                RefSection('${items.length} propozycji'),
+                if (items.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24),
+                    child: Text('Nie znaleźliśmy takiej zabawy. Zmień wiek, czas lub wpisany tytuł.'),
+                  ),
+                for (final item in items) AudioRow(item: item),
+              ],
             ],
-          ),
-        ),
-        if (items.isEmpty)
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AkSpace.l),
-                child: Text(l10n.libraryEmpty, textAlign: TextAlign.center),
-              ),
-            ),
-          )
-        else
-          SliverList.builder(
-            itemCount: items.length,
-            itemBuilder: (context, i) => ItemTile(item: items[i], catalog: catalog),
-          ),
-        SliverToBoxAdapter(child: SizedBox(height: AkSpace.xl + MediaQuery.paddingOf(context).bottom)),
-      ],
-    );
-  }
-}
-
-class _ChipRow extends StatelessWidget {
-  const _ChipRow({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      container: true,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.xs, AkSpace.m, AkSpace.xs),
-        child: Row(
-          children: [
-            for (final (i, c) in children.indexed) ...[if (i > 0) const SizedBox(width: AkSpace.s), c],
-          ],
-        ),
+          );
+        },
       ),
     );
   }
-}
-
-/// Pack, age and situation in one sheet; every change applies at once.
-Future<void> _showFilters(
-  BuildContext context,
-  Catalog catalog,
-  LibraryFilter initial,
-  ValueChanged<LibraryFilter> apply,
-) {
-  final l10n = AppLocalizations.of(context);
-  final ages = {for (final p in catalog.packs) p.ageMin}.toList()..sort();
-  var filter = initial;
-  return showModalBottomSheet<void>(
-    context: context,
-    // Above the tab bar, not inside the tab.
-    useRootNavigator: true,
-    showDragHandle: true,
-    isScrollControlled: true,
-    builder: (context) => StatefulBuilder(
-      builder: (context, setSheet) {
-        void set(LibraryFilter next) {
-          setSheet(() => filter = next);
-          apply(next);
-        }
-
-        Widget group(String title, List<Widget> chips) => Padding(
-          padding: const EdgeInsets.only(bottom: AkSpace.m),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: AkSpace.xs),
-              Wrap(spacing: AkSpace.s, runSpacing: AkSpace.s, children: chips),
-            ],
-          ),
-        );
-
-        return SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.l),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                group(l10n.filterAge, [
-                  for (final a in ages)
-                    FilterChip(
-                      label: Text(l10n.ageFrom(a)),
-                      selected: filter.age == a,
-                      labelStyle: selectableChipLabel(context, selected: filter.age == a),
-                      onSelected: (on) => set(filter.copyWith(age: () => on ? a : null)),
-                    ),
-                ]),
-                group(l10n.filterSituation, [
-                  for (final s in Situation.values)
-                    FilterChip(
-                      avatar: Icon(situationIcon(s), size: 18),
-                      label: Text(l10n.situation(s)),
-                      selected: filter.situation == s,
-                      labelStyle: selectableChipLabel(context, selected: filter.situation == s),
-                      onSelected: (on) => set(filter.copyWith(situation: () => on ? s : null)),
-                    ),
-                ]),
-                group(l10n.filterPack, [
-                  for (final p in catalog.packs)
-                    FilterChip(
-                      label: Text(p.title),
-                      selected: filter.packId == p.id,
-                      labelStyle: selectableChipLabel(context, selected: filter.packId == p.id),
-                      onSelected: (on) => set(filter.copyWith(packId: () => on ? p.id : null)),
-                    ),
-                ]),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(onPressed: () => Navigator.pop(context), child: Text(l10n.filtersDone)),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    ),
-  );
 }

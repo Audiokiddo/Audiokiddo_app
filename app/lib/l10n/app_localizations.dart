@@ -1444,7 +1444,7 @@ abstract class AppLocalizations {
   /// No description provided for @introVolumeBody.
   ///
   /// In pl, this message translates to:
-  /// **'Żeby dobrze słyszeć Lorda.'**
+  /// **'Żeby dobrze słyszeć Szop’ena.'**
   String get introVolumeBody;
 
   /// No description provided for @introPasswordTitle.
@@ -1492,7 +1492,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeKiddo.
   ///
   /// In pl, this message translates to:
-  /// **'Lord Von Ekran. Dotknij, a coś powie.'**
+  /// **'Szop’en von Ekran. Dotknij, a coś powie.'**
   String get homeKiddo;
 
   /// No description provided for @homeNew.
@@ -1540,7 +1540,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizHello.
   ///
   /// In pl, this message translates to:
-  /// **'Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Lord nie kłamie.'**
+  /// **'Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Szop’en nie kłamie.'**
   String get quizHello;
 
   /// No description provided for @quizHelloPoint1.
@@ -1732,7 +1732,7 @@ abstract class AppLocalizations {
   /// No description provided for @reminder1Title.
   ///
   /// In pl, this message translates to:
-  /// **'Lord czeka'**
+  /// **'Szop’en czeka'**
   String get reminder1Title;
 
   /// No description provided for @reminder1Body.
@@ -1768,13 +1768,13 @@ abstract class AppLocalizations {
   /// No description provided for @reminder4Title.
   ///
   /// In pl, this message translates to:
-  /// **'Lord melduje'**
+  /// **'Szop’en melduje'**
   String get reminder4Title;
 
   /// No description provided for @reminder4Body.
   ///
   /// In pl, this message translates to:
-  /// **'Dziecko zadało dziś już 347 pytań? Oddaj kilka Lordowi. On to lubi. Serio.'**
+  /// **'Dziecko zadało dziś już 347 pytań? Oddaj kilka Szop’enowi. On to lubi. Serio.'**
   String get reminder4Body;
 
   /// No description provided for @reminder5Title.
@@ -1804,13 +1804,13 @@ abstract class AppLocalizations {
   /// No description provided for @reminder7Title.
   ///
   /// In pl, this message translates to:
-  /// **'Lord nie śpi'**
+  /// **'Szop’en nie śpi'**
   String get reminder7Title;
 
   /// No description provided for @reminder7Body.
   ///
   /// In pl, this message translates to:
-  /// **'Lord nie śpi. Lord czeka. Lord trochę tęskni. Dzisiejsza porcja to kilka minut.'**
+  /// **'Szop’en nie śpi. Szop’en czeka. Szop’en trochę tęskni. Dzisiejsza porcja to kilka minut.'**
   String get reminder7Body;
 
   /// No description provided for @remindersAsk.
@@ -1906,7 +1906,7 @@ abstract class AppLocalizations {
   /// No description provided for @planEmptyBody.
   ///
   /// In pl, this message translates to:
-  /// **'Odpowiedz na kilka pytań (minuta), a Lord rozłoży zabawy na dni: po trochu, bez przytłaczania.'**
+  /// **'Odpowiedz na kilka pytań (minuta), a Szop’en rozłoży zabawy na dni: po trochu, bez przytłaczania.'**
   String get planEmptyBody;
 
   /// No description provided for @planEmptyButton.
@@ -2308,7 +2308,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayNoPlan.
   ///
   /// In pl, this message translates to:
-  /// **'Odpowiedz na kilka pytań, a Lord ułoży zabawy na każdy dzień.'**
+  /// **'Odpowiedz na kilka pytań, a Szop’en ułoży zabawy na każdy dzień.'**
   String get todayNoPlan;
 
   /// No description provided for @todayDone.
@@ -2428,7 +2428,7 @@ abstract class AppLocalizations {
   /// No description provided for @tripBody.
   ///
   /// In pl, this message translates to:
-  /// **'Powiedz, ile jedziecie. Lord ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.'**
+  /// **'Powiedz, ile jedziecie. Szop’en ułoży zabawy i piosenki na całą trasę, z przerwami na wyglądanie przez okno. Telefon możesz schować.'**
   String get tripBody;
 
   /// No description provided for @tripHowLong.
@@ -2452,7 +2452,7 @@ abstract class AppLocalizations {
   /// No description provided for @tripBreaks.
   ///
   /// In pl, this message translates to:
-  /// **'Co kwadrans Lord zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.'**
+  /// **'Co kwadrans Szop’en zrobi przerwę: „Co widzisz za oknem?”. Zabaw z odpowiadaniem nie ma, żeby nikt nie sięgał po telefon w czasie jazdy.'**
   String get tripBreaks;
 
   /// No description provided for @tripMore.
@@ -2494,7 +2494,7 @@ abstract class AppLocalizations {
   /// No description provided for @bedtimeBreaths.
   ///
   /// In pl, this message translates to:
-  /// **'Trzy spokojne oddechy z Lordem'**
+  /// **'Trzy spokojne oddechy z Szop’enem'**
   String get bedtimeBreaths;
 
   /// No description provided for @bedtimeQuiet.
@@ -2518,7 +2518,7 @@ abstract class AppLocalizations {
   /// No description provided for @bedtimeKiddoGoodnight.
   ///
   /// In pl, this message translates to:
-  /// **'„Dobranoc” od Lorda'**
+  /// **'„Dobranoc” od Szop’ena'**
   String get bedtimeKiddoGoodnight;
 
   /// No description provided for @bedtimeRecordHint.
@@ -2554,7 +2554,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionKiddo.
   ///
   /// In pl, this message translates to:
-  /// **'Lord mówi'**
+  /// **'Szop’en mówi'**
   String get sessionKiddo;
 
   /// No description provided for @sessionParent.
@@ -2614,7 +2614,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceBody.
   ///
   /// In pl, this message translates to:
-  /// **'Nagraj trzy krótkie wiadomości dla: {name}. Lord wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.'**
+  /// **'Nagraj trzy krótkie wiadomości dla: {name}. Szop’en wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.'**
   String voiceBody(String name);
 
   /// No description provided for @voiceHello.
@@ -2626,7 +2626,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceHelloHint.
   ///
   /// In pl, this message translates to:
-  /// **'Na przykład: „Cześć, {name}! Lord już czeka. Baw się dobrze!”'**
+  /// **'Na przykład: „Cześć, {name}! Szop’en już czeka. Baw się dobrze!”'**
   String voiceHelloHint(String name);
 
   /// No description provided for @voicePraise.
@@ -2716,7 +2716,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingAnswerBody.
   ///
   /// In pl, this message translates to:
-  /// **'Klaśnięciem albo głosem. Lord słucha i prowadzi zabawę dalej.'**
+  /// **'Klaśnięciem albo głosem. Szop’en słucha i prowadzi zabawę dalej.'**
   String get onboardingAnswerBody;
 
   /// No description provided for @onboardingModesTitle.
@@ -2746,13 +2746,13 @@ abstract class AppLocalizations {
   /// No description provided for @gameHintWaiting.
   ///
   /// In pl, this message translates to:
-  /// **'Odpowiedz na głos. Za chwilę Lord powie, jak było.'**
+  /// **'Odpowiedz na głos. Za chwilę Szop’en powie, jak było.'**
   String get gameHintWaiting;
 
   /// No description provided for @gameHintListening.
   ///
   /// In pl, this message translates to:
-  /// **'Lord słucha. Klaśnij albo odpowiedz głośno.'**
+  /// **'Szop’en słucha. Klaśnij albo odpowiedz głośno.'**
   String get gameHintListening;
 
   /// No description provided for @gameHintTap.
@@ -2830,7 +2830,7 @@ abstract class AppLocalizations {
   /// No description provided for @weekCardAskGeneric.
   ///
   /// In pl, this message translates to:
-  /// **'Zapytajcie, w co grało z Lordem. Opowie Wam wszystko!'**
+  /// **'Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko!'**
   String get weekCardAskGeneric;
 
   /// No description provided for @weekCardShareText.
@@ -2980,7 +2980,7 @@ abstract class AppLocalizations {
   /// No description provided for @stepPlayHint.
   ///
   /// In pl, this message translates to:
-  /// **'Lord podpowie, co pasuje teraz'**
+  /// **'Szop’en podpowie, co pasuje teraz'**
   String get stepPlayHint;
 
   /// No description provided for @stepDownload.
@@ -3004,7 +3004,7 @@ abstract class AppLocalizations {
   /// No description provided for @stepVoiceHint.
   ///
   /// In pl, this message translates to:
-  /// **'Lord wplecie Twój głos w zabawę'**
+  /// **'Szop’en wplecie Twój głos w zabawę'**
   String get stepVoiceHint;
 
   /// No description provided for @stepReminders.
@@ -3106,7 +3106,7 @@ abstract class AppLocalizations {
   /// No description provided for @pickResult.
   ///
   /// In pl, this message translates to:
-  /// **'LORD PROPONUJE'**
+  /// **'SZOP’EN PROPONUJE'**
   String get pickResult;
 
   /// No description provided for @pickStart.

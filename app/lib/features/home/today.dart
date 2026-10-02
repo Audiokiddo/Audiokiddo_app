@@ -31,9 +31,9 @@ class TodayHero extends ConsumerWidget {
   const TodayHero({super.key});
 
   static const _gradients = {
-    DayPart.morning: [Color(0xFFFFD27A), Color(0xFFFF9A6B)],
-    DayPart.midday: [Color(0xFF7FD3D6), Color(0xFFFFD27A)],
-    DayPart.afternoon: [Color(0xFFFFB38A), Color(0xFFC9A6E0)],
+    DayPart.morning: [Color(0xFFBCE8E3), Color(0xFF8CD5D5)],
+    DayPart.midday: [Color(0xFFBCE8E3), Color(0xFF8CD5D5)],
+    DayPart.afternoon: [Color(0xFFE1D2F2), Color(0xFFCAB5E5)],
     DayPart.evening: [Color(0xFF3B2E5A), Color(0xFF1E2A4A)],
   };
 
@@ -199,13 +199,13 @@ class _PokeKiddoState extends ConsumerState<_PokeKiddo> {
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
-    label: 'Lord Von Ekran. Poznaj mnie.',
+    label: 'Szop’en von Ekran. Poznaj mnie.',
     child: GestureDetector(
       onTap: () => showGoldenHello(context),
       child: Kiddo(
         size: 104,
         mood: widget.mood,
-        // The parent's Start: Lord in his officer's coat.
+        // The parent's Start: Szop’en in his officer's coat.
         outfit: GoldenOutfit.official,
         cheeky: true,
         wave: widget.mood == KiddoMood.happy,

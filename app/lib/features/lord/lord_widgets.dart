@@ -10,12 +10,7 @@ import '../catalog/catalog_providers.dart';
 import 'lord_lines.dart';
 
 /// Typewriter, as on the case files of the Home Affairs Office.
-const _typewriter = TextStyle(
-  fontFamily: 'Courier',
-  fontFamilyFallback: ['Courier New', 'monospace'],
-  fontWeight: FontWeight.w600,
-  height: 1.3,
-);
+const _typewriter = TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600, height: 1.3);
 
 /// Where each pool continues, so a line is not repeated at every visit (stored on the phone).
 /// A plain object, not reactive state: picking a line never rebuilds anything.
@@ -67,13 +62,13 @@ final launchNoteProvider = Provider<String>((ref) {
 /// Case number for today's note: stable for the day, looks like a register entry.
 int caseNumber(DateTime day) => 100 + (day.difference(DateTime(day.year)).inDays * 7) % 900;
 
-/// Lord Von Ekran's note on Start: paper, typewriter, a red case number. Tap to meet him.
+/// Szop’en von Ekran's note on Start: paper, typewriter, a red case number. Tap to meet him.
 class LordNote extends ConsumerWidget {
   const LordNote({super.key, this.onTap});
 
   final VoidCallback? onTap;
 
-  static const paper = Color(0xFFE8DCC0);
+  static const paper = Color(0xFFFFE5A0);
   static const ink = Color(0xFF16130F);
   static const stamp = Color(0xFFC2271D);
 
@@ -84,14 +79,14 @@ class LordNote extends ConsumerWidget {
     final time = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
     return Semantics(
       button: onTap != null,
-      label: 'Lord Von Ekran: $line',
+      label: 'Szop’en von Ekran: $line',
       excludeSemantics: true,
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           padding: const EdgeInsets.fromLTRB(12, 10, 14, 12),
-          decoration: BoxDecoration(color: paper, borderRadius: BorderRadius.circular(6)),
+          decoration: BoxDecoration(color: paper, borderRadius: BorderRadius.circular(24)),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -105,7 +100,7 @@ class LordNote extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'LORD VON EKRAN · $time',
+                            'SZOP’EN · $time',
                             style: _typewriter.copyWith(
                               fontSize: 11,
                               color: ink.withValues(alpha: 0.6),
@@ -119,7 +114,7 @@ class LordNote extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                             decoration: BoxDecoration(border: Border.all(color: stamp, width: 1.5)),
                             child: Text(
-                              'AKTA #${caseNumber(now)}',
+                              'ZMIANA #${caseNumber(now)}',
                               style: _typewriter.copyWith(fontSize: 10, color: stamp, letterSpacing: 1),
                             ),
                           ),
@@ -139,7 +134,7 @@ class LordNote extends ConsumerWidget {
   }
 }
 
-/// A line for the parent while Lord is busy with the child: same dog, officer's coat, on the
+/// A line for the parent while Szop’en is busy with the child: same dog, officer's coat, on the
 /// screen only. Changes with [pool], at most every 30 seconds (no joke rain).
 class ParentAside extends ConsumerStatefulWidget {
   const ParentAside({super.key, required this.pool, this.dark = false});

@@ -47,7 +47,7 @@ void main() {
   testWidgets('library', (tester) async {
     final handle = tester.ensureSemantics();
     await pump(tester);
-    await tester.tap(find.byIcon(Icons.library_music_rounded));
+    await tester.tap(find.byIcon(Icons.library_music_outlined));
     await tester.pumpAndSettle();
     await expectAccessible(tester);
     handle.dispose();
@@ -56,8 +56,18 @@ void main() {
   testWidgets('details', (tester) async {
     final handle = tester.ensureSemantics();
     await pump(tester);
-    await tester.tap(find.byIcon(Icons.library_music_rounded));
+    await tester.tap(find.byIcon(Icons.library_music_outlined));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Audiozabawy'));
+    await tester.tap(find.text('Audiozabawy'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Magiczny sklep'),
+      150,
+      scrollable: find
+          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+          .first,
+    );
     await tester.tap(find.text('Magiczny sklep'));
     await tester.pumpAndSettle();
     await expectAccessible(tester);
@@ -87,8 +97,18 @@ void main() {
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       await pump(tester);
       await expectAccessible(tester);
-      await tester.tap(find.byIcon(Icons.library_music_rounded));
+      await tester.tap(find.byIcon(Icons.library_music_outlined));
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Audiozabawy'));
+      await tester.tap(find.text('Audiozabawy'));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Magiczny sklep'),
+        150,
+        scrollable: find
+            .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+            .first,
+      );
       await tester.tap(find.text('Magiczny sklep'));
       await tester.pumpAndSettle();
       await expectAccessible(tester);

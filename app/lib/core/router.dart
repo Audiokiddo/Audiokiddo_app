@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,15 +17,16 @@ import '../features/kids_mode/kids_home_screen.dart';
 import '../features/kids_mode/kids_mode_controller.dart';
 import '../features/onboarding/onboarding_controller.dart';
 import '../features/onboarding/onboarding_screen.dart';
-import '../features/personal/mine_screen.dart';
+import '../features/discovery/parent_screens.dart';
+import '../features/discovery/rescue_screen.dart';
+import '../features/discovery/routines_screen.dart';
+import '../features/discovery/queue_screen.dart';
 import '../features/player/mini_player.dart';
 import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
 import '../features/reminders/reminder_offer.dart';
 import '../features/session/session_screens.dart';
-
-import '../l10n/app_localizations.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
 /// until a parent passes the gate (ARCHITECTURE §12).
@@ -62,9 +61,6 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
           routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
         ),
         StatefulShellBranch(
-          routes: [GoRoute(path: '/plan', builder: (context, state) => const PlanScreen())],
-        ),
-        StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/biblioteka',
@@ -74,10 +70,20 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
           ],
         ),
         StatefulShellBranch(
-          routes: [GoRoute(path: '/moje', builder: (context, state) => const MineScreen())],
+          routes: [GoRoute(path: '/ulubione', builder: (context, state) => const CollectionScreen())],
+        ),
+        StatefulShellBranch(
+          routes: [GoRoute(path: '/moje', builder: (context, state) => const MoreScreen())],
         ),
       ],
     ),
+    GoRoute(path: '/ratunku', builder: (context, state) => const RescueScreen()),
+    GoRoute(path: '/rutyny', builder: (context, state) => const RoutinesScreen()),
+    GoRoute(path: '/kolejka', builder: (context, state) => const QueueScreen()),
+    GoRoute(path: '/profil', builder: (context, state) => const ProfileScreen()),
+    GoRoute(path: '/pobrane', builder: (context, state) => const DownloadsScreen()),
+    GoRoute(path: '/historia', builder: (context, state) => const CollectionScreen(history: true)),
+    GoRoute(path: '/plan', builder: (context, state) => const PlanScreen()),
     GoRoute(path: '/moje/narzedzia', builder: (context, state) => const DevToolsScreen()),
     GoRoute(path: '/plan/postep', builder: (context, state) => const ProgressScreen()),
     GoRoute(
@@ -111,36 +117,38 @@ class _ParentShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
     final child = ref.watch(familyProvider).value?.active;
     final todayDone = child == null ? null : ref.watch(planPositionProvider(child.id))?.todayDone;
     return Scaffold(
-      // Content scrolls under a frosted bar, as in Apple's apps.
-      extendBody: true,
       body: RemindersKeeper(todayDone: todayDone, child: shell),
-      bottomNavigationBar: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const MiniPlayer(),
-              NavigationBar(
-                selectedIndex: shell.currentIndex,
-                onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
-                destinations: [
-                  NavigationDestination(icon: const Icon(Icons.home_rounded), label: l10n.navHome),
-                  NavigationDestination(icon: const Icon(Icons.queue_music_rounded), label: l10n.navPlan),
-                  NavigationDestination(
-                    icon: const Icon(Icons.library_music_rounded),
-                    label: l10n.navLibrary,
-                  ),
-                  NavigationDestination(icon: const Icon(Icons.favorite_rounded), label: l10n.navMine),
-                ],
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const MiniPlayer(),
+          NavigationBar(
+            height: 64,
+            selectedIndex: shell.currentIndex,
+            onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home_rounded),
+                label: 'Start',
               ),
+              NavigationDestination(
+                icon: Icon(Icons.library_music_outlined),
+                selectedIcon: Icon(Icons.library_music_rounded),
+                label: 'Biblioteka',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.favorite_border_rounded),
+                selectedIcon: Icon(Icons.favorite_rounded),
+                label: 'Ulubione',
+              ),
+              NavigationDestination(icon: Icon(Icons.menu_rounded), label: 'Więcej'),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

@@ -53,7 +53,7 @@ void main() {
     expect(second, isNot(first));
   });
 
-  testWidgets('Start note and parent aside render with Lord in his coat', (tester) async {
+  testWidgets('Start note and parent aside render with Szop’en in his coat', (tester) async {
     final db = memoryDatabase();
     addTearDown(db.close);
     await tester.pumpWidget(
@@ -71,8 +71,8 @@ void main() {
         ),
       ),
     );
-    expect(find.textContaining('LORD VON EKRAN'), findsOneWidget);
-    expect(find.textContaining('AKTA #'), findsOneWidget);
+    expect(find.textContaining('SZOP’EN'), findsOneWidget);
+    expect(find.textContaining('ZMIANA #'), findsOneWidget);
     expect(find.text('DLA RODZICA'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

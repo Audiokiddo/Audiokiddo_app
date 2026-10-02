@@ -6,8 +6,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:audiokiddo/core/widgets/golden_painter.dart';
+import 'package:audiokiddo/core/widgets/raccoon_painter.dart';
 
-Future<void> export(String file, GoldenPainter painter, {int width = 600, int height = 690}) async {
+Future<void> export(String file, RaccoonPainter painter, {int width = 600, int height = 690}) async {
   final recorder = ui.PictureRecorder();
   painter.paint(Canvas(recorder), Size(width.toDouble(), height.toDouble()));
   final picture = recorder.endRecording();
@@ -25,7 +26,7 @@ void main() {
   test('export Golden artwork and motion frames', () async {
     for (final outfit in GoldenOutfit.values) {
       final name = 'golden_${outfit.name}';
-      final painter = GoldenPainter(
+      final painter = RaccoonPainter(
         outfit: outfit,
         cheeky: outfit == GoldenOutfit.official,
         mood: outfit == GoldenOutfit.pajamas ? KiddoMood.sleepy : KiddoMood.idle,
@@ -35,12 +36,18 @@ void main() {
       await File('ios/AudioKiddoWidget/Assets.xcassets/$name.imageset/Contents.json').writeAsString(
         '{"images":[{"filename":"$name.png","idiom":"universal"}],"info":{"author":"xcode","version":1}}',
       );
-      await export('../docs/golden/$name.png', painter);
+      await export('../docs/szop/wdrozenie/$name.png', painter);
     }
     for (var i = 0; i < 40; i++) {
       await export(
-        '../docs/golden/frames/golden_${i.toString().padLeft(3, '0')}.png',
-        GoldenPainter(outfit: GoldenOutfit.official, phase: i / 40, animated: true, wave: true, cheeky: true),
+        '../docs/szop/wdrozenie/frames/golden_${i.toString().padLeft(3, '0')}.png',
+        RaccoonPainter(
+          outfit: GoldenOutfit.official,
+          phase: i / 40,
+          animated: true,
+          wave: true,
+          cheeky: true,
+        ),
         width: 400,
         height: 460,
       );

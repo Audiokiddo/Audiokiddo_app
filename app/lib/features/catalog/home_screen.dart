@@ -1,315 +1,262 @@
+import 'dart:async';
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/doodles.dart';
 import '../../core/widgets/kiddo.dart';
-import '../../core/widgets/motion.dart';
-import '../../l10n/app_localizations.dart';
-import '../family/family.dart';
 import '../../core/widgets/golden_hello.dart';
-import '../home/first_steps.dart';
-import '../lord/lord_widgets.dart';
-import '../home/quick_pick.dart';
-import '../home/today.dart';
-import '../kids_mode/kids_mode_setup.dart';
+import '../../core/widgets/motion.dart';
+import '../family/family.dart' hide progressProvider;
+import '../personal/personal_repository.dart';
+import '../player/player_providers.dart';
+import '../discovery/discovery_model.dart';
+import '../discovery/reference_widgets.dart';
+import '../lord/lord_lines.dart';
 import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
-import 'widgets/item_views.dart';
 
-/// Start answers one question: what do we put on now? Today's portion, four ways to play,
-/// first steps for a new parent, a question for the dinner table. Browsing lives in the
-/// library.
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: CatalogLoader(builder: (context, catalog) => _HomeContent(catalog: catalog)),
-      ),
-    );
-  }
-}
-
-class _HomeContent extends StatelessWidget {
-  const _HomeContent({required this.catalog});
-
-  final Catalog catalog;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final news = [
-      for (final s in catalog.shelves.where((s) => s.id == 'nowosci'))
-        for (final id in s.itemIds) ?catalog.item(id),
-    ];
-
-    return ListView(
-      // The frosted tab bar floats over the list: leave room under the last card.
-      padding: EdgeInsets.only(bottom: AkSpace.xl + MediaQuery.paddingOf(context).bottom),
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.l, AkSpace.m, AkSpace.m),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(l10n.homeGreeting, style: Theme.of(context).textTheme.displaySmall),
-              const SizedBox(height: AkSpace.xs),
-              const _ScreenFreeLine(),
-            ],
-          ),
-        ),
-        LordNote(onTap: () => showGoldenHello(context)),
-        const TodayHero(),
-        const _Modes(),
-        const FirstStepsCard(),
-        const TalkCard(),
-        if (news.isNotEmpty) ScrollReveal(child: _NewsBanner(item: news.first)),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, 0),
-          child: OutlinedButton.icon(
-            onPressed: () => context.go('/biblioteka'),
-            icon: const Icon(Icons.grid_view_rounded),
-            label: Text(l10n.homeAllActivities(catalog.items.length)),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Minutes of play instead of a screen in the last seven days, all children together.
 final screenFreeMinutesProvider = Provider<int>((ref) {
   final family = ref.watch(familyProvider).value;
-  if (family == null) return 0;
   final since = ref.watch(clockProvider)().subtract(const Duration(days: 7));
-  var seconds = 0;
-  for (final child in family.children) {
-    for (final r in family.resultsOf(child.id)) {
-      if (r.at.isAfter(since)) seconds += r.seconds;
-    }
-  }
-  // Rounded up: the first short activity already counts.
-  return (seconds + 59) ~/ 60;
+  return ((family?.results.where((r) => r.at.isAfter(since)).fold<int>(0, (s, r) => s + r.seconds) ?? 0) +
+          59) ~/
+      60;
 });
 
-/// "84 min without a screen this week (like 4 cartoon episodes)", or the plain promise.
-class _ScreenFreeLine extends ConsumerWidget {
-  const _ScreenFreeLine();
-
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final minutes = ref.watch(screenFreeMinutesProvider);
-    final style = Theme.of(context).textTheme.bodyLarge?.copyWith(color: context.palette.inkMuted);
-    if (minutes == 0) return Text(l10n.homeSubtitle, style: style);
-    // A cartoon episode is about 20 minutes: the comparison parents count in.
-    final episodes = minutes ~/ 20;
-    return Row(
-      children: [
-        const Icon(Icons.visibility_off_rounded, size: 20, color: AkBrand.teal),
-        const SizedBox(width: AkSpace.s),
-        Expanded(
-          child: Text(
-            episodes > 0 ? l10n.screenFreeEpisodes(minutes, episodes) : l10n.screenFree(minutes),
-            style: style?.copyWith(color: context.palette.ink, fontWeight: FontWeight.w600),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Four big ways to play, the one that fits this part of the day first.
-class _Modes extends ConsumerWidget {
-  const _Modes();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final part = dayPartOf(ref.watch(clockProvider)());
-    final quick = _Mode(
-      Icons.timer_rounded,
-      l10n.modeQuick,
-      l10n.modeQuickHint,
-      AkBrand.teal,
-      () => showQuickPick(context),
-    );
-    final trip = _Mode(
-      Icons.directions_car_rounded,
-      l10n.modeTrip,
-      l10n.modeTripHint,
-      AkBrand.terracotta,
-      () => context.push('/podroz'),
-    );
-    final bed = _Mode(
-      Icons.bedtime_rounded,
-      l10n.modeBedtime,
-      l10n.modeBedtimeHint,
-      const Color(0xFF3B2E5A),
-      () => context.push('/dobranoc'),
-    );
-    final kids = _Mode(
-      Icons.child_care_rounded,
-      l10n.modeKids,
-      l10n.modeKidsHint,
-      AkBrand.lavenderDeep,
-      () => showKidsModeSetup(context, ref),
-    );
-    final modes = switch (part) {
-      DayPart.evening => [bed, quick, kids, trip],
-      DayPart.afternoon => [trip, quick, kids, bed],
-      _ => [quick, trip, kids, bed],
-    };
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: AkSpace.xs, bottom: AkSpace.s),
-            child: Text(l10n.modesTitle, style: Theme.of(context).textTheme.titleLarge),
-          ),
-          for (var row = 0; row < 2; row++)
-            Padding(
-              padding: EdgeInsets.only(bottom: row == 0 ? AkSpace.s : 0),
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(child: modes[row * 2]),
-                    const SizedBox(width: AkSpace.s),
-                    Expanded(child: modes[row * 2 + 1]),
-                  ],
-                ),
+  Widget build(BuildContext context, WidgetRef ref) => Scaffold(
+    body: SafeArea(
+      child: CatalogLoader(
+        builder: (context, catalog) {
+          final recent = ref.watch(recentProvider).value ?? [];
+          final items = [for (final id in recent) ?catalog.item(id)];
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'AudioKiddo',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Szukaj zabawy',
+                    onPressed: () => context.go('/biblioteka?szukaj=1'),
+                    icon: const Icon(Icons.search_rounded),
+                  ),
+                  IconButton(
+                    tooltip: 'Profil dziecka',
+                    onPressed: () => context.push('/profil'),
+                    icon: const Icon(Icons.account_circle_outlined),
+                  ),
+                ],
               ),
-            ),
-        ],
+              const SizedBox(height: 18),
+              Text('Czego dziś\npotrzebujesz?', style: Theme.of(context).textTheme.headlineSmall),
+              const SizedBox(height: 18),
+              TwoColumns(
+                children: [
+                  _Need(
+                    'Mam\n20 minut',
+                    'Szybkie propozycje',
+                    Icons.schedule_rounded,
+                    AkBrand.sun,
+                    () => context.push('/ratunku'),
+                  ),
+                  _Need(
+                    'Podróżujemy',
+                    'Do auta, pociągu, samolotu',
+                    Icons.directions_car_rounded,
+                    referenceMint,
+                    () => context.push('/podroz'),
+                  ),
+                  _Need(
+                    'Trochę\nruchu',
+                    'Zabawy pełne energii',
+                    Icons.directions_run_rounded,
+                    referenceLilac,
+                    () => context.push('/biblioteka?kategoria=movement'),
+                  ),
+                  _Need(
+                    'Czas się\nwyciszyć',
+                    'Spokojne historie i dźwięki',
+                    Icons.bedtime_rounded,
+                    referencePurple,
+                    () => context.push('/dobranoc'),
+                  ),
+                ],
+              ),
+              RefSection(
+                'Kontynuuj słuchanie',
+                action: 'Zobacz wszystkie',
+                onTap: () => context.push('/historia'),
+              ),
+              if (items.isEmpty)
+                InkWell(
+                  onTap: () => context.go('/biblioteka'),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.headphones_rounded, color: AkBrand.tealDeep),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Pierwsza przygoda czeka w bibliotece.',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right_rounded),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
+              const _QuietSzopen(),
+              RefSection('Na co dzień', action: 'Wszystkie tryby', onTap: () => context.push('/rutyny')),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.restaurant_rounded, color: AkBrand.tealDeep),
+                title: const Text('Podczas obiadu'),
+                subtitle: const Text('Zabawy bez dodatkowych przygotowań'),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => context.push('/ratunku?tryb=obiad'),
+              ),
+            ],
+          );
+        },
       ),
-    );
+    ),
+  );
+  String _remaining(WidgetRef ref, ContentItem item) {
+    final p = ref.watch(progressProvider(item.id)).value;
+    if (p == null || p.completed) return '${(item.durationSec / 60).ceil()} min';
+    return '${((p.durationMs - p.positionMs).clamp(0, 1 << 40) / 60000).ceil()} min pozostało';
   }
 }
 
-class _Mode extends StatelessWidget {
-  const _Mode(this.icon, this.title, this.hint, this.color, this.onTap);
-
+class _Need extends StatelessWidget {
+  const _Need(this.title, this.hint, this.icon, this.color, this.onTap);
+  final String title, hint;
   final IconData icon;
-  final String title;
-  final String hint;
   final Color color;
   final VoidCallback onTap;
-
   @override
   Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    return Semantics(
-      button: true,
-      label: '$title. $hint',
-      excludeSemantics: true,
-      child: Pressable(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(AkSpace.m),
-          decoration: BoxDecoration(
-            color: context.palette.surface,
-            borderRadius: BorderRadius.circular(AkRadius.card),
-            boxShadow: akSoftShadow(context),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
-                child: Icon(icon, color: Colors.white),
-              ),
-              const SizedBox(height: AkSpace.s),
-              Text(title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-              Text(hint, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
-            ],
-          ),
+    final ink = color == referencePurple ? Colors.white : const Color(0xFF211C35);
+    return Pressable(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(20)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 32, color: ink),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(color: ink, fontWeight: FontWeight.w700, height: 1.15),
+            ),
+            const SizedBox(height: 6),
+            Text(hint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ink, height: 1.25)),
+          ],
         ),
       ),
     );
   }
 }
 
-/// Lavender "Nowość!" card like in picture-book apps: a sticker, the title, a hint.
-class _NewsBanner extends StatelessWidget {
-  const _NewsBanner({required this.item});
+class _QuietSzopen extends ConsumerStatefulWidget {
+  const _QuietSzopen();
+  @override
+  ConsumerState<_QuietSzopen> createState() => _QuietSzopenState();
+}
 
-  final ContentItem item;
+class _QuietSzopenState extends ConsumerState<_QuietSzopen> {
+  Timer? _timer;
+  Timer? _hide;
+  bool _visible = false;
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: 12), () async {
+      final s = await ref.read(discoveryProvider.future);
+      if (!mounted) return;
+      final day = ref.read(clockProvider)().toIso8601String().substring(0, 10);
+      if (s.quiet ||
+          s.cameoDay == day ||
+          ref.read(currentMediaProvider).value != null ||
+          !(ModalRoute.of(context)?.isCurrent ?? false) ||
+          !TickerMode.valuesOf(context).enabled) {
+        return;
+      }
+      await ref.read(discoveryProvider.notifier).shown(day);
+      if (!mounted) return;
+      setState(() => _visible = true);
+      _hide = Timer(const Duration(seconds: 10), () {
+        if (mounted) setState(() => _visible = false);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _hide?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final text = Theme.of(context).textTheme;
+    final quiet = ref.watch(discoveryProvider).value?.quiet ?? false;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.m, 0),
-      child: Semantics(
-        button: true,
-        label: '${l10n.homeNew}: ${item.title}',
-        excludeSemantics: true,
-        child: Material(
-          color: const Color(0xFFE9DDF5),
-          borderRadius: BorderRadius.circular(AkRadius.card),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: () => context.push(itemRoute(item)),
-            child: Stack(
-              children: [
-                const Positioned.fill(
-                  child: FloatingDoodles(count: 6, opacity: 0.12, color: AkBrand.lavenderDeep, seed: 11),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(AkSpace.m),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: AkBrand.orange,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                l10n.homeNew,
-                                style: text.labelLarge?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: AkSpace.s),
-                            Text(
-                              item.title,
-                              style: text.titleLarge?.copyWith(
-                                color: AkBrand.ink,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(l10n.homeNewHint, style: text.bodyMedium?.copyWith(color: AkBrand.ink)),
-                          ],
-                        ),
-                      ),
-                      const Kiddo(size: 76, mood: KiddoMood.listening),
-                    ],
+      padding: const EdgeInsets.only(top: 14),
+      child: Column(
+        children: [
+          if (_visible && !quiet && ref.watch(currentMediaProvider).value == null)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: referenceMint, borderRadius: BorderRadius.circular(18)),
+              child: Row(
+                children: [
+                  const Kiddo(size: 42, cheeky: true, outfit: GoldenOutfit.official),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      lordLine(LordPool.hello, ref.watch(clockProvider)().difference(DateTime(2026)).inDays),
+                    ),
                   ),
-                ),
-              ],
+                  IconButton(
+                    tooltip: 'Schowaj Szop’ena',
+                    onPressed: () => setState(() => _visible = false),
+                    icon: const Icon(Icons.close_rounded),
+                  ),
+                ],
+              ),
+            ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => showGoldenHello(context),
+              icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
+              label: const Text('Zawołaj Szop’ena'),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

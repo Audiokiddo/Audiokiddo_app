@@ -101,7 +101,7 @@ class GameScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              // Lord is gentle with the child; the parent gets his dry aside on the screen.
+              // Szop’en is gentle with the child; the parent gets his dry aside on the screen.
               ParentAside(
                 dark: true,
                 pool: switch (game.phase) {

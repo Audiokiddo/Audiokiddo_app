@@ -22,7 +22,7 @@ enum DayPart: CaseIterable {
     switch self {
     case .morning: return "Poranna rozgrzewka"
     case .midday: return "Czas na przygodę"
-    case .afternoon: return "W drogę z Lordem"
+    case .afternoon: return "W drogę z Szop’enem"
     case .evening: return "Czas się wyciszyć"
     }
   }
@@ -73,7 +73,7 @@ enum DayPart: CaseIterable {
 
   var mascot: String {
     switch self {
-    // Lord Von Ekran in his officer's coat for the parent; in pajamas at night.
+    // Szop’en von Ekran in his officer's coat for the parent; in pajamas at night.
     case .morning, .midday, .afternoon: return "golden_official"
     case .evening: return "golden_pajamas"
     }
@@ -113,7 +113,7 @@ struct ChildWeek {
   }
 }
 
-/// Lord's line for the parent in each part of the day, written by the app every day
+/// Szop’en's line for the parent in each part of the day, written by the app every day
 /// (lib/features/home/home_widget_sync.dart); the built-in subtitle until the app has run.
 enum LordJoke {
   static func load(_ part: DayPart) -> String? {
@@ -193,7 +193,7 @@ struct PartView: View {
         HStack {
           if family == .systemSmall {
             Image(part.mascot).resizable().scaledToFit().frame(width: 38, height: 42)
-              .accessibilityLabel("Lord Von Ekran")
+              .accessibilityLabel("Szop’en von Ekran")
           }
           if let week = entry.week {
             NotesRow(notes: week.notes, color: part.foreground)
@@ -203,7 +203,7 @@ struct PartView: View {
         }
         Spacer(minLength: 0)
         if family == .systemSmall {
-          // Small widget: Lord's line is the headline.
+          // Small widget: Szop’en's line is the headline.
           Text(entry.joke)
             .font(.system(size: 13, weight: .semibold)).italic()
             .minimumScaleFactor(0.8).lineLimit(3)
@@ -222,7 +222,7 @@ struct PartView: View {
       }
       if family != .systemSmall {
         Image(part.mascot).resizable().scaledToFit().frame(width: 88)
-          .accessibilityLabel("Lord Von Ekran")
+          .accessibilityLabel("Szop’en von Ekran")
       }
     }
     .foregroundColor(part.foreground)
@@ -243,7 +243,7 @@ struct AudioKiddoWidget: Widget {
     StaticConfiguration(kind: "AudioKiddoWidget", provider: PartProvider()) { entry in
       PartView(entry: entry)
     }
-    .configurationDisplayName("Lord na dziś")
+    .configurationDisplayName("Szop’en na dziś")
     .description("Zabawa na tę porę dnia: rano rozgrzewka, po południu droga, wieczorem kołysanka.")
     .supportedFamilies([.systemSmall, .systemMedium])
   }

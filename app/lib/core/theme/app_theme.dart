@@ -113,9 +113,9 @@ ThemeData buildTheme(Brightness brightness) {
     ),
     navigationBarTheme: NavigationBarThemeData(
       // Translucent: the shell blurs what scrolls underneath (Apple's frosted bar).
-      backgroundColor: p.surface.withValues(alpha: 0.78),
+      backgroundColor: p.background,
       elevation: 0,
-      indicatorColor: p.primary.withValues(alpha: 0.14),
+      indicatorColor: Colors.transparent,
       iconTheme: WidgetStateProperty.resolveWith(
         (states) => IconThemeData(color: states.contains(WidgetState.selected) ? p.primary : p.inkMuted),
       ),

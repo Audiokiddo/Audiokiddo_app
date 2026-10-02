@@ -1,16 +1,16 @@
 import 'package:audiokiddo/core/widgets/ambient_motion.dart';
 import 'package:audiokiddo/core/widgets/golden_hello.dart';
-import 'package:audiokiddo/core/widgets/golden_painter.dart';
+import 'package:audiokiddo/core/widgets/raccoon_painter.dart';
 import 'package:audiokiddo/core/widgets/kiddo.dart';
 import 'package:audiokiddo/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-GoldenPainter painter(WidgetTester t) => t
+RaccoonPainter painter(WidgetTester t) => t
     .widgetList<CustomPaint>(find.byType(CustomPaint))
     .map((w) => w.painter)
-    .whereType<GoldenPainter>()
+    .whereType<RaccoonPainter>()
     .single;
 
 void main() {
@@ -90,14 +90,18 @@ void main() {
     );
     await t.tap(find.text('Golden'));
     await t.pumpAndSettle();
-    expect(find.text('Lord Von Ekran'), findsOneWidget);
+    expect(find.text('Szop’en von Ekran'), findsOneWidget);
     await t.ensureVisible(find.text('Masz coś jeszcze?'));
     await t.tap(find.text('Masz coś jeszcze?'));
+    await t.pump();
+    expect(painter(t).mood, KiddoMood.happy);
+    await t.pump(const Duration(milliseconds: 1200));
+    expect(painter(t).mood, KiddoMood.idle);
     await t.pumpAndSettle();
     expect(t.takeException(), isNull);
     await t.ensureVisible(find.text('Wybieram zabawę'));
     await t.tap(find.text('Wybieram zabawę'));
     await t.pumpAndSettle();
-    expect(find.text('Lord Von Ekran'), findsNothing);
+    expect(find.text('Szop’en von Ekran'), findsNothing);
   });
 }

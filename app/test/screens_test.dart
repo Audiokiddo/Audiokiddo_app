@@ -41,12 +41,17 @@ Finder get mainScroll =>
     find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first;
 
 Future<void> openLibrary(WidgetTester tester) async {
-  await tester.tap(find.byIcon(Icons.library_music_rounded));
+  await tester.tap(find.byIcon(Icons.library_music_outlined));
   await tester.pumpAndSettle();
 }
 
 Future<void> openItem(WidgetTester tester, String title) async {
+  final router = GoRouter.of(tester.element(find.byType(Scaffold).first));
+  router.go('/biblioteka?typ=audio_game');
+  await tester.pumpAndSettle();
   await tester.scrollUntilVisible(find.text(title), 200, scrollable: mainScroll);
+  await Scrollable.ensureVisible(tester.element(find.text(title)), alignment: .5);
+  await tester.pumpAndSettle();
   await tester.tap(find.text(title));
   await tester.pumpAndSettle();
 }
@@ -69,35 +74,27 @@ Future<void> goBack(WidgetTester tester) async {
 void main() {
   testWidgets('home: today, four ways to play, first steps, all activities', (tester) async {
     await pumpApp(tester);
-    expect(find.text('Czas na zabawę!'), findsOneWidget);
-    expect(find.text('Co teraz?'), findsOneWidget);
-    for (final mode in ['Mam chwilę', 'W drogę', 'Dobranoc', 'Tryb dziecka']) {
-      expect(find.text(mode), findsOneWidget);
+    expect(find.text('Czego dziś\npotrzebujesz?'), findsOneWidget);
+    for (final label in ['Mam\n20 minut', 'Podróżujemy', 'Trochę\nruchu', 'Czas się\nwyciszyć']) {
+      expect(find.text(label), findsOneWidget);
     }
-    await tester.scrollUntilVisible(find.text('Pierwsze kroki'), 200, scrollable: mainScroll);
-    await tester.scrollUntilVisible(find.textContaining('Wszystkie zabawy'), 200, scrollable: mainScroll);
+    expect(find.text('Kontynuuj słuchanie'), findsOneWidget);
   });
-
-  testWidgets('"Mam chwilę" suggests one activity for where you are', (tester) async {
+  testWidgets('rescue flow has time, mood and material selection', (tester) async {
     await pumpApp(tester);
-    await tapOnStart(tester, 'Mam chwilę');
-    expect(find.text('Gdzie jesteście?'), findsOneWidget);
-    await tester.tap(find.text('W aucie'));
+    await tester.tap(find.text('Mam\n20 minut'));
     await tester.pumpAndSettle();
-    expect(find.text('LORD PROPONUJE'), findsOneWidget);
-    expect(find.text('Włącz'), findsOneWidget);
-    expect(find.text('Ułóż zabawy na całą trasę'), findsOneWidget);
+    expect(find.text('Ile masz czasu?'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Pokaż propozycje'), 200, scrollable: mainScroll);
+    await tester.tap(find.text('Pokaż propozycje'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mamy coś!'), findsOneWidget);
   });
-
-  testWidgets('pack shortcut opens the filtered library', (tester) async {
+  testWidgets('category shortcut opens the filtered library', (tester) async {
     await pumpApp(tester);
     await openLibrary(tester);
-    final packCard = find.text('10 zabaw · 3+').first;
-    await tester.ensureVisible(packCard);
+    await tester.tap(find.text('Przygody\ni wyobraźnia'));
     await tester.pumpAndSettle();
-    await tester.tap(packCard);
-    await tester.pumpAndSettle();
-    expect(find.text('10 pozycji'), findsOneWidget);
     expect(find.text('Magiczny sklep'), findsOneWidget);
   });
 
@@ -151,15 +148,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byTooltip('Usuń z ulubionych'), findsOneWidget);
     await goBack(tester);
-    await tester.tap(find.byIcon(Icons.favorite_rounded));
+    await tester.tap(find.byIcon(Icons.favorite_border_rounded));
     await tester.pumpAndSettle();
     expect(find.text('Magiczny sklep'), findsOneWidget);
-    expect(
-      find.text(
-        'Pobierz zabawy przed podróżą. Bez nich po 10 minutach jazdy padnie pytanie: „daleko jeszcze?”.',
-      ),
-      findsOneWidget,
-    );
   });
 
   testWidgets('playable item offers a download with its size', (tester) async {
@@ -203,7 +194,11 @@ void main() {
 
     testWidgets('kids mode: only playable games, no escape, exit through the gate', (tester) async {
       await pumpApp(tester);
-      await tapOnStart(tester, 'Tryb dziecka');
+      await tester.tap(find.byIcon(Icons.menu_rounded));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Tryb dziecka'));
+      await tester.tap(find.text('Tryb dziecka'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Włącz tryb dziecka'));
       await tester.pumpAndSettle();
 
@@ -233,7 +228,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('47'));
       await tester.pumpAndSettle();
-      expect(find.text('Czas na zabawę!'), findsOneWidget);
+      expect(find.text('Czego dziś\npotrzebujesz?'), findsOneWidget);
     });
   });
 }

@@ -41,17 +41,9 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    // Kiddo's magic way in: volume, hello, the magic word (touch the orb), access granted.
-    expect(find.text('Podgłośnij!'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 4));
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 2));
-    await tester.pumpAndSettle();
-    expect(find.text('ABRAKADABRA!'), findsOneWidget);
-    await tester.tap(find.bySemanticsLabel('Magiczna kula. Dotknij, aby wejść.'));
-    await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('Dostęp przyznany!'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 3));
+    expect(find.text('Więcej\nniż\nsłuchanie.'), findsOneWidget);
+    await tester.ensureVisible(find.text('Zaczynamy'));
+    await tester.tap(find.text('Zaczynamy'));
     await tester.pumpAndSettle();
     expect(find.text('Cześć! Tu AudioKiddo.'), findsOneWidget);
     await tester.tap(find.text('Dalej'));
@@ -109,8 +101,8 @@ void main() {
     expect(find.text('Włącz przypomnienia'), findsOneWidget);
     await tester.tap(find.text('Nie teraz'));
     await tester.pumpAndSettle();
-    expect(find.text('Czas na zabawę!'), findsOneWidget);
-    final container = ProviderScope.containerOf(tester.element(find.text('Czas na zabawę!')));
+    expect(find.text('Czego dziś\npotrzebujesz?'), findsOneWidget);
+    final container = ProviderScope.containerOf(tester.element(find.text('Czego dziś\npotrzebujesz?')));
     final family = container.read(familyProvider).value!;
     expect(
       [for (final c in family.children) (c.name, c.age, c.dailyMinutes)],

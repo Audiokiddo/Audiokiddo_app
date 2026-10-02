@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +19,7 @@ Future<void> showGoldenHello(BuildContext context) => showModalBottomSheet<void>
   builder: (_) => const _GoldenHello(),
 );
 
-/// Lord Von Ekran introduces himself to the parent: officer's coat, dry lines, no voice.
+/// Szop’en von Ekran introduces himself to the parent: officer's coat, dry lines, no voice.
 class _GoldenHello extends ConsumerStatefulWidget {
   const _GoldenHello();
   @override
@@ -26,6 +28,25 @@ class _GoldenHello extends ConsumerStatefulWidget {
 
 class _GoldenHelloState extends ConsumerState<_GoldenHello> {
   late String _line = ref.read(lordCursorProvider).next(LordPool.hello);
+  Timer? _reaction;
+  bool _amused = false;
+  void _nextLine() {
+    _reaction?.cancel();
+    setState(() {
+      _line = ref.read(lordCursorProvider).next(LordPool.hello);
+      _amused = true;
+    });
+    _reaction = Timer(const Duration(milliseconds: 1100), () {
+      if (mounted) setState(() => _amused = false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _reaction?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => SafeArea(
     child: SingleChildScrollView(
@@ -33,9 +54,15 @@ class _GoldenHelloState extends ConsumerState<_GoldenHello> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Kiddo(size: 160, cheeky: true, wave: true, outfit: GoldenOutfit.official),
+          Kiddo(
+            size: 160,
+            cheeky: true,
+            wave: _amused,
+            mood: _amused ? KiddoMood.happy : KiddoMood.idle,
+            outfit: GoldenOutfit.official,
+          ),
           Text(
-            'Lord Von Ekran',
+            'Szop’en von Ekran',
             style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
@@ -50,10 +77,7 @@ class _GoldenHelloState extends ConsumerState<_GoldenHello> {
             runSpacing: 8,
             alignment: WrapAlignment.center,
             children: [
-              OutlinedButton(
-                onPressed: () => setState(() => _line = ref.read(lordCursorProvider).next(LordPool.hello)),
-                child: const Text('Masz coś jeszcze?'),
-              ),
+              OutlinedButton(onPressed: _nextLine, child: const Text('Masz coś jeszcze?')),
               FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Wybieram zabawę')),
             ],
           ),

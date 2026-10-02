@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-/// Child-facing outfits follow the day ([day], [adventure], [pajamas]). [official] is Lord Von
+/// Child-facing outfits follow the day ([day], [adventure], [pajamas]). [official] is Szop’en Von
 /// Ekran for the parent: officer of the Home Affairs Office (trench coat, tie, hat, monocle).
 enum GoldenOutfit { day, adventure, pajamas, official }
 
@@ -575,7 +575,7 @@ class GoldenPainter extends CustomPainter {
     canvas.restore();
   }
 
-  /// Hat and monocle of Lord Von Ekran, drawn in the head's frame so they tilt with it.
+  /// Hat and monocle of Szop’en von Ekran, drawn in the head's frame so they tilt with it.
   void _officialHead(Canvas canvas, bool sleepy) {
     // Monocle over the right eye, on a thin chain.
     if (!sleepy) {
