@@ -32,6 +32,33 @@ class JsonReader {
 
   String? optString(String key) => has(key) ? string(key) : null;
 
+  /// A calendar day written as `YYYY-MM-DD` (release dates), or null when absent.
+  DateTime? optDate(String key) {
+    if (!has(key)) return null;
+    final raw = string(key);
+    final match = RegExp(r'^(\d{4})-(\d{2})-(\d{2})$').firstMatch(raw);
+    final date = match == null
+        ? null
+        : DateTime(int.parse(match[1]!), int.parse(match[2]!), int.parse(match[3]!));
+    if (date == null || date.month != int.parse(match![2]!) || date.day != int.parse(match[3]!)) {
+      throw FormatError('$path.$key', 'expected a date YYYY-MM-DD');
+    }
+    return date;
+  }
+
+  /// A day of any year written as `MM-DD` (seasons), or null when absent.
+  String? optMonthDay(String key) {
+    if (!has(key)) return null;
+    final raw = string(key);
+    final match = RegExp(r'^(\d{2})-(\d{2})$').firstMatch(raw);
+    final month = match == null ? 0 : int.parse(match[1]!);
+    final day = match == null ? 0 : int.parse(match[2]!);
+    if (month < 1 || month > 12 || day < 1 || day > DateTime(2024, month + 1, 0).day) {
+      throw FormatError('$path.$key', 'expected a day MM-DD');
+    }
+    return raw;
+  }
+
   int integer(String key, {int? min, int? max}) {
     final value = json[key];
     if (value is! int) throw FormatError('$path.$key', 'expected an integer');

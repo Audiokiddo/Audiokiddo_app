@@ -35,6 +35,7 @@ mkdir -p "$site/nagrania"
 cp tool/lhpl/get.php "$site/"
 $plugin && cp tool/lhpl/wp-plugin.php "$site/$slug.php"
 cp -R dev_content/audio dev_content/games dev_content/pdf "$site/nagrania/"
+[[ -d dev_content/previews ]] && cp -R dev_content/previews "$site/nagrania/"
 printf 'Require all denied\n' > "$site/nagrania/.htaccess"
 printf '<Files "config.php">\n  Require all denied\n</Files>\nOptions -Indexes\n' > "$site/.htaccess"
 umask 077

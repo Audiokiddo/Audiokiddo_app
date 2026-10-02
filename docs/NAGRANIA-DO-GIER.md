@@ -68,24 +68,29 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 | `q_auta` | Uwaga! Samochody jeżdżą po chmurach. |
 | `a_auta` | Nie! Samochody jeżdżą po drogach. |
 
-## Głos Lorda (aplikacja)
+## Głos Szop’ena (aplikacja)
 
-Krótkie kwestie Lorda Von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). Radośnie, z uśmiechem, bez muzyki pod spodem.
+Krótkie kwestie Szop'ena von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). Radośnie, z uśmiechem, bez muzyki pod spodem.
 
 | Plik | Tekst |
 |---|---|
 | `volume.m4a` | Hej! Podgłośnij telefon, żeby dobrze mnie słyszeć! |
-| `hello.m4a` | Cześć! Jestem Lord. Mam duże uszy i jeszcze większą ochotę na przygody. Gramy bez patrzenia w ekran! |
+| `hello.m4a` | Cześć! Jestem Szop'en. Mam pasiasty ogon i jeszcze większą ochotę na przygody. Gramy bez patrzenia w ekran! |
 | `password_voice.m4a` | Żeby wejść do świata AudioKiddo, powiedz głośno magiczne hasło: Abrakadabra! |
 | `password_tap.m4a` | Żeby wejść do świata AudioKiddo, powiedz głośno: Abrakadabra! I dotknij magicznej kuli! |
 | `granted.m4a` | Hurra! Dostęp przyznany! Wchodzimy! |
-| `kids_1.m4a` | Uszy gotowe? Moje są duże. To trochę nie fair. |
-| `kids_2.m4a` | Potrzebuję kogoś z wyobraźnią. Ja mam głównie sierść. Wchodzisz w to? |
+| `kids_1.m4a` | Uszy gotowe? Moje są małe, ale słyszą wszystko. Nawet szelest cukierka. |
+| `kids_2.m4a` | Potrzebuję kogoś z wyobraźnią. Ja mam głównie futro i paski. Wchodzisz w to? |
 | `kids_3.m4a` | Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy. Wybierz zabawę! |
 | `trip_start.m4a` | Ruszamy w drogę! Zapnijcie pasy. Ja pilnuję zagadek, a ty wypatruj czerwonego auta. |
 | `window_1.m4a` | Przerwa na okno! Policz, ile czerwonych samochodów zobaczysz, zanim wrócimy do zabawy. |
 | `window_2.m4a` | Przerwa na okno! Czy widzisz jakieś zwierzę? Opowiedz o nim rodzicom. |
 | `window_3.m4a` | Przerwa na okno! Znajdź coś zielonego, coś okrągłego i coś bardzo dużego. |
-| `trip_end.m4a` | Dojechaliśmy! Mój ogon mówi, że to była świetna podróż. Do usłyszenia! |
+| `trip_end.m4a` | Dojechaliśmy! Mój pasiasty ogon mówi, że to była świetna podróż. Do usłyszenia! |
 | `bedtime_start.m4a` | Czas na wyciszenie. Zróbmy razem trzy spokojne oddechy. Wdech. I wydech. Wdech. I wydech. Wdech. I wydech. |
 | `goodnight.m4a` | Dobranoc. Nos pod koc, uszy na poduszkę. Resztę przygód zostawimy na jutro. |
+| `diploma.m4a` | Brawo! Cały pakiet ukończony. Oto twój dyplom. Jestem z ciebie bardzo dumny! |
+| `bonus_wyobraznia.m4a` | Sekretna wiadomość od Szop'ena. Dziś w nocy twoje łóżko zamieni się w statek. Dokąd popłyniesz? Opowiedz o tym rodzicom przy śniadaniu! |
+| `bonus_slowa-i-wiedza.m4a` | Sekretna zagadka od Szop'ena. Ma cztery nogi, ale nie chodzi. Stoi w kuchni i czeka na obiad. Co to? To stół! |
+| `bonus_detektyw.m4a` | Tajne zadanie dla detektywa. Znajdź w domu trzy rzeczy, które zaczynają się na literę K. Szepnij je rodzicowi do ucha. Sprawa zamknięta! |
+| `bonus_inne.m4a` | Sekretna wiadomość od Szop'ena. Jesteś prawdziwym mistrzem słuchania. Przybij piątkę rodzicowi! |

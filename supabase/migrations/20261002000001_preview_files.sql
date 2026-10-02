@@ -1,0 +1,28 @@
+-- Free previews of paid recordings (tool/make_previews.py): anyone may get a signed link.
+insert into public.content_files (path, item_id, pack_id, free) values
+  ('previews/detektyw/gadajacy-smietnik.m4a', 'gadajacy-smietnik', 'detektyw', true),
+  ('previews/detektyw/na-ratunek-budce-z-lodami.m4a', 'na-ratunek-budce-z-lodami', 'detektyw', true),
+  ('previews/detektyw/tajemnicze-znaki.m4a', 'tajemnicze-znaki', 'detektyw', true),
+  ('previews/detektyw/znikajace-dzwonki.m4a', 'znikajace-dzwonki', 'detektyw', true),
+  ('previews/piosenki/piosenka-1.m4a', 'piosenka-1', null, true),
+  ('previews/piosenki/piosenka-2.m4a', 'piosenka-2', null, true),
+  ('previews/piosenki/piosenka-3.m4a', 'piosenka-3', null, true),
+  ('previews/slowa-i-wiedza/co-to-za-przedmiot.m4a', 'co-to-za-przedmiot', 'slowa-i-wiedza', true),
+  ('previews/slowa-i-wiedza/co-tu-nie-pasuje.m4a', 'co-tu-nie-pasuje', 'slowa-i-wiedza', true),
+  ('previews/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a', 'dokoncz-zgodnie-z-prawda', 'slowa-i-wiedza', true),
+  ('previews/slowa-i-wiedza/kto-to-powiedzial.m4a', 'kto-to-powiedzial', 'slowa-i-wiedza', true),
+  ('previews/slowa-i-wiedza/szybkie-skojarzenia.m4a', 'szybkie-skojarzenia', 'slowa-i-wiedza', true),
+  ('previews/slowa-i-wiedza/uloz-zdanie.m4a', 'uloz-zdanie', 'slowa-i-wiedza', true),
+  ('previews/slowa-i-wiedza/wymien-trzy.m4a', 'wymien-trzy', 'slowa-i-wiedza', true),
+  ('previews/slowa-i-wiedza/znajdz-przeciwienstwo.m4a', 'znajdz-przeciwienstwo', 'slowa-i-wiedza', true),
+  ('previews/slowa-i-wiedza/znajdz-synonimy.m4a', 'znajdz-synonimy', 'slowa-i-wiedza', true),
+  ('previews/wyobraznia/co-oni-odpowiedzieli.m4a', 'co-oni-odpowiedzieli', 'wyobraznia', true),
+  ('previews/wyobraznia/dokoncz-historie.m4a', 'dokoncz-historie', 'wyobraznia', true),
+  ('previews/wyobraznia/magiczny-teatr.m4a', 'magiczny-teatr', 'wyobraznia', true),
+  ('previews/wyobraznia/mikstura.m4a', 'mikstura', 'wyobraznia', true),
+  ('previews/wyobraznia/mistrz-kuchni.m4a', 'mistrz-kuchni', 'wyobraznia', true),
+  ('previews/wyobraznia/moj-superbohater.m4a', 'moj-superbohater', 'wyobraznia', true),
+  ('previews/wyobraznia/podroz-na-inna-planete.m4a', 'podroz-na-inna-planete', 'wyobraznia', true),
+  ('previews/wyobraznia/wymysl-znaczenie.m4a', 'wymysl-znaczenie', 'wyobraznia', true),
+  ('previews/wyobraznia/zaginiony-skarb.m4a', 'zaginiony-skarb', 'wyobraznia', true)
+on conflict (path) do update set item_id = excluded.item_id, pack_id = excluded.pack_id, free = excluded.free;

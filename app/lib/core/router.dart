@@ -17,6 +17,7 @@ import '../features/kids_mode/kids_home_screen.dart';
 import '../features/kids_mode/kids_mode_controller.dart';
 import '../features/onboarding/onboarding_controller.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/diploma/diploma_screen.dart';
 import '../features/discovery/parent_screens.dart';
 import '../features/discovery/rescue_screen.dart';
 import '../features/discovery/routines_screen.dart';
@@ -108,6 +109,10 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
     GoRoute(
       path: '/pakiet/:id',
       builder: (context, state) => PackScreen(packId: state.pathParameters['id']!),
+    ),
+    GoRoute(
+      path: '/dyplom/:id',
+      builder: (context, state) => DiplomaScreen(packId: state.pathParameters['id']!),
     ),
     GoRoute(
       path: '/zabawa/:id',

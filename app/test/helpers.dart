@@ -15,6 +15,7 @@ import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
 import 'package:audiokiddo/features/parent_voice/parent_voice.dart';
 import 'package:audiokiddo/features/player/player_providers.dart';
+import 'package:audiokiddo/features/purchases/preview_player.dart';
 import 'package:drift/drift.dart' show DatabaseConnection, driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -86,6 +87,7 @@ List<Override> testOverrides(
   ambientMotionProvider.overrideWithValue(false),
   kidsMagicEntryProvider.overrideWithValue(false),
   parentVoiceStoreProvider.overrideWithValue(FakeParentVoiceStore()),
+  previewAudioProvider.overrideWithValue(FakePreviewAudio()),
 ];
 
 /// Parent recordings in memory: [clipsByChild] is what "was recorded", [played] what played.
@@ -123,4 +125,26 @@ class FakeParentVoiceStore implements ParentVoiceStore {
 
   @override
   Future<void> stopPlayback() async {}
+}
+
+/// Previews "play" instantly in tests: [played] lists the URLs, [finish] ends the current one.
+class FakePreviewAudio implements PreviewAudio {
+  final played = <Uri>[];
+  void Function()? _done;
+
+  @override
+  Future<void> play(
+    Uri url, {
+    required void Function(double) onProgress,
+    required void Function() onDone,
+  }) async {
+    played.add(url);
+    _done = onDone;
+    onProgress(.5);
+  }
+
+  @override
+  Future<void> stop() async => _done = null;
+
+  void finish() => _done?.call();
 }

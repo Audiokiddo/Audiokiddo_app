@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
+import '../purchases/preview_player.dart';
 import '../purchases/shop.dart';
 import '../../core/format.dart';
 import '../downloads/download_button.dart';
@@ -156,17 +157,22 @@ class _DetailsContent extends ConsumerWidget {
             DownloadControl(item: item),
             if (!isGame)
               TextButton.icon(
-                onPressed: ref.watch(queueRunnerProvider).running ? null : () async {
-                  await ref.read(discoveryProvider.notifier).add(item.id);
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('Dodano do kolejki'),
-                        action: SnackBarAction(label: 'Otwórz', onPressed: () => context.push('/kolejka')),
-                      ),
-                    );
-                  }
-                },
+                onPressed: ref.watch(queueRunnerProvider).running
+                    ? null
+                    : () async {
+                        await ref.read(discoveryProvider.notifier).add(item.id);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Dodano do kolejki'),
+                              action: SnackBarAction(
+                                label: 'Otwórz',
+                                onPressed: () => context.push('/kolejka'),
+                              ),
+                            ),
+                          );
+                        }
+                      },
                 icon: const Icon(Icons.playlist_add_rounded),
                 label: const Text('Dodaj do kolejki'),
               ),
@@ -181,6 +187,10 @@ class _DetailsContent extends ConsumerWidget {
             Text(l10n.needsRefresh, style: text.bodyMedium),
           ],
           ItemAccess.locked => [
+            if (item.preview != null) ...[
+              PreviewButton(item: item, wide: true),
+              const SizedBox(height: AkSpace.s),
+            ],
             FilledButton.icon(
               onPressed: () => _unlock(context),
               icon: const Icon(Icons.lock_open_rounded),

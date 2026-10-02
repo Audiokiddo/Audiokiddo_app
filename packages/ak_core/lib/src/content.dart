@@ -33,6 +33,7 @@ class Pack {
     required this.description,
     this.storeProductId,
     this.cover,
+    this.releasedOn,
   });
 
   factory Pack.fromJson(JsonReader r) => Pack(
@@ -43,11 +44,15 @@ class Pack {
     description: r.string('description'),
     storeProductId: r.optString('store_product_id'),
     cover: r.optObject('cover') == null ? null : AssetRef.fromJson(r.object('cover')),
+    releasedOn: r.optDate('released'),
   );
 
   final String id;
   final String title;
   final int ageMin;
+
+  /// When the pack went on sale; "Nowe" for a while after (see [isNewAt]).
+  final DateTime? releasedOn;
 
   /// Name of a brand colour token (e.g. `lavender`), resolved by the app theme.
   final String colorToken;
@@ -80,6 +85,8 @@ class ContentItem {
     this.minEngineVersion = 1,
     this.timingSensitive = false,
     this.storeProductId,
+    this.preview,
+    this.releasedOn,
   });
 
   factory ContentItem.fromJson(JsonReader r) {
@@ -121,6 +128,8 @@ class ContentItem {
       minEngineVersion: r.optInteger('min_engine_version', min: 1) ?? 1,
       timingSensitive: r.boolean('timing_sensitive'),
       storeProductId: r.optString('store_product_id'),
+      preview: r.optObject('preview') == null ? null : AssetRef.fromJson(r.object('preview')),
+      releasedOn: r.optDate('released'),
     );
   }
 
@@ -157,6 +166,12 @@ class ContentItem {
 
   bool get isFree => access == ContentAccess.free;
 
+  /// A short free excerpt of a paid recording, so a parent can hear it before buying.
+  final AssetRef? preview;
+
+  /// When the item was published; "Nowe" for a while after (see [isNewAt]).
+  final DateTime? releasedOn;
+
   /// Total bytes to download for offline use.
   int get downloadBytes => [...audio, ...pdf, ...?script?.assets.values].fold(0, (sum, a) => sum + a.bytes);
 }
@@ -167,3 +182,10 @@ T _parseEnum<T extends Enum>(String raw, List<T> values, String path) {
   }
   throw FormatError(path, 'unknown value "$raw"');
 }
+
+/// How long something counts as new after its release.
+const newForDays = 30;
+
+/// Whether content released on [releasedOn] is still "new" at [now].
+bool isNewAt(DateTime? releasedOn, DateTime now) =>
+    releasedOn != null && !releasedOn.isAfter(now) && now.difference(releasedOn).inDays < newForDays;

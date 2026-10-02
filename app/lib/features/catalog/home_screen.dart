@@ -12,12 +12,15 @@ import '../../core/widgets/motion.dart';
 import '../family/family.dart' hide progressProvider;
 import '../personal/personal_repository.dart';
 import '../player/player_providers.dart';
+import '../diploma/diploma_screen.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../lord/lord_lines.dart';
 import '../purchases/shop.dart';
 import '../purchases/shop_screen.dart';
 import 'catalog_providers.dart';
+import 'seasonal.dart';
+import 'widgets/content_cover.dart';
 import 'widgets/catalog_loader.dart';
 
 final screenFreeMinutesProvider = Provider<int>((ref) {
@@ -126,7 +129,10 @@ class HomeScreen extends ConsumerWidget {
                 )
               else
                 for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
+              const PendingDiplomaCard(),
               _NextPackCard(catalog: catalog),
+              const _NewThings(),
+              const _SeasonShelf(),
               const _QuietSzopen(),
               RefSection('Na co dzień', action: 'Wszystkie tryby', onTap: () => context.push('/rutyny')),
               ListTile(
@@ -337,6 +343,81 @@ class _NextPackCard extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// "Nowości": what was released in the last weeks (from the catalog's release dates).
+class _NewThings extends ConsumerWidget {
+  const _NewThings();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(newItemsProvider);
+    if (items.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const RefSection('Nowości'),
+        for (final item in items.take(3)) AudioRow(item: item),
+      ],
+    );
+  }
+}
+
+/// The seasonal collection of the catalog: one row that changes with the time of year.
+class _SeasonShelf extends ConsumerWidget {
+  const _SeasonShelf();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final shelf = ref.watch(seasonalShelfProvider);
+    final catalog = ref.watch(catalogProvider).value;
+    if (shelf == null || catalog == null) return const SizedBox.shrink();
+    final items = [for (final id in shelf.itemIds) ?catalog.item(id)];
+    final text = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RefSection(shelf.title),
+        if (shelf.subtitle != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(shelf.subtitle!, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+          ),
+        SizedBox(
+          // Cover plus two lines of title, at any text size.
+          height: 120 + MediaQuery.textScalerOf(context).scale(40),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: items.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            itemBuilder: (context, i) {
+              final item = items[i];
+              return SizedBox(
+                width: 112,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () => context.push('/zabawa/${item.id}'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ContentCover(
+                        item: item,
+                        size: 112,
+                        locked: !ref.watch(canPlayProvider(item)),
+                        fresh: ref.watch(isNewItemProvider(item)),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(item.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: text.bodySmall),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

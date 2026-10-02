@@ -14,6 +14,7 @@ import '../family/family.dart';
 import '../personal/personal_repository.dart';
 import '../parental_gate/parental_gate.dart';
 import '../kids_mode/kids_mode_setup.dart';
+import '../diploma/diploma.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
 
@@ -315,6 +316,23 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                 ],
               ),
+            if (ref.watch(diplomasProvider(child.id)).value case final diplomas?
+                when diplomas.isNotEmpty) ...[
+              const RefSection('Dyplomy'),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final e in diplomas.entries)
+                    if (catalog?.pack(e.key) case final pack?)
+                      ActionChip(
+                        avatar: const Icon(Icons.workspace_premium_rounded, size: 18, color: AkBrand.sunDeep),
+                        label: Text(pack.title),
+                        onPressed: () => context.push('/dyplom/${pack.id}'),
+                      ),
+                ],
+              ),
+            ],
             const RefSection('Ostatnio słuchane'),
             for (final id in recent)
               if (catalog?.item(id) case final item?)

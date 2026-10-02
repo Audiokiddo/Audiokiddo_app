@@ -19,20 +19,26 @@ RATE = 44100
 
 LINES = {
     "volume": "Hej! Podgłośnij telefon, żeby dobrze mnie słyszeć!",
-    "hello": "Cześć! Jestem Lord. Mam duże uszy i jeszcze większą ochotę na przygody. Gramy bez patrzenia w ekran!",
+    "hello": "Cześć! Jestem Szop'en. Mam pasiasty ogon i jeszcze większą ochotę na przygody. Gramy bez patrzenia w ekran!",
     "password_voice": "Żeby wejść do świata AudioKiddo, powiedz głośno magiczne hasło: Abrakadabra!",
     "password_tap": "Żeby wejść do świata AudioKiddo, powiedz głośno: Abrakadabra! I dotknij magicznej kuli!",
     "granted": "Hurra! Dostęp przyznany! Wchodzimy!",
-    "kids_1": "Uszy gotowe? Moje są duże. To trochę nie fair.",
-    "kids_2": "Potrzebuję kogoś z wyobraźnią. Ja mam głównie sierść. Wchodzisz w to?",
+    "kids_1": "Uszy gotowe? Moje są małe, ale słyszą wszystko. Nawet szelest cukierka.",
+    "kids_2": "Potrzebuję kogoś z wyobraźnią. Ja mam głównie futro i paski. Wchodzisz w to?",
     "kids_3": "Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy. Wybierz zabawę!",
     "trip_start": "Ruszamy w drogę! Zapnijcie pasy. Ja pilnuję zagadek, a ty wypatruj czerwonego auta.",
     "window_1": "Przerwa na okno! Policz, ile czerwonych samochodów zobaczysz, zanim wrócimy do zabawy.",
     "window_2": "Przerwa na okno! Czy widzisz jakieś zwierzę? Opowiedz o nim rodzicom.",
     "window_3": "Przerwa na okno! Znajdź coś zielonego, coś okrągłego i coś bardzo dużego.",
-    "trip_end": "Dojechaliśmy! Mój ogon mówi, że to była świetna podróż. Do usłyszenia!",
+    "trip_end": "Dojechaliśmy! Mój pasiasty ogon mówi, że to była świetna podróż. Do usłyszenia!",
     "bedtime_start": "Czas na wyciszenie. Zróbmy razem trzy spokojne oddechy. Wdech. I wydech. Wdech. I wydech. Wdech. I wydech.",
     "goodnight": "Dobranoc. Nos pod koc, uszy na poduszkę. Resztę przygód zostawimy na jutro.",
+    # Diploma after a whole pack (app/lib/features/diploma): congratulations and a secret reward.
+    "diploma": "Brawo! Cały pakiet ukończony. Oto twój dyplom. Jestem z ciebie bardzo dumny!",
+    "bonus_wyobraznia": "Sekretna wiadomość od Szop'ena. Dziś w nocy twoje łóżko zamieni się w statek. Dokąd popłyniesz? Opowiedz o tym rodzicom przy śniadaniu!",
+    "bonus_slowa-i-wiedza": "Sekretna zagadka od Szop'ena. Ma cztery nogi, ale nie chodzi. Stoi w kuchni i czeka na obiad. Co to? To stół!",
+    "bonus_detektyw": "Tajne zadanie dla detektywa. Znajdź w domu trzy rzeczy, które zaczynają się na literę K. Szepnij je rodzicowi do ucha. Sprawa zamknięta!",
+    "bonus_inne": "Sekretna wiadomość od Szop'ena. Jesteś prawdziwym mistrzem słuchania. Przybij piątkę rodzicowi!",
 }
 
 
@@ -52,6 +58,17 @@ def chime():
     for f in [523, 659, 784, 1047]:
         out += mix(tone(f, 0.16, 0.3, 8), tone(f * 2, 0.16, 0.08, 12))
     return out + mix(tone(1047, 0.8, 0.25, 3), tone(1568, 0.8, 0.1, 4))
+
+
+def fanfare():
+    """Diploma fanfare: two short calls, then a held major chord with a sparkle on top."""
+    out = []
+    for f in [523, 523, 659]:
+        out += mix(tone(f, 0.13, 0.28, 7), tone(f * 1.5, 0.13, 0.08, 9))
+    out += [0.0] * int(RATE * 0.05)
+    chord = mix(tone(523, 1.4, 0.22, 2.2), tone(659, 1.4, 0.18, 2.2), tone(784, 1.4, 0.18, 2.2),
+                tone(1047, 1.4, 0.12, 2.6), tone(2093, 0.6, 0.05, 6))
+    return out + chord
 
 
 def note(freq):
@@ -111,7 +128,7 @@ def main():
         # Melody notes for the weekly plan (C4..E5), soft bell-like tones.
         scale = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25]
         notes = {f"note_{i}": note(f) for i, f in enumerate(scale)}
-        for name, samples in {"chime": chime(), "pop": pop(), "whoosh": whoosh(), **notes}.items():
+        for name, samples in {"chime": chime(), "pop": pop(), "whoosh": whoosh(), "fanfare": fanfare(), **notes}.items():
             wav = pathlib.Path(tmp) / f"{name}.wav"
             write_wav(samples, wav)
             encode(wav, OUT / f"{name}.m4a")
@@ -120,8 +137,8 @@ def main():
 
     doc = ROOT / "docs/NAGRANIA-DO-GIER.md"
     text = doc.read_text()
-    marker = "## Głos Lorda (aplikacja)"
-    section = [marker, "", "Krótkie kwestie Lorda Von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). "
+    marker = "## Głos Szop’ena (aplikacja)"
+    section = [marker, "", "Krótkie kwestie Szop'ena von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). "
                "Radośnie, z uśmiechem, bez muzyki pod spodem.", "", "| Plik | Tekst |", "|---|---|"]
     section += [f"| `{name}.m4a` | {line} |" for name, line in LINES.items()]
     if marker in text:

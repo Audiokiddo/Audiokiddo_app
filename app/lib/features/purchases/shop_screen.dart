@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
 import '../../l10n/app_localizations.dart';
+import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/catalog_loader.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
@@ -352,7 +353,20 @@ class _PackCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(pack.title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                pack.title,
+                                style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                            if (isNewAt(pack.releasedOn, ref.watch(clockProvider)())) ...[
+                              const SizedBox(width: 6),
+                              const _Badge('Nowy', color: AkBrand.sun),
+                            ],
+                          ],
+                        ),
                         const SizedBox(height: 2),
                         Text(
                           '${playsCount(summary.items.length)} · ${summary.minutes} min · od ${pack.ageMin} lat',
@@ -643,6 +657,15 @@ class PackScreen extends ConsumerWidget {
                           minHeight: 8,
                         ),
                       ),
+                      if (summary.items.isNotEmpty && done == summary.items.length)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: FilledButton.tonalIcon(
+                            onPressed: () => context.push('/dyplom/${pack.id}'),
+                            icon: const Icon(Icons.workspace_premium_rounded),
+                            label: const Text('Zobacz dyplom'),
+                          ),
+                        ),
                     ],
                     if (!owned && summary.freeItems.isNotEmpty) ...[
                       const RefSection('Wypróbuj za darmo'),

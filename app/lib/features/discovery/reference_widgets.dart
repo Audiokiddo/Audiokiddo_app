@@ -8,8 +8,10 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
 import '../catalog/catalog_providers.dart';
+import '../catalog/seasonal.dart';
 import '../catalog/widgets/content_cover.dart';
 import '../home/quick_pick.dart';
+import '../purchases/preview_player.dart';
 import 'discovery_model.dart';
 
 const referencePurple = Color(0xFF342650);
@@ -254,8 +256,15 @@ class AudioRow extends ConsumerWidget {
       child: Row(
         children: [
           InkWell(
+            // The title next to it opens the same page and carries the label for VoiceOver.
+            excludeFromSemantics: true,
             onTap: () => context.push('/zabawa/${item.id}'),
-            child: ContentCover(item: item, size: 64, locked: !playable),
+            child: ContentCover(
+              item: item,
+              size: 64,
+              locked: !playable,
+              fresh: ref.watch(isNewItemProvider(item)),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -282,6 +291,8 @@ class AudioRow extends ConsumerWidget {
                       onPressed: () => startItem(context, item),
                       icon: const Icon(Icons.play_arrow_rounded, size: 24),
                     )
+                  : item.preview != null
+                  ? PreviewButton(item: item)
                   : IconButton.outlined(
                       tooltip: 'Zobacz dostęp do ${item.title}',
                       onPressed: () => context.push('/zabawa/${item.id}'),

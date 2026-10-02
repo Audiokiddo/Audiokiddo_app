@@ -9,7 +9,8 @@
    "age_min": 3,
    "color": "lavender",
    "description": "Profesor Fantazjusz i Czarodziejka Nela zabierają dziecko do krainy wyobraźni: tworzy własne historie, odpowiada na pytania i wykonuje zadania.",
-   "store_product_id": "pl.audiokiddo.pack.wyobraznia"
+   "store_product_id": "pl.audiokiddo.pack.wyobraznia",
+   "released": "2026-09-01"
   },
   {
    "id": "slowa-i-wiedza",
@@ -17,7 +18,8 @@
    "age_min": 3,
    "color": "teal",
    "description": "Zagadki, łamigłówki i zabawy słowne: słownictwo, skojarzenia i logiczne myślenie.",
-   "store_product_id": "pl.audiokiddo.pack.slowa_i_wiedza"
+   "store_product_id": "pl.audiokiddo.pack.slowa_i_wiedza",
+   "released": "2026-09-01"
   },
   {
    "id": "detektyw",
@@ -25,7 +27,8 @@
    "age_min": 6,
    "color": "sun",
    "description": "Detektywistyczne przygody z Maxem i Milą oraz akta spraw do wydrukowania.",
-   "store_product_id": "pl.audiokiddo.pack.detektyw"
+   "store_product_id": "pl.audiokiddo.pack.detektyw",
+   "released": "2026-09-01"
   }
  ],
  "items": [
@@ -54,7 +57,8 @@
      "sha256": "6c842de4933d6d6740c81089bcbdae2b5e03d971318b458c939765e652a23a57"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.magiczny_sklep"
+   "store_product_id": "pl.audiokiddo.item.magiczny_sklep",
+   "released": "2026-09-01"
   },
   {
    "id": "zaginiony-skarb",
@@ -81,7 +85,13 @@
      "sha256": "98833d9a29d68bf799d85f6cc304cc13249821dc18bcc7e369e0738cbca3688a"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.zaginiony_skarb"
+   "store_product_id": "pl.audiokiddo.item.zaginiony_skarb",
+   "preview": {
+    "path": "previews/wyobraznia/zaginiony-skarb.m4a",
+    "bytes": 293778,
+    "sha256": "eb433bb0eace60429f445d1dcd16e7f1a39cf458516db672605e14b3dafe621c"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "podroz-na-inna-planete",
@@ -108,7 +118,13 @@
      "sha256": "1e63e8cb8b99bfb1b8bdb397d3b23d3aa4ff7355132bbe8b1df76c509f17af26"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.podroz_na_inna_planete"
+   "store_product_id": "pl.audiokiddo.item.podroz_na_inna_planete",
+   "preview": {
+    "path": "previews/wyobraznia/podroz-na-inna-planete.m4a",
+    "bytes": 294556,
+    "sha256": "71fff2cd7ee4a37799a1c46c5c7ad1333943972e15c3b2ac9d80c5efb8d72af1"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "wymysl-znaczenie",
@@ -135,7 +151,13 @@
      "sha256": "7bed256b7a3ae974006cc36f24579bd303af8bbadd56151421f65a9009550707"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.wymysl_znaczenie"
+   "store_product_id": "pl.audiokiddo.item.wymysl_znaczenie",
+   "preview": {
+    "path": "previews/wyobraznia/wymysl-znaczenie.m4a",
+    "bytes": 293110,
+    "sha256": "b48a1b2f961814107edc5c7a7398ea30e5a247b634c5be493f7101b76dad73c6"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "mikstura",
@@ -162,7 +184,13 @@
      "sha256": "ff3592a39ec40790f277de42fa2a38a086fa65db92eeeab01af8997f26130885"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.mikstura"
+   "store_product_id": "pl.audiokiddo.item.mikstura",
+   "preview": {
+    "path": "previews/wyobraznia/mikstura.m4a",
+    "bytes": 292243,
+    "sha256": "336ae6fdc8bed374cc758aa31ccc889f77150a8e3ee36f5d4192bcb72915a54a"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "moj-superbohater",
@@ -189,7 +217,13 @@
      "sha256": "598eb839532bba68de6ce326b1b0ec171e2910097ab785bfc3a6164d95eb9fa5"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.moj_superbohater"
+   "store_product_id": "pl.audiokiddo.item.moj_superbohater",
+   "preview": {
+    "path": "previews/wyobraznia/moj-superbohater.m4a",
+    "bytes": 293565,
+    "sha256": "3b0031e943297531ade008be67976f1608c44d62cb7f6466329392e58e327da2"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "dokoncz-historie",
@@ -216,7 +250,13 @@
      "sha256": "ee77cb4c68e3e8d8ca106672671ce9d858de714e3b75985f2a53c6861d4e8f67"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.dokoncz_historie"
+   "store_product_id": "pl.audiokiddo.item.dokoncz_historie",
+   "preview": {
+    "path": "previews/wyobraznia/dokoncz-historie.m4a",
+    "bytes": 292754,
+    "sha256": "d284df0168cb5022eaab0c2d03ca07c78f3300bab9d96042cc7479995aee3a0d"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "mistrz-kuchni",
@@ -243,7 +283,13 @@
      "sha256": "d918e774ff631d7903f382acef4923c5a5071188cb440cc2d796331ec0120276"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.mistrz_kuchni"
+   "store_product_id": "pl.audiokiddo.item.mistrz_kuchni",
+   "preview": {
+    "path": "previews/wyobraznia/mistrz-kuchni.m4a",
+    "bytes": 292873,
+    "sha256": "3ac8a0d0aa57735eada060702fb66b9b8f8690867179277f86dd4a20aecf0c50"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "magiczny-teatr",
@@ -270,7 +316,13 @@
      "sha256": "aa2b09cd0bc9dc70d514806d6c22cd3cf7df3d538fb4eeb5580b2b3147ad5f59"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.magiczny_teatr"
+   "store_product_id": "pl.audiokiddo.item.magiczny_teatr",
+   "preview": {
+    "path": "previews/wyobraznia/magiczny-teatr.m4a",
+    "bytes": 293273,
+    "sha256": "3d4f63d1373e8b38f63c4ec4fa5d37b76d86c376a14a88b48dd810961594d1f6"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "co-oni-odpowiedzieli",
@@ -297,7 +349,13 @@
      "sha256": "99b225d58ceff9901b882efea7aa1c43403d32f693b6e3f47081b4c6eca0b3ab"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.co_oni_odpowiedzieli"
+   "store_product_id": "pl.audiokiddo.item.co_oni_odpowiedzieli",
+   "preview": {
+    "path": "previews/wyobraznia/co-oni-odpowiedzieli.m4a",
+    "bytes": 293655,
+    "sha256": "b343c2ec52c8b9d95fedd028453793ab62a8de09c52e807e31fa4eff88b01e9f"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "co-to-za-przedmiot",
@@ -331,7 +389,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/co-to-za-przedmiot.m4a",
+    "bytes": 373030,
+    "sha256": "32ccc8be843cb1e3048a38ed9611d3d0ad3e741292a1ff462d17e26b6ab9b4e6"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "co-to-za-dzwiek",
@@ -365,7 +429,8 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "released": "2026-09-01"
   },
   {
    "id": "szybkie-skojarzenia",
@@ -399,7 +464,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/szybkie-skojarzenia.m4a",
+    "bytes": 373115,
+    "sha256": "30837d092aeb86fc9b55be93e29a3293a5af54ea83e19a91d8513dd372c60485"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "co-tu-nie-pasuje",
@@ -433,7 +504,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/co-tu-nie-pasuje.m4a",
+    "bytes": 372124,
+    "sha256": "6f49d18215471d56512448ae84b40f3650c44a2a5178f2477a0114a1ad37c09a"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "wymien-trzy",
@@ -467,7 +544,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/wymien-trzy.m4a",
+    "bytes": 372018,
+    "sha256": "4875164fd81ee40bbfd658ada84a63dbfd71cc0ca2c4abf98f6b68a575f6a6d4"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "znajdz-przeciwienstwo",
@@ -501,7 +584,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/znajdz-przeciwienstwo.m4a",
+    "bytes": 372400,
+    "sha256": "280cb0f132d87876653502ecc51aab1f7d2d12d5edad414ea59644a1bcc3c42a"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "znajdz-synonimy",
@@ -535,7 +624,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/znajdz-synonimy.m4a",
+    "bytes": 372285,
+    "sha256": "a6853192bb4e14c49feb0860b2c3c2ce4553c0a1d19037ea4ca182c08230ebdf"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "uloz-zdanie",
@@ -569,7 +664,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/uloz-zdanie.m4a",
+    "bytes": 372545,
+    "sha256": "530a82330733a5cdd9ec6f5ac5a1a843cf42c9f61d31438b7a3e77632732bf9b"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "dokoncz-zgodnie-z-prawda",
@@ -603,7 +704,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a",
+    "bytes": 372831,
+    "sha256": "74b0a467e569c2fa76ebbc96fe7eb0b955d814dd0fb9b29b872c4ecbb32579df"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "kto-to-powiedzial",
@@ -637,7 +744,13 @@
      "bytes": 67371,
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/kto-to-powiedzial.m4a",
+    "bytes": 372273,
+    "sha256": "acfaa161d6d04ec5ee3ba1f7ba99c61280efe114ee8ba595b1367749306018e2"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "zlodziej-naszyjnika",
@@ -675,7 +788,8 @@
      "sha256": "985681dd1066f0c50e221c3a3b6761ca94b39a1c886251c75a188f060c81cb89"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.zlodziej_naszyjnika"
+   "store_product_id": "pl.audiokiddo.item.zlodziej_naszyjnika",
+   "released": "2026-09-01"
   },
   {
    "id": "znikajace-dzwonki",
@@ -713,7 +827,13 @@
      "sha256": "b5880bb2141cf134d2d703171ed2aaea3fbd91308237fec511d6cf0b3903fff4"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.znikajace_dzwonki"
+   "store_product_id": "pl.audiokiddo.item.znikajace_dzwonki",
+   "preview": {
+    "path": "previews/detektyw/znikajace-dzwonki.m4a",
+    "bytes": 293747,
+    "sha256": "a67b90fe89b983e8a724e97cf034c236e3588a70fd4683a6ff98be9dcdd942e4"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "na-ratunek-budce-z-lodami",
@@ -751,7 +871,13 @@
      "sha256": "024d3c438bbd1547132007d9e669b420681d2f9e76e944360f45bb8979fc230c"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.na_ratunek_budce_z_lodami"
+   "store_product_id": "pl.audiokiddo.item.na_ratunek_budce_z_lodami",
+   "preview": {
+    "path": "previews/detektyw/na-ratunek-budce-z-lodami.m4a",
+    "bytes": 293959,
+    "sha256": "42c4cb400b52dff468b610ae2e5de5d62bdecf6d9d9b6267439a1a36064b6944"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "tajemnicze-znaki",
@@ -789,7 +915,13 @@
      "sha256": "d381cb7d1c460eba8cf24c26d916cccdc9607f50d1fd2bce2c11fc79fd09ab5d"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.tajemnicze_znaki"
+   "store_product_id": "pl.audiokiddo.item.tajemnicze_znaki",
+   "preview": {
+    "path": "previews/detektyw/tajemnicze-znaki.m4a",
+    "bytes": 295112,
+    "sha256": "8cc5e77aab3ed09f271365f9abe84e3135ec57a783a3791655937e8c5248c7d6"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "gadajacy-smietnik",
@@ -827,7 +959,13 @@
      "sha256": "78126ce2bfc04bccb8e7d809ee22f5550916f530c0fd4e1dab3fead6152248b6"
     }
    ],
-   "store_product_id": "pl.audiokiddo.item.gadajacy_smietnik"
+   "store_product_id": "pl.audiokiddo.item.gadajacy_smietnik",
+   "preview": {
+    "path": "previews/detektyw/gadajacy-smietnik.m4a",
+    "bytes": 294101,
+    "sha256": "396b2233b890e3683823846604288e76e7d070e1d385637c8ed4f20c0b33f31f"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "piosenka-1",
@@ -847,7 +985,13 @@
      "bytes": 303909,
      "sha256": "d7b6de52b8e4ba551f3447e8e9ccdac5c5ecfc5663c2943dff458db8b128dea6"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/piosenki/piosenka-1.m4a",
+    "bytes": 203653,
+    "sha256": "111e5618d252a97df8e066787a30502d7679e2c26023a88b76a7e16e1666d914"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "piosenka-2",
@@ -867,7 +1011,13 @@
      "bytes": 303155,
      "sha256": "88ce3fed7a46e8247952ab80a065901cab58fbf1d8f64e6586b7d92c360630e6"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/piosenki/piosenka-2.m4a",
+    "bytes": 203242,
+    "sha256": "b4a108f57830c5058b42362e0378fdfa05b2697a5f26a2fb6133758eab431295"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "piosenka-3",
@@ -886,7 +1036,13 @@
      "bytes": 300220,
      "sha256": "d5dda4fb37abc3a77e855328e885f0754e1cb0a385d7da46574b5929880f9631"
     }
-   ]
+   ],
+   "preview": {
+    "path": "previews/piosenki/piosenka-3.m4a",
+    "bytes": 201893,
+    "sha256": "412d13d10befdd08cbe7b6dd69643b36be874dee839d0a7a24b744d170626006"
+   },
+   "released": "2026-09-01"
   },
   {
    "id": "zgadnij-dzwiek",
@@ -1075,7 +1231,8 @@
      }
     }
    },
-   "timing_sensitive": false
+   "timing_sensitive": false,
+   "released": "2026-09-01"
   },
   {
    "id": "zamrozony-taniec",
@@ -1207,7 +1364,8 @@
      }
     }
    },
-   "timing_sensitive": false
+   "timing_sensitive": false,
+   "released": "2026-09-01"
   },
   {
    "id": "zamrozone-raczki",
@@ -1337,7 +1495,8 @@
      }
     }
    },
-   "timing_sensitive": false
+   "timing_sensitive": false,
+   "released": "2026-09-01"
   },
   {
    "id": "echo-rytmu",
@@ -1545,7 +1704,8 @@
      }
     }
    },
-   "timing_sensitive": true
+   "timing_sensitive": true,
+   "released": "2026-09-01"
   },
   {
    "id": "prawda-czy-nie",
@@ -2034,7 +2194,8 @@
      }
     }
    },
-   "timing_sensitive": false
+   "timing_sensitive": false,
+   "released": "2026-09-27"
   }
  ],
  "shelves": [
@@ -2081,14 +2242,6 @@
    ]
   },
   {
-   "id": "nowosci",
-   "title": "Nowość!",
-   "kind": "row",
-   "item_ids": [
-    "prawda-czy-nie"
-   ]
-  },
-  {
    "id": "gry",
    "title": "Gry bez ekranu",
    "kind": "row",
@@ -2099,6 +2252,86 @@
     "echo-rytmu",
     "prawda-czy-nie"
    ]
+  },
+  {
+   "id": "jesien",
+   "title": "Jesienne wieczory",
+   "subtitle": "Krótkie dni, długie historie. Na ciemne popołudnia pod kocem.",
+   "season_from": "10-01",
+   "season_to": "11-30",
+   "item_ids": [
+    "zaginiony-skarb",
+    "magiczny-teatr",
+    "podroz-na-inna-planete",
+    "tajemnicze-znaki",
+    "mikstura",
+    "piosenka-3"
+   ],
+   "kind": "row"
+  },
+  {
+   "id": "zima",
+   "title": "Zimowe wieczory w domu",
+   "subtitle": "Za oknem ciemno i zimno, w domu zagadki i historie.",
+   "season_from": "12-01",
+   "season_to": "02-28",
+   "item_ids": [
+    "magiczny-sklep",
+    "mistrz-kuchni",
+    "dokoncz-historie",
+    "co-to-za-dzwiek",
+    "znikajace-dzwonki",
+    "piosenka-3"
+   ],
+   "kind": "row"
+  },
+  {
+   "id": "wiosna",
+   "title": "Wiosenne zagadki",
+   "subtitle": "Więcej światła, więcej ciekawości i ruchu.",
+   "season_from": "03-01",
+   "season_to": "06-14",
+   "item_ids": [
+    "co-to-za-przedmiot",
+    "wymien-trzy",
+    "znajdz-przeciwienstwo",
+    "zgadnij-dzwiek",
+    "echo-rytmu",
+    "zamrozony-taniec"
+   ],
+   "kind": "row"
+  },
+  {
+   "id": "wakacje",
+   "title": "Wakacje w drodze",
+   "subtitle": "Na długie trasy: bez ekranu i bez „daleko jeszcze?”.",
+   "season_from": "06-15",
+   "season_to": "08-24",
+   "item_ids": [
+    "zamrozone-raczki",
+    "szybkie-skojarzenia",
+    "prawda-czy-nie",
+    "co-tu-nie-pasuje",
+    "zaginiony-skarb",
+    "gadajacy-smietnik"
+   ],
+   "kind": "row"
+  },
+  {
+   "id": "przedszkole",
+   "title": "Nowy rok w przedszkolu",
+   "subtitle": "Słówka, skojarzenia i pierwsze zagadki na dobry start.",
+   "season_from": "08-25",
+   "season_to": "09-30",
+   "item_ids": [
+    "uloz-zdanie",
+    "kto-to-powiedzial",
+    "znajdz-synonimy",
+    "dokoncz-zgodnie-z-prawda",
+    "co-oni-odpowiedzieli",
+    "zlodziej-naszyjnika"
+   ],
+   "kind": "row"
   }
  ]
 }

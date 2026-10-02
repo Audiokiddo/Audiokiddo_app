@@ -198,5 +198,6 @@ do $$ begin
   assert public.can_download('00000000-0000-0000-0000-000000000009', 'audio/wyobraznia/zaginiony-skarb.m4a'), 'yearly subscription covers all';
   assert not public.can_download('00000000-0000-0000-0000-000000000009', 'audio/../secret.m4a'), 'unknown path';
   assert not public.can_download('00000000-0000-0000-0000-00000000000a', 'audio/detektyw/tajemnicze-znaki.m4a'), 'guest without purchase';
+  assert public.can_download(null, 'previews/detektyw/tajemnicze-znaki.m4a'), 'a preview of a paid item is free';
 end $$;
 select 'download tests passed';

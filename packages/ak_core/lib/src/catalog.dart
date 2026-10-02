@@ -9,19 +9,57 @@ const int catalogSchemaVersion = 1;
 enum ShelfKind { featured, row, ageGroups, situations }
 
 class Shelf {
-  const Shelf({required this.id, required this.title, required this.kind, required this.itemIds});
+  const Shelf({
+    required this.id,
+    required this.title,
+    required this.kind,
+    required this.itemIds,
+    this.subtitle,
+    this.seasonFrom,
+    this.seasonTo,
+  });
 
   factory Shelf.fromJson(JsonReader r) => Shelf(
     id: r.string('id'),
     title: r.string('title'),
     kind: r.enumValue('kind', ShelfKind.values),
     itemIds: r.strings('item_ids'),
+    subtitle: r.optString('subtitle'),
+    seasonFrom: r.optMonthDay('season_from'),
+    seasonTo: r.optMonthDay('season_to'),
   );
 
   final String id;
   final String title;
   final ShelfKind kind;
   final List<String> itemIds;
+  final String? subtitle;
+
+  /// A seasonal shelf shows only between these days of the year (`MM-DD`, both inclusive);
+  /// the range may wrap around New Year (`12-01` to `02-28`).
+  final String? seasonFrom;
+  final String? seasonTo;
+
+  bool get seasonal => seasonFrom != null && seasonTo != null;
+
+  /// Always true for an ordinary shelf.
+  bool inSeasonAt(DateTime now) {
+    if (!seasonal) return true;
+    final today = '${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    return seasonFrom!.compareTo(seasonTo!) <= 0
+        ? today.compareTo(seasonFrom!) >= 0 && today.compareTo(seasonTo!) <= 0
+        : today.compareTo(seasonFrom!) >= 0 || today.compareTo(seasonTo!) <= 0;
+  }
+
+  Shelf withItems(List<String> ids) => Shelf(
+    id: id,
+    title: title,
+    kind: kind,
+    itemIds: ids,
+    subtitle: subtitle,
+    seasonFrom: seasonFrom,
+    seasonTo: seasonTo,
+  );
 }
 
 class Catalog {
@@ -118,14 +156,7 @@ CatalogParseResult parseCatalog(Map<String, Object?> json, {int engine = engineV
           '[$i]',
         ),
       );
-      shelves.add(
-        Shelf(
-          id: shelf.id,
-          title: shelf.title,
-          kind: shelf.kind,
-          itemIds: shelf.itemIds.where(seenIds.contains).toList(),
-        ),
-      );
+      shelves.add(shelf.withItems(shelf.itemIds.where(seenIds.contains).toList()));
     } on FormatError catch (e) {
       skipped.add(SkippedItem(e.path, e.message));
     }
