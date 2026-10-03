@@ -71,3 +71,24 @@ export async function sha256Hex(text: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
+
+/**
+ * GET on the shop's REST API with the read-only key. Some hosts drop the Authorization header
+ * before PHP sees it; WooCommerce then accepts the same key as query parameters (HTTPS only).
+ */
+export async function wooGet(
+  base: string,
+  key: string,
+  secret: string,
+  path: string,
+  params: Record<string, string> = {},
+): Promise<Response> {
+  const url = new URL(path, base);
+  for (const [name, value] of Object.entries(params)) url.searchParams.set(name, value);
+  const response = await fetch(url, { headers: { Authorization: `Basic ${btoa(`${key}:${secret}`)}` } });
+  if (response.status !== 401) return response;
+  const withKey = new URL(url);
+  withKey.searchParams.set("consumer_key", key);
+  withKey.searchParams.set("consumer_secret", secret);
+  return await fetch(withKey);
+}

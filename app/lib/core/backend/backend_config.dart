@@ -22,6 +22,11 @@ abstract final class BackendConfig {
   static const googleWebClientId = String.fromEnvironment('GOOGLE_WEB_CLIENT_ID');
   static const googleIosClientId = String.fromEnvironment('GOOGLE_IOS_CLIENT_ID');
 
+  /// Whether the access-code field is shown. Codes unlock content outside the stores, which Apple
+  /// may not accept in an iOS release (guideline 3.1.1); the order number and e-mail ways stay
+  /// either way (3.1.3(b)). Build such a release with `--dart-define=REDEEM_CODES=false`.
+  static const redeemCodes = bool.fromEnvironment('REDEEM_CODES', defaultValue: true);
+
   static bool get googleConfigured =>
       googleWebClientId.isNotEmpty && (!Platform.isIOS || googleIosClientId.isNotEmpty);
 }

@@ -27,6 +27,63 @@ enum AccountError { invalidEmail, tooManyRequests, wrongCode, offline, server, c
 /// The server's answer about a store purchase (verify-purchase).
 enum ServerVerdict { verified, pending, rejected, retry }
 
+/// The server's answer to an access code or an order number (redeem-code, claim-order).
+enum ClaimStatus {
+  /// Added to the account.
+  ok,
+
+  /// This account already has it.
+  already,
+
+  /// Code: unknown. Order: the number and e-mail do not belong together (never says which).
+  notFound,
+  expired,
+  usedUp,
+
+  /// The order is not paid (refunded, cancelled, still processing).
+  notPaid,
+
+  /// Another account already holds this order.
+  taken,
+
+  /// The order has nothing the app can unlock.
+  nothing,
+  rateLimited,
+
+  /// The text cannot be a code or an order number.
+  format,
+}
+
+class ClaimResult {
+  const ClaimResult(this.status, [this.scopes = const []]);
+
+  final ClaimStatus status;
+
+  /// What was added (`pack:detektyw`, `all_content`…); empty unless [status] is ok or already.
+  final List<String> scopes;
+
+  bool get granted => status == ClaimStatus.ok || status == ClaimStatus.already;
+
+  /// Reads the Edge Function's `{status, scopes}`.
+  factory ClaimResult.fromJson(Object? json) {
+    if (json is! Map) return const ClaimResult(ClaimStatus.format);
+    final status = switch (json['status']) {
+      'ok' => ClaimStatus.ok,
+      'already' => ClaimStatus.already,
+      'invalid' || 'not_found' => ClaimStatus.notFound,
+      'expired' => ClaimStatus.expired,
+      'used_up' => ClaimStatus.usedUp,
+      'not_paid' => ClaimStatus.notPaid,
+      'taken' => ClaimStatus.taken,
+      'nothing' => ClaimStatus.nothing,
+      'rate_limited' => ClaimStatus.rateLimited,
+      _ => ClaimStatus.format,
+    };
+    final scopes = json['scopes'];
+    return ClaimResult(status, [if (scopes is List) ...scopes.whereType<String>()]);
+  }
+}
+
 class AccountException implements Exception {
   const AccountException(this.error);
 
@@ -60,6 +117,14 @@ abstract interface class AccountService {
   /// Pulls the parent's shop orders into their account; returns how many products were
   /// assigned.
   Future<int> syncWebPurchases();
+
+  /// Adds what an access code unlocks (gift, tester, promotion) to the account; a guest
+  /// account is created when nobody is signed in.
+  Future<ClaimResult> redeemCode(String code);
+
+  /// Adds the packs of one shop order, proven by its number and billing e-mail, for buyers
+  /// whose shop e-mail differs from the one they sign in with.
+  Future<ClaimResult> claimOrder(String order, String email);
 
   /// Entitlements of the signed-in parent (empty when signed out). Throws when offline.
   Future<List<Entitlement>> entitlements();
@@ -148,6 +213,20 @@ class SupabaseAccountService implements AccountService {
     final response = await _client.functions.invoke('sync-web-purchases');
     final data = response.data;
     return data is Map && data['claimed'] is int ? data['claimed'] as int : 0;
+  });
+
+  @override
+  Future<ClaimResult> redeemCode(String code) => _claim('redeem-code', {'code': code});
+
+  @override
+  Future<ClaimResult> claimOrder(String order, String email) =>
+      _claim('claim-order', {'order': order, 'email': email});
+
+  Future<ClaimResult> _claim(String function, Map<String, Object?> body) => _guard(() async {
+    // Anonymous guest account when nobody is signed in: access waits there until sign-in.
+    if (await purchaseAccountId() == null) throw const AccountException(AccountError.offline);
+    final response = await _client.functions.invoke(function, body: body);
+    return ClaimResult.fromJson(response.data);
   });
 
   @override
@@ -279,6 +358,13 @@ class SignedOutAccountService implements AccountService {
 
   @override
   Future<int> syncWebPurchases() async => 0;
+
+  @override
+  Future<ClaimResult> redeemCode(String code) async => throw const AccountException(AccountError.server);
+
+  @override
+  Future<ClaimResult> claimOrder(String order, String email) async =>
+      throw const AccountException(AccountError.server);
 
   @override
   Future<List<Entitlement>> entitlements() async => const [];

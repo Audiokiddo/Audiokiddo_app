@@ -203,3 +203,58 @@ do $$ begin
   assert not public.can_download(null, 'pdf/detektyw/tajemnicze-znaki.pdf'), 'case files stay paid';
 end $$;
 select 'download tests passed';
+
+-- 14. Access codes and orders claimed by number.
+do $$
+declare
+  u1 constant uuid := '00000000-0000-0000-0000-000000000001';
+  u9 constant uuid := '00000000-0000-0000-0000-000000000009';
+  ua constant uuid := '00000000-0000-0000-0000-00000000000a';
+  h1 constant text := repeat('a', 64);
+  h2 constant text := repeat('b', 64);
+  h3 constant text := repeat('c', 64);
+  r jsonb;
+begin
+  insert into public.access_codes (code_hash, scopes, note, max_uses) values (h1, '{pack:detektyw}', 'test', 2);
+  insert into public.access_codes (code_hash, scopes, expires_at) values (h2, '{all_content}', now() - interval '1 day');
+  insert into public.access_codes (code_hash, scopes, access_days) values (h3, '{pack:wyobraznia}', 30);
+
+  assert (public.redeem_access_code(ua, repeat('f', 64))->>'status') = 'invalid', 'unknown code';
+  assert (public.redeem_access_code(ua, h2)->>'status') = 'expired', 'expired code';
+  r := public.redeem_access_code(ua, h1);
+  assert r->>'status' = 'ok' and r->'scopes' = '["pack:detektyw"]', 'redeemed: ' || r::text;
+  assert public.can_download(ua, 'audio/detektyw/tajemnicze-znaki.m4a'), 'the code unlocks the pack for the guest account';
+  assert not public.can_download(ua, 'audio/wyobraznia/zaginiony-skarb.m4a'), 'only that pack';
+  assert (public.redeem_access_code(ua, h1)->>'status') = 'already', 'the same account twice';
+  assert (select uses from public.access_codes where code_hash = h1) = 1, 'uses counted once';
+  assert (public.redeem_access_code(u9, h1)->>'status') = 'ok', 'second use';
+  assert (select count(*) from public.entitlements where product_ref = 'code' and scope = 'pack:detektyw') = 2,
+    'two accounts hold their own rows (no clash on the unique key)';
+  assert (public.redeem_access_code(u1, h1)->>'status') = 'used_up', 'used up';
+
+  perform public.redeem_access_code(u1, h3);
+  assert (select valid_until from public.entitlements where user_id = u1 and scope = 'pack:wyobraznia' and product_ref = 'code')
+    between now() + interval '29 days' and now() + interval '31 days', 'timed access';
+
+  -- Guessing is limited: ten failures an hour, then even a good code waits.
+  for i in 1..10 loop
+    perform public.redeem_access_code(u9, repeat(i::text, 64));
+  end loop;
+  assert (public.redeem_access_code(u9, h3)->>'status') = 'rate_limited', 'rate limit after ten failures';
+
+  -- Orders: user 1 claims order 9100 (Detektyw) by number.
+  assert public.claim_order(ua, 9100, 'kupujacy@example.com', 'refunded', '{woo:7339}') = 'not_paid', 'refunded order';
+  assert public.claim_order(ua, 9100, 'kupujacy@example.com', 'completed', '{woo:999999}') = 'nothing', 'no app product';
+  assert public.claim_order(ua, 9100, 'kupujacy@example.com', 'completed', '{woo:7339,woo:999999}') = 'ok', 'claimed';
+  assert exists (select 1 from public.entitlements where user_id = ua and store_original_tx_id = 'woo:9100:woo:7339' and status = 'active'), 'granted';
+  assert public.claim_order(ua, 9100, 'kupujacy@example.com', 'completed', '{woo:7339}') = 'ok', 'the holder can claim again';
+  assert public.claim_order(u1, 9100, 'kupujacy@example.com', 'completed', '{woo:7339}') = 'taken', 'another account cannot take it';
+  assert (select user_id from public.entitlements where store_original_tx_id = 'woo:9100:woo:7339') = ua, 'still with the first';
+  perform public.note_claim_failure(u1, 'order');
+  assert (select count(*) from public.claim_attempts where user_id = u1 and kind = 'order' and not ok) >= 1, 'function-side failures are counted';
+  assert not has_function_privilege('authenticated', 'public.note_claim_failure(uuid, text)', 'execute'), 'service role only';
+  assert not has_function_privilege('authenticated', 'public.redeem_access_code(uuid, text)', 'execute'), 'service role only';
+  assert not has_function_privilege('authenticated', 'public.claim_order(uuid, bigint, text, text, text[])', 'execute'), 'service role only';
+  assert not has_table_privilege('authenticated', 'public.access_codes', 'select'), 'codes are not readable';
+end $$;
+select 'access code tests passed';

@@ -1,7 +1,7 @@
 // Called by the app after the parent signs in with the e-mail used on audiokiddo.pl.
 // Fetches that e-mail's shop orders (read-only REST key) and grants them (ARCHITECTURE §7a).
 // Secrets: WOO_URL, WOO_CONSUMER_KEY, WOO_CONSUMER_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
-import { normalizeEmail, parseWooOrder } from "../_shared/woo.ts";
+import { normalizeEmail, parseWooOrder, wooGet } from "../_shared/woo.ts";
 import { adminClient, env, json, requestUser } from "../_shared/supabase.ts";
 
 Deno.serve(async (req) => {
@@ -11,21 +11,11 @@ Deno.serve(async (req) => {
   if (!user?.email || !user.email_confirmed_at) return json({ error: "unauthorized" }, 401);
   const email = normalizeEmail(user.email);
 
-  const url = new URL("/wp-json/wc/v3/orders", env("WOO_URL"));
-  url.searchParams.set("search", email);
-  url.searchParams.set("status", "completed,refunded,cancelled");
-  url.searchParams.set("per_page", "100");
-  const key = env("WOO_CONSUMER_KEY");
-  const secret = env("WOO_CONSUMER_SECRET");
-  let response = await fetch(url, { headers: { Authorization: `Basic ${btoa(`${key}:${secret}`)}` } });
-  if (response.status === 401) {
-    // Some hosts drop the Authorization header before PHP sees it; WooCommerce then accepts
-    // the same key as query parameters (HTTPS only).
-    const withKey = new URL(url);
-    withKey.searchParams.set("consumer_key", key);
-    withKey.searchParams.set("consumer_secret", secret);
-    response = await fetch(withKey);
-  }
+  const response = await wooGet(env("WOO_URL"), env("WOO_CONSUMER_KEY"), env("WOO_CONSUMER_SECRET"), "/wp-json/wc/v3/orders", {
+    search: email,
+    status: "completed,refunded,cancelled",
+    per_page: "100",
+  });
   if (!response.ok) {
     console.warn(`sync-web-purchases: shop answered ${response.status}`);
     return json({ error: "shop" }, 502);

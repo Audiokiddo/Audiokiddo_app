@@ -244,6 +244,10 @@ Bez tego Supabase nie wyśle kodu nikomu poza członkami zespołu, a treści mai
 Do tego czasu ustawienia logowania (konta anonimowe, adres strony, 6-cyfrowy kod) wysyłasz bez szablonu maila: `tool/push_config_no_templates.sh`. Zwykłe `supabase config push` na planie Free odrzuca całość przez szablon.
 3. Napisz mi „SMTP gotowe”. Uruchomię w terminalu `supabase config push` (polski mail z kodem), a Ty zatwierdzisz Enterem.
 
+## Krok 14a. Dostęp ze sklepu, prezenty i kody (zrobione w kodzie 2026-10-03)
+
+Opis: `docs/DOSTEP-Z-SKLEPU.md`. Do wdrożenia przez Ciebie: `supabase db push` oraz `supabase functions deploy redeem-code claim-order sync-web-purchases`. Potem dopisz do maila „Zamówienie zrealizowane” w WooCommerce tekst z punktu „Co zrobić po stronie sklepu”. Kody robisz komendą `python3 tool/make_codes.py …`.
+
 ## Krok 15. Logowanie przez Google (20 min, po kroku 4)
 
 1. console.cloud.google.com → projekt `audiokiddo` → **Interfejsy API i usługi → Ekran zgody OAuth**: typ „Zewnętrzny”, nazwa AudioKiddo, e-mail wsparcia, logo (opcjonalnie), zakresy tylko `email` i `profile`.

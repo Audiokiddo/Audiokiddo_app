@@ -11,6 +11,7 @@ import '../features/catalog/home_screen.dart';
 import '../features/catalog/library_filter.dart';
 import '../features/catalog/library_screen.dart';
 import '../features/access/dev_tools_screen.dart';
+import '../features/account/access_screen.dart';
 import '../features/account/account_screen.dart';
 import '../features/games/game_screen.dart';
 import '../features/kids_mode/kids_home_screen.dart';
@@ -102,6 +103,7 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
     GoRoute(path: '/dobranoc', builder: (context, state) => const BedtimeScreen()),
     GoRoute(path: '/sesja', builder: (context, state) => const SessionScreen()),
     GoRoute(path: '/konto', builder: (context, state) => const AccountScreen()),
+    GoRoute(path: '/dostep', builder: (context, state) => const AccessScreen()),
     GoRoute(
       path: '/oferta',
       builder: (context, state) => PaywallScreen(itemId: state.uri.queryParameters['zabawa']),

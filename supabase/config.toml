@@ -448,3 +448,10 @@ verify_jwt = false
 # Free files need no account; paid ones are checked in the function (can_download).
 [functions.download-url]
 verify_jwt = false
+
+# Both check the caller themselves (auth.getUser on the bearer token), like the other functions.
+[functions.redeem-code]
+verify_jwt = false
+
+[functions.claim-order]
+verify_jwt = false

@@ -571,10 +571,10 @@ class _HelpBlock extends ConsumerWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.storefront_rounded, color: AkBrand.tealDeep),
-          title: const Text('Kupione na audiokiddo.pl?'),
-          subtitle: const Text('Zaloguj się tym samym adresem e-mail, a pakiety pojawią się tutaj.'),
+          title: const Text('Masz już dostęp z audiokiddo.pl?'),
+          subtitle: const Text('Zaloguj się e-mailem, podaj numer zamówienia albo wpisz kod.'),
           trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: () => context.push('/konto'),
+          onTap: () => context.push('/dostep'),
         ),
         ListTile(
           contentPadding: EdgeInsets.zero,

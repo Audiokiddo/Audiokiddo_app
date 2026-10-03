@@ -97,7 +97,7 @@ void main() {
       expect(find.textContaining('Za darmo:'), findsWidgets);
       await tester.scrollUntilVisible(find.textContaining('taniej o 9,99'), 200, scrollable: mainScroll);
       expect(find.textContaining('taniej o 9,98'), findsOneWidget, reason: 'three packs: 169,97 − 159,99');
-      await tester.scrollUntilVisible(find.text('Kupione na audiokiddo.pl?'), 200, scrollable: mainScroll);
+      await tester.scrollUntilVisible(find.text('Masz już dostęp z audiokiddo.pl?'), 200, scrollable: mainScroll);
     });
 
     testWidgets('a pack page sells after the gate; owned packs say so', (tester) async {

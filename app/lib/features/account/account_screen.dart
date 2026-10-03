@@ -1,6 +1,7 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/theme/tokens.dart';
@@ -190,6 +191,13 @@ class _SignedInState extends ConsumerState<_SignedIn> {
               iconColor: const Color(0xFF2F6FDB),
               title: l10n.accountRefresh,
               onTap: _busy ? null : _refresh,
+            ),
+            GroupedRow(
+              icon: Icons.redeem_rounded,
+              iconColor: const Color(0xFF8A5CC9),
+              title: 'Kod albo numer zamówienia',
+              chevron: true,
+              onTap: _busy ? null : () => context.push('/dostep'),
             ),
           ],
         ),

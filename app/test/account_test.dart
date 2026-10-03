@@ -73,6 +73,29 @@ class FakeAccountService implements AccountService {
     return shopScopes.length;
   }
 
+  /// What redeemCode / claimOrder answer next; every call is recorded in [claims].
+  ClaimResult claimResult = const ClaimResult(ClaimStatus.notFound);
+  final claims = <String>[];
+
+  Future<ClaimResult> _claim(String what) async {
+    if (offline) throw const AccountException(AccountError.offline);
+    claims.add(what);
+    if (claimResult.granted) {
+      _entitlements = [
+        ..._entitlements,
+        for (final scope in claimResult.scopes)
+          Entitlement(scope: scope, status: EntitlementStatus.active, source: EntitlementSource.manual),
+      ];
+    }
+    return claimResult;
+  }
+
+  @override
+  Future<ClaimResult> redeemCode(String code) => _claim('code:$code');
+
+  @override
+  Future<ClaimResult> claimOrder(String order, String email) => _claim('order:$order:$email');
+
   @override
   Future<List<Entitlement>> entitlements() async {
     if (offline) throw const AccountException(AccountError.offline);
