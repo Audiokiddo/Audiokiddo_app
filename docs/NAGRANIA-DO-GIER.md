@@ -68,6 +68,15 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 | `q_auta` | Uwaga! Samochody jeżdżą po chmurach. |
 | `a_auta` | Nie! Samochody jeżdżą po drogach. |
 
+## Prawdziwe nagrania zabaw (wgrywanie do aplikacji)
+
+Stan: prawdziwe nagrania ma tylko pakiet **Słowa i Wiedza**. Detektyw, Wyobraźnia i piosenki grają głosem zastępczym z syntezatora.
+
+1. Wrzuć pliki (MP3, M4A, WAV) do `AudioKiddo-materialy/<folder>/`, po jednym na zabawę, z **tytułem zabawy w nazwie pliku**, np. `Znikające dzwonki rowerowe.mp3` albo `3. Mikstura.wav`. Foldery: `detektyw`, `wyobraznia`, `slowa-i-wiedza`, `piosenki`.
+2. `python3 tool/import_recordings.py` (najpierw można sprawdzić na sucho: `--dry-run`). Skrypt wypisuje, co do czego dopasował i które pliki nie pasują do żadnej zabawy. Konwertuje na AAC 96 kb/s, wpisuje prawdziwy czas i sumy kontrolne do katalogu i od nowa wycina darmowe fragmenty.
+3. `tool/files_update.sh` robi ZIP z samymi nagraniami (bez zmiany klucza). Wgraj go do `wp-content/plugins/audiokiddo-pliki/` przez Menedżer plików LH.pl i rozpakuj z nadpisaniem.
+4. `tool/phone_build.sh` (i później wersja sklepowa): katalog z nowymi sumami kontrolnymi jest w aplikacji.
+
 ## Głos Szop’ena (aplikacja)
 
 Krótkie kwestie Szop'ena von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). Radośnie, z uśmiechem, bez muzyki pod spodem.
