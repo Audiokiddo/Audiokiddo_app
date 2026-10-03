@@ -70,12 +70,14 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 
 ## Prawdziwe nagrania zabaw (wgrywanie do aplikacji)
 
-Stan: prawdziwe nagrania ma tylko pakiet **Słowa i Wiedza**. Detektyw, Wyobraźnia i piosenki grają głosem zastępczym z syntezatora.
+Stan (3.10.2026): prawdziwe nagrania mają pakiety **Słowa i Wiedza**, **Wyobraźnia** i **Detektyw** (wgrane do katalogu, czekają na serwer). Piosenki grają jeszcze głosem zastępczym z syntezatora.
 
 1. Wrzuć pliki (MP3, M4A, WAV) do `AudioKiddo-materialy/<folder>/`, po jednym na zabawę, z **tytułem zabawy w nazwie pliku**, np. `Znikające dzwonki rowerowe.mp3` albo `3. Mikstura.wav`. Foldery: `detektyw`, `wyobraznia`, `slowa-i-wiedza`, `piosenki`.
 2. `python3 tool/import_recordings.py` (najpierw można sprawdzić na sucho: `--dry-run`). Skrypt wypisuje, co do czego dopasował i które pliki nie pasują do żadnej zabawy. Konwertuje na AAC 96 kb/s, wpisuje prawdziwy czas i sumy kontrolne do katalogu i od nowa wycina darmowe fragmenty.
-3. `tool/files_update.sh` robi ZIP z samymi nagraniami (bez zmiany klucza). Wgraj go do `wp-content/plugins/audiokiddo-pliki/` przez Menedżer plików LH.pl i rozpakuj z nadpisaniem.
-4. `tool/phone_build.sh` (i później wersja sklepowa): katalog z nowymi sumami kontrolnymi jest w aplikacji.
+   PDF-y w tym samym folderze: plik z „Akta sprawy” w nazwie i tytułem zabawy trafia do tej zabawy jako wydruk, plik zaczynający się od „Przewodnik” to bezpłatny przewodnik pakietu (strona pakietu w aplikacji). Duże PDF-y są zmniejszane (`tool/shrink_pdf.py`, np. akta 13 MB → 3 MB).
+3. `tool/files_update.sh detektyw wyobraznia slowa-i-wiedza` robi osobny ZIP dla każdego pakietu (bez zmiany klucza). Wgraj je do `wp-content/plugins/audiokiddo-pliki/` przez Menedżer plików LH.pl i rozpakuj z nadpisaniem. Nowe pliki z przewodnikami wymagają jeszcze `supabase db push`.
+4. `python3 tool/verify_server_files.py` sprawdza, czy pliki na serwerze zgadzają się z katalogiem (rozmiar i suma kontrolna); darmowe zabawy, fragmenty i przewodniki sprawdza w całości, płatne pomija.
+5. `tool/phone_build.sh` (i później wersja sklepowa): katalog z nowymi sumami kontrolnymi jest w aplikacji. Instalować dopiero po kroku 3, bo inaczej telefon odrzuci pobranie (suma się nie zgodzi).
 
 ## Głos Szop’ena (aplikacja)
 
