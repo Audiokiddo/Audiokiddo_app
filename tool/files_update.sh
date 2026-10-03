@@ -16,6 +16,10 @@ cd "$(dirname "$0")/.."
 [[ -d dev_content/audio ]] || { echo "Brak folderu dev_content z nagraniami."; exit 1; }
 out="$(cd .. && pwd)/AudioKiddo-na-serwer"
 mkdir -p "$out"
+# The same files unpacked, for FTP (FileZilla): drag the "nagrania" folder into the plugin folder.
+ftp="$out/do-wgrania"
+rm -rf "$ftp"
+mkdir -p "$ftp"
 
 build() { # build <zip name> <pack or "">
   local name=$1 pack=$2 work
@@ -31,6 +35,8 @@ build() { # build <zip name> <pack or "">
       cp -R "dev_content/$kind/$pack" "$work/nagrania/$kind/"
     done
   fi
+  find "$work" -name .DS_Store -delete
+  cp -R "$work/nagrania" "$ftp/"
   rm -f "$out/$name"
   (cd "$work" && zip -qr -X "$out/$name" nagrania -x '*.DS_Store')
   rm -rf "$work"
@@ -43,6 +49,6 @@ if [[ $# -eq 0 ]]; then
 else
   for pack in "$@"; do build "nagrania-$pack.zip" "$pack"; done
 fi
-echo "1. LH.pl → Serwery → Menedżer plików → public_html/wp-content/plugins/audiokiddo-pliki/"
-echo "2. Wgraj ZIP-y po kolei, rozpakuj każdy z nadpisaniem, usuń ZIP-y z serwera."
+echo "Rozpakowane do FTP: $ftp/nagrania (przeciągnij do wp-content/plugins/audiokiddo-pliki/ w FileZilli)."
+echo "Albo: Menedżer plików LH.pl → wgraj ZIP-y, rozpakuj z nadpisaniem, usuń ZIP-y z serwera."
 echo "3. Nową wersję aplikacji (katalog z sumami kontrolnymi) instaluje tool/phone_build.sh."
