@@ -15,6 +15,16 @@ void main() {
   ).catalog;
   final files = Directory('assets/covers').listSync().whereType<File>().where((f) => f.path.endsWith('.jpg'));
 
+  test('every pack has a guide and every Detektyw play has its case file', () {
+    for (final pack in catalog.packs) {
+      expect(pack.guide?.path, 'pdf/${pack.id}/przewodnik.pdf', reason: pack.id);
+    }
+    for (final item in catalog.itemsInPack('detektyw')) {
+      expect(item.pdf.single.path, 'pdf/detektyw/${item.id}.pdf');
+      expect(item.pdf.single.bytes, greaterThan(500 * 1024), reason: '${item.id} is a real case file');
+    }
+  });
+
   test('every cover file belongs to a play and is a square of the agreed size', () async {
     expect(files, isNotEmpty);
     for (final file in files) {

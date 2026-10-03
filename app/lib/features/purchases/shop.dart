@@ -11,6 +11,7 @@ import '../../core/storage/storage_providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
 import '../parental_gate/parental_gate.dart';
+import '../pdf/pdf_screen.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'store_gateway.dart';
@@ -171,4 +172,14 @@ Future<void> hidePackSuggestion(WidgetRef ref, String packId) async {
   final until = ref.read(clockProvider)().add(const Duration(days: 7));
   await ref.read(databaseProvider).writeValue(_hiddenSuggestionKey, '$packId|${until.toIso8601String()}');
   ref.invalidate(hiddenPackSuggestionProvider);
+}
+
+/// The pack's guide for parents (a free PDF): a parent area, so it opens after the gate.
+Future<void> openGuide(BuildContext context, AssetRef guide, String packTitle) async {
+  if (!await showParentalGate(context) || !context.mounted) return;
+  await Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => PdfScreen(asset: guide, title: 'Przewodnik: $packTitle'),
+    ),
+  );
 }

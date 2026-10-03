@@ -9,6 +9,7 @@ import 'package:audiokiddo/features/purchases/shop.dart';
 import 'package:audiokiddo/features/purchases/store_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'screens_test.dart' show mainScroll, pumpApp;
 
@@ -114,6 +115,21 @@ void main() {
       await tester.tap(find.text('Kup pakiet · 49,99 zł'));
       await tester.pumpAndSettle();
       expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'buying asks an adult first');
+    });
+
+    testWidgets('the pack page offers the free guide for parents', (tester) async {
+      await pumpApp(tester);
+      GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/pakiet/detektyw');
+      await tester.pumpAndSettle();
+      expect(find.text('Przewodnik po pakiecie (PDF)'), findsOneWidget);
+      await Scrollable.ensureVisible(
+        tester.element(find.text('Przewodnik po pakiecie (PDF)')),
+        alignment: .4,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Przewodnik po pakiecie (PDF)'));
+      await tester.pumpAndSettle();
+      expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'a link out asks an adult first');
     });
 
     testWidgets('with the subscription everything is unlocked', (tester) async {

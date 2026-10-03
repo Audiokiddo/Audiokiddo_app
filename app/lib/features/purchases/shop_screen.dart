@@ -690,6 +690,14 @@ class PackScreen extends ConsumerWidget {
                       const SizedBox(height: 12),
                       Text(pack.description, style: text.bodyMedium),
                     ],
+                    if (pack.guide case final guide?) ...[
+                      const SizedBox(height: 14),
+                      OutlinedButton.icon(
+                        onPressed: () => openGuide(context, guide, pack.title),
+                        icon: const Icon(Icons.menu_book_rounded),
+                        label: const Text('Przewodnik po pakiecie (PDF)'),
+                      ),
+                    ],
                     if (summary.skills.isNotEmpty) ...[
                       const RefSection('Co ćwiczy'),
                       Wrap(

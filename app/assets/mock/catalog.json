@@ -10,7 +10,12 @@
    "color": "lavender",
    "description": "Profesor Fantazjusz i Czarodziejka Nela zabierają dziecko do krainy wyobraźni: tworzy własne historie, odpowiada na pytania i wykonuje zadania.",
    "store_product_id": "pl.audiokiddo.pack.wyobraznia",
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "guide": {
+    "path": "pdf/wyobraznia/przewodnik.pdf",
+    "bytes": 1865664,
+    "sha256": "de0e98e040fbe49c9d2fa6af1d16213d0f5a7d5a435ca43bc915302408d060e7"
+   }
   },
   {
    "id": "slowa-i-wiedza",
@@ -19,7 +24,12 @@
    "color": "teal",
    "description": "Zagadki, łamigłówki i zabawy słowne: słownictwo, skojarzenia i logiczne myślenie.",
    "store_product_id": "pl.audiokiddo.pack.slowa_i_wiedza",
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "guide": {
+    "path": "pdf/slowa-i-wiedza/przewodnik.pdf",
+    "bytes": 1953678,
+    "sha256": "7702fe3b87b7fcccacf29d7b4d1dcf755717533a942dc5bab9eaafa5c5912891"
+   }
   },
   {
    "id": "detektyw",
@@ -28,7 +38,12 @@
    "color": "sun",
    "description": "Detektywistyczne przygody z Maxem i Milą oraz akta spraw do wydrukowania.",
    "store_product_id": "pl.audiokiddo.pack.detektyw",
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "guide": {
+    "path": "pdf/detektyw/przewodnik.pdf",
+    "bytes": 1887463,
+    "sha256": "3c995b1f0274d28287fbfc8eb203403fcc3be446b8164ae4f10d5baa675d7e57"
+   }
   }
  ],
  "items": [
@@ -39,7 +54,7 @@
    "title": "Magiczny sklep",
    "parent_description": "Dziecko trafia do magicznego sklepu i wymyśla, do czego służą niezwykłe przedmioty.",
    "age_min": 3,
-   "duration_sec": 360,
+   "duration_sec": 357,
    "situations": [
     "podroz",
     "w_domu",
@@ -53,8 +68,8 @@
    "audio": [
     {
      "path": "audio/wyobraznia/magiczny-sklep.m4a",
-     "bytes": 295850,
-     "sha256": "6c842de4933d6d6740c81089bcbdae2b5e03d971318b458c939765e652a23a57"
+     "bytes": 4414364,
+     "sha256": "3e0716deea785f2157d47946fc2def6f0aff4740deea0212cf050c2d52a375c6"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.magiczny_sklep",
@@ -67,7 +82,7 @@
    "title": "Zaginiony skarb",
    "parent_description": "Wyprawa poszukiwacza przygód: zagadki i decyzje w drodze do skarbu.",
    "age_min": 3,
-   "duration_sec": 480,
+   "duration_sec": 456,
    "situations": [
     "podroz",
     "w_domu",
@@ -81,15 +96,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/zaginiony-skarb.m4a",
-     "bytes": 296580,
-     "sha256": "98833d9a29d68bf799d85f6cc304cc13249821dc18bcc7e369e0738cbca3688a"
+     "bytes": 5649089,
+     "sha256": "e23aa0acb992bb3bcec949cc458d330e2438e620a8d07e491e5127e6bd48c5c9"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.zaginiony_skarb",
    "preview": {
     "path": "previews/wyobraznia/zaginiony-skarb.m4a",
-    "bytes": 293778,
-    "sha256": "eb433bb0eace60429f445d1dcd16e7f1a39cf458516db672605e14b3dafe621c"
+    "bytes": 373187,
+    "sha256": "ebf4d17b0e93ae66d6d68eda2c601f49d431601dae4d1e99e343288f1a071103"
    },
    "released": "2026-09-01"
   },
@@ -100,7 +115,7 @@
    "title": "Podróż na inną planetę",
    "parent_description": "Dziecko tworzy własną planetę: jej nazwę, mieszkańców i zwyczaje.",
    "age_min": 3,
-   "duration_sec": 300,
+   "duration_sec": 292,
    "situations": [
     "podroz",
     "w_domu",
@@ -114,15 +129,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/podroz-na-inna-planete.m4a",
-     "bytes": 297779,
-     "sha256": "1e63e8cb8b99bfb1b8bdb397d3b23d3aa4ff7355132bbe8b1df76c509f17af26"
+     "bytes": 3627345,
+     "sha256": "5b8c7ec84196688faee1a679d7a0afefd129725f362ed4fb42a838e2d6c42b2f"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.podroz_na_inna_planete",
    "preview": {
     "path": "previews/wyobraznia/podroz-na-inna-planete.m4a",
-    "bytes": 294556,
-    "sha256": "71fff2cd7ee4a37799a1c46c5c7ad1333943972e15c3b2ac9d80c5efb8d72af1"
+    "bytes": 372357,
+    "sha256": "6daeb114af750f317b4cc46c7376cb4cc98b3ce83cf29ff82d5213d41d6f8e1f"
    },
    "released": "2026-09-01"
   },
@@ -133,7 +148,7 @@
    "title": "Wymyśl znaczenie",
    "parent_description": "Zabawa słowami: własne definicje dla nieznanych wyrazów.",
    "age_min": 3,
-   "duration_sec": 420,
+   "duration_sec": 390,
    "situations": [
     "podroz",
     "w_domu",
@@ -147,15 +162,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/wymysl-znaczenie.m4a",
-     "bytes": 295745,
-     "sha256": "7bed256b7a3ae974006cc36f24579bd303af8bbadd56151421f65a9009550707"
+     "bytes": 4858356,
+     "sha256": "e8e512faf1b6dde5267a4689285bcf89ffce67757c72f2b4e35d5c9fe858331d"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.wymysl_znaczenie",
    "preview": {
     "path": "previews/wyobraznia/wymysl-znaczenie.m4a",
-    "bytes": 293110,
-    "sha256": "b48a1b2f961814107edc5c7a7398ea30e5a247b634c5be493f7101b76dad73c6"
+    "bytes": 372439,
+    "sha256": "20127e28a15bbd9d769644556230b2b3ae63cea7dfa7998b8887399aad2ad994"
    },
    "released": "2026-09-01"
   },
@@ -166,7 +181,7 @@
    "title": "Mikstura",
    "parent_description": "Młody alchemik wybiera składniki i tworzy własną miksturę.",
    "age_min": 3,
-   "duration_sec": 420,
+   "duration_sec": 406,
    "situations": [
     "podroz",
     "w_domu",
@@ -180,15 +195,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/mikstura.m4a",
-     "bytes": 293242,
-     "sha256": "ff3592a39ec40790f277de42fa2a38a086fa65db92eeeab01af8997f26130885"
+     "bytes": 5061857,
+     "sha256": "cee3f7430efff567e73b558b0e154d8684914a92018c9f22ff3e1c41605164ab"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.mikstura",
    "preview": {
     "path": "previews/wyobraznia/mikstura.m4a",
-    "bytes": 292243,
-    "sha256": "336ae6fdc8bed374cc758aa31ccc889f77150a8e3ee36f5d4192bcb72915a54a"
+    "bytes": 372849,
+    "sha256": "06fbbc6ab98bc58ea5e91d54e615c3ed3870a683da0355d1f10d3d0bbff66d3f"
    },
    "released": "2026-09-01"
   },
@@ -199,7 +214,7 @@
    "title": "Mój superbohater",
    "parent_description": "Projektowanie wymarzonego bohatera: supermoce, wygląd, zadania.",
    "age_min": 3,
-   "duration_sec": 480,
+   "duration_sec": 471,
    "situations": [
     "podroz",
     "w_domu",
@@ -213,15 +228,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/moj-superbohater.m4a",
-     "bytes": 296094,
-     "sha256": "598eb839532bba68de6ce326b1b0ec171e2910097ab785bfc3a6164d95eb9fa5"
+     "bytes": 5877906,
+     "sha256": "d28c391bf557ecfe6b6d4268b80ffea6d74e7e474dee2e64235058f530ab9b88"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.moj_superbohater",
    "preview": {
     "path": "previews/wyobraznia/moj-superbohater.m4a",
-    "bytes": 293565,
-    "sha256": "3b0031e943297531ade008be67976f1608c44d62cb7f6466329392e58e327da2"
+    "bytes": 372440,
+    "sha256": "53e277b2b51ae986b3f6429833f474ff172978886098123543ce92f6dc4d0ba2"
    },
    "released": "2026-09-01"
   },
@@ -232,7 +247,7 @@
    "title": "Dokończ historię",
    "parent_description": "Prowadzący zaczyna opowieść, dziecko wymyśla jej ciąg dalszy.",
    "age_min": 3,
-   "duration_sec": 360,
+   "duration_sec": 361,
    "situations": [
     "podroz",
     "w_domu",
@@ -246,15 +261,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/dokoncz-historie.m4a",
-     "bytes": 295833,
-     "sha256": "ee77cb4c68e3e8d8ca106672671ce9d858de714e3b75985f2a53c6861d4e8f67"
+     "bytes": 4540942,
+     "sha256": "27d20ef313fc3d546539ec3a6f832621ae0b0ae1b4931d874831c858d32de4c7"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.dokoncz_historie",
    "preview": {
     "path": "previews/wyobraznia/dokoncz-historie.m4a",
-    "bytes": 292754,
-    "sha256": "d284df0168cb5022eaab0c2d03ca07c78f3300bab9d96042cc7479995aee3a0d"
+    "bytes": 372234,
+    "sha256": "939d336e808443b220d3267b2fb04baf96bb2bc25544028812e2ce646d83813a"
    },
    "released": "2026-09-01"
   },
@@ -265,7 +280,7 @@
    "title": "Mistrz kuchni",
    "parent_description": "Dziecko jako szef kuchni tworzy własne danie.",
    "age_min": 3,
-   "duration_sec": 360,
+   "duration_sec": 327,
    "situations": [
     "podroz",
     "w_domu",
@@ -279,15 +294,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/mistrz-kuchni.m4a",
-     "bytes": 294609,
-     "sha256": "d918e774ff631d7903f382acef4923c5a5071188cb440cc2d796331ec0120276"
+     "bytes": 4059654,
+     "sha256": "c4898ba90aa77053346d4d3387210a4898349b153b6908848539c4ef35fc4593"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.mistrz_kuchni",
    "preview": {
     "path": "previews/wyobraznia/mistrz-kuchni.m4a",
-    "bytes": 292873,
-    "sha256": "3ac8a0d0aa57735eada060702fb66b9b8f8690867179277f86dd4a20aecf0c50"
+    "bytes": 372294,
+    "sha256": "9e868712349101c6a93a4549740831777ccf0abd49a3bf4d746b2bcf2e516d06"
    },
    "released": "2026-09-01"
   },
@@ -298,7 +313,7 @@
    "title": "Magiczny teatr",
    "parent_description": "Reżyserowanie spektaklu: fabuła, postacie i scenografia.",
    "age_min": 3,
-   "duration_sec": 540,
+   "duration_sec": 525,
    "situations": [
     "podroz",
     "w_domu",
@@ -312,15 +327,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/magiczny-teatr.m4a",
-     "bytes": 295014,
-     "sha256": "aa2b09cd0bc9dc70d514806d6c22cd3cf7df3d538fb4eeb5580b2b3147ad5f59"
+     "bytes": 6532840,
+     "sha256": "9c462696323ddede3dd1dc15c6d2b858bbd59b0282e629474285582e08d61808"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.magiczny_teatr",
    "preview": {
     "path": "previews/wyobraznia/magiczny-teatr.m4a",
-    "bytes": 293273,
-    "sha256": "3d4f63d1373e8b38f63c4ec4fa5d37b76d86c376a14a88b48dd810961594d1f6"
+    "bytes": 372286,
+    "sha256": "89ac0ed2863ec94009be898e285bc076887cb25256bccbc353c5df25ac91cbb9"
    },
    "released": "2026-09-01"
   },
@@ -331,7 +346,7 @@
    "title": "Co oni odpowiedzieli?",
    "parent_description": "Co powie książka albo pingwin? Zabawne odpowiedzi w różnych rolach.",
    "age_min": 3,
-   "duration_sec": 480,
+   "duration_sec": 441,
    "situations": [
     "podroz",
     "w_domu",
@@ -345,15 +360,15 @@
    "audio": [
     {
      "path": "audio/wyobraznia/co-oni-odpowiedzieli.m4a",
-     "bytes": 296225,
-     "sha256": "99b225d58ceff9901b882efea7aa1c43403d32f693b6e3f47081b4c6eca0b3ab"
+     "bytes": 5495384,
+     "sha256": "cd5cdb821f643e91fad618391b66c18d05d6549348eaeea3825a258f2417a013"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.co_oni_odpowiedzieli",
    "preview": {
     "path": "previews/wyobraznia/co-oni-odpowiedzieli.m4a",
-    "bytes": 293655,
-    "sha256": "b343c2ec52c8b9d95fedd028453793ab62a8de09c52e807e31fa4eff88b01e9f"
+    "bytes": 371923,
+    "sha256": "fd2c750b1eff2fa5f7259e847c471f93e3fc9f1ef267f1d7eaffc5da9d215182"
    },
    "released": "2026-09-01"
   },
@@ -378,8 +393,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-to-za-przedmiot.m4a",
-     "bytes": 5150010,
-     "sha256": "ccfc22c3b67388f56e829b3ae8022f551e4ca8cfb5bcfe41467a2ac480456720"
+     "bytes": 5148597,
+     "sha256": "b9942b8b1da831ebd0440a5b9d0ab2e73703d63bd9b4a4be85c534cf6c984527"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.co_to_za_przedmiot",
@@ -392,8 +407,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/co-to-za-przedmiot.m4a",
-    "bytes": 373030,
-    "sha256": "32ccc8be843cb1e3048a38ed9611d3d0ad3e741292a1ff462d17e26b6ab9b4e6"
+    "bytes": 372805,
+    "sha256": "65fb1b0a17ec1645467eb37dc0371cbf676dd7c012340052b105a17dc33fde4c"
    },
    "released": "2026-09-01"
   },
@@ -418,8 +433,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-to-za-dzwiek.m4a",
-     "bytes": 5312596,
-     "sha256": "02671b0c5673f3aac28f2eae0bacf41c1a3c7611f21df414e849d339d4f1b7c7"
+     "bytes": 5311555,
+     "sha256": "8a1e82421b853d607c2924cb7a71db7f188e16b4f62539b0b9774af30f8ba0d3"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.co_to_za_dzwiek",
@@ -453,8 +468,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/szybkie-skojarzenia.m4a",
-     "bytes": 3057580,
-     "sha256": "9669e9c096b29c21d1ef2b33ed854a789ac05ce2f1adbfea417aaebd5a961d9c"
+     "bytes": 3058638,
+     "sha256": "fdd1d64126481857e6383ebaaf3fa212270d80d1ed716db8b57a23e6fa734262"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.szybkie_skojarzenia",
@@ -467,8 +482,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/szybkie-skojarzenia.m4a",
-    "bytes": 373115,
-    "sha256": "30837d092aeb86fc9b55be93e29a3293a5af54ea83e19a91d8513dd372c60485"
+    "bytes": 373187,
+    "sha256": "11df91fa1e5c8a654980d0c208208efcbbb314a5e637e425e7c91ee6f535d578"
    },
    "released": "2026-09-01"
   },
@@ -493,8 +508,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/co-tu-nie-pasuje.m4a",
-     "bytes": 3178548,
-     "sha256": "8107577e160062b0165bc920d02dfcbd88bdc2bc1d1d93a0e112b91e30238996"
+     "bytes": 3178818,
+     "sha256": "4edbb13a7eedfd128129f129aa7417e64dc5b8772259a45c463ce7fddf3c9a67"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.co_tu_nie_pasuje",
@@ -507,8 +522,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/co-tu-nie-pasuje.m4a",
-    "bytes": 372124,
-    "sha256": "6f49d18215471d56512448ae84b40f3650c44a2a5178f2477a0114a1ad37c09a"
+    "bytes": 372138,
+    "sha256": "ad15cd473d4011fcb4238bb36a2180b42e322e74a93c00c5edbd2cb7f502feda"
    },
    "released": "2026-09-01"
   },
@@ -519,7 +534,7 @@
    "title": "Wymień trzy",
    "parent_description": "Trzy pasujące odpowiedzi na każde pytanie, np. zwierzęta z zoo.",
    "age_min": 3,
-   "duration_sec": 375,
+   "duration_sec": 411,
    "situations": [
     "podroz",
     "w_domu",
@@ -533,8 +548,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/wymien-trzy.m4a",
-     "bytes": 4672040,
-     "sha256": "67c00dc6990d05b9b2afeb3556970b69d8b98d76d96ff698df6732edffd541ae"
+     "bytes": 5110206,
+     "sha256": "573aab9b5674d1e53d8ab363bad32bdb5a1f1fb4570913142b7a75f1f52b8839"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.wymien_trzy",
@@ -547,8 +562,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/wymien-trzy.m4a",
-    "bytes": 372018,
-    "sha256": "4875164fd81ee40bbfd658ada84a63dbfd71cc0ca2c4abf98f6b68a575f6a6d4"
+    "bytes": 371361,
+    "sha256": "5e57721d729fa8e9feee929d3eedf647763516735b88ccecba36b42cfb47ad2b"
    },
    "released": "2026-09-01"
   },
@@ -573,8 +588,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/znajdz-przeciwienstwo.m4a",
-     "bytes": 5013861,
-     "sha256": "9ffb5f9969c21ca9cf06954aeeecef9ba10eb0a004206d7e40c8d51bffd73ee7"
+     "bytes": 5012580,
+     "sha256": "4b92a8f92aa778b89073ce60a9daeebae2097d808b95b9fa19804bae2e69a512"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.znajdz_przeciwienstwo",
@@ -587,8 +602,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/znajdz-przeciwienstwo.m4a",
-    "bytes": 372400,
-    "sha256": "280cb0f132d87876653502ecc51aab1f7d2d12d5edad414ea59644a1bcc3c42a"
+    "bytes": 372605,
+    "sha256": "75e04732246547f2c87a27c45ac139d0a7b0cccd4bf36b31ce1a3a69ca9d4a9e"
    },
    "released": "2026-09-01"
   },
@@ -599,7 +614,7 @@
    "title": "Znajdź synonimy",
    "parent_description": "Szukanie słów o podobnym znaczeniu.",
    "age_min": 3,
-   "duration_sec": 258,
+   "duration_sec": 242,
    "situations": [
     "podroz",
     "w_domu",
@@ -613,8 +628,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/znajdz-synonimy.m4a",
-     "bytes": 3200728,
-     "sha256": "a6288883610aeba10df557306434e33e2b5c1633dd46c2767095e0cd1c676103"
+     "bytes": 2994434,
+     "sha256": "ce0fa5f0471dc5b9a805b7e27e4a39988ab821909ace9dd035b72ceb725e0367"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.znajdz_synonimy",
@@ -627,8 +642,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/znajdz-synonimy.m4a",
-    "bytes": 372285,
-    "sha256": "a6853192bb4e14c49feb0860b2c3c2ce4553c0a1d19037ea4ca182c08230ebdf"
+    "bytes": 372521,
+    "sha256": "198c57ba3ae7715cec096fde5069f36838dfe417a422036f1094e2e290b3f6ed"
    },
    "released": "2026-09-01"
   },
@@ -653,8 +668,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/uloz-zdanie.m4a",
-     "bytes": 4493246,
-     "sha256": "894383b7bde12436ad3615eabf97eb62a1cc64a2a876646157f2fb29fe8b713f"
+     "bytes": 4492698,
+     "sha256": "77c32f17752fa6b0c7c3a94fe6efee23f88b8dca30065f59408c010294dff461"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.uloz_zdanie",
@@ -667,8 +682,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/uloz-zdanie.m4a",
-    "bytes": 372545,
-    "sha256": "530a82330733a5cdd9ec6f5ac5a1a843cf42c9f61d31438b7a3e77632732bf9b"
+    "bytes": 372494,
+    "sha256": "e3b087dd5da46795513817ecc1c370965923758e89c1c48c08acbc4c06cd606b"
    },
    "released": "2026-09-01"
   },
@@ -693,8 +708,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a",
-     "bytes": 5292276,
-     "sha256": "babf7559e0656a567e351af56df039d57440d0515aad91fece97cfc90c5ffe91"
+     "bytes": 5291654,
+     "sha256": "6e9c14d3731781f67eea5694370f572ebb44e395e728021e2b804d6198011de1"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.dokoncz_zgodnie_z_prawda",
@@ -707,8 +722,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a",
-    "bytes": 372831,
-    "sha256": "74b0a467e569c2fa76ebbc96fe7eb0b955d814dd0fb9b29b872c4ecbb32579df"
+    "bytes": 372792,
+    "sha256": "e9987766ca5150b42db7235d2a9c94e56310e3fbaba7a735f1aeaa2cd66a5de2"
    },
    "released": "2026-09-01"
   },
@@ -733,8 +748,8 @@
    "audio": [
     {
      "path": "audio/slowa-i-wiedza/kto-to-powiedzial.m4a",
-     "bytes": 5315556,
-     "sha256": "7252d54ca762ba663bfb03972dba1a2788d5201df5bdba6d2aaef81c92cafd1c"
+     "bytes": 5317513,
+     "sha256": "ad639bd5c33e50c16840c1822233856d98763e87099fd9670ed5885af169f9d9"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.kto_to_powiedzial",
@@ -747,8 +762,8 @@
    ],
    "preview": {
     "path": "previews/slowa-i-wiedza/kto-to-powiedzial.m4a",
-    "bytes": 372273,
-    "sha256": "acfaa161d6d04ec5ee3ba1f7ba99c61280efe114ee8ba595b1367749306018e2"
+    "bytes": 372856,
+    "sha256": "6e20a2804f795b36906a808646f636c42850b9bbe14ec1a71824d7d535a4a29e"
    },
    "released": "2026-09-01"
   },
@@ -760,7 +775,7 @@
    "subtitle": "Max i Mila",
    "parent_description": "Max i Mila dostają ostrzeżenie o planowanej kradzieży na balu. Do zabawy przydają się wydrukowane akta sprawy.",
    "age_min": 6,
-   "duration_sec": 960,
+   "duration_sec": 1080,
    "situations": [
     "w_domu",
     "podroz"
@@ -777,15 +792,15 @@
    "audio": [
     {
      "path": "audio/detektyw/zlodziej-naszyjnika.m4a",
-     "bytes": 296463,
-     "sha256": "1ecff9369b0acea22f5067241cd19594fce92dffd7017a91752f0bf496caa249"
+     "bytes": 13467130,
+     "sha256": "3f4e09bb39c5f4d34757311f779827685272bdcec8cbb72ae9a986b9c18ab6e6"
     }
    ],
    "pdf": [
     {
      "path": "pdf/detektyw/zlodziej-naszyjnika.pdf",
-     "bytes": 812,
-     "sha256": "985681dd1066f0c50e221c3a3b6761ca94b39a1c886251c75a188f060c81cb89"
+     "bytes": 3051074,
+     "sha256": "77af76b4efb8c6b07c07da37565632e221fe79726bd31e6a79db0408f6439ace"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.zlodziej_naszyjnika",
@@ -799,7 +814,7 @@
    "subtitle": "Max i Mila",
    "parent_description": "Ktoś zabiera dzwonki rowerowe z całego miasta. Do zabawy przydają się wydrukowane akta sprawy.",
    "age_min": 6,
-   "duration_sec": 960,
+   "duration_sec": 875,
    "situations": [
     "w_domu",
     "podroz"
@@ -816,22 +831,22 @@
    "audio": [
     {
      "path": "audio/detektyw/znikajace-dzwonki.m4a",
-     "bytes": 299636,
-     "sha256": "5712230ef381ee1e12ac5f16c933c811ce689fb52024c1aee00ecf502c342745"
+     "bytes": 10838754,
+     "sha256": "7bccfef739a924576dd660c6163bf6d25c4549d8c20deecc5376f9c30058ab08"
     }
    ],
    "pdf": [
     {
      "path": "pdf/detektyw/znikajace-dzwonki.pdf",
-     "bytes": 819,
-     "sha256": "b5880bb2141cf134d2d703171ed2aaea3fbd91308237fec511d6cf0b3903fff4"
+     "bytes": 3131798,
+     "sha256": "08280723f6aae4f3cd1df5790d76fc7aeccaa4248aff78b936fb3ea47b90b443"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.znikajace_dzwonki",
    "preview": {
     "path": "previews/detektyw/znikajace-dzwonki.m4a",
-    "bytes": 293747,
-    "sha256": "a67b90fe89b983e8a724e97cf034c236e3588a70fd4683a6ff98be9dcdd942e4"
+    "bytes": 372975,
+    "sha256": "ae80767dcd411f1e2bac2b88b0b4886d88f58314073637d3f7fc9bc3394ab785"
    },
    "released": "2026-09-01"
   },
@@ -843,7 +858,7 @@
    "subtitle": "Max i Mila",
    "parent_description": "Z budki z lodami zniknęła książka z przepisami. Do zabawy przydają się wydrukowane akta sprawy.",
    "age_min": 6,
-   "duration_sec": 960,
+   "duration_sec": 742,
    "situations": [
     "w_domu",
     "podroz"
@@ -860,22 +875,22 @@
    "audio": [
     {
      "path": "audio/detektyw/na-ratunek-budce-z-lodami.m4a",
-     "bytes": 299088,
-     "sha256": "401a4968e47e49b969fae2160354a288e290f6849401c28aa25e704f2b930de0"
+     "bytes": 9250761,
+     "sha256": "8a6ba8bf57c553aa6d967809112204230db59b5cfb5d36c0c948ae74c941167d"
     }
    ],
    "pdf": [
     {
      "path": "pdf/detektyw/na-ratunek-budce-z-lodami.pdf",
-     "bytes": 818,
-     "sha256": "024d3c438bbd1547132007d9e669b420681d2f9e76e944360f45bb8979fc230c"
+     "bytes": 4283274,
+     "sha256": "68875abf01684ca64d5efc76577aebbed7b6e8b806a887d348068c4702a6b208"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.na_ratunek_budce_z_lodami",
    "preview": {
     "path": "previews/detektyw/na-ratunek-budce-z-lodami.m4a",
-    "bytes": 293959,
-    "sha256": "42c4cb400b52dff468b610ae2e5de5d62bdecf6d9d9b6267439a1a36064b6944"
+    "bytes": 373679,
+    "sha256": "85b6ac359f743e27056bcc06de527bbf79beb245516c87639d42d04ba8c14d60"
    },
    "released": "2026-09-01"
   },
@@ -887,7 +902,7 @@
    "subtitle": "Max i Mila",
    "parent_description": "W mieście pojawiają się tajemnicze znaki. Dokąd prowadzą? Do zabawy przydają się wydrukowane akta sprawy.",
    "age_min": 6,
-   "duration_sec": 960,
+   "duration_sec": 967,
    "situations": [
     "w_domu",
     "podroz"
@@ -904,22 +919,22 @@
    "audio": [
     {
      "path": "audio/detektyw/tajemnicze-znaki.m4a",
-     "bytes": 301720,
-     "sha256": "205dd38cce6eea54a0def78fa52183e443f309565e5cb34d04c61696ed74099a"
+     "bytes": 12062156,
+     "sha256": "345f210dcfb060b0768da58a378a7445a56fc7805d70bab132c1d1c9befddea5"
     }
    ],
    "pdf": [
     {
      "path": "pdf/detektyw/tajemnicze-znaki.pdf",
-     "bytes": 825,
-     "sha256": "d381cb7d1c460eba8cf24c26d916cccdc9607f50d1fd2bce2c11fc79fd09ab5d"
+     "bytes": 4921086,
+     "sha256": "de1b0aae8e15eea3301747fadf25fb0afd6ee6daad03d3e202475464b144a400"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.tajemnicze_znaki",
    "preview": {
     "path": "previews/detektyw/tajemnicze-znaki.m4a",
-    "bytes": 295112,
-    "sha256": "8cc5e77aab3ed09f271365f9abe84e3135ec57a783a3791655937e8c5248c7d6"
+    "bytes": 372272,
+    "sha256": "9357b7329777a10e6ca8af43e24433a4f9d711afa569216a22dbfc8e5027769b"
    },
    "released": "2026-09-01"
   },
@@ -931,7 +946,7 @@
    "subtitle": "Max i Mila",
    "parent_description": "Max i Mila trafiają na gadający śmietnik. Kto go zbudował i po co? Do zabawy przydają się wydrukowane akta sprawy.",
    "age_min": 6,
-   "duration_sec": 960,
+   "duration_sec": 1155,
    "situations": [
     "w_domu",
     "podroz"
@@ -948,22 +963,22 @@
    "audio": [
     {
      "path": "audio/detektyw/gadajacy-smietnik.m4a",
-     "bytes": 298007,
-     "sha256": "6431f323aca25058b500e86d4c0e80dc82feb4c9352cd5b6cd2317bfe9575862"
+     "bytes": 14259806,
+     "sha256": "c810e1b9e6622c64b6a39066bd239c563bc144a010d628b9f366b8696ef96774"
     }
    ],
    "pdf": [
     {
      "path": "pdf/detektyw/gadajacy-smietnik.pdf",
-     "bytes": 810,
-     "sha256": "78126ce2bfc04bccb8e7d809ee22f5550916f530c0fd4e1dab3fead6152248b6"
+     "bytes": 2736431,
+     "sha256": "2b61634f8ef38344fa129339c57ce2e68ad71c02cfefebcabe9d6bd6e849c2f7"
     }
    ],
    "store_product_id": "pl.audiokiddo.item.gadajacy_smietnik",
    "preview": {
     "path": "previews/detektyw/gadajacy-smietnik.m4a",
-    "bytes": 294101,
-    "sha256": "396b2233b890e3683823846604288e76e7d070e1d385637c8ed4f20c0b33f31f"
+    "bytes": 373330,
+    "sha256": "f0e387485407888c37a11920ad75858155401373bf990e68bc11bf6397f3a421"
    },
    "released": "2026-09-01"
   },

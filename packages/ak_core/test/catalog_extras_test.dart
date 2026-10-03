@@ -1,7 +1,10 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:test/test.dart';
 
-Map<String, Object?> catalogJson({Map<String, Object?> item = const {}, Map<String, Object?> shelf = const {}}) => {
+Map<String, Object?> catalogJson({
+  Map<String, Object?> item = const {},
+  Map<String, Object?> shelf = const {},
+}) => {
   'schema_version': 1,
   'version': 1,
   'packs': [
@@ -24,7 +27,13 @@ Map<String, Object?> catalogJson({Map<String, Object?> item = const {}, Map<Stri
     },
   ],
   'shelves': [
-    {'id': 's', 'title': 'S', 'kind': 'row', 'item_ids': ['a', 'gone'], ...shelf},
+    {
+      'id': 's',
+      'title': 'S',
+      'kind': 'row',
+      'item_ids': ['a', 'gone'],
+      ...shelf,
+    },
   ],
 };
 
@@ -44,6 +53,17 @@ void main() {
     final plain = parseCatalog(catalogJson()).catalog.items.single;
     expect(plain.releasedOn, isNull);
     expect(plain.preview, isNull);
+  });
+
+  test('a pack guide is optional and read like any asset', () {
+    final json = catalogJson();
+    (json['packs']! as List).cast<Map<String, Object?>>().single['guide'] = {
+      'path': 'pdf/p/przewodnik.pdf',
+      'bytes': 1000,
+      'sha256': 'cc',
+    };
+    expect(parseCatalog(json).catalog.packs.single.guide?.path, 'pdf/p/przewodnik.pdf');
+    expect(parseCatalog(catalogJson()).catalog.packs.single.guide, isNull);
   });
 
   test('a broken date skips the item, not the catalog', () {

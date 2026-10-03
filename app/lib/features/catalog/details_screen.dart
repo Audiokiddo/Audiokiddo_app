@@ -215,13 +215,13 @@ class _DetailsContent extends ConsumerWidget {
           _Section(title: AppLocalizations.of(context).micTitle, child: const _MicrophoneCard()),
         if (item.pdf.isNotEmpty && canPlay)
           _Section(
-            title: l10n.pdfSection,
+            title: pack?.id == 'detektyw' ? 'Akta sprawy do wydrukowania' : l10n.pdfSection,
             child: Align(
               alignment: Alignment.centerLeft,
               child: OutlinedButton.icon(
                 onPressed: () => _openPdf(context, item.pdf.first),
                 icon: const Icon(Icons.print_rounded),
-                label: Text(l10n.pdfOpen),
+                label: Text(pack?.id == 'detektyw' ? 'Otwórz akta sprawy' : l10n.pdfOpen),
               ),
             ),
           ),

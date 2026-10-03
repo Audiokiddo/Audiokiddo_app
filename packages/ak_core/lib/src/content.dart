@@ -34,6 +34,7 @@ class Pack {
     this.storeProductId,
     this.cover,
     this.releasedOn,
+    this.guide,
   });
 
   factory Pack.fromJson(JsonReader r) => Pack(
@@ -45,11 +46,16 @@ class Pack {
     storeProductId: r.optString('store_product_id'),
     cover: r.optObject('cover') == null ? null : AssetRef.fromJson(r.object('cover')),
     releasedOn: r.optDate('released'),
+    guide: r.optObject('guide') == null ? null : AssetRef.fromJson(r.object('guide')),
   );
 
   final String id;
   final String title;
   final int ageMin;
+
+  /// The pack's product guide for parents (PDF): what is inside and how to play. A free file,
+  /// so it can be read before buying.
+  final AssetRef? guide;
 
   /// When the pack went on sale; "Nowe" for a while after (see [isNewAt]).
   final DateTime? releasedOn;

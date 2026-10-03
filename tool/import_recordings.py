@@ -11,8 +11,10 @@ old way: files numbered 1..10 like on audiokiddo.pl.
 
 Each file is converted to AAC 96 kb/s (about half the size of shop MP3s, fine for speech and
 music) at the path the catalog already uses; the catalog gets the real duration, size and
-SHA-256, and the free 45 s previews are cut again (tool/make_previews.py). Printables listed in
-PRINTABLES are attached to every play of the pack.
+SHA-256, and the free 45 s previews are cut again (tool/make_previews.py). PDFs in the same
+folder: a file with "Akta sprawy" (or "do wydruku") in its name goes to the play named in it
+as that play's printable, a file starting with "Przewodnik" becomes the pack's free guide for
+parents; both are shrunk (tool/shrink_pdf.py). PRINTABLES are attached to every play of a pack.
 
 Recordings are paid content: they live in dev_content/ (not in git); tool/set_files_secrets.sh
 or tool/files_update.sh puts them on the server.
@@ -27,6 +29,9 @@ import shutil
 import subprocess
 import sys
 import unicodedata
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from shrink_pdf import shrink  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DEFAULT_MATERIALS = ROOT.parent / "AudioKiddo-materialy"
@@ -96,6 +101,34 @@ def plan(folder: pathlib.Path, items: list) -> tuple[dict, list]:
     return matched, unmatched
 
 
+def printable_pdfs(folder: pathlib.Path, items: list) -> tuple:
+    """{item_id: pdf} for case files named after a play, and the pack guide (Przewodnik*.pdf)."""
+    pdfs = sorted(p for p in folder.iterdir() if p.suffix.lower() == ".pdf")
+    guide = next((p for p in pdfs if norm(p.stem).startswith("przewodnik")), None)
+    pool = [i for i in items if i.get("pack_id") == folder.name]
+    keys = {i["id"]: {norm(i["title"]), norm(i["id"])} for i in pool}
+    per_item = {}
+    for pdf in pdfs:
+        stem = norm(pdf.stem)
+        if pdf == guide or not any(w in stem for w in ("akta", "dowydruku", "wydruk")):
+            continue
+        hits = sorted(((len(k), i) for i, ks in keys.items() for k in ks if k and k in stem), reverse=True)
+        if hits:
+            per_item[hits[0][1]] = pdf
+        else:
+            print(f"  NIE PASUJE (PDF bez tytułu zabawy w nazwie): {pdf.name}")
+    return per_item, guide
+
+
+def import_pdf(source: pathlib.Path, rel: str, out: pathlib.Path) -> dict:
+    target = out / rel
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shrink(source, target)
+    asset = {"path": rel}
+    fingerprint(asset, out)
+    return asset
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--materials", default=str(DEFAULT_MATERIALS))
@@ -110,7 +143,7 @@ def main() -> int:
     done = 0
     for folder in sorted(p for p in materials.iterdir() if p.is_dir() and p.name not in SKIP_FOLDERS):
         matched, unmatched = plan(folder, catalog["items"])
-        if not matched and not unmatched:
+        if not matched and not unmatched and not any(p.suffix.lower() == ".pdf" for p in folder.iterdir()):
             continue
         print(f"== {folder.name}")
         for item_id, source in matched.items():
@@ -140,6 +173,21 @@ def main() -> int:
             done += 1
         for name in unmatched:
             print(f"  NIE PASUJE do żadnej zabawy (nazwa pliku powinna zawierać tytuł): {name}")
+        per_item, guide = printable_pdfs(folder, catalog["items"])
+        for item_id, pdf in per_item.items():
+            if args.dry_run:
+                print(f"  wydruk {item_id}  ←  {pdf.name}")
+                continue
+            asset = import_pdf(pdf, f"pdf/{folder.name}/{item_id}.pdf", out)
+            items[item_id]["pdf"] = [asset]
+            print(f"  wydruk {item_id}: {asset['bytes'] / 1e6:.1f} MB  ←  {pdf.name}")
+        pack = next((p for p in catalog["packs"] if p["id"] == folder.name), None)
+        if guide and pack:
+            if args.dry_run:
+                print(f"  przewodnik {pack['id']}  ←  {guide.name}")
+            else:
+                pack["guide"] = import_pdf(guide, f"pdf/{folder.name}/przewodnik.pdf", out)
+                print(f"  przewodnik {pack['id']}: {pack['guide']['bytes'] / 1e6:.1f} MB  ←  {guide.name}")
     if args.dry_run:
         return 0
     catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=1) + "\n")
