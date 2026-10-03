@@ -51,6 +51,8 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
   initialLocation: !onboarding.done ? '/powitanie' : (kids.active ? '/dziecko' : '/'),
   refreshListenable: Listenable.merge([kids, onboarding]),
   redirect: (context, state) => appRedirect(kids, onboarding, state.matchedLocation),
+  // An unknown or outdated link (old widget, typo) opens Start instead of an error page.
+  onException: (context, state, router) => router.go('/'),
   routes: [
     GoRoute(path: '/powitanie', builder: (context, state) => const OnboardingScreen()),
     GoRoute(path: '/dziecko', builder: (context, state) => const KidsHomeScreen()),
