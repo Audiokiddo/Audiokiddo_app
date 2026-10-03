@@ -2,25 +2,25 @@
 
 Generowane przez `tool/import_covers.py` (nie edytuj ręcznie). Obrazy wrzucasz do `AudioKiddo-materialy/okladki/` pod dowolną nazwą zawierającą tytuł zabawy, np. `Gadający śmietnik.jpg`, i uruchamiasz skrypt (albo piszesz do mnie).
 
-Wymagania: kwadrat, najlepiej 1080×1080 px, JPG lub PNG. W aplikacji okładka ma 900×900 px (razem 2462 KB), bez okładki widać rysunek zastępczy.
+Wymagania: kwadrat, najlepiej 1080×1080 px, JPG lub PNG. W aplikacji okładka ma 900×900 px (razem 4072 KB), bez okładki widać rysunek zastępczy.
 
-Mamy 15 z 33 okładek zabaw i 2 z 3 okładek pakietów.
+Mamy 25 z 33 okładek zabaw i 3 z 3 okładek pakietów.
 
 | Zabawa | Pakiet | Okładka |
 |---|---|---|
-| **Pakiet Wyobraźnia** (`pakiet-wyobraznia`) | okładka pakietu | brak |
+| **Pakiet Wyobraźnia** (`pakiet-wyobraznia`) | okładka pakietu | jest |
 | **Pakiet Słowa i Wiedza** (`pakiet-slowa-i-wiedza`) | okładka pakietu | jest |
 | **Pakiet Detektyw** (`pakiet-detektyw`) | okładka pakietu | jest |
-| Magiczny sklep (`magiczny-sklep`) | wyobraznia | brak |
-| Zaginiony skarb (`zaginiony-skarb`) | wyobraznia | brak |
-| Podróż na inną planetę (`podroz-na-inna-planete`) | wyobraznia | brak |
-| Wymyśl znaczenie (`wymysl-znaczenie`) | wyobraznia | brak |
-| Mikstura (`mikstura`) | wyobraznia | brak |
-| Mój superbohater (`moj-superbohater`) | wyobraznia | brak |
-| Dokończ historię (`dokoncz-historie`) | wyobraznia | brak |
-| Mistrz kuchni (`mistrz-kuchni`) | wyobraznia | brak |
-| Magiczny teatr (`magiczny-teatr`) | wyobraznia | brak |
-| Co oni odpowiedzieli? (`co-oni-odpowiedzieli`) | wyobraznia | brak |
+| Magiczny sklep (`magiczny-sklep`) | wyobraznia | jest |
+| Zaginiony skarb (`zaginiony-skarb`) | wyobraznia | jest |
+| Podróż na inną planetę (`podroz-na-inna-planete`) | wyobraznia | jest |
+| Wymyśl znaczenie (`wymysl-znaczenie`) | wyobraznia | jest |
+| Mikstura (`mikstura`) | wyobraznia | jest |
+| Mój superbohater (`moj-superbohater`) | wyobraznia | jest |
+| Dokończ historię (`dokoncz-historie`) | wyobraznia | jest |
+| Mistrz kuchni (`mistrz-kuchni`) | wyobraznia | jest |
+| Magiczny teatr (`magiczny-teatr`) | wyobraznia | jest |
+| Co oni odpowiedzieli? (`co-oni-odpowiedzieli`) | wyobraznia | jest |
 | Co to za przedmiot? (`co-to-za-przedmiot`) | slowa-i-wiedza | jest |
 | Co to za dźwięk? (`co-to-za-dzwiek`) | slowa-i-wiedza | jest |
 | Szybkie skojarzenia (`szybkie-skojarzenia`) | slowa-i-wiedza | jest |
