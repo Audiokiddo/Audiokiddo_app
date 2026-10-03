@@ -13,6 +13,7 @@ import '../downloads/download_providers.dart';
 import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
 import 'microphone.dart';
+import 'speech.dart';
 import '../family/family.dart';
 import '../parent_voice/parent_voice.dart';
 
@@ -57,7 +58,9 @@ class GameUiState {
 
   bool get tapToAnswer => listening.contains(InputKind.tapAnywhere);
   bool get listensToSound =>
-      listening.contains(InputKind.clap) || listening.contains(InputKind.voiceActivity);
+      listening.contains(InputKind.clap) ||
+      listening.contains(InputKind.voiceActivity) ||
+      listening.contains(InputKind.speechKeywords);
 
   bool get active => phase != GamePhase.idle && phase != GamePhase.finished && phase != GamePhase.failed;
 }
@@ -79,6 +82,10 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
   Set<InputKind> _listening = const {};
   int _minClaps = 1;
 
+  // Words: the phone's own recogniser, only in the foreground and only while a choice waits.
+  bool _speechReady = false;
+  bool get _speechUsable => _speechReady && _foreground;
+
   GameAudio get _audio => ref.read(gameAudioProvider);
 
   bool get _micOn => _mic != null;
@@ -90,10 +97,12 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
   @override
   GameUiState build() {
     WidgetsBinding.instance.addObserver(this);
+    final speech = ref.read(speechInputProvider);
     ref.onDispose(() {
       WidgetsBinding.instance.removeObserver(this);
       _generation++;
       unawaited(_stopMicrophone());
+      unawaited(speech.stop());
     });
     return const GameUiState();
   }
@@ -110,6 +119,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final saved = resume ? await loadGameSnapshot(ref.read(databaseProvider), item) : null;
     if (!resume) await clearGameSnapshot(ref.read(databaseProvider), item.id);
     await _startMicrophone();
+    _speechReady = _micOn && scriptListensToWords(script) && await _speechAvailable();
     final runner = _runner = ScriptRunner(
       script,
       resumeFrom: saved,
@@ -117,7 +127,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         if (!_micUsable) FallbackReason.noMicrophone,
         if (!_foreground) FallbackReason.screenLocked,
       },
-    );
+    )..setSpeechAvailable(available: _speechUsable);
     state = GameUiState(phase: GamePhase.playing, itemId: item.id, title: item.title);
     try {
       var command = runner.start();
@@ -167,6 +177,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     await ref.read(parentVoiceStoreProvider).stopPlayback();
     _input?.complete(const InputTimedOut());
     _input = null;
+    await ref.read(speechInputProvider).stop();
     await _stopMicrophone();
     await _audio.stop();
     state = const GameUiState();
@@ -184,6 +195,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     _foreground = state == AppLifecycleState.resumed;
     _runner?.setAvailability(FallbackReason.screenLocked, available: _foreground);
     _runner?.setAvailability(FallbackReason.noMicrophone, available: _micUsable);
+    _runner?.setSpeechAvailable(available: _speechUsable);
     if (_listening.isEmpty || _foreground) return;
     // Touch cannot reach a locked phone (nor sound a backgrounded Android app): keep what
     // still works, or switch the open input to its fallback at once.
@@ -216,6 +228,9 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         return done ? const WaitElapsed() : null;
       case Listen(:final input, :final window, :final minCount):
         return _listen({input}, window, generation, media, minClaps: minCount ?? 1);
+      case ListenForChoice(:final inputs, :final window, :final vocabulary)
+          when inputs.contains(InputKind.speechKeywords):
+        return _listenForWords(window, vocabulary, generation);
       case ListenForChoice(:final inputs, :final window):
         return _listen(inputs, window, generation, media);
       case Finish(:final asset):
@@ -226,12 +241,78 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
 
   Set<InputKind> _usable(Set<InputKind> inputs) => {
     for (final kind in inputs)
-      if ((kind == InputKind.tapAnywhere && _foreground) || (_soundInputs.contains(kind) && _micUsable)) kind,
+      if ((kind == InputKind.tapAnywhere && _foreground) ||
+          (_soundInputs.contains(kind) && _micUsable) ||
+          (kind == InputKind.speechKeywords && _speechUsable))
+        kind,
   };
 
-  FallbackReason _whyUnusable(Set<InputKind> inputs) => inputs.any(_soundInputs.contains) && !_micUsable
-      ? FallbackReason.noMicrophone
-      : FallbackReason.screenLocked;
+  FallbackReason _whyUnusable(Set<InputKind> inputs) => switch (inputs) {
+    _ when inputs.any(_soundInputs.contains) && !_micUsable => FallbackReason.noMicrophone,
+    _ when inputs.contains(InputKind.speechKeywords) && !_speechUsable =>
+      _micUsable ? FallbackReason.noSpeech : FallbackReason.noMicrophone,
+    _ => FallbackReason.screenLocked,
+  };
+
+  Future<bool> _speechAvailable() async {
+    try {
+      return await ref.read(speechInputProvider).ready();
+    } on Object {
+      return false;
+    }
+  }
+
+  /// A choice answered with words. The clap microphone is handed to the recogniser for the
+  /// window and taken back afterwards; whatever the child says is matched against
+  /// [vocabulary] as it is heard and then forgotten.
+  Future<EngineEvent?> _listenForWords(Duration window, List<String> vocabulary, int generation) async {
+    if (!_speechUsable) return InputFailed(_whyUnusable(const {InputKind.speechKeywords}));
+    final speech = ref.read(speechInputProvider);
+    final hadMicrophone = _micOn;
+    await _stopMicrophone();
+    final completer = _input = Completer<EngineEvent>();
+    _listening = const {InputKind.speechKeywords};
+    _set(GamePhase.listening, listening: _listening);
+    final matcher = WordMatcher(vocabulary);
+    final scaled = window * ref.read(gameTimeScaleProvider);
+    unawaited(
+      speech
+          .listen(
+            window: scaled,
+            vocabulary: vocabulary,
+            onHeard: (transcripts) {
+              if (_input != completer) return; // a late result from an earlier question
+              for (final transcript in transcripts) {
+                if (matcher.match(transcript) case final word?) {
+                  _completeInput(InputDetected(kind: InputKind.speechKeywords, word: word));
+                  return;
+                }
+              }
+            },
+          )
+          // The recogniser stopped by itself: nothing it heard was an answer.
+          .then((_) {
+            if (_input == completer) _completeInput(const InputTimedOut());
+          })
+          .catchError((Object e) {
+            debugPrint('speech failed: $e');
+            if (_input != completer) return;
+            _speechReady = false;
+            _runner?.setSpeechAvailable(available: false);
+            _completeInput(const InputFailed(FallbackReason.noSpeech));
+          }),
+    );
+    // The recogniser's own timer may be late; the game never waits past the window.
+    unawaited(
+      Future<void>.delayed(scaled + const Duration(milliseconds: 600)).then((_) {
+        if (_input == completer) _completeInput(const InputTimedOut());
+      }),
+    );
+    final event = await completer.future;
+    await speech.stop();
+    if (hadMicrophone && generation == _generation) await _startMicrophone();
+    return generation == _generation ? event : null;
+  }
 
   Future<EngineEvent?> _listen(
     Set<InputKind> inputs,

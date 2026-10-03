@@ -10,6 +10,7 @@ import 'package:audiokiddo/core/storage/storage_providers.dart';
 import 'package:audiokiddo/features/content/content_urls.dart';
 import 'package:audiokiddo/features/downloads/download_providers.dart';
 import 'package:audiokiddo/features/downloads/file_transfer.dart';
+import 'package:audiokiddo/features/games/speech.dart';
 import 'package:audiokiddo/features/kids_mode/kids_home_screen.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
@@ -75,6 +76,7 @@ List<Override> testOverrides(
   KidsModeController? kidsMode,
   bool onboardingDone = true,
   MediaItem? media,
+  SpeechInput? speech,
 }) => [
   onboardingProvider.overrideWithValue(OnboardingController(db, done: onboardingDone)),
   databaseProvider.overrideWithValue(db),
@@ -88,7 +90,46 @@ List<Override> testOverrides(
   kidsMagicEntryProvider.overrideWithValue(false),
   parentVoiceStoreProvider.overrideWithValue(FakeParentVoiceStore()),
   previewAudioProvider.overrideWithValue(FakePreviewAudio()),
+  speechInputProvider.overrideWithValue(speech ?? FakeSpeech(available: false)),
 ];
+
+/// Word recognition without a recogniser: [answer] picks what the child "says" to each
+/// question (null: silence); [available] false is a phone without offline Polish.
+class FakeSpeech implements SpeechInput {
+  FakeSpeech({this.available = true, this.answer});
+
+  bool available;
+  String? Function(List<String> vocabulary)? answer;
+  final heard = <String>[];
+  bool listening = false;
+
+  @override
+  Future<bool> ready() async => available;
+
+  @override
+  Future<bool> requestPermission() async => available;
+
+  @override
+  Future<void> listen({
+    required Duration window,
+    required List<String> vocabulary,
+    required void Function(List<String> transcripts) onHeard,
+  }) async {
+    if (!available) throw const SpeechUnavailable('test');
+    listening = true;
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+    final said = answer?.call(vocabulary);
+    if (said != null && listening) {
+      heard.add(said);
+      // As a real recogniser would: a sentence around the word, alternatives after it.
+      onHeard(['no to $said', said]);
+    }
+    await Future<void>.delayed(window);
+  }
+
+  @override
+  Future<void> stop() async => listening = false;
+}
 
 /// Parent recordings in memory: [clipsByChild] is what "was recorded", [played] what played.
 class FakeParentVoiceStore implements ParentVoiceStore {

@@ -254,4 +254,77 @@ void main() {
       expect(audio.log.last, 'play:outro_good');
     });
   });
+
+  group('answers with words (Zgubiona Gwiazdka)', () {
+    Future<(FakeMicrophone, ProviderContainer)> story(FakeSpeech speech, {bool microphone = true}) async {
+      final mic = FakeMicrophone();
+      final db = memoryDatabase();
+      addTearDown(db.close);
+      final c = ProviderContainer(
+        overrides: [
+          ...testOverrides(db, speech: speech),
+          gameAudioProvider.overrideWithValue(audio),
+          gameTimeScaleProvider.overrideWithValue(0.05),
+          microphoneInputProvider.overrideWithValue(mic),
+        ],
+      );
+      addTearDown(c.dispose);
+      if (microphone) await c.read(databaseProvider).writeValue('games_microphone', '1');
+      await c
+          .read(gameControllerProvider.notifier)
+          .start((await c.read(catalogProvider.future)).item('zgubiona-gwiazdka')!);
+      return (mic, c);
+    }
+
+    List<String> played() => [
+      for (final l in audio.log)
+        if (l.startsWith('play:')) l.substring(5),
+    ];
+
+    test('the words the child says choose the way and the ending', () async {
+      final speech = FakeSpeech(
+        answer: (vocabulary) => switch (vocabulary.first) {
+          'las' => 'rzeka',
+          'kamienie' => 'łódką',
+          'trzy' => 'trzy',
+          _ => null,
+        },
+      );
+      final (mic, c) = await story(speech);
+      expect(c.read(gameControllerProvider).phase, GamePhase.finished);
+      expect(speech.heard, ['rzeka', 'łódką', 'trzy']);
+      expect(
+        played(),
+        containsAllInOrder(['cross', 'river', 'frog', 'boat', 'ducks', 'count_praise', 'ending_moon']),
+      );
+      expect(played(), isNot(contains('forest')));
+      expect(mic.starts, greaterThan(1), reason: 'claps listen again after each spoken answer');
+      expect(mic.open, isFalse);
+    });
+
+    test('a phone that cannot recognise words asks for claps instead', () async {
+      final (mic, c) = await story(FakeSpeech(available: false));
+      c.listen(gameControllerProvider, (_, next) {
+        if (next.phase == GamePhase.listening && next.listening.contains(InputKind.clap)) {
+          mic.feed(clapSound());
+        }
+      });
+      await c
+          .read(gameControllerProvider.notifier)
+          .start((await c.read(catalogProvider.future)).item('zgubiona-gwiazdka')!);
+      expect(played(), containsAllInOrder(['cross', 'cross_claps', 'forest']));
+      expect(played().last, startsWith('ending_'));
+    });
+
+    test('without a microphone the narrator chooses and the story still ends', () async {
+      final speech = FakeSpeech();
+      final (mic, c) = await story(speech, microphone: false);
+      expect(mic.starts, 0);
+      expect(speech.heard, isEmpty);
+      expect(
+        played(),
+        containsAllInOrder(['cross', 'cross_auto', 'forest', 'owl_auto', 'hollow_auto', 'ending_lullaby']),
+      );
+    });
+  });
 }

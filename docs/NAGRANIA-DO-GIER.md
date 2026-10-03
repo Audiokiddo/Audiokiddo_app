@@ -68,40 +68,58 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 | `q_auta` | Uwaga! Samochody jeżdżą po chmurach. |
 | `a_auta` | Nie! Samochody jeżdżą po drogach. |
 
-## Prawdziwe nagrania zabaw (wgrywanie do aplikacji)
+## zgubiona-gwiazdka
 
-Stan (3.10.2026): prawdziwe nagrania mają pakiety **Słowa i Wiedza**, **Wyobraźnia** i **Detektyw** (wgrane do katalogu, czekają na serwer). Piosenki grają jeszcze głosem zastępczym z syntezatora.
-
-1. Wrzuć pliki (MP3, M4A, WAV) do `AudioKiddo-materialy/<folder>/`, po jednym na zabawę, z **tytułem zabawy w nazwie pliku**, np. `Znikające dzwonki rowerowe.mp3` albo `3. Mikstura.wav`. Foldery: `detektyw`, `wyobraznia`, `slowa-i-wiedza`, `piosenki`.
-2. `python3 tool/import_recordings.py` (najpierw można sprawdzić na sucho: `--dry-run`). Skrypt wypisuje, co do czego dopasował i które pliki nie pasują do żadnej zabawy. Konwertuje na AAC 96 kb/s, wpisuje prawdziwy czas i sumy kontrolne do katalogu i od nowa wycina darmowe fragmenty.
-   PDF-y w tym samym folderze: plik z „Akta sprawy” w nazwie i tytułem zabawy trafia do tej zabawy jako wydruk, plik zaczynający się od „Przewodnik” to bezpłatny przewodnik pakietu (strona pakietu w aplikacji). Duże PDF-y są zmniejszane (`tool/shrink_pdf.py`, np. akta 13 MB → 3 MB).
-3. `tool/files_update.sh detektyw wyobraznia slowa-i-wiedza` robi osobny ZIP dla każdego pakietu (bez zmiany klucza). Wgraj je do `wp-content/plugins/audiokiddo-pliki/` przez Menedżer plików LH.pl i rozpakuj z nadpisaniem. Nowe pliki z przewodnikami wymagają jeszcze `supabase db push`.
-4. `python3 tool/verify_server_files.py` sprawdza, czy pliki na serwerze zgadzają się z katalogiem (rozmiar i suma kontrolna); darmowe zabawy, fragmenty i przewodniki sprawdza w całości, płatne pomija.
-5. `tool/phone_build.sh` (i później wersja sklepowa): katalog z nowymi sumami kontrolnymi jest w aplikacji. Instalować dopiero po kroku 3, bo inaczej telefon odrzuci pobranie (suma się nie zgodzi).
-
-## Głos Szop’ena (aplikacja)
-
-Krótkie kwestie Szop'ena von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). Radośnie, z uśmiechem, bez muzyki pod spodem.
-
-| Plik | Tekst |
+| Segment | Tekst |
 |---|---|
-| `volume.m4a` | Hej! Podgłośnij telefon, żeby dobrze mnie słyszeć! |
-| `hello.m4a` | Cześć! Jestem Szop'en. Mam pasiasty ogon i jeszcze większą ochotę na przygody. Gramy bez patrzenia w ekran! |
-| `password_voice.m4a` | Żeby wejść do świata AudioKiddo, powiedz głośno magiczne hasło: Abrakadabra! |
-| `password_tap.m4a` | Żeby wejść do świata AudioKiddo, powiedz głośno: Abrakadabra! I dotknij magicznej kuli! |
-| `granted.m4a` | Hurra! Dostęp przyznany! Wchodzimy! |
-| `kids_1.m4a` | Uszy gotowe? Moje są małe, ale słyszą wszystko. Nawet szelest cukierka. |
-| `kids_2.m4a` | Potrzebuję kogoś z wyobraźnią. Ja mam głównie futro i paski. Wchodzisz w to? |
-| `kids_3.m4a` | Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy. Wybierz zabawę! |
-| `trip_start.m4a` | Ruszamy w drogę! Zapnijcie pasy. Ja pilnuję zagadek, a ty wypatruj czerwonego auta. |
-| `window_1.m4a` | Przerwa na okno! Policz, ile czerwonych samochodów zobaczysz, zanim wrócimy do zabawy. |
-| `window_2.m4a` | Przerwa na okno! Czy widzisz jakieś zwierzę? Opowiedz o nim rodzicom. |
-| `window_3.m4a` | Przerwa na okno! Znajdź coś zielonego, coś okrągłego i coś bardzo dużego. |
-| `trip_end.m4a` | Dojechaliśmy! Mój pasiasty ogon mówi, że to była świetna podróż. Do usłyszenia! |
-| `bedtime_start.m4a` | Czas na wyciszenie. Zróbmy razem trzy spokojne oddechy. Wdech. I wydech. Wdech. I wydech. Wdech. I wydech. |
-| `goodnight.m4a` | Dobranoc. Nos pod koc, uszy na poduszkę. Resztę przygód zostawimy na jutro. |
-| `diploma.m4a` | Brawo! Cały pakiet ukończony. Oto twój dyplom. Jestem z ciebie bardzo dumny! |
-| `bonus_wyobraznia.m4a` | Sekretna wiadomość od Szop'ena. Dziś w nocy twoje łóżko zamieni się w statek. Dokąd popłyniesz? Opowiedz o tym rodzicom przy śniadaniu! |
-| `bonus_slowa-i-wiedza.m4a` | Sekretna zagadka od Szop'ena. Ma cztery nogi, ale nie chodzi. Stoi w kuchni i czeka na obiad. Co to? To stół! |
-| `bonus_detektyw.m4a` | Tajne zadanie dla detektywa. Znajdź w domu trzy rzeczy, które zaczynają się na literę K. Szepnij je rodzicowi do ucha. Sprawa zamknięta! |
-| `bonus_inne.m4a` | Sekretna wiadomość od Szop'ena. Jesteś prawdziwym mistrzem słuchania. Przybij piątkę rodzicowi! |
+| `intro` | Cześć! Dziś opowiemy bajkę razem, a ty zdecydujesz, co się w niej wydarzy. Tej nocy z nieba spadła malutka Gwiazdka. Zgubiła się i bardzo chce wrócić do domu. Pomożesz ją odnaleźć? Kiedy o coś zapytam, odpowiedz głośno jednym słowem. Gotowi? Powiedz głośno: tak! |
+| `ready_self` | Na pewno jesteście gotowi. Ruszamy! |
+| `go` | Super! Ruszamy w drogę. |
+| `cross` | Na trawie świecą dwa ślady Gwiazdki. Jeden prowadzi do Szumiącego Lasu, a drugi nad Srebrną Rzekę. Dokąd idziemy? Powiedz: las albo rzeka. |
+| `cross_again` | Nie usłyszałam. Powiedz głośno: las! Albo: rzeka! |
+| `cross_auto` | Dobrze, to ja wybiorę. Ślad przy lesie świeci mocniej. Idziemy do lasu! |
+| `cross_claps` | Jeśli chcesz iść do lasu, klaśnij raz. Jeśli nad rzekę, powiedz głośno: rzeka! |
+| `forest` | Wchodzimy do Szumiącego Lasu. … [dźwięk] … Na gałęzi siedzi Sowa Mądralka. Hu, hu! Pomogę wam, mówi sowa, jeśli zgadniecie zagadkę. Kto robi: hau, hau? |
+| `riddle_praise` | Brawo! To piesek! Sowa Mądralka aż zahukała z radości. |
+| `riddle_wrong` | Hmm, to zwierzątko robi inaczej. Hau, hau robi piesek! |
+| `riddle_hint_say` | Podpowiem: to zwierzątko pilnuje domu i merda ogonem. Kto robi hau, hau? |
+| `riddle_tell` | To piesek! Hau, hau! |
+| `owl` | Hu, hu! Widziałam Gwiazdkę, mówi sowa. Poleciała na Wysoką Górę albo schowała się w Starej Dziupli. Gdzie jej szukamy? Powiedz: góra albo dziupla. |
+| `owl_again` | Nie usłyszałam. Powiedz głośno: góra! Albo: dziupla! |
+| `owl_auto` | To ja wybiorę: zajrzymy do dziupli! |
+| `owl_claps` | Jeśli na górę, klaśnij raz. Jeśli do dziupli, powiedz głośno: dziupla! |
+| `mountain` | Wspinamy się na Wysoką Górę. Hop, hop, coraz wyżej! Na szczycie wieje zimny wiatr, a Gwiazdka siedzi na kamieniu i drży z zimna. Żeby wróciła na niebo, trzeba obudzić Wiatr Wędrowca. Klaśnij trzy razy, mocno! |
+| `wind_claps_self` | Posłuchaj… Wiatr Wędrowiec budzi się sam! |
+| `wind_ok` | Udało się! Wiatr Wędrowiec się obudził! … [dźwięk] |
+| `wind_help` | Wiatr śpi mocno. Pomogę: klaszczemy razem! … [dźwięk] … Obudził się! |
+| `ending_wind` | Wiatr Wędrowiec delikatnie podnosi Gwiazdkę i niesie ją wysoko, wysoko, aż na samo niebo. Spójrz dziś wieczorem w okno. Ta gwiazdka, która mruga najmocniej, mówi ci: dziękuję! … [dźwięk] … Chcesz sprawdzić, co by się stało na innej drodze? Zagraj jeszcze raz i wybierz inaczej. Koniec bajki. |
+| `hollow` | Zaglądamy do Starej Dziupli. Ciii… W środku śpi Wiewiórka Ruda, a obok niej, zwinięta w kłębek, świeci Gwiazdka. Też zasnęła! Co robimy? Budzimy ją czy śpiewamy kołysankę? Powiedz: budzimy albo kołysanka. |
+| `hollow_again` | Nie usłyszałam. Powiedz cichutko: kołysanka. Albo głośno: budzimy! |
+| `hollow_auto` | To ja wybiorę: zaśpiewamy kołysankę. |
+| `hollow_claps` | Jeśli budzimy Gwiazdkę, klaśnij raz. Jeśli śpiewamy kołysankę, powiedz: kołysanka. |
+| `wake` | Pobudka! Gwiazdka otwiera oczka i ziewa. Ale się wyspałam, mówi. Wiewiórka Ruda też się budzi i woła: znam skrót do nieba! |
+| `ending_squirrel` | Wiewiórka skacze z gałęzi na gałąź, aż na czubek najwyższej sosny, a Gwiazdka razem z nią. Stamtąd jednym skokiem wraca na niebo. A Wiewiórka Ruda ma teraz najjaśniejszą lampkę w całym lesie: co noc Gwiazdka świeci prosto do jej dziupli. … [dźwięk] … Chcesz sprawdzić, co by się stało na innej drodze? Zagraj jeszcze raz i wybierz inaczej. Koniec bajki. |
+| `lullaby` | Śpiewamy cichutko. … [dźwięk] … Gwiazdka uśmiecha się przez sen. |
+| `ending_lullaby` | Gwiazdka śpi w dziupli aż do rana. Kiedy zapada kolejna noc, wypoczęta wraca na niebo, a Wiewiórka Ruda macha jej łapką na do widzenia. Dobranoc, Gwiazdko! … [dźwięk] … Chcesz sprawdzić, co by się stało na innej drodze? Zagraj jeszcze raz i wybierz inaczej. Koniec bajki. |
+| `river` | Idziemy nad Srebrną Rzekę. … [dźwięk] … Na liściu siedzi Żabka Kumka. Kum, kum! Widziałam Gwiazdkę na Wyspie Trzcin, na środku rzeki. |
+| `frog` | Jak się tam dostaniemy? Skaczemy po kamieniach czy płyniemy łódką? Powiedz: kamienie albo łódka. |
+| `frog_again` | Nie usłyszałam. Powiedz głośno: kamienie! Albo: łódka! |
+| `frog_auto` | To ja wybiorę: płyniemy łódką! |
+| `frog_claps` | Jeśli skaczemy po kamieniach, klaśnij raz. Jeśli płyniemy łódką, powiedz głośno: łódka! |
+| `stones` | Skaczemy z kamienia na kamień. Przy każdym skoku klaśnij! Trzy skoki. Hop! |
+| `stones_claps_self` | Hop, hop, hop! Żabka skacze razem z nami. |
+| `stones_ok` | Hop, hop, hop! Brawo, ani razu nie wpadliśmy do wody. |
+| `stones_help` | Skaczemy razem! … [dźwięk] … Hop, hop, hop! Jesteśmy na drugim brzegu. |
+| `island` | Jesteśmy na Wyspie Trzcin. Ciii… Coś świeci w trzcinach. To Gwiazdka! Ale jej światełko prawie zgasło. Dodajmy jej sił. Powiedz głośno: świeć! |
+| `shine_self` | Gwiazdka słyszy, że wszyscy jej kibicują. |
+| `shine_help` | Zawołajmy razem: świeć! |
+| `ending_fireflies` | Na twój głos z trzcin wylatują świetliki. Setki małych światełek otaczają Gwiazdkę, aż znowu świeci pełnym blaskiem. Świetliki odprowadzają ją na niebo jak mały, świecący pociąg. … [dźwięk] … Chcesz sprawdzić, co by się stało na innej drodze? Zagraj jeszcze raz i wybierz inaczej. Koniec bajki. |
+| `boat` | Wsiadamy do łódki. Żeby płynąć, trzeba wiosłować i mówić: plum! Powiedz głośno: plum! |
+| `row_self` | Wiosłuję za was: plum, plum! |
+| `row_ok` | Plum, plum! Płyniemy! … [dźwięk] |
+| `row_help` | Wiosłuję za was: … [dźwięk] |
+| `ducks` | Obok łódki płynie Mama Kaczka z kaczuszkami. Posłuchaj, ile kaczuszek zakwacze. … [dźwięk] … Ile ich było? Powiedz liczbę. |
+| `count_praise` | Tak! Trzy kaczuszki! Mama Kaczka jest z was dumna. |
+| `count_wrong` | Policzmy razem. … [dźwięk] … Raz, dwa, trzy. Trzy kaczuszki! |
+| `count_tell` | Były trzy kaczuszki! Raz, dwa, trzy. |
+| `ending_moon` | Kaczki prowadzą łódkę tam, gdzie na wodzie leży srebrna ścieżka księżyca. Gwiazdka wskakuje na nią i biegnie jak po moście, aż na samo niebo. Księżyc mruga do ciebie: dziękuję za pomoc! … [dźwięk] … Chcesz sprawdzić, co by się stało na innej drodze? Zagraj jeszcze raz i wybierz inaczej. Koniec bajki. |

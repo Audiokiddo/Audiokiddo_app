@@ -9,6 +9,7 @@ import 'package:record/record.dart';
 
 import '../../core/storage/database.dart';
 import '../../core/storage/storage_providers.dart';
+import 'speech.dart';
 
 /// Sample rate the detectors are tuned for.
 const micSampleRate = 16000;
@@ -108,9 +109,15 @@ class MicrophoneSettings extends AsyncNotifier<bool> {
   }
 
   /// Asks the system if needed; returns false when the parent (or the system) refused.
-  Future<bool> enable() async {
+  /// With [words] it also asks for speech recognition (games answered with words); a refusal
+  /// there still leaves claps and voice working.
+  Future<bool> enable({bool words = false}) async {
     final granted = await ref.read(microphoneInputProvider).requestPermission();
     await _db.writeValue(_key, granted ? '1' : '0');
+    if (granted && words) {
+      await ref.read(speechInputProvider).requestPermission();
+      ref.invalidate(speechReadyProvider);
+    }
     state = AsyncData(granted);
     return granted;
   }
@@ -123,12 +130,23 @@ class MicrophoneSettings extends AsyncNotifier<bool> {
 
 final microphoneSettingsProvider = AsyncNotifierProvider<MicrophoneSettings, bool>(MicrophoneSettings.new);
 
-/// Whether [script] can listen for claps or voice (and so benefits from the microphone).
+/// Whether [script] can listen for claps, voice or words (and so benefits from the microphone).
 bool scriptListensToSound(GameScript script) => script.steps.values.any(
   (step) => switch (step) {
     InputStep(:final input) => input == InputKind.clap || input == InputKind.voiceActivity,
-    ChoiceStep(:final options) =>
-      options.containsKey(InputKind.clap) || options.containsKey(InputKind.voiceActivity),
+    ChoiceStep(:final inputs) => inputs.any(
+      {InputKind.clap, InputKind.voiceActivity, InputKind.speechKeywords}.contains,
+    ),
     _ => false,
   },
 );
+
+/// Whether the child can answer [script] with words (engine 3).
+bool scriptListensToWords(GameScript script) =>
+    script.steps.values.any((step) => step is ChoiceStep && step.words.isNotEmpty);
+
+/// Whether word answers can be heard on this phone now (permission given, offline Polish).
+final speechReadyProvider = FutureProvider<bool>((ref) async {
+  if (!await ref.watch(microphoneSettingsProvider.future)) return false;
+  return ref.watch(speechInputProvider).ready();
+});

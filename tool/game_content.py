@@ -279,6 +279,231 @@ def prawda_czy_nie():
     return game(g, steps, assets, variables={"score": 0}, engine=2)
 
 
+def wind(seconds):
+    rnd = random.Random(11)
+    out, last = [], 0.0
+    for i in range(int(RATE * seconds)):
+        last = 0.995 * last + 0.005 * rnd.uniform(-1, 1)
+        swell = 0.6 + 0.4 * math.sin(2 * math.pi * 0.35 * i / RATE)
+        out.append(9.0 * last * swell)
+    return out
+
+
+def plum():
+    n = int(RATE * 0.25)
+    out, phase = [], 0.0
+    for i in range(n):
+        phase += 2 * math.pi * (700 - 2000 * i / RATE) / RATE
+        out.append(0.5 * math.sin(phase) * math.exp(-14 * i / RATE))
+    return out + silence(0.25)
+
+
+def quack():
+    n = int(RATE * 0.18)
+    return [0.3 * (1 if math.sin(2 * math.pi * 480 * i / RATE) > 0 else -1) * math.exp(-8 * i / RATE)
+            for i in range(n)] + silence(0.3)
+
+
+def chime(seconds=2.5):
+    out = silence(int(seconds * RATE) / RATE)
+    for k, f in enumerate([1047, 1319, 1568, 2093, 1568, 2093]):
+        start = int(k * 0.22 * RATE)
+        for i, v in enumerate(tone(f, 0.9, 0.18, decay=4)):
+            if start + i < len(out):
+                out[start + i] += v
+    return out
+
+
+WORDS = "words"  # marks engine-3 steps for the narrator list
+
+
+def word_decision(g, steps, assets, key, question, words, again, auto, auto_target, clap_question, clap_targets,
+                  sound=None, after=None):
+    """A question answered with a word. Without word recognition the same question is asked
+    with a clap (first option) or a spoken word (second); without a microphone the narrator
+    picks [auto_target] herself. Not heard twice: the narrator picks too."""
+    assets[key] = segment(g, key, question, sound, after)
+    assets[f"{key}_again"] = segment(g, f"{key}_again", again)
+    assets[f"{key}_auto"] = segment(g, f"{key}_auto", auto)
+    assets[f"{key}_claps"] = segment(g, f"{key}_claps", clap_question)
+    steps[key] = {"type": "play", "asset": key, "next": f"{key}_answer"}
+    steps[f"{key}_answer"] = {
+        "type": "choice", "window_ms": 8000, "words": words, "on_timeout": f"{key}_retry",
+        "fallback": {
+            "no_microphone": {"type": "goto", "target": f"{key}_auto"},
+            "screen_locked": "same_as_no_microphone",
+            "input_error": "same_as_no_microphone",
+            "no_speech": {"type": "goto", "target": f"{key}_claps"},
+        },
+    }
+    steps[f"{key}_retry"] = {"type": "branch", "if": {"var": "score", "gt": -1}, "max_visits": 1,
+                             "then": f"{key}_again", "else": f"{key}_auto"}
+    steps[f"{key}_again"] = {"type": "play", "asset": f"{key}_again", "next": f"{key}_answer"}
+    steps[f"{key}_auto"] = {"type": "play", "asset": f"{key}_auto", "next": auto_target}
+    steps[f"{key}_claps"] = {"type": "play", "asset": f"{key}_claps", "next": f"{key}_clap_answer"}
+    steps[f"{key}_clap_answer"] = {
+        "type": "choice", "window_ms": 8000,
+        "options": {"clap": clap_targets[0], "voice_activity": clap_targets[1]},
+        "on_timeout": f"{key}_auto",
+        "fallback": {"no_microphone": {"type": "goto", "target": f"{key}_auto"},
+                     "screen_locked": "same_as_no_microphone", "input_error": "same_as_no_microphone"},
+    }
+
+
+def zgubiona_gwiazdka():
+    """Engine 3: a story with five endings; the child chooses the way with words."""
+    g = "zgubiona-gwiazdka"
+    assets, steps = {}, {}
+
+    def say(name, text=None, sound=None, after=None, next_step=None):
+        assets[name] = segment(g, name, text, sound, after)
+        steps[name] = {"type": "play", "asset": name, "next": next_step}
+
+    def listen(name, kind, ok, missed, self_text, self_next, window=8000, count=None):
+        """Claps or voice; without a microphone the narrator does it herself."""
+        assets[f"{name}_self"] = segment(g, f"{name}_self", self_text)
+        steps[name] = {"type": "input", "input": kind, "window_ms": window, "on_detected": ok, "on_timeout": missed,
+                       "fallback": {"no_microphone": {"type": "play", "asset": f"{name}_self", "next": self_next},
+                                    "screen_locked": "same_as_no_microphone", "input_error": "same_as_no_microphone"}}
+        if count:
+            steps[name]["min_count"] = count
+
+    def ending(name, text):
+        assets[name] = segment(g, name, text, chime(), "Chcesz sprawdzić, co by się stało na innej drodze? "
+                               "Zagraj jeszcze raz i wybierz inaczej. Koniec bajki.")
+        steps[name] = {"type": "end", "asset": name}
+
+    say("intro", "Cześć! Dziś opowiemy bajkę razem, a ty zdecydujesz, co się w niej wydarzy. Tej nocy z nieba spadła "
+        "malutka Gwiazdka. Zgubiła się i bardzo chce wrócić do domu. Pomożesz ją odnaleźć? Kiedy o coś zapytam, "
+        "odpowiedz głośno jednym słowem. Gotowi? Powiedz głośno: tak!", next_step="ready")
+    listen("ready", "voice_activity", "go", "go", "Na pewno jesteście gotowi. Ruszamy!", "cross", window=7000)
+    say("go", "Super! Ruszamy w drogę.", next_step="cross")
+
+    word_decision(
+        g, steps, assets, "cross",
+        "Na trawie świecą dwa ślady Gwiazdki. Jeden prowadzi do Szumiącego Lasu, a drugi nad Srebrną Rzekę. "
+        "Dokąd idziemy? Powiedz: las albo rzeka.",
+        {"forest": ["las", "do lasu", "lasek", "lasu"], "river": ["rzeka", "nad rzekę", "rzekę", "rzeczka", "rzeki"]},
+        "Nie usłyszałam. Powiedz głośno: las! Albo: rzeka!",
+        "Dobrze, to ja wybiorę. Ślad przy lesie świeci mocniej. Idziemy do lasu!", "forest",
+        "Jeśli chcesz iść do lasu, klaśnij raz. Jeśli nad rzekę, powiedz głośno: rzeka!", ["forest", "river"])
+
+    # --- the forest: an owl's riddle, then the mountain or the hollow ---------------------
+    say("forest", "Wchodzimy do Szumiącego Lasu.", wind(3),
+        "Na gałęzi siedzi Sowa Mądralka. Hu, hu! Pomogę wam, mówi sowa, jeśli zgadniecie zagadkę. "
+        "Kto robi: hau, hau?", next_step="riddle")
+    steps["riddle"] = {
+        "type": "choice", "window_ms": 8000,
+        "words": {"riddle_right": ["pies", "piesek", "psiak", "pieska", "psa"],
+                  "riddle_wrong": ["kot", "kotek", "krowa", "kaczka", "kura", "żaba", "koń", "owca"]},
+        "on_timeout": "riddle_hint",
+        "fallback": {"no_microphone": {"type": "wait", "duration_ms": 4000, "next": "riddle_tell"},
+                     "screen_locked": "same_as_no_microphone", "input_error": "same_as_no_microphone"},
+    }
+    steps["riddle_right"] = {"type": "set", "var": "score", "op": "inc", "next": "riddle_praise"}
+    say("riddle_praise", "Brawo! To piesek! Sowa Mądralka aż zahukała z radości.", next_step="owl")
+    say("riddle_wrong", "Hmm, to zwierzątko robi inaczej. Hau, hau robi piesek!", next_step="owl")
+    steps["riddle_hint"] = {"type": "branch", "if": {"var": "score", "gt": -1}, "max_visits": 1,
+                            "then": "riddle_hint_say", "else": "riddle_tell"}
+    say("riddle_hint_say", "Podpowiem: to zwierzątko pilnuje domu i merda ogonem. Kto robi hau, hau?",
+        next_step="riddle")
+    say("riddle_tell", "To piesek! Hau, hau!", next_step="owl")
+
+    word_decision(
+        g, steps, assets, "owl",
+        "Hu, hu! Widziałam Gwiazdkę, mówi sowa. Poleciała na Wysoką Górę albo schowała się w Starej Dziupli. "
+        "Gdzie jej szukamy? Powiedz: góra albo dziupla.",
+        {"mountain": ["góra", "na górę", "górę", "góry", "górka"],
+         "hollow": ["dziupla", "dziuplę", "do dziupli", "dziupli"]},
+        "Nie usłyszałam. Powiedz głośno: góra! Albo: dziupla!",
+        "To ja wybiorę: zajrzymy do dziupli!", "hollow",
+        "Jeśli na górę, klaśnij raz. Jeśli do dziupli, powiedz głośno: dziupla!", ["mountain", "hollow"])
+
+    say("mountain", "Wspinamy się na Wysoką Górę. Hop, hop, coraz wyżej! Na szczycie wieje zimny wiatr, a Gwiazdka "
+        "siedzi na kamieniu i drży z zimna. Żeby wróciła na niebo, trzeba obudzić Wiatr Wędrowca. "
+        "Klaśnij trzy razy, mocno!", next_step="wind_claps")
+    listen("wind_claps", "clap", "wind_ok", "wind_help", "Posłuchaj… Wiatr Wędrowiec budzi się sam!", "ending_wind",
+           count=3)
+    say("wind_ok", "Udało się! Wiatr Wędrowiec się obudził!", wind(3), next_step="ending_wind")
+    say("wind_help", "Wiatr śpi mocno. Pomogę: klaszczemy razem!", pattern([0.5, 0.5, 0.6]),
+        "Obudził się!", next_step="ending_wind")
+    ending("ending_wind", "Wiatr Wędrowiec delikatnie podnosi Gwiazdkę i niesie ją wysoko, wysoko, aż na samo niebo. "
+           "Spójrz dziś wieczorem w okno. Ta gwiazdka, która mruga najmocniej, mówi ci: dziękuję!")
+
+    word_decision(
+        g, steps, assets, "hollow",
+        "Zaglądamy do Starej Dziupli. Ciii… W środku śpi Wiewiórka Ruda, a obok niej, zwinięta w kłębek, świeci "
+        "Gwiazdka. Też zasnęła! Co robimy? Budzimy ją czy śpiewamy kołysankę? Powiedz: budzimy albo kołysanka.",
+        {"wake": ["budzimy", "obudź", "obudzić", "budzić", "pobudka", "budzimy ją"],
+         "lullaby": ["kołysanka", "kołysankę", "śpiewamy", "śpiewać", "lulu"]},
+        "Nie usłyszałam. Powiedz cichutko: kołysanka. Albo głośno: budzimy!",
+        "To ja wybiorę: zaśpiewamy kołysankę.", "lullaby",
+        "Jeśli budzimy Gwiazdkę, klaśnij raz. Jeśli śpiewamy kołysankę, powiedz: kołysanka.", ["wake", "lullaby"])
+    say("wake", "Pobudka! Gwiazdka otwiera oczka i ziewa. Ale się wyspałam, mówi. Wiewiórka Ruda też się budzi "
+        "i woła: znam skrót do nieba!", next_step="ending_squirrel")
+    ending("ending_squirrel", "Wiewiórka skacze z gałęzi na gałąź, aż na czubek najwyższej sosny, a Gwiazdka razem "
+           "z nią. Stamtąd jednym skokiem wraca na niebo. A Wiewiórka Ruda ma teraz najjaśniejszą lampkę w całym "
+           "lesie: co noc Gwiazdka świeci prosto do jej dziupli.")
+    say("lullaby", "Śpiewamy cichutko.", melody(6, seed=21), "Gwiazdka uśmiecha się przez sen.",
+        next_step="ending_lullaby")
+    ending("ending_lullaby", "Gwiazdka śpi w dziupli aż do rana. Kiedy zapada kolejna noc, wypoczęta wraca na niebo, "
+           "a Wiewiórka Ruda macha jej łapką na do widzenia. Dobranoc, Gwiazdko!")
+
+    # --- the river: a frog, the stones or the boat ---------------------------------------
+    say("river", "Idziemy nad Srebrną Rzekę.", plum() + plum() + rain(2),
+        "Na liściu siedzi Żabka Kumka. Kum, kum! Widziałam Gwiazdkę na Wyspie Trzcin, na środku rzeki.",
+        next_step="frog")
+    word_decision(
+        g, steps, assets, "frog",
+        "Jak się tam dostaniemy? Skaczemy po kamieniach czy płyniemy łódką? Powiedz: kamienie albo łódka.",
+        {"stones": ["kamienie", "po kamieniach", "kamień", "skaczemy", "skakać"],
+         "boat": ["łódka", "łódką", "łódź", "łódkę", "płyniemy"]},
+        "Nie usłyszałam. Powiedz głośno: kamienie! Albo: łódka!",
+        "To ja wybiorę: płyniemy łódką!", "boat",
+        "Jeśli skaczemy po kamieniach, klaśnij raz. Jeśli płyniemy łódką, powiedz głośno: łódka!",
+        ["stones", "boat"])
+
+    say("stones", "Skaczemy z kamienia na kamień. Przy każdym skoku klaśnij! Trzy skoki. Hop!",
+        next_step="stones_claps")
+    listen("stones_claps", "clap", "stones_ok", "stones_help", "Hop, hop, hop! Żabka skacze razem z nami.", "island",
+           window=9000, count=3)
+    say("stones_ok", "Hop, hop, hop! Brawo, ani razu nie wpadliśmy do wody.", next_step="island")
+    say("stones_help", "Skaczemy razem!", pattern([0.6, 0.6, 0.6]), "Hop, hop, hop! Jesteśmy na drugim brzegu.",
+        next_step="island")
+    say("island", "Jesteśmy na Wyspie Trzcin. Ciii… Coś świeci w trzcinach. To Gwiazdka! Ale jej światełko prawie "
+        "zgasło. Dodajmy jej sił. Powiedz głośno: świeć!", next_step="shine")
+    listen("shine", "voice_activity", "ending_fireflies", "shine_help", "Gwiazdka słyszy, że wszyscy jej kibicują.",
+           "ending_fireflies")
+    say("shine_help", "Zawołajmy razem: świeć!", next_step="ending_fireflies")
+    ending("ending_fireflies", "Na twój głos z trzcin wylatują świetliki. Setki małych światełek otaczają Gwiazdkę, "
+           "aż znowu świeci pełnym blaskiem. Świetliki odprowadzają ją na niebo jak mały, świecący pociąg.")
+
+    say("boat", "Wsiadamy do łódki. Żeby płynąć, trzeba wiosłować i mówić: plum! Powiedz głośno: plum!",
+        next_step="row")
+    listen("row", "voice_activity", "row_ok", "row_help", "Wiosłuję za was: plum, plum!", "ducks")
+    say("row_ok", "Plum, plum! Płyniemy!", plum() + plum() + plum(), next_step="ducks")
+    say("row_help", "Wiosłuję za was:", plum() + plum() + plum(), next_step="ducks")
+    say("ducks", "Obok łódki płynie Mama Kaczka z kaczuszkami. Posłuchaj, ile kaczuszek zakwacze.",
+        quack() + quack() + quack(), "Ile ich było? Powiedz liczbę.", next_step="count")
+    steps["count"] = {
+        "type": "choice", "window_ms": 8000,
+        "words": {"count_right": ["trzy", "3", "trzech", "trzej"],
+                  "count_wrong": ["jeden", "jedna", "dwa", "dwie", "cztery", "pięć", "sześć"]},
+        "on_timeout": "count_tell",
+        "fallback": {"no_microphone": {"type": "wait", "duration_ms": 4000, "next": "count_tell"},
+                     "screen_locked": "same_as_no_microphone", "input_error": "same_as_no_microphone"},
+    }
+    steps["count_right"] = {"type": "set", "var": "score", "op": "inc", "next": "count_praise"}
+    say("count_praise", "Tak! Trzy kaczuszki! Mama Kaczka jest z was dumna.", next_step="ending_moon")
+    say("count_wrong", "Policzmy razem.", quack() + quack() + quack(), "Raz, dwa, trzy. Trzy kaczuszki!",
+        next_step="ending_moon")
+    say("count_tell", "Były trzy kaczuszki! Raz, dwa, trzy.", next_step="ending_moon")
+    ending("ending_moon", "Kaczki prowadzą łódkę tam, gdzie na wodzie leży srebrna ścieżka księżyca. Gwiazdka wskakuje "
+           "na nią i biegnie jak po moście, aż na samo niebo. Księżyc mruga do ciebie: dziękuję za pomoc!")
+
+    return game(g, steps, assets, variables={"score": 0}, engine=3)
+
+
 def item(id_, title, description, script, situations, requirements, minutes, access="paid"):
     return {
         "id": id_, "kind": "interactive_game", "title": title, "parent_description": description,
@@ -311,14 +536,25 @@ def main():
              "Z mikrofonem (opcjonalnie) aplikacja reaguje na odpowiedź i liczy punkty; bez mikrofonu daje czas do namysłu "
              "i podaje rozwiązanie.",
              prawda_czy_nie(), ["podroz", "w_domu", "czekanie"], ["mikrofon"], 4, access="free"),
+        item("zgubiona-gwiazdka", "Zgubiona Gwiazdka",
+             "Bajka, w której dziecko wybiera drogę: mówi „las” albo „rzeka”, „góra” albo „dziupla”, rozwiązuje "
+             "zagadki i klaszcze. Pięć różnych zakończeń, więc warto wracać. Słowa rozpoznaje sam telefon, bez "
+             "internetu i bez nagrywania. Gdy telefon nie rozpoznaje słów, pyta o klaśnięcie; bez mikrofonu "
+             "narratorka wybiera drogę sama.",
+             zgubiona_gwiazdka(), ["w_domu", "przed_snem", "podroz"], ["mikrofon"], 8, access="free")
+        | {"released": "2026-10-03"},
     ]
     catalog = json.loads(CATALOG.read_text())
     ids = {g["id"] for g in games}
+    # Fields set elsewhere (release date, preview…) survive regenerating.
+    old = {i["id"]: i for i in catalog["items"]}
+    games = [{**old.get(g["id"], {}), **g} for g in games]
     catalog["items"] = [i for i in catalog["items"] if i["id"] not in ids] + games
-    catalog["shelves"] = [s for s in catalog["shelves"] if s["id"] not in ("gry", "nowosci")] + [
-        {"id": "nowosci", "title": "Nowość!", "kind": "row", "item_ids": ["prawda-czy-nie"]},
-        {"id": "gry", "title": "Gry bez ekranu", "kind": "row", "item_ids": [g["id"] for g in games]}
-    ]
+    # "Nowości" come from release dates now; the games row keeps its place.
+    games_row = {"id": "gry", "title": "Gry bez ekranu", "kind": "row", "item_ids": [g["id"] for g in games]}
+    shelves = [s for s in catalog["shelves"] if s["id"] != "nowosci"]
+    at = next((n for n, s in enumerate(shelves) if s["id"] == "gry"), len(shelves))
+    catalog["shelves"] = shelves[:at] + [games_row] + shelves[at + 1:]
     CATALOG.write_text(json.dumps(catalog, ensure_ascii=False, indent=1) + "\n")
 
     lines = ["# Teksty do nagrania: prototypy gier (Etap 4)", "",

@@ -2211,6 +2211,931 @@
    },
    "timing_sensitive": false,
    "released": "2026-09-27"
+  },
+  {
+   "id": "zgubiona-gwiazdka",
+   "kind": "interactive_game",
+   "title": "Zgubiona Gwiazdka",
+   "parent_description": "Bajka, w której dziecko wybiera drogę: mówi „las” albo „rzeka”, „góra” albo „dziupla”, rozwiązuje zagadki i klaszcze. Pięć różnych zakończeń, więc warto wracać. Słowa rozpoznaje sam telefon, bez internetu i bez nagrywania. Gdy telefon nie rozpoznaje słów, pyta o klaśnięcie; bez mikrofonu narratorka wybiera drogę sama.",
+   "age_min": 3,
+   "duration_sec": 480,
+   "situations": [
+    "w_domu",
+    "przed_snem",
+    "podroz"
+   ],
+   "requirements": [
+    "mikrofon"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "free",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "zgubiona-gwiazdka",
+    "version": 1,
+    "min_engine_version": 3,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/zgubiona-gwiazdka/intro.m4a",
+      "bytes": 155534,
+      "sha256": "b96b03d8372d776fa6e082076890210fe943922d6b04f8a6e51d7bc7abbaa76c"
+     },
+     "ready_self": {
+      "path": "games/zgubiona-gwiazdka/ready_self.m4a",
+      "bytes": 23372,
+      "sha256": "c5b0bcf4c80e3b6034b49601fdba495890a3eb3511238a305e3c1edc0ecab7de"
+     },
+     "go": {
+      "path": "games/zgubiona-gwiazdka/go.m4a",
+      "bytes": 17945,
+      "sha256": "171e1e1e479ccd58a57171ec994d007500380648a55f1449f5980d02bea294b1"
+     },
+     "cross": {
+      "path": "games/zgubiona-gwiazdka/cross.m4a",
+      "bytes": 82306,
+      "sha256": "641c7ba7db625ed4936831bee056e59aab6a7309f5f87e6872a0c942ff622389"
+     },
+     "cross_again": {
+      "path": "games/zgubiona-gwiazdka/cross_again.m4a",
+      "bytes": 40021,
+      "sha256": "96c66f9d663304c841b6e800edb7a165574e415197878e0384d01265a5ef8123"
+     },
+     "cross_auto": {
+      "path": "games/zgubiona-gwiazdka/cross_auto.m4a",
+      "bytes": 43609,
+      "sha256": "7ef54afe96ef6da3c1ac52f940fb2b77680c5fb9afb5cfc9ccdbda4f9e427dd0"
+     },
+     "cross_claps": {
+      "path": "games/zgubiona-gwiazdka/cross_claps.m4a",
+      "bytes": 51706,
+      "sha256": "ba33cc33522d4c8f5d630dc9157e3b2f2516295b438246cb26ca1af3af562484"
+     },
+     "forest": {
+      "path": "games/zgubiona-gwiazdka/forest.m4a",
+      "bytes": 121259,
+      "sha256": "e2a73265d9c415b9c650394b5648f034d108f51502c35b5134797fbf64c11a0a"
+     },
+     "riddle_praise": {
+      "path": "games/zgubiona-gwiazdka/riddle_praise.m4a",
+      "bytes": 38130,
+      "sha256": "2a82532ff287a06b98b17238ff7ec3c9cfadba7d323905c623b3c01993bbdb3e"
+     },
+     "riddle_wrong": {
+      "path": "games/zgubiona-gwiazdka/riddle_wrong.m4a",
+      "bytes": 40950,
+      "sha256": "56fabe5621b6893519e7c39ecc0a2a264f8241eed70af71c4a886b5f50822617"
+     },
+     "riddle_hint_say": {
+      "path": "games/zgubiona-gwiazdka/riddle_hint_say.m4a",
+      "bytes": 45929,
+      "sha256": "0eb471fa43c9a86235b712d0caf89f1f598981dace473cd865bc89b5fcf2de9d"
+     },
+     "riddle_tell": {
+      "path": "games/zgubiona-gwiazdka/riddle_tell.m4a",
+      "bytes": 20605,
+      "sha256": "a5787f9ef4d26f93d183e03516649d062f23fa1834e427c7e3e17e543d1088ea"
+     },
+     "owl": {
+      "path": "games/zgubiona-gwiazdka/owl.m4a",
+      "bytes": 89987,
+      "sha256": "e06d79ca677755e68728f5640d563db7a968ba6f58429e73da4287ef5b488a27"
+     },
+     "owl_again": {
+      "path": "games/zgubiona-gwiazdka/owl_again.m4a",
+      "bytes": 39619,
+      "sha256": "1d59453f9f304eb7a9fe50adb1874ba92c64070541d26e0cd38c871c919d9f22"
+     },
+     "owl_auto": {
+      "path": "games/zgubiona-gwiazdka/owl_auto.m4a",
+      "bytes": 20623,
+      "sha256": "44c6bea9bd7f86092d52c8f6c1953108363919c6f553f6569fbdcaef77d176fd"
+     },
+     "owl_claps": {
+      "path": "games/zgubiona-gwiazdka/owl_claps.m4a",
+      "bytes": 45632,
+      "sha256": "c989755dd142e490bcd5c39709eec323b1c68949ffac0084c5c1e15a1dfdc71d"
+     },
+     "mountain": {
+      "path": "games/zgubiona-gwiazdka/mountain.m4a",
+      "bytes": 125145,
+      "sha256": "781931df5eea2d48e393a19388e8120ca6c864f207896e6e7625515a83d66fe3"
+     },
+     "wind_claps_self": {
+      "path": "games/zgubiona-gwiazdka/wind_claps_self.m4a",
+      "bytes": 25750,
+      "sha256": "6e67a3240c38a93754e664f004b7260c4243da3c785ad270688bd010f3626f94"
+     },
+     "wind_ok": {
+      "path": "games/zgubiona-gwiazdka/wind_ok.m4a",
+      "bytes": 49444,
+      "sha256": "f8e04bc7bfb517cf86a0c111c46d2f4eaad09cfdd833c751de88049404b3c692"
+     },
+     "wind_help": {
+      "path": "games/zgubiona-gwiazdka/wind_help.m4a",
+      "bytes": 44713,
+      "sha256": "f428272a742e98aa09260d02670a6c5490ed29499f87dcb35b809fd209541fdb"
+     },
+     "ending_wind": {
+      "path": "games/zgubiona-gwiazdka/ending_wind.m4a",
+      "bytes": 180770,
+      "sha256": "56671ff93ea000a257a0aef0451dd3ef00bba4ce771cdc942974d5c16fb00cd3"
+     },
+     "hollow": {
+      "path": "games/zgubiona-gwiazdka/hollow.m4a",
+      "bytes": 130160,
+      "sha256": "25d628cbf2232112938a1563c49250d1d2878ca30652e4cb3121eff1d207701f"
+     },
+     "hollow_again": {
+      "path": "games/zgubiona-gwiazdka/hollow_again.m4a",
+      "bytes": 46131,
+      "sha256": "c98873004c66721cd1b9169c36edf65e193c555ce4874fd054faa82e008ae136"
+     },
+     "hollow_auto": {
+      "path": "games/zgubiona-gwiazdka/hollow_auto.m4a",
+      "bytes": 23998,
+      "sha256": "f3347a55616f8e856f03d18bc73bcf437c072b1d0634ed5b290a6d61c92ce8b0"
+     },
+     "hollow_claps": {
+      "path": "games/zgubiona-gwiazdka/hollow_claps.m4a",
+      "bytes": 56160,
+      "sha256": "bbc4418345c2559b58b04f048c91ae01c6d80467c7b4b863665965f0ed765a37"
+     },
+     "wake": {
+      "path": "games/zgubiona-gwiazdka/wake.m4a",
+      "bytes": 73834,
+      "sha256": "67f9291fb380c944f697eb9df7bef1201032659f234fc9d74622749727364b39"
+     },
+     "ending_squirrel": {
+      "path": "games/zgubiona-gwiazdka/ending_squirrel.m4a",
+      "bytes": 203470,
+      "sha256": "cc27a43bc84979ca927f84d0b874a5731d6e758fbb373d24e7b0a7541f6b01ef"
+     },
+     "lullaby": {
+      "path": "games/zgubiona-gwiazdka/lullaby.m4a",
+      "bytes": 81335,
+      "sha256": "53e26770629a90c83ee83243862c8c287e64efa99de60da834dba1bde536c3c2"
+     },
+     "ending_lullaby": {
+      "path": "games/zgubiona-gwiazdka/ending_lullaby.m4a",
+      "bytes": 165475,
+      "sha256": "e4ebe4db13d9c0a5f322753c6258331ed7be942828522cf6b9057373f6311b0b"
+     },
+     "river": {
+      "path": "games/zgubiona-gwiazdka/river.m4a",
+      "bytes": 111548,
+      "sha256": "324c34a5e79298a4ebff9b98479bfd59db2336c487db1a53b6afaf327e154d14"
+     },
+     "frog": {
+      "path": "games/zgubiona-gwiazdka/frog.m4a",
+      "bytes": 55528,
+      "sha256": "c03154fe218db4f3794fea1365df47d2612317e5c1e6e9ce4d748265ef3aa36b"
+     },
+     "frog_again": {
+      "path": "games/zgubiona-gwiazdka/frog_again.m4a",
+      "bytes": 41338,
+      "sha256": "3dd5a72aa8b0359441de4f7f46a999833e3224e7f7e94665a090af62f2731e9b"
+     },
+     "frog_auto": {
+      "path": "games/zgubiona-gwiazdka/frog_auto.m4a",
+      "bytes": 19674,
+      "sha256": "719f1bbace969da4029916ad6a869322677d00db191fe06ed15bd3b68371fb7d"
+     },
+     "frog_claps": {
+      "path": "games/zgubiona-gwiazdka/frog_claps.m4a",
+      "bytes": 56493,
+      "sha256": "666b45aa602801773880c23ddc5f14f1f538bd51e29a128f517bea28b2cfb064"
+     },
+     "stones": {
+      "path": "games/zgubiona-gwiazdka/stones.m4a",
+      "bytes": 48926,
+      "sha256": "e8a2e882f81324bb0cc15b922e8773b7937ce882d549a1480cede6ba96730307"
+     },
+     "stones_claps_self": {
+      "path": "games/zgubiona-gwiazdka/stones_claps_self.m4a",
+      "bytes": 33715,
+      "sha256": "15dcff30fa01088fd40158f7b8eaa11a26111491e28719d0108e8958c729027d"
+     },
+     "stones_ok": {
+      "path": "games/zgubiona-gwiazdka/stones_ok.m4a",
+      "bytes": 40940,
+      "sha256": "42cd83f77bd9794419b4fc5a25f996f0b5068f580d0b62ef4f576954298b0265"
+     },
+     "stones_help": {
+      "path": "games/zgubiona-gwiazdka/stones_help.m4a",
+      "bytes": 51488,
+      "sha256": "91e34847dac0029f8b2a04292fd15d90eb984ba8602533a8dab2c9b5df1c7919"
+     },
+     "island": {
+      "path": "games/zgubiona-gwiazdka/island.m4a",
+      "bytes": 90988,
+      "sha256": "030357971cb7bf6cfa0d6ee90771cb1bdff70cb5dfbf70374656bf05e667b4b8"
+     },
+     "shine_self": {
+      "path": "games/zgubiona-gwiazdka/shine_self.m4a",
+      "bytes": 26884,
+      "sha256": "fcf7d30c27ccf6bed0373c58f8426ec9a46655deb633f08277f8ea35cf9e2222"
+     },
+     "shine_help": {
+      "path": "games/zgubiona-gwiazdka/shine_help.m4a",
+      "bytes": 20555,
+      "sha256": "01b10964a2187779f2efc395dfc9e322a28f936839d0165936ca65ca06f8db67"
+     },
+     "ending_fireflies": {
+      "path": "games/zgubiona-gwiazdka/ending_fireflies.m4a",
+      "bytes": 179011,
+      "sha256": "f94f74672c141f679c477bd1b5fd1c53ed27c28275f78f2bcbdf9d96cb75d098"
+     },
+     "boat": {
+      "path": "games/zgubiona-gwiazdka/boat.m4a",
+      "bytes": 57425,
+      "sha256": "8021238481076694c44c46489825e8a830f4f623f71ee0336490ca1dd9cda02c"
+     },
+     "row_self": {
+      "path": "games/zgubiona-gwiazdka/row_self.m4a",
+      "bytes": 23418,
+      "sha256": "ce5529b6f06f4ef6d7ed27917e584aff85f8a1090ef5d8ce6f8e9206fa5b7769"
+     },
+     "row_ok": {
+      "path": "games/zgubiona-gwiazdka/row_ok.m4a",
+      "bytes": 27266,
+      "sha256": "449b1892d734b625143b59b234ca82c28a3bc493156a4db7141d482719ac1045"
+     },
+     "row_help": {
+      "path": "games/zgubiona-gwiazdka/row_help.m4a",
+      "bytes": 21368,
+      "sha256": "475f241b4d3f7eee562359474c848e58f27b4fd3007ac1285e240cc6b4fa7217"
+     },
+     "ducks": {
+      "path": "games/zgubiona-gwiazdka/ducks.m4a",
+      "bytes": 73288,
+      "sha256": "cccbfa849cd2258252189eda0094064135dd0573ee3b4f9944f52d43b8531f41"
+     },
+     "count_praise": {
+      "path": "games/zgubiona-gwiazdka/count_praise.m4a",
+      "bytes": 32539,
+      "sha256": "473cafdad5354cb8a61368b4b3c11df14e1d62646ee65b2a4490a7db930d2db0"
+     },
+     "count_wrong": {
+      "path": "games/zgubiona-gwiazdka/count_wrong.m4a",
+      "bytes": 45144,
+      "sha256": "e5410d777d326718bf59f9c93885aff6ef2686dfaf80795d76399f7308130b6b"
+     },
+     "count_tell": {
+      "path": "games/zgubiona-gwiazdka/count_tell.m4a",
+      "bytes": 29365,
+      "sha256": "66d2ed9b30b1eb4616a8147574f61d5748c74f33e512440c9769e361db4258fc"
+     },
+     "ending_moon": {
+      "path": "games/zgubiona-gwiazdka/ending_moon.m4a",
+      "bytes": 177757,
+      "sha256": "e83cf51e3b7901b9eab219ff1fddee41d3a85f1fa8a2f193e1717657835a3eac"
+     }
+    },
+    "variables": {
+     "score": 0
+    },
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "ready"
+     },
+     "ready": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 7000,
+      "on_detected": "go",
+      "on_timeout": "go",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "ready_self",
+        "next": "cross"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "go": {
+      "type": "play",
+      "asset": "go",
+      "next": "cross"
+     },
+     "cross": {
+      "type": "play",
+      "asset": "cross",
+      "next": "cross_answer"
+     },
+     "cross_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "forest": [
+        "las",
+        "do lasu",
+        "lasek",
+        "lasu"
+       ],
+       "river": [
+        "rzeka",
+        "nad rzekę",
+        "rzekę",
+        "rzeczka",
+        "rzeki"
+       ]
+      },
+      "on_timeout": "cross_retry",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "cross_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "cross_claps"
+       }
+      }
+     },
+     "cross_retry": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "cross_again",
+      "else": "cross_auto"
+     },
+     "cross_again": {
+      "type": "play",
+      "asset": "cross_again",
+      "next": "cross_answer"
+     },
+     "cross_auto": {
+      "type": "play",
+      "asset": "cross_auto",
+      "next": "forest"
+     },
+     "cross_claps": {
+      "type": "play",
+      "asset": "cross_claps",
+      "next": "cross_clap_answer"
+     },
+     "cross_clap_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "options": {
+       "clap": "forest",
+       "voice_activity": "river"
+      },
+      "on_timeout": "cross_auto",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "cross_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "forest": {
+      "type": "play",
+      "asset": "forest",
+      "next": "riddle"
+     },
+     "riddle": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "riddle_right": [
+        "pies",
+        "piesek",
+        "psiak",
+        "pieska",
+        "psa"
+       ],
+       "riddle_wrong": [
+        "kot",
+        "kotek",
+        "krowa",
+        "kaczka",
+        "kura",
+        "żaba",
+        "koń",
+        "owca"
+       ]
+      },
+      "on_timeout": "riddle_hint",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 4000,
+        "next": "riddle_tell"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "riddle_right": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "riddle_praise"
+     },
+     "riddle_praise": {
+      "type": "play",
+      "asset": "riddle_praise",
+      "next": "owl"
+     },
+     "riddle_wrong": {
+      "type": "play",
+      "asset": "riddle_wrong",
+      "next": "owl"
+     },
+     "riddle_hint": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "riddle_hint_say",
+      "else": "riddle_tell"
+     },
+     "riddle_hint_say": {
+      "type": "play",
+      "asset": "riddle_hint_say",
+      "next": "riddle"
+     },
+     "riddle_tell": {
+      "type": "play",
+      "asset": "riddle_tell",
+      "next": "owl"
+     },
+     "owl": {
+      "type": "play",
+      "asset": "owl",
+      "next": "owl_answer"
+     },
+     "owl_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "mountain": [
+        "góra",
+        "na górę",
+        "górę",
+        "góry",
+        "górka"
+       ],
+       "hollow": [
+        "dziupla",
+        "dziuplę",
+        "do dziupli",
+        "dziupli"
+       ]
+      },
+      "on_timeout": "owl_retry",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "owl_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "owl_claps"
+       }
+      }
+     },
+     "owl_retry": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "owl_again",
+      "else": "owl_auto"
+     },
+     "owl_again": {
+      "type": "play",
+      "asset": "owl_again",
+      "next": "owl_answer"
+     },
+     "owl_auto": {
+      "type": "play",
+      "asset": "owl_auto",
+      "next": "hollow"
+     },
+     "owl_claps": {
+      "type": "play",
+      "asset": "owl_claps",
+      "next": "owl_clap_answer"
+     },
+     "owl_clap_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "options": {
+       "clap": "mountain",
+       "voice_activity": "hollow"
+      },
+      "on_timeout": "owl_auto",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "owl_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "mountain": {
+      "type": "play",
+      "asset": "mountain",
+      "next": "wind_claps"
+     },
+     "wind_claps": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 8000,
+      "on_detected": "wind_ok",
+      "on_timeout": "wind_help",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "wind_claps_self",
+        "next": "ending_wind"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      },
+      "min_count": 3
+     },
+     "wind_ok": {
+      "type": "play",
+      "asset": "wind_ok",
+      "next": "ending_wind"
+     },
+     "wind_help": {
+      "type": "play",
+      "asset": "wind_help",
+      "next": "ending_wind"
+     },
+     "ending_wind": {
+      "type": "end",
+      "asset": "ending_wind"
+     },
+     "hollow": {
+      "type": "play",
+      "asset": "hollow",
+      "next": "hollow_answer"
+     },
+     "hollow_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "wake": [
+        "budzimy",
+        "obudź",
+        "obudzić",
+        "budzić",
+        "pobudka",
+        "budzimy ją"
+       ],
+       "lullaby": [
+        "kołysanka",
+        "kołysankę",
+        "śpiewamy",
+        "śpiewać",
+        "lulu"
+       ]
+      },
+      "on_timeout": "hollow_retry",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "hollow_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "hollow_claps"
+       }
+      }
+     },
+     "hollow_retry": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "hollow_again",
+      "else": "hollow_auto"
+     },
+     "hollow_again": {
+      "type": "play",
+      "asset": "hollow_again",
+      "next": "hollow_answer"
+     },
+     "hollow_auto": {
+      "type": "play",
+      "asset": "hollow_auto",
+      "next": "lullaby"
+     },
+     "hollow_claps": {
+      "type": "play",
+      "asset": "hollow_claps",
+      "next": "hollow_clap_answer"
+     },
+     "hollow_clap_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "options": {
+       "clap": "wake",
+       "voice_activity": "lullaby"
+      },
+      "on_timeout": "hollow_auto",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "hollow_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "wake": {
+      "type": "play",
+      "asset": "wake",
+      "next": "ending_squirrel"
+     },
+     "ending_squirrel": {
+      "type": "end",
+      "asset": "ending_squirrel"
+     },
+     "lullaby": {
+      "type": "play",
+      "asset": "lullaby",
+      "next": "ending_lullaby"
+     },
+     "ending_lullaby": {
+      "type": "end",
+      "asset": "ending_lullaby"
+     },
+     "river": {
+      "type": "play",
+      "asset": "river",
+      "next": "frog"
+     },
+     "frog": {
+      "type": "play",
+      "asset": "frog",
+      "next": "frog_answer"
+     },
+     "frog_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "stones": [
+        "kamienie",
+        "po kamieniach",
+        "kamień",
+        "skaczemy",
+        "skakać"
+       ],
+       "boat": [
+        "łódka",
+        "łódką",
+        "łódź",
+        "łódkę",
+        "płyniemy"
+       ]
+      },
+      "on_timeout": "frog_retry",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "frog_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "frog_claps"
+       }
+      }
+     },
+     "frog_retry": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "frog_again",
+      "else": "frog_auto"
+     },
+     "frog_again": {
+      "type": "play",
+      "asset": "frog_again",
+      "next": "frog_answer"
+     },
+     "frog_auto": {
+      "type": "play",
+      "asset": "frog_auto",
+      "next": "boat"
+     },
+     "frog_claps": {
+      "type": "play",
+      "asset": "frog_claps",
+      "next": "frog_clap_answer"
+     },
+     "frog_clap_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "options": {
+       "clap": "stones",
+       "voice_activity": "boat"
+      },
+      "on_timeout": "frog_auto",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "frog_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "stones": {
+      "type": "play",
+      "asset": "stones",
+      "next": "stones_claps"
+     },
+     "stones_claps": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 9000,
+      "on_detected": "stones_ok",
+      "on_timeout": "stones_help",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "stones_claps_self",
+        "next": "island"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      },
+      "min_count": 3
+     },
+     "stones_ok": {
+      "type": "play",
+      "asset": "stones_ok",
+      "next": "island"
+     },
+     "stones_help": {
+      "type": "play",
+      "asset": "stones_help",
+      "next": "island"
+     },
+     "island": {
+      "type": "play",
+      "asset": "island",
+      "next": "shine"
+     },
+     "shine": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 8000,
+      "on_detected": "ending_fireflies",
+      "on_timeout": "shine_help",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "shine_self",
+        "next": "ending_fireflies"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "shine_help": {
+      "type": "play",
+      "asset": "shine_help",
+      "next": "ending_fireflies"
+     },
+     "ending_fireflies": {
+      "type": "end",
+      "asset": "ending_fireflies"
+     },
+     "boat": {
+      "type": "play",
+      "asset": "boat",
+      "next": "row"
+     },
+     "row": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 8000,
+      "on_detected": "row_ok",
+      "on_timeout": "row_help",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "row_self",
+        "next": "ducks"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "row_ok": {
+      "type": "play",
+      "asset": "row_ok",
+      "next": "ducks"
+     },
+     "row_help": {
+      "type": "play",
+      "asset": "row_help",
+      "next": "ducks"
+     },
+     "ducks": {
+      "type": "play",
+      "asset": "ducks",
+      "next": "count"
+     },
+     "count": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "count_right": [
+        "trzy",
+        "3",
+        "trzech",
+        "trzej"
+       ],
+       "count_wrong": [
+        "jeden",
+        "jedna",
+        "dwa",
+        "dwie",
+        "cztery",
+        "pięć",
+        "sześć"
+       ]
+      },
+      "on_timeout": "count_tell",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 4000,
+        "next": "count_tell"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "count_right": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "count_praise"
+     },
+     "count_praise": {
+      "type": "play",
+      "asset": "count_praise",
+      "next": "ending_moon"
+     },
+     "count_wrong": {
+      "type": "play",
+      "asset": "count_wrong",
+      "next": "ending_moon"
+     },
+     "count_tell": {
+      "type": "play",
+      "asset": "count_tell",
+      "next": "ending_moon"
+     },
+     "ending_moon": {
+      "type": "end",
+      "asset": "ending_moon"
+     }
+    }
+   },
+   "timing_sensitive": false,
+   "released": "2026-10-03"
   }
  ],
  "shelves": [
@@ -2265,7 +3190,8 @@
     "zamrozony-taniec",
     "zamrozone-raczki",
     "echo-rytmu",
-    "prawda-czy-nie"
+    "prawda-czy-nie",
+    "zgubiona-gwiazdka"
    ]
   },
   {

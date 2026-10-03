@@ -212,7 +212,10 @@ class _DetailsContent extends ConsumerWidget {
             ),
           ),
         if (item.script case final script? when scriptListensToSound(script))
-          _Section(title: AppLocalizations.of(context).micTitle, child: const _MicrophoneCard()),
+          _Section(
+            title: AppLocalizations.of(context).micTitle,
+            child: _MicrophoneCard(words: scriptListensToWords(script)),
+          ),
         if (item.pdf.isNotEmpty && canPlay)
           _Section(
             title: pack?.id == 'detektyw' ? 'Akta sprawy do wydrukowania' : l10n.pdfSection,
@@ -263,13 +266,16 @@ class _Meta extends StatelessWidget {
 /// Parent zone: lets games hear claps and voice. The system prompt appears only after the
 /// parental gate (ARCHITECTURE §12).
 class _MicrophoneCard extends ConsumerWidget {
-  const _MicrophoneCard();
+  const _MicrophoneCard({required this.words});
+
+  /// The game can also be answered with words.
+  final bool words;
 
   Future<void> _enable(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     if (!await showParentalGate(context)) return;
-    final granted = await ref.read(microphoneSettingsProvider.notifier).enable();
+    final granted = await ref.read(microphoneSettingsProvider.notifier).enable(words: words);
     if (!granted) messenger.showSnackBar(SnackBar(content: Text(l10n.micDenied)));
   }
 
@@ -282,6 +288,21 @@ class _MicrophoneCard extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(on ? l10n.micOnBody : l10n.micOffBody, style: text.bodyMedium),
+        if (words) ...[
+          const SizedBox(height: AkSpace.xs),
+          Text(switch ((on, ref.watch(speechReadyProvider).value)) {
+            (true, true) => 'W tej zabawie dziecko może też odpowiadać słowami. Rozpoznaje je sam telefon.',
+            (true, _) =>
+              'W tej zabawie dziecko może odpowiadać słowami, ale ten telefon ich teraz nie rozpozna '
+                  '(brak zgody na rozpoznawanie mowy albo polskiego bez internetu). Zabawa zapyta wtedy '
+                  'o klaśnięcia.',
+            _ =>
+              'W tej zabawie dziecko może też odpowiadać słowami, np. „w lewo”. Słowa rozpoznaje sam '
+                  'telefon, bez internetu.',
+          }, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+          if (on && ref.watch(speechReadyProvider).value == false)
+            TextButton(onPressed: () => _enable(context, ref), child: const Text('Pozwól rozpoznawać słowa')),
+        ],
         if (!on) ...[
           const SizedBox(height: AkSpace.xs),
           Text(l10n.micWithout, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
