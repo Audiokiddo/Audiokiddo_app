@@ -33,10 +33,14 @@ class Listen extends EngineCommand {
 /// Listen for any of [inputs] (a choice); report [InputDetected] with its `kind`, or
 /// [InputTimedOut] / [InputFailed].
 class ListenForChoice extends EngineCommand {
-  const ListenForChoice(this.inputs, this.window);
+  const ListenForChoice(this.inputs, this.window, {this.vocabulary = const []});
 
   final Set<InputKind> inputs;
   final Duration window;
+
+  /// With [InputKind.speechKeywords]: the words the child may say. Report the one heard, as
+  /// written here, in [InputDetected.word].
+  final List<String> vocabulary;
 }
 
 /// The session is over; play [asset] if given, then close.
@@ -62,12 +66,15 @@ class WaitElapsed extends EngineEvent {
 }
 
 class InputDetected extends EngineEvent {
-  const InputDetected({this.count = 1, this.kind});
+  const InputDetected({this.count = 1, this.kind, this.word});
 
   final int count;
 
   /// Which input was heard; needed to answer a choice.
   final InputKind? kind;
+
+  /// For [InputKind.speechKeywords]: the vocabulary word the child said.
+  final String? word;
 }
 
 class InputTimedOut extends EngineEvent {
@@ -163,6 +170,12 @@ class ScriptRunner {
     scriptVersion: script.version,
   );
 
+  bool _speechUnavailable = false;
+
+  /// The phone cannot recognise words now (no permission, no on-device Polish, an error). Only
+  /// speech steps are affected; claps and touch keep working.
+  void setSpeechAvailable({required bool available}) => _speechUnavailable = !available;
+
   /// Marks an input source as (un)available, e.g. the screen got locked or the parent
   /// denied the microphone. Affects the next input step.
   void setAvailability(FallbackReason reason, {required bool available}) =>
@@ -183,8 +196,8 @@ class ScriptRunner {
       (WaitStep(:final next), WaitElapsed()) => _resolve(next),
       (final InputStep input, InputDetected(:final count)) =>
         count >= (input.minCount ?? 1) ? _resolve(input.onDetected) : _resolve(input.onTimeout),
-      (final ChoiceStep choice, InputDetected(:final kind)) => _resolve(
-        choice.options[kind] ?? (kind == null ? choice.options[_available(choice).first]! : choice.onTimeout),
+      (final ChoiceStep choice, InputDetected(:final kind, :final word)) => _resolve(
+        _answerOf(choice, kind, word),
       ),
       (final ListeningStep listening, InputTimedOut()) => _resolve(listening.onTimeout),
       (final ListeningStep listening, InputFailed(:final reason)) => _runFallback(listening, reason),
@@ -192,6 +205,23 @@ class ScriptRunner {
       // An event that does not match the step (e.g. a late timer) replays the current step.
       _ => _commandFor(step),
     };
+  }
+
+  /// Where a heard answer leads; an answer the choice does not offer counts as silence.
+  String _answerOf(ChoiceStep choice, InputKind? kind, String? word) {
+    if (kind == InputKind.speechKeywords) {
+      return (word == null ? null : choice.targetForWord(word)) ?? choice.onTimeout;
+    }
+    if (kind == null) {
+      return _defaultTarget(choice);
+    }
+    return choice.options[kind] ?? choice.onTimeout;
+  }
+
+  /// The first answer the child can still give (an input that came without a kind).
+  String _defaultTarget(ChoiceStep choice) {
+    final kind = _available(choice).first;
+    return kind == InputKind.speechKeywords ? choice.words.keys.first : choice.options[kind]!;
   }
 
   EngineCommand _advanceFrom(ScriptStep fallback) => switch (fallback) {
@@ -202,6 +232,7 @@ class ScriptRunner {
 
   /// What stops [kind] from working right now, or null when it is available.
   FallbackReason? _blocker(InputKind kind) => switch (kind) {
+    InputKind.speechKeywords when _speechUnavailable => FallbackReason.noMicrophone,
     InputKind.clap || InputKind.voiceActivity || InputKind.speechKeywords
         when _unavailable.contains(FallbackReason.noMicrophone) =>
       FallbackReason.noMicrophone,
@@ -213,7 +244,10 @@ class ScriptRunner {
 
   /// Options of [choice] the child can use right now, in script order.
   List<InputKind> _available(ChoiceStep choice) => [
-    for (final kind in choice.options.keys)
+    for (final kind in [
+      ...choice.words.keys.take(1).map((_) => InputKind.speechKeywords),
+      ...choice.options.keys,
+    ])
       if (_blocker(kind) == null) kind,
   ];
 
@@ -261,8 +295,8 @@ class ScriptRunner {
           id = target;
         case InputStep(:final input) when _blocker(input) != null:
           return _runFallback(step, _blocker(input)!);
-        case ChoiceStep(:final options) when _available(step).isEmpty:
-          return _runFallback(step, _blocker(options.keys.first)!);
+        case ChoiceStep(:final inputs) when _available(step).isEmpty:
+          return _runFallback(step, _blocker(inputs.first)!);
         default:
           return _commandFor(step);
       }
@@ -280,9 +314,10 @@ class ScriptRunner {
       Duration(milliseconds: windowMs),
       minCount: minCount,
     ),
-    ChoiceStep(:final windowMs) => ListenForChoice(
+    ChoiceStep(:final windowMs, :final vocabulary) => ListenForChoice(
       _available(step).toSet(),
       Duration(milliseconds: windowMs),
+      vocabulary: _available(step).contains(InputKind.speechKeywords) ? vocabulary : const [],
     ),
     EndStep(:final asset) => _finish(Finish(asset: asset)),
     _ => throw StateError('not an audible step: ${step.id}'),

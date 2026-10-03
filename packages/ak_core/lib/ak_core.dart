@@ -11,3 +11,4 @@ export 'src/lease.dart';
 export 'src/script/model.dart';
 export 'src/script/runner.dart';
 export 'src/script/validator.dart';
+export 'src/script/words.dart';

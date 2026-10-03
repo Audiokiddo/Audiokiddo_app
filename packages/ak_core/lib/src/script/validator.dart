@@ -1,4 +1,5 @@
 import 'model.dart';
+import 'words.dart';
 
 /// Hard limits enforced by the engine (ARCHITECTURE §10.3).
 abstract final class ScriptLimits {
@@ -102,16 +103,45 @@ ScriptValidation validateScript(GameScript script, {int engine = engineVersion})
           error(reportAs, 'input "${step.input.name}" is not supported by this engine');
         }
         checkListening(step, reportAs);
-      case ChoiceStep(:final options):
+      case ChoiceStep(:final options, :final words):
         if (script.minEngineVersion < 2) {
           error(reportAs, 'choice steps need "min_engine_version": 2');
         }
         for (final kind in options.keys) {
           if (!_inputsSupportedInV1.contains(kind)) {
-            error(reportAs, 'input "${kind.name}" is not supported by this engine');
+            error(reportAs, 'input "${kind.name}" is not supported in "options" (words go in "words")');
           }
         }
-        if (options.length < 2) warn(reportAs, 'a choice with one option works like an input step');
+        if (words.isNotEmpty) {
+          if (script.minEngineVersion < 3) error(reportAs, '"words" need "min_engine_version": 3');
+          if (options.isNotEmpty) {
+            error(
+              reportAs,
+              'a choice uses "options" or "words", not both (speech and claps share one microphone)',
+            );
+          }
+          final owner = <String, String>{};
+          for (final MapEntry(key: target, value: list) in words.entries) {
+            if (list.isEmpty) error(reportAs, 'no words for "$target"');
+            for (final word in list) {
+              final key = normalizeSpoken(word);
+              if (key.isEmpty) error(reportAs, 'empty word for "$target"');
+              final other = owner[key];
+              if (other != null && other != target) {
+                error(reportAs, 'the word "$word" leads to both "$other" and "$target"');
+              }
+              owner[key] = target;
+              if (key.length < 3 && !key.contains(' ')) {
+                warn(reportAs, 'the word "$word" is very short; recognition may confuse it');
+              }
+            }
+          }
+          if (words.length < 2 && options.isEmpty) {
+            warn(reportAs, 'only one answer listed: the game waits for that word (a "say it" step)');
+          }
+        } else if (options.length < 2) {
+          warn(reportAs, 'a choice with one option works like an input step');
+        }
         checkListening(step, reportAs);
       case BranchStep(:final condition):
         if (!script.variables.containsKey(condition.variable)) {

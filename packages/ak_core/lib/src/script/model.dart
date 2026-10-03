@@ -3,12 +3,14 @@ import '../json.dart';
 
 /// Highest script engine version this build of the app understands.
 /// 2: `choice` steps (the child answers by clapping, speaking or tapping).
-const int engineVersion = 2;
+/// 3: `words` in a choice: the child answers with a word the game listens for.
+const int engineVersion = 3;
 
 /// Supported `schema_version` of the game script format.
 const int scriptSchemaVersion = 1;
 
-/// Child input a script may wait for. [speechKeywords] is reserved and rejected in v1.
+/// Child input a script may wait for. [speechKeywords] is the child saying one of a choice's
+/// `words` (engine 3, recognised on the device).
 enum InputKind { tapAnywhere, clap, voiceActivity, motionShake, speechKeywords }
 
 /// Why an input step falls back to its non-input variant.
@@ -167,14 +169,22 @@ class InputStep extends ScriptStep implements ListeningStep {
   List<String> get targets => [onDetected, onTimeout, for (final f in fallbacks.values) ...f.targets];
 }
 
-/// The child answers in one of several ways, e.g. clap for "yes" and say anything for "no".
-/// Each option names the input and the step it leads to (engine 2).
+/// The child answers in one of several ways, e.g. clap for "yes" and say anything for "no"
+/// (engine 2), or says one of the words the game listens for (engine 3).
 ///
 /// ```json
 /// {"type": "choice", "window_ms": 8000,
 ///  "options": {"clap": "answer_yes", "voice_activity": "answer_no"},
 ///  "on_timeout": "ask_again", "fallback": {...}}
+///
+/// {"type": "choice", "window_ms": 9000,
+///  "words": {"go_left": ["lewo", "w lewo"], "go_right": ["prawo", "w prawo"]},
+///  "on_timeout": "ask_again", "fallback": {...}}
 /// ```
+/// `words` maps a target step to the words that lead there. The first target is also where the
+/// fallback goes (no speech recognition on this phone), so list the gentlest path first.
+/// A choice uses either `options` (sound and touch) or `words`, never both: speech and the
+/// clap detector would share one microphone.
 class ChoiceStep extends ScriptStep implements ListeningStep {
   const ChoiceStep(
     super.id, {
@@ -182,20 +192,29 @@ class ChoiceStep extends ScriptStep implements ListeningStep {
     required this.windowMs,
     required this.onTimeout,
     required this.fallbacks,
+    this.words = const {},
   });
 
   factory ChoiceStep.fromJson(String id, JsonReader r) {
-    final optionsJson = r.object('options');
+    final optionsJson = r.optObject('options');
     final options = <InputKind, String>{};
-    for (final key in optionsJson.json.keys) {
+    for (final key in optionsJson?.json.keys ?? const <String>[]) {
       final kind = InputKind.values.where((k) => wireName(k) == key).firstOrNull;
-      if (kind == null) throw FormatError('${optionsJson.path}.$key', 'unknown input "$key"');
-      options[kind] = optionsJson.string(key);
+      if (kind == null) throw FormatError('${optionsJson!.path}.$key', 'unknown input "$key"');
+      options[kind] = optionsJson!.string(key);
     }
-    if (options.isEmpty) throw FormatError(optionsJson.path, 'a choice needs at least one option');
+    final wordsJson = r.optObject('words');
+    final words = <String, List<String>>{};
+    for (final target in wordsJson?.json.keys ?? const <String>[]) {
+      words[target] = wordsJson!.strings(target);
+    }
+    if (options.isEmpty && words.isEmpty) {
+      throw FormatError(r.path, 'a choice needs "options" or "words"');
+    }
     return ChoiceStep(
       id,
       options: Map.unmodifiable(options),
+      words: Map.unmodifiable({for (final e in words.entries) e.key: List<String>.unmodifiable(e.value)}),
       windowMs: r.integer('window_ms', min: 1),
       onTimeout: r.string('on_timeout'),
       fallbacks: _parseFallbacks(id, r),
@@ -203,6 +222,9 @@ class ChoiceStep extends ScriptStep implements ListeningStep {
   }
 
   final Map<InputKind, String> options;
+
+  /// target step → the words that lead there (engine 3).
+  final Map<String, List<String>> words;
   @override
   final int windowMs;
   @override
@@ -210,8 +232,27 @@ class ChoiceStep extends ScriptStep implements ListeningStep {
   @override
   final Map<FallbackReason, ScriptStep> fallbacks;
 
+  /// Every word the child may say here, as the script wrote it.
+  List<String> get vocabulary => [for (final list in words.values) ...list];
+
+  /// The step a heard [word] leads to (spelling as in [vocabulary]), or null.
+  String? targetForWord(String word) {
+    for (final MapEntry(key: target, value: list) in words.entries) {
+      if (list.contains(word)) return target;
+    }
+    return null;
+  }
+
+  /// The inputs this choice listens for.
+  Set<InputKind> get inputs => {...options.keys, if (words.isNotEmpty) InputKind.speechKeywords};
+
   @override
-  List<String> get targets => [...options.values, onTimeout, for (final f in fallbacks.values) ...f.targets];
+  List<String> get targets => [
+    ...words.keys,
+    ...options.values,
+    onTimeout,
+    for (final f in fallbacks.values) ...f.targets,
+  ];
 }
 
 class Condition {

@@ -232,4 +232,89 @@ void main() {
       expect(validateScript(old).errors.map((e) => e.message), contains(contains('min_engine_version')));
     });
   });
+
+  group('words (engine 3)', () {
+    test('the child says a word and the story goes that way', () {
+      for (final (word, asset) in [('do lasu', 'forest'), ('zamek', 'castle'), ('lasek', 'forest')]) {
+        final runner = ScriptRunner(paths());
+        runner.start();
+        final listen = runner.next(const SegmentFinished()) as ListenForChoice;
+        expect(listen.inputs, {InputKind.speechKeywords});
+        expect(listen.vocabulary, ['las', 'do lasu', 'lasek', 'zamek', 'do zamku']);
+        final next = runner.next(InputDetected(kind: InputKind.speechKeywords, word: word));
+        expect((next as PlaySegment).asset, asset, reason: word);
+      }
+    });
+
+    test('a word the game does not know counts as no answer', () {
+      final runner = ScriptRunner(paths());
+      runner.start();
+      runner.next(const SegmentFinished());
+      final next = runner.next(const InputDetected(kind: InputKind.speechKeywords, word: 'morze'));
+      expect((next as PlaySegment).asset, 'question', reason: 'asked again');
+    });
+
+    test('without speech recognition the clap version of the question is used', () {
+      final runner = ScriptRunner(paths())..setSpeechAvailable(available: false);
+      final log = play(runner, normal);
+      expect(log, ['play:question', 'play:clap_question', 'play:forest', 'finish:-:completed']);
+    });
+
+    test('words need engine 3 and must not share an answer, nor mix with claps', () {
+      expect(validateScript(paths()).errors, isEmpty);
+      final shared = paths(
+        extra: {
+          'words': {
+            'forest': ['las'],
+            'castle': ['Las!'],
+          },
+        },
+      );
+      expect(validateScript(shared).errors.map((e) => e.message), contains(contains('leads to both')));
+      final mixed = paths(
+        extra: {
+          'options': {'clap': 'forest'},
+        },
+      );
+      expect(validateScript(mixed).errors.map((e) => e.message), contains(contains('not both')));
+    });
+  });
+}
+
+/// The child picks a way by saying it; without speech the same question is asked with claps.
+GameScript paths({Map<String, Object?> extra = const {}}) {
+  const asset = {'path': 'x.m4a', 'bytes': 1, 'sha256': '00'};
+  return parseGameScript({
+    'schema_version': 1,
+    'id': 'paths',
+    'version': 1,
+    'min_engine_version': 3,
+    'assets': {
+      for (final a in ['question', 'forest', 'castle', 'clap_question']) a: asset,
+    },
+    'start': 'question',
+    'steps': {
+      'question': {'type': 'play', 'asset': 'question', 'next': 'answer'},
+      'answer': {
+        'type': 'choice',
+        'window_ms': 9000,
+        'words': {
+          'forest': ['las', 'do lasu', 'lasek'],
+          'castle': ['zamek', 'do zamku'],
+        },
+        'on_timeout': 'again',
+        'fallback': {
+          'no_microphone': {'type': 'goto', 'target': 'clap_question'},
+          'screen_locked': 'same_as_no_microphone',
+          'input_error': 'same_as_no_microphone',
+        },
+        ...extra,
+      },
+      'again': {'type': 'goto', 'target': 'question', 'max_visits': 2},
+      'clap_question': {'type': 'play', 'asset': 'clap_question', 'next': 'forest'},
+      'forest': {'type': 'play', 'asset': 'forest', 'next': 'end'},
+      'castle': {'type': 'play', 'asset': 'castle', 'next': 'end'},
+      'end': {'type': 'end'},
+    },
+  });
 }
