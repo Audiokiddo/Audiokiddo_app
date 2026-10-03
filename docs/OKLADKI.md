@@ -2,12 +2,15 @@
 
 Generowane przez `tool/import_covers.py` (nie edytuj ręcznie). Obrazy wrzucasz do `AudioKiddo-materialy/okladki/` pod dowolną nazwą zawierającą tytuł zabawy, np. `Gadający śmietnik.jpg`, i uruchamiasz skrypt (albo piszesz do mnie).
 
-Wymagania: kwadrat, najlepiej 1080×1080 px, JPG lub PNG. W aplikacji okładka ma 900×900 px (razem 894 KB), bez okładki widać rysunek zastępczy.
+Wymagania: kwadrat, najlepiej 1080×1080 px, JPG lub PNG. W aplikacji okładka ma 900×900 px (razem 2462 KB), bez okładki widać rysunek zastępczy.
 
-Mamy 6 z 33.
+Mamy 15 z 33 okładek zabaw i 2 z 3 okładek pakietów.
 
 | Zabawa | Pakiet | Okładka |
 |---|---|---|
+| **Pakiet Wyobraźnia** (`pakiet-wyobraznia`) | okładka pakietu | brak |
+| **Pakiet Słowa i Wiedza** (`pakiet-slowa-i-wiedza`) | okładka pakietu | jest |
+| **Pakiet Detektyw** (`pakiet-detektyw`) | okładka pakietu | jest |
 | Magiczny sklep (`magiczny-sklep`) | wyobraznia | brak |
 | Zaginiony skarb (`zaginiony-skarb`) | wyobraznia | brak |
 | Podróż na inną planetę (`podroz-na-inna-planete`) | wyobraznia | brak |
@@ -19,15 +22,15 @@ Mamy 6 z 33.
 | Magiczny teatr (`magiczny-teatr`) | wyobraznia | brak |
 | Co oni odpowiedzieli? (`co-oni-odpowiedzieli`) | wyobraznia | brak |
 | Co to za przedmiot? (`co-to-za-przedmiot`) | slowa-i-wiedza | jest |
-| Co to za dźwięk? (`co-to-za-dzwiek`) | slowa-i-wiedza | brak |
-| Szybkie skojarzenia (`szybkie-skojarzenia`) | slowa-i-wiedza | brak |
-| Co tu nie pasuje? (`co-tu-nie-pasuje`) | slowa-i-wiedza | brak |
-| Wymień trzy (`wymien-trzy`) | slowa-i-wiedza | brak |
-| Znajdź przeciwieństwo (`znajdz-przeciwienstwo`) | slowa-i-wiedza | brak |
-| Znajdź synonimy (`znajdz-synonimy`) | slowa-i-wiedza | brak |
-| Ułóż zdanie (`uloz-zdanie`) | slowa-i-wiedza | brak |
-| Dokończ zgodnie z prawdą (`dokoncz-zgodnie-z-prawda`) | slowa-i-wiedza | brak |
-| Kto to powiedział? (`kto-to-powiedzial`) | slowa-i-wiedza | brak |
+| Co to za dźwięk? (`co-to-za-dzwiek`) | slowa-i-wiedza | jest |
+| Szybkie skojarzenia (`szybkie-skojarzenia`) | slowa-i-wiedza | jest |
+| Co tu nie pasuje? (`co-tu-nie-pasuje`) | slowa-i-wiedza | jest |
+| Wymień trzy (`wymien-trzy`) | slowa-i-wiedza | jest |
+| Znajdź przeciwieństwo (`znajdz-przeciwienstwo`) | slowa-i-wiedza | jest |
+| Znajdź synonimy (`znajdz-synonimy`) | slowa-i-wiedza | jest |
+| Ułóż zdanie (`uloz-zdanie`) | slowa-i-wiedza | jest |
+| Dokończ zgodnie z prawdą (`dokoncz-zgodnie-z-prawda`) | slowa-i-wiedza | jest |
+| Kto to powiedział? (`kto-to-powiedzial`) | slowa-i-wiedza | jest |
 | Złodziej naszyjnika (`zlodziej-naszyjnika`) | detektyw | jest |
 | Znikające dzwonki rowerowe (`znikajace-dzwonki`) | detektyw | jest |
 | Na ratunek budce z lodami (`na-ratunek-budce-z-lodami`) | detektyw | jest |

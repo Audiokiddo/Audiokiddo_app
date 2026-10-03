@@ -315,7 +315,9 @@ class PackArt extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final covered = withCovers(ref, summary.items);
     final Widget art;
-    if (covered.length >= 2) {
+    if (ref.watch(hasPackCoverProvider(summary.pack.id))) {
+      art = CoverImage(asset: packCoverAssetPath(summary.pack.id));
+    } else if (covered.length >= 2) {
       final tiles = covered.take(4).toList();
       art = Column(
         children: [
@@ -350,6 +352,20 @@ class PackBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(hasPackCoverProvider(summary.pack.id))) {
+      return Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 340),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(26),
+              child: CoverImage(asset: packCoverAssetPath(summary.pack.id)),
+            ),
+          ),
+        ),
+      );
+    }
     final covered = withCovers(ref, summary.items).take(3).toList();
     if (covered.isEmpty) {
       return AspectRatio(

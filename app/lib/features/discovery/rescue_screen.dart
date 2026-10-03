@@ -68,6 +68,8 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
       ),
       body: SafeArea(
         child: ListView(
+          // The result is a new page: it starts at the top, not where the choices were scrolled to.
+          key: ValueKey(results),
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
           children: [
             Text(

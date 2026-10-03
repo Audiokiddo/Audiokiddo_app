@@ -121,7 +121,10 @@ void main() {
       await pumpApp(tester);
       GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/pakiet/detektyw');
       await tester.pumpAndSettle();
-      expect(find.text('Przewodnik po pakiecie (PDF)'), findsOneWidget);
+      final scroll = find
+          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+          .last;
+      await tester.scrollUntilVisible(find.text('Przewodnik po pakiecie (PDF)'), 200, scrollable: scroll);
       await Scrollable.ensureVisible(
         tester.element(find.text('Przewodnik po pakiecie (PDF)')),
         alignment: .4,

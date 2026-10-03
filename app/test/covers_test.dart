@@ -29,7 +29,11 @@ void main() {
     expect(files, isNotEmpty);
     for (final file in files) {
       final id = file.uri.pathSegments.last.replaceAll('.jpg', '');
-      expect(catalog.item(id), isNotNull, reason: '${file.path} has no play in the catalog');
+      if (id.startsWith('pakiet-')) {
+        expect(catalog.pack(id.substring(7)), isNotNull, reason: '${file.path} has no pack in the catalog');
+      } else {
+        expect(catalog.item(id), isNotNull, reason: '${file.path} has no play in the catalog');
+      }
       final codec = await ui.instantiateImageCodec(await file.readAsBytes());
       final frame = (await codec.getNextFrame()).image;
       expect((frame.width, frame.height), (900, 900), reason: id);

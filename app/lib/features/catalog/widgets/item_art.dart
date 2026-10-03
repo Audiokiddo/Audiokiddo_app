@@ -26,6 +26,39 @@ final coverAssetsProvider = FutureProvider<Set<String>>((ref) => bundledCovers()
 
 String coverAssetPath(String itemId) => '$_coversDir$itemId.jpg';
 
+/// The cover of a whole pack (`assets/covers/pakiet-ID.jpg`).
+String packCoverAssetPath(String packId) => '${_coversDir}pakiet-$packId.jpg';
+
+/// Whether [packId] has its own cover image.
+final hasPackCoverProvider = Provider.family<bool, String>(
+  (ref, packId) => ref.watch(coverAssetsProvider).value?.contains(packCoverAssetPath(packId)) ?? false,
+);
+
+/// A bundled cover image, decoded no bigger than shown (a 56 px row does not hold 900 px).
+class CoverImage extends StatelessWidget {
+  const CoverImage({super.key, required this.asset});
+
+  final String asset;
+
+  @override
+  Widget build(BuildContext context) {
+    final pixelRatio = MediaQuery.devicePixelRatioOf(context);
+    return LayoutBuilder(
+      builder: (context, c) {
+        final side = c.biggest.shortestSide.isFinite ? c.biggest.shortestSide : 200.0;
+        return Image.asset(
+          asset,
+          fit: BoxFit.cover,
+          cacheWidth: (side * pixelRatio).round().clamp(64, 900),
+          gaplessPlayback: true,
+          filterQuality: FilterQuality.medium,
+          excludeFromSemantics: true,
+        );
+      },
+    );
+  }
+}
+
 /// Whether [item] has a real cover (false until the manifest is read, so first frames show the
 /// drawn placeholder and swap once).
 final hasCoverProvider = Provider.family<bool, ContentItem>(
@@ -54,21 +87,7 @@ class ItemArt extends ConsumerWidget {
         seed: seed ?? item.id.codeUnits.fold(0, (a, b) => a + b) % 5,
       );
     }
-    final pixelRatio = MediaQuery.devicePixelRatioOf(context);
-    return LayoutBuilder(
-      builder: (context, c) {
-        final side = c.biggest.shortestSide.isFinite ? c.biggest.shortestSide : 200.0;
-        return Image.asset(
-          coverAssetPath(item.id),
-          fit: BoxFit.cover,
-          // Decode no bigger than shown: a 56 px row does not hold a 900 px picture in memory.
-          cacheWidth: (side * pixelRatio).round().clamp(64, 900),
-          gaplessPlayback: true,
-          filterQuality: FilterQuality.medium,
-          excludeFromSemantics: true,
-        );
-      },
-    );
+    return CoverImage(asset: coverAssetPath(item.id));
   }
 }
 
