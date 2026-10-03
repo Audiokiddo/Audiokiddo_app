@@ -100,6 +100,9 @@ class FakeSpeech implements SpeechInput {
 
   bool available;
   String? Function(List<String> vocabulary)? answer;
+
+  @override
+  bool get supported => true;
   final heard = <String>[];
   bool listening = false;
 

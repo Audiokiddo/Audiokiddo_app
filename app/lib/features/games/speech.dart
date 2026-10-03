@@ -11,6 +11,9 @@ import 'package:speech_to_text/speech_to_text.dart';
 /// audio is never recorded, stored or sent, and a phone that cannot recognise Polish
 /// offline simply plays the clap version of the question.
 abstract interface class SpeechInput {
+  /// Whether this kind of phone may answer with words at all (see [DeviceSpeech.platformAllowed]).
+  bool get supported;
+
   /// Whether answers by words can be heard now, without asking for anything.
   Future<bool> ready();
 
@@ -68,9 +71,18 @@ class DeviceSpeech implements SpeechInput {
 
   static const _quiet = {'error_no_match', 'error_speech_timeout', 'error_busy'};
 
+  /// Android's recogniser falls back to Google's servers when offline Polish is missing
+  /// (speech_to_text 7.5 below Android 13 and without an on-device model), which a kids' app
+  /// must not do. Until a strictly on-device check is tested on real phones, Android games
+  /// ask for claps instead of words.
+  static bool get platformAllowed => Platform.isIOS;
+
+  @override
+  bool get supported => platformAllowed;
+
   @override
   Future<bool> ready() async {
-    if (!await _speech.hasPermission) return false;
+    if (!platformAllowed || !await _speech.hasPermission) return false;
     try {
       return await _init();
     } on Object catch (e) {
@@ -81,6 +93,7 @@ class DeviceSpeech implements SpeechInput {
 
   @override
   Future<bool> requestPermission() async {
+    if (!platformAllowed) return false;
     try {
       return await _init();
     } on Object {

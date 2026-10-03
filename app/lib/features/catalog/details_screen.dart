@@ -14,6 +14,7 @@ import '../../core/format.dart';
 import '../downloads/download_button.dart';
 import '../games/game_controller.dart';
 import '../games/microphone.dart';
+import '../games/speech.dart';
 import '../parental_gate/parental_gate.dart';
 import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';
@@ -291,6 +292,8 @@ class _MicrophoneCard extends ConsumerWidget {
         if (words) ...[
           const SizedBox(height: AkSpace.xs),
           Text(switch ((on, ref.watch(speechReadyProvider).value)) {
+            _ when !ref.watch(speechInputProvider).supported =>
+              'W tej zabawie można odpowiadać słowami, ale na tym telefonie dziecko odpowie klaśnięciem.',
             (true, true) => 'W tej zabawie dziecko może też odpowiadać słowami. Rozpoznaje je sam telefon.',
             (true, _) =>
               'W tej zabawie dziecko może odpowiadać słowami, ale ten telefon ich teraz nie rozpozna '
@@ -300,7 +303,7 @@ class _MicrophoneCard extends ConsumerWidget {
               'W tej zabawie dziecko może też odpowiadać słowami, np. „w lewo”. Słowa rozpoznaje sam '
                   'telefon, bez internetu.',
           }, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
-          if (on && ref.watch(speechReadyProvider).value == false)
+          if (on && ref.watch(speechInputProvider).supported && ref.watch(speechReadyProvider).value == false)
             TextButton(onPressed: () => _enable(context, ref), child: const Text('Pozwól rozpoznawać słowa')),
         ],
         if (!on) ...[
