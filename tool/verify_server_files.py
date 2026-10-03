@@ -45,6 +45,9 @@ def assets(catalog: dict):
                 yield f"{item['id']} ({key})", asset
         if item.get("preview"):
             yield f"{item['id']} (fragment)", item["preview"]
+        script_assets = (item.get("script") or {}).get("assets") or {}
+        for name, asset in sorted(script_assets.items()):
+            yield f"{item['id']} (gra: {name})", asset
 
 
 def main() -> int:
