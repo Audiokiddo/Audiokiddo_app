@@ -1,9 +1,10 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 
-import '../../discovery/reference_widgets.dart';
+import 'item_art.dart';
 
-/// Lightweight, consistent editorial artwork for catalog entries without cover files.
+/// A play's square cover with its badges (lock, "NOWE"); the drawn scene stands in until the
+/// cover image arrives (assets/covers, tool/import_covers.py).
 class ContentCover extends StatelessWidget {
   const ContentCover({
     super.key,
@@ -28,12 +29,7 @@ class ContentCover extends StatelessWidget {
         borderRadius: BorderRadius.circular(size * .13),
         child: Stack(
           children: [
-            Positioned.fill(
-              child: ArtScene(
-                category: itemCategory(item),
-                seed: item.id.codeUnits.fold(0, (a, b) => a + b) % 5,
-              ),
-            ),
+            Positioned.fill(child: ItemArt(item: item)),
             if (fresh)
               Positioned(
                 left: 5,

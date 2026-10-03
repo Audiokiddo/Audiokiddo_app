@@ -10,6 +10,7 @@ import '../../core/widgets/motion.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/catalog_loader.dart';
+import '../catalog/widgets/item_art.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../family/family.dart';
@@ -302,21 +303,77 @@ class _StoreUnavailable extends StatelessWidget {
   );
 }
 
-/// Pack artwork from the kind of play most of its items are.
-class PackArt extends StatelessWidget {
+/// A pack's picture: a mosaic of its plays' covers (two or more), one cover, or the drawn
+/// scene of the kind of play most of its items are while no cover exists yet.
+class PackArt extends ConsumerWidget {
   const PackArt({super.key, required this.summary, this.radius = 18});
 
   final PackSummary summary;
   final double radius;
 
   @override
-  Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(radius),
-    child: ArtScene(
-      category: summary.items.isEmpty ? PlayCategory.adventure : itemCategory(summary.items.first),
-      seed: summary.pack.id.codeUnits.fold(0, (a, b) => a + b) % 5,
-    ),
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final covered = withCovers(ref, summary.items);
+    final Widget art;
+    if (covered.length >= 2) {
+      final tiles = covered.take(4).toList();
+      art = Column(
+        children: [
+          for (var row = 0; row < 2; row++)
+            Expanded(
+              child: Row(
+                children: [
+                  for (var col = 0; col < 2; col++)
+                    Expanded(child: ItemArt(item: tiles[(row * 2 + col) % tiles.length])),
+                ],
+              ),
+            ),
+        ],
+      );
+    } else if (covered.length == 1) {
+      art = ItemArt(item: covered.first);
+    } else {
+      art = ArtScene(
+        category: summary.items.isEmpty ? PlayCategory.adventure : itemCategory(summary.items.first),
+        seed: summary.pack.id.codeUnits.fold(0, (a, b) => a + b) % 5,
+      );
+    }
+    return ClipRRect(borderRadius: BorderRadius.circular(radius), child: art);
+  }
+}
+
+/// The pack page header: up to three covers side by side, or the drawn scene before covers exist.
+class PackBanner extends ConsumerWidget {
+  const PackBanner({super.key, required this.summary});
+
+  final PackSummary summary;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final covered = withCovers(ref, summary.items).take(3).toList();
+    if (covered.isEmpty) {
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: PackArt(summary: summary, radius: 24),
+      );
+    }
+    return Row(
+      children: [
+        for (var i = 0; i < covered.length; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: ItemArt(item: covered[i]),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
 }
 
 class _PackCard extends ConsumerWidget {
@@ -615,10 +672,7 @@ class PackScreen extends ConsumerWidget {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                   children: [
-                    AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: PackArt(summary: summary, radius: 24),
-                    ),
+                    PackBanner(summary: summary),
                     const SizedBox(height: 14),
                     Text('Pakiet', style: text.labelMedium?.copyWith(color: context.palette.inkMuted)),
                     Text(pack.title, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),

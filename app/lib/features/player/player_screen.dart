@@ -7,6 +7,7 @@ import '../../core/format.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../catalog/catalog_providers.dart';
+import '../catalog/widgets/item_art.dart';
 import '../personal/personal_repository.dart';
 import '../downloads/download_button.dart';
 import '../discovery/discovery_model.dart';
@@ -72,21 +73,20 @@ class _Player extends ConsumerWidget {
                 child: const Text('Otwórz bibliotekę'),
               ),
             ] else ...[
-              Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 360),
-                  child: AspectRatio(
-                    aspectRatio: 1.08,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(28),
-                      child: ArtScene(
-                        category: item == null ? PlayCategory.calm : itemCategory(item),
-                        seed: media.id.length,
+              item == null
+                  ? Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 360),
+                        child: AspectRatio(
+                          aspectRatio: 1.08,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(28),
+                            child: ArtScene(category: PlayCategory.calm, seed: media.id.length),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
+                    )
+                  : ItemHeaderArt(item: item, maxWidth: 360, radius: 28, seed: media.id.length),
               const SizedBox(height: 22),
               Text(media.title, style: text.headlineSmall),
               const SizedBox(height: 8),

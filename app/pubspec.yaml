@@ -54,6 +54,7 @@ flutter:
     - assets/mock/
     - assets/audio/
     - assets/audio/kiddo/
+    - assets/covers/
   fonts:
     - family: Poppins
       fonts:

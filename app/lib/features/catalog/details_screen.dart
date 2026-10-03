@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../purchases/preview_player.dart';
+import 'widgets/item_art.dart';
 import '../purchases/shop.dart';
 import '../../core/format.dart';
 import '../downloads/download_button.dart';
@@ -19,7 +20,6 @@ import '../personal/personal_repository.dart';
 import '../player/playback_controller.dart';
 import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
-import '../discovery/reference_widgets.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/queue_controller.dart';
 import 'widgets/labels.dart';
@@ -103,10 +103,7 @@ class _DetailsContent extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(AkSpace.m, 0, AkSpace.m, AkSpace.xl),
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(26),
-          child: SizedBox(height: 230, child: ArtScene(category: itemCategory(item))),
-        ),
+        ItemHeaderArt(item: item),
         const SizedBox(height: AkSpace.l),
         Text(pack?.title ?? l10n.kind(item.kind), style: text.labelLarge?.copyWith(color: palette.inkMuted)),
         Text(item.title, style: text.headlineMedium),

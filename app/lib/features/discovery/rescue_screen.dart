@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/theme/app_theme.dart';
 import '../catalog/catalog_providers.dart';
+import '../catalog/widgets/item_art.dart';
 import '../family/family.dart';
 import '../home/quick_pick.dart';
 import 'discovery_model.dart';
@@ -175,10 +176,7 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
                 child: const Text('Zmień wybór'),
               ),
             ] else ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: SizedBox(height: 210, child: ArtScene(category: itemCategory(top))),
-              ),
+              ItemHeaderArt(item: top, maxWidth: 280, radius: 24),
               const SizedBox(height: 16),
               Text(top.title, style: text.headlineSmall),
               const SizedBox(height: 8),

@@ -4,6 +4,7 @@ import 'package:ak_core/ak_core.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../catalog/widgets/item_art.dart';
 import '../downloads/download_providers.dart';
 import '../personal/personal_repository.dart';
 import 'audio_handler.dart';
@@ -53,6 +54,7 @@ class PlaybackController {
         id: item.id,
         title: item.title,
         album: album,
+        artUri: await coverArtUri(item),
         extras: {timingSensitiveExtra: item.timingSensitive},
       ),
       source,

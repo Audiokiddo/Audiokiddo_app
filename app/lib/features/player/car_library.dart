@@ -3,6 +3,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../catalog/catalog_providers.dart';
+import '../catalog/widgets/item_art.dart';
 import '../downloads/download_providers.dart';
 import '../family/family.dart';
 import 'playback_controller.dart';
@@ -92,6 +93,7 @@ class CarLibrary {
           id: item.id,
           title: item.title,
           album: 'AudioKiddo',
+          artUri: await coverArtUri(item),
           duration: Duration(seconds: item.durationSec),
           playable: true,
         ),
