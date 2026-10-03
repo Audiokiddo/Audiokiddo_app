@@ -26,7 +26,7 @@ void main() {
 
   test('same_as_ fallback aliases resolve to the same step', () {
     final listen = parse(loadFixture()).steps['listen1'] as InputStep;
-    expect(listen.fallbacks.keys, containsAll(FallbackReason.values));
+    expect(listen.fallbacks.keys, containsAll(FallbackReason.values.where((r) => r.required)));
     expect(
       listen.fallbacks[FallbackReason.screenLocked],
       same(listen.fallbacks[FallbackReason.noMicrophone]),

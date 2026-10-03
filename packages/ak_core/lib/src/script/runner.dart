@@ -232,10 +232,10 @@ class ScriptRunner {
 
   /// What stops [kind] from working right now, or null when it is available.
   FallbackReason? _blocker(InputKind kind) => switch (kind) {
-    InputKind.speechKeywords when _speechUnavailable => FallbackReason.noMicrophone,
     InputKind.clap || InputKind.voiceActivity || InputKind.speechKeywords
         when _unavailable.contains(FallbackReason.noMicrophone) =>
       FallbackReason.noMicrophone,
+    InputKind.speechKeywords when _speechUnavailable => FallbackReason.noSpeech,
     InputKind.tapAnywhere || InputKind.motionShake when _unavailable.contains(FallbackReason.screenLocked) =>
       FallbackReason.screenLocked,
     _ when _unavailable.contains(FallbackReason.inputError) => FallbackReason.inputError,

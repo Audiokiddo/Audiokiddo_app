@@ -74,7 +74,7 @@ ScriptValidation validateScript(GameScript script, {int engine = engineVersion})
     if (step.windowMs > ScriptLimits.maxInputWindowMs) {
       error(reportAs, 'input window longer than ${ScriptLimits.maxInputWindowMs} ms');
     }
-    for (final reason in FallbackReason.values) {
+    for (final reason in FallbackReason.values.where((r) => r.required)) {
       if (!step.fallbacks.containsKey(reason)) error(reportAs, 'missing fallback for "${reason.name}"');
     }
     // Aliased reasons share one step object; check each distinct fallback once.

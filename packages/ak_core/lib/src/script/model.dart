@@ -14,7 +14,17 @@ const int scriptSchemaVersion = 1;
 enum InputKind { tapAnywhere, clap, voiceActivity, motionShake, speechKeywords }
 
 /// Why an input step falls back to its non-input variant.
-enum FallbackReason { noMicrophone, screenLocked, inputError }
+/// Why a listening step cannot listen. [noSpeech] (engine 3): the microphone works but the
+/// phone cannot recognise words; optional, defaults to the [noMicrophone] fallback.
+enum FallbackReason {
+  noMicrophone,
+  screenLocked,
+  inputError,
+  noSpeech;
+
+  /// Every listening step must say what happens for this reason.
+  bool get required => this != noSpeech;
+}
 
 enum SetOp { set, inc, dec }
 

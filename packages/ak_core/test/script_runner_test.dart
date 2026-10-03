@@ -260,6 +260,20 @@ void main() {
       expect(log, ['play:question', 'play:clap_question', 'play:forest', 'finish:-:completed']);
     });
 
+    test('without any microphone the story simply goes on', () {
+      final runner = ScriptRunner(paths(), unavailable: {FallbackReason.noMicrophone})
+        ..setSpeechAvailable(available: false);
+      expect(play(runner, normal), ['play:question', 'play:forest', 'finish:-:completed']);
+    });
+
+    test('a recogniser failing mid-game switches to claps', () {
+      final runner = ScriptRunner(paths());
+      runner.start();
+      runner.next(const SegmentFinished());
+      final next = runner.next(const InputFailed(FallbackReason.noSpeech));
+      expect((next as PlaySegment).asset, 'clap_question');
+    });
+
     test('words need engine 3 and must not share an answer, nor mix with claps', () {
       expect(validateScript(paths()).errors, isEmpty);
       final shared = paths(
@@ -304,9 +318,10 @@ GameScript paths({Map<String, Object?> extra = const {}}) {
         },
         'on_timeout': 'again',
         'fallback': {
-          'no_microphone': {'type': 'goto', 'target': 'clap_question'},
+          'no_microphone': {'type': 'play', 'asset': 'forest', 'next': 'end'},
           'screen_locked': 'same_as_no_microphone',
           'input_error': 'same_as_no_microphone',
+          'no_speech': {'type': 'goto', 'target': 'clap_question'},
         },
         ...extra,
       },

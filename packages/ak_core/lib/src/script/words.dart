@@ -66,7 +66,9 @@ class WordMatcher {
     }
     // "w lewo" contains "lewo": the longer phrase says more, so it wins over the word inside it.
     found.removeWhere(
-      (w) => found.any((o) => o != w && normalizeSpoken(o).length > normalizeSpoken(w).length && _contains(o, w)),
+      (w) => found.any(
+        (o) => o != w && normalizeSpoken(o).length > normalizeSpoken(w).length && _contains(o, w),
+      ),
     );
     if (found.length == 1) return found.single;
     if (found.length > 1) return null;
