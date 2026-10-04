@@ -32,6 +32,7 @@ import '../features/purchases/shop_screen.dart';
 import '../features/reminders/reminder_offer.dart';
 import '../features/games/speech_check_screen.dart';
 import '../features/personal/app_icon_screen.dart';
+import '../features/pdf/case_file_screen.dart';
 import '../features/session/session_screens.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
@@ -131,6 +132,10 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
     GoRoute(
       path: '/dyplom/:id',
       pageBuilder: (context, state) => swipePage(state, DiplomaScreen(packId: state.pathParameters['id']!)),
+    ),
+    GoRoute(
+      path: '/akta/:id',
+      pageBuilder: (context, state) => swipePage(state, CaseFileScreen(itemId: state.pathParameters['id']!)),
     ),
     GoRoute(
       path: '/zabawa/:id',

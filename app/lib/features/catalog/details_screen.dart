@@ -17,6 +17,7 @@ import '../discovery/reference_widgets.dart';
 import '../games/microphone.dart';
 import '../games/speech.dart';
 import '../parental_gate/parental_gate.dart';
+import '../pdf/case_file.dart';
 import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';
 import '../player/playback_controller.dart';
@@ -223,13 +224,22 @@ class _DetailsContent extends ConsumerWidget {
         if (item.pdf.isNotEmpty && canPlay)
           _Section(
             title: pack?.id == 'detektyw' ? 'Akta sprawy do wydrukowania' : l10n.pdfSection,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: OutlinedButton.icon(
-                onPressed: () => _openPdf(context, item.pdf.first),
-                icon: const Icon(Icons.print_rounded),
-                label: Text(pack?.id == 'detektyw' ? 'Otwórz akta sprawy' : l10n.pdfOpen),
-              ),
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                if (ref.watch(caseTasksProvider(item.id)) != null)
+                  FilledButton.icon(
+                    onPressed: () => context.push('/akta/${item.id}'),
+                    icon: const Icon(Icons.search_rounded),
+                    label: const Text('Rozwiązuj w telefonie'),
+                  ),
+                OutlinedButton.icon(
+                  onPressed: () => _openPdf(context, item.pdf.first),
+                  icon: const Icon(Icons.print_rounded),
+                  label: Text(pack?.id == 'detektyw' ? 'Otwórz akta sprawy' : l10n.pdfOpen),
+                ),
+              ],
             ),
           ),
         if (item.requirements.isNotEmpty)

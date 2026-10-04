@@ -17,6 +17,7 @@ import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../discovery/queue_controller.dart';
 import '../home/quick_pick.dart';
+import '../pdf/case_file.dart';
 import 'audio_handler.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
@@ -54,6 +55,12 @@ class _Player extends ConsumerWidget {
           icon: const Icon(Icons.keyboard_arrow_down_rounded),
         ),
         actions: [
+          if (item != null && item.pdf.isNotEmpty && ref.watch(caseTasksProvider(item.id)) != null)
+            IconButton(
+              tooltip: 'Akta sprawy',
+              onPressed: () => context.push('/akta/${item.id}'),
+              icon: const Icon(Icons.folder_open_rounded),
+            ),
           IconButton(
             tooltip: 'Zakończ słuchanie',
             onPressed: media == null

@@ -90,23 +90,13 @@ Materiały źródłowe Dawida (poza repo): `~/Desktop/claude folder/AudioKiddo-m
    bez przewodnika + `detektyw/przewodnik.pdf`, `slowa-i-wiedza/przewodnik.pdf`,
    `wyobraznia/przewodnik.pdf`) do `…/audiokiddo-pliki/nagrania/pdf/<pakiet>/`, potem
    `verify_server_files.py`. Wymaga Maca i FileZilli (Dawid).
-2. **Poprawić 2 testy** w `app/test/screens_test.dart`: „favourite appears on the Moje tab”
-   (tapuje dawną ikonę Ulubionych w pasku – Ulubione są teraz pod sercem w nagłówku Startu
-   i w „Więcej”) oraz „playable item offers a download with its size” (sprawdzić, czy to skutek
-   poprzedniego).
-3. **Interaktywne akta sprawy Detektywa** (prośba Dawida):
-   - akta „pod ręką” w czasie zabawy: przycisk „Akta sprawy” w odtwarzaczu (gdy zabawa ma PDF);
-   - wersja interaktywna: strony PDF rysowane na telefonie (`printing` → `Printing.raster`),
-     pod każdą stroną odpowiedzi do zaznaczenia (duże przyciski / pole kodu), komunikat
-     „Dobry wybór!” albo „Spróbuj jeszcze raz”; zadania otwarte i słuchowe bez oceniania
-     („Sprawdźcie z Maxem i Milą”); dane zadań i odpowiedzi w małym JSON (np. `app/assets/case_files.json`).
-   - Odpowiedzi „Złodziej naszyjnika” (ustalone): 1) 41 (z opcji 38/42/41); 2) drzwi 3 „Figlarz”
-     (trójkąt w dwóch kółkach; opcje Fikołek/Zgrywalski/Figlarz/Wiercipiętek); 3) litera „Z”
-     (A1→A5→C1→C5); 4) kod 7895; 5) „POD LAMPĄ JEST KLUCZ”; 6) osoba 2 (okrągłe okulary);
-     7) „SALA PODUSZKOWA”; 8) kolory z nagrania (słuchowe – bez oceniania).
-   - Pozostałe sprawy (Znikające dzwonki, Na ratunek budce z lodami, Tajemnicze znaki, Gadający
-     śmietnik): odpowiedzi ustalić, oglądając strony (render: PyMuPDF `pip3 install --user pymupdf`).
-     Np. „Na ratunek…” zad. 2 to szyfr 13-1-7-9-3-26-11-1 = „MAGICZKA”? – sprawdzić na stronie.
+2. ~~Poprawić 2 testy~~ – zrobione w chmurze (4.10.2026).
+3. ~~Interaktywne akta sprawy Detektywa~~ – zrobione w chmurze (4.10.2026): ekran `/akta/:id`
+   (`app/lib/features/pdf/case_file_screen.dart`), przycisk „Akta sprawy” w odtwarzaczu
+   i „Rozwiązuj w telefonie” na karcie zabawy, dane w `app/assets/case_files.json`.
+   Do sprawdzenia przez Dawida na iPhonie (rysowanie stron PDF działa tylko na urządzeniu)
+   i w treści nagrań: odpowiedzi odczytane ze stron, nie z nagrań. Labirynt „Znikające dzwonki”
+   zad. 2 i zadania słuchowe/rysunkowe są bez oceniania.
 4. **Przebudowa Biblioteki** (prośba Dawida): czytelniejsza, z wyraźnym podziałem na pakiety
    (karty pakietów z okładką, liczbą zabaw, co masz / co do odblokowania, potem zabawy w pakiecie;
    osobno piosenki i gry; filtry wieku i czasu). `lib/features/catalog/library_screen.dart`.

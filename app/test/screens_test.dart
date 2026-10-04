@@ -144,6 +144,23 @@ void main() {
     expect(find.text('Odblokuj'), findsOneWidget, reason: 'other packs stay locked');
   });
 
+  testWidgets('an owned case file can be solved on the phone', (tester) async {
+    await pumpApp(
+      tester,
+      entitlements: [
+        Entitlement(
+          scope: Scopes.pack('detektyw'),
+          status: EntitlementStatus.active,
+          source: EntitlementSource.woocommerce,
+        ),
+      ],
+    );
+    await openLibrary(tester);
+    await openItem(tester, 'Złodziej naszyjnika');
+    await tester.scrollUntilVisible(find.text('Rozwiązuj w telefonie'), 200, scrollable: mainScroll);
+    expect(find.text('Otwórz akta sprawy'), findsOneWidget, reason: 'printing stays behind the gate');
+  });
+
   testWidgets('screens have no overflow with large text', (tester) async {
     await pumpApp(tester, textScale: 1.6);
     await tester.drag(mainScroll, const Offset(0, -4000));

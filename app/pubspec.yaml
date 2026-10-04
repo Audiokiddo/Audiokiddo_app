@@ -54,6 +54,7 @@ flutter:
   generate: true
   assets:
     - assets/mock/
+    - assets/case_files.json
     - assets/audio/
     - assets/audio/kiddo/
     - assets/covers/
