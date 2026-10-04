@@ -88,7 +88,7 @@ void main() {
 
     testWidgets('shows the subscription, packs with a free taste and bundle savings', (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('Sklep'));
+      await tester.tap(find.byTooltip('Sklep'));
       await tester.pumpAndSettle();
       expect(find.text('Wszystko w jednym'), findsOneWidget);
       expect(find.text('7 dni za darmo'), findsOneWidget);
@@ -106,7 +106,7 @@ void main() {
 
     testWidgets('a pack page sells after the gate; owned packs say so', (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('Sklep'));
+      await tester.tap(find.byTooltip('Sklep'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(find.text('Wyobraźnia'), 200, scrollable: mainScroll);
       await tester.tap(find.text('Wyobraźnia'));
@@ -150,7 +150,7 @@ void main() {
           ),
         ],
       );
-      await tester.tap(find.text('Sklep'));
+      await tester.tap(find.byTooltip('Sklep'));
       await tester.pumpAndSettle();
       expect(find.text('Masz pełny dostęp'), findsOneWidget);
       expect(find.text('Wszystko w jednym'), findsNothing);

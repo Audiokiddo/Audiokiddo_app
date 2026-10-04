@@ -10,6 +10,7 @@ import 'package:audiokiddo/features/session/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'helpers.dart';
 
@@ -212,10 +213,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Evening: the "Dobranoc" mode comes first; bring it above the tab bar.
-    await tester.ensureVisible(find.text('Czas się\nwyciszyć').first);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Czas się\nwyciszyć').first);
+    // "Na dobranoc" from Start's quick situations.
+    GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/dobranoc');
     await tester.pumpAndSettle();
     expect(find.text('Trzy spokojne oddechy z Szop’enem'), findsOneWidget);
     expect(find.text('„Dobranoc” od Szop’ena'), findsOneWidget);

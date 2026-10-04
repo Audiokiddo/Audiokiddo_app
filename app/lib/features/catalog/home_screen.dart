@@ -391,13 +391,14 @@ class _CategoryGrid extends StatelessWidget {
             label: c.label.replaceAll('\n', ' '),
             excludeSemantics: true,
             child: Container(
-              height: 104,
+              constraints: const BoxConstraints(minHeight: 104),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(color: _look[c]!.$1, borderRadius: BorderRadius.circular(22)),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(_look[c]!.$3, size: 34, color: _look[c]!.$2),
-                  const Spacer(),
+                  const SizedBox(height: 10),
                   Text(
                     c.label,
                     textAlign: TextAlign.center,
@@ -466,11 +467,25 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
 });
 
 /// Big covers at the top of Start: one swipe away from something new.
-class HeroShelf extends ConsumerWidget {
+class HeroShelf extends ConsumerStatefulWidget {
   const HeroShelf({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HeroShelf> createState() => _HeroShelfState();
+}
+
+class _HeroShelfState extends ConsumerState<HeroShelf> {
+  late final _controller = PageController(viewportFraction: .9);
+  int _page = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final items = ref.watch(heroItemsProvider);
     if (items.isEmpty) return const SizedBox.shrink();
     final width = MediaQuery.sizeOf(context).width - 40;
@@ -478,11 +493,16 @@ class HeroShelf extends ConsumerWidget {
       height: (width * .62).clamp(190, 300),
       child: PageView.builder(
         padEnds: false,
-        controller: PageController(viewportFraction: items.length == 1 ? 1 : .9),
+        controller: _controller,
+        onPageChanged: (p) => setState(() => _page = p),
         itemCount: items.length,
-        itemBuilder: (context, i) => Padding(
-          padding: EdgeInsets.only(right: items.length == 1 ? 0 : 12),
-          child: _HeroCard(item: items[i]),
+        // The next card peeks in as a hint; only the one in view is a target.
+        itemBuilder: (context, i) => ExcludeSemantics(
+          excluding: i != _page,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: _HeroCard(item: items[i]),
+          ),
         ),
       ),
     );

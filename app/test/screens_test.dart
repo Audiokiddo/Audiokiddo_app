@@ -41,7 +41,7 @@ Finder get mainScroll =>
     find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first;
 
 Future<void> openLibrary(WidgetTester tester) async {
-  await tester.tap(find.byIcon(Icons.library_music_outlined));
+  await tester.tap(find.byIcon(Icons.auto_stories_outlined));
   await tester.pumpAndSettle();
 }
 
@@ -72,18 +72,20 @@ Future<void> goBack(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('home: today, four ways to play, first steps, all activities', (tester) async {
+  testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
-    expect(find.text('Czego dziś\npotrzebujesz?'), findsOneWidget);
-    for (final label in ['Mam\n20 minut', 'Podróżujemy', 'Trochę\nruchu', 'Czas się\nwyciszyć']) {
+    expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
+    for (final label in ['Przygody\ni wyobraźnia', 'Zagadki\ni detektywi', 'Piosenki', 'Ruch i energia']) {
       expect(find.text(label), findsOneWidget);
     }
-    expect(find.text('Kontynuuj słuchanie'), findsOneWidget);
+    for (final label in ['Mam 20 minut', 'W podróży']) {
+      await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
+    }
+    await tester.scrollUntilVisible(find.text('Kontynuuj słuchanie'), 200, scrollable: mainScroll);
   });
   testWidgets('rescue flow has time, mood and material selection', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.text('Mam\n20 minut'));
-    await tester.pumpAndSettle();
+    await tapOnStart(tester, 'Mam 20 minut');
     expect(find.text('Ile masz czasu?'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Pokaż propozycje'), 200, scrollable: mainScroll);
     await tester.tap(find.text('Pokaż propozycje'));
@@ -228,7 +230,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('47'));
       await tester.pumpAndSettle();
-      expect(find.text('Czego dziś\npotrzebujesz?'), findsOneWidget);
+      expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
     });
   });
 }

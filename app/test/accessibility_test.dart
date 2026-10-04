@@ -47,7 +47,7 @@ void main() {
   testWidgets('library', (tester) async {
     final handle = tester.ensureSemantics();
     await pump(tester);
-    await tester.tap(find.byIcon(Icons.library_music_outlined));
+    await tester.tap(find.byIcon(Icons.auto_stories_outlined));
     await tester.pumpAndSettle();
     await expectAccessible(tester);
     handle.dispose();
@@ -56,7 +56,7 @@ void main() {
   testWidgets('details', (tester) async {
     final handle = tester.ensureSemantics();
     await pump(tester);
-    await tester.tap(find.byIcon(Icons.library_music_outlined));
+    await tester.tap(find.byIcon(Icons.auto_stories_outlined));
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Audiozabawy'));
     await tester.tap(find.text('Audiozabawy'));
@@ -97,7 +97,7 @@ void main() {
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       await pump(tester);
       await expectAccessible(tester);
-      await tester.tap(find.byIcon(Icons.library_music_outlined));
+      await tester.tap(find.byIcon(Icons.auto_stories_outlined));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Audiozabawy'));
       await tester.tap(find.text('Audiozabawy'));

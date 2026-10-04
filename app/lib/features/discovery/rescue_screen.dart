@@ -178,8 +178,6 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
                 child: const Text('Zmień wybór'),
               ),
             ] else ...[
-              Text('Propozycja', textAlign: TextAlign.center, style: text.labelLarge),
-              Text('Mamy coś!', textAlign: TextAlign.center, style: text.headlineLarge),
               Text(
                 'Idealne na ${(top.durationSec / 60).ceil() <= 10 ? 'krótką chwilę' : '${(top.durationSec / 60).ceil()} minut'}',
                 textAlign: TextAlign.center,

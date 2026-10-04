@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -368,57 +367,63 @@ class _WeekStrip extends StatelessWidget {
             style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              for (final d in days)
-                () {
-                  final done = d.day <= position.completedDays;
-                  final today = d.day == position.currentDay && !position.todayDone;
-                  final label = done
-                      ? 'Dzień ${d.day}, zrobiony.'
-                      : today
-                      ? 'Dzień ${d.day}, dzisiaj. Otwórz zabawy.'
-                      : 'Dzień ${d.day}, zablokowany.';
-                  return Semantics(
-                    button: true,
-                    label: label,
-                    excludeSemantics: true,
-                    child: GestureDetector(
-                      onTap: () => onOpen(d),
-                      child: Container(
-                        width: 38,
-                        height: 38,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: done
-                              ? AkBrand.teal
-                              : today
-                              ? AkBrand.sun
-                              : palette.surfaceMuted,
-                          border: today ? Border.all(color: const Color(0xFF211C35), width: 2) : null,
+          LayoutBuilder(
+            builder: (context, box) {
+              // Seven steps across even on the narrowest phones.
+              final size = math.min(38.0, (box.maxWidth - 6 * 4) / 7);
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  for (final d in days)
+                    () {
+                      final done = d.day <= position.completedDays;
+                      final today = d.day == position.currentDay && !position.todayDone;
+                      final label = done
+                          ? 'Dzień ${d.day}, zrobiony.'
+                          : today
+                          ? 'Dzień ${d.day}, dzisiaj. Otwórz zabawy.'
+                          : 'Dzień ${d.day}, zablokowany.';
+                      return Semantics(
+                        button: true,
+                        label: label,
+                        excludeSemantics: true,
+                        child: GestureDetector(
+                          onTap: () => onOpen(d),
+                          child: Container(
+                            width: size,
+                            height: size,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: done
+                                  ? AkBrand.teal
+                                  : today
+                                  ? AkBrand.sun
+                                  : palette.surfaceMuted,
+                              border: today ? Border.all(color: const Color(0xFF211C35), width: 2) : null,
+                            ),
+                            child: done
+                                ? const Icon(Icons.check_rounded, color: Colors.white, size: 20)
+                                : d.chest
+                                ? Icon(
+                                    Icons.redeem_rounded,
+                                    size: 18,
+                                    color: today ? const Color(0xFF211C35) : palette.inkMuted,
+                                  )
+                                : Text(
+                                    '${d.day}',
+                                    style: text.labelLarge?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: today ? const Color(0xFF211C35) : palette.inkMuted,
+                                    ),
+                                  ),
+                          ),
                         ),
-                        child: done
-                            ? const Icon(Icons.check_rounded, color: Colors.white, size: 20)
-                            : d.chest
-                            ? Icon(
-                                Icons.redeem_rounded,
-                                size: 18,
-                                color: today ? const Color(0xFF211C35) : palette.inkMuted,
-                              )
-                            : Text(
-                                '${d.day}',
-                                style: text.labelLarge?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  color: today ? const Color(0xFF211C35) : palette.inkMuted,
-                                ),
-                              ),
-                      ),
-                    ),
-                  );
-                }(),
-            ],
+                      );
+                    }(),
+                ],
+              );
+            },
           ),
         ],
       ),

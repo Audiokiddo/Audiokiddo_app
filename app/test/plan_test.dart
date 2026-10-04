@@ -51,16 +51,14 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Plan rozwoju'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('Zosia'), findsWidgets);
-    expect(find.text('POZIOM 1 · DNI 1–7'), findsOneWidget);
-    expect(find.text('Poznajemy się'), findsOneWidget);
-    expect(find.text('0/30'), findsOneWidget);
+    expect(find.text('Dziś dla: Zosia'), findsOneWidget);
+    expect(find.text('DZIEŃ 1 Z 30 · POZNAJEMY SIĘ'), findsOneWidget);
+    expect(find.textContaining('ekranem w dół'), findsOneWidget, reason: 'the tip of day 1 on the card');
 
     expect(find.text('Tydzień 1'), findsOneWidget);
     await tester.tap(find.bySemanticsLabel('Dzień 1, dzisiaj. Otwórz zabawy.'));
     await tester.pumpAndSettle();
     expect(find.text('Dzień 1'), findsOneWidget);
-    expect(find.textContaining('ekranem w dół'), findsOneWidget, reason: 'the tip of day 1');
     await tester.tapAt(const Offset(20, 40)); // close the sheet
     await tester.pumpAndSettle();
 
@@ -69,7 +67,8 @@ void main() {
     expect(find.textContaining('Najpierw skończcie dzień 1'), findsOneWidget);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.insights_rounded));
+    expect(find.text('Co rozwijamy'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.insights_rounded).first);
     await tester.pumpAndSettle();
     expect(find.text('Postęp: Zosia'), findsOneWidget);
     expect(find.textContaining('Na razie jest tu cicho'), findsOneWidget);
