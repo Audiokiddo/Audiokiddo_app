@@ -10,7 +10,6 @@ import '../../l10n/app_localizations.dart';
 import '../catalog/widgets/catalog_loader.dart';
 import '../catalog/widgets/item_views.dart';
 import '../downloads/download_providers.dart';
-import '../parental_gate/parental_gate.dart';
 import 'personal_repository.dart';
 
 class MineScreen extends StatelessWidget {
@@ -29,9 +28,7 @@ class MineScreen extends StatelessWidget {
           IconButton(
             tooltip: l10n.accountTitle,
             icon: const Icon(Icons.account_circle_rounded),
-            onPressed: () async {
-              if (await showParentalGate(context) && context.mounted) await context.push('/konto');
-            },
+            onPressed: () => context.push('/konto'),
           ),
           if (kDebugMode)
             IconButton(

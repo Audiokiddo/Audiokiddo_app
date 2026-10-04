@@ -19,6 +19,7 @@ import '../personal/personal_repository.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
 import 'szop_after_play.dart';
+import 'szop_lines.dart';
 
 const _barColor = referencePurple;
 const _barHeight = 68.0;
@@ -403,16 +404,6 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
     for (final (_, line) in szopNudges) line,
   ];
 
-  /// While a play runs: a wink or a tip, never anything for the child to look at.
-  static const _playingLines = [
-    'Ja pilnuję nagrania. Ty pilnuj kawy, zanim wystygnie.',
-    'Dziecko słucha, Ty masz chwilę. Nie zmarnuj jej na składanie skarpetek.',
-    'Jeśli dziecko odpowiada głośno, to znak, że działa. Sąsiedzi niech też się cieszą.',
-    'Możesz zablokować telefon. Nagranie gra dalej, a ja nikomu nie powiem.',
-    'Zabawa za długa? Na dole odtwarzacza jest Timer snu. Szopy też lubią krótkie zmiany.',
-    'Dziecko się zgubiło w zadaniu? Cofnij o 15 sekund, bez stresu.',
-  ];
-
   // Now and then, never nagging: first after a few seconds, then every few minutes while the
   // card is on screen, at most a handful a day (and never with "Komentarze Szop’ena" off).
   static const _first = Duration(seconds: 3);
@@ -444,8 +435,11 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
       if (count >= _perDay || !mounted) return;
       await db.writeValue('szopen_bubbles', '$day|${count + 1}');
       if (!mounted) return;
-      final pool = widget.playing ? _playingLines : _lines;
-      setState(() => _line = pool[_random.nextInt(pool.length)]);
+      setState(
+        () => _line = widget.playing
+            ? ref.read(szopPlayingBagProvider).next().$2
+            : _lines[_random.nextInt(_lines.length)],
+      );
       _hide = Timer(const Duration(seconds: 9), () {
         if (mounted) setState(() => _line = null);
       });

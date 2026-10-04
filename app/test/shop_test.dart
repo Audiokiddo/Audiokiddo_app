@@ -121,20 +121,20 @@ void main() {
       expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'buying asks an adult first');
     });
 
-    testWidgets('the pack page offers the free guide for parents', (tester) async {
+    testWidgets('the pack page offers films and materials behind the gate', (tester) async {
       await pumpApp(tester);
       GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/pakiet/detektyw');
       await tester.pumpAndSettle();
       final scroll = find
           .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
           .last;
-      await tester.scrollUntilVisible(find.text('Przewodnik po pakiecie (PDF)'), 200, scrollable: scroll);
+      await tester.scrollUntilVisible(find.text('Filmy i materiały do zabaw'), 200, scrollable: scroll);
       await Scrollable.ensureVisible(
-        tester.element(find.text('Przewodnik po pakiecie (PDF)')),
+        tester.element(find.text('Filmy i materiały do zabaw')),
         alignment: .4,
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Przewodnik po pakiecie (PDF)'));
+      await tester.tap(find.text('Filmy i materiały do zabaw'));
       await tester.pumpAndSettle();
       expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'a link out asks an adult first');
     });

@@ -202,9 +202,15 @@ class CategoryTile extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(category.label, style: text.titleSmall?.copyWith(color: fg, fontWeight: FontWeight.w800)),
+                    Text(
+                      category.label,
+                      style: text.titleSmall?.copyWith(color: fg, fontWeight: FontWeight.w800),
+                    ),
                     if (count != null)
-                      Text(playsLabel(count), style: text.bodySmall?.copyWith(color: fg.withValues(alpha: .85))),
+                      Text(
+                        playsLabel(count),
+                        style: text.bodySmall?.copyWith(color: fg.withValues(alpha: .85)),
+                      ),
                   ],
                 ),
               ),
@@ -382,7 +388,8 @@ class ListenedBar extends ConsumerWidget {
                       label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.palette.inkMuted),
+                      style: Theme.of(context).textTheme.labelSmall
+                          ?.copyWith(color: context.palette.inkMuted),
                     ),
                   ),
                 ],
@@ -543,7 +550,8 @@ class _PlaysByPackState extends ConsumerState<PlaysByPack> {
       for (final pack in packs)
         if (catalog.itemsInPack(pack.id).where(listed).toList() case final items when items.isNotEmpty)
           (pack.id == item.packId ? 'Dalej w pakiecie ${pack.title}' : 'Pakiet ${pack.title}', items),
-      if (catalog.items.where((i) => i.packId == null && listed(i)).toList() case final loose when loose.isNotEmpty)
+      if (catalog.items.where((i) => i.packId == null && listed(i)).toList() case final loose
+          when loose.isNotEmpty)
         ('Piosenki i gry', loose),
     ];
     final shown = _expanded ? rows : rows.take(_rowsFirst).toList();

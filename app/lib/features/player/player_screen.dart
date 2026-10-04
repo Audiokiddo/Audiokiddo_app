@@ -116,6 +116,7 @@ class _Player extends ConsumerWidget {
                         radius: 28,
                         seed: media.id.length,
                       ),
+                SzopWhilePlaying(playing: playing),
                 const SizedBox(height: 22),
                 Text(media.title, style: text.headlineSmall),
                 const SizedBox(height: 8),

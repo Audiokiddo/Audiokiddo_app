@@ -97,6 +97,10 @@ class FakeAccountService implements AccountService {
   Future<ClaimResult> claimOrder(String order, String email) => _claim('order:$order:$email');
 
   @override
+  Future<ReferralInfo> referralInfo() async =>
+      const ReferralInfo(code: 'POLEC-ABCDEF', friends: 2, rewards: 1);
+
+  @override
   Future<List<Entitlement>> entitlements() async {
     if (offline) throw const AccountException(AccountError.offline);
     return _user == null ? const [] : _entitlements;

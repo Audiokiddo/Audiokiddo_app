@@ -29,10 +29,12 @@ import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
 import '../features/purchases/shop_screen.dart';
+import '../features/referral/referral_screen.dart';
 import '../features/reminders/reminder_offer.dart';
 import '../features/games/speech_check_screen.dart';
 import '../features/personal/app_icon_screen.dart';
 import '../features/pdf/case_file_screen.dart';
+import '../features/pdf/guide_links.dart';
 import '../features/session/session_screens.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
@@ -73,8 +75,13 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
           routes: [
             GoRoute(
               path: '/biblioteka',
-              builder: (context, state) =>
-                  LibraryScreen(filter: LibraryFilter.fromQuery(state.uri.queryParameters)),
+              // Each filter is its own page (keyed by the whole address), so changing it rebuilds.
+              pageBuilder: (context, state) => SwipeablePage<void>(
+                key: ValueKey(state.uri.toString()),
+                canOnlySwipeFromEdge: true,
+                backGestureDetectionWidth: 32,
+                builder: (_) => LibraryScreen(filter: LibraryFilter.fromQuery(state.uri.queryParameters)),
+              ),
             ),
           ],
         ),
@@ -108,14 +115,15 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
     GoRoute(path: '/plan/postep', pageBuilder: (context, state) => swipePage(state, const ProgressScreen())),
     GoRoute(
       path: '/plan/dziecko',
-      builder: (context, state) =>
-          ChildQuiz(onDone: () => context.canPop() ? context.pop() : context.go('/plan')),
+      pageBuilder: (context, state) =>
+          swipePage(state, ChildQuiz(onDone: () => context.canPop() ? context.pop() : context.go('/plan'))),
     ),
     GoRoute(path: '/plan/glos', pageBuilder: (context, state) => swipePage(state, const ParentVoiceScreen())),
     // The home-screen widget opens these through audiokiddo://open/dobranoc and /podroz.
     GoRoute(path: '/podroz', pageBuilder: (context, state) => swipePage(state, const TripScreen())),
     GoRoute(path: '/dobranoc', pageBuilder: (context, state) => swipePage(state, const BedtimeScreen())),
     GoRoute(path: '/sesja', pageBuilder: (context, state) => swipePage(state, const SessionScreen())),
+    GoRoute(path: '/polec', pageBuilder: (context, state) => swipePage(state, const ReferralScreen())),
     GoRoute(path: '/konto', pageBuilder: (context, state) => swipePage(state, const AccountScreen())),
     GoRoute(path: '/dostep', pageBuilder: (context, state) => swipePage(state, const AccessScreen())),
     GoRoute(path: '/mowa', pageBuilder: (context, state) => swipePage(state, const SpeechCheckScreen())),
@@ -128,6 +136,11 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
     GoRoute(
       path: '/pakiet/:id',
       pageBuilder: (context, state) => swipePage(state, PackScreen(packId: state.pathParameters['id']!)),
+    ),
+    GoRoute(
+      path: '/pakiet/:id/materialy',
+      pageBuilder: (context, state) =>
+          swipePage(state, PackMaterialsScreen(packId: state.pathParameters['id']!)),
     ),
     GoRoute(
       path: '/dyplom/:id',
@@ -201,3 +214,7 @@ Page<void> swipePage(GoRouterState state, Widget child) => SwipeablePage<void>(
   backGestureDetectionWidth: 32,
   builder: (_) => child,
 );
+
+/// The same swipe back for screens pushed directly with the Navigator (PDF preview, editing).
+Route<T> swipeRoute<T>({required WidgetBuilder builder}) =>
+    SwipeablePageRoute<T>(canOnlySwipeFromEdge: true, backGestureDetectionWidth: 32, builder: builder);

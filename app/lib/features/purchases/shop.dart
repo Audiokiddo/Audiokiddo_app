@@ -11,8 +11,6 @@ import '../../core/storage/storage_providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
 import '../parental_gate/parental_gate.dart';
-import '../pdf/guide_links.dart';
-import '../pdf/pdf_screen.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'store_gateway.dart';
@@ -174,21 +172,6 @@ Future<void> hidePackSuggestion(WidgetRef ref, String packId) async {
   final until = ref.read(clockProvider)().add(const Duration(days: 7));
   await ref.read(databaseProvider).writeValue(_hiddenSuggestionKey, '$packId|${until.toIso8601String()}');
   ref.invalidate(hiddenPackSuggestionProvider);
-}
-
-/// The pack's guide for parents (a free PDF): a parent area, so it opens after the gate.
-/// Its films and files are buttons above the preview (links inside a previewed PDF do not work).
-Future<void> openGuide(BuildContext context, AssetRef guide, Pack pack) async {
-  if (!await showParentalGate(context) || !context.mounted) return;
-  await Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) => PdfScreen(
-        asset: guide,
-        title: 'Przewodnik: ${pack.title}',
-        header: GuideLinksButton(packId: pack.id),
-      ),
-    ),
-  );
 }
 
 /// For families who bought on audiokiddo.pl or got a gift code: the way to their access.

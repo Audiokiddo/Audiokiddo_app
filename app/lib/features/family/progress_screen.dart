@@ -15,6 +15,7 @@ import 'family.dart';
 import 'plan_texts.dart';
 import 'week_card.dart';
 import '../parent_voice/parent_voice.dart';
+import '../../core/router.dart';
 
 /// What the child practised and how the answers go, with plain advice the parent can act
 /// on (change goals, minutes, try a pack), plus reminders. Everything stays on the phone.
@@ -170,7 +171,7 @@ class ProgressScreen extends ConsumerWidget {
                 subtitle: l10n.progressProfileSummary(child.age, child.dailyMinutes),
                 chevron: true,
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
+                  swipeRoute<void>(
                     builder: (route) => ChildQuiz(editing: child, onDone: () => Navigator.of(route).pop()),
                   ),
                 ),
@@ -303,9 +304,7 @@ class _ReminderRow extends ConsumerWidget {
       onTap: () => s.enabled
           ? ref.read(remindersProvider.notifier).disable()
           : Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (route) => ReminderOffer(onDone: () => Navigator.of(route).pop()),
-              ),
+              swipeRoute<void>(builder: (route) => ReminderOffer(onDone: () => Navigator.of(route).pop())),
             ),
     );
   }

@@ -26,6 +26,7 @@ import 'widgets/catalog_loader.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/queue_controller.dart';
 import 'widgets/labels.dart';
+import '../../core/router.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key, required this.itemId});
@@ -77,15 +78,14 @@ class _DetailsContent extends ConsumerWidget {
     }
   }
 
+  // The offer itself asks for an adult before any purchase (buyWithGate).
   Future<void> _unlock(BuildContext context) async {
-    if (!await showParentalGate(context) || !context.mounted) return;
     await context.push('/oferta?zabawa=${item.id}');
   }
 
   Future<void> _openPdf(BuildContext context, AssetRef asset) async {
-    if (!await showParentalGate(context) || !context.mounted) return;
     await Navigator.of(context).push(
-      MaterialPageRoute<void>(
+      swipeRoute<void>(
         builder: (_) => PdfScreen(asset: asset, title: item.title),
       ),
     );

@@ -182,7 +182,7 @@ class _AccessScreenState extends ConsumerState<AccessScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Kod z prezentu, od testerów albo z promocji.', style: text.bodyMedium),
+                    Text('Kod z prezentu, z promocji albo od znajomych (POLEC-…).', style: text.bodyMedium),
                     const SizedBox(height: 12),
                     TextField(
                       controller: _code,

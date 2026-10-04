@@ -12,12 +12,12 @@ import '../downloads/download_manager.dart';
 import '../downloads/pack_download.dart';
 import '../family/family.dart';
 import '../personal/personal_repository.dart';
-import '../parental_gate/parental_gate.dart';
 import '../kids_mode/kids_mode_setup.dart';
 import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
+import '../../core/router.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
@@ -53,9 +53,7 @@ class MoreScreen extends ConsumerWidget {
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.account_circle_outlined),
           title: const Text('Konto i zakupy'),
-          onTap: () async {
-            if (await showParentalGate(context) && context.mounted) context.push('/konto');
-          },
+          onTap: () => context.push('/konto'),
         ),
         const RefSection('Wygląd aplikacji'),
         SegmentedButton<ThemeMode>(
@@ -88,6 +86,14 @@ class MoreScreen extends ConsumerWidget {
           onChanged: (v) => ref.read(discoveryProvider.notifier).quiet(!v),
         ),
         const RefSection('Pomóż nam rosnąć'),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.card_giftcard_rounded, color: AkBrand.tealDeep),
+          title: const Text('Poleć znajomym'),
+          subtitle: const Text('Znajomy 14 dni za darmo, Ty miesiąc gratis'),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push('/polec'),
+        ),
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.star_rounded, color: AkBrand.tealDeep),
@@ -314,7 +320,7 @@ class ProfileScreen extends ConsumerWidget {
                       tooltip: 'Edytuj profil',
                       onPressed: () =>
                           Navigator.of(context)
-                              .push(MaterialPageRoute<void>(builder: (_) => _EditProfile(child: child))),
+                              .push(swipeRoute<void>(builder: (_) => _EditProfile(child: child))),
                       icon: const Icon(Icons.edit_outlined),
                     ),
                   ],

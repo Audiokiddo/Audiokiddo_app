@@ -30,9 +30,12 @@ enum PlayCategory {
           i.skills.any((s) => s.contains('wyobraź') || s.contains('kreatyw')),
     movement => i.skills.contains('ruch') || i.requirements.contains(Requirement.miejsceDoRuchu),
     detective => i.packId == 'detektyw' || i.skills.any((s) => s.contains('logicz')),
-    education => i.packId == 'slowa-i-wiedza' || i.skills.any((s) => s.contains('słownict') || s.contains('wiedz')),
+    education =>
+      i.packId == 'slowa-i-wiedza' || i.skills.any((s) => s.contains('słownict') || s.contains('wiedz')),
     adventure =>
-      i.packId == 'wyobraznia' || i.skills.any((s) => s.contains('opowiad')) || (i.script != null && i.audio.isEmpty),
+      i.packId == 'wyobraznia' ||
+          i.skills.any((s) => s.contains('opowiad')) ||
+          (i.script != null && i.audio.isEmpty),
     songs => i.kind == ContentKind.song,
     calm => i.situations.contains(Situation.przedSnem),
   };

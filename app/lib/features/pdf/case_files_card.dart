@@ -17,6 +17,7 @@ import '../../core/widgets/szop.dart';
 import '../parental_gate/parental_gate.dart';
 import '../catalog/catalog_providers.dart';
 import 'pdf_screen.dart';
+import '../../core/router.dart';
 
 const _ink = Color(0xFF211C35);
 
@@ -73,9 +74,8 @@ class _OneCaseButton extends StatelessWidget {
   Widget build(BuildContext context) => FilledButton.icon(
     style: FilledButton.styleFrom(backgroundColor: referencePurple, foregroundColor: Colors.white),
     onPressed: () async {
-      if (!await showParentalGate(context) || !context.mounted) return;
       await Navigator.of(context).push(
-        MaterialPageRoute<void>(
+        swipeRoute<void>(
           builder: (_) => PdfScreen(asset: item.pdf.first, title: item.title),
         ),
       );
@@ -124,8 +124,9 @@ class _CaseFilesBulkButtonsState extends ConsumerState<CaseFilesBulkButtons> {
     for (final i in widget.items) (i, await ref.read(pdfBytesProvider(i.pdf.first).future)),
   ];
 
-  Future<void> _run(String what, Future<void> Function() action) async {
-    if (!await showParentalGate(context) || !mounted) return;
+  /// Sending leaves the app (share sheet), so it asks for an adult; printing does not.
+  Future<void> _run(String what, Future<void> Function() action, {bool gate = false}) async {
+    if (gate && (!await showParentalGate(context) || !mounted)) return;
     setState(() => _busy = what);
     try {
       await action();
@@ -180,7 +181,7 @@ class _CaseFilesBulkButtonsState extends ConsumerState<CaseFilesBulkButtons> {
             foregroundColor: _ink,
             side: const BorderSide(color: _ink),
           ),
-          onPressed: _busy != null ? null : () => _run('share', _share),
+          onPressed: _busy != null ? null : () => _run('share', _share, gate: true),
           icon: busy('share', const Icon(Icons.ios_share_rounded)),
           label: Text('Wyślij wszystkie akta ($n)'),
         ),

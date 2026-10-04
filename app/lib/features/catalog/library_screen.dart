@@ -12,6 +12,7 @@ import '../discovery/reference_widgets.dart';
 import '../downloads/download_providers.dart';
 import '../family/family.dart' hide progressProvider;
 import '../kids_mode/kids_mode_setup.dart';
+import '../pdf/guide_links.dart';
 import '../purchases/shop.dart';
 import '../purchases/purchase_controller.dart';
 import '../purchases/shop_screen.dart';
@@ -34,7 +35,17 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   String _search = '';
   bool _searching = false;
 
-  void _set(LibraryFilter f) => context.go(f.toLocation());
+  /// From the library a filter opens as its own page (swipe back returns); changing a filter
+  /// on that page replaces it.
+  void _set(LibraryFilter f) {
+    if (f.isEmpty) {
+      context.canPop() ? context.pop() : context.go(f.toLocation());
+    } else if (widget.filter.isEmpty) {
+      context.push(f.toLocation());
+    } else {
+      context.replace(f.toLocation());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +66,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     _searching = false;
                     _search = '';
                   });
-                  if (searching && context.canPop()) {
+                  if (context.canPop()) {
                     context.pop();
                   } else {
                     _set(const LibraryFilter());
@@ -678,7 +689,7 @@ class _FilterChips extends StatelessWidget {
   }
 }
 
-/// The parents' guides of every pack, on top of the printables.
+/// Films and printables of every pack, on top of the printable plays.
 class _Guides extends StatelessWidget {
   const _Guides({required this.catalog});
 
@@ -688,16 +699,16 @@ class _Guides extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const RefSection('Przewodniki dla rodzica'),
+      const RefSection('Filmy i materiały do pakietów'),
       for (final pack in catalog.packs)
-        if (pack.guide case final guide?)
+        if (pack.guide != null)
           ListTile(
             contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.menu_book_rounded, color: AkBrand.tealDeep),
-            title: Text('Przewodnik: ${pack.title}'),
-            subtitle: const Text('Za darmo, do przeczytania i druku'),
+            leading: const Icon(Icons.smart_display_rounded, color: AkBrand.tealDeep),
+            title: Text(pack.title),
+            subtitle: const Text('Filmy do zabaw i pliki do druku'),
             trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => openGuide(context, guide, pack),
+            onTap: () => openPackMaterials(context, pack.id),
           ),
     ],
   );

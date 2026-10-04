@@ -54,6 +54,25 @@ enum ClaimStatus {
   format,
 }
 
+/// The parent's referral code ("POLEC-7K3M9Q"), friends who used it and rewards earned.
+class ReferralInfo {
+  const ReferralInfo({required this.code, this.friends = 0, this.rewards = 0});
+
+  final String code;
+  final int friends;
+  final int rewards;
+
+  static ReferralInfo? fromJson(Object? json) {
+    if (json is! Map || json['code'] is! String) return null;
+    int count(Object? v) => v is int ? v : int.tryParse('$v') ?? 0;
+    return ReferralInfo(
+      code: json['code'] as String,
+      friends: count(json['friends']),
+      rewards: count(json['rewards']),
+    );
+  }
+}
+
 class ClaimResult {
   const ClaimResult(this.status, [this.scopes = const []]);
 
@@ -121,6 +140,10 @@ abstract interface class AccountService {
   /// Adds what an access code unlocks (gift, tester, promotion) to the account; a guest
   /// account is created when nobody is signed in.
   Future<ClaimResult> redeemCode(String code);
+
+  /// The parent's referral code and how many friends used it (referral-code); a guest account
+  /// is created when nobody is signed in.
+  Future<ReferralInfo> referralInfo();
 
   /// Adds the packs of one shop order, proven by its number and billing e-mail, for buyers
   /// whose shop e-mail differs from the one they sign in with.
@@ -221,6 +244,15 @@ class SupabaseAccountService implements AccountService {
   @override
   Future<ClaimResult> claimOrder(String order, String email) =>
       _claim('claim-order', {'order': order, 'email': email});
+
+  @override
+  Future<ReferralInfo> referralInfo() => _guard(() async {
+    if (await purchaseAccountId() == null) throw const AccountException(AccountError.offline);
+    final response = await _client.functions.invoke('referral-code');
+    final info = ReferralInfo.fromJson(response.data);
+    if (info == null) throw const AccountException(AccountError.server);
+    return info;
+  });
 
   Future<ClaimResult> _claim(String function, Map<String, Object?> body) => _guard(() async {
     // Anonymous guest account when nobody is signed in: access waits there until sign-in.
@@ -365,6 +397,9 @@ class SignedOutAccountService implements AccountService {
   @override
   Future<ClaimResult> claimOrder(String order, String email) async =>
       throw const AccountException(AccountError.server);
+
+  @override
+  Future<ReferralInfo> referralInfo() async => throw const AccountException(AccountError.notConfigured);
 
   @override
   Future<List<Entitlement>> entitlements() async => const [];

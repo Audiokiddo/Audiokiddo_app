@@ -17,6 +17,7 @@ import '../family/family.dart';
 import '../downloads/pack_download.dart';
 import '../home/quick_pick.dart';
 import '../pdf/case_files_card.dart';
+import '../pdf/guide_links.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
@@ -954,12 +955,12 @@ class PackScreen extends ConsumerWidget {
                       const SizedBox(height: 12),
                       Text(pack.description, style: text.bodyMedium),
                     ],
-                    if (pack.guide case final guide?) ...[
+                    if (pack.guide != null) ...[
                       const SizedBox(height: 14),
                       OutlinedButton.icon(
-                        onPressed: () => openGuide(context, guide, pack),
-                        icon: const Icon(Icons.menu_book_rounded),
-                        label: const Text('Przewodnik po pakiecie (PDF)'),
+                        onPressed: () => openPackMaterials(context, pack.id),
+                        icon: const Icon(Icons.smart_display_rounded),
+                        label: const Text('Filmy i materiały do zabaw'),
                       ),
                     ],
                     if (owned && summary.items.any((i) => i.pdf.isNotEmpty) && pack.id == 'detektyw') ...[

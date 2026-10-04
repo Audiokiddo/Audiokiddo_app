@@ -18,6 +18,7 @@ import '../purchases/offer_catalog.dart';
 import '../purchases/purchase_controller.dart';
 import '../purchases/shop.dart';
 import '../rating/rating.dart';
+import '../referral/referral_screen.dart';
 import '../purchases/shop_screen.dart';
 import '../purchases/store_gateway.dart';
 import '../downloads/download_providers.dart';
@@ -111,6 +112,7 @@ class HomeScreen extends ConsumerWidget {
               _OwnedPacks(catalog: catalog),
               const PendingDiplomaCard(),
               const RatingCard(),
+              const ReferralCard(),
               _NextPackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
               const _OfflineCard(),
@@ -882,7 +884,7 @@ class HeroShelf extends ConsumerStatefulWidget {
 }
 
 class _HeroShelfState extends ConsumerState<HeroShelf> {
-  static const _fraction = .8;
+  static const _fraction = .66;
   late final _controller = PageController(viewportFraction: _fraction);
   int _page = 0;
 

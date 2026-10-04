@@ -204,20 +204,13 @@ void main() {
     setUp(() => debugGateChallengeFactory = () => GateChallenge.fixed(47, [74, 47, 12, 33]));
     tearDown(() => debugGateChallengeFactory = null);
 
-    testWidgets('unlock asks an adult first, then shows store prices', (tester) async {
+    testWidgets('unlock shows store prices; buying asks an adult first', (tester) async {
       await pumpApp(tester);
       await openLibrary(tester);
       await openItem(tester, 'Zaginiony skarb');
       await tester.tap(find.text('Odblokuj'));
       await tester.pumpAndSettle();
-      expect(find.text('czterdzieści siedem'), findsOneWidget);
-
-      await tester.tap(find.text('74'));
-      await tester.pumpAndSettle();
-      expect(find.text('To nie ta liczba. Spróbuj jeszcze raz.'), findsOneWidget);
-
-      await tester.tap(find.text('47'));
-      await tester.pumpAndSettle();
+      expect(find.text('czterdzieści siedem'), findsNothing, reason: 'looking at prices needs no gate');
       expect(find.text('Odblokuj zabawy'), findsOneWidget);
       expect(find.textContaining('7 dni za darmo, zanim dojedziemy'), findsOneWidget, reason: 'the car gag');
       await tester.drag(mainScroll, const Offset(0, -350));

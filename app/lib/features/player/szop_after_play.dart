@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../discovery/discovery_model.dart';
+import 'szop_lines.dart';
 
 /// What Szop’en says when a recording ends: a dry joke for the parent, or a small tip for
 /// what to do next with the child. Never about the child, never a modal.
@@ -223,6 +226,105 @@ class _SzopAfterPlayCardState extends ConsumerState<SzopAfterPlayCard> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Szop’en in the player while a play runs: a line a little after it starts, then every few
+/// minutes, each gone after a while or with a swipe to the left. Off with "Komentarze Szop’ena".
+class SzopWhilePlaying extends ConsumerStatefulWidget {
+  const SzopWhilePlaying({super.key, required this.playing});
+
+  final bool playing;
+
+  @override
+  ConsumerState<SzopWhilePlaying> createState() => _SzopWhilePlayingState();
+}
+
+class _SzopWhilePlayingState extends ConsumerState<SzopWhilePlaying> {
+  static const _first = Duration(seconds: 20);
+  static const _every = Duration(minutes: 2, seconds: 30);
+  static const _shown = Duration(seconds: 14);
+
+  (SzopPose, String)? _line;
+  Timer? _next;
+  Timer? _hide;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.playing) _next = Timer(_first, _speak);
+  }
+
+  @override
+  void didUpdateWidget(SzopWhilePlaying old) {
+    super.didUpdateWidget(old);
+    if (widget.playing && !old.playing) {
+      _next?.cancel();
+      _next = Timer(_first, _speak);
+    } else if (!widget.playing && old.playing) {
+      _next?.cancel();
+    }
+  }
+
+  void _speak() {
+    if (!mounted || !widget.playing) return;
+    if (!(ref.read(discoveryProvider).value?.quiet ?? false)) {
+      setState(() => _line = ref.read(szopPlayingBagProvider).next());
+      _hide?.cancel();
+      _hide = Timer(_shown, () {
+        if (mounted) setState(() => _line = null);
+      });
+    }
+    _next = Timer(_every, _speak);
+  }
+
+  @override
+  void dispose() {
+    _next?.cancel();
+    _hide?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final line = _line;
+    const ink = Color(0xFF211C35);
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
+      child: line == null
+          ? const SizedBox(width: double.infinity)
+          : Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Dismissible(
+                key: ValueKey(line),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) => setState(() => _line = null),
+                child: Semantics(
+                  liveRegion: true,
+                  label: 'Szop’en mówi: ${line.$2}',
+                  excludeSemantics: true,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 14, 8),
+                    decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(18)),
+                    child: Row(
+                      children: [
+                        SzopSticker(line.$1, height: 48),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            line.$2,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.3),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

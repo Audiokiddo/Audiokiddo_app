@@ -258,3 +258,28 @@ begin
   assert not has_table_privilege('authenticated', 'public.access_codes', 'select'), 'codes are not readable';
 end $$;
 select 'access code tests passed';
+
+-- Referrals: the friend gets 14 days, the parent who shared the code gets 30 days after the
+-- friend's first purchase; own code and a second referral are refused.
+insert into auth.users (id, email, email_confirmed_at) values
+  ('00000000-0000-0000-0000-0000000000a1', 'polecajacy@example.com', now()),
+  ('00000000-0000-0000-0000-0000000000a2', 'znajomy@example.com', now());
+do $$
+declare
+  v_code text;
+begin
+  v_code := public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECABCDEF') ->> 'code';
+  assert v_code = 'POLECABCDEF';
+  assert public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECZZZZZZ') ->> 'code' = 'POLECABCDEF', 'one code per parent';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a1', v_code) ->> 'status' = 'invalid', 'own code refused';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a2', v_code) ->> 'status' = 'ok';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a2', v_code) ->> 'status' = 'already';
+  assert exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a2'
+    and scope = 'all_content' and valid_until > now() + interval '13 days'), 'friend trial';
+  assert not exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a1'), 'no reward before a purchase';
+  perform public.upsert_entitlement('00000000-0000-0000-0000-0000000000a2', 'app_store',
+    'ios:pl.audiokiddo.sub.yearly', 'tx-ref', 'active', null);
+  assert exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a1'
+    and product_ref = 'referral-reward' and valid_until > now() + interval '29 days'), 'reward after purchase';
+  assert (public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECZZZZZZ') ->> 'rewards')::int = 1;
+end $$;
