@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:swipeable_page_route/swipeable_page_route.dart';
+
 import 'tokens.dart';
 
 ThemeData buildTheme(Brightness brightness) {
@@ -27,6 +29,20 @@ ThemeData buildTheme(Brightness brightness) {
   final text = base.textTheme.apply(bodyColor: p.ink, displayColor: p.ink);
 
   return base.copyWith(
+    // Back by swiping from the left edge, the page following the finger with the previous
+    // one underneath (iOS-style, on both platforms).
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.iOS: SwipeablePageTransitionsBuilder(
+          canOnlySwipeFromEdge: true,
+          backGestureDetectionWidth: 32,
+        ),
+        TargetPlatform.android: SwipeablePageTransitionsBuilder(
+          canOnlySwipeFromEdge: true,
+          backGestureDetectionWidth: 32,
+        ),
+      },
+    ),
     scaffoldBackgroundColor: p.background,
     extensions: [p],
     // Apple-style type: big, bold, tightly tracked headlines; calm body text.

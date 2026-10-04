@@ -12,7 +12,6 @@ import 'package:audiokiddo/features/player/playback_controller.dart';
 import 'dart:ui' as ui;
 
 import 'package:audiokiddo/app.dart';
-import 'package:audiokiddo/core/widgets/golden_hello.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -85,10 +84,15 @@ void main() {
     await tester.pumpAndSettle();
     Future<void> capture(String name) async {
       await tester.runAsync(() async {
+        final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+        await Future.wait([for (final asset in manifest.listAssets()) if ((asset.startsWith('assets/szop/') || asset.startsWith('assets/covers/')) && (asset.endsWith('.png') || asset.endsWith('.webp'))) precacheImage(AssetImage(asset), key.currentContext!)]);
+      });
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.runAsync(() async {
         final boundary = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
         final image = await boundary.toImage(pixelRatio: 2);
         final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-        final file = File('../docs/redesign-reference/$name.png');
+        final file = File('../docs/qa-2026-10-04/$name.png');
         await file.parent.create(recursive: true);
         await file.writeAsBytes(bytes!.buffer.asUint8List());
         image.dispose();
@@ -98,10 +102,9 @@ void main() {
     await capture('start');
     final context = tester.element(find.byType(Scaffold).first);
     final router = GoRouter.of(context);
-    showGoldenHello(context);
+    await tester.scrollUntilVisible(find.text('Mam 20 minut'), 160, scrollable: find.byType(Scrollable).first);
     await tester.pumpAndSettle();
-    await capture('szopen-spotkanie');
-    router.pop();
+    await capture('start-sytuacje');
     for (final route in <String, String>{
       'biblioteka': '/biblioteka',
       'kategoria': '/biblioteka?kategoria=adventure',
@@ -129,6 +132,9 @@ void main() {
         await capture('propozycje');
       }
     }
+    await tester.scrollUntilVisible(find.text('Wybierz kolejną zabawę'), 200, scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
+    await capture('odtwarzacz-podobne');
     final playerContext = tester.element(find.byType(Scaffold).first);
     showSleepPicker(playerContext);
     await tester.pumpAndSettle();
@@ -136,6 +142,10 @@ void main() {
     Navigator.of(tester.element(find.text('Ustaw timer'))).pop();
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+    tester.view.physicalSize = const Size(2400, 3200);
+    router.go('/');
+    await tester.pumpAndSettle();
+    await capture('start-tablet');
     tester.view.physicalSize = const Size(960, 1704);
     tester.platformDispatcher.textScaleFactorTestValue = 1.35;
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);

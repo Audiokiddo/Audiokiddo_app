@@ -85,7 +85,7 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
         value: Theme.of(context).brightness == Brightness.dark
             ? SystemUiOverlayStyle.light
             : SystemUiOverlayStyle.dark,
-        child: EdgeSwipeBack(router: _router, child: child!),
+        child: child!,
       ),
     );
   }

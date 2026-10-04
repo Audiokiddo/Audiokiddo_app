@@ -84,6 +84,8 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
 
   // Words: the phone's own recogniser, only in the foreground and only while a choice waits.
   bool _speechReady = false;
+  bool _repeatRequested = false;
+  String? _lastPrompt;
   bool get _speechUsable => _speechReady && _foreground;
 
   GameAudio get _audio => ref.read(gameAudioProvider);
@@ -115,6 +117,8 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final generation = ++_generation;
     _item = item;
     _answers = 0;
+    _repeatRequested = false;
+    _lastPrompt = null;
     final startedAt = DateTime.now();
     final saved = resume ? await loadGameSnapshot(ref.read(databaseProvider), item) : null;
     if (!resume) await clearGameSnapshot(ref.read(databaseProvider), item.id);
@@ -133,7 +137,15 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       var command = runner.start();
       while (generation == _generation) {
         final event = await _execute(command, generation);
-        if (event == null || generation != _generation) return; // stopped or replaced
+        if (generation != _generation) return;
+        if (_repeatRequested && _lastPrompt != null) {
+          _repeatRequested = false;
+          if (command is! PlaySegment) {
+            await _execute(PlaySegment(_lastPrompt!), generation);
+          }
+          continue; // Keep the current choice and its score; ask again.
+        }
+        if (event == null) return;
         if (command is Finish) {
           await _stopMicrophone();
           // Games that keep a `score` variable report correct answers to the parent.
@@ -183,6 +195,21 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     state = const GameUiState();
   }
 
+  /// Repeat the last instruction without advancing the story or changing its score.
+  void repeatInstruction() {
+    if (_lastPrompt == null ||
+        _repeatRequested ||
+        !(state.phase == GamePhase.playing || state.phase == GamePhase.listening)) {
+      return;
+    }
+    _repeatRequested = true;
+    if (_input != null) {
+      _completeInput(const InputTimedOut());
+    } else {
+      unawaited(_audio.stop());
+    }
+  }
+
   /// Touch anywhere while a tap answer is possible.
   void tap() {
     if (_listening.contains(InputKind.tapAnywhere)) {
@@ -213,6 +240,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final media = MediaItem(id: '$gameMediaPrefix${item.id}', title: item.title, album: 'AudioKiddo');
     switch (command) {
       case PlaySegment(:final asset):
+        _lastPrompt = asset;
         _set(GamePhase.playing);
         // Save at every instruction: after any interruption the child hears it again.
         await ref
@@ -226,6 +254,13 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         final done = await _pausableDelay(duration, generation);
         await _audio.stopLoop();
         return done ? const WaitElapsed() : null;
+      // "Powiedz: tak!", "plum!": the recogniser hears short words far better than the
+      // loudness detector, so any word it catches is the answer.
+      case Listen(input: InputKind.voiceActivity, :final window) when _speechUsable:
+        return await _listenForWords(window, const [], generation, anySpeech: true) ??
+            (generation == _generation
+                ? await _listen({InputKind.voiceActivity}, window, generation, media)
+                : null);
       case Listen(:final input, :final window, :final minCount):
         return _listen({input}, window, generation, media, minClaps: minCount ?? 1);
       case ListenForChoice(:final inputs, :final window, :final vocabulary)
@@ -265,7 +300,14 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
   /// A choice answered with words. The clap microphone is handed to the recogniser for the
   /// window and taken back afterwards; whatever the child says is matched against
   /// [vocabulary] as it is heard and then forgotten.
-  Future<EngineEvent?> _listenForWords(Duration window, List<String> vocabulary, int generation) async {
+  /// With [anySpeech] any word counts (InputKind.voiceActivity); when the recogniser fails
+  /// there it returns null and the loudness detector takes over.
+  Future<EngineEvent?> _listenForWords(
+    Duration window,
+    List<String> vocabulary,
+    int generation, {
+    bool anySpeech = false,
+  }) async {
     if (!_speechUsable) return InputFailed(_whyUnusable(const {InputKind.speechKeywords}));
     final speech = ref.read(speechInputProvider);
     final hadMicrophone = _micOn;
@@ -274,14 +316,29 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     _listening = const {InputKind.speechKeywords};
     _set(GamePhase.listening, listening: _listening);
     final matcher = WordMatcher(vocabulary);
+    var gaveUp = false;
     final scaled = window * ref.read(gameTimeScaleProvider);
     unawaited(
       speech
           .listen(
             window: scaled,
-            vocabulary: vocabulary,
+            vocabulary: anySpeech
+                ? const []
+                : [...vocabulary, 'jeszcze raz', 'powtórz', 'czy możesz powtórzyć'],
             onHeard: (transcripts) {
               if (_input != completer) return; // a late result from an earlier question
+              if (transcripts.any(
+                (t) => RegExp(r'(^| )(jeszcze raz|powtorz|powtorzyc)( |$)').hasMatch(normalizeSpoken(t)),
+              )) {
+                repeatInstruction();
+                return;
+              }
+              if (anySpeech) {
+                if (transcripts.any((t) => normalizeSpoken(t).isNotEmpty)) {
+                  _completeInput(const InputDetected(kind: InputKind.voiceActivity));
+                }
+                return;
+              }
               for (final transcript in transcripts) {
                 if (matcher.match(transcript) case final word?) {
                   _completeInput(InputDetected(kind: InputKind.speechKeywords, word: word));
@@ -299,7 +356,8 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
             if (_input != completer) return;
             _speechReady = false;
             _runner?.setSpeechAvailable(available: false);
-            _completeInput(const InputFailed(FallbackReason.noSpeech));
+            gaveUp = true;
+            _completeInput(anySpeech ? const InputTimedOut() : const InputFailed(FallbackReason.noSpeech));
           }),
     );
     // The recogniser's own timer may be late; the game never waits past the window.
@@ -311,6 +369,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final event = await completer.future;
     await speech.stop();
     if (hadMicrophone && generation == _generation) await _startMicrophone();
+    if (gaveUp && anySpeech) return null;
     return generation == _generation ? event : null;
   }
 
@@ -332,7 +391,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     await _audio.startLoop(media, silenceUri);
     unawaited(
       _pausableDelay(window, generation).then((done) {
-        if (!done) return;
+        if (!done || generation != _generation || _input != completer) return;
         // Counted claps short of the target still reach the script (e.g. "you clapped twice").
         final claps = _detector?.claps ?? 0;
         _completeInput(
@@ -358,7 +417,10 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     if (!enabled) return;
     try {
       final samples = await ref.read(microphoneInputProvider).start();
-      _detector = SoundDetector(sampleRate: micSampleRate);
+      _detector = SoundDetector(
+        sampleRate: micSampleRate,
+        voiceMinDuration: const Duration(milliseconds: 120),
+      );
       _mic = samples.listen(_onSamples, onError: (Object _) => _onMicrophoneLost());
     } on Exception catch (e) {
       debugPrint('microphone unavailable: $e');

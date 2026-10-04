@@ -75,14 +75,27 @@ void main() {
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
     expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
+    for (final label in ['Mam 20 minut', 'W podróży']) {
+      await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
+      expect(find.text(label), findsOneWidget);
+    }
+    await tester.scrollUntilVisible(find.text('Kontynuuj słuchanie'), 200, scrollable: mainScroll);
+    // Categories deliberately live below the recommendations, not above practical situations.
+    await tester.scrollUntilVisible(find.text('Przygody\ni wyobraźnia'), 200, scrollable: mainScroll);
     for (final label in ['Przygody\ni wyobraźnia', 'Zagadki\ni detektywi', 'Piosenki', 'Ruch i energia']) {
       expect(find.text(label), findsOneWidget);
     }
-    for (final label in ['Mam 20 minut', 'W podróży']) {
-      await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
-    }
-    await tester.scrollUntilVisible(find.text('Kontynuuj słuchanie'), 200, scrollable: mainScroll);
   });
+  testWidgets('search from Start has a visible back action', (tester) async {
+    await pumpApp(tester);
+    await tester.tap(find.byTooltip('Szukaj zabawy'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Wróć'), findsOneWidget);
+    await tester.tap(find.byTooltip('Wróć'));
+    await tester.pumpAndSettle();
+    expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
+  });
+
   testWidgets('rescue flow has time, mood and material selection', (tester) async {
     await pumpApp(tester);
     await tapOnStart(tester, 'Mam 20 minut');

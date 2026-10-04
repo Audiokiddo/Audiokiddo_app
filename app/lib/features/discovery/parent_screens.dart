@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/format.dart';
 import '../../core/theme/appearance.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/golden_hello.dart';
 import '../catalog/catalog_providers.dart';
 import '../downloads/download_providers.dart';
 import '../downloads/download_manager.dart';
@@ -81,15 +80,10 @@ class MoreScreen extends ConsumerWidget {
         const RefSection('Szop’en — kolega na dyżurze'),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Drobne żarty na Start'),
-          subtitle: const Text('Najwyżej jeden dziennie, bez dźwięku. W trakcie słuchania ma przerwę.'),
+          title: const Text('Komentarze Szop’ena'),
+          subtitle: const Text('Przy powrocie i osiągnięciach. Krótko, bez dźwięku.'),
           value: !(ref.watch(discoveryProvider).value?.quiet ?? false),
           onChanged: (v) => ref.read(discoveryProvider.notifier).quiet(!v),
-        ),
-        OutlinedButton.icon(
-          onPressed: () => showGoldenHello(context),
-          icon: const Icon(Icons.chat_bubble_outline_rounded),
-          label: const Text('Zawołaj Szop’ena'),
         ),
         const SizedBox(height: 24),
       ],

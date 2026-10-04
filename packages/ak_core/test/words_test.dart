@@ -10,6 +10,14 @@ void main() {
     });
   });
 
+  test('numeric recognition and spoken numbers select the same answer', () {
+    final matcher = WordMatcher(['trzy', 'cztery', 'pięć']);
+    expect(matcher.match('3'), 'trzy');
+    expect(matcher.match('chyba 5'), 'pięć');
+    expect(matcher.match('3 albo 4'), isNull);
+    expect(matcher.match('13'), isNull);
+  });
+
   group('WordMatcher', () {
     final matcher = WordMatcher(['lewo', 'w lewo', 'prawo', 'prosto', 'dziękuję', 'tak', 'nie']);
 

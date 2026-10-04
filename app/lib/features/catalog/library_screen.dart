@@ -24,10 +24,28 @@ class _LibraryScreenState extends State<LibraryScreen> {
   Widget build(BuildContext context) {
     final f = widget.filter;
     final category = f.category;
+    final searching = _searching || GoRouterState.of(context).uri.queryParameters['szukaj'] == '1';
     return Scaffold(
       appBar: AppBar(
         title: Text(category?.label.replaceAll('\n', ' ') ?? 'Biblioteka'),
-        leading: category == null
+        leading: searching
+            ? IconButton(
+                tooltip: 'Wróć',
+                icon: const Icon(Icons.arrow_back_rounded),
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  setState(() {
+                    _searching = false;
+                    _search = '';
+                  });
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go(f.toLocation());
+                  }
+                },
+              )
+            : category == null
             ? null
             : IconButton(
                 tooltip: 'Wszystkie kategorie',

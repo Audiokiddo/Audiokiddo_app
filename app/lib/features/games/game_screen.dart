@@ -53,84 +53,96 @@ class GameScreen extends ConsumerWidget {
       _ => null,
     };
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Scaffold(
-        backgroundColor: _background,
-        body: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: AkSpace.l),
-              Text(
-                game.title ?? '',
-                style: text.titleMedium?.copyWith(color: _foreground),
-                textAlign: TextAlign.center,
-              ),
-              Expanded(
-                child: Semantics(
-                  button: true,
-                  liveRegion: true,
-                  label: tapToAnswer ? label : (playing ? l10n.pause : l10n.play),
-                  excludeSemantics: true,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: switch (game.phase) {
-                      _ when tapToAnswer => ref.read(gameControllerProvider.notifier).tap,
-                      GamePhase.finished || GamePhase.failed => () => _exit(context, ref),
-                      _ => playing ? handler.pause : handler.play,
-                    },
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _GameKiddo(game: game, playing: playing),
-                          const SizedBox(height: AkSpace.l),
-                          Text(label, style: text.titleLarge?.copyWith(color: _foreground)),
-                          if (hint != null)
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(AkSpace.xl, AkSpace.s, AkSpace.xl, 0),
-                              child: Text(
-                                hint,
-                                textAlign: TextAlign.center,
-                                style: text.bodyLarge?.copyWith(color: _foreground.withValues(alpha: 0.7)),
+    // Left only by holding the exit button: no swipe or back gesture ends it by accident.
+    return PopScope(
+      canPop: false,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Scaffold(
+          backgroundColor: _background,
+          body: SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: AkSpace.l),
+                Text(
+                  game.title ?? '',
+                  style: text.titleMedium?.copyWith(color: _foreground),
+                  textAlign: TextAlign.center,
+                ),
+                Expanded(
+                  child: Semantics(
+                    button: true,
+                    liveRegion: true,
+                    label: tapToAnswer ? label : (playing ? l10n.pause : l10n.play),
+                    excludeSemantics: true,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: switch (game.phase) {
+                        _ when tapToAnswer => ref.read(gameControllerProvider.notifier).tap,
+                        GamePhase.finished || GamePhase.failed => () => _exit(context, ref),
+                        _ => playing ? handler.pause : handler.play,
+                      },
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _GameKiddo(game: game, playing: playing),
+                            const SizedBox(height: AkSpace.l),
+                            Text(label, style: text.titleLarge?.copyWith(color: _foreground)),
+                            if (hint != null)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(AkSpace.xl, AkSpace.s, AkSpace.xl, 0),
+                                child: Text(
+                                  hint,
+                                  textAlign: TextAlign.center,
+                                  style: text.bodyLarge?.copyWith(color: _foreground.withValues(alpha: 0.7)),
+                                ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              // Szop’en is gentle with the child; the parent gets his dry aside on the screen.
-              ParentAside(
-                dark: true,
-                pool: switch (game.phase) {
-                  GamePhase.finished => LordPool.gameFinished,
-                  GamePhase.waiting => LordPool.gameWaiting,
-                  _ => LordPool.gameListening,
-                },
-              ),
-              Semantics(
-                button: true,
-                label: l10n.noLookExit,
-                onLongPress: () => _exit(context, ref),
-                excludeSemantics: true,
-                child: GestureDetector(
+                if (game.phase == GamePhase.playing || game.phase == GamePhase.listening)
+                  TextButton.icon(
+                    onPressed: () => ref.read(gameControllerProvider.notifier).repeatInstruction(),
+                    style: TextButton.styleFrom(foregroundColor: _foreground),
+                    icon: const Icon(Icons.replay_rounded),
+                    label: const Text('Powtórz polecenie'),
+                  ),
+                // Szop’en is gentle with the child; the parent gets his dry aside on the screen.
+                if (game.phase == GamePhase.finished)
+                  ParentAside(
+                    dark: true,
+                    pool: switch (game.phase) {
+                      GamePhase.finished => LordPool.gameFinished,
+                      GamePhase.waiting => LordPool.gameWaiting,
+                      _ => LordPool.gameListening,
+                    },
+                  ),
+                Semantics(
+                  button: true,
+                  label: l10n.noLookExit,
                   onLongPress: () => _exit(context, ref),
-                  child: Container(
-                    height: kKidsTouchTarget,
-                    margin: const EdgeInsets.all(AkSpace.l),
-                    padding: const EdgeInsets.symmetric(horizontal: AkSpace.l),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: _foreground.withValues(alpha: 0.4)),
-                      borderRadius: BorderRadius.circular(AkRadius.button),
+                  excludeSemantics: true,
+                  child: GestureDetector(
+                    onLongPress: () => _exit(context, ref),
+                    child: Container(
+                      height: kKidsTouchTarget,
+                      margin: const EdgeInsets.all(AkSpace.l),
+                      padding: const EdgeInsets.symmetric(horizontal: AkSpace.l),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: _foreground.withValues(alpha: 0.4)),
+                        borderRadius: BorderRadius.circular(AkRadius.button),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(l10n.noLookExit, style: const TextStyle(color: _foreground)),
                     ),
-                    alignment: Alignment.center,
-                    child: Text(l10n.noLookExit, style: const TextStyle(color: _foreground)),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

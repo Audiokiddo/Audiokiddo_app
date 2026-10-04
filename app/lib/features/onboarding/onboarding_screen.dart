@@ -14,6 +14,8 @@ import '../kids_mode/kids_mode_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import '../reminders/reminder_offer.dart';
 import 'onboarding_controller.dart';
+import '../games/microphone.dart';
+import '../games/speech.dart';
 
 /// First run, written for the parent in the calm style of Apple's welcome sheets: a hello
 /// with the volume reminder, how it works, an optional age (kept on the device only) and an
@@ -38,6 +40,36 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void dispose() {
     _pages.dispose();
     super.dispose();
+  }
+
+  Future<void> _welcomePermissions() async {
+    final allow = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Bajka może usłyszeć odpowiedź'),
+        content: Text(
+          ref.read(speechInputProvider).supported
+              ? 'Włącz mikrofon i rozpoznawanie słów, aby dziecko mogło odpowiadać w zabawach. Rozpoznawanie działa na urządzeniu. Możesz też grać bez mikrofonu i zmienić decyzję później.'
+              : 'Włącz mikrofon do klaskania i zabaw dźwiękowych. Rozpoznawanie słów nie jest jeszcze dostępne na tym urządzeniu. Możesz grać także bez mikrofonu.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Nie teraz')),
+          FilledButton(onPressed: () => Navigator.pop(c, true), child: const Text('Włącz mikrofon')),
+        ],
+      ),
+    );
+    if (allow == true) {
+      try {
+        await ref.read(microphoneSettingsProvider.notifier).enable(words: true);
+        ref.invalidate(speechReadyProvider);
+      } on Object {
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Możesz włączyć mikrofon później w ustawieniach.')));
+        }
+      }
+    }
+    if (mounted) setState(() => _stage = _Stage.pages);
   }
 
   void _next() => _pages.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
@@ -99,7 +131,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      onPressed: () => setState(() => _stage = _Stage.pages),
+                      onPressed: _welcomePermissions,
                       icon: const Icon(Icons.arrow_forward_rounded),
                       label: const Text('Zaczynamy'),
                     ),

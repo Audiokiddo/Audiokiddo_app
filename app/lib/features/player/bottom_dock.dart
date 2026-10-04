@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
+import '../../core/storage/storage_providers.dart';
+import '../discovery/discovery_model.dart';
 import '../../core/widgets/ambient_motion.dart';
 import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
@@ -202,80 +204,86 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
       }
     }
 
-    return SizedBox(
-      height: 76,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            left: 12,
-            right: 12,
-            top: 6,
-            bottom: 6,
-            child: Material(
-              color: AkBrand.sun,
-              borderRadius: BorderRadius.circular(22),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(22),
-                onTap: open,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(106, 6, 8, 6),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              playing
-                                  ? 'Teraz słuchacie'
-                                  : resume.loaded
-                                  ? 'Wróćmy do zabawy'
-                                  : 'Dokończ przygodę',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (!playing) const ResumeAside(),
+        SizedBox(
+          height: 76,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                left: 12,
+                right: 12,
+                top: 6,
+                bottom: 6,
+                child: Material(
+                  color: AkBrand.sun,
+                  borderRadius: BorderRadius.circular(22),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(22),
+                    onTap: open,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(106, 6, 8, 6),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  playing
+                                      ? 'Teraz słuchacie'
+                                      : resume.loaded
+                                      ? 'Wróćmy do zabawy'
+                                      : 'Dokończ przygodę',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                                ),
+                                Text(
+                                  resume.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: text.bodySmall?.copyWith(color: ink),
+                                ),
+                              ],
                             ),
-                            Text(
-                              resume.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: text.bodySmall?.copyWith(color: ink),
+                          ),
+                          IconButton.filled(
+                            style: IconButton.styleFrom(
+                              backgroundColor: AkBrand.tealDeep,
+                              foregroundColor: Colors.white,
                             ),
-                          ],
-                        ),
+                            tooltip: playing ? 'Pauza' : 'Odtwórz',
+                            onPressed: !resume.loaded ? open : (playing ? handler.pause : handler.play),
+                            icon: Icon(playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
+                          ),
+                        ],
                       ),
-                      IconButton.filled(
-                        style: IconButton.styleFrom(
-                          backgroundColor: AkBrand.tealDeep,
-                          foregroundColor: Colors.white,
-                        ),
-                        tooltip: playing ? 'Pauza' : 'Odtwórz',
-                        onPressed: !resume.loaded ? open : (playing ? handler.pause : handler.play),
-                        icon: Icon(playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          // Szop’en: his feet hide behind the bar, as if he climbed up from it.
-          Positioned(
-            left: 18,
-            bottom: -14,
-            child: IgnorePointer(
-              child: AnimatedSlide(
-                offset: _risen ? Offset.zero : const Offset(0, .9),
-                duration: const Duration(milliseconds: 520),
-                curve: Curves.easeOutBack,
-                child: _Breathing(child: SzopSticker(pose, height: 84)),
+              // Szop’en: his feet hide behind the bar, as if he climbed up from it.
+              Positioned(
+                left: 18,
+                bottom: -14,
+                child: IgnorePointer(
+                  child: AnimatedSlide(
+                    offset: _risen ? Offset.zero : const Offset(0, .9),
+                    duration: const Duration(milliseconds: 520),
+                    curve: Curves.easeOutBack,
+                    child: _Breathing(child: SzopSticker(pose, height: 84)),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -320,4 +328,121 @@ class _BreathingState extends ConsumerState<_Breathing> with SingleTickerProvide
         Transform.translate(offset: Offset(0, 2.5 * math.sin(_c.value * 2 * math.pi)), child: child),
     child: widget.child,
   );
+}
+
+/// One brief comment per day, only beside a paused adventure. Never speaks over audio.
+class ResumeAside extends ConsumerStatefulWidget {
+  const ResumeAside({super.key});
+  @override
+  ConsumerState<ResumeAside> createState() => _ResumeAsideState();
+}
+
+class _ResumeAsideState extends ConsumerState<ResumeAside> {
+  String? _line;
+  Timer? _timer;
+  static const _lines = [
+    'Zatrzymałem przygodę. Prania nie umiem, próbowałem.',
+    'Wracamy? Zdążyłem udawać, że pracuję.',
+    'Bohaterowie czekają. Jako jedyni w tym domu cierpliwie.',
+    'Przerwa zaliczona. Kawa pewnie też już zimna.',
+    'Byłem cały czas na posterunku. Chrapanie to wentylacja.',
+    'Przygoda zapisana. Gdzie są drugie skarpetki — nadal nie wiem.',
+  ];
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_show());
+  }
+
+  Future<void> _show() async {
+    try {
+      final settings = await ref.read(discoveryProvider.future);
+      if (!mounted || settings.quiet) return;
+      final db = ref.read(databaseProvider);
+      final now = ref.read(clockProvider)();
+      final day = '${now.year}-${now.month}-${now.day}';
+      if (await db.readValue('szopen_resume_day') == day || !mounted) return;
+      await db.writeValue('szopen_resume_day', day);
+      if (!mounted) return;
+      setState(() => _line = _lines[now.day % _lines.length]);
+      _timer = Timer(const Duration(seconds: 9), () {
+        if (mounted) setState(() => _line = null);
+      });
+    } on Object {
+      /* A decorative comment must never block playback. */
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final line = _line;
+    final show = line != null && !(ref.watch(discoveryProvider).value?.quiet ?? false);
+    const ink = Color(0xFF211C35);
+    // A comic speech bubble over Szop’en (left of the card), popping in and out.
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.bottomLeft,
+      child: !show
+          ? const SizedBox(width: double.infinity)
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 24, 0),
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: .6, end: 1),
+                duration: const Duration(milliseconds: 360),
+                curve: Curves.easeOutBack,
+                builder: (context, v, child) =>
+                    Transform.scale(scale: v, alignment: Alignment.bottomLeft, child: child),
+                child: GestureDetector(
+                  onTap: () => setState(() => _line = null),
+                  child: Semantics(
+                    label: 'Szop’en mówi: $line',
+                    child: CustomPaint(
+                      painter: const _BubblePainter(color: Colors.white, tailX: 46),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 20),
+                        child: Text(
+                          line,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.25),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+/// Rounded bubble with a tail at the bottom pointing down to Szop’en.
+class _BubblePainter extends CustomPainter {
+  const _BubblePainter({required this.color, required this.tailX});
+
+  final Color color;
+  final double tailX;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const tail = 10.0;
+    final body = RRect.fromLTRBR(0, 0, size.width, size.height - tail, const Radius.circular(18));
+    final path = Path()
+      ..addRRect(body)
+      ..moveTo(tailX - 9, size.height - tail - 1)
+      ..lineTo(tailX - 4, size.height)
+      ..lineTo(tailX + 10, size.height - tail - 1)
+      ..close();
+    canvas.drawShadow(path, const Color(0x55000000), 6, false);
+    canvas.drawPath(path, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(_BubblePainter old) => old.color != color || old.tailX != tailX;
 }

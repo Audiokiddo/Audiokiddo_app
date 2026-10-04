@@ -77,7 +77,7 @@ class DeviceSpeech implements SpeechInput {
         _finish(e.permanent && !_quiet.contains(e.errorMsg) ? SpeechUnavailable(e.errorMsg) : null);
       },
     );
-    _initialised = true;
+    _initialised = ok;
     _note(ok ? 'gotowy' : 'brak zgody albo rozpoznawania mowy');
     if (!ok) return false;
     final locales = await _speech.locales();
@@ -121,6 +121,8 @@ class DeviceSpeech implements SpeechInput {
     }
   }
 
+  bool _stopRequested = false;
+
   @override
   Future<void> listen({
     required Duration window,
@@ -128,43 +130,54 @@ class DeviceSpeech implements SpeechInput {
     required void Function(List<String> transcripts) onHeard,
   }) async {
     if (!await ready()) throw const SpeechUnavailable('not ready');
-    final session = _session = Completer<void>();
-    final started = DateTime.now();
-    var heardAnything = false;
-    try {
-      await _speech.listen(
-        onResult: (r) {
-          final heard = [for (final a in r.alternates) a.recognizedWords];
-          heardAnything = heardAnything || heard.any((h) => h.trim().isNotEmpty);
-          _note('słyszę: ${heard.join(' | ')}${r.finalResult ? ' (koniec)' : ''}');
-          onHeard(heard);
-        },
-        listenOptions: SpeechListenOptions(
-          localeId: _locale,
-          listenFor: window,
-          pauseFor: window,
-          // Never leaves the phone; a phone without offline Polish fails and the game falls back.
-          onDevice: true,
-          listenMode: ListenMode.confirmation,
-          cancelOnError: true,
-          autoPunctuation: false,
-          contextualPhrases: vocabulary,
-        ),
-      );
-    } on SpeechUnavailable {
-      rethrow;
-    } on Object catch (e) {
-      _note('nie udało się zacząć słuchać: $e');
-      _finish();
-      throw SpeechUnavailable('listen_failed: $e');
-    }
-    await session.future;
-    // A recogniser that stops at once without hearing anything is not working (seen with
-    // error 300 when offline recognition cannot start): let the game ask for claps.
-    final early = window - DateTime.now().difference(started) > const Duration(seconds: 2);
-    if (early && !heardAnything && window > const Duration(seconds: 3)) {
-      _note('rozpoznawanie skończyło się od razu, bez słów');
-      throw const SpeechUnavailable('stopped_at_once');
+    _stopRequested = false;
+    final deadline = DateTime.now().add(window);
+    // The recogniser ends a session after a pause; a child who is still thinking gets a new
+    // one, until the whole answer window is used up.
+    while (!_stopRequested) {
+      final remaining = deadline.difference(DateTime.now());
+      if (remaining < const Duration(milliseconds: 800)) break;
+      final session = _session = Completer<void>();
+      final started = DateTime.now();
+      var heardAnything = false;
+      try {
+        await _speech.listen(
+          onResult: (r) {
+            final heard = {r.recognizedWords, for (final a in r.alternates) a.recognizedWords}.toList();
+            heardAnything = heardAnything || heard.any((h) => h.trim().isNotEmpty);
+            _note('słyszę: ${heard.join(' | ')}${r.finalResult ? ' (koniec)' : ''}');
+            onHeard(heard);
+          },
+          listenOptions: SpeechListenOptions(
+            localeId: _locale,
+            listenFor: remaining,
+            // Short: a final result comes soon after the child stops talking.
+            pauseFor: const Duration(seconds: 3),
+            partialResults: true,
+            // Never leaves the phone; a phone without offline Polish fails and the game falls back.
+            onDevice: true,
+            listenMode: ListenMode.confirmation,
+            cancelOnError: true,
+            autoPunctuation: false,
+            contextualPhrases: vocabulary,
+          ),
+        );
+      } on SpeechUnavailable {
+        rethrow;
+      } on Object catch (e) {
+        _note('nie udało się zacząć słuchać: $e');
+        _finish();
+        throw SpeechUnavailable('listen_failed: $e');
+      }
+      await session.future;
+      if (_stopRequested) break;
+      // A recogniser that stops at once without hearing anything is not working (seen with
+      // error 300 when offline recognition cannot start): let the game ask for claps.
+      if (!heardAnything && DateTime.now().difference(started) < const Duration(milliseconds: 1200)) {
+        _note('rozpoznawanie skończyło się od razu, bez słów');
+        throw const SpeechUnavailable('stopped_at_once');
+      }
+      _note('słucham dalej');
     }
   }
 
@@ -177,6 +190,7 @@ class DeviceSpeech implements SpeechInput {
 
   @override
   Future<void> stop() async {
+    _stopRequested = true;
     final wasListening = _session != null || _speech.isListening;
     _finish();
     if (!wasListening) return;

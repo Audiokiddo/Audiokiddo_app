@@ -1,17 +1,13 @@
-import 'dart:async';
-
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/golden_hello.dart';
 import '../../core/widgets/motion.dart';
 import '../../core/widgets/szop.dart';
 import '../family/family.dart' hide progressProvider;
 import '../personal/personal_repository.dart';
-import '../player/player_providers.dart';
 import '../diploma/diploma_screen.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
@@ -59,7 +55,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   IconButton(
                     tooltip: 'Szukaj zabawy',
-                    onPressed: () => context.go('/biblioteka?szukaj=1'),
+                    onPressed: () => context.push('/biblioteka?szukaj=1'),
                     icon: const Icon(Icons.search_rounded),
                   ),
                   IconButton(
@@ -79,8 +75,7 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               const HeroShelf(),
               const SizedBox(height: 18),
-              const _CategoryGrid(),
-              const SizedBox(height: 14),
+
               const _QuickNeeds(),
               RefSection(
                 'Kontynuuj słuchanie',
@@ -113,7 +108,7 @@ class HomeScreen extends ConsumerWidget {
               _NextPackCard(catalog: catalog),
               const _NewThings(),
               const _SeasonShelf(),
-              const _QuietSzopen(),
+              const _CategoryGrid(),
               RefSection('Na co dzień', action: 'Wszystkie tryby', onTap: () => context.push('/rutyny')),
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -133,86 +128,6 @@ class HomeScreen extends ConsumerWidget {
     final p = ref.watch(progressProvider(item.id)).value;
     if (p == null || p.completed) return '${(item.durationSec / 60).ceil()} min';
     return '${((p.durationMs - p.positionMs).clamp(0, 1 << 40) / 60000).ceil()} min pozostało';
-  }
-}
-
-class _QuietSzopen extends ConsumerStatefulWidget {
-  const _QuietSzopen();
-  @override
-  ConsumerState<_QuietSzopen> createState() => _QuietSzopenState();
-}
-
-class _QuietSzopenState extends ConsumerState<_QuietSzopen> {
-  Timer? _timer;
-  Timer? _hide;
-  bool _visible = false;
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer(const Duration(seconds: 12), () async {
-      final s = await ref.read(discoveryProvider.future);
-      if (!mounted) return;
-      final day = ref.read(clockProvider)().toIso8601String().substring(0, 10);
-      if (s.quiet ||
-          s.cameoDay == day ||
-          ref.read(currentMediaProvider).value != null ||
-          !(ModalRoute.of(context)?.isCurrent ?? false) ||
-          !TickerMode.valuesOf(context).enabled) {
-        return;
-      }
-      await ref.read(discoveryProvider.notifier).shown(day);
-      if (!mounted) return;
-      setState(() => _visible = true);
-      _hide = Timer(const Duration(seconds: 10), () {
-        if (mounted) setState(() => _visible = false);
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _hide?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final quiet = ref.watch(discoveryProvider).value?.quiet ?? false;
-    return Padding(
-      padding: const EdgeInsets.only(top: 14),
-      child: Column(
-        children: [
-          if (_visible && !quiet && ref.watch(currentMediaProvider).value == null)
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: referenceMint, borderRadius: BorderRadius.circular(18)),
-              child: LightSurface(
-                child: Row(
-                  children: [
-                    SzopSticker(szopOfTheDay(ref.watch(clockProvider)()).$1, height: 56),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(szopOfTheDay(ref.watch(clockProvider)()).$2)),
-                    IconButton(
-                      tooltip: 'Schowaj Szop’ena',
-                      onPressed: () => setState(() => _visible = false),
-                      icon: const Icon(Icons.close_rounded),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: () => showGoldenHello(context),
-              icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
-              label: const Text('Zawołaj Szop’ena'),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -427,18 +342,49 @@ class _QuickNeeds extends StatelessWidget {
       (Icons.bedtime_rounded, 'Na dobranoc', '/dobranoc'),
       (Icons.auto_awesome_rounded, 'Tryby i rutyny', '/rutyny'),
     ];
-    return SizedBox(
-      height: 44,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: needs.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-        itemBuilder: (context, i) => ActionChip(
-          avatar: Icon(needs[i].$1, size: 18),
-          label: Text(needs[i].$2),
-          onPressed: () => context.push(needs[i].$3),
-        ),
-      ),
+    const colors = [AkBrand.sun, Color(0xFFB8E3DF), Color(0xFFDED0EF), Color(0xFFE5DCEF)];
+    return Column(
+      children: [
+        for (var row = 0; row < 2; row++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var col = 0; col < 2; col++) ...[
+                    if (col > 0) const SizedBox(width: 10),
+                    Expanded(
+                      child: Material(
+                        color: colors[row * 2 + col],
+                        borderRadius: BorderRadius.circular(22),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(22),
+                          onTap: () => context.push(needs[row * 2 + col].$3),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(needs[row * 2 + col].$1, size: 30, color: Color(0xFF211C35)),
+                                const SizedBox(height: 12),
+                                Text(
+                                  needs[row * 2 + col].$2,
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -490,7 +436,8 @@ class _HeroShelfState extends ConsumerState<HeroShelf> {
     if (items.isEmpty) return const SizedBox.shrink();
     final width = MediaQuery.sizeOf(context).width - 40;
     return SizedBox(
-      height: (width * .62).clamp(190, 300),
+      // A square cover plus two lines under it.
+      height: width * .9 - 12 + MediaQuery.textScalerOf(context).scale(58),
       child: PageView.builder(
         padEnds: false,
         controller: _controller,
@@ -519,74 +466,76 @@ class _HeroCard extends ConsumerWidget {
     final fresh = ref.watch(isNewItemProvider(item));
     final text = Theme.of(context).textTheme;
     final age = item.ageMax == null ? '${item.ageMin}+ lat' : '${item.ageMin}–${item.ageMax} lat';
+    // Covers carry their own title art: shown whole (square), the title goes underneath.
     return Pressable(
       onTap: () => context.push('/zabawa/${item.id}'),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(26),
-        child: Stack(
-          fit: StackFit.expand,
+      child: Semantics(
+        button: true,
+        label:
+            '${fresh ? 'Nowość' : 'Jeszcze nie słuchane'}: ${item.title}, ${(item.durationSec / 60).ceil()} min',
+        excludeSemantics: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ItemArt(item: item),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [.35, 1],
-                  colors: [Colors.transparent, Color(0xE61B1530)],
+            AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(26),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ItemArt(item: item),
+                    Positioned(
+                      left: 12,
+                      top: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AkBrand.sun,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          fresh ? 'Nowość' : 'Jeszcze nie słuchane',
+                          style: text.labelMedium?.copyWith(
+                            color: const Color(0xFF211C35),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 12,
+                      bottom: 12,
+                      child: Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: AkBrand.teal,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 3),
+                        ),
+                        child: Icon(
+                          ref.watch(canPlayProvider(item)) ? Icons.play_arrow_rounded : Icons.lock_rounded,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Positioned(
-              left: 14,
-              top: 14,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(12)),
-                child: Text(
-                  fresh ? 'Nowość' : 'Jeszcze nie słuchane',
-                  style: text.labelMedium?.copyWith(
-                    color: const Color(0xFF211C35),
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
+            const SizedBox(height: 8),
+            Text(
+              item.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
             ),
-            Positioned(
-              left: 16,
-              right: 70,
-              bottom: 14,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    item.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: text.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${(item.durationSec / 60).ceil()} min · $age',
-                    style: text.bodySmall?.copyWith(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              right: 14,
-              bottom: 14,
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: const BoxDecoration(color: AkBrand.teal, shape: BoxShape.circle),
-                child: Icon(
-                  ref.watch(canPlayProvider(item)) ? Icons.play_arrow_rounded : Icons.lock_rounded,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
+            Text(
+              '${(item.durationSec / 60).ceil()} min · $age',
+              maxLines: 1,
+              style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
             ),
           ],
         ),

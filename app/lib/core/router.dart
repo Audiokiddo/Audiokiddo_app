@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import '../features/catalog/details_screen.dart';
 import '../features/family/child_quiz.dart';
@@ -56,16 +57,16 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
   // An unknown or outdated link (old widget, typo) opens Start instead of an error page.
   onException: (context, state, router) => router.go('/'),
   routes: [
-    GoRoute(path: '/powitanie', builder: (context, state) => const OnboardingScreen()),
-    GoRoute(path: '/dziecko', builder: (context, state) => const KidsHomeScreen()),
-    GoRoute(path: '/dziecko/graj', builder: (context, state) => const NoLookScreen()),
-    GoRoute(path: '/dziecko/gra', builder: (context, state) => const GameScreen()),
-    GoRoute(path: '/gra', builder: (context, state) => const GameScreen()),
+    GoRoute(path: '/powitanie', pageBuilder: (context, state) => swipePage(state, const OnboardingScreen())),
+    GoRoute(path: '/dziecko', pageBuilder: (context, state) => swipePage(state, const KidsHomeScreen())),
+    GoRoute(path: '/dziecko/graj', pageBuilder: (context, state) => swipePage(state, const NoLookScreen())),
+    GoRoute(path: '/dziecko/gra', pageBuilder: (context, state) => swipePage(state, const GameScreen())),
+    GoRoute(path: '/gra', pageBuilder: (context, state) => swipePage(state, const GameScreen())),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => _ParentShell(shell: shell),
       branches: [
         StatefulShellBranch(
-          routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
+          routes: [GoRoute(path: '/', pageBuilder: (context, state) => swipePage(state, const HomeScreen()))],
         ),
         StatefulShellBranch(
           routes: [
@@ -77,52 +78,66 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
           ],
         ),
         StatefulShellBranch(
-          routes: [GoRoute(path: '/ulubione', builder: (context, state) => const CollectionScreen())],
+          routes: [
+            GoRoute(
+              path: '/ulubione',
+              pageBuilder: (context, state) => swipePage(state, const CollectionScreen()),
+            ),
+          ],
         ),
         StatefulShellBranch(
-          routes: [GoRoute(path: '/moje', builder: (context, state) => const MoreScreen())],
+          routes: [
+            GoRoute(path: '/moje', pageBuilder: (context, state) => swipePage(state, const MoreScreen())),
+          ],
         ),
       ],
     ),
-    GoRoute(path: '/sklep', builder: (context, state) => const ShopScreen()),
-    GoRoute(path: '/ratunku', builder: (context, state) => const RescueScreen()),
-    GoRoute(path: '/rutyny', builder: (context, state) => const RoutinesScreen()),
-    GoRoute(path: '/kolejka', builder: (context, state) => const QueueScreen()),
-    GoRoute(path: '/profil', builder: (context, state) => const ProfileScreen()),
-    GoRoute(path: '/pobrane', builder: (context, state) => const DownloadsScreen()),
-    GoRoute(path: '/historia', builder: (context, state) => const CollectionScreen(history: true)),
-    GoRoute(path: '/plan', builder: (context, state) => const PlanScreen()),
-    GoRoute(path: '/moje/narzedzia', builder: (context, state) => const DevToolsScreen()),
-    GoRoute(path: '/plan/postep', builder: (context, state) => const ProgressScreen()),
+    GoRoute(path: '/sklep', pageBuilder: (context, state) => swipePage(state, const ShopScreen())),
+    GoRoute(path: '/ratunku', pageBuilder: (context, state) => swipePage(state, const RescueScreen())),
+    GoRoute(path: '/rutyny', pageBuilder: (context, state) => swipePage(state, const RoutinesScreen())),
+    GoRoute(path: '/kolejka', pageBuilder: (context, state) => swipePage(state, const QueueScreen())),
+    GoRoute(path: '/profil', pageBuilder: (context, state) => swipePage(state, const ProfileScreen())),
+    GoRoute(path: '/pobrane', pageBuilder: (context, state) => swipePage(state, const DownloadsScreen())),
+    GoRoute(
+      path: '/historia',
+      pageBuilder: (context, state) => swipePage(state, const CollectionScreen(history: true)),
+    ),
+    GoRoute(path: '/plan', pageBuilder: (context, state) => swipePage(state, const PlanScreen())),
+    GoRoute(
+      path: '/moje/narzedzia',
+      pageBuilder: (context, state) => swipePage(state, const DevToolsScreen()),
+    ),
+    GoRoute(path: '/plan/postep', pageBuilder: (context, state) => swipePage(state, const ProgressScreen())),
     GoRoute(
       path: '/plan/dziecko',
       builder: (context, state) =>
           ChildQuiz(onDone: () => context.canPop() ? context.pop() : context.go('/plan')),
     ),
-    GoRoute(path: '/plan/glos', builder: (context, state) => const ParentVoiceScreen()),
+    GoRoute(path: '/plan/glos', pageBuilder: (context, state) => swipePage(state, const ParentVoiceScreen())),
     // The home-screen widget opens these through audiokiddo://open/dobranoc and /podroz.
-    GoRoute(path: '/podroz', builder: (context, state) => const TripScreen()),
-    GoRoute(path: '/dobranoc', builder: (context, state) => const BedtimeScreen()),
-    GoRoute(path: '/sesja', builder: (context, state) => const SessionScreen()),
-    GoRoute(path: '/konto', builder: (context, state) => const AccountScreen()),
-    GoRoute(path: '/dostep', builder: (context, state) => const AccessScreen()),
-    GoRoute(path: '/mowa', builder: (context, state) => const SpeechCheckScreen()),
-    GoRoute(path: '/ikona', builder: (context, state) => const AppIconScreen()),
+    GoRoute(path: '/podroz', pageBuilder: (context, state) => swipePage(state, const TripScreen())),
+    GoRoute(path: '/dobranoc', pageBuilder: (context, state) => swipePage(state, const BedtimeScreen())),
+    GoRoute(path: '/sesja', pageBuilder: (context, state) => swipePage(state, const SessionScreen())),
+    GoRoute(path: '/konto', pageBuilder: (context, state) => swipePage(state, const AccountScreen())),
+    GoRoute(path: '/dostep', pageBuilder: (context, state) => swipePage(state, const AccessScreen())),
+    GoRoute(path: '/mowa', pageBuilder: (context, state) => swipePage(state, const SpeechCheckScreen())),
+    GoRoute(path: '/ikona', pageBuilder: (context, state) => swipePage(state, const AppIconScreen())),
     GoRoute(
       path: '/oferta',
-      builder: (context, state) => PaywallScreen(itemId: state.uri.queryParameters['zabawa']),
+      pageBuilder: (context, state) =>
+          swipePage(state, PaywallScreen(itemId: state.uri.queryParameters['zabawa'])),
     ),
     GoRoute(
       path: '/pakiet/:id',
-      builder: (context, state) => PackScreen(packId: state.pathParameters['id']!),
+      pageBuilder: (context, state) => swipePage(state, PackScreen(packId: state.pathParameters['id']!)),
     ),
     GoRoute(
       path: '/dyplom/:id',
-      builder: (context, state) => DiplomaScreen(packId: state.pathParameters['id']!),
+      pageBuilder: (context, state) => swipePage(state, DiplomaScreen(packId: state.pathParameters['id']!)),
     ),
     GoRoute(
       path: '/zabawa/:id',
-      builder: (context, state) => DetailsScreen(itemId: state.pathParameters['id']!),
+      pageBuilder: (context, state) => swipePage(state, DetailsScreen(itemId: state.pathParameters['id']!)),
     ),
     // The player slides up like a sheet and is pulled down to minimise it.
     GoRoute(
@@ -141,7 +156,10 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
         ),
       ),
     ),
-    GoRoute(path: '/odtwarzacz/bez-patrzenia', builder: (context, state) => const NoLookScreen()),
+    GoRoute(
+      path: '/odtwarzacz/bez-patrzenia',
+      pageBuilder: (context, state) => swipePage(state, const NoLookScreen()),
+    ),
   ],
 );
 
@@ -170,50 +188,11 @@ class _ParentShell extends ConsumerWidget {
   }
 }
 
-/// Screens a child uses: no swipe-back there (games are left by holding a button).
-bool noSwipeBack(String path) =>
-    path.startsWith('/dziecko') || path == '/gra' || path == '/powitanie' || path.startsWith('/odtwarzacz');
-
-/// A swipe from the left edge goes back, on every screen and platform, also where the
-/// system gesture does not reach (iOS only listens to the first 20 points).
-class EdgeSwipeBack extends StatefulWidget {
-  const EdgeSwipeBack({super.key, required this.router, required this.child});
-
-  final GoRouter router;
-  final Widget child;
-
-  @override
-  State<EdgeSwipeBack> createState() => _EdgeSwipeBackState();
-}
-
-class _EdgeSwipeBackState extends State<EdgeSwipeBack> {
-  double _dx = 0;
-
-  void _back() {
-    final router = widget.router;
-    final path = router.routerDelegate.currentConfiguration.uri.path;
-    if (noSwipeBack(path) || !router.canPop()) return;
-    router.pop();
-  }
-
-  @override
-  Widget build(BuildContext context) => Stack(
-    children: [
-      widget.child,
-      Positioned(
-        left: 0,
-        top: 0,
-        bottom: 0,
-        width: 24,
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onHorizontalDragStart: (_) => _dx = 0,
-          onHorizontalDragUpdate: (d) => _dx += d.delta.dx,
-          onHorizontalDragEnd: (d) {
-            if (_dx > 70 || (d.primaryVelocity ?? 0) > 700) _back();
-          },
-        ),
-      ),
-    ],
-  );
-}
+/// Pages swipe back from the left edge, following the finger with the previous page
+/// underneath (iOS-style, on both platforms). Game screens opt out with PopScope.
+Page<void> swipePage(GoRouterState state, Widget child) => SwipeablePage<void>(
+  key: state.pageKey,
+  canOnlySwipeFromEdge: true,
+  backGestureDetectionWidth: 32,
+  builder: (_) => child,
+);

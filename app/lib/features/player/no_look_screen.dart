@@ -23,65 +23,69 @@ class NoLookScreen extends ConsumerWidget {
     final handler = ref.watch(audioHandlerProvider);
     final playing = ref.watch(playbackStateProvider).value?.playing ?? false;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Scaffold(
-        backgroundColor: _background,
-        body: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: AkSpace.xl),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AkSpace.l),
-                child: Text(
-                  l10n.noLookHint,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: _foreground),
+    // Left only by holding the exit button: no swipe or back gesture ends it by accident.
+    return PopScope(
+      canPop: false,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Scaffold(
+          backgroundColor: _background,
+          body: SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: AkSpace.xl),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AkSpace.l),
+                  child: Text(
+                    l10n.noLookHint,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: _foreground),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Semantics(
-                    button: true,
-                    label: playing ? l10n.pause : l10n.play,
-                    excludeSemantics: true,
-                    child: GestureDetector(
-                      onTap: playing ? handler.pause : handler.play,
-                      child: Container(
-                        width: 220,
-                        height: 220,
-                        decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF2A1E17)),
-                        child: Icon(
-                          playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                          size: 120,
-                          color: _foreground,
+                Expanded(
+                  child: Center(
+                    child: Semantics(
+                      button: true,
+                      label: playing ? l10n.pause : l10n.play,
+                      excludeSemantics: true,
+                      child: GestureDetector(
+                        onTap: playing ? handler.pause : handler.play,
+                        child: Container(
+                          width: 220,
+                          height: 220,
+                          decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF2A1E17)),
+                          child: Icon(
+                            playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                            size: 120,
+                            color: _foreground,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Semantics(
-                button: true,
-                label: l10n.noLookExit,
-                onLongPress: () => context.pop(),
-                excludeSemantics: true,
-                child: GestureDetector(
+                Semantics(
+                  button: true,
+                  label: l10n.noLookExit,
                   onLongPress: () => context.pop(),
-                  child: Container(
-                    height: kKidsTouchTarget,
-                    margin: const EdgeInsets.all(AkSpace.l),
-                    padding: const EdgeInsets.symmetric(horizontal: AkSpace.l),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: _foreground.withValues(alpha: 0.4)),
-                      borderRadius: BorderRadius.circular(AkRadius.button),
+                  excludeSemantics: true,
+                  child: GestureDetector(
+                    onLongPress: () => context.pop(),
+                    child: Container(
+                      height: kKidsTouchTarget,
+                      margin: const EdgeInsets.all(AkSpace.l),
+                      padding: const EdgeInsets.symmetric(horizontal: AkSpace.l),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: _foreground.withValues(alpha: 0.4)),
+                        borderRadius: BorderRadius.circular(AkRadius.button),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(l10n.noLookExit, style: const TextStyle(color: _foreground)),
                     ),
-                    alignment: Alignment.center,
-                    child: Text(l10n.noLookExit, style: const TextStyle(color: _foreground)),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

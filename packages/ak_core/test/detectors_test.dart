@@ -36,6 +36,17 @@ SoundDetector run(List<List<double>> parts) {
 }
 
 void main() {
+  test('short game answer is heard but a clap is not counted as speech', () {
+    final speech = SoundDetector(voiceMinDuration: const Duration(milliseconds: 120));
+    speech.add(silence(.3));
+    speech.add(voice(.15));
+    expect(speech.voiceDetected, isTrue);
+    final transient = SoundDetector(voiceMinDuration: const Duration(milliseconds: 120));
+    transient.add(silence(.3));
+    transient.add(clap());
+    transient.add(silence(.3));
+    expect(transient.voiceDetected, isFalse);
+  });
   test('counts separate claps in a quiet room', () {
     final d = run([silence(0.5), clap(), silence(0.4), clap(), silence(0.4), clap(), silence(0.5)]);
     expect(d.claps, 3);

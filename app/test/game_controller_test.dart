@@ -286,13 +286,13 @@ void main() {
         answer: (vocabulary) => switch (vocabulary.first) {
           'las' => 'rzeka',
           'kamienie' => 'łódką',
-          'trzy' => 'trzy',
+          'trzy' => '3',
           _ => null,
         },
       );
       final (mic, c) = await story(speech);
       expect(c.read(gameControllerProvider).phase, GamePhase.finished);
-      expect(speech.heard, ['rzeka', 'łódką', 'trzy']);
+      expect(speech.heard, ['rzeka', 'łódką', '3']);
       expect(
         played(),
         containsAllInOrder(['cross', 'river', 'frog', 'boat', 'ducks', 'count_praise', 'ending_moon']),
@@ -300,6 +300,37 @@ void main() {
       expect(played(), isNot(contains('forest')));
       expect(mic.starts, greaterThan(1), reason: 'claps listen again after each spoken answer');
       expect(mic.open, isFalse);
+    });
+
+    test('spoken repeat replays the prompt without advancing the story', () async {
+      var asked = false;
+      final speech = FakeSpeech(
+        answer: (vocabulary) {
+          if (vocabulary.first == 'las' && !asked) {
+            asked = true;
+            return 'czy możesz powtórzyć';
+          }
+          return vocabulary.first;
+        },
+      );
+      final (_, c) = await story(speech);
+      expect(c.read(gameControllerProvider).phase, GamePhase.finished);
+      expect(played().where((p) => p == 'cross').length, 2);
+      expect(played().where((p) => p.startsWith('ending_')).length, 1);
+    });
+
+    test('"tak" and "plum" are heard by the recogniser, not only by loudness', () async {
+      final speech = FakeSpeech(
+        anyWord: 'plum',
+        answer: (vocabulary) => switch (vocabulary.first) {
+          'las' => 'rzeka',
+          'kamienie' => 'łódka',
+          _ => null,
+        },
+      );
+      await story(speech);
+      expect(played(), containsAllInOrder(['intro', 'go', 'cross', 'river', 'boat', 'row_ok']));
+      expect(played(), isNot(contains('row_help')));
     });
 
     test('a phone that cannot recognise words asks for claps instead', () async {

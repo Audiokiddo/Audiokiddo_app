@@ -7,6 +7,7 @@ import '../../core/storage/database.dart';
 import '../../core/storage/storage_providers.dart';
 import '../../core/widgets/kiddo.dart';
 import '../catalog/catalog_providers.dart';
+import '../discovery/discovery_model.dart';
 import 'lord_lines.dart';
 
 /// Typewriter, as on the case files of the Home Affairs Office.
@@ -172,6 +173,7 @@ class _ParentAsideState extends ConsumerState<ParentAside> {
 
   @override
   Widget build(BuildContext context) {
+    if (ref.watch(discoveryProvider).value?.quiet ?? false) return const SizedBox.shrink();
     final fg = widget.dark ? const Color(0xFFE9D9CB) : const Color(0xFF16130F);
     return Semantics(
       label: 'Dla rodzica. $_line',

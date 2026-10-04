@@ -19,7 +19,20 @@ String normalizeSpoken(String text) {
     final letter = (code >= 0x61 && code <= 0x7a) || (code >= 0x30 && code <= 0x39);
     out.write(letter ? plain : ' ');
   }
-  return out.toString().trim().replaceAll(RegExp(r'\s+'), ' ');
+  const numbers = {
+    '0': 'zero',
+    '1': 'jeden',
+    '2': 'dwa',
+    '3': 'trzy',
+    '4': 'cztery',
+    '5': 'piec',
+    '6': 'szesc',
+    '7': 'siedem',
+    '8': 'osiem',
+    '9': 'dziewiec',
+    '10': 'dziesiec',
+  };
+  return out.toString().trim().split(RegExp(r'\s+')).map((w) => numbers[w] ?? w).join(' ');
 }
 
 int _distance(String a, String b) {

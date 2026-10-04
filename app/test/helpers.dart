@@ -96,10 +96,13 @@ List<Override> testOverrides(
 /// Word recognition without a recogniser: [answer] picks what the child "says" to each
 /// question (null: silence); [available] false is a phone without offline Polish.
 class FakeSpeech implements SpeechInput {
-  FakeSpeech({this.available = true, this.answer});
+  FakeSpeech({this.available = true, this.answer, this.anyWord});
 
   bool available;
   String? Function(List<String> vocabulary)? answer;
+
+  /// What the child says when any word is an answer.
+  String? anyWord;
 
   @override
   bool get supported => true;
@@ -121,7 +124,8 @@ class FakeSpeech implements SpeechInput {
     if (!available) throw const SpeechUnavailable('test');
     listening = true;
     await Future<void>.delayed(const Duration(milliseconds: 20));
-    final said = answer?.call(vocabulary);
+    // Prompts that take any word ("Powiedz: tak!") get silence unless a test says otherwise.
+    final said = vocabulary.isEmpty ? anyWord : answer?.call(vocabulary);
     if (said != null && listening) {
       heard.add(said);
       // As a real recogniser would: a sentence around the word, alternatives after it.

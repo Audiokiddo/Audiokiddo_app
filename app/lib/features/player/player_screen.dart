@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'package:ak_core/ak_core.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +16,9 @@ import '../downloads/download_button.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../discovery/queue_controller.dart';
+import '../home/quick_pick.dart';
 import 'audio_handler.dart';
+import 'playback_controller.dart';
 import 'player_providers.dart';
 
 class PlayerScreen extends StatelessWidget {
@@ -62,7 +67,7 @@ class _Player extends ConsumerWidget {
         // Pulling the player down past the top minimises it, as in other music apps.
         child: PullDownToClose(
           child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            physics: PullDownToClose.physics,
             padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
             children: [
               if (media == null) ...[
@@ -76,6 +81,8 @@ class _Player extends ConsumerWidget {
                   child: const Text('Otwórz bibliotekę'),
                 ),
               ] else ...[
+                if (item != null && state?.processingState == AudioProcessingState.completed)
+                  _UpNext(after: item),
                 item == null
                     ? Center(
                         child: ConstrainedBox(
@@ -202,6 +209,15 @@ class _Player extends ConsumerWidget {
                   icon: const Icon(Icons.visibility_off_outlined, size: 18),
                   label: const Text('Tryb bez patrzenia'),
                 ),
+                if (item != null) ...[
+                  const SizedBox(height: 16),
+                  SimilarPlays(
+                    item: item,
+                    title: state?.processingState == AudioProcessingState.completed
+                        ? 'Przygoda skończona. Co dalej?'
+                        : 'Wybierz kolejną zabawę',
+                  ),
+                ],
                 if (state?.processingState == AudioProcessingState.error)
                   const Text('Nie udało się odtworzyć nagrania. Sprawdź połączenie i spróbuj ponownie.'),
               ],
@@ -440,8 +456,7 @@ class _SeekBarState extends ConsumerState<SeekBar> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(formatClock(at)),
-            if (buffering)
-              const SizedBox.square(dimension: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+            if (buffering) const Text('Wczytuję…', style: TextStyle(fontSize: 12)),
             Text(
               '-${formatClock(Duration(milliseconds: (widget.duration - at).inMilliseconds.clamp(0, 1 << 40)))}',
             ),
@@ -452,28 +467,146 @@ class _SeekBarState extends ConsumerState<SeekBar> {
   }
 }
 
-/// Closes the screen when its list is pulled down past the top (once per gesture).
+/// Pulling the list down past its top drags the whole screen with the finger (1:1, rounded
+/// like a sheet); let go far enough or fast enough and it closes, otherwise it springs back.
+/// The list must use clamping physics so the pull arrives as overscroll.
 class PullDownToClose extends StatefulWidget {
   const PullDownToClose({super.key, required this.child});
 
   final Widget child;
 
+  static const physics = AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics());
+
   @override
   State<PullDownToClose> createState() => _PullDownToCloseState();
 }
 
-class _PullDownToCloseState extends State<PullDownToClose> {
+class _PullDownToCloseState extends State<PullDownToClose> with SingleTickerProviderStateMixin {
+  double _pull = 0;
+  double _from = 0;
   bool _closing = false;
+  late final AnimationController _settle = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 280),
+  )..addListener(() => setState(() => _pull = _from * (1 - Curves.easeOutCubic.transform(_settle.value))));
 
   @override
-  Widget build(BuildContext context) => NotificationListener<ScrollUpdateNotification>(
-    onNotification: (n) {
-      if (!_closing && n.dragDetails != null && n.metrics.pixels < -90 && context.canPop()) {
-        _closing = true;
-        context.pop();
-      }
-      return false;
-    },
-    child: widget.child,
-  );
+  void dispose() {
+    _settle.dispose();
+    super.dispose();
+  }
+
+  void _release(double velocity) {
+    if (_pull <= 0 || _closing) return;
+    if ((_pull > 120 || (velocity > 700 && _pull > 24)) && context.canPop()) {
+      _closing = true;
+      context.pop();
+      return;
+    }
+    _from = _pull;
+    _settle.forward(from: 0);
+  }
+
+  bool _onScroll(ScrollNotification n) {
+    if (n.depth != 0 || _closing) return false;
+    switch (n) {
+      case OverscrollNotification(:final overscroll, dragDetails: _?) when overscroll < 0:
+        _settle.stop();
+        setState(() => _pull += -overscroll);
+      case ScrollUpdateNotification(:final scrollDelta?, dragDetails: _?) when _pull > 0 && scrollDelta > 0:
+        setState(() => _pull = math.max(0, _pull - scrollDelta));
+      case ScrollEndNotification(:final dragDetails):
+        _release(dragDetails?.primaryVelocity ?? 0);
+      default:
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final still = MediaQuery.disableAnimationsOf(context);
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onScroll,
+      child: Transform.translate(
+        offset: Offset(0, still ? 0 : _pull),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(math.min(_pull / 3, 28))),
+          child: widget.child,
+        ),
+      ),
+    );
+  }
+}
+
+/// When a play ends, the next one is one tap away (the most similar play the family can
+/// start), so the parent does not have to search with a child waiting.
+class _UpNext extends ConsumerWidget {
+  const _UpNext({required this.after});
+
+  final ContentItem after;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(catalogProvider).value;
+    if (catalog == null) return const SizedBox.shrink();
+    final next = similarPlays(catalog, after).where((i) => ref.watch(canPlayProvider(i))).firstOrNull;
+    if (next == null) return const SizedBox.shrink();
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(22)),
+        child: Row(
+          children: [
+            SizedBox.square(
+              dimension: 64,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: ItemArt(item: next),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Brawo! Co dalej?',
+                    style: text.labelLarge?.copyWith(
+                      color: const Color(0xFF211C35),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Text(
+                    next.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: text.titleMedium?.copyWith(
+                      color: const Color(0xFF211C35),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    '${(next.durationSec / 60).ceil()} min',
+                    style: text.bodySmall?.copyWith(color: const Color(0xFF211C35)),
+                  ),
+                ],
+              ),
+            ),
+            IconButton.filled(
+              style: IconButton.styleFrom(backgroundColor: referencePurple, foregroundColor: Colors.white),
+              tooltip: 'Zaczynamy: ${next.title}',
+              iconSize: 30,
+              // Recordings start right here in the player; a game opens its own screen.
+              onPressed: () => next.kind == ContentKind.interactiveGame
+                  ? startItem(context, next)
+                  : ref.read(playbackControllerProvider).start(next, album: 'AudioKiddo'),
+              icon: const Icon(Icons.play_arrow_rounded),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

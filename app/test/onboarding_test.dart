@@ -45,6 +45,8 @@ void main() {
     await tester.ensureVisible(find.text('Zaczynamy'));
     await tester.tap(find.text('Zaczynamy'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('Nie teraz'));
+    await tester.pumpAndSettle();
     expect(find.text('Cześć! Tu AudioKiddo.'), findsOneWidget);
     await tester.tap(find.text('Dalej'));
     await tester.pumpAndSettle();

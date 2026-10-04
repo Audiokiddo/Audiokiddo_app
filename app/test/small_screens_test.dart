@@ -89,6 +89,8 @@ void main() {
       await tester.ensureVisible(find.text('Zaczynamy'));
       await tester.tap(find.text('Zaczynamy'));
       await tester.pumpAndSettle();
+      await tester.tap(find.text('Nie teraz'));
+      await tester.pumpAndSettle();
       for (var page = 0; page < 3; page++) {
         expect(tester.takeException(), isNull, reason: 'welcome page ${page + 1} on $name');
         await tester.drag(find.byType(PageView), const Offset(-600, 0));
