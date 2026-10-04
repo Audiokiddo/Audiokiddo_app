@@ -6,3 +6,4 @@ key.properties
 dev_content/
 supabase/.temp/
 supabase/.branches/
+packages/ak_core/build/
