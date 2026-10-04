@@ -2,7 +2,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
-/* Layout: one reading column with wide tables; the brand's sun yellow marks decisions, teal marks numbers. */
+/* Layout: one reading column; a level ladder and a dated plan as the spine; sun yellow marks decisions, teal marks numbers. */
 :root {
   --bg: #FBFAF7;
   --surface: #FFFFFF;
@@ -34,14 +34,14 @@
   color-scheme: dark;
 }
 body { background: var(--bg); color: var(--ink); font: 17px/1.55 var(--body); }
-.wrap { max-width: 880px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; }
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; }
 h1, h2, h3 { font-family: var(--display); line-height: 1.2; text-wrap: balance; color: var(--plum); }
 h1 { font-size: clamp(28px, 5vw, 42px); font-weight: 800; margin: 0 0 12px; }
 h2 { font-size: 24px; font-weight: 800; margin: 52px 0 12px; }
-h3 { font-size: 18px; font-weight: 600; margin: 26px 0 6px; }
+h3 { font-size: 18px; font-weight: 600; margin: 24px 0 6px; }
 p, li { max-width: 70ch; }
 .lead { font-size: 19px; color: var(--muted); margin: 0; }
-.meta { font-size: 14px; color: var(--muted); margin-top: 16px; }
+.meta { font-size: 14px; color: var(--muted); margin-top: 14px; }
 .eyebrow { font: 600 12px/1 var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--teal); }
 .thesis { background: var(--sun-soft); border: 1px solid var(--sun); padding: 18px 20px; border-radius: 14px; margin: 28px 0; }
 .thesis p { margin: 0 0 8px; font-size: 18px; }
@@ -50,23 +50,24 @@ p, li { max-width: 70ch; }
 .alert p { margin: 0; }
 .alert strong { color: var(--warn); }
 .table { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
-table { border-collapse: collapse; width: 100%; min-width: 600px; font-size: 15px; }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 15px; }
 th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { font: 600 12px/1.3 var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 tr:last-child td { border-bottom: 0; }
 td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 tr.total td { font-weight: 700; background: var(--teal-soft); }
-tr.bad td.n:last-child { color: var(--warn); font-weight: 700; }
-tr.good td.n:last-child { color: var(--teal); font-weight: 700; }
-.pill { display: inline-block; font: 600 11px/1 var(--display); letter-spacing: .05em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; white-space: nowrap; }
-.pill.gpt { background: var(--teal-soft); color: var(--teal); }
-.pill.cl { background: var(--sun-soft); color: var(--ink); }
-.pill.new { background: var(--warn-soft); color: var(--warn); }
-.steps { display: grid; gap: 14px; margin: 16px 0; padding: 0; list-style: none; }
-.steps li { display: grid; grid-template-columns: 128px 1fr; gap: 14px; max-width: none; }
-.steps .when { font: 600 13px/1.35 var(--display); color: var(--teal); padding-top: 3px; }
-.steps .what { min-width: 0; }
-.steps .what strong { display: block; }
+.lvl { font: 800 13px/1.3 var(--display); color: var(--plum); white-space: nowrap; }
+.prob { display: inline-block; min-width: 46px; text-align: center; font: 700 13px/1.3 var(--display); padding: 6px 10px; border-radius: 999px; background: var(--teal-soft); color: var(--teal); font-variant-numeric: tabular-nums; }
+.prob.mid { background: var(--sun-soft); color: var(--ink); }
+.prob.low { background: var(--warn-soft); color: var(--warn); }
+.who { font: 600 12px/1.3 var(--display); padding: 6px 10px; border-radius: 999px; background: var(--sun-soft); color: var(--ink); white-space: nowrap; }
+.quarter { margin-top: 28px; }
+.quarter h3 { margin: 0 0 4px; }
+.quarter .goal { color: var(--muted); font-size: 15px; margin: 0 0 8px; }
+.tasks { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.tasks li { display: grid; grid-template-columns: 112px 1fr auto; gap: 12px; align-items: baseline; max-width: none; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.tasks .date { font: 600 13px/1.3 var(--display); color: var(--teal); font-variant-numeric: tabular-nums; }
+.tasks .what { min-width: 0; }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
 .card h3 { margin-top: 0; }
@@ -76,214 +77,153 @@ ol.q li::marker { font-family: var(--display); color: var(--teal); font-weight: 
 .q em { color: var(--muted); font-style: normal; display: block; font-size: 15px; }
 a { color: var(--teal); }
 a:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
-@media (max-width: 560px) {
+@media (max-width: 600px) {
   body { font-size: 16px; }
-  .steps li { grid-template-columns: 1fr; gap: 2px; }
+  .tasks li { grid-template-columns: 1fr; gap: 4px; }
 }
 </style>
 
 <div class="wrap">
-  <span class="eyebrow">AudioKiddo · strategia finalna · 4 października 2026</span>
-  <h1>Pierwszy milion zysku: plan finalny</h1>
-  <p class="lead">Połączenie dwóch planów: dyscypliny testu z wersji ChatGPT i tempa z wersji Claude, z liczbami przeliczonymi na Waszych prawdziwych cenach. Dla Dawida i Neli.</p>
-  <p class="meta">Ceny ze sklepu: Słowa i Wiedza oraz Wyobraźnia po 49,99 zł, Detektyw 69,99 zł, zestaw 2 pakietów 89,99 zł, zestaw 3 pakietów 159,99 zł; abonament w aplikacji 24,99 zł/mies. lub 149,99 zł/rok. Wszystkie liczby to scenariusze, nie prognoza.</p>
+  <span class="eyebrow">AudioKiddo · strategia · 5 października 2026</span>
+  <h1>Droga do miliona i dalej</h1>
+  <p class="lead">Jeden plan dla Neli i Dawida: Wasze decyzje właścicielskie, liczby na prawdziwych cenach i daty zadań do końca 2028 roku.</p>
+  <p class="meta">Prawdopodobieństwa to nasz szacunek, nie prognoza: oparty na tym, jak zwykle rozwijają się małe aplikacje subskrypcyjne dla rodzin. Aktualizujemy je co kwartał, kiedy pojawią się Wasze prawdziwe dane.</p>
 
   <div class="thesis">
-    <p><strong>W jednym zdaniu:</strong> przez 10 dni naprawiamy i mierzymy zakup, potem sprzedajemy <strong>zestaw 3 pakietów i prezent</strong> rodzicom i dziadkom <strong>przez audiokiddo.pl</strong>, wykorzystując sezon Mikołajki–Święta. Budżet zwiększamy tylko z dodatniej marży, a aplikacja pracuje na drugi zakup.</p>
-    <p>Pierwsze 5 000 zł nie ma dać miliona. Ma odpowiedzieć na jedno pytanie: czy potrafimy pozyskać płacącego rodzica taniej, niż zarabiamy na jego zamówieniu.</p>
+    <p><strong>Kierunek:</strong> AudioKiddo to subskrypcja z biblioteką interaktywnych audiozabaw dla dzieci 3–9 lat. Mówimy do mamy dziecka 3–6 lat, która musi na chwilę zająć dziecko. Rośniemy przez własny content na Instagramie i TikToku, a reklama wzmacnia to, co już działa.</p>
+    <p><strong>Pierwszy kamień milowy:</strong> 50 000 zł zysku miesięcznie. <strong>Pierwszy milion</strong> to suma zysku po drodze. Zysk w pierwszych latach głównie reinwestujemy.</p>
   </div>
 
-  <h2>Porównanie dwóch planów</h2>
-  <p>Oba plany zgadzają się w najważniejszym: strona sprzedaje, aplikacja zatrzymuje klienta, na start jeden kanał płatny (Meta), żadnych fikcyjnych opinii, skalowanie tylko z zysku. Różnią się akcentami.</p>
+  <h2>Drabina poziomów</h2>
+  <p>Każdy poziom ma jasny miernik. Przechodzimy wyżej, kiedy go osiągniemy, nie wtedy, kiedy minie data. Zysk to wynik po reklamie i kosztach działalności, przed podatkiem dochodowym.</p>
   <div class="table">
     <table>
-      <thead><tr><th>Temat</th><th>ChatGPT</th><th>Claude</th><th>W wersji finalnej</th></tr></thead>
+      <thead><tr><th>Poziom</th><th>Termin</th><th>Miernik</th><th class="n">Zysk / mies.</th><th class="n">Szansa</th></tr></thead>
       <tbody>
-        <tr><td>Start</td><td>Najpierw diagnoza poprzednich 2 000 zł i test z 5–8 rodzicami</td><td>Szybki start pod sezon</td><td><span class="pill gpt">ChatGPT</span> diagnoza, ale skrócona do 10 dni, żeby zdążyć przed listopadem</td></tr>
-        <tr><td>Sezon prezentów</td><td>Brak</td><td>Główna dźwignia Q4</td><td><span class="pill cl">Claude</span> produkt „Prezent AudioKiddo” od 1 listopada</td></tr>
-        <tr><td>Marża</td><td>Założone 120 zł netto na klienta</td><td>130 zł netto rocznie</td><td><span class="pill new">Nowe</span> przeliczone z VAT: z pojedynczego pakietu zostaje około 38 zł, z zestawu 3 pakietów około 125 zł</td></tr>
-        <tr><td>Kategoria Kids</td><td>Brak</td><td>Pomiar tylko na stronie</td><td><span class="pill cl">Claude</span> każda reklama prowadzi na stronę, nie do App Store</td></tr>
-        <tr><td>Podział 5 000 zł</td><td>1 500 + 2 500 warunkowo + 1 000 rezerwy</td><td>Cztery transze do końca listopada</td><td><span class="pill gpt">ChatGPT</span> struktura z rezerwą, <span class="pill cl">Claude</span> terminy pod sezon</td></tr>
-        <tr><td>Zasady decyzji i płynność</td><td>Bardzo dobre: CAC, 20–30 zamówień przed skalą, 60/40, zysk ≠ gotówka</td><td>Skrótowo</td><td><span class="pill gpt">ChatGPT</span> w całości</td></tr>
-        <tr><td>Termin miliona</td><td>Nie podaje, bo brak danych</td><td>Okolice Świąt 2027 w scenariuszu roboczym</td><td>Dwa scenariusze z jasnym warunkiem: data zależy od zmierzonego CAC</td></tr>
-        <tr><td>Kolejna zabawa po zakończeniu</td><td>Bez automatycznego odtwarzania</td><td>Cykl z odliczaniem 5 s</td><td><span class="pill new">Pogodzone</span> auto-start tylko w cyklu włączonym przez rodzica, z 5 s na zatrzymanie</td></tr>
-        <tr><td>B2B</td><td>Przedszkola po walidacji</td><td>Przedszkola, logopedzi, firmy na Mikołaja</td><td>Firmy na Mikołaja już teraz (krótki cykl decyzji), przedszkola od stycznia</td></tr>
-        <tr><td>Social media i kreacje</td><td>Kalendarz tygodnia i 3 kreacje</td><td>4 kreacje, w tym prezent i auto</td><td>Kalendarz ChatGPT plus kreacje prezent i auto</td></tr>
+        <tr><td class="lvl">0 · Fundament</td><td>31.10.2026</td><td>Zakup na stronie i w aplikacji działa, pomiar zgodny z zamówieniami, 3 filmy tygodniowo</td><td class="n">0 zł</td><td class="n"><span class="prob">90%</span></td></tr>
+        <tr><td class="lvl">1 · Pierwsze rodziny</td><td>31.12.2026</td><td>150 płacących rodzin, w tym 50 rocznych dostępów; znany koszt pozyskania (CAC)</td><td class="n">0–10 tys. zł</td><td class="n"><span class="prob">60%</span></td></tr>
+        <tr><td class="lvl">2 · Rentowny kanał</td><td>31.03.2027</td><td>CAC rocznego dostępu ≤ 60 zł przez 2 miesiące, 300 nowych rodzin miesięcznie</td><td class="n">5–15 tys. zł</td><td class="n"><span class="prob mid">40%</span></td></tr>
+        <tr><td class="lvl">3 · Tysiąc rodzin</td><td>30.06.2027</td><td>1 000 aktywnych subskrypcji, 15 tys. obserwujących, pierwsze polecenia</td><td class="n">10–20 tys. zł</td><td class="n"><span class="prob mid">30%</span></td></tr>
+        <tr><td class="lvl">4 · Zespół</td><td>31.12.2027</td><td>3 000 subskrypcji, osoba operacyjna na pół etatu, 2 nowe zabawy miesięcznie</td><td class="n">20–30 tys. zł</td><td class="n"><span class="prob low">22%</span></td></tr>
+        <tr><td class="lvl">5 · Kamień milowy</td><td>30.09.2028</td><td>7 000 aktywnych subskrypcji plus pakiety i pierwsze B2B</td><td class="n">≈ 50 tys. zł</td><td class="n"><span class="prob low">15%</span></td></tr>
+        <tr class="total"><td class="lvl">Milion</td><td>koniec 2028</td><td>Suma zysku od startu ≥ 1 mln zł</td><td class="n"></td><td class="n"><span class="prob low">12–15%</span></td></tr>
       </tbody>
     </table>
   </div>
+  <p>Szansa każdego poziomu liczona jest od dziś. Gdy poziom się uda, szanse kolejnych mniej więcej się podwajają. Na przykład po zdobyciu rentownego kanału szansa na 50 000 zł miesięcznie rośnie z około 15% do około 35%. Najczęstszy powód porażki w tej branży to zbyt drogi klient (CAC) przy zbyt krótkim abonamencie. Dlatego poziom 2 jest najważniejszy.</p>
 
-  <h2>Najważniejsze odkrycie: co reklamować</h2>
-  <p>Przeliczenie marży z pierwszego zamówienia: cena brutto minus 23% VAT, minus około 2% dla operatora płatności, minus 2 zł innych kosztów zmiennych. Wychodzi maksymalny CAC, przy którym pierwsze zamówienie jeszcze się zwraca.</p>
+  <h3>Skąd 7 000 subskrypcji na 50 000 zł</h3>
   <div class="table">
     <table>
-      <thead><tr><th>Produkt</th><th class="n">Cena brutto</th><th class="n">Netto po VAT</th><th class="n">Maks. CAC na 1. zamówieniu</th></tr></thead>
+      <thead><tr><th>Aktywne subskrypcje</th><th class="n">Przychód netto / mies.</th><th class="n">Reklama na odejścia</th><th class="n">Zespół i koszty</th><th class="n">Zysk / mies.</th></tr></thead>
       <tbody>
-        <tr class="bad"><td>Pojedynczy pakiet (Słowa i Wiedza, Wyobraźnia)</td><td class="n">49,99 zł</td><td class="n">40,64 zł</td><td class="n">≈ 37 zł</td></tr>
-        <tr class="bad"><td>Detektyw</td><td class="n">69,99 zł</td><td class="n">56,90 zł</td><td class="n">≈ 53 zł</td></tr>
-        <tr><td>Zestaw 2 pakietów</td><td class="n">89,99 zł</td><td class="n">73,16 zł</td><td class="n">≈ 69 zł</td></tr>
-        <tr class="good"><td>Zestaw 3 pakietów</td><td class="n">159,99 zł</td><td class="n">130,07 zł</td><td class="n">≈ 125 zł</td></tr>
-        <tr class="good"><td>Zestaw 3 pakietów w Mikołajki</td><td class="n">129,99 zł</td><td class="n">105,68 zł</td><td class="n">≈ 101 zł</td></tr>
+        <tr><td>1 000</td><td class="n">≈ 12 800 zł</td><td class="n">≈ 2 100 zł</td><td class="n">≈ 7 000 zł</td><td class="n">≈ 3 700 zł + pakiety</td></tr>
+        <tr><td>3 000</td><td class="n">≈ 38 400 zł</td><td class="n">≈ 6 300 zł</td><td class="n">≈ 15 000 zł</td><td class="n">≈ 17 000 zł + pakiety</td></tr>
+        <tr><td>7 000</td><td class="n">≈ 89 600 zł</td><td class="n">≈ 14 700 zł</td><td class="n">≈ 28 000 zł</td><td class="n">≈ 47 000 zł + pakiety</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="alert">
-    <p><strong>Wniosek:</strong> reklama pojedynczego pakietu przy typowym CAC 40–60 zł traci pieniądze na pierwszym zamówieniu. Reklamujemy zestaw 3 pakietów (i prezent w tej samej cenie), a pojedynczy pakiet zostaje tańszą opcją na stronie dla niezdecydowanych. To mogła być jedna z przyczyn, dla których poprzednie 2 000 zł nie zadziałało.</p>
-  </div>
-  <p>Jeśli działalność <strong>nie jest płatnikiem VAT</strong> (zwolnienie do 200 000 zł sprzedaży rocznie), zostaje o około 23% więcej. Przy drodze do miliona próg 200 000 zł zostanie jednak przekroczony w pierwszym roku, więc model liczymy z VAT.</p>
+  <p>Założenia: 60% rodzin na planie rocznym (149,99 zł, czyli 10,16 zł netto miesięcznie), 40% na miesięcznym (24,99 zł, czyli 20,32 zł netto). Około 10% przychodu traci się na prowizje sklepów, bo część rodzin płaci w aplikacji. Co miesiąc odchodzi 3,5% rodzin i zastępujemy je przy CAC 60 zł. Pakiety, prezenty i B2B to nadwyżka ponad te liczby.</p>
 
-  <h2>Ile klientów na milion</h2>
-  <p>Wzór z planu ChatGPT: klienci = (1 000 000 + 12 000 kosztów stałych rocznie) / (wartość netto klienta − CAC − 12 zł kosztów zmiennych). Wartość klienta w ciągu roku obejmuje pierwsze zamówienie i dokupienia. Liczymy ją dopiero, gdy dokupienia się potwierdzą.</p>
-  <div class="table">
-    <table>
-      <thead><tr><th>Scenariusz</th><th class="n">Wartość klienta</th><th class="n">CAC</th><th class="n">Zostaje</th><th class="n">Klientów</th><th class="n">Reklama łącznie</th></tr></thead>
-      <tbody>
-        <tr><td>Sezon, mocna kreacja</td><td class="n">130 zł</td><td class="n">30 zł</td><td class="n">88 zł</td><td class="n">11 500</td><td class="n">345 000 zł</td></tr>
-        <tr><td>Roboczy</td><td class="n">130 zł</td><td class="n">40 zł</td><td class="n">78 zł</td><td class="n">12 975</td><td class="n">519 000 zł</td></tr>
-        <tr><td>Ostrożny</td><td class="n">110 zł</td><td class="n">40 zł</td><td class="n">58 zł</td><td class="n">17 449</td><td class="n">698 000 zł</td></tr>
-        <tr class="bad"><td>Trudny</td><td class="n">110 zł</td><td class="n">60 zł</td><td class="n">38 zł</td><td class="n">26 632</td><td class="n">1 598 000 zł</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p>Wynik przed podatkiem dochodowym. W trudnym scenariuszu sama płatna reklama nie wystarczy: trzeba obniżyć CAC (polecenia, twórcy, organiczne wideo, B2B) albo podnieść wartość klienta (abonament, nowe pakiety).</p>
-
-  <h3>Kiedy milion</h3>
-  <p>W scenariuszu roboczym, przy reinwestowaniu do 60% nadwyżki i dwóch sezonach prezentowych, wynik narastająco przekracza milion w okolicy <strong>Świąt 2027</strong>. W ostrożnym scenariuszu to raczej połowa 2028 roku. Datę urealniamy w styczniu 2027, po zmierzeniu CAC i dokupień z pierwszego sezonu.</p>
-  <div class="table">
-    <table>
-      <thead><tr><th>Okres</th><th class="n">Reklama / mies.</th><th class="n">Nowi klienci / mies.</th><th class="n">Wynik okresu (roboczy)</th></tr></thead>
-      <tbody>
-        <tr><td>Paźdz. 2026: diagnoza i test</td><td class="n">do 1 500 zł</td><td class="n">≈ 35</td><td class="n">≈ 0 zł</td></tr>
-        <tr><td>Listopad–grudzień 2026: sezon</td><td class="n">3 500 → 40 000 zł</td><td class="n">90 → 1 000</td><td class="n">≈ 90 000 zł</td></tr>
-        <tr><td>Styczeń–marzec 2027</td><td class="n">≈ 15 000 zł</td><td class="n">≈ 370</td><td class="n">≈ 75 000 zł</td></tr>
-        <tr><td>Kwiecień–czerwiec 2027 (Dzień Dziecka)</td><td class="n">30 000 → 60 000 zł</td><td class="n">750 → 1 500</td><td class="n">≈ 230 000 zł</td></tr>
-        <tr><td>Lipiec–wrzesień 2027 (wakacje, auto)</td><td class="n">≈ 60 000 zł</td><td class="n">≈ 1 500</td><td class="n">≈ 300 000 zł</td></tr>
-        <tr><td>Październik–grudzień 2027 (drugi sezon)</td><td class="n">80 000 → 100 000 zł</td><td class="n">≈ 2 200</td><td class="n">≈ 450 000 zł</td></tr>
-        <tr class="total"><td>Narastająco do końca 2027</td><td></td><td></td><td class="n">≈ 1,15 mln zł</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h2>Kalendarz do końca roku</h2>
-  <ul class="steps">
-    <li><span class="when">5–8 października</span><span class="what"><strong>Diagnoza</strong>Poprzednie 2 000 zł: kanał, cel kampanii, kliknięcia, wejścia, zamówienia. Karty produktów na Empiku. Zebrać realne prowizje i zwroty.</span></li>
-    <li><span class="when">9–14 października</span><span class="what"><strong>Strona i pomiar</strong>Strona sytuacyjna z próbką bez logowania, główny przycisk: zestaw 3 pakietów. Piksel Meta z Conversions API i GA4 w WooCommerce. Zakup testowy od reklamy do odsłuchu w aplikacji. Test z 5–8 rodzicami: „co kupujesz i jak tego użyjesz?”.</span></li>
-    <li><span class="when">15–31 października</span><span class="what"><strong>Transza 1: 1 500 zł</strong>Meta, jedna kampania sprzedażowa na dorosłych, 4 kreacje: obiad, auto, Szop’en po godzinach, prezent. Limit 100 zł dziennie.</span></li>
-    <li><span class="when">Równolegle</span><span class="what"><strong>Produkt prezentowy</strong>Kod na zestaw lub pakiet plus kartka PDF z Szop’enem do wydruku albo wysłania mailem. System kodów już działa.</span></li>
-    <li><span class="when">1–20 listopada</span><span class="what"><strong>Transza 2: do 2 500 zł, warunkowo</strong>Tylko gdy CAC zestawu jest poniżej około 80 zł. Najlepsze 2 kreacje plus wariant „prezent dla wnuka”. Mail do listy, start programu dla twórców.</span></li>
-    <li><span class="when">21 listopada – 6 grudnia</span><span class="what"><strong>Mikołajki: rezerwa 1 000 zł plus nadwyżka</strong>Zestaw 3 pakietów za 129,99 zł z jasną datą końca promocji. Remarketing do odwiedzających (po zebraniu zgód). Oferta dla firm: kody dla dzieci pracowników.</span></li>
-    <li><span class="when">7–22 grudnia</span><span class="what"><strong>Prezent na ostatnią chwilę</strong>„Kod dotrze w minutę, zdążysz nawet w Wigilię.” Budżet wyłącznie z nadwyżki.</span></li>
-    <li><span class="when">Styczeń 2027</span><span class="what"><strong>Rozliczenie sezonu</strong>CAC, dokupienia, zwroty, rozmowy z kupującymi. Decyzja o abonamencie, przedszkolach i realnej dacie miliona.</span></li>
-  </ul>
-
-  <h2>Pierwsze 5 000 zł</h2>
-  <div class="table">
-    <table>
-      <thead><tr><th>Transza</th><th class="n">Kwota</th><th>Kiedy</th><th>Warunek</th></tr></thead>
-      <tbody>
-        <tr><td>1. Test zestawu</td><td class="n">1 500 zł</td><td>15–31 października</td><td>Zakup testowy działa, pomiar zgodny z zamówieniami w WooCommerce</td></tr>
-        <tr><td>2. Rozwinięcie i prezent</td><td class="n">2 500 zł</td><td>1–20 listopada</td><td>CAC zestawu poniżej około 80 zł; zwroty pod kontrolą</td></tr>
-        <tr><td>3. Rezerwa na Mikołajki</td><td class="n">1 000 zł</td><td>21 listopada – 6 grudnia</td><td>Dodatnia marża po reklamie; nie wydajemy „żeby wykorzystać budżet”</td></tr>
-        <tr class="total"><td>Razem</td><td class="n">5 000 zł</td><td colspan="2">Dalej tylko z nadwyżki: do 60% na reklamy, 40% na bufor i nowe treści</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p>Montaż, lektor, narzędzia i Wasz czas nie są w tej kwocie. Na start materiały nagrywa Nela telefonem.</p>
-
-  <h2>Oferta i strona</h2>
-  <ul>
-    <li>Jedna strona na jeden problem: „Pomysł na zabawę, kiedy Ty potrzebujesz chwili”. Na górze krótki film z prawdziwym użyciem i próbka do odsłuchu bez konta.</li>
-    <li>Pod próbką: wiek, czas, co jest potrzebne, co robi dziecko, cena i jak działa dostęp (strona i aplikacja). Bez obietnicy „20 minut ciszy gwarantowane”.</li>
-    <li>Główny przycisk: zestaw 3 pakietów, z ceną za jedną zabawę (około 6,40 zł). Obok mniejsza opcja: jeden pakiet.</li>
-    <li>Odpowiedzi na obiekcje: czy działa bez internetu, czy potrzebny ekran, co jeśli dziecko nie chce mówić.</li>
-    <li>Strona „Prezent”: kod plus kartka do wydruku, dla dziadków, cioć i chrzestnych.</li>
-    <li>Opinie tylko prawdziwe, za zgodą rodziców. Żadnych liczników „kupiło 500 osób” ani fałszywych odliczań.</li>
-  </ul>
-
-  <h2>Kanały</h2>
+  <h2>Oferta</h2>
   <div class="cards">
-    <div class="card"><h3>Meta Ads (jedyny płatny)</h3><p>Rodzice 25–45 lat, w sezonie także dziadkowie 50–70. Reklamy tylko do dorosłych. Reguła: po wydaniu 2× docelowego CAC bez zakupu przegląd oferty i kreacji. Skalowanie o 20–30% co 3–4 dni po 20–30 zamówieniach.</p></div>
-    <div class="card"><h3>Organiczne wideo</h3><p>Trzy krótkie filmy tygodniowo (Reels, TikTok, Shorts) plus karuzela. Poniedziałek: rozpoznawalna sytuacja. Środa: dowód działania. Piątek: Szop’en, pracownik AudioKiddo. Niedziela: ściąga do zapisania.</p></div>
-    <div class="card"><h3>Twórcy i polecenia</h3><p>10–20 mikrotwórczyń i twórców rodzicielskich z kodem i prowizją 20–25% od sprzedaży. Polecenie po zakupie: znajomy dostaje 15% zniżki, polecający darmową zabawę. Nagroda dopiero po opłaconym zamówieniu.</p></div>
-    <div class="card"><h3>E-mail</h3><p>Opcjonalny zapis „3 darmowe zabawy na weekend”, potem 5 maili w 10 dni. Najtańsza sprzedaż w sezonie prezentów.</p></div>
-    <div class="card"><h3>Firmy na Mikołaja</h3><p>Kody dla dzieci pracowników. Jedno zamówienie na 200 kodów to tyle, co cały miesiąc reklam. Krótki cykl decyzji, dlatego już w listopadzie.</p></div>
-    <div class="card"><h3>Przedszkola i logopedzi</h3><p>Od stycznia: licencja grupowa (roboczo 399–699 zł rocznie) i program partnerski dla logopedów. Nie liczymy w modelu przed pierwszą podpisaną umową.</p></div>
+    <div class="card"><h3>Abonament, główny produkt</h3><p>Jeden plan, pełna biblioteka. 24,99 zł miesięcznie lub 149,99 zł rocznie, czyli 50% taniej. Promujemy plan roczny: poprawia gotówkę i od razu zwraca koszt pozyskania.</p></div>
+    <div class="card"><h3>Rok AudioKiddo na stronie</h3><p>Na audiokiddo.pl sprzedajemy „Rok AudioKiddo” za 149,99 zł jako jednorazowy dostęp na 365 dni (konto lub kod, gotowe w systemie). Bez prowizji sklepów i bez wdrażania płatności cyklicznych. Przed końcem roku przypomnienie mailem.</p></div>
+    <div class="card"><h3>Pakiety na zawsze</h3><p>49,99 zł, Detektyw 69,99 zł, zestawy 89,99 i 159,99 zł. Dla niechętnych abonamentom. Przy trzech pakietach rok abonamentu wychodzi taniej, co pokazujemy w aplikacji.</p></div>
+    <div class="card"><h3>Darmowe zabawy</h3><p>W każdym pakiecie wybieramy tę zabawę, która najszybciej daje efekt „to naprawdę zajęło moje dziecko”, a nie najdłuższą. Sprawdzamy to na 10 rodzinach do 31.01.2027.</p></div>
+  </div>
+  <p>Ceny są takie same na stronie i w aplikacji. Reklamy, content i maile prowadzą na stronę. W aplikacji jest tylko „Masz zakup z audiokiddo.pl albo kod? Odbierz dostęp”, bez linku do zakupu, bo zabraniają tego zasady Apple dla kategorii Kids.</p>
+
+  <div class="alert">
+    <p><strong>Zasada sprzedaży z pierwszego zamówienia:</strong> po VAT, płatności i drobnych kosztach z pojedynczego pakietu za 49,99 zł zostaje około 38 zł, z rocznego dostępu około 117 zł, a z zestawu 3 pakietów około 125 zł. W reklamach pokazujemy więc roczny dostęp i zestaw, nie pojedynczy pakiet.</p>
   </div>
 
-  <h2>Aplikacja: drugi zakup i polecenie</h2>
-  <p>Już zrobione w aplikacji (do sprawdzenia na iPhonie):</p>
-  <ul>
-    <li>Na Starcie osobno „Wasze pakiety” z postępem i „Czeka na odkrycie” z próbką za darmo, ceną za jedną zabawę i zestawem taniej.</li>
-    <li>Biblioteka z pakietami, darmowymi zabawami i skrótami dla rodzica: bez przygotowań, do auta, na dobranoc, bez internetu, do druku, tryb dziecka.</li>
-    <li>Cykl w aucie i w domu z 5-sekundowym odliczaniem przed kolejną zabawą. Rodzic może zatrzymać, puścić od razu albo zakończyć.</li>
-    <li>Szop’en po każdej zabawie: żart albo rada dla rodzica. Można go schować i wyłączyć.</li>
-    <li>Akta sprawy Detektywa: rozwiązywanie w telefonie oraz wysłanie lub wydruk wszystkich akt naraz.</li>
-    <li>Przewodniki z działającymi linkami do filmów i plików.</li>
-  </ul>
-  <p>Następne w kolejności: „Plan B” jednym kliknięciem, polecenie znajomemu w aplikacji i 2 nowe zabawy miesięcznie głosem Neli. Abonament dopiero przy stałym rytmie nowości.</p>
+  <h2>Plan z datami</h2>
+  <p>N to Nela (CEO: marka, content, marketing, produkt). D to Dawid (technologia, aplikacja, strona, automatyzacja).</p>
 
-  <h2>Zasady decyzji i pieniędzy</h2>
-  <ul>
-    <li>Źródłem prawdy są zamówienia i zwroty w sklepie, nie panel reklamowy.</li>
-    <li>CAC = koszt reklamy / nowi płacący klienci. Nowi klienci osobno od dokupień.</li>
-    <li>Na początku liczymy tylko pierwsze zamówienie. Przyszłe dokupienia dopiero, gdy się potwierdzą.</li>
-    <li>Co tydzień: rozliczone wpływy minus podatki, zwroty, prowizje i bufor. Z tego, co zostaje, do 60% na kolejne reklamy.</li>
-    <li>Zysk księgowy, gotówka w firmie i wypłaty właścicieli to trzy różne liczby. Raportujemy je osobno.</li>
-    <li>Jedna tabela tygodniowa: wydatki, nowi klienci, wpływy netto, zwroty, CAC, marża po reklamie, powroty po 7 i 30 dniach.</li>
-  </ul>
-
-  <h2>Pomiar</h2>
-  <p>Zdarzenia na stronie: wyświetlenie oferty, start i ukończenie próbki, rozpoczęcie płatności, opłacone zamówienie z unikalnym ID, zwrot. Aplikacja jest w kategorii Kids, więc nie ma w niej zewnętrznych narzędzi analitycznych ani reklamowych. Powroty do aplikacji liczymy zbiorczo po stronie serwera. Nigdy nie wysyłamy reklamodawcom imion dzieci, nagrań ani wypowiedzi.</p>
-
-  <h2>Jak legalnie ominąć prowizje App Store i Google Play</h2>
-  <p>Prowizja sklepów to 15% (program dla małych firm Apple, Google do miliona dolarów rocznie). Na zestawie 3 pakietów to około 19,50 zł. Da się jej uniknąć bez łamania zasad i bez ryzyka usunięcia aplikacji ze sklepu.</p>
-  <div class="table">
-    <table>
-      <thead><tr><th>Sposób</th><th>Prowizja</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Zakup na audiokiddo.pl, dostęp w aplikacji</strong> po e-mailu, numerze zamówienia lub kodzie (zasada „multiplatform” Apple 3.1.3(b))</td><td>0% dla sklepów, tylko około 2% za płatność</td><td>Działa już dziś</td></tr>
-        <tr><td><strong>Kody prezentowe sprzedawane na stronie</strong>, wpisywane w aplikacji w „Odbierz dostęp”</td><td>0% dla sklepów</td><td>Działa (make_codes.py, redeem-code)</td></tr>
-        <tr><td><strong>Mail do rodziców z kontem</strong> (za zgodą) z ofertą sklepu www</td><td>0%</td><td>Dozwolone, bo komunikacja poza aplikacją</td></tr>
-        <tr><td><strong>Te same ceny w aplikacji i na stronie</strong> (decyzja właścicieli): 49,99 / 69,99 / 89,99 / 159,99 zł, abonament 24,99 zł/mies. lub 149,99 zł/rok</td><td>Prowizja tylko od zakupów w aplikacji</td><td>Ustawić identyczne ceny w App Store Connect i Google Play; aplikacja pokazuje cennik w Sklepie</td></tr>
-        <tr><td><strong>Google Play w UE: alternatywne płatności</strong> (User Choice Billing)</td><td>Około 4 punkty procentowe mniej</td><td>Do rozważenia po starcie na Androidzie</td></tr>
-        <tr><td>Przycisk „kup taniej na stronie” w aplikacji</td><td>Nie dotyczy</td><td><strong>Nie robimy.</strong> Apple odrzuca takie aplikacje. Unijna furtka (link do zakupu z opłatą dla Apple) nie jest dostępna dla aplikacji w kategorii Kids.</td></tr>
-      </tbody>
-    </table>
+  <div class="quarter">
+    <h3>Październik 2026 · Fundament</h3>
+    <p class="goal">Cel: poziom 0. Budżet reklam: do 1 500 zł.</p>
+    <ul class="tasks">
+      <li><span class="date">do 8.10</span><span class="what">Diagnoza poprzednich 2 000 zł (kanał, cel, kliknięcia, zamówienia) i zamówień z Empiku</span><span class="who">N + D</span></li>
+      <li><span class="date">do 12.10</span><span class="what">Te same ceny w App Store Connect i Google Play co na stronie; produkt „Rok AudioKiddo” w sklepie WooCommerce</span><span class="who">D</span></li>
+      <li><span class="date">do 15.10</span><span class="what">Strona sytuacyjna „Zabawa na chwilę, kiedy Ty potrzebujesz chwili”: próbka bez logowania, roczny dostęp i zestaw</span><span class="who">N + D</span></li>
+      <li><span class="date">do 17.10</span><span class="what">Piksel Meta z Conversions API i GA4; zakup testowy od reklamy do odsłuchu w aplikacji</span><span class="who">D</span></li>
+      <li><span class="date">od 13.10</span><span class="what">Rytm contentu: 3 krótkie filmy tygodniowo plus karuzela; seria z Szop’enem i sytuacjami z życia mam</span><span class="who">N</span></li>
+      <li><span class="date">20.10</span><span class="what">Transza 1: 1 500 zł na Meta, 4 kreacje (obiad, auto, Szop’en, prezent), limit 100 zł dziennie</span><span class="who">N</span></li>
+      <li><span class="date">do 31.10</span><span class="what">Zgłoszenie aplikacji do App Store i Google Play (do potwierdzenia)</span><span class="who">D</span></li>
+    </ul>
   </div>
-  <p>W praktyce: reklamy, social media, maile i twórcy prowadzą na stronę. W aplikacji jest tylko „Masz zakup z audiokiddo.pl albo kod? Odbierz dostęp” (na stronie pakietu i w Bibliotece), bez cen i bez linku do sklepu www. Zakup w aplikacji zostaje dla osób, które wolą płacić przez Apple lub Google.</p>
 
-  <h2>Oceny w App Store i Google Play</h2>
-  <p>Po trzeciej ukończonej zabawie Szop’en pyta na Starcie: „Podoba się AudioKiddo?”. „Tak, oceniam” otwiera systemowe okno oceny, „Coś nie gra” otwiera maila do Was. Obie drogi prowadzą przez bramkę rodzica (kategoria Kids), a pytanie wraca najwcześniej po 60 dniach. W menu Więcej są „Oceń AudioKiddo” i „Napisz do nas”. Najlepsze oceny dają rzeczy, które działają bez zawodu: szybki start zabawy, praca bez internetu, brak reklam i jasne zakupy. Na to idą kolejne poprawki.</p>
+  <div class="quarter">
+    <h3>Listopad–grudzień 2026 · Sezon prezentów</h3>
+    <p class="goal">Cel: poziom 1. Budżet: 2 500 zł plus 1 000 zł rezerwy, dalej tylko z nadwyżki.</p>
+    <ul class="tasks">
+      <li><span class="date">do 5.11</span><span class="what">„Rok AudioKiddo w prezencie”: kod plus kartka PDF z Szop’enem dla dziadków, cioć i chrzestnych</span><span class="who">N + D</span></li>
+      <li><span class="date">1–20.11</span><span class="what">Transza 2 (do 2 500 zł) tylko przy CAC rocznego dostępu poniżej 80 zł</span><span class="who">N</span></li>
+      <li><span class="date">do 15.11</span><span class="what">10 twórczyń z kodem i prowizją 20–25% od sprzedaży</span><span class="who">N</span></li>
+      <li><span class="date">21.11–6.12</span><span class="what">Mikołajki: zestaw 3 pakietów 129,99 zł z jasną datą końca; oferta kodów dla firm</span><span class="who">N</span></li>
+      <li><span class="date">7–22.12</span><span class="what">„Prezent na ostatnią chwilę, kod w minutę”; budżet tylko z nadwyżki</span><span class="who">N</span></li>
+    </ul>
+  </div>
 
-  <h2>Progi na drodze do miliona</h2>
-  <ul class="steps">
-    <li><span class="when">Próg 1</span><span class="what"><strong>Powtarzalna sprzedaż</strong>Rodzice kupują, dostają dostęp i umieją z niego korzystać. Znane realne koszty.</span></li>
-    <li><span class="when">Próg 2</span><span class="what"><strong>Rentowny kanał</strong>Kolejne transze, a nie jeden dobry dzień, dają dodatnią marżę po reklamie.</span></li>
-    <li><span class="when">Próg 3</span><span class="what"><strong>Powracający klient</strong>Dokupienia, prezenty dla znajomych, polecenia. Dopiero teraz liczymy wartość klienta powyżej pierwszego zamówienia.</span></li>
-    <li><span class="when">Próg 4</span><span class="what"><strong>Skala</strong>Większy budżet, więcej treści, drugi kanał (Google Search, twórcy, B2B), przy pilnowanej marży.</span></li>
-    <li><span class="when">Próg 5</span><span class="what"><strong>Milion</strong>Suma wyników po wszystkich kosztach.</span></li>
-  </ul>
+  <div class="quarter">
+    <h3>I kwartał 2027 · Rentowny kanał</h3>
+    <p class="goal">Cel: poziom 2.</p>
+    <ul class="tasks">
+      <li><span class="date">do 15.01</span><span class="what">Rozliczenie sezonu: CAC, odejścia, zwroty, 10 rozmów z mamami; decyzja o skali reklam</span><span class="who">N + D</span></li>
+      <li><span class="date">do 31.01</span><span class="what">Test darmowych zabaw na 10 rodzinach; wymiana na te z najlepszym efektem „wow”</span><span class="who">N</span></li>
+      <li><span class="date">od 1.02</span><span class="what">2 nowe zabawy miesięcznie (scenariusz N, głos i produkcja ElevenLabs, publikacja D)</span><span class="who">N + D</span></li>
+      <li><span class="date">do 28.02</span><span class="what">Montażysta na zlecenie (około 1 500–2 500 zł miesięcznie), żeby N tworzyła, a nie montowała</span><span class="who">N</span></li>
+      <li><span class="date">do 31.03</span><span class="what">Polecenia: znajomy dostaje 15% zniżki, polecający miesiąc gratis; automatyczne maile po zakupie</span><span class="who">D</span></li>
+    </ul>
+  </div>
 
-  <h2>Czego nie robimy</h2>
+  <div class="quarter">
+    <h3>II–III kwartał 2027 · Tysiąc rodzin</h3>
+    <p class="goal">Cel: poziom 3.</p>
+    <ul class="tasks">
+      <li><span class="date">do 31.05</span><span class="what">Kampania na Dzień Dziecka (1.06); nowy pakiet tematyczny</span><span class="who">N</span></li>
+      <li><span class="date">do 30.06</span><span class="what">Pilotaż B2B: 5 przedszkoli i 5 logopedów, licencja roboczo 399–699 zł rocznie</span><span class="who">N</span></li>
+      <li><span class="date">lipiec–sierpień</span><span class="what">Wakacje i podróże: cykl do auta i pobieranie offline w reklamach</span><span class="who">N + D</span></li>
+      <li><span class="date">do 30.09</span><span class="what">Osoba operacyjna (Project/Operations Manager) na pół etatu, gdy zysk ≥ 15 tys. zł miesięcznie przez 2 miesiące</span><span class="who">N + D</span></li>
+    </ul>
+  </div>
+
+  <div class="quarter">
+    <h3>IV kwartał 2027 – 2028 · Zespół i kamień milowy</h3>
+    <p class="goal">Cel: poziomy 4 i 5.</p>
+    <ul class="tasks">
+      <li><span class="date">paźdz.–grudz. 2027</span><span class="what">Drugi sezon prezentów z gotowym procesem i budżetem z nadwyżki</span><span class="who">N</span></li>
+      <li><span class="date">do 31.03.2028</span><span class="what">Oferta B2B jako osobna linia, z umową i cennikiem</span><span class="who">N</span></li>
+      <li><span class="date">do 30.06.2028</span><span class="what">Zespół treści (scenarzysta, producent audio); founderzy po 15–20 godzin tygodniowo na strategię, kreację i produkt</span><span class="who">N + D</span></li>
+      <li><span class="date">do 30.09.2028</span><span class="what">7 000 subskrypcji, 50 000 zł zysku miesięcznie; decyzja o pierwszym rynku zagranicznym</span><span class="who">N + D</span></li>
+    </ul>
+  </div>
+
+  <h2>Zasady, które chronią plan</h2>
   <ul>
-    <li>Nie reklamujemy samego pakietu za 49,99 zł, dopóki CAC jest wyższy niż około 37 zł.</li>
-    <li>Nie kierujemy reklam do dzieci i nie dodajemy do aplikacji SDK reklamowych ani analitycznych.</li>
-    <li>Nie wymyślamy opinii, liczników ani fałszywej presji czasu.</li>
-    <li>Nie rozdrabniamy budżetu na kilka płatnych kanałów jednocześnie.</li>
-    <li>Nie liczymy obrotu jako zysku.</li>
+    <li><strong>Najpierw marka, którą mama chce oglądać, potem produkt, który chce kupić.</strong> Content nie musi sprzedawać w każdym materiale. Nie zawstydzamy rodziców za ekrany.</li>
+    <li><strong>Reklama wzmacnia zwycięzców.</strong> Płacimy tylko za treści, które już dobrze działają organicznie. Jeden płatny kanał (Meta) do poziomu 2.</li>
+    <li><strong>Pieniądze:</strong> źródłem prawdy są zamówienia w sklepie. Skalujemy dopiero po 20–30 opłaconych zamówieniach. Co tydzień do 60% nadwyżki na reklamy, reszta na bufor i treści. Zysk, gotówka w firmie i wypłaty właścicieli to trzy osobne liczby.</li>
+    <li><strong>Produkt:</strong> dziecko jest bohaterem, interakcja co chwilę, bez moralizowania i szkolnego tonu. Większość zabaw dziecko ogarnia samo.</li>
+    <li><strong>Jedna rzecz naraz:</strong> książki, zabawki, urządzenie i inne rynki dopiero po wygraniu biblioteki audiozabaw.</li>
+    <li><strong>Decyzje:</strong> w swoich obszarach każde z Was decyduje samo. Inwestor, udziały, duże zobowiązania, nowe rynki i kluczowe stanowiska wymagają decyzji obojga (50/50).</li>
+    <li><strong>Czego nie robimy:</strong> reklam do dzieci, SDK reklamowych w aplikacji, fikcyjnych opinii i fałszywej presji czasu, linku do zakupu poza sklepem w aplikacji.</li>
   </ul>
 
-  <h2>Pytania, które urealnią datę miliona</h2>
+  <h2>Tygodniowa tabela (15 minut w poniedziałek)</h2>
+  <p>Wydatki na reklamy, nowe płacące rodziny (roczne, miesięczne, pakiety), CAC, aktywne subskrypcje, odejścia, zysk po reklamie, obserwujący i zasięgi trzech najlepszych filmów. Te liczby decydują o przejściu na kolejny poziom i o zmianie prawdopodobieństw w tym dokumencie.</p>
+
+  <h2>Pytania, które urealnią daty</h2>
   <ol class="q">
-    <li>Gdzie i z jakim celem poszło poprzednie 2 000 zł? <em>Kanał, cel kampanii, który produkt był reklamowany, kliknięcia, wejścia, zamówienia.</em></li>
-    <li>Ile było dotąd zamówień na stronie i na Empiku, i które produkty kupowano? <em>Prowizja Empiku i to, czy kupowano zestawy, czy pojedyncze pakiety.</em></li>
-    <li>Czy jesteście płatnikiem VAT i jaka jest forma opodatkowania? <em>Zmienia marżę o około 23% i to, czy milion liczymy przed, czy po podatku.</em></li>
-    <li>Kiedy aplikacja ma trafić do App Store i Google Play? <em>Decyduje, czy w Święta sprzedajemy „aplikację”, czy „audiozabawy z dostępem przez stronę”.</em></li>
-    <li>Ile godzin tygodniowo możecie dać na treści i reklamy? <em>Plan zakłada 3 filmy tygodniowo i 2 nowe zabawy miesięcznie.</em></li>
-    <li>Jak duże są lista mailowa i konta społecznościowe?</li>
-    <li>Czy zgadzacie się na zestaw 3 pakietów za 129,99 zł w Mikołajki i prowizję 20–25% dla twórców?</li>
-    <li>Czy macie kontakty do firm (HR, benefity), przedszkoli albo logopedów?</li>
-    <li>Czy abonament ma ruszyć w tym roku, czy po sezonie?</li>
-    <li>Czy milion ma zostać w firmie, czy trafić do Was po wszystkich podatkach i wynagrodzeniach?</li>
+    <li>Gdzie i z jakim celem poszło poprzednie 2 000 zł? <em>Kanał, cel kampanii, reklamowany produkt, kliknięcia, wejścia, zamówienia.</em></li>
+    <li>Ile było dotąd zamówień na stronie i na Empiku, i które produkty kupowano?</li>
+    <li>Czy jesteście płatnikiem VAT i jaka jest forma opodatkowania? <em>Zmienia marżę o około 23%.</em></li>
+    <li>Kiedy aplikacja ma trafić do App Store i Google Play?</li>
+    <li>Ile godzin tygodniowo każde z Was może dać firmie do końca roku?</li>
+    <li>Jak duże są dziś konta na Instagramie i TikToku oraz lista mailowa?</li>
+    <li>Czy zgadzacie się na „Rok AudioKiddo” na stronie jako dostęp na 365 dni bez automatycznego odnawiania?</li>
+    <li>Czy milion liczymy przed, czy po podatku dochodowym?</li>
   </ol>
 </div>
