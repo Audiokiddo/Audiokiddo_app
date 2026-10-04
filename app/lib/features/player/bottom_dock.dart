@@ -41,7 +41,14 @@ class BottomDock extends ConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (resume != null) _ResumeCard(resume: resume),
+        if (resume != null)
+          // Swiped to the left, the card goes away until something else is playing or paused.
+          Dismissible(
+            key: ValueKey(resume.key),
+            direction: DismissDirection.endToStart,
+            onDismissed: (_) => ref.read(hiddenResumeProvider.notifier).hide(resume.key),
+            child: _ResumeCard(resume: resume),
+          ),
         Container(
           height: _barHeight + bottom,
           padding: EdgeInsets.only(bottom: bottom),
@@ -150,9 +157,26 @@ class ResumeCard {
 
   /// Already in the player (play/pause), rather than to be started.
   final bool loaded;
+
+  String get key => mediaId ?? item?.id ?? title;
+}
+
+/// The card the parent swiped away (by [ResumeCard.key]); it stays hidden for that play.
+final hiddenResumeProvider = NotifierProvider<HiddenResume, String?>(HiddenResume.new);
+
+class HiddenResume extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  void hide(String key) => state = key;
 }
 
 final resumeCardProvider = Provider<ResumeCard?>((ref) {
+  final card = ref.watch(_resumeCandidateProvider);
+  return card == null || card.key == ref.watch(hiddenResumeProvider) ? null : card;
+});
+
+final _resumeCandidateProvider = Provider<ResumeCard?>((ref) {
   final media = ref.watch(currentMediaProvider).value;
   if (media != null) return ResumeCard(title: media.title, mediaId: media.id, loaded: true);
   final catalog = ref.watch(catalogProvider).value;
@@ -339,19 +363,31 @@ class ResumeAside extends ConsumerStatefulWidget {
 
 class _ResumeAsideState extends ConsumerState<ResumeAside> {
   String? _line;
-  Timer? _timer;
-  static const _lines = [
+  Timer? _hide;
+  Timer? _next;
+  static final _random = math.Random();
+
+  /// Lines for a paused play, then the general nudges (with their own moods elsewhere).
+  static final _lines = [
     'Zatrzymałem przygodę. Prania nie umiem, próbowałem.',
     'Wracamy? Zdążyłem udawać, że pracuję.',
     'Bohaterowie czekają. Jako jedyni w tym domu cierpliwie.',
     'Przerwa zaliczona. Kawa pewnie też już zimna.',
     'Byłem cały czas na posterunku. Chrapanie to wentylacja.',
     'Przygoda zapisana. Gdzie są drugie skarpetki — nadal nie wiem.',
+    for (final (_, line) in szopNudges) line,
   ];
+
+  // Now and then, never nagging: first after a few seconds, then every few minutes while the
+  // card is on screen, at most a handful a day (and never with "Komentarze Szop’ena" off).
+  static const _first = Duration(seconds: 4);
+  static const _every = Duration(minutes: 4);
+  static const _perDay = 6;
+
   @override
   void initState() {
     super.initState();
-    unawaited(_show());
+    _next = Timer(_first, _show);
   }
 
   Future<void> _show() async {
@@ -361,13 +397,16 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
       final db = ref.read(databaseProvider);
       final now = ref.read(clockProvider)();
       final day = '${now.year}-${now.month}-${now.day}';
-      if (await db.readValue('szopen_resume_day') == day || !mounted) return;
-      await db.writeValue('szopen_resume_day', day);
+      final saved = (await db.readValue('szopen_bubbles') ?? '').split('|');
+      final count = saved.first == day && saved.length > 1 ? int.tryParse(saved[1]) ?? 0 : 0;
+      if (count >= _perDay || !mounted) return;
+      await db.writeValue('szopen_bubbles', '$day|${count + 1}');
       if (!mounted) return;
-      setState(() => _line = _lines[now.day % _lines.length]);
-      _timer = Timer(const Duration(seconds: 9), () {
+      setState(() => _line = _lines[_random.nextInt(_lines.length)]);
+      _hide = Timer(const Duration(seconds: 9), () {
         if (mounted) setState(() => _line = null);
       });
+      _next = Timer(_every, _show);
     } on Object {
       /* A decorative comment must never block playback. */
     }
@@ -375,7 +414,8 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _hide?.cancel();
+    _next?.cancel();
     super.dispose();
   }
 

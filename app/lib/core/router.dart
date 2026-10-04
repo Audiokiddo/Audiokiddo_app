@@ -139,21 +139,24 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
       path: '/zabawa/:id',
       pageBuilder: (context, state) => swipePage(state, DetailsScreen(itemId: state.pathParameters['id']!)),
     ),
-    // The player slides up like a sheet and is pulled down to minimise it.
+    // The player slides up like a sheet: pulled down to minimise it, or swiped from the left
+    // edge like any other page (then it follows the finger sideways).
     GoRoute(
       path: '/odtwarzacz',
-      pageBuilder: (context, state) => CustomTransitionPage(
+      pageBuilder: (context, state) => SwipeablePage<void>(
         key: state.pageKey,
-        child: const PlayerScreen(),
+        canOnlySwipeFromEdge: true,
+        backGestureDetectionWidth: 32,
         transitionDuration: const Duration(milliseconds: 320),
         reverseTransitionDuration: const Duration(milliseconds: 260),
-        transitionsBuilder: (context, animation, _, child) => SlideTransition(
-          position: Tween(
-            begin: const Offset(0, 1),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+        transitionBuilder: (context, animation, _, isSwipeGesture, child) => SlideTransition(
+          position: Tween(begin: isSwipeGesture ? const Offset(1, 0) : const Offset(0, 1), end: Offset.zero)
+              .animate(
+                isSwipeGesture ? animation : CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
           child: child,
         ),
+        builder: (_) => const PlayerScreen(),
       ),
     ),
     GoRoute(
