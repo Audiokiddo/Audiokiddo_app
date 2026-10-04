@@ -6,22 +6,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/storage/storage_providers.dart';
 
 enum PlayCategory {
-  adventure('Przygody\ni wyobraźnia'),
-  detective('Zagadki\ni detektywi'),
+  // Names stay as they were: they are in links (?kategoria=…). Labels follow the kinds of play
+  // parents look for.
+  creative('Kreatywne'),
+  movement('Ruchowe'),
+  detective('Logiczne'),
+  education('Edukacyjne'),
+  adventure('Fabularne'),
   songs('Piosenki'),
-  movement('Ruch i energia'),
-  creative('Twórcze\nzabawy'),
-  calm('Spokój\ni wyciszenie');
+
+  /// Calm, before sleep: used to pick plays (rescue, Szop’en’s tips), not shown as a tile.
+  calm('Spokojne');
 
   const PlayCategory(this.label);
   final String label;
+
+  /// The tiles on Start and in the library, in this order.
+  static const shown = [creative, movement, detective, education, adventure, songs];
+
   bool matches(ContentItem i) => switch (this) {
-    adventure => i.packId == 'wyobraznia',
-    detective => i.packId == 'detektyw' || i.skills.any((s) => s.contains('logik')),
-    songs => i.kind == ContentKind.song,
-    movement => i.skills.contains('ruch') || i.requirements.contains(Requirement.miejsceDoRuchu),
     creative =>
-      i.requirements.contains(Requirement.kartkaIOlowek) || i.skills.any((s) => s.contains('kreatyw')),
+      i.requirements.contains(Requirement.kartkaIOlowek) ||
+          i.skills.any((s) => s.contains('wyobraź') || s.contains('kreatyw')),
+    movement => i.skills.contains('ruch') || i.requirements.contains(Requirement.miejsceDoRuchu),
+    detective => i.packId == 'detektyw' || i.skills.any((s) => s.contains('logicz')),
+    education => i.packId == 'slowa-i-wiedza' || i.skills.any((s) => s.contains('słownict') || s.contains('wiedz')),
+    adventure =>
+      i.packId == 'wyobraznia' || i.skills.any((s) => s.contains('opowiad')) || (i.script != null && i.audio.isEmpty),
+    songs => i.kind == ContentKind.song,
     calm => i.situations.contains(Situation.przedSnem),
   };
 }

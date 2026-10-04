@@ -62,6 +62,7 @@ flutter:
     - assets/audio/kiddo/
     - assets/covers/
     - assets/szop/
+    - assets/brand/
   fonts:
     - family: Poppins
       fonts:

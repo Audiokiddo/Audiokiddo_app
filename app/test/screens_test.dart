@@ -81,8 +81,9 @@ void main() {
     }
     await tester.scrollUntilVisible(find.text('Kontynuuj słuchanie'), 200, scrollable: mainScroll);
     // Categories deliberately live below the recommendations, not above practical situations.
-    await tester.scrollUntilVisible(find.text('Przygody\ni wyobraźnia'), 200, scrollable: mainScroll);
-    for (final label in ['Przygody\ni wyobraźnia', 'Zagadki\ni detektywi', 'Piosenki', 'Ruch i energia']) {
+    await tester.scrollUntilVisible(find.text('Kreatywne'), 200, scrollable: mainScroll);
+    await tester.scrollUntilVisible(find.text('Piosenki'), 200, scrollable: mainScroll);
+    for (final label in ['Kreatywne', 'Ruchowe', 'Logiczne', 'Edukacyjne', 'Fabularne', 'Piosenki']) {
       expect(find.text(label), findsOneWidget);
     }
   });
@@ -108,10 +109,10 @@ void main() {
   testWidgets('category shortcut opens the filtered library', (tester) async {
     await pumpApp(tester);
     await openLibrary(tester);
-    await tester.scrollUntilVisible(find.text('Przygody\ni wyobraźnia'), 200, scrollable: mainScroll);
-    await Scrollable.ensureVisible(tester.element(find.text('Przygody\ni wyobraźnia')), alignment: .5);
+    await tester.scrollUntilVisible(find.text('Fabularne'), 200, scrollable: mainScroll);
+    await Scrollable.ensureVisible(tester.element(find.text('Fabularne')), alignment: .5);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Przygody\ni wyobraźnia'));
+    await tester.tap(find.text('Fabularne'));
     await tester.pumpAndSettle();
     expect(find.text('Magiczny sklep'), findsOneWidget);
   });
@@ -147,7 +148,7 @@ void main() {
     expect(find.text('Odblokuj'), findsOneWidget, reason: 'other packs stay locked');
   });
 
-  testWidgets('an owned case file can be solved on the phone', (tester) async {
+  testWidgets('an owned case file can be printed or sent, one or all at once', (tester) async {
     await pumpApp(
       tester,
       entitlements: [
@@ -160,8 +161,13 @@ void main() {
     );
     await openLibrary(tester);
     await openItem(tester, 'Złodziej naszyjnika');
-    await tester.scrollUntilVisible(find.text('Rozwiązuj w telefonie'), 200, scrollable: mainScroll);
-    expect(find.text('Wydrukuj lub wyślij'), findsOneWidget, reason: 'printing stays behind the gate');
+    await tester.scrollUntilVisible(find.text('Ta sprawa: drukuj lub wyślij'), 200, scrollable: mainScroll);
+    expect(find.text('Wydrukuj wszystkie naraz'), findsOneWidget);
+    expect(
+      find.text('Rozwiązuj w telefonie'),
+      findsNothing,
+      reason: 'the case is solved away from the phone',
+    );
   });
 
   testWidgets('screens have no overflow with large text', (tester) async {

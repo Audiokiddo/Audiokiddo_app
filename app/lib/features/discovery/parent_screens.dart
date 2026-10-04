@@ -9,7 +9,7 @@ import '../../core/theme/tokens.dart';
 import '../catalog/catalog_providers.dart';
 import '../downloads/download_providers.dart';
 import '../downloads/download_manager.dart';
-import '../downloads/download_button.dart';
+import '../downloads/pack_download.dart';
 import '../family/family.dart';
 import '../personal/personal_repository.dart';
 import '../parental_gate/parental_gate.dart';
@@ -143,66 +143,98 @@ class CollectionScreen extends ConsumerWidget {
   }
 }
 
+/// Downloads: the family's plays by pack, each with its own button and a "whole pack" one, then
+/// what is on the phone and what is still coming.
 class DownloadsScreen extends ConsumerStatefulWidget {
   const DownloadsScreen({super.key});
   @override
   ConsumerState<DownloadsScreen> createState() => _DownloadsScreenState();
 }
 
+enum _DownloadsTab { yours, onPhone, pending }
+
 class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
-  bool pending = false;
+  _DownloadsTab tab = _DownloadsTab.yours;
   @override
   Widget build(BuildContext context) {
-    final catalog = ref.watch(catalogProvider);
+    final catalog = ref.watch(catalogProvider).value;
     final summary = ref.watch(downloadSummaryProvider).value;
     final free = ref.watch(freeBytesProvider).value;
-    final entries = [
-      for (final i in catalog.value?.items ?? <ContentItem>[])
-        (i, ref.watch(downloadStatusProvider(i)).value ?? ItemDownloadStatus.none),
+    final text = Theme.of(context).textTheme;
+    final items = [
+      for (final i in catalog?.items ?? <ContentItem>[])
+        if (i.downloadBytes > 0) i,
     ];
-    final shown = entries
-        .where(
-          (e) => pending
-              ? e.$2.isActive || e.$2.phase == DownloadPhase.failed
-              : e.$2.phase == DownloadPhase.ready,
-        )
-        .toList();
+    final playable = [
+      for (final i in items)
+        if (ref.watch(canPlayProvider(i))) i,
+    ];
+    ItemDownloadStatus status(ContentItem i) =>
+        ref.watch(downloadStatusProvider(i)).value ?? ItemDownloadStatus.none;
+    final listed = switch (tab) {
+      _DownloadsTab.yours => playable,
+      _DownloadsTab.onPhone => [
+        for (final i in items)
+          if (status(i).phase == DownloadPhase.ready) i,
+      ],
+      _DownloadsTab.pending => [
+        for (final i in items)
+          if (status(i).isActive || status(i).phase == DownloadPhase.failed) i,
+      ],
+    };
+    final groups = <(String, List<ContentItem>)>[
+      for (final pack in catalog?.packs ?? const <Pack>[])
+        if (listed.where((i) => i.packId == pack.id).toList() case final g when g.isNotEmpty) (pack.title, g),
+      if (listed.where((i) => i.packId == null).toList() case final g when g.isNotEmpty)
+        ('Piosenki i gry', g),
+    ];
     return Scaffold(
       appBar: AppBar(title: const Text('Pobrane')),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            SegmentedButton<bool>(
-              segments: const [
-                ButtonSegment(value: false, label: Text('W urządzeniu')),
-                ButtonSegment(value: true, label: Text('Pobieranie')),
-              ],
-              selected: {pending},
-              onSelectionChanged: (s) => setState(() => pending = s.single),
+            Text(
+              'Pobrane zabawy działają bez internetu: w aucie, samolocie i na działce.',
+              style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
             ),
-            const SizedBox(height: 20),
-            if (catalog.isLoading) const LinearProgressIndicator(),
-            if (shown.isEmpty)
+            const SizedBox(height: 14),
+            SegmentedButton<_DownloadsTab>(
+              segments: const [
+                ButtonSegment(value: _DownloadsTab.yours, label: Text('Wasze zabawy')),
+                ButtonSegment(value: _DownloadsTab.onPhone, label: Text('W telefonie')),
+                ButtonSegment(value: _DownloadsTab.pending, label: Text('W trakcie')),
+              ],
+              selected: {tab},
+              onSelectionChanged: (s) => setState(() => tab = s.single),
+            ),
+            const SizedBox(height: 12),
+            if (catalog == null) const LinearProgressIndicator(),
+            if (catalog != null && groups.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Text(
-                  pending
-                      ? 'Brak trwających pobrań.'
-                      : 'Jeszcze nic nie pobrano. Wybierz zabawę w bibliotece i dotknij „Pobierz”.',
-                ),
+                child: Text(switch (tab) {
+                  _DownloadsTab.yours => 'Nie macie jeszcze zabaw do pobrania.',
+                  _DownloadsTab.onPhone => 'Jeszcze nic nie pobrano. Zacznij od „Wasze zabawy”.',
+                  _DownloadsTab.pending => 'Nic się teraz nie pobiera.',
+                }),
               ),
-            for (final (item, _) in shown) ...[
-              AudioRow(item: item),
-              DownloadControl(item: item),
-              const SizedBox(height: 18),
+            for (final (title, group) in groups) ...[
+              const SizedBox(height: 12),
+              Text(title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+              if (tab == _DownloadsTab.yours) ...[
+                const SizedBox(height: 8),
+                PackDownloadButton(items: group, label: 'Pobierz wszystkie'),
+              ],
+              for (final item in group)
+                AudioRow(
+                  item: item,
+                  trailing: ItemDownloadIcon(item: item),
+                ),
             ],
             const SizedBox(height: 24),
-            Text(
-              'Zajęte miejsce: ${formatBytes(summary?.bytes ?? 0)}',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            if (free != null) Text('Wolne na urządzeniu: ${formatBytes(free)}'),
+            Text('Zajęte miejsce: ${formatBytes(summary?.bytes ?? 0)}', style: text.titleSmall),
+            if (free != null) Text('Wolne w telefonie: ${formatBytes(free)}'),
             if (free != null && (summary?.bytes ?? 0) + free > 0)
               Padding(
                 padding: const EdgeInsets.only(top: 10),

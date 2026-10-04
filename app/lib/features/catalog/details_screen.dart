@@ -17,7 +17,6 @@ import '../discovery/reference_widgets.dart';
 import '../games/microphone.dart';
 import '../games/speech.dart';
 import '../parental_gate/parental_gate.dart';
-import '../pdf/case_file.dart';
 import '../pdf/case_files_card.dart';
 import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';

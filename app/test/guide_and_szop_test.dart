@@ -19,7 +19,11 @@ void main() {
     final raw = jsonDecode(File('assets/guide_links.json').readAsStringSync()) as Map<String, Object?>;
     for (final pack in catalog.packs.where((p) => p.guide != null)) {
       final links = parseGuideLinks(raw[pack.id]! as Map<String, Object?>);
-      expect(links.plays.map((p) => p.itemId), catalog.itemsInPack(pack.id).map((i) => i.id), reason: pack.id);
+      expect(
+        links.plays.map((p) => p.itemId),
+        catalog.itemsInPack(pack.id).map((i) => i.id),
+        reason: pack.id,
+      );
       for (final play in links.plays) {
         expect(play.video?.host, contains('youtube'));
         expect(play.files, isNotEmpty);
@@ -28,7 +32,10 @@ void main() {
   });
 
   test('Szop’en after a play: a fitting tip often, never the same line twice in a row', () {
-    final song = catalog.items.firstWhere((i) => i.kind == ContentKind.song, orElse: () => catalog.items.first);
+    final song = catalog.items.firstWhere(
+      (i) => i.kind == ContentKind.song,
+      orElse: () => catalog.items.first,
+    );
     final random = math.Random(1);
     SzopLine? previous;
     for (var n = 0; n < 50; n++) {
@@ -44,7 +51,10 @@ void main() {
     expect(noPrep.every((i) => i.requirements.isEmpty), isTrue);
     final printable = const LibraryFilter(printable: true).apply(catalog.items);
     expect(printable, isNotEmpty);
-    expect(printable.every((i) => i.pdf.isNotEmpty || i.requirements.contains(Requirement.wydrukPdf)), isTrue);
+    expect(
+      printable.every((i) => i.pdf.isNotEmpty || i.requirements.contains(Requirement.wydrukPdf)),
+      isTrue,
+    );
     final parsed = LibraryFilter.fromQuery(
       Uri.parse(const LibraryFilter(noPrep: true, available: true).toLocation()).queryParameters,
     );

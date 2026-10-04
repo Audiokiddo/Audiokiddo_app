@@ -149,73 +149,78 @@ class _SzopAfterPlayCardState extends ConsumerState<SzopAfterPlayCard> {
     final line = ref.watch(szopAfterPlayProvider(widget.item));
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: .85, end: 1),
-        duration: const Duration(milliseconds: 380),
-        curve: Curves.easeOutBack,
-        builder: (context, v, child) => Transform.scale(scale: v, child: child),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            SzopSticker(line.pose, height: 72),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Semantics(
-                label: 'Szop’en ${line.tip ? 'radzi' : 'mówi'}: ${line.text}',
-                excludeSemantics: true,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(14, 10, 4, 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(18),
-                      topRight: Radius.circular(18),
-                      bottomRight: Radius.circular(18),
-                      bottomLeft: Radius.circular(4),
+    return Dismissible(
+      key: ValueKey(line),
+      direction: DismissDirection.endToStart,
+      onDismissed: (_) => setState(() => _closed = true),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 14),
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: .85, end: 1),
+          duration: const Duration(milliseconds: 380),
+          curve: Curves.easeOutBack,
+          builder: (context, v, child) => Transform.scale(scale: v, child: child),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SzopSticker(line.pose, height: 72),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Semantics(
+                  label: 'Szop’en ${line.tip ? 'radzi' : 'mówi'}: ${line.text}',
+                  excludeSemantics: true,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(14, 10, 4, 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(18),
+                        topRight: Radius.circular(18),
+                        bottomRight: Radius.circular(18),
+                        bottomLeft: Radius.circular(4),
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (line.tip)
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (line.tip)
+                                Text(
+                                  'RADA SZOP’ENA',
+                                  style: text.labelSmall?.copyWith(
+                                    color: const Color(0xFF6B5A8E),
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
                               Text(
-                                'RADA SZOP’ENA',
-                                style: text.labelSmall?.copyWith(
-                                  color: const Color(0xFF6B5A8E),
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 1,
+                                line.text,
+                                style: text.bodyMedium?.copyWith(
+                                  color: ink,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.25,
                                 ),
                               ),
-                            Text(
-                              line.text,
-                              style: text.bodyMedium?.copyWith(
-                                color: ink,
-                                fontWeight: FontWeight.w600,
-                                height: 1.25,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        tooltip: 'Schowaj Szop’ena',
-                        visualDensity: VisualDensity.compact,
-                        color: ink,
-                        onPressed: () => setState(() => _closed = true),
-                        icon: const Icon(Icons.close_rounded, size: 18),
-                      ),
-                    ],
+                        IconButton(
+                          tooltip: 'Schowaj Szop’ena',
+                          visualDensity: VisualDensity.compact,
+                          color: ink,
+                          onPressed: () => setState(() => _closed = true),
+                          icon: const Icon(Icons.close_rounded, size: 18),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -103,17 +103,11 @@ void main() {
     expect((await container.read(diplomasProvider('z').future)).keys, ['detektyw']);
   });
 
-  testWidgets('autumn on Start: the packs row and the seasonal row', (tester) async {
+  testWidgets('Start lists packs to unlock and no seasonal row', (tester) async {
     await pumpOn(tester, DateTime(2026, 10, 2));
     await tester.scrollUntilVisible(find.text('Pakiety przygód'), 200, scrollable: scroll);
     expect(find.byIcon(Icons.lock_rounded), findsWidgets, reason: 'packs not owned are listed too');
-    await tester.scrollUntilVisible(find.text('Jesienne wieczory'), 200, scrollable: scroll);
-    expect(find.text('Wakacje w drodze'), findsNothing);
-  });
-
-  testWidgets('in July the holiday row shows and the packs row stays', (tester) async {
-    await pumpOn(tester, DateTime(2027, 7, 1));
-    await tester.scrollUntilVisible(find.text('Wakacje w drodze'), 200, scrollable: scroll);
+    await tester.scrollUntilVisible(find.text('Piosenki'), 200, scrollable: scroll);
     expect(find.text('Jesienne wieczory'), findsNothing);
   });
 

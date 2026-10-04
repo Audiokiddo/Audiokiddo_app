@@ -482,18 +482,23 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
                 curve: Curves.easeOutBack,
                 builder: (context, v, child) =>
                     Transform.scale(scale: v, alignment: Alignment.bottomLeft, child: child),
-                child: GestureDetector(
-                  onTap: () => setState(() => _line = null),
-                  child: Semantics(
-                    label: 'Szop’en mówi: $line',
-                    child: CustomPaint(
-                      painter: const _BubblePainter(color: Colors.white, tailX: 46),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 20),
-                        child: Text(
-                          line,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.25),
+                child: Dismissible(
+                  key: ValueKey(line),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (_) => setState(() => _line = null),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _line = null),
+                    child: Semantics(
+                      label: 'Szop’en mówi: $line',
+                      child: CustomPaint(
+                        painter: const _BubblePainter(color: Colors.white, tailX: 46),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 10, 14, 20),
+                          child: Text(
+                            line,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.25),
+                          ),
                         ),
                       ),
                     ),

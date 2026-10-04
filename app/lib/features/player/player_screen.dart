@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/format.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/item_art.dart';
 import '../personal/personal_repository.dart';
@@ -18,7 +17,7 @@ import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../discovery/queue_controller.dart';
 import '../home/quick_pick.dart';
-import '../pdf/case_file.dart';
+import '../pdf/case_files_card.dart';
 import 'audio_handler.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
@@ -57,12 +56,6 @@ class _Player extends ConsumerWidget {
           icon: const Icon(Icons.keyboard_arrow_down_rounded),
         ),
         actions: [
-          if (item != null && item.pdf.isNotEmpty && ref.watch(caseTasksProvider(item.id)) != null)
-            IconButton(
-              tooltip: 'Akta sprawy',
-              onPressed: () => context.push('/akta/${item.id}'),
-              icon: const Icon(Icons.folder_open_rounded),
-            ),
           IconButton(
             tooltip: 'Zakończ słuchanie',
             onPressed: media == null
@@ -119,7 +112,7 @@ class _Player extends ConsumerWidget {
                     : ItemHeaderArt(
                         item: item,
                         // The case file button takes room: a smaller cover keeps the tools in view.
-                        maxWidth: item.pdf.isNotEmpty && item.packId == 'detektyw' ? 220 : 360,
+                        maxWidth: item.pdf.isNotEmpty && item.packId == 'detektyw' ? 290 : 360,
                         radius: 28,
                         seed: media.id.length,
                       ),
@@ -131,7 +124,7 @@ class _Player extends ConsumerWidget {
                   style: text.bodySmall,
                 ),
                 if (item != null && item.pdf.isNotEmpty && item.packId == 'detektyw') ...[
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   _CaseFileButton(item: item),
                 ],
                 const SizedBox(height: 20),
@@ -568,48 +561,47 @@ class _PullDownToCloseState extends State<PullDownToClose> with SingleTickerProv
   }
 }
 
-/// Detektyw: the case file as a big button under the title, with Szop’en, not only an icon.
-class _CaseFileButton extends ConsumerWidget {
+/// Detektyw: the case file as a slim bar under the title; it opens print and send options.
+class _CaseFileButton extends StatelessWidget {
   const _CaseFileButton({required this.item});
 
   final ContentItem item;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final interactive = ref.watch(caseTasksProvider(item.id)) != null;
+  Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
     return Material(
       color: AkBrand.sun,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
       child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        // Without tasks to answer on the phone, the details page has the printable file.
-        onTap: () => context.push(interactive ? '/akta/${item.id}' : '/zabawa/${item.id}'),
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => showCaseFilesSheet(context, item),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 6, 14, 6),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             children: [
-              const SzopSticker(SzopPose.chytry, height: 56),
-              const SizedBox(width: 8),
+              const Icon(Icons.folder_open_rounded, color: ink),
+              const SizedBox(width: 10),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Akta sprawy',
-                      style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
-                    ),
-                    Text(
-                      interactive
-                          ? 'Zadania i poszlaki do tej zagadki. Odpowiadaj tutaj albo wydrukuj.'
-                          : 'Zadania i poszlaki do wydrukowania.',
-                      style: text.bodySmall?.copyWith(color: ink),
-                    ),
-                  ],
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Akta sprawy  ',
+                        style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                      ),
+                      TextSpan(
+                        text: 'drukuj lub wyślij',
+                        style: text.bodySmall?.copyWith(color: ink),
+                      ),
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const Icon(Icons.folder_open_rounded, color: ink),
+              const Icon(Icons.chevron_right_rounded, color: ink),
             ],
           ),
         ),

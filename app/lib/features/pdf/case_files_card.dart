@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -16,63 +15,79 @@ import '../../core/theme/tokens.dart';
 import '../discovery/reference_widgets.dart';
 import '../../core/widgets/szop.dart';
 import '../parental_gate/parental_gate.dart';
-import 'case_file.dart';
+import '../catalog/catalog_providers.dart';
 import 'pdf_screen.dart';
 
 const _ink = Color(0xFF211C35);
 
-/// Szop’en pointing the parent to a case file: solve it on the phone, or print or send it.
-/// Shown big on a Detektyw play, so nobody misses that the case comes with files.
+/// The Detektyw plays that come with a case file, in pack order.
+List<ContentItem> caseFileItems(Catalog catalog) => [
+  for (final i in catalog.itemsInPack('detektyw'))
+    if (i.pdf.isNotEmpty) i,
+];
+
+/// Szop’en pointing the parent to a case file: print or send this case, or all cases at once.
+/// The case is solved with a pencil, away from the phone.
 class CaseFileCard extends ConsumerWidget {
   const CaseFileCard({super.key, required this.item});
 
   final ContentItem item;
 
-  Future<void> _print(BuildContext context) async {
-    if (!await showParentalGate(context) || !context.mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => PdfScreen(asset: item.pdf.first, title: item.title),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final interactive = ref.watch(caseTasksProvider(item.id)) != null;
-    final text = Theme.of(context).textTheme;
+    final catalog = ref.watch(catalogProvider).value;
+    final all = catalog == null ? const <ContentItem>[] : caseFileItems(catalog);
     return _SzopCard(
       pose: SzopPose.chytry,
       title: 'Psst, detektywie! Do tej sprawy są akta.',
-      body: interactive
-          ? 'W środku zadania, mapy i poszlaki. Odpowiadajcie w telefonie albo wydrukujcie akta '
-                'i rozwiązujcie ołówkiem. Akta możesz też wysłać sobie mailem.'
-          : 'W środku zadania i poszlaki. Wydrukuj akta albo wyślij je sobie mailem.',
+      body:
+          'W środku zadania, mapy i poszlaki do rozwiązania ołówkiem, bez telefonu. '
+          'Wydrukuj tę sprawę albo od razu wszystkie akta pakietu. Możesz je też wysłać sobie mailem.',
       children: [
-        if (interactive)
-          FilledButton.icon(
-            style: FilledButton.styleFrom(backgroundColor: referencePurple, foregroundColor: Colors.white),
-            onPressed: () => context.push('/akta/${item.id}'),
-            icon: const Icon(Icons.search_rounded),
-            label: const Text('Rozwiązuj w telefonie'),
-          ),
-        OutlinedButton.icon(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: _ink,
-            side: const BorderSide(color: _ink),
-          ),
-          onPressed: () => _print(context),
-          icon: const Icon(Icons.print_rounded),
-          label: Text('Wydrukuj lub wyślij', style: text.labelLarge?.copyWith(color: _ink)),
-        ),
+        _OneCaseButton(item: item),
+        if (all.length > 1) CaseFilesBulkButtons(packTitle: 'Detektyw', items: all),
       ],
     );
   }
 }
 
+/// The case files as a sheet (from the player): this case, or all at once.
+Future<void> showCaseFilesSheet(BuildContext context, ContentItem item) => showModalBottomSheet<void>(
+  context: context,
+  isScrollControlled: true,
+  showDragHandle: true,
+  builder: (_) => SafeArea(
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: CaseFileCard(item: item),
+    ),
+  ),
+);
+
+class _OneCaseButton extends StatelessWidget {
+  const _OneCaseButton({required this.item});
+
+  final ContentItem item;
+
+  @override
+  Widget build(BuildContext context) => FilledButton.icon(
+    style: FilledButton.styleFrom(backgroundColor: referencePurple, foregroundColor: Colors.white),
+    onPressed: () async {
+      if (!await showParentalGate(context) || !context.mounted) return;
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => PdfScreen(asset: item.pdf.first, title: item.title),
+        ),
+      );
+    },
+    icon: const Icon(Icons.description_rounded),
+    label: const Text('Ta sprawa: drukuj lub wyślij'),
+  );
+}
+
 /// On the Detektyw pack page: every case file at once, sent in one share or printed as one
 /// document, so nobody has to open five files one by one.
-class AllCaseFilesCard extends ConsumerStatefulWidget {
+class AllCaseFilesCard extends StatelessWidget {
   const AllCaseFilesCard({super.key, required this.packTitle, required this.items});
 
   final String packTitle;
@@ -81,10 +96,28 @@ class AllCaseFilesCard extends ConsumerStatefulWidget {
   final List<ContentItem> items;
 
   @override
-  ConsumerState<AllCaseFilesCard> createState() => _AllCaseFilesCardState();
+  Widget build(BuildContext context) => _SzopCard(
+    pose: SzopPose.zadowolony,
+    title: 'Wszystkie akta sprawy w jednym miejscu',
+    body:
+        'Każda zagadka ma swoje akta (${items.length} plików) do rozwiązania ołówkiem. '
+        'Wyślij je sobie naraz, na przykład mailem, albo wydrukuj wszystkie jednym przyciskiem.',
+    children: [CaseFilesBulkButtons(packTitle: packTitle, items: items)],
+  );
 }
 
-class _AllCaseFilesCardState extends ConsumerState<AllCaseFilesCard> {
+/// "Wyślij wszystkie akta" and "Wydrukuj wszystkie naraz", behind the parental gate.
+class CaseFilesBulkButtons extends ConsumerStatefulWidget {
+  const CaseFilesBulkButtons({super.key, required this.packTitle, required this.items});
+
+  final String packTitle;
+  final List<ContentItem> items;
+
+  @override
+  ConsumerState<CaseFilesBulkButtons> createState() => _CaseFilesBulkButtonsState();
+}
+
+class _CaseFilesBulkButtonsState extends ConsumerState<CaseFilesBulkButtons> {
   String? _busy;
 
   Future<List<(ContentItem, Uint8List)>> _load() async => [
@@ -138,15 +171,15 @@ class _AllCaseFilesCardState extends ConsumerState<AllCaseFilesCard> {
     Widget busy(String what, Widget icon) => _busy == what
         ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
         : icon;
-    return _SzopCard(
-      pose: SzopPose.zadowolony,
-      title: 'Wszystkie akta sprawy w jednym miejscu',
-      body:
-          'Każda zagadka ma swoje akta ($n plików). Wyślij je sobie naraz, na przykład mailem, '
-          'albo wydrukuj wszystkie jednym przyciskiem. Odpowiadać można też w telefonie, przy każdej sprawie.',
+    return Wrap(
+      spacing: 10,
+      runSpacing: 8,
       children: [
-        FilledButton.icon(
-          style: FilledButton.styleFrom(backgroundColor: referencePurple, foregroundColor: Colors.white),
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: _ink,
+            side: const BorderSide(color: _ink),
+          ),
           onPressed: _busy != null ? null : () => _run('share', _share),
           icon: busy('share', const Icon(Icons.ios_share_rounded)),
           label: Text('Wyślij wszystkie akta ($n)'),

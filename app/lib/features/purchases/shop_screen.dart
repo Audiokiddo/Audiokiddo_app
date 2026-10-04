@@ -14,6 +14,7 @@ import '../catalog/widgets/item_art.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../family/family.dart';
+import '../downloads/pack_download.dart';
 import '../home/quick_pick.dart';
 import '../pdf/case_files_card.dart';
 import 'offer_catalog.dart';
@@ -76,6 +77,8 @@ class ShopScreen extends ConsumerWidget {
                       owned: bundlePacks(id, catalog).every((p) => ownsPack(scopes, p.id)),
                     ),
                 ],
+                if (!subscribed) _SinglePlays(catalog: catalog, byId: byId),
+                _PriceList(catalog: catalog, byId: byId),
                 const SizedBox(height: 12),
                 const _HelpBlock(),
               ],
@@ -84,6 +87,162 @@ class ShopScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+/// Single plays for families who want just one: by pack, with price and a buy button.
+class _SinglePlays extends ConsumerStatefulWidget {
+  const _SinglePlays({required this.catalog, required this.byId});
+
+  final Catalog catalog;
+  final Map<String, StoreProduct> byId;
+
+  @override
+  ConsumerState<_SinglePlays> createState() => _SinglePlaysState();
+}
+
+class _SinglePlaysState extends ConsumerState<_SinglePlays> {
+  String? _open;
+
+  @override
+  Widget build(BuildContext context) {
+    final busy = ref.watch(purchaseControllerProvider).busyProductId;
+    final text = Theme.of(context).textTheme;
+    final groups = [
+      for (final pack in widget.catalog.packs)
+        (
+          pack,
+          [
+            for (final i in widget.catalog.itemsInPack(pack.id))
+              if (!ref.watch(canPlayProvider(i)) && widget.byId[i.storeProductId] != null) i,
+          ],
+        ),
+    ].where((g) => g.$2.isNotEmpty).toList();
+    if (groups.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const RefSection('Pojedyncze zabawy'),
+        Text(
+          'Chcesz tylko jedną przygodę? Kup ją osobno. Cały pakiet wychodzi taniej w przeliczeniu na zabawę.',
+          style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+        ),
+        const SizedBox(height: 6),
+        for (final (pack, items) in groups) ...[
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(pack.title, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+            subtitle: Text('${playsCount(items.length)} do kupienia osobno'),
+            trailing: Icon(_open == pack.id ? Icons.expand_less_rounded : Icons.expand_more_rounded),
+            onTap: () => setState(() => _open = _open == pack.id ? null : pack.id),
+          ),
+          if (_open == pack.id)
+            for (final item in items)
+              AudioRow(
+                item: item,
+                trailing: FilledButton.tonal(
+                  onPressed: busy == null
+                      ? () => buyWithGate(context, ref, widget.byId[item.storeProductId]!)
+                      : null,
+                  child: busy == item.storeProductId
+                      ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                      : Text(widget.byId[item.storeProductId]!.price),
+                ),
+              ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Every price in one place, the same as on audiokiddo.pl. Bundles show the packs' total
+/// crossed out, because that is what they really save.
+class _PriceList extends StatelessWidget {
+  const _PriceList({required this.catalog, required this.byId});
+
+  final Catalog catalog;
+  final Map<String, StoreProduct> byId;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final rows = <(String, StoreProduct, String?)>[
+      if (byId[ProductIds.monthly] case final m?) ('Abonament miesięczny', m, null),
+      if (byId[ProductIds.yearly] case final y?) ('Abonament roczny', y, null),
+      for (final pack in catalog.packs)
+        if (byId[pack.storeProductId] case final p?) ('Pakiet ${pack.title}', p, null),
+      for (final id in [ProductIds.bundleTwo, ProductIds.bundleThree])
+        if (byId[id] case final b?)
+          (
+            'Zestaw ${bundlePacks(id, catalog).length} pakietów',
+            b,
+            _sum([for (final p in bundlePacks(id, catalog)) byId[p.storeProductId]], b.currencyCode),
+          ),
+    ];
+    final singles = [for (final i in catalog.items) ?byId[i.storeProductId]?.rawPrice];
+    if (rows.isEmpty) return const SizedBox.shrink();
+    final from = singles.isEmpty ? null : singles.reduce((a, b) => a < b ? a : b);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const RefSection('Cennik'),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          decoration: BoxDecoration(
+            color: context.palette.surface,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: akSoftShadow(context),
+          ),
+          child: Column(
+            children: [
+              for (final (label, product, crossed) in rows)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Expanded(child: Text(label, style: text.bodyMedium)),
+                      if (crossed != null) ...[
+                        Text(
+                          crossed,
+                          style: text.bodySmall?.copyWith(
+                            decoration: TextDecoration.lineThrough,
+                            color: context.palette.inkMuted,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Text(product.price, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+                    ],
+                  ),
+                ),
+              if (from != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Expanded(child: Text('Pojedyncza zabawa', style: text.bodyMedium)),
+                      Text(
+                        'od ${formatMoney(from, byId.values.first.currencyCode)}',
+                        style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'Ceny są takie same jak na audiokiddo.pl. Pakiety kupujesz raz i zostają na zawsze.',
+          style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+        ),
+      ],
+    );
+  }
+
+  static String? _sum(List<StoreProduct?> products, String? currency) {
+    if (products.isEmpty || products.any((p) => p?.rawPrice == null)) return null;
+    return formatMoney(products.fold(0.0, (a, p) => a + p!.rawPrice!), currency);
   }
 }
 
@@ -406,6 +565,39 @@ class PackBanner extends ConsumerWidget {
   }
 }
 
+/// Under the start button: the pack works without the internet once downloaded, in one tap.
+class _OfflineHint extends ConsumerWidget {
+  const _OfflineHint({required this.items});
+
+  final List<ContentItem> items;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!items.any((i) => ref.watch(canPlayProvider(i)))) return const SizedBox.shrink();
+    final text = Theme.of(context).textTheme;
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AkBrand.teal.withValues(alpha: .12),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Słuchajcie bez internetu', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+          Text(
+            'Pobierz zabawy na telefon przed drogą: zagrają w aucie, samolocie i na działce.',
+            style: text.bodySmall,
+          ),
+          const SizedBox(height: 8),
+          PackDownloadButton(items: items),
+        ],
+      ),
+    );
+  }
+}
+
 /// Right under the cover: start the pack without scrolling. An owned pack goes on with the
 /// first play the child has not finished; otherwise its first free play.
 class _PackStartButton extends ConsumerWidget {
@@ -436,9 +628,7 @@ class _PackStartButton extends ConsumerWidget {
       onPressed: () => startItem(context, next),
       icon: const Icon(Icons.play_arrow_rounded, size: 28),
       label: Text(
-        owned
-            ? '${first ? 'Zacznij' : 'Graj dalej'}: ${next.title}'
-            : 'Posłuchaj za darmo: ${next.title}',
+        owned ? '${first ? 'Zacznij' : 'Graj dalej'}: ${next.title}' : 'Posłuchaj za darmo: ${next.title}',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -746,6 +936,7 @@ class PackScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
                     _PackStartButton(summary: summary, owned: owned),
                     if (!owned) const Center(child: RedeemAccessLink()),
+                    _OfflineHint(items: summary.items),
                     const SizedBox(height: 14),
                     Text('Pakiet', style: text.labelMedium?.copyWith(color: context.palette.inkMuted)),
                     Text(pack.title, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),

@@ -20,9 +20,10 @@ import '../purchases/shop.dart';
 import '../rating/rating.dart';
 import '../purchases/shop_screen.dart';
 import '../purchases/store_gateway.dart';
+import '../downloads/download_providers.dart';
 import 'catalog_providers.dart';
+import 'library_filter.dart';
 import 'seasonal.dart';
-import 'widgets/content_cover.dart';
 import 'widgets/item_art.dart';
 import 'widgets/catalog_loader.dart';
 
@@ -48,17 +49,8 @@ class HomeScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  const _SzopButton(),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'AudioKiddo',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-                      ),
-                    ),
+                  const Expanded(
+                    child: Align(alignment: Alignment.centerLeft, child: AudioKiddoLogo(height: 40)),
                   ),
                   IconButton(
                     tooltip: 'Szukaj zabawy',
@@ -121,17 +113,11 @@ class HomeScreen extends ConsumerWidget {
               const RatingCard(),
               _NextPackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
-              const _SeasonShelf(),
+              const _OfflineCard(),
+              const RefSection('Dla wieku'),
+              const _AgeRow(),
+              const RefSection('Rodzaje zabaw'),
               const _CategoryGrid(),
-              RefSection('Na co dzień', action: 'Wszystkie tryby', onTap: () => context.push('/rutyny')),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.restaurant_rounded, color: AkBrand.tealDeep),
-                title: const Text('Podczas obiadu'),
-                subtitle: const Text('Zabawy bez dodatkowych przygotowań'),
-                trailing: const Icon(Icons.chevron_right_rounded),
-                onTap: () => context.push('/ratunku?tryb=obiad'),
-              ),
             ],
           );
         },
@@ -193,14 +179,16 @@ class StartSzop extends Notifier<(SzopPose, String)?> {
   }
 }
 
-class _SzopButton extends ConsumerStatefulWidget {
-  const _SzopButton();
+/// Szop’en and his line under the logo. He speaks up a moment after Start opens; a tap shows
+/// the next line, a swipe to the left sends him away.
+class _SzopBubble extends ConsumerStatefulWidget {
+  const _SzopBubble();
 
   @override
-  ConsumerState<_SzopButton> createState() => _SzopButtonState();
+  ConsumerState<_SzopBubble> createState() => _SzopBubbleState();
 }
 
-class _SzopButtonState extends ConsumerState<_SzopButton> {
+class _SzopBubbleState extends ConsumerState<_SzopBubble> {
   Timer? _greet;
 
   @override
@@ -222,25 +210,6 @@ class _SzopButtonState extends ConsumerState<_SzopButton> {
   @override
   Widget build(BuildContext context) {
     final line = ref.watch(startSzopProvider);
-    final quiet = ref.watch(discoveryProvider).value?.quiet ?? false;
-    return Semantics(
-      button: true,
-      label: 'Szop’en, posłuchaj porady',
-      excludeSemantics: true,
-      child: GestureDetector(
-        onTap: quiet ? null : () => ref.read(startSzopProvider.notifier).speak(),
-        child: SzopSticker(line?.$1 ?? szopOfTheDay(ref.watch(clockProvider)()).$1, height: 44),
-      ),
-    );
-  }
-}
-
-class _SzopBubble extends ConsumerWidget {
-  const _SzopBubble();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final line = ref.watch(startSzopProvider);
     final show = line != null && !(ref.watch(discoveryProvider).value?.quiet ?? false);
     const ink = Color(0xFF211C35);
     return AnimatedSize(
@@ -250,29 +219,35 @@ class _SzopBubble extends ConsumerWidget {
       child: !show
           ? const SizedBox(width: double.infinity)
           : Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: GestureDetector(
-                onTap: () => ref.read(startSzopProvider.notifier).hush(),
-                child: Semantics(
-                  liveRegion: true,
-                  label: 'Szop’en mówi: ${line.$2}',
-                  excludeSemantics: true,
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                    decoration: const BoxDecoration(
-                      color: AkBrand.sun,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(4),
-                        topRight: Radius.circular(18),
-                        bottomLeft: Radius.circular(18),
-                        bottomRight: Radius.circular(18),
+              padding: const EdgeInsets.only(top: 10),
+              child: Dismissible(
+                key: ValueKey(line),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) => ref.read(startSzopProvider.notifier).hush(),
+                child: GestureDetector(
+                  onTap: () => ref.read(startSzopProvider.notifier).speak(),
+                  child: Semantics(
+                    liveRegion: true,
+                    button: true,
+                    label: 'Szop’en mówi: ${line.$2}. Stuknij po kolejną poradę.',
+                    excludeSemantics: true,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(8, 8, 14, 8),
+                      decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(20)),
+                      child: Row(
+                        children: [
+                          SzopSticker(line.$1, height: 52),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              line.$2,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.3),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    child: Text(
-                      line.$2,
-                      style: Theme.of(context).textTheme.bodyMedium
-                          ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.3),
                     ),
                   ),
                 ),
@@ -280,6 +255,123 @@ class _SzopBubble extends ConsumerWidget {
             ),
     );
   }
+}
+
+/// Ages as three big chips, each opening the library for that age.
+class _AgeRow extends StatelessWidget {
+  const _AgeRow();
+
+  @override
+  Widget build(BuildContext context) {
+    const ages = [(3, 5, AkBrand.sun), (5, 7, Color(0xFFB8E3DF)), (7, 9, Color(0xFFDED0EF))];
+    final text = Theme.of(context).textTheme;
+    return Row(
+      children: [
+        for (final (i, (from, to, color)) in ages.indexed) ...[
+          if (i > 0) const SizedBox(width: 10),
+          Expanded(
+            child: Material(
+              color: color,
+              borderRadius: BorderRadius.circular(18),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(18),
+                onTap: () => context.push(LibraryFilter(age: to, ageFrom: from).toLocation()),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  child: Column(
+                    children: [
+                      Text(
+                        '$from–$to',
+                        style: text.titleLarge?.copyWith(
+                          color: const Color(0xFF211C35),
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text('lat', style: text.bodySmall?.copyWith(color: const Color(0xFF211C35))),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Plays work without the internet once downloaded: said plainly on Start.
+class _OfflineCard extends ConsumerWidget {
+  const _OfflineCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(downloadSummaryProvider).value?.itemIds.length ?? 0;
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Material(
+        color: referenceMint,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () => context.push('/pobrane'),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                const Icon(Icons.offline_pin_rounded, size: 34, color: Color(0xFF0E3437)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Zabawy bez internetu',
+                        style: text.titleSmall?.copyWith(
+                          color: const Color(0xFF211C35),
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text(
+                        count == 0
+                            ? 'Pobierz je przed drogą do auta, samolotu czy na działkę.'
+                            : 'Pobrane: ${playsCount(count)}. Dobierz kolejne, całe pakiety jednym przyciskiem.',
+                        style: text.bodySmall?.copyWith(color: const Color(0xFF211C35)),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded, color: Color(0xFF211C35)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The brand logo, in the text colour of the theme (dark on light, light on dark).
+class AudioKiddoLogo extends StatelessWidget {
+  const AudioKiddoLogo({super.key, this.height = 36});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: 'AudioKiddo',
+    image: true,
+    excludeSemantics: true,
+    child: Image.asset(
+      'assets/brand/logo.png',
+      height: height,
+      fit: BoxFit.contain,
+      color: Theme.of(context).colorScheme.onSurface,
+      colorBlendMode: BlendMode.srcIn,
+      filterQuality: FilterQuality.medium,
+    ),
+  );
 }
 
 /// After the child finished a free taste of a pack, its other plays are the natural next step.
@@ -681,107 +773,15 @@ class _BundleTeaser extends StatelessWidget {
   }
 }
 
-/// The seasonal collection of the catalog: one row that changes with the time of year.
-class _SeasonShelf extends ConsumerWidget {
-  const _SeasonShelf();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final shelf = ref.watch(seasonalShelfProvider);
-    final catalog = ref.watch(catalogProvider).value;
-    if (shelf == null || catalog == null) return const SizedBox.shrink();
-    final items = [for (final id in shelf.itemIds) ?catalog.item(id)];
-    final text = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RefSection(shelf.title),
-        if (shelf.subtitle != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Text(shelf.subtitle!, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
-          ),
-        SizedBox(
-          // Cover plus two lines of title, at any text size.
-          height: 120 + MediaQuery.textScalerOf(context).scale(40),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: items.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
-            itemBuilder: (context, i) {
-              final item = items[i];
-              return SizedBox(
-                width: 112,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(14),
-                  onTap: () => context.push('/zabawa/${item.id}'),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ContentCover(
-                        item: item,
-                        size: 112,
-                        locked: !ref.watch(canPlayProvider(item)),
-                        fresh: ref.watch(isNewItemProvider(item)),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(item.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: text.bodySmall),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// The tiles of the mockup: six kinds of play, each opening the library filtered to it.
+/// Six kinds of play, each opening the library filtered to it.
 class _CategoryGrid extends StatelessWidget {
   const _CategoryGrid();
-
-  static const _look = <PlayCategory, (Color, Color, IconData)>{
-    PlayCategory.adventure: (AkBrand.sun, Color(0xFF211C35), Icons.rocket_launch_rounded),
-    PlayCategory.detective: (referenceLilac, Color(0xFF211C35), Icons.search_rounded),
-    PlayCategory.songs: (referenceMint, Color(0xFF211C35), Icons.music_note_rounded),
-    PlayCategory.movement: (AkBrand.teal, Color(0xFF10393B), Icons.directions_run_rounded),
-    PlayCategory.creative: (Color(0xFF7B5BA6), Colors.white, Icons.palette_rounded),
-    PlayCategory.calm: (Color(0xFFCDEDE8), Color(0xFF211C35), Icons.nightlight_round),
-  };
 
   @override
   Widget build(BuildContext context) => TwoColumns(
     children: [
-      for (final c in PlayCategory.values)
-        Pressable(
-          onTap: () => context.push('/biblioteka?kategoria=${c.name}'),
-          child: Semantics(
-            button: true,
-            label: c.label.replaceAll('\n', ' '),
-            excludeSemantics: true,
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 104),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(color: _look[c]!.$1, borderRadius: BorderRadius.circular(22)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(_look[c]!.$3, size: 34, color: _look[c]!.$2),
-                  const SizedBox(height: 10),
-                  Text(
-                    c.label,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: Theme.of(context).textTheme.titleSmall
-                        ?.copyWith(color: _look[c]!.$2, fontWeight: FontWeight.w700, height: 1.15),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+      for (final c in PlayCategory.shown)
+        CategoryTile(category: c, onTap: () => context.push('/biblioteka?kategoria=${c.name}')),
     ],
   );
 }
@@ -795,7 +795,7 @@ class _QuickNeeds extends StatelessWidget {
     final needs = [
       (Icons.schedule_rounded, 'Mam 20 minut', '/ratunku'),
       (Icons.directions_car_rounded, 'W podróży', '/podroz'),
-      (Icons.bedtime_rounded, 'Na dobranoc', '/dobranoc'),
+      (Icons.offline_pin_rounded, 'Pobierz offline', '/pobrane'),
       (Icons.auto_awesome_rounded, 'Tryby i rutyny', '/rutyny'),
     ];
     const colors = [AkBrand.sun, Color(0xFFB8E3DF), Color(0xFFDED0EF), Color(0xFFE5DCEF)];
@@ -865,7 +865,7 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
       int rank(ContentItem i) => ref.watch(canPlayProvider(i)) ? 0 : 1;
       return rank(a).compareTo(rank(b));
     });
-  final picks = [...fresh, ...rest].where((i) => i.id != _closingPlayId).take(4).toList();
+  final picks = [...fresh, ...rest].where((i) => i.id != _closingPlayId).take(2).toList();
   // "Prawda czy nie?" always closes the row: a quick game for any moment.
   final closing = catalog.item(_closingPlayId);
   return [...picks, ?closing];
@@ -882,7 +882,7 @@ class HeroShelf extends ConsumerStatefulWidget {
 }
 
 class _HeroShelfState extends ConsumerState<HeroShelf> {
-  static const _fraction = .62;
+  static const _fraction = .8;
   late final _controller = PageController(viewportFraction: _fraction);
   int _page = 0;
 

@@ -69,6 +69,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               onPressed: () => setState(() => _searching = true),
               icon: const Icon(Icons.search_rounded),
             ),
+          IconButton(
+            tooltip: 'Ulubione',
+            onPressed: () => context.push('/ulubione'),
+            icon: const Icon(Icons.favorite_border_rounded),
+          ),
         ],
       ),
       body: CatalogLoader(
@@ -153,39 +158,43 @@ class _Browse extends ConsumerWidget {
     ];
     final products = ref.watch(storeProductsProvider(productsKey(shopProductIds(catalog))));
     final byId = {for (final p in products.value ?? const <StoreProduct>[]) p.id: p};
-    final text = Theme.of(context).textTheme;
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
       children: [
         _SearchField(onTap: onSearch),
         const SizedBox(height: 6),
-        RefSection(owned.isEmpty ? 'Wasze zabawy' : 'Wasze pakiety'),
-        if (owned.isEmpty)
-          _FreeStart(onTap: () => onFilter(const LibraryFilter(available: true)))
-        else
-          for (final s in owned)
-            _OwnedPackCard(
-              summary: s,
-              onPlay: () => onFilter(LibraryFilter(packId: s.pack.id)),
-            ),
-        if (locked.isNotEmpty) ...[
-          const RefSection('Do odblokowania'),
-          Text(
-            'W każdym pakiecie część zabaw jest za darmo. Posłuchajcie, zanim kupicie.',
-            style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+        _Panel(
+          color: AkBrand.teal.withValues(alpha: .14),
+          title: owned.isEmpty ? 'Wasze zabawy' : 'Wasze pakiety',
+          children: [
+            if (owned.isEmpty)
+              _FreeStart(onTap: () => onFilter(const LibraryFilter(available: true)))
+            else
+              for (final s in owned)
+                _OwnedPackCard(
+                  summary: s,
+                  onPlay: () => onFilter(LibraryFilter(packId: s.pack.id)),
+                ),
+          ],
+        ),
+        if (locked.isNotEmpty)
+          _Panel(
+            color: referenceLilac.withValues(alpha: .35),
+            title: 'Do odblokowania',
+            subtitle: 'W każdym pakiecie część zabaw jest za darmo. Posłuchajcie, zanim kupicie.',
+            children: [
+              for (final s in locked) _LockedPackCard(summary: s, product: byId[s.pack.storeProductId]),
+              const Center(child: RedeemAccessLink()),
+            ],
           ),
-          const SizedBox(height: 10),
-          for (final s in locked) _LockedPackCard(summary: s, product: byId[s.pack.storeProductId]),
-          const RedeemAccessLink(),
-        ],
         const RefSection('Dla rodzica'),
         _ParentTools(onFilter: onFilter),
-        const RefSection('Szybki wybór'),
+        const RefSection('Filtry zabaw'),
         _QuickFilters(onFilter: onFilter),
         const RefSection('Kategorie'),
         TwoColumns(
           children: [
-            for (final c in PlayCategory.values)
+            for (final c in PlayCategory.shown)
               CategoryTile(
                 category: c,
                 onTap: () => onFilter(LibraryFilter(category: c)),
@@ -193,6 +202,42 @@ class _Browse extends ConsumerWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+/// A tinted block that sets a group apart (your packs, packs to unlock).
+class _Panel extends StatelessWidget {
+  const _Panel({required this.color, required this.title, this.subtitle, required this.children});
+
+  final Color color;
+  final String title;
+  final String? subtitle;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Container(
+      margin: const EdgeInsets.only(top: 18),
+      padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(26)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Text(title, style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+          ),
+          if (subtitle != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 2, 4, 0),
+              child: Text(subtitle!, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+            ),
+          const SizedBox(height: 10),
+          ...children,
+        ],
+      ),
     );
   }
 }
@@ -435,19 +480,13 @@ class _LockedPackCard extends StatelessWidget {
                         children: [
                           _Tag('${playsCount(summary.items.length)} · ${summary.minutes} min'),
                           if (free > 0) _Tag(free == 1 ? '1 za darmo' : '$free za darmo', strong: true),
+                          if (product != null) _Tag(product!.price, strong: true),
                         ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                Column(
-                  children: [
-                    if (product != null)
-                      Text(product!.price, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
-                    const Icon(Icons.chevron_right_rounded),
-                  ],
-                ),
+                const Icon(Icons.chevron_right_rounded),
               ],
             ),
           ),
@@ -488,15 +527,8 @@ class _ParentTools extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final downloaded = ref.watch(downloadSummaryProvider).value?.itemIds.length ?? 0;
     final tools = <(IconData, String, String, VoidCallback)>[
-      (
-        Icons.bolt_rounded,
-        'Bez przygotowań',
-        'Nic nie trzeba szykować',
-        () => onFilter(const LibraryFilter(noPrep: true, available: true)),
-      ),
       (Icons.schedule_rounded, 'Mam 20 minut', 'Dobierzemy zabawy', () => context.push('/ratunku')),
       (Icons.directions_car_rounded, 'Do auta', 'Cykl na całą drogę', () => context.push('/podroz')),
-      (Icons.bedtime_rounded, 'Na dobranoc', 'Wieczorny rytuał', () => context.push('/dobranoc')),
       (
         Icons.offline_pin_rounded,
         'Bez internetu',
@@ -578,10 +610,11 @@ class _QuickFilters extends StatelessWidget {
       ('Audiozabawy', const LibraryFilter(kind: ContentKind.audioGame)),
       ('Piosenki', const LibraryFilter(kind: ContentKind.song)),
       ('Gry z odpowiedziami', const LibraryFilter(kind: ContentKind.interactiveGame)),
+      ('Bez przygotowań', const LibraryFilter(noPrep: true)),
       ('Do 10 min', const LibraryFilter(maxMinutes: 10)),
       ('Do 20 min', const LibraryFilter(maxMinutes: 20)),
-      ('3–4 lata', const LibraryFilter(age: 4, ageFrom: 3)),
-      ('5–6 lat', const LibraryFilter(age: 6, ageFrom: 5)),
+      ('3–5 lat', const LibraryFilter(age: 5, ageFrom: 3)),
+      ('5–7 lat', const LibraryFilter(age: 7, ageFrom: 5)),
       ('7–9 lat', const LibraryFilter(age: 9, ageFrom: 7)),
       ('Tylko dostępne', const LibraryFilter(available: true)),
     ];
@@ -624,7 +657,7 @@ class _FilterChips extends StatelessWidget {
             (ContentKind.interactiveGame, 'Gry'),
           ])
             chip(label, f.kind == kind, () => f.copyWith(kind: () => f.kind == kind ? null : kind)),
-          for (final (age, from, label) in [(4, 3, '3–4'), (6, 5, '5–6'), (9, 7, '7–9')])
+          for (final (age, from, label) in [(5, 3, '3–5'), (7, 5, '5–7'), (9, 7, '7–9')])
             chip(
               label,
               f.age == age,

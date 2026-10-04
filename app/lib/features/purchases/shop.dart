@@ -17,12 +17,13 @@ import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'store_gateway.dart';
 
-/// Everything the Shop tab can sell: both subscriptions, every pack and both bundles.
+/// Everything the Shop tab can sell: both subscriptions, every pack, both bundles and single plays.
 Set<String> shopProductIds(Catalog catalog) => {
   ...ProductIds.subscriptions,
   for (final p in catalog.packs) ?p.storeProductId,
   ProductIds.bundleTwo,
   ProductIds.bundleThree,
+  for (final i in catalog.items) ?i.storeProductId,
 };
 
 /// Packs of a bundle product, in catalog order.
