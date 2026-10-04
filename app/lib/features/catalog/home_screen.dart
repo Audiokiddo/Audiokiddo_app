@@ -106,7 +106,7 @@ class HomeScreen extends ConsumerWidget {
                 for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
               const PendingDiplomaCard(),
               _NextPackCard(catalog: catalog),
-              const _NewThings(),
+              _PacksShelf(catalog: catalog),
               const _SeasonShelf(),
               const _CategoryGrid(),
               RefSection('Na co dzień', action: 'Wszystkie tryby', onTap: () => context.push('/rutyny')),
@@ -207,19 +207,90 @@ class _NextPackCard extends ConsumerWidget {
   }
 }
 
-/// "Nowości": what was released in the last weeks (from the catalog's release dates).
-class _NewThings extends ConsumerWidget {
-  const _NewThings();
+/// Every pack, owned or not, as one swipeable row: tapping opens the pack page with its plays
+/// (locked ones can be previewed there).
+class _PacksShelf extends ConsumerWidget {
+  const _PacksShelf({required this.catalog});
+
+  final Catalog catalog;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final items = ref.watch(newItemsProvider);
-    if (items.isEmpty) return const SizedBox.shrink();
+    if (catalog.packs.isEmpty) return const SizedBox.shrink();
+    final scopes = ref.watch(activeScopesProvider);
+    final text = Theme.of(context).textTheme;
+    final summaries = [for (final p in catalog.packs) PackSummary(p, catalog)];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const RefSection('Nowości'),
-        for (final item in items.take(3)) AudioRow(item: item),
+        const RefSection('Pakiety'),
+        SizedBox(
+          // Cover plus three lines under it, at any text size.
+          height: 150 + MediaQuery.textScalerOf(context).scale(66),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: summaries.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            itemBuilder: (context, i) {
+              final s = summaries[i];
+              final owned = ownsPack(scopes, s.pack.id);
+              return SizedBox(
+                width: 150,
+                child: Pressable(
+                  onTap: () => openPack(context, s.pack.id),
+                  child: Semantics(
+                    button: true,
+                    label: '${s.pack.title}, ${playsCount(s.items.length)}, ${owned ? 'masz' : 'do odblokowania'}',
+                    excludeSemantics: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox.square(
+                          dimension: 150,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              PackArt(summary: s, radius: 22),
+                              Positioned(
+                                right: 8,
+                                top: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: owned ? AkBrand.teal : AkBrand.sun,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    owned ? Icons.check_rounded : Icons.lock_rounded,
+                                    size: 18,
+                                    color: owned ? Colors.white : const Color(0xFF211C35),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          s.pack.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        Text(
+                          '${playsCount(s.items.length)} · ${owned ? 'masz' : 'do odblokowania'}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
       ],
     );
   }
