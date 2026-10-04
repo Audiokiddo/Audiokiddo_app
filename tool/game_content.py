@@ -104,24 +104,68 @@ def encode(inputs, target):
 
 SCRIPT_LINES = {}  # game -> [(segment, text)] for the narrator list
 
+# Narrator voice: macOS "Zosia" by default (free placeholder). With --voice NAME the games in
+# --games are spoken by that ElevenLabs voice instead (key from the macOS keychain, item
+# "elevenlabs-api-key"; never in the repository). Every line is cached by its text, so a
+# rerun costs nothing for lines already bought.
+ELEVEN = {"voice": None, "games": set(), "model": "eleven_v4", "spent": 0, "limit": 6000}
+ELEVEN_VOICES = {"nela": "PCOFCZ4Ict9D0opt85il", "fantazjusz": "ijH86K9sA5IEvCDBMgFn"}
+TTS_CACHE = OUT / "tts-cache"
+
+
+def _eleven_key():
+    key = subprocess.run(["security", "find-generic-password", "-a", "audiokiddo", "-s", "elevenlabs-api-key", "-w"],
+                         capture_output=True, text=True).stdout.strip()
+    if not key:
+        raise SystemExit("Brak klucza ElevenLabs w pęku kluczy (elevenlabs-api-key).")
+    return key
+
+
+def speak(text, target, game):
+    """Writes [text] spoken by the narrator to [target] (aiff for say, mp3 for ElevenLabs)."""
+    if ELEVEN["voice"] and game in ELEVEN["games"]:
+        import urllib.request
+        voice = ELEVEN_VOICES[ELEVEN["voice"]]
+        cache = TTS_CACHE / ELEVEN["voice"] / (hashlib.sha1(f'{ELEVEN["model"]}|{text}'.encode()).hexdigest() + ".mp3")
+        if not cache.exists():
+            if ELEVEN["spent"] + len(text) > ELEVEN["limit"]:
+                raise SystemExit(f'Limit znaków ({ELEVEN["limit"]}) osiągnięty; przerwano bez dalszych kosztów.')
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            request = urllib.request.Request(
+                f"https://api.elevenlabs.io/v1/text-to-speech/{voice}?output_format=mp3_44100_128",
+                data=json.dumps({"text": text, "model_id": ELEVEN["model"], "language_code": "pl",
+                                 "voice_settings": {"stability": 0.5, "similarity_boost": 0.8}}).encode(),
+                headers={"xi-api-key": _eleven_key(), "Content-Type": "application/json"}, method="POST")
+            # No automatic retry: a failed call may already have used credits.
+            with urllib.request.urlopen(request, timeout=120) as response:
+                data = response.read()
+            if not data:
+                raise SystemExit("ElevenLabs zwrócił pusty plik.")
+            cache.write_bytes(data)
+            ELEVEN["spent"] += len(text)
+        target.write_bytes(cache.read_bytes())
+        return target
+    subprocess.run(["say", "-v", "Zosia", "-o", str(target), text], check=True)
+    return target
+
 
 def segment(game, name, speech=None, sound=None, after=None):
     """speech → sound → speech (after). Returns the asset entry."""
     target = OUT / "games" / game / f"{name}.m4a"
     if speech or after:
         SCRIPT_LINES.setdefault(game, []).append((name, " … ".join(t for t in [speech, "[dźwięk]" if sound else None, after] if t)))
-    if not target.exists():
+    fresh_voice = ELEVEN["voice"] and game in ELEVEN["games"]
+    if not target.exists() or fresh_voice:
         with tempfile.TemporaryDirectory() as tmp:
             parts = []
             for i, text in enumerate([speech, None, after]):
                 if i == 1 and sound is not None:
                     p = pathlib.Path(tmp) / "sound.wav"
-                    write_wav(sound, p)
+                    # Effects sit under a real narrator, never above her.
+                    write_wav([v * 0.45 for v in sound] if fresh_voice else sound, p)
                     parts.append(p)
                 elif text:
-                    p = pathlib.Path(tmp) / f"s{i}.aiff"
-                    subprocess.run(["say", "-v", "Zosia", "-o", str(p), text], check=True)
-                    parts.append(p)
+                    parts.append(speak(text, pathlib.Path(tmp) / f"s{i}.{'mp3' if fresh_voice else 'aiff'}", game))
             encode(parts, target)
     data = target.read_bytes()
     return {"path": f"games/{game}/{name}.m4a", "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
@@ -514,6 +558,13 @@ def item(id_, title, description, script, situations, requirements, minutes, acc
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--voice", choices=sorted(ELEVEN_VOICES), help="ElevenLabs narrator for --games")
+    parser.add_argument("--games", nargs="*", default=[], help="game ids spoken by --voice")
+    parser.add_argument("--limit", type=int, default=6000, help="max characters bought in this run")
+    args = parser.parse_args()
+    ELEVEN.update(voice=args.voice, games=set(args.games), limit=args.limit)
     games = [
         item("zgadnij-dzwiek", "Zgadnij dźwięk",
              "Dziecko słucha odgłosów i mówi, co to. Aplikacja nie ocenia odpowiedzi: po chwili podaje rozwiązanie. "
@@ -566,6 +617,8 @@ def main():
         lines.append("")
     (ROOT / "docs/NAGRANIA-DO-GIER.md").write_text("\n".join(lines))
     print(f"{len(games)} games, {sum(len(g['script']['assets']) for g in games)} segments")
+    if ELEVEN["voice"]:
+        print(f"ElevenLabs ({ELEVEN['voice']}): kupiono {ELEVEN['spent']} znaków w tym przebiegu")
 
 
 if __name__ == "__main__":

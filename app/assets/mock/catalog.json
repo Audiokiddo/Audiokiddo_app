@@ -2241,258 +2241,258 @@
     "assets": {
      "intro": {
       "path": "games/zgubiona-gwiazdka/intro.m4a",
-      "bytes": 155534,
-      "sha256": "b96b03d8372d776fa6e082076890210fe943922d6b04f8a6e51d7bc7abbaa76c"
+      "bytes": 172101,
+      "sha256": "afeee13aebf590ae02d806582256c54afedfc8e8e6d98576df737f37cd4e0d3b"
      },
      "ready_self": {
       "path": "games/zgubiona-gwiazdka/ready_self.m4a",
-      "bytes": 23372,
-      "sha256": "c5b0bcf4c80e3b6034b49601fdba495890a3eb3511238a305e3c1edc0ecab7de"
+      "bytes": 23634,
+      "sha256": "a76b52d4d3b8c390ba031e4b54c34c3bcd01fda03b6b1bfda83b49341ee6ebaf"
      },
      "go": {
       "path": "games/zgubiona-gwiazdka/go.m4a",
-      "bytes": 17945,
-      "sha256": "171e1e1e479ccd58a57171ec994d007500380648a55f1449f5980d02bea294b1"
+      "bytes": 17621,
+      "sha256": "fd5f9d44e73c9b1ae5df93eac6577f9afd636ce48f9b8465b2899d18e755a4b9"
      },
      "cross": {
       "path": "games/zgubiona-gwiazdka/cross.m4a",
-      "bytes": 82306,
-      "sha256": "641c7ba7db625ed4936831bee056e59aab6a7309f5f87e6872a0c942ff622389"
+      "bytes": 103101,
+      "sha256": "28fd8f138c38f8aacfb59cc38b0b015c0bbb0378271ff5249380f459f896be2d"
      },
      "cross_again": {
       "path": "games/zgubiona-gwiazdka/cross_again.m4a",
-      "bytes": 40021,
-      "sha256": "96c66f9d663304c841b6e800edb7a165574e415197878e0384d01265a5ef8123"
+      "bytes": 40498,
+      "sha256": "3a86719df47ecff503bcd7918c6035e0d35237ce1a1fe3f7ae677308786ff270"
      },
      "cross_auto": {
       "path": "games/zgubiona-gwiazdka/cross_auto.m4a",
-      "bytes": 43609,
-      "sha256": "7ef54afe96ef6da3c1ac52f940fb2b77680c5fb9afb5cfc9ccdbda4f9e427dd0"
+      "bytes": 46726,
+      "sha256": "f47c414e99d656b5d4dfb1d80de012489370888aa45b3ec6815c873a2e6f884b"
      },
      "cross_claps": {
       "path": "games/zgubiona-gwiazdka/cross_claps.m4a",
-      "bytes": 51706,
-      "sha256": "ba33cc33522d4c8f5d630dc9157e3b2f2516295b438246cb26ca1af3af562484"
+      "bytes": 55632,
+      "sha256": "b6fa1c816ffa2e241bd8006e7197c56d3a52c4a5d9aa8b99566e791a4b7fd19e"
      },
      "forest": {
       "path": "games/zgubiona-gwiazdka/forest.m4a",
-      "bytes": 121259,
-      "sha256": "e2a73265d9c415b9c650394b5648f034d108f51502c35b5134797fbf64c11a0a"
+      "bytes": 130588,
+      "sha256": "47f64fd490fe8071f95ffc8ecced77ea723776851bc6f07bbf46bf70fe21eb3d"
      },
      "riddle_praise": {
       "path": "games/zgubiona-gwiazdka/riddle_praise.m4a",
-      "bytes": 38130,
-      "sha256": "2a82532ff287a06b98b17238ff7ec3c9cfadba7d323905c623b3c01993bbdb3e"
+      "bytes": 44536,
+      "sha256": "73563db83db516a51ab53e5cb1b7820961171cbc4fc35aad86b16a1c6e55086e"
      },
      "riddle_wrong": {
       "path": "games/zgubiona-gwiazdka/riddle_wrong.m4a",
-      "bytes": 40950,
-      "sha256": "56fabe5621b6893519e7c39ecc0a2a264f8241eed70af71c4a886b5f50822617"
+      "bytes": 43830,
+      "sha256": "25d8507dfbe0c617880490c7af2193f53ce2f18edbe39b28a9b79d9ba7547d68"
      },
      "riddle_hint_say": {
       "path": "games/zgubiona-gwiazdka/riddle_hint_say.m4a",
-      "bytes": 45929,
-      "sha256": "0eb471fa43c9a86235b712d0caf89f1f598981dace473cd865bc89b5fcf2de9d"
+      "bytes": 50734,
+      "sha256": "28b0f2d7530bf46d58cd544214438303d67bec4b88b286db694d1f75a587aeb1"
      },
      "riddle_tell": {
       "path": "games/zgubiona-gwiazdka/riddle_tell.m4a",
-      "bytes": 20605,
-      "sha256": "a5787f9ef4d26f93d183e03516649d062f23fa1834e427c7e3e17e543d1088ea"
+      "bytes": 17666,
+      "sha256": "f8df1cd165b1ea329c6e6fa88619005a3c21ef7befe3496c2bd4f54982e2f02b"
      },
      "owl": {
       "path": "games/zgubiona-gwiazdka/owl.m4a",
-      "bytes": 89987,
-      "sha256": "e06d79ca677755e68728f5640d563db7a968ba6f58429e73da4287ef5b488a27"
+      "bytes": 101698,
+      "sha256": "b4368a7413ee9b04ca67ea8b60768fc2d95a442e522a7c83c6f797caac21f4c7"
      },
      "owl_again": {
       "path": "games/zgubiona-gwiazdka/owl_again.m4a",
-      "bytes": 39619,
-      "sha256": "1d59453f9f304eb7a9fe50adb1874ba92c64070541d26e0cd38c871c919d9f22"
+      "bytes": 40541,
+      "sha256": "73d077291b5b53d63a528833a1a01ca873c9911c85e4c330e42e118b80e01f97"
      },
      "owl_auto": {
       "path": "games/zgubiona-gwiazdka/owl_auto.m4a",
-      "bytes": 20623,
-      "sha256": "44c6bea9bd7f86092d52c8f6c1953108363919c6f553f6569fbdcaef77d176fd"
+      "bytes": 26028,
+      "sha256": "b9d86fe5b33e172733648c453de57886243a82ad1a8aa5d0d80331cc590b963b"
      },
      "owl_claps": {
       "path": "games/zgubiona-gwiazdka/owl_claps.m4a",
-      "bytes": 45632,
-      "sha256": "c989755dd142e490bcd5c39709eec323b1c68949ffac0084c5c1e15a1dfdc71d"
+      "bytes": 48433,
+      "sha256": "6534c904c0651f5a5782792bbf91168d31410fd6166d3003bead2356652171e0"
      },
      "mountain": {
       "path": "games/zgubiona-gwiazdka/mountain.m4a",
-      "bytes": 125145,
-      "sha256": "781931df5eea2d48e393a19388e8120ca6c864f207896e6e7625515a83d66fe3"
+      "bytes": 133460,
+      "sha256": "b494c8e55b609d43c16035eb6eb2e2f8f4225eda677d55532b2856e3b614f662"
      },
      "wind_claps_self": {
       "path": "games/zgubiona-gwiazdka/wind_claps_self.m4a",
-      "bytes": 25750,
-      "sha256": "6e67a3240c38a93754e664f004b7260c4243da3c785ad270688bd010f3626f94"
+      "bytes": 32773,
+      "sha256": "ab918dac4acd898737dfdc5c425c91e4dca4897965c57ad03a646d1febdf19f3"
      },
      "wind_ok": {
       "path": "games/zgubiona-gwiazdka/wind_ok.m4a",
-      "bytes": 49444,
-      "sha256": "f8e04bc7bfb517cf86a0c111c46d2f4eaad09cfdd833c751de88049404b3c692"
+      "bytes": 53246,
+      "sha256": "d56e18daf9f4554945dd92802d1bb4fce46e18d42a541ae2fce1251e42b68210"
      },
      "wind_help": {
       "path": "games/zgubiona-gwiazdka/wind_help.m4a",
-      "bytes": 44713,
-      "sha256": "f428272a742e98aa09260d02670a6c5490ed29499f87dcb35b809fd209541fdb"
+      "bytes": 50480,
+      "sha256": "8b21119178850203034ade77f2b2096c0c416e0de1373dd4a71afd918a4134dd"
      },
      "ending_wind": {
       "path": "games/zgubiona-gwiazdka/ending_wind.m4a",
-      "bytes": 180770,
-      "sha256": "56671ff93ea000a257a0aef0451dd3ef00bba4ce771cdc942974d5c16fb00cd3"
+      "bytes": 193925,
+      "sha256": "6698aa5f54a3b7c8dc938e8434fd3074aff7bcb04638a8830fb4e2d71740891b"
      },
      "hollow": {
       "path": "games/zgubiona-gwiazdka/hollow.m4a",
-      "bytes": 130160,
-      "sha256": "25d628cbf2232112938a1563c49250d1d2878ca30652e4cb3121eff1d207701f"
+      "bytes": 146440,
+      "sha256": "4cb1d2dc753ef15b67bd5e887209d3a775a710d46c022f642fa1d676baba713f"
      },
      "hollow_again": {
       "path": "games/zgubiona-gwiazdka/hollow_again.m4a",
-      "bytes": 46131,
-      "sha256": "c98873004c66721cd1b9169c36edf65e193c555ce4874fd054faa82e008ae136"
+      "bytes": 51850,
+      "sha256": "03955cdf64715ee765356bd70be456eddafb91d5e6f64f4c028ece70f90e64f7"
      },
      "hollow_auto": {
       "path": "games/zgubiona-gwiazdka/hollow_auto.m4a",
-      "bytes": 23998,
-      "sha256": "f3347a55616f8e856f03d18bc73bcf437c072b1d0634ed5b290a6d61c92ce8b0"
+      "bytes": 26124,
+      "sha256": "905311525010d821bd324fa1af0782f279b489dead7b3abdb8cc0ae4f5983f11"
      },
      "hollow_claps": {
       "path": "games/zgubiona-gwiazdka/hollow_claps.m4a",
-      "bytes": 56160,
-      "sha256": "bbc4418345c2559b58b04f048c91ae01c6d80467c7b4b863665965f0ed765a37"
+      "bytes": 55882,
+      "sha256": "9b0a40b8430d0a521cf7bdaadfd7e5ace2cb613ab9c926997ea1df59342c044c"
      },
      "wake": {
       "path": "games/zgubiona-gwiazdka/wake.m4a",
-      "bytes": 73834,
-      "sha256": "67f9291fb380c944f697eb9df7bef1201032659f234fc9d74622749727364b39"
+      "bytes": 92964,
+      "sha256": "14754bea2ac4af56a0122f6789b63534f2638aa134e17ad125c95e1d1ef1c78a"
      },
      "ending_squirrel": {
       "path": "games/zgubiona-gwiazdka/ending_squirrel.m4a",
-      "bytes": 203470,
-      "sha256": "cc27a43bc84979ca927f84d0b874a5731d6e758fbb373d24e7b0a7541f6b01ef"
+      "bytes": 224429,
+      "sha256": "dd0e71740fae7577fc77d938faa709e854affe6499c2d721271f33f4fefbb810"
      },
      "lullaby": {
       "path": "games/zgubiona-gwiazdka/lullaby.m4a",
-      "bytes": 81335,
-      "sha256": "53e26770629a90c83ee83243862c8c287e64efa99de60da834dba1bde536c3c2"
+      "bytes": 86679,
+      "sha256": "72028456a513e22668df1b8cbb0fe69cdcb716e959783d32fd7d37446fc39eee"
      },
      "ending_lullaby": {
       "path": "games/zgubiona-gwiazdka/ending_lullaby.m4a",
-      "bytes": 165475,
-      "sha256": "e4ebe4db13d9c0a5f322753c6258331ed7be942828522cf6b9057373f6311b0b"
+      "bytes": 174521,
+      "sha256": "052180287938cdd984b7d6706987b46a5e04602f0a4a0b63476a4594de8f691b"
      },
      "river": {
       "path": "games/zgubiona-gwiazdka/river.m4a",
-      "bytes": 111548,
-      "sha256": "324c34a5e79298a4ebff9b98479bfd59db2336c487db1a53b6afaf327e154d14"
+      "bytes": 111943,
+      "sha256": "12814fd16aada49a6393afea0df65dcc663f55248684a8ed5e4c9636f4ccaf6e"
      },
      "frog": {
       "path": "games/zgubiona-gwiazdka/frog.m4a",
-      "bytes": 55528,
-      "sha256": "c03154fe218db4f3794fea1365df47d2612317e5c1e6e9ce4d748265ef3aa36b"
+      "bytes": 64325,
+      "sha256": "443ea4f15372808443e6e25d3f29c57c3e55effa4e9da4fe0dda30c84730b919"
      },
      "frog_again": {
       "path": "games/zgubiona-gwiazdka/frog_again.m4a",
-      "bytes": 41338,
-      "sha256": "3dd5a72aa8b0359441de4f7f46a999833e3224e7f7e94665a090af62f2731e9b"
+      "bytes": 41826,
+      "sha256": "f53f757e0adf6eda09c94ae757b2f816036545251a23ceb225848d243b7b74d3"
      },
      "frog_auto": {
       "path": "games/zgubiona-gwiazdka/frog_auto.m4a",
-      "bytes": 19674,
-      "sha256": "719f1bbace969da4029916ad6a869322677d00db191fe06ed15bd3b68371fb7d"
+      "bytes": 22350,
+      "sha256": "c8387567361e1a4fa52bf61445fae839616ef2f058d2e796a32c5564fe7f3099"
      },
      "frog_claps": {
       "path": "games/zgubiona-gwiazdka/frog_claps.m4a",
-      "bytes": 56493,
-      "sha256": "666b45aa602801773880c23ddc5f14f1f538bd51e29a128f517bea28b2cfb064"
+      "bytes": 57236,
+      "sha256": "26b0c0dbf0ac1579af9132fbe940c4aea018aac1596612f9488235ca10b61e2c"
      },
      "stones": {
       "path": "games/zgubiona-gwiazdka/stones.m4a",
-      "bytes": 48926,
-      "sha256": "e8a2e882f81324bb0cc15b922e8773b7937ce882d549a1480cede6ba96730307"
+      "bytes": 50396,
+      "sha256": "9bdf52cca4e5469ea3bf3e51ad75e19d590ab9e82360e587ce1117564aa2414b"
      },
      "stones_claps_self": {
       "path": "games/zgubiona-gwiazdka/stones_claps_self.m4a",
-      "bytes": 33715,
-      "sha256": "15dcff30fa01088fd40158f7b8eaa11a26111491e28719d0108e8958c729027d"
+      "bytes": 30670,
+      "sha256": "566a784bcc05f2fe219baba87757069cd6329528dbd582f6e566b44cfd5d5b8c"
      },
      "stones_ok": {
       "path": "games/zgubiona-gwiazdka/stones_ok.m4a",
-      "bytes": 40940,
-      "sha256": "42cd83f77bd9794419b4fc5a25f996f0b5068f580d0b62ef4f576954298b0265"
+      "bytes": 37318,
+      "sha256": "07eb7282a2b2555c37c77ce917ca188ccb71327531d6f09f892fa16b9d702516"
      },
      "stones_help": {
       "path": "games/zgubiona-gwiazdka/stones_help.m4a",
-      "bytes": 51488,
-      "sha256": "91e34847dac0029f8b2a04292fd15d90eb984ba8602533a8dab2c9b5df1c7919"
+      "bytes": 43864,
+      "sha256": "d48211b6e5976e66a8f1b05ac39a1b9d2a242733015b8722e50239b1f201f00c"
      },
      "island": {
       "path": "games/zgubiona-gwiazdka/island.m4a",
-      "bytes": 90988,
-      "sha256": "030357971cb7bf6cfa0d6ee90771cb1bdff70cb5dfbf70374656bf05e667b4b8"
+      "bytes": 99495,
+      "sha256": "d6e59b6ff2e37bda21ffb606e03b0f983a6a3522479c81f75d449b14a7d9c11e"
      },
      "shine_self": {
       "path": "games/zgubiona-gwiazdka/shine_self.m4a",
-      "bytes": 26884,
-      "sha256": "fcf7d30c27ccf6bed0373c58f8426ec9a46655deb633f08277f8ea35cf9e2222"
+      "bytes": 26939,
+      "sha256": "88fef6f5f1d0ed6efcf4767ed2d843e2c71f5d0852325a7e8102ae83f38089f2"
      },
      "shine_help": {
       "path": "games/zgubiona-gwiazdka/shine_help.m4a",
-      "bytes": 20555,
-      "sha256": "01b10964a2187779f2efc395dfc9e322a28f936839d0165936ca65ca06f8db67"
+      "bytes": 20991,
+      "sha256": "d7be2ac7abfc5d5fd3389292cc06540e4b368893aaf5981653fdb7847d7e23d7"
      },
      "ending_fireflies": {
       "path": "games/zgubiona-gwiazdka/ending_fireflies.m4a",
-      "bytes": 179011,
-      "sha256": "f94f74672c141f679c477bd1b5fd1c53ed27c28275f78f2bcbdf9d96cb75d098"
+      "bytes": 190177,
+      "sha256": "1f488e8efdf00cc0679d8b3cba71f5f3fe66e9c0bf33003b4681a53a3e51e8ea"
      },
      "boat": {
       "path": "games/zgubiona-gwiazdka/boat.m4a",
-      "bytes": 57425,
-      "sha256": "8021238481076694c44c46489825e8a830f4f623f71ee0336490ca1dd9cda02c"
+      "bytes": 63492,
+      "sha256": "4fe95a9a632820be22efea432bde7229598b546f5eb94ebf2abe27f2494f219a"
      },
      "row_self": {
       "path": "games/zgubiona-gwiazdka/row_self.m4a",
-      "bytes": 23418,
-      "sha256": "ce5529b6f06f4ef6d7ed27917e584aff85f8a1090ef5d8ce6f8e9206fa5b7769"
+      "bytes": 25988,
+      "sha256": "b9ce3c8ad0e08af7452161d45f569007badfbcb16f537d3b5cd81077cd0bb682"
      },
      "row_ok": {
       "path": "games/zgubiona-gwiazdka/row_ok.m4a",
-      "bytes": 27266,
-      "sha256": "449b1892d734b625143b59b234ca82c28a3bc493156a4db7141d482719ac1045"
+      "bytes": 27656,
+      "sha256": "6a4e03c0fb09326e5e694991162aa376048a187ab6e415fcfd777ac22f675158"
      },
      "row_help": {
       "path": "games/zgubiona-gwiazdka/row_help.m4a",
-      "bytes": 21368,
-      "sha256": "475f241b4d3f7eee562359474c848e58f27b4fd3007ac1285e240cc6b4fa7217"
+      "bytes": 20570,
+      "sha256": "fdc50dc0b89f45940f7b74639e7fd62d5502ed4eb2bafb336562916e4254c3eb"
      },
      "ducks": {
       "path": "games/zgubiona-gwiazdka/ducks.m4a",
-      "bytes": 73288,
-      "sha256": "cccbfa849cd2258252189eda0094064135dd0573ee3b4f9944f52d43b8531f41"
+      "bytes": 77552,
+      "sha256": "777f383ee2153b50cb1c7ccc535a43b37a9766513ae79c1cbbbaa02476580016"
      },
      "count_praise": {
       "path": "games/zgubiona-gwiazdka/count_praise.m4a",
-      "bytes": 32539,
-      "sha256": "473cafdad5354cb8a61368b4b3c11df14e1d62646ee65b2a4490a7db930d2db0"
+      "bytes": 36674,
+      "sha256": "da8afa5ea527c266fb86ae4bbfa27c0c9c99e0202d17acbfc5e5678e32184eeb"
      },
      "count_wrong": {
       "path": "games/zgubiona-gwiazdka/count_wrong.m4a",
-      "bytes": 45144,
-      "sha256": "e5410d777d326718bf59f9c93885aff6ef2686dfaf80795d76399f7308130b6b"
+      "bytes": 45701,
+      "sha256": "7da8b9aa7a8adecfa590e7ebd01a47b9e15bd5152c9c791604eff55673935d90"
      },
      "count_tell": {
       "path": "games/zgubiona-gwiazdka/count_tell.m4a",
-      "bytes": 29365,
-      "sha256": "66d2ed9b30b1eb4616a8147574f61d5748c74f33e512440c9769e361db4258fc"
+      "bytes": 34080,
+      "sha256": "d5fab2358dc074f2d3aeee0125e7fb40837cf54d71323f60611ec16296f3792c"
      },
      "ending_moon": {
       "path": "games/zgubiona-gwiazdka/ending_moon.m4a",
-      "bytes": 177757,
-      "sha256": "e83cf51e3b7901b9eab219ff1fddee41d3a85f1fa8a2f193e1717657835a3eac"
+      "bytes": 189185,
+      "sha256": "d5eef6753b424822cfbdf8b6bbbca38a342192a5b707d50ca3a0a021090608ee"
      }
     },
     "variables": {
