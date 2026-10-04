@@ -59,9 +59,9 @@ class HomeScreen extends ConsumerWidget {
                     icon: const Icon(Icons.search_rounded),
                   ),
                   IconButton(
-                    tooltip: 'Sklep',
-                    onPressed: () => context.push('/sklep'),
-                    icon: const Icon(Icons.shopping_bag_outlined),
+                    tooltip: 'Ulubione',
+                    onPressed: () => context.push('/ulubione'),
+                    icon: const Icon(Icons.favorite_border_rounded),
                   ),
                   IconButton(
                     tooltip: 'Profil dziecka',

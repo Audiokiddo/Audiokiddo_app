@@ -189,6 +189,12 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
     await super.stop();
   }
 
+  /// The parent is done with this play: stop and forget it, so nothing offers to resume it.
+  Future<void> endSession() async {
+    await stop();
+    mediaItem.add(null);
+  }
+
   void setSleepTimer(SleepTimer timer) {
     cancelSleepTimer();
     _sleep = timer;

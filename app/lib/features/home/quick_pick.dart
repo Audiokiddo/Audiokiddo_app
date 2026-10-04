@@ -14,6 +14,7 @@ import '../catalog/widgets/labels.dart';
 import '../family/family.dart';
 import '../games/game_controller.dart';
 import '../player/playback_controller.dart';
+import '../player/player_providers.dart';
 import 'today.dart';
 
 /// "Mam chwilę": three taps (where, how long, mood) and one activity to start. Parents
@@ -192,6 +193,35 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (ref.watch(currentMediaProvider).value case final media?)
+              Padding(
+                padding: const EdgeInsets.only(bottom: AkSpace.m),
+                child: Material(
+                  color: AkBrand.sun,
+                  borderRadius: BorderRadius.circular(18),
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                    leading: const Icon(Icons.play_circle_fill_rounded, color: Color(0xFF211C35), size: 36),
+                    title: Text(
+                      'Dokończ: ${media.title}',
+                      style: const TextStyle(color: Color(0xFF211C35), fontWeight: FontWeight.w700),
+                    ),
+                    subtitle: const Text(
+                      'albo wybierz niżej coś innego',
+                      style: TextStyle(color: Color(0xFF211C35)),
+                    ),
+                    trailing: IconButton(
+                      tooltip: 'Zakończ tę zabawę',
+                      color: const Color(0xFF211C35),
+                      onPressed: () => ref.read(audioHandlerProvider).endSession(),
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                    onTap: () => _go(
+                      () => widget.host.push(media.id.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz'),
+                    ),
+                  ),
+                ),
+              ),
             Text(l10n.pickTitle, style: text.headlineSmall),
             group(
               l10n.pickWhere,

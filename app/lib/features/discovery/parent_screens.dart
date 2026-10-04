@@ -27,6 +27,7 @@ class MoreScreen extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
         for (final item in [
+          (Icons.favorite_rounded, 'Ulubione', '/ulubione'),
           (Icons.face_rounded, 'Profil dziecka', '/profil'),
           (Icons.auto_awesome_rounded, 'Tryby i rutyny', '/rutyny'),
           (Icons.queue_music_rounded, 'Kolejka', '/kolejka'),

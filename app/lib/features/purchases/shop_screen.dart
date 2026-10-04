@@ -662,7 +662,7 @@ class PackScreen extends ConsumerWidget {
             ? null
             : IconButton(
                 tooltip: 'Sklep',
-                onPressed: () => context.push('/sklep'),
+                onPressed: () => context.go('/sklep'),
                 icon: const Icon(Icons.arrow_back_rounded),
               ),
       ),
@@ -804,7 +804,7 @@ class PackScreen extends ConsumerWidget {
                             ),
                           ),
                         TextButton(
-                          onPressed: () => context.push('/sklep'),
+                          onPressed: () => context.go('/sklep'),
                           child: const Text('Albo wszystko w abonamencie'),
                         ),
                       ],

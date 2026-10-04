@@ -46,7 +46,13 @@ class BottomDock extends ConsumerWidget {
           Dismissible(
             key: ValueKey(resume.key),
             direction: DismissDirection.endToStart,
-            onDismissed: (_) => ref.read(hiddenResumeProvider.notifier).hide(resume.key),
+            onDismissed: (_) {
+              ref.read(hiddenResumeProvider.notifier).hide(resume.key);
+              // A paused play swiped away is finished with; a playing one keeps playing.
+              if (resume.loaded && !(ref.read(playbackStateProvider).value?.playing ?? false)) {
+                ref.read(audioHandlerProvider).endSession();
+              }
+            },
             child: _ResumeCard(resume: resume),
           ),
         Container(
@@ -119,8 +125,9 @@ class _PlayButton extends ConsumerWidget {
       label: media == null ? 'Szybki wybór zabawy' : 'Otwórz odtwarzacz: ${media.title}',
       excludeSemantics: true,
       child: GestureDetector(
+        // Playing: back to it. Otherwise a choice (with "carry on" on top when something waits).
         onTap: () {
-          if (media != null) {
+          if (media != null && playing) {
             context.push(media.id.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz');
           } else {
             showQuickPick(context);

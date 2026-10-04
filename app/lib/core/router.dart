@@ -79,10 +79,7 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
         ),
         StatefulShellBranch(
           routes: [
-            GoRoute(
-              path: '/ulubione',
-              pageBuilder: (context, state) => swipePage(state, const CollectionScreen()),
-            ),
+            GoRoute(path: '/sklep', pageBuilder: (context, state) => swipePage(state, const ShopScreen())),
           ],
         ),
         StatefulShellBranch(
@@ -92,7 +89,7 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
         ),
       ],
     ),
-    GoRoute(path: '/sklep', pageBuilder: (context, state) => swipePage(state, const ShopScreen())),
+    GoRoute(path: '/ulubione', pageBuilder: (context, state) => swipePage(state, const CollectionScreen())),
     GoRoute(path: '/ratunku', pageBuilder: (context, state) => swipePage(state, const RescueScreen())),
     GoRoute(path: '/rutyny', pageBuilder: (context, state) => swipePage(state, const RoutinesScreen())),
     GoRoute(path: '/kolejka', pageBuilder: (context, state) => swipePage(state, const QueueScreen())),
@@ -183,7 +180,7 @@ class _ParentShell extends ConsumerWidget {
         tabs: const [
           (icon: Icons.home_outlined, selected: Icons.home_rounded, label: 'Start'),
           (icon: Icons.auto_stories_outlined, selected: Icons.auto_stories_rounded, label: 'Biblioteka'),
-          (icon: Icons.favorite_border_rounded, selected: Icons.favorite_rounded, label: 'Ulubione'),
+          (icon: Icons.shopping_bag_outlined, selected: Icons.shopping_bag_rounded, label: 'Sklep'),
           (icon: Icons.menu_rounded, selected: Icons.menu_rounded, label: 'Więcej'),
         ],
       ),

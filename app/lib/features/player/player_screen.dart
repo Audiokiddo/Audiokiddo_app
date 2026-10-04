@@ -55,6 +55,16 @@ class _Player extends ConsumerWidget {
         ),
         actions: [
           IconButton(
+            tooltip: 'Zakończ słuchanie',
+            onPressed: media == null
+                ? null
+                : () {
+                    handler.endSession();
+                    context.canPop() ? context.pop() : context.go('/');
+                  },
+            icon: const Icon(Icons.stop_circle_outlined),
+          ),
+          IconButton(
             tooltip: favorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych',
             onPressed: item == null
                 ? null
