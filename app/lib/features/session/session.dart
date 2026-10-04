@@ -197,15 +197,32 @@ final sessionAudioProvider = Provider<SessionAudio>((ref) => AppSessionAudio(ref
 /// Tests shrink pauses; 1.0 in the app.
 final sessionTimeScaleProvider = Provider<double>((ref) => 1.0);
 
+/// Quiet before the next recording of a session starts by itself, so a parent can hold it.
+const autoNextDelay = Duration(seconds: 5);
+
 @immutable
 class SessionState {
-  const SessionState({this.kind, this.steps = const [], this.index = 0, this.running = false, this.childId});
+  const SessionState({
+    this.kind,
+    this.steps = const [],
+    this.index = 0,
+    this.running = false,
+    this.childId,
+    this.countdown,
+    this.held = false,
+  });
 
   final SessionKind? kind;
   final List<SessionStep> steps;
   final int index;
   final bool running;
   final String? childId;
+
+  /// Seconds until [current] starts by itself; null while something plays.
+  final int? countdown;
+
+  /// The parent held the countdown; [current] waits until they resume.
+  final bool held;
 
   SessionStep? get current => index < steps.length ? steps[index] : null;
   SessionStep? get next => index + 1 < steps.length ? steps[index + 1] : null;
@@ -221,6 +238,7 @@ class SessionState {
 class SessionController extends Notifier<SessionState> {
   int _generation = 0;
   bool _skip = false;
+  bool _held = false;
 
   @override
   SessionState build() {
@@ -230,15 +248,25 @@ class SessionController extends Notifier<SessionState> {
 
   Future<void> start(SessionKind kind, List<SessionStep> steps, {String? childId}) async {
     final generation = ++_generation;
+    _held = false;
     await ref.read(sessionAudioProvider).stop();
     state = SessionState(kind: kind, steps: steps, running: true, childId: childId);
     final clips = childId == null
         ? const <ParentClip, String>{}
         : await ref.read(parentVoiceStoreProvider).clips(childId);
+    var playedItem = false;
     for (var i = 0; i < steps.length; i++) {
       if (generation != _generation) return;
-      state = SessionState(kind: kind, steps: steps, index: i, running: true, childId: childId);
+      final playing = SessionState(kind: kind, steps: steps, index: i, running: true, childId: childId);
       _skip = false;
+      // After the first recording, each next one waits a moment so a parent can hold it.
+      if (steps[i] is ItemStep && playedItem) {
+        await _countdown(playing, generation);
+        if (generation != _generation) return;
+        _skip = false;
+      }
+      state = playing;
+      if (steps[i] is ItemStep) playedItem = true;
       await _play(steps[i], clips, generation);
     }
     if (generation == _generation) {
@@ -274,15 +302,61 @@ class SessionController extends Notifier<SessionState> {
     }
   }
 
-  /// Moves on to the next step.
+  /// Counts [autoNextDelay] down before [playing] starts; waits while held, ends early on skip.
+  Future<void> _countdown(SessionState playing, int generation) async {
+    const step = Duration(milliseconds: 100);
+    final tick = step * ref.read(sessionTimeScaleProvider);
+    var left = autoNextDelay;
+    while (generation == _generation && !_skip && (_held || left > Duration.zero)) {
+      final seconds = (left.inMilliseconds / 1000).ceil();
+      if (state.countdown != seconds || state.held != _held || state.index != playing.index) {
+        state = SessionState(
+          kind: playing.kind,
+          steps: playing.steps,
+          index: playing.index,
+          running: true,
+          childId: playing.childId,
+          countdown: seconds,
+          held: _held,
+        );
+      }
+      await Future<void>.delayed(tick);
+      if (!_held) left -= step;
+    }
+    _held = false;
+  }
+
+  /// Keeps the next recording from starting by itself until [resume].
+  void hold() {
+    if (state.countdown == null) return;
+    _held = true;
+    state = SessionState(
+      kind: state.kind,
+      steps: state.steps,
+      index: state.index,
+      running: true,
+      childId: state.childId,
+      countdown: state.countdown,
+      held: true,
+    );
+  }
+
+  /// Starts the held recording now.
+  void resume() {
+    _held = false;
+    _skip = true;
+  }
+
+  /// Moves on to the next step; during the countdown, starts the next recording now.
   Future<void> skip() async {
     _skip = true;
     // Stopping what plays ends the current step; the loop then starts the next one.
-    if (state.current != null) await ref.read(sessionAudioProvider).stop();
+    if (state.current != null && state.countdown == null) await ref.read(sessionAudioProvider).stop();
   }
 
   Future<void> stop() async {
     _generation++;
+    _held = false;
     await ref.read(sessionAudioProvider).stop();
     state = const SessionState();
   }

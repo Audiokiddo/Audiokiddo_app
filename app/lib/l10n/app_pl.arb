@@ -899,6 +899,17 @@
       }
     }
   },
+  "sessionUpNext": "Następna za {seconds} s",
+  "@sessionUpNext": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionHeldInfo": "Wstrzymane. Następna zabawa poczeka na Ciebie.",
+  "sessionHold": "Zatrzymaj",
+  "sessionResume": "Graj dalej",
   "sessionSkip": "Dalej",
   "sessionStop": "Zakończ",
   "sessionDone": "Gotowe",

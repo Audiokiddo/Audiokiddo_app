@@ -2575,6 +2575,30 @@ abstract class AppLocalizations {
   /// **'Jeszcze ok. {minutes} min'**
   String sessionLeft(int minutes);
 
+  /// No description provided for @sessionUpNext.
+  ///
+  /// In pl, this message translates to:
+  /// **'Następna za {seconds} s'**
+  String sessionUpNext(int seconds);
+
+  /// No description provided for @sessionHeldInfo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wstrzymane. Następna zabawa poczeka na Ciebie.'**
+  String get sessionHeldInfo;
+
+  /// No description provided for @sessionHold.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatrzymaj'**
+  String get sessionHold;
+
+  /// No description provided for @sessionResume.
+  ///
+  /// In pl, this message translates to:
+  /// **'Graj dalej'**
+  String get sessionResume;
+
   /// No description provided for @sessionSkip.
   ///
   /// In pl, this message translates to:

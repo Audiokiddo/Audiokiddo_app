@@ -1477,6 +1477,20 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String sessionUpNext(int seconds) {
+    return 'Następna za $seconds s';
+  }
+
+  @override
+  String get sessionHeldInfo => 'Wstrzymane. Następna zabawa poczeka na Ciebie.';
+
+  @override
+  String get sessionHold => 'Zatrzymaj';
+
+  @override
+  String get sessionResume => 'Graj dalej';
+
+  @override
   String get sessionSkip => 'Dalej';
 
   @override

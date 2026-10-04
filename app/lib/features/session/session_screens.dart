@@ -48,7 +48,7 @@ class TripScreen extends ConsumerStatefulWidget {
 class _TripScreenState extends ConsumerState<TripScreen> {
   int _minutes = 30;
 
-  static const durations = [15, 30, 45, 60, 90];
+  static const durations = [15, 20, 30, 45, 60, 90];
 
   @override
   Widget build(BuildContext context) {
@@ -319,8 +319,10 @@ class SessionScreen extends ConsumerWidget {
       ParentStep() => l10n.sessionParent,
       null => '',
     };
+    final waiting = !session.finished && session.countdown != null;
     final mood = switch (session.current) {
       _ when session.finished => night ? KiddoMood.sleepy : KiddoMood.happy,
+      _ when waiting && !night => KiddoMood.happy,
       // In the evening Kiddo stays calm and sleepy, even while it talks.
       _ when night => KiddoMood.sleepy,
       ItemStep() => KiddoMood.listening,
@@ -367,7 +369,9 @@ class SessionScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: AkSpace.s),
-                if (!session.finished && session.next != null)
+                if (waiting)
+                  _Countdown(seconds: session.countdown!, held: session.held, color: fg)
+                else if (!session.finished && session.next != null)
                   Text(
                     l10n.sessionNext(title(session.next)),
                     style: text.bodyLarge?.copyWith(color: fg.withValues(alpha: 0.7)),
@@ -384,7 +388,39 @@ class SessionScreen extends ConsumerWidget {
                 const Spacer(),
                 ParentAside(dark: true, pool: night ? LordPool.bedtime : LordPool.trip),
                 const SizedBox(height: AkSpace.s),
-                if (!session.finished)
+                if (waiting && session.held)
+                  FilledButton.icon(
+                    onPressed: () => ref.read(sessionProvider.notifier).resume(),
+                    style: FilledButton.styleFrom(backgroundColor: fg, foregroundColor: AkBrand.cocoa),
+                    icon: const Icon(Icons.play_arrow_rounded),
+                    label: Text(l10n.sessionResume),
+                  )
+                else if (waiting)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: () => ref.read(sessionProvider.notifier).hold(),
+                          style: FilledButton.styleFrom(backgroundColor: fg, foregroundColor: AkBrand.cocoa),
+                          icon: const Icon(Icons.pause_rounded),
+                          label: Text(l10n.sessionHold),
+                        ),
+                      ),
+                      const SizedBox(width: AkSpace.s),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => ref.read(sessionProvider.notifier).skip(),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: fg,
+                            side: const BorderSide(color: Color(0x66FFF3E6)),
+                          ),
+                          icon: const Icon(Icons.skip_next_rounded),
+                          label: Text(l10n.sessionSkip),
+                        ),
+                      ),
+                    ],
+                  )
+                else if (!session.finished)
                   OutlinedButton.icon(
                     onPressed: () => ref.read(sessionProvider.notifier).skip(),
                     style: OutlinedButton.styleFrom(
@@ -401,6 +437,56 @@ class SessionScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The few seconds before the next recording starts by itself: a draining ring and the
+/// seconds left, or a note that the parent held it.
+class _Countdown extends StatelessWidget {
+  const _Countdown({required this.seconds, required this.held, required this.color});
+
+  final int seconds;
+  final bool held;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final total = autoNextDelay.inSeconds;
+    return Column(
+      children: [
+        SizedBox.square(
+          dimension: 64,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned.fill(
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: held ? 1 : (seconds - 1).clamp(0, total) / total),
+                  duration: held ? Duration.zero : const Duration(seconds: 1),
+                  builder: (context, value, _) => CircularProgressIndicator(
+                    value: value,
+                    strokeWidth: 4,
+                    color: color,
+                    backgroundColor: color.withValues(alpha: 0.15),
+                  ),
+                ),
+              ),
+              held
+                  ? Icon(Icons.pause_rounded, color: color, size: 30)
+                  : Text('$seconds', style: text.headlineSmall?.copyWith(color: color)),
+            ],
+          ),
+        ),
+        const SizedBox(height: AkSpace.s),
+        Text(
+          held ? l10n.sessionHeldInfo : l10n.sessionUpNext(seconds),
+          style: text.bodyLarge?.copyWith(color: color.withValues(alpha: 0.75)),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }
