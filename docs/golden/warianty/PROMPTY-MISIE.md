@@ -1,0 +1,20 @@
+# Misie AudioKiddo — Q, R, S, T
+
+Próbne koncepcje do wyboru, wygenerowane wbudowanym Imagegen. Nie wdrożono ich do aplikacji. Q i R: 2D. S: warstwowy papier 2,5D. T: ilustracja z delikatną objętością 2,5D.
+
+## Q
+
+Original AudioKiddo bear mascot concept sheet Q, pure 2D cartoon. Lovable stocky caramel brown teddy BEAR with tiny rounded ears, broad cream muzzle, small black oval nose, heavy asymmetric brows, short round belly and stubby legs, slightly messy three-tuft hair. Saturated teal oversized hoodie with tiny simple cream sound-wave emblem, no lettering on clothes. Personality: relaxed witty grown-up buddy with a crooked knowing smile, but warmly welcoming to children. Professionally hand-inked thick variable-weight dark espresso contours, very simple flat solid colors, intentional charming asymmetry, no gradients, no 3D, no detailed fur, no glossy baby eyes. Main full-body bear left standing casually paws in pocket. Two smaller head expressions right: genuinely kind open smile for children and cheeky half-lidded deadpan smirk for parents. Plain ivory background. Only text 'Q · 2D'. Distinct original mascot identity, not a depiction of any existing film or TV bear. Rich caramel, teal and cream palette.
+
+## R
+
+Original AudioKiddo mascot concept sheet R, pure 2D cartoon BEAR, NOT a known film or TV character. A funny compact charcoal-purple bear with extremely round oversized head, tiny round ears, golden apricot oval muzzle, small offset nose, tuft of spiky hair, large expressive dark eyebrows, very short legs and broad little paws. Wearing a vivid tangerine short-sleeve bowling shirt open over cream belly, tiny teal pocket detail. Strong funny silhouette, mischievous laid-back comedian, affectionate rather than mean. Bold expressive hand-drawn ink lines, flat limited saturated plum orange apricot teal palette, no gradients, no shading, no texture, no 3D. Large full body left giving a casual one-paw shrug, two smaller head studies right: warm delighted child-facing grin and dry sarcastic eyebrow-raised parent-facing face. Original polished animation development art, plain warm white background. Only label 'R · 2D'.
+
+## S
+
+Original family audio app AudioKiddo BEAR mascot concept S, tactile 2.5D cut-paper illustration. A very cuddly but witty little honey-yellow bear with tiny round ears set wide apart, squat pear-shaped belly, cream muzzle, dark chocolate bean nose, short thick arms, big soft feet, asymmetric brows and a sideways self-satisfied smile. Rich cobalt blue sweatshirt with small cream soundwave symbol. Visual medium specifically layered flat paper shapes with shallow physical depth, subtle paper grain and tiny contact shadows, not photorealism or fully volumetric CGI. Simple controlled shapes and bold honey cobalt cream colors. Main full-body on left, leaning casually with paws resting on belly. Two head studies right: tender cheerful expression welcoming a child and relaxed deadpan smirk for a parent. Same recognizable character in all three poses. Warm ivory clean background. Only label 'S · 2,5D'. Original design, no existing entertainment characters.
+
+## T
+
+Original bear mascot for AudioKiddo concept sheet T, 2.5D stylized illustrated character with shallow clay-like rounded volume and crisp bold dark plum outlines. A comically plump cinnamon brown BEAR with small circular ears, broad pale peach cheeks and muzzle, small dark nose, little round belly, stocky short legs, one unruly hair tuft, thick asymmetric eyebrows. Violet zip hoodie worn open over belly, bright coral small crossbody pouch, cream paws. A lovable confident wisecracker, relaxed friendly and absurdly self-assured; no aggressive features. Matte simplified shapes, flat-color regions with restrained cel shading, no realistic fur, no glossy plastic or photorealism. Main full-body left with one paw on hip and other giving a conversational gesture. Two head studies on right: friendly delighted smile for children and knowing cheeky half smile for adults. Strong distinctive silhouette, polished original professional character design not a recognizable film/TV bear. Plain ivory backdrop. Only label 'T · 2,5D'.
+
