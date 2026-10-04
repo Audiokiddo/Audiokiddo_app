@@ -178,12 +178,20 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
                 child: const Text('Zmień wybór'),
               ),
             ] else ...[
-              ItemHeaderArt(item: top, maxWidth: 280, radius: 24),
+              Text('Propozycja', textAlign: TextAlign.center, style: text.labelLarge),
+              Text('Mamy coś!', textAlign: TextAlign.center, style: text.headlineLarge),
+              Text(
+                'Idealne na ${(top.durationSec / 60).ceil() <= 10 ? 'krótką chwilę' : '${(top.durationSec / 60).ceil()} minut'}',
+                textAlign: TextAlign.center,
+                style: text.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+              ItemHeaderArt(item: top, maxWidth: 340, radius: 24),
               const SizedBox(height: 16),
               Text(top.title, style: text.headlineSmall),
-              const SizedBox(height: 8),
-              Text('${(top.durationSec / 60).ceil()} minut · od ${top.ageMin} lat', style: text.bodyMedium),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
+              MetaStrip(item: top),
+              const SizedBox(height: 12),
               Text(top.parentDescription, maxLines: 4, overflow: TextOverflow.ellipsis),
               const SizedBox(height: 18),
               FilledButton.icon(
@@ -198,16 +206,12 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
               ),
               if (picks.length > 1) ...[
                 const RefSection('Podobne propozycje'),
-                for (final (i, item) in picks.take(5).indexed)
-                  if (i != selected)
-                    AudioRow(
-                      item: item,
-                      trailing: IconButton(
-                        tooltip: 'Wybierz tę propozycję',
-                        onPressed: () => setState(() => selected = i),
-                        icon: const Icon(Icons.chevron_right_rounded),
-                      ),
-                    ),
+                CoverRow(
+                  items: [
+                    for (final (i, item) in picks.take(6).indexed)
+                      if (i != selected) item,
+                  ],
+                ),
               ],
             ],
           ],

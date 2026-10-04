@@ -37,3 +37,12 @@ String tipText(AppLocalizations l10n, PlanTip tip) => switch (tip) {
 
 /// Catalog skills are Polish words already; capitalised for display.
 String skillLabel(String skill) => skill.isEmpty ? skill : skill[0].toUpperCase() + skill.substring(1);
+
+String goalName(AppLocalizations l10n, DevGoal goal) => switch (goal) {
+  DevGoal.imagination => l10n.goalImagination,
+  DevGoal.language => l10n.goalLanguage,
+  DevGoal.logic => l10n.goalLogic,
+  DevGoal.listening => l10n.goalListening,
+  DevGoal.movement => l10n.goalMovement,
+  DevGoal.calm => l10n.goalCalm,
+};

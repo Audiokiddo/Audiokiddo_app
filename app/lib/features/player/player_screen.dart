@@ -59,166 +59,154 @@ class _Player extends ConsumerWidget {
         ],
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
-          children: [
-            if (media == null) ...[
-              const SizedBox(height: 60),
-              const Icon(Icons.headphones_rounded, size: 80),
-              const SizedBox(height: 24),
-              const Text('Wybierz nagranie w bibliotece.', textAlign: TextAlign.center),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: () => context.go('/biblioteka'),
-                child: const Text('Otwórz bibliotekę'),
-              ),
-            ] else ...[
-              item == null
-                  ? Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 360),
-                        child: AspectRatio(
-                          aspectRatio: 1.08,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(28),
-                            child: ArtScene(category: PlayCategory.calm, seed: media.id.length),
-                          ),
-                        ),
-                      ),
-                    )
-                  : ItemHeaderArt(item: item, maxWidth: 360, radius: 28, seed: media.id.length),
-              const SizedBox(height: 22),
-              Text(media.title, style: text.headlineSmall),
-              const SizedBox(height: 8),
-              Text(
-                '${formatClock(duration)}${item == null ? '' : ' · od ${item.ageMin} lat'}${media.album == null ? '' : ' · ${media.album}'}',
-                style: text.bodySmall,
-              ),
-              const SizedBox(height: 20),
-              Slider(
-                value: position.inMilliseconds.clamp(0, duration.inMilliseconds).toDouble(),
-                max: duration.inMilliseconds.toDouble().clamp(1, double.infinity),
-                semanticFormatterCallback: (_) => formatClock(position),
-                onChanged: duration == Duration.zero
-                    ? null
-                    : (v) => handler.seek(Duration(milliseconds: v.round())),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(formatClock(position)),
-                  Text(
-                    '-${formatClock(Duration(milliseconds: (duration - position).inMilliseconds.clamp(0, 1 << 40)))}',
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    tooltip: 'Cofnij 15 sekund',
-                    iconSize: 36,
-                    onPressed: handler.rewind,
-                    icon: const _SkipIcon(back: true),
-                  ),
-                  SizedBox.square(
-                    dimension: 84,
-                    child: IconButton.filled(
-                      style: IconButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFFBF2),
-                        foregroundColor: referencePurple,
-                      ),
-                      tooltip: playing ? 'Pauza' : 'Odtwórz',
-                      iconSize: 46,
-                      onPressed: playing ? handler.pause : handler.play,
-                      icon: Icon(playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'Przewiń 15 sekund',
-                    iconSize: 36,
-                    onPressed: handler.fastForward,
-                    icon: const _SkipIcon(back: false),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28),
-              Wrap(
-                alignment: WrapAlignment.spaceAround,
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _Tool(
-                    label: 'Tempo',
-                    icon: Icons.speed_rounded,
-                    onTap: () => showModalBottomSheet<void>(
-                      context: context,
-                      showDragHandle: true,
-                      builder: (c) => SafeArea(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (media.extras?[timingSensitiveExtra] == true)
-                              const Padding(
-                                padding: EdgeInsets.all(24),
-                                child: Text('Ta zabawa wymaga oryginalnego tempa.'),
-                              )
-                            else
-                              for (final speed in [.75, 1.0, 1.25])
-                                ListTile(
-                                  title: Text('$speed×'),
-                                  trailing: (state?.speed ?? 1) == speed
-                                      ? const Icon(Icons.check_rounded)
-                                      : null,
-                                  onTap: () {
-                                    handler.setSpeed(speed);
-                                    Navigator.pop(c);
-                                  },
-                                ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  _Tool(
-                    label: 'Timer snu',
-                    icon: Icons.bedtime_outlined,
-                    onTap: () => showSleepPicker(context),
-                  ),
-                  _Tool(
-                    label: 'Pobierz',
-                    icon: Icons.download_outlined,
-                    onTap: item == null
-                        ? null
-                        : () => showModalBottomSheet<void>(
-                            context: context,
-                            showDragHandle: true,
-                            builder: (c) => SafeArea(
-                              child: Padding(
-                                padding: const EdgeInsets.all(24),
-                                child: DownloadControl(item: item),
-                              ),
+        // Pulling the player down past the top minimises it, as in other music apps.
+        child: PullDownToClose(
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
+            children: [
+              if (media == null) ...[
+                const SizedBox(height: 60),
+                const Icon(Icons.headphones_rounded, size: 80),
+                const SizedBox(height: 24),
+                const Text('Wybierz nagranie w bibliotece.', textAlign: TextAlign.center),
+                const SizedBox(height: 24),
+                FilledButton(
+                  onPressed: () => context.go('/biblioteka'),
+                  child: const Text('Otwórz bibliotekę'),
+                ),
+              ] else ...[
+                item == null
+                    ? Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 360),
+                          child: AspectRatio(
+                            aspectRatio: 1.08,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(28),
+                              child: ArtScene(category: PlayCategory.calm, seed: media.id.length),
                             ),
                           ),
-                  ),
-                  _Tool(
-                    label: 'Kolejka',
-                    icon: Icons.queue_music_rounded,
-                    onTap: () => context.push('/kolejka'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              TextButton.icon(
-                onPressed: () => context.push('/odtwarzacz/bez-patrzenia'),
-                icon: const Icon(Icons.visibility_off_outlined, size: 18),
-                label: const Text('Tryb bez patrzenia'),
-              ),
-              if (state?.processingState == AudioProcessingState.error)
-                const Text('Nie udało się odtworzyć nagrania. Sprawdź połączenie i spróbuj ponownie.'),
+                        ),
+                      )
+                    : ItemHeaderArt(item: item, maxWidth: 360, radius: 28, seed: media.id.length),
+                const SizedBox(height: 22),
+                Text(media.title, style: text.headlineSmall),
+                const SizedBox(height: 8),
+                Text(
+                  '${formatClock(duration)}${item == null ? '' : ' · od ${item.ageMin} lat'}${media.album == null ? '' : ' · ${media.album}'}',
+                  style: text.bodySmall,
+                ),
+                const SizedBox(height: 20),
+                SeekBar(position: position, duration: duration, onSeek: handler.seek),
+                const SizedBox(height: 18),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      tooltip: 'Cofnij 15 sekund',
+                      iconSize: 36,
+                      onPressed: () => seekBy(ref, position, duration, const Duration(seconds: -15)),
+                      icon: const _SkipIcon(back: true),
+                    ),
+                    SizedBox.square(
+                      dimension: 84,
+                      child: IconButton.filled(
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFFBF2),
+                          foregroundColor: referencePurple,
+                        ),
+                        tooltip: playing ? 'Pauza' : 'Odtwórz',
+                        iconSize: 46,
+                        onPressed: playing ? handler.pause : handler.play,
+                        icon: Icon(playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'Przewiń 15 sekund',
+                      iconSize: 36,
+                      onPressed: () => seekBy(ref, position, duration, const Duration(seconds: 15)),
+                      icon: const _SkipIcon(back: false),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 28),
+                Wrap(
+                  alignment: WrapAlignment.spaceAround,
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _Tool(
+                      label: 'Tempo',
+                      icon: Icons.speed_rounded,
+                      onTap: () => showModalBottomSheet<void>(
+                        context: context,
+                        showDragHandle: true,
+                        builder: (c) => SafeArea(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (media.extras?[timingSensitiveExtra] == true)
+                                const Padding(
+                                  padding: EdgeInsets.all(24),
+                                  child: Text('Ta zabawa wymaga oryginalnego tempa.'),
+                                )
+                              else
+                                for (final speed in [.75, 1.0, 1.25])
+                                  ListTile(
+                                    title: Text('$speed×'),
+                                    trailing: (state?.speed ?? 1) == speed
+                                        ? const Icon(Icons.check_rounded)
+                                        : null,
+                                    onTap: () {
+                                      handler.setSpeed(speed);
+                                      Navigator.pop(c);
+                                    },
+                                  ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    _Tool(
+                      label: 'Timer snu',
+                      icon: Icons.bedtime_outlined,
+                      onTap: () => showSleepPicker(context),
+                    ),
+                    _Tool(
+                      label: 'Pobierz',
+                      icon: Icons.download_outlined,
+                      onTap: item == null
+                          ? null
+                          : () => showModalBottomSheet<void>(
+                              context: context,
+                              showDragHandle: true,
+                              builder: (c) => SafeArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: DownloadControl(item: item),
+                                ),
+                              ),
+                            ),
+                    ),
+                    _Tool(
+                      label: 'Kolejka',
+                      icon: Icons.queue_music_rounded,
+                      onTap: () => context.push('/kolejka'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextButton.icon(
+                  onPressed: () => context.push('/odtwarzacz/bez-patrzenia'),
+                  icon: const Icon(Icons.visibility_off_outlined, size: 18),
+                  label: const Text('Tryb bez patrzenia'),
+                ),
+                if (state?.processingState == AudioProcessingState.error)
+                  const Text('Nie udało się odtworzyć nagrania. Sprawdź połączenie i spróbuj ponownie.'),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -371,5 +359,121 @@ class _SkipIcon extends StatelessWidget {
         ),
       ],
     ),
+  );
+}
+
+/// Where the parent asked to jump to, until playback gets there: the bar shows it at once
+/// instead of jumping back while the recording buffers.
+final seekTargetProvider = NotifierProvider<SeekTarget, Duration?>(SeekTarget.new);
+
+class SeekTarget extends Notifier<Duration?> {
+  @override
+  Duration? build() => null;
+
+  void set(Duration? target) => state = target;
+}
+
+void seekBy(WidgetRef ref, Duration position, Duration duration, Duration delta) {
+  final from = ref.read(seekTargetProvider) ?? position;
+  final ms = (from + delta).inMilliseconds.clamp(0, duration.inMilliseconds);
+  final target = Duration(milliseconds: ms);
+  ref.read(seekTargetProvider.notifier).set(target);
+  ref.read(audioHandlerProvider).seek(target);
+}
+
+/// Position slider that follows the finger, seeks once on release and keeps the thumb where it
+/// was dropped until playback catches up (or gives up after a while).
+class SeekBar extends ConsumerStatefulWidget {
+  const SeekBar({super.key, required this.position, required this.duration, required this.onSeek});
+
+  final Duration position;
+  final Duration duration;
+  final Future<void> Function(Duration) onSeek;
+
+  @override
+  ConsumerState<SeekBar> createState() => _SeekBarState();
+}
+
+class _SeekBarState extends ConsumerState<SeekBar> {
+  double? _dragging;
+  DateTime? _since;
+
+  @override
+  void didUpdateWidget(SeekBar old) {
+    super.didUpdateWidget(old);
+    final target = ref.read(seekTargetProvider);
+    if (target == null) return;
+    final reached = (widget.position - target).inMilliseconds.abs() < 1500;
+    final tooLong = _since != null && DateTime.now().difference(_since!) > const Duration(seconds: 20);
+    if (reached || tooLong) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(seekTargetProvider.notifier).set(null);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final target = ref.watch(seekTargetProvider);
+    if (target != null) _since ??= DateTime.now();
+    if (target == null) _since = null;
+    final total = widget.duration.inMilliseconds.toDouble().clamp(1, double.infinity).toDouble();
+    final shown = _dragging ?? (target ?? widget.position).inMilliseconds.toDouble();
+    final at = Duration(milliseconds: shown.round());
+    final buffering = target != null && _dragging == null;
+    return Column(
+      children: [
+        Slider(
+          value: shown.clamp(0, total),
+          max: total,
+          semanticFormatterCallback: (_) => formatClock(at),
+          onChangeStart: (v) => setState(() => _dragging = v),
+          onChanged: widget.duration == Duration.zero ? null : (v) => setState(() => _dragging = v),
+          onChangeEnd: (v) {
+            final to = Duration(milliseconds: v.round());
+            setState(() => _dragging = null);
+            ref.read(seekTargetProvider.notifier).set(to);
+            widget.onSeek(to);
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(formatClock(at)),
+            if (buffering)
+              const SizedBox.square(dimension: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+            Text(
+              '-${formatClock(Duration(milliseconds: (widget.duration - at).inMilliseconds.clamp(0, 1 << 40)))}',
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Closes the screen when its list is pulled down past the top (once per gesture).
+class PullDownToClose extends StatefulWidget {
+  const PullDownToClose({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  State<PullDownToClose> createState() => _PullDownToCloseState();
+}
+
+class _PullDownToCloseState extends State<PullDownToClose> {
+  bool _closing = false;
+
+  @override
+  Widget build(BuildContext context) => NotificationListener<ScrollUpdateNotification>(
+    onNotification: (n) {
+      if (!_closing && n.dragDetails != null && n.metrics.pixels < -90 && context.canPop()) {
+        _closing = true;
+        context.pop();
+      }
+      return false;
+    },
+    child: widget.child,
   );
 }

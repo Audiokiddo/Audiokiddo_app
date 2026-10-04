@@ -1,0 +1,323 @@
+import 'dart:async';
+import 'dart:math' as math;
+
+import 'package:ak_core/ak_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../core/theme/tokens.dart';
+import '../../core/widgets/ambient_motion.dart';
+import '../../core/widgets/szop.dart';
+import '../catalog/catalog_providers.dart';
+import '../discovery/reference_widgets.dart';
+import '../home/quick_pick.dart';
+import '../personal/personal_repository.dart';
+import 'playback_controller.dart';
+import 'player_providers.dart';
+
+const _barColor = referencePurple;
+const _barHeight = 68.0;
+
+/// One tab of the bar (the middle play button is not a tab).
+typedef DockTab = ({IconData icon, IconData selected, String label});
+
+/// The bottom of the parent app: the "carry on" card with Szop’en peeking out of the bar, and
+/// the bar itself with a big play button in the middle.
+class BottomDock extends ConsumerWidget {
+  const BottomDock({super.key, required this.tabs, required this.current, required this.onTab});
+
+  /// Exactly four: two left and two right of the play button.
+  final List<DockTab> tabs;
+  final int current;
+  final ValueChanged<int> onTab;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bottom = MediaQuery.paddingOf(context).bottom;
+    final resume = ref.watch(resumeCardProvider);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (resume != null) _ResumeCard(resume: resume),
+        Container(
+          height: _barHeight + bottom,
+          padding: EdgeInsets.only(bottom: bottom),
+          decoration: const BoxDecoration(
+            color: _barColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
+          ),
+          child: Row(
+            children: [
+              for (var i = 0; i < 2; i++) _tab(i),
+              const Expanded(child: Center(child: _PlayButton())),
+              for (var i = 2; i < 4; i++) _tab(i),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _tab(int i) {
+    final tab = tabs[i];
+    final selected = i == current;
+    final color = selected ? Colors.white : Colors.white.withValues(alpha: .62);
+    return Expanded(
+      child: Semantics(
+        selected: selected,
+        button: true,
+        label: tab.label,
+        excludeSemantics: true,
+        child: InkResponse(
+          onTap: () => onTab(i),
+          radius: 36,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(selected ? tab.selected : tab.icon, color: color, size: 25),
+              const SizedBox(height: 3),
+              Text(
+                tab.label,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 11,
+                  color: color,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Plays what is loaded (opens the player), or offers a quick pick when nothing is.
+class _PlayButton extends ConsumerWidget {
+  const _PlayButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final media = ref.watch(currentMediaProvider).value;
+    final playing = ref.watch(playbackStateProvider).value?.playing ?? false;
+    return Semantics(
+      button: true,
+      label: media == null ? 'Szybki wybór zabawy' : 'Otwórz odtwarzacz: ${media.title}',
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () {
+          if (media != null) {
+            context.push(media.id.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz');
+          } else {
+            showQuickPick(context);
+          }
+        },
+        child: Container(
+          width: 58,
+          height: 58,
+          decoration: BoxDecoration(
+            color: AkBrand.teal,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white.withValues(alpha: .9), width: 3),
+            boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 12, offset: Offset(0, 4))],
+          ),
+          child: Icon(
+            media != null && playing ? Icons.graphic_eq_rounded : Icons.play_arrow_rounded,
+            color: Colors.white,
+            size: 34,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// What the card above the bar offers: the loaded recording, or the last unfinished one.
+@immutable
+class ResumeCard {
+  const ResumeCard({required this.title, this.item, this.mediaId, this.loaded = false});
+
+  final String title;
+  final ContentItem? item;
+  final String? mediaId;
+
+  /// Already in the player (play/pause), rather than to be started.
+  final bool loaded;
+}
+
+final resumeCardProvider = Provider<ResumeCard?>((ref) {
+  final media = ref.watch(currentMediaProvider).value;
+  if (media != null) return ResumeCard(title: media.title, mediaId: media.id, loaded: true);
+  final catalog = ref.watch(catalogProvider).value;
+  for (final id in ref.watch(recentProvider).value ?? const <String>[]) {
+    final item = catalog?.item(id);
+    final progress = ref.watch(progressProvider(id)).value;
+    if (item != null && progress != null && !progress.completed && progress.positionMs > 15000) {
+      return ResumeCard(title: item.title, item: item);
+    }
+    break; // only the very last one: older unfinished plays are in "Kontynuuj"
+  }
+  return null;
+});
+
+class _ResumeCard extends ConsumerStatefulWidget {
+  const _ResumeCard({required this.resume});
+
+  final ResumeCard resume;
+
+  @override
+  ConsumerState<_ResumeCard> createState() => _ResumeCardState();
+}
+
+class _ResumeCardState extends ConsumerState<_ResumeCard> {
+  // He rises from the bar when the card appears, then breathes gently.
+  bool _risen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _risen = true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final resume = widget.resume;
+    final handler = ref.watch(audioHandlerProvider);
+    final playing = resume.loaded && (ref.watch(playbackStateProvider).value?.playing ?? false);
+    final pose = playing ? SzopPose.klaszcze : (resume.loaded ? SzopPose.prosi : SzopPose.chytry);
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    void open() {
+      if (resume.loaded) {
+        context.push(resume.mediaId!.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz');
+      } else {
+        startItem(context, resume.item!);
+      }
+    }
+
+    return SizedBox(
+      height: 76,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            left: 12,
+            right: 12,
+            top: 6,
+            bottom: 6,
+            child: Material(
+              color: AkBrand.sun,
+              borderRadius: BorderRadius.circular(22),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(22),
+                onTap: open,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(106, 6, 8, 6),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              playing
+                                  ? 'Teraz słuchacie'
+                                  : resume.loaded
+                                  ? 'Wróćmy do zabawy'
+                                  : 'Dokończ przygodę',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                            ),
+                            Text(
+                              resume.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: text.bodySmall?.copyWith(color: ink),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton.filled(
+                        style: IconButton.styleFrom(
+                          backgroundColor: AkBrand.tealDeep,
+                          foregroundColor: Colors.white,
+                        ),
+                        tooltip: playing ? 'Pauza' : 'Odtwórz',
+                        onPressed: !resume.loaded ? open : (playing ? handler.pause : handler.play),
+                        icon: Icon(playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Szop’en: his feet hide behind the bar, as if he climbed up from it.
+          Positioned(
+            left: 18,
+            bottom: -14,
+            child: IgnorePointer(
+              child: AnimatedSlide(
+                offset: _risen ? Offset.zero : const Offset(0, .9),
+                duration: const Duration(milliseconds: 520),
+                curve: Curves.easeOutBack,
+                child: _Breathing(child: SzopSticker(pose, height: 84)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A slow up-and-down bob, off when the system asks for less motion.
+class _Breathing extends ConsumerStatefulWidget {
+  const _Breathing({required this.child});
+
+  final Widget child;
+
+  @override
+  ConsumerState<_Breathing> createState() => _BreathingState();
+}
+
+class _BreathingState extends ConsumerState<_Breathing> with SingleTickerProviderStateMixin {
+  late final _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final still =
+        (MediaQuery.maybeDisableAnimationsOf(context) ?? false) ||
+        !TickerMode.valuesOf(context).enabled ||
+        !ref.read(ambientMotionProvider);
+    if (still) {
+      _c.stop();
+    } else if (!_c.isAnimating) {
+      unawaited(_c.repeat());
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: _c,
+    builder: (context, child) =>
+        Transform.translate(offset: Offset(0, 2.5 * math.sin(_c.value * 2 * math.pi)), child: child),
+    child: widget.child,
+  );
+}

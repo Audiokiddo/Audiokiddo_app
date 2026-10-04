@@ -172,9 +172,11 @@ class _DiplomaViewState extends ConsumerState<_DiplomaView> {
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(color: referenceMint, borderRadius: BorderRadius.circular(18)),
-                  child: Text(
-                    bonusTranscript(widget.pack.id),
-                    style: text.bodyLarge?.copyWith(color: _ink, fontWeight: FontWeight.w600),
+                  child: LightSurface(
+                    child: Text(
+                      bonusTranscript(widget.pack.id),
+                      style: text.bodyLarge?.copyWith(color: _ink, fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
               FilledButton.icon(

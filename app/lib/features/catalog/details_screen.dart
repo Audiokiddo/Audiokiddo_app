@@ -13,6 +13,7 @@ import '../purchases/shop.dart';
 import '../../core/format.dart';
 import '../downloads/download_button.dart';
 import '../games/game_controller.dart';
+import '../discovery/reference_widgets.dart';
 import '../games/microphone.dart';
 import '../games/speech.dart';
 import '../parental_gate/parental_gate.dart';
@@ -110,16 +111,18 @@ class _DetailsContent extends ConsumerWidget {
         Text(item.title, style: text.headlineMedium),
         if (item.subtitle != null) Text(item.subtitle!, style: text.titleMedium),
         const SizedBox(height: AkSpace.m),
-        Wrap(
-          spacing: AkSpace.s,
-          runSpacing: AkSpace.s,
-          children: [
-            _Meta(icon: Icons.schedule_rounded, label: l10n.duration(item.durationSec)),
-            _Meta(icon: Icons.child_care_rounded, label: l10n.ageFrom(item.ageMin)),
-            if (players != null) _Meta(icon: Icons.group_rounded, label: players),
-            if (item.isFree) _Meta(icon: Icons.card_giftcard_rounded, label: l10n.free),
-          ],
-        ),
+        MetaStrip(item: item),
+        if (players != null || item.isFree) ...[
+          const SizedBox(height: AkSpace.s),
+          Wrap(
+            spacing: AkSpace.s,
+            runSpacing: AkSpace.s,
+            children: [
+              if (players != null) _Meta(icon: Icons.group_rounded, label: players),
+              if (item.isFree) _Meta(icon: Icons.card_giftcard_rounded, label: l10n.free),
+            ],
+          ),
+        ],
         const SizedBox(height: AkSpace.m),
         Text(item.parentDescription, style: text.bodyMedium),
         const SizedBox(height: AkSpace.l),
@@ -249,6 +252,7 @@ class _DetailsContent extends ConsumerWidget {
               ],
             ),
           ),
+        SimilarPlays(item: item),
       ],
     );
   }

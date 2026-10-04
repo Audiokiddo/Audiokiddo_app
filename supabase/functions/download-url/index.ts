@@ -5,7 +5,8 @@
 import { adminClient, env, json, requestUser } from "../_shared/supabase.ts";
 import { isSafePath, signedFileUrl } from "../_shared/signed_url.ts";
 
-const TTL_SECONDS = 15 * 60;
+// Long enough to stream a whole play and seek in it (a player re-reads the link while it plays).
+const TTL_SECONDS = 4 * 60 * 60;
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "method" }, 405);

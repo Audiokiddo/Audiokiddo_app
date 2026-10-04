@@ -6,21 +6,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/kiddo.dart';
 import '../../core/widgets/golden_hello.dart';
 import '../../core/widgets/motion.dart';
+import '../../core/widgets/szop.dart';
 import '../family/family.dart' hide progressProvider;
 import '../personal/personal_repository.dart';
 import '../player/player_providers.dart';
 import '../diploma/diploma_screen.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
-import '../lord/lord_lines.dart';
 import '../purchases/shop.dart';
 import '../purchases/shop_screen.dart';
 import 'catalog_providers.dart';
 import 'seasonal.dart';
 import 'widgets/content_cover.dart';
+import 'widgets/item_art.dart';
 import 'widgets/catalog_loader.dart';
 
 final screenFreeMinutesProvider = Provider<int>((ref) {
@@ -45,6 +45,8 @@ class HomeScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
+                  SzopSticker(szopOfTheDay(ref.watch(clockProvider)()).$1, height: 40),
+                  const SizedBox(width: 6),
                   Expanded(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
@@ -61,47 +63,25 @@ class HomeScreen extends ConsumerWidget {
                     icon: const Icon(Icons.search_rounded),
                   ),
                   IconButton(
+                    tooltip: 'Sklep',
+                    onPressed: () => context.push('/sklep'),
+                    icon: const Icon(Icons.shopping_bag_outlined),
+                  ),
+                  IconButton(
                     tooltip: 'Profil dziecka',
                     onPressed: () => context.push('/profil'),
                     icon: const Icon(Icons.account_circle_outlined),
                   ),
                 ],
               ),
+              const SizedBox(height: 10),
+              Text('Co dziś\nrobimy?', style: Theme.of(context).textTheme.headlineLarge),
+              const SizedBox(height: 16),
+              const HeroShelf(),
               const SizedBox(height: 18),
-              Text('Czego dziś\npotrzebujesz?', style: Theme.of(context).textTheme.headlineSmall),
-              const SizedBox(height: 18),
-              TwoColumns(
-                children: [
-                  _Need(
-                    'Mam\n20 minut',
-                    'Szybkie propozycje',
-                    Icons.schedule_rounded,
-                    AkBrand.sun,
-                    () => context.push('/ratunku'),
-                  ),
-                  _Need(
-                    'Podróżujemy',
-                    'Do auta, pociągu, samolotu',
-                    Icons.directions_car_rounded,
-                    referenceMint,
-                    () => context.push('/podroz'),
-                  ),
-                  _Need(
-                    'Trochę\nruchu',
-                    'Zabawy pełne energii',
-                    Icons.directions_run_rounded,
-                    referenceLilac,
-                    () => context.push('/biblioteka?kategoria=movement'),
-                  ),
-                  _Need(
-                    'Czas się\nwyciszyć',
-                    'Spokojne historie i dźwięki',
-                    Icons.bedtime_rounded,
-                    referencePurple,
-                    () => context.push('/dobranoc'),
-                  ),
-                ],
-              ),
+              const _CategoryGrid(),
+              const SizedBox(height: 14),
+              const _QuickNeeds(),
               RefSection(
                 'Kontynuuj słuchanie',
                 action: 'Zobacz wszystkie',
@@ -156,39 +136,6 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _Need extends StatelessWidget {
-  const _Need(this.title, this.hint, this.icon, this.color, this.onTap);
-  final String title, hint;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-  @override
-  Widget build(BuildContext context) {
-    final ink = color == referencePurple ? Colors.white : const Color(0xFF211C35);
-    return Pressable(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(20)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 32, color: ink),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium
-                  ?.copyWith(color: ink, fontWeight: FontWeight.w700, height: 1.15),
-            ),
-            const SizedBox(height: 6),
-            Text(hint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ink, height: 1.25)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _QuietSzopen extends ConsumerStatefulWidget {
   const _QuietSzopen();
   @override
@@ -240,21 +187,19 @@ class _QuietSzopenState extends ConsumerState<_QuietSzopen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(color: referenceMint, borderRadius: BorderRadius.circular(18)),
-              child: Row(
-                children: [
-                  const Kiddo(size: 42, cheeky: true, outfit: GoldenOutfit.official),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      lordLine(LordPool.hello, ref.watch(clockProvider)().difference(DateTime(2026)).inDays),
+              child: LightSurface(
+                child: Row(
+                  children: [
+                    SzopSticker(szopOfTheDay(ref.watch(clockProvider)()).$1, height: 56),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(szopOfTheDay(ref.watch(clockProvider)()).$2)),
+                    IconButton(
+                      tooltip: 'Schowaj Szop’ena',
+                      onPressed: () => setState(() => _visible = false),
+                      icon: const Icon(Icons.close_rounded),
                     ),
-                  ),
-                  IconButton(
-                    tooltip: 'Schowaj Szop’ena',
-                    onPressed: () => setState(() => _visible = false),
-                    icon: const Icon(Icons.close_rounded),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           Align(
@@ -418,6 +363,214 @@ class _SeasonShelf extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The tiles of the mockup: six kinds of play, each opening the library filtered to it.
+class _CategoryGrid extends StatelessWidget {
+  const _CategoryGrid();
+
+  static const _look = <PlayCategory, (Color, Color, IconData)>{
+    PlayCategory.adventure: (AkBrand.sun, Color(0xFF211C35), Icons.rocket_launch_rounded),
+    PlayCategory.detective: (referenceLilac, Color(0xFF211C35), Icons.search_rounded),
+    PlayCategory.songs: (referenceMint, Color(0xFF211C35), Icons.music_note_rounded),
+    PlayCategory.movement: (AkBrand.teal, Color(0xFF10393B), Icons.directions_run_rounded),
+    PlayCategory.creative: (Color(0xFF7B5BA6), Colors.white, Icons.palette_rounded),
+    PlayCategory.calm: (Color(0xFFCDEDE8), Color(0xFF211C35), Icons.nightlight_round),
+  };
+
+  @override
+  Widget build(BuildContext context) => TwoColumns(
+    children: [
+      for (final c in PlayCategory.values)
+        Pressable(
+          onTap: () => context.push('/biblioteka?kategoria=${c.name}'),
+          child: Semantics(
+            button: true,
+            label: c.label.replaceAll('\n', ' '),
+            excludeSemantics: true,
+            child: Container(
+              height: 104,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(color: _look[c]!.$1, borderRadius: BorderRadius.circular(22)),
+              child: Column(
+                children: [
+                  Icon(_look[c]!.$3, size: 34, color: _look[c]!.$2),
+                  const Spacer(),
+                  Text(
+                    c.label,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.titleSmall
+                        ?.copyWith(color: _look[c]!.$2, fontWeight: FontWeight.w700, height: 1.15),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+    ],
+  );
+}
+
+/// "Szybko": the situations a parent is usually in, one tap each.
+class _QuickNeeds extends StatelessWidget {
+  const _QuickNeeds();
+
+  @override
+  Widget build(BuildContext context) {
+    final needs = [
+      (Icons.schedule_rounded, 'Mam 20 minut', '/ratunku'),
+      (Icons.directions_car_rounded, 'W podróży', '/podroz'),
+      (Icons.bedtime_rounded, 'Na dobranoc', '/dobranoc'),
+      (Icons.auto_awesome_rounded, 'Tryby i rutyny', '/rutyny'),
+    ];
+    return SizedBox(
+      height: 44,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: needs.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, i) => ActionChip(
+          avatar: Icon(needs[i].$1, size: 18),
+          label: Text(needs[i].$2),
+          onPressed: () => context.push(needs[i].$3),
+        ),
+      ),
+    );
+  }
+}
+
+/// Plays worth starting now: what is new, then what this child has not heard yet.
+final heroItemsProvider = Provider<List<ContentItem>>((ref) {
+  final catalog = ref.watch(catalogProvider).value;
+  if (catalog == null) return const [];
+  final family = ref.watch(familyProvider).value;
+  final child = family?.active;
+  final played = {
+    ...?ref.watch(recentProvider).value,
+    if (child != null) ...family!.resultsOf(child.id).map((r) => r.itemId),
+  };
+  bool fits(ContentItem i) =>
+      !played.contains(i.id) &&
+      (i.audio.isNotEmpty || i.script != null) &&
+      (child == null || (i.ageMin <= child.age && (i.ageMax == null || i.ageMax! >= child.age)));
+  final fresh = ref.watch(newItemsProvider).where(fits);
+  final rest = catalog.items.where((i) => fits(i) && !fresh.contains(i)).toList()
+    ..sort((a, b) {
+      int rank(ContentItem i) => ref.watch(canPlayProvider(i)) ? 0 : 1;
+      return rank(a).compareTo(rank(b));
+    });
+  return [...fresh, ...rest].take(4).toList();
+});
+
+/// Big covers at the top of Start: one swipe away from something new.
+class HeroShelf extends ConsumerWidget {
+  const HeroShelf({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(heroItemsProvider);
+    if (items.isEmpty) return const SizedBox.shrink();
+    final width = MediaQuery.sizeOf(context).width - 40;
+    return SizedBox(
+      height: (width * .62).clamp(190, 300),
+      child: PageView.builder(
+        padEnds: false,
+        controller: PageController(viewportFraction: items.length == 1 ? 1 : .9),
+        itemCount: items.length,
+        itemBuilder: (context, i) => Padding(
+          padding: EdgeInsets.only(right: items.length == 1 ? 0 : 12),
+          child: _HeroCard(item: items[i]),
+        ),
+      ),
+    );
+  }
+}
+
+class _HeroCard extends ConsumerWidget {
+  const _HeroCard({required this.item});
+
+  final ContentItem item;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fresh = ref.watch(isNewItemProvider(item));
+    final text = Theme.of(context).textTheme;
+    final age = item.ageMax == null ? '${item.ageMin}+ lat' : '${item.ageMin}–${item.ageMax} lat';
+    return Pressable(
+      onTap: () => context.push('/zabawa/${item.id}'),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(26),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ItemArt(item: item),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [.35, 1],
+                  colors: [Colors.transparent, Color(0xE61B1530)],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 14,
+              top: 14,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(12)),
+                child: Text(
+                  fresh ? 'Nowość' : 'Jeszcze nie słuchane',
+                  style: text.labelMedium?.copyWith(
+                    color: const Color(0xFF211C35),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 16,
+              right: 70,
+              bottom: 14,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    item.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: text.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${(item.durationSec / 60).ceil()} min · $age',
+                    style: text.bodySmall?.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 14,
+              bottom: 14,
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: const BoxDecoration(color: AkBrand.teal, shape: BoxShape.circle),
+                child: Icon(
+                  ref.watch(canPlayProvider(item)) ? Icons.play_arrow_rounded : Icons.lock_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import 'core/router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/appearance.dart';
 import 'features/home/home_widget_sync.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
 import 'features/onboarding/onboarding_controller.dart';
@@ -68,6 +69,7 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
       debugShowCheckedModeBanner: false,
       theme: buildTheme(Brightness.light),
       darkTheme: buildTheme(Brightness.dark),
+      themeMode: ref.watch(appearanceProvider).value ?? ThemeMode.light,
       locale: const Locale('pl'),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
@@ -83,7 +85,7 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
         value: Theme.of(context).brightness == Brightness.dark
             ? SystemUiOverlayStyle.light
             : SystemUiOverlayStyle.dark,
-        child: child!,
+        child: EdgeSwipeBack(router: _router, child: child!),
       ),
     );
   }

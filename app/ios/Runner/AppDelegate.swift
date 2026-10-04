@@ -18,6 +18,9 @@ import UIKit
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "LaunchRoutePlugin") {
       LaunchRoutePlugin.register(with: registrar)
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AppIconPlugin") {
+      AppIconPlugin.register(with: registrar)
+    }
   }
 }
 
@@ -47,6 +50,37 @@ final class DeviceStoragePlugin: NSObject, FlutterPlugin {
         result(nil)
       } catch {
         result(FlutterError(code: "io", message: error.localizedDescription, details: nil))
+      }
+    default:
+      result(FlutterMethodNotImplemented)
+    }
+  }
+}
+
+/// The home-screen icon the parent picked (`pl.audiokiddo/icon`). Only on request: Apple
+/// allows alternate icons chosen by the user, never changed automatically (guideline 4.6).
+final class AppIconPlugin: NSObject, FlutterPlugin {
+  static func register(with registrar: FlutterPluginRegistrar) {
+    let channel = FlutterMethodChannel(name: "pl.audiokiddo/icon", binaryMessenger: registrar.messenger())
+    registrar.addMethodCallDelegate(AppIconPlugin(), channel: channel)
+  }
+
+  func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    switch call.method {
+    case "supported":
+      result(UIApplication.shared.supportsAlternateIcons)
+    case "current":
+      result(UIApplication.shared.alternateIconName)
+    case "set":
+      let name = (call.arguments as? [String: Any])?["name"] as? String
+      UIApplication.shared.setAlternateIconName(name) { error in
+        DispatchQueue.main.async {
+          if let error = error {
+            result(FlutterError(code: "icon", message: error.localizedDescription, details: nil))
+          } else {
+            result(nil)
+          }
+        }
       }
     default:
       result(FlutterMethodNotImplemented)

@@ -23,13 +23,14 @@ import '../features/discovery/parent_screens.dart';
 import '../features/discovery/rescue_screen.dart';
 import '../features/discovery/routines_screen.dart';
 import '../features/discovery/queue_screen.dart';
-import '../features/player/mini_player.dart';
+import '../features/player/bottom_dock.dart';
 import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
 import '../features/purchases/shop_screen.dart';
 import '../features/reminders/reminder_offer.dart';
 import '../features/games/speech_check_screen.dart';
+import '../features/personal/app_icon_screen.dart';
 import '../features/session/session_screens.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
@@ -76,9 +77,6 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
           ],
         ),
         StatefulShellBranch(
-          routes: [GoRoute(path: '/sklep', builder: (context, state) => const ShopScreen())],
-        ),
-        StatefulShellBranch(
           routes: [GoRoute(path: '/ulubione', builder: (context, state) => const CollectionScreen())],
         ),
         StatefulShellBranch(
@@ -86,6 +84,7 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
         ),
       ],
     ),
+    GoRoute(path: '/sklep', builder: (context, state) => const ShopScreen()),
     GoRoute(path: '/ratunku', builder: (context, state) => const RescueScreen()),
     GoRoute(path: '/rutyny', builder: (context, state) => const RoutinesScreen()),
     GoRoute(path: '/kolejka', builder: (context, state) => const QueueScreen()),
@@ -108,6 +107,7 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
     GoRoute(path: '/konto', builder: (context, state) => const AccountScreen()),
     GoRoute(path: '/dostep', builder: (context, state) => const AccessScreen()),
     GoRoute(path: '/mowa', builder: (context, state) => const SpeechCheckScreen()),
+    GoRoute(path: '/ikona', builder: (context, state) => const AppIconScreen()),
     GoRoute(
       path: '/oferta',
       builder: (context, state) => PaywallScreen(itemId: state.uri.queryParameters['zabawa']),
@@ -124,7 +124,23 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
       path: '/zabawa/:id',
       builder: (context, state) => DetailsScreen(itemId: state.pathParameters['id']!),
     ),
-    GoRoute(path: '/odtwarzacz', builder: (context, state) => const PlayerScreen()),
+    // The player slides up like a sheet and is pulled down to minimise it.
+    GoRoute(
+      path: '/odtwarzacz',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const PlayerScreen(),
+        transitionDuration: const Duration(milliseconds: 320),
+        reverseTransitionDuration: const Duration(milliseconds: 260),
+        transitionsBuilder: (context, animation, _, child) => SlideTransition(
+          position: Tween(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+          child: child,
+        ),
+      ),
+    ),
     GoRoute(path: '/odtwarzacz/bez-patrzenia', builder: (context, state) => const NoLookScreen()),
   ],
 );
@@ -140,40 +156,64 @@ class _ParentShell extends ConsumerWidget {
     final todayDone = child == null ? null : ref.watch(planPositionProvider(child.id))?.todayDone;
     return Scaffold(
       body: RemindersKeeper(todayDone: todayDone, child: shell),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const MiniPlayer(),
-          NavigationBar(
-            height: 64,
-            selectedIndex: shell.currentIndex,
-            onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home_rounded),
-                label: 'Start',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.library_music_outlined),
-                selectedIcon: Icon(Icons.library_music_rounded),
-                label: 'Biblioteka',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.shopping_bag_outlined),
-                selectedIcon: Icon(Icons.shopping_bag_rounded),
-                label: 'Sklep',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.favorite_border_rounded),
-                selectedIcon: Icon(Icons.favorite_rounded),
-                label: 'Ulubione',
-              ),
-              NavigationDestination(icon: Icon(Icons.menu_rounded), label: 'Więcej'),
-            ],
-          ),
+      bottomNavigationBar: BottomDock(
+        current: shell.currentIndex,
+        onTab: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
+        tabs: const [
+          (icon: Icons.home_outlined, selected: Icons.home_rounded, label: 'Start'),
+          (icon: Icons.auto_stories_outlined, selected: Icons.auto_stories_rounded, label: 'Biblioteka'),
+          (icon: Icons.favorite_border_rounded, selected: Icons.favorite_rounded, label: 'Ulubione'),
+          (icon: Icons.menu_rounded, selected: Icons.menu_rounded, label: 'Więcej'),
         ],
       ),
     );
   }
+}
+
+/// Screens a child uses: no swipe-back there (games are left by holding a button).
+bool noSwipeBack(String path) =>
+    path.startsWith('/dziecko') || path == '/gra' || path == '/powitanie' || path.startsWith('/odtwarzacz');
+
+/// A swipe from the left edge goes back, on every screen and platform, also where the
+/// system gesture does not reach (iOS only listens to the first 20 points).
+class EdgeSwipeBack extends StatefulWidget {
+  const EdgeSwipeBack({super.key, required this.router, required this.child});
+
+  final GoRouter router;
+  final Widget child;
+
+  @override
+  State<EdgeSwipeBack> createState() => _EdgeSwipeBackState();
+}
+
+class _EdgeSwipeBackState extends State<EdgeSwipeBack> {
+  double _dx = 0;
+
+  void _back() {
+    final router = widget.router;
+    final path = router.routerDelegate.currentConfiguration.uri.path;
+    if (noSwipeBack(path) || !router.canPop()) return;
+    router.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    children: [
+      widget.child,
+      Positioned(
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: 24,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragStart: (_) => _dx = 0,
+          onHorizontalDragUpdate: (d) => _dx += d.delta.dx,
+          onHorizontalDragEnd: (d) {
+            if (_dx > 70 || (d.primaryVelocity ?? 0) > 700) _back();
+          },
+        ),
+      ),
+    ],
+  );
 }

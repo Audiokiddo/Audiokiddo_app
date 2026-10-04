@@ -256,29 +256,41 @@ class _FullAccessCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    const ink = Colors.white;
     return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(color: referenceMint, borderRadius: BorderRadius.circular(24)),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AkBrand.tealDeep, Color(0xFF145457)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.verified_rounded, color: AkBrand.tealDeep),
+              const Icon(Icons.verified_rounded, color: AkBrand.sun),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Masz pełny dostęp',
-                  style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                  style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: ink),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 6),
-          Text('Wszystkie pakiety i nowości są odblokowane. Miłego słuchania.', style: text.bodyMedium),
+          Text(
+            'Wszystkie pakiety i nowości są odblokowane. Miłego słuchania.',
+            style: text.bodyMedium?.copyWith(color: ink),
+          ),
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton(
+              style: TextButton.styleFrom(foregroundColor: AkBrand.sun),
               onPressed: () => openWithGate(context, manageSubscriptionsUrl),
               child: const Text('Zarządzaj subskrypcją'),
             ),
@@ -650,7 +662,7 @@ class PackScreen extends ConsumerWidget {
             ? null
             : IconButton(
                 tooltip: 'Sklep',
-                onPressed: () => context.go('/sklep'),
+                onPressed: () => context.push('/sklep'),
                 icon: const Icon(Icons.arrow_back_rounded),
               ),
       ),
@@ -792,7 +804,7 @@ class PackScreen extends ConsumerWidget {
                             ),
                           ),
                         TextButton(
-                          onPressed: () => context.go('/sklep'),
+                          onPressed: () => context.push('/sklep'),
                           child: const Text('Albo wszystko w abonamencie'),
                         ),
                       ],

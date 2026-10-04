@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/format.dart';
+import '../../core/theme/appearance.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/golden_hello.dart';
 import '../catalog/catalog_providers.dart';
@@ -54,6 +55,28 @@ class MoreScreen extends ConsumerWidget {
           onTap: () async {
             if (await showParentalGate(context) && context.mounted) context.push('/konto');
           },
+        ),
+        const RefSection('Wygląd aplikacji'),
+        SegmentedButton<ThemeMode>(
+          segments: const [
+            ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode_rounded), label: Text('Jasny')),
+            ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode_rounded), label: Text('Ciemny')),
+            ButtonSegment(
+              value: ThemeMode.system,
+              icon: Icon(Icons.phone_iphone_rounded),
+              label: Text('Jak telefon'),
+            ),
+          ],
+          selected: {ref.watch(appearanceProvider).value ?? ThemeMode.light},
+          onSelectionChanged: (s) => ref.read(appearanceProvider.notifier).set(s.single),
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.emoji_emotions_outlined, color: AkBrand.tealDeep),
+          title: const Text('Ikona aplikacji'),
+          subtitle: const Text('Wybierz, w jakim humorze Szop’en czeka na ekranie telefonu'),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push('/ikona'),
         ),
         const RefSection('Szop’en — kolega na dyżurze'),
         SwitchListTile(
@@ -223,34 +246,36 @@ class ProfileScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(color: referenceMint, borderRadius: BorderRadius.circular(24)),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.face_rounded, size: 42, color: AkBrand.tealDeep),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          child.name.isEmpty ? 'Twoje dziecko' : child.name,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        Text('${child.age} lat'),
-                      ],
+              child: LightSurface(
+                child: Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.face_rounded, size: 42, color: AkBrand.tealDeep),
                     ),
-                  ),
-                  IconButton(
-                    tooltip: 'Edytuj profil',
-                    onPressed: () =>
-                        Navigator.of(context)
-                            .push(MaterialPageRoute<void>(builder: (_) => _EditProfile(child: child))),
-                    icon: const Icon(Icons.edit_outlined),
-                  ),
-                ],
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            child.name.isEmpty ? 'Twoje dziecko' : child.name,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          Text('${child.age} lat'),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'Edytuj profil',
+                      onPressed: () =>
+                          Navigator.of(context)
+                              .push(MaterialPageRoute<void>(builder: (_) => _EditProfile(child: child))),
+                      icon: const Icon(Icons.edit_outlined),
+                    ),
+                  ],
+                ),
               ),
             ),
             if (family!.children.length > 1)
@@ -294,11 +319,9 @@ class ProfileScreen extends ConsumerWidget {
             if (counts.isEmpty)
               const Text('Po kilku zabawach pojawią się tutaj ulubione tematy dziecka.')
             else
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
+              Row(
                 children: [
-                  for (final c
+                  for (final (i, c)
                       in (PlayCategory.values.toList()..sort((a, b) {
                             int score(PlayCategory c) => results
                                 .where(
@@ -308,12 +331,36 @@ class ProfileScreen extends ConsumerWidget {
                                 .length;
                             return score(b).compareTo(score(a));
                           }))
-                          .take(3))
-                    ActionChip(
-                      avatar: Icon(categoryIcon(c), size: 18),
-                      label: Text(c.label.replaceAll('\n', ' ')),
-                      onPressed: () => context.push('/biblioteka?kategoria=${c.name}'),
+                          .take(3)
+                          .indexed) ...[
+                    if (i > 0) const SizedBox(width: 10),
+                    Expanded(
+                      child: Material(
+                        color: categoryColor(c) == referencePurple ? referenceLilac : categoryColor(c),
+                        borderRadius: BorderRadius.circular(18),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(18),
+                          onTap: () => context.push('/biblioteka?kategoria=${c.name}'),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
+                            child: Column(
+                              children: [
+                                Icon(categoryIcon(c), size: 30, color: const Color(0xFF211C35)),
+                                const SizedBox(height: 6),
+                                Text(
+                                  c.label.split('\n').first,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.labelLarge
+                                      ?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w700),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
+                  ],
                 ],
               ),
             if (ref.watch(diplomasProvider(child.id)).value case final diplomas?
@@ -333,6 +380,20 @@ class ProfileScreen extends ConsumerWidget {
                 ],
               ),
             ],
+            ...() {
+              final weekAgo = DateTime.now().subtract(const Duration(days: 7));
+              final week = <String, int>{};
+              for (final r in results.where((r) => r.at.isAfter(weekAgo))) {
+                week.update(r.itemId, (n) => n + 1, ifAbsent: () => 1);
+              }
+              if (week.isEmpty) return const <Widget>[];
+              return [
+                const RefSection('W tym tygodniu'),
+                for (final e in (week.entries.toList()..sort((a, b) => b.value.compareTo(a.value))).take(5))
+                  if (catalog?.item(e.key) case final item?)
+                    AudioRow(item: item, subtitle: e.value == 1 ? '1 raz' : '${e.value} razy'),
+              ];
+            }(),
             const RefSection('Ostatnio słuchane'),
             for (final id in recent)
               if (catalog?.item(id) case final item?)

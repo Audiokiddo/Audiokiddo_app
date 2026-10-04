@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
 import '../catalog/catalog_providers.dart';
@@ -12,6 +13,8 @@ import '../catalog/seasonal.dart';
 import '../catalog/widgets/content_cover.dart';
 import '../home/quick_pick.dart';
 import '../purchases/preview_player.dart';
+import '../../l10n/app_localizations.dart';
+import '../catalog/widgets/labels.dart';
 import 'discovery_model.dart';
 
 const referencePurple = Color(0xFF342650);
@@ -299,6 +302,170 @@ class AudioRow extends ConsumerWidget {
                       icon: const Icon(Icons.lock_outline_rounded, size: 22),
                     )),
         ],
+      ),
+    );
+  }
+}
+
+/// Content on a fixed light colour (mint, lilac, sun): always the light theme inside, so text
+/// stays dark and readable when the app itself is dark.
+class LightSurface extends StatelessWidget {
+  const LightSurface({super.key, required this.child});
+
+  final Widget child;
+
+  static final _theme = buildTheme(Brightness.light);
+
+  @override
+  Widget build(BuildContext context) => Theme(
+    data: _theme,
+    child: DefaultTextStyle.merge(
+      style: TextStyle(color: AkPalette.light.ink),
+      child: child,
+    ),
+  );
+}
+
+/// The three facts a parent decides by, as in the mockup: how long, for what age, what is
+/// needed (or that nothing is).
+class MetaStrip extends StatelessWidget {
+  const MetaStrip({super.key, required this.item});
+
+  final ContentItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final minutes = (item.durationSec / 60).ceil();
+    final age = item.ageMax == null ? '${item.ageMin}+ lat' : '${item.ageMin}–${item.ageMax} lat';
+    final needs = item.requirements.where((r) => r != Requirement.mikrofon).map(l10n.requirement).toList();
+    Widget cell(IconData icon, Color color, String value, String label) => Expanded(
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            child: Icon(icon, size: 20, color: const Color(0xFF211C35)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  maxLines: 2,
+                  style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700, height: 1.1),
+                ),
+                Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: text.bodySmall),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(color: context.palette.surface, borderRadius: BorderRadius.circular(20)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          cell(Icons.schedule_rounded, referenceMint, '$minutes', minutes == 1 ? 'minuta' : 'minut'),
+          cell(Icons.groups_rounded, referenceLilac, age, 'wiek'),
+          cell(
+            needs.isEmpty ? Icons.check_rounded : Icons.content_cut_rounded,
+            AkBrand.sun,
+            needs.isEmpty ? 'Nic' : needs.join(' + '),
+            'potrzebne',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Plays like [item]: the same kind of play or the same pack, for the same age.
+List<ContentItem> similarPlays(Catalog catalog, ContentItem item, {int limit = 8}) {
+  final category = itemCategory(item);
+  int score(ContentItem i) =>
+      (i.packId != null && i.packId == item.packId ? 2 : 0) +
+      (category.matches(i) ? 3 : 0) +
+      i.situations.where(item.situations.contains).length;
+  final candidates = [
+    for (final i in catalog.items)
+      if (i.id != item.id &&
+          (i.audio.isNotEmpty || i.script != null) &&
+          i.ageMin <= (item.ageMax ?? item.ageMin + 3) &&
+          score(i) >= 2)
+        i,
+  ]..sort((a, b) => score(b).compareTo(score(a)));
+  return candidates.take(limit).toList();
+}
+
+/// "Podobne zabawy": a row of covers under a play.
+class SimilarPlays extends ConsumerWidget {
+  const SimilarPlays({super.key, required this.item, this.title = 'Podobne zabawy'});
+
+  final ContentItem item;
+  final String title;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(catalogProvider).value;
+    if (catalog == null) return const SizedBox.shrink();
+    final items = similarPlays(catalog, item);
+    if (items.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RefSection(title),
+        CoverRow(items: items),
+      ],
+    );
+  }
+}
+
+/// A horizontal row of covers with titles, each opening its play.
+class CoverRow extends ConsumerWidget {
+  const CoverRow({super.key, required this.items, this.size = 112});
+
+  final List<ContentItem> items;
+  final double size;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = Theme.of(context).textTheme;
+    return SizedBox(
+      height: size + 8 + MediaQuery.textScalerOf(context).scale(40),
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
+        itemBuilder: (context, i) {
+          final item = items[i];
+          return SizedBox(
+            width: size,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () => context.push('/zabawa/${item.id}'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ContentCover(
+                    item: item,
+                    size: size,
+                    locked: !ref.watch(canPlayProvider(item)),
+                    fresh: ref.watch(isNewItemProvider(item)),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(item.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: text.bodySmall),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

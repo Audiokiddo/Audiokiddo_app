@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'dart:async';
 
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +9,14 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/kiddo.dart';
-import '../../core/widgets/motion.dart';
-import '../../core/widgets/ambient_motion.dart';
-import '../../core/audio/kiddo_voice.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/item_views.dart';
+import '../../core/widgets/szop.dart';
+import '../catalog/widgets/item_art.dart';
+import '../discovery/reference_widgets.dart';
+import '../home/quick_pick.dart';
+import '../purchases/shop.dart';
 import 'family.dart';
 import 'plan_texts.dart';
 
@@ -87,6 +88,8 @@ class _NoChildren extends StatelessWidget {
   }
 }
 
+/// The parent's path: what to play today (one tap), where the week stands, what the child is
+/// developing, and what comes next, with the packs that open more of it.
 class _Path extends ConsumerWidget {
   const _Path({required this.child, required this.family});
 
@@ -95,52 +98,75 @@ class _Path extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
     final plan = ref.watch(planProvider(child.id));
     final position = ref.watch(planPositionProvider(child.id));
     final progress = ref.watch(progressProvider(child.id));
-    if (plan.isEmpty || position == null) return const Center(child: CircularProgressIndicator());
-
-    _NodeState stateOf(PlanDay day) => day.day <= position.completedDays
-        ? _NodeState.done
-        : day.day == position.currentDay && !position.todayDone
-        ? _NodeState.today
-        : _NodeState.locked;
-
-    final sections = <Widget>[];
-    for (var start = 0; start < plan.length; start += 7) {
-      final week = plan.sublist(start, math.min(start + 7, plan.length));
-      if (week.first.day == week.first.level.firstDay) sections.add(_LevelHeader(level: week.first.level));
-      sections.add(
-        ScrollReveal(
-          child: _WeekStaff(
-            week: start ~/ 7 + 1,
-            days: week,
-            states: [for (final d in week) stateOf(d)],
-            onOpen: (day, state) => _openDay(context, ref, day, state, position),
-          ),
-        ),
-      );
+    final catalog = ref.watch(catalogProvider).value;
+    if (plan.isEmpty || position == null || catalog == null) {
+      return const Center(child: CircularProgressIndicator());
     }
-
+    final today = plan[position.currentDay - 1];
+    final tomorrow = position.currentDay < plan.length ? plan[position.currentDay] : null;
+    final weekStart = (position.currentDay - 1) ~/ 7 * 7;
+    final week = plan.sublist(weekStart, math.min(weekStart + 7, plan.length));
     return ListView(
       padding: EdgeInsets.only(bottom: AkSpace.xl + MediaQuery.paddingOf(context).bottom),
       children: [
         _ChildSwitcher(family: family),
-        _Stats(progress: progress, position: position, days: plan.length),
-        if (position.todayDone)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(AkSpace.m, 0, AkSpace.m, AkSpace.s),
-            child: _Note(icon: Icons.celebration_rounded, text: l10n.planTodayDone),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.m, 0),
+          child: _TodayCard(
+            child: child,
+            day: today,
+            done: position.todayDone,
+            tomorrow: tomorrow,
+            total: plan.length,
+            catalog: catalog,
           ),
-        ...sections,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, 0),
+          child: _WeekStrip(days: week, position: position, onOpen: (d) => _openDay(context, d, position)),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, 0),
+          child: _Numbers(progress: progress),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.l, AkSpace.m, 0),
+          child: _Growing(child: child, progress: progress, catalog: catalog),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.l, AkSpace.m, 0),
+          child: _NextStages(plan: plan, position: position, catalog: catalog),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, 0),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              ActionChip(
+                avatar: const Icon(Icons.insights_rounded, size: 18),
+                label: const Text('Szczegółowe postępy'),
+                onPressed: () => context.push('/plan/postep'),
+              ),
+              ActionChip(
+                avatar: const Icon(Icons.tune_rounded, size: 18),
+                label: const Text('Zmień cele i czas'),
+                onPressed: () => context.push('/plan/dziecko'),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  void _openDay(BuildContext context, WidgetRef ref, PlanDay day, _NodeState state, PlanPosition position) {
+  void _openDay(BuildContext context, PlanDay day, PlanPosition position) {
     final l10n = AppLocalizations.of(context);
-    if (state == _NodeState.locked) {
+    final open = day.day <= position.completedDays || day.day == position.currentDay;
+    if (!open) {
       final text = day.day == position.completedDays + 1
           ? l10n.planOpensTomorrow
           : l10n.planLockedDay(day.day - 1);
@@ -151,13 +177,467 @@ class _Path extends ConsumerWidget {
     }
     showModalBottomSheet<void>(
       context: context,
-      // Above the tab bar, not inside the tab.
       useRootNavigator: true,
       showDragHandle: true,
       isScrollControlled: true,
       builder: (sheet) => _DaySheet(day: day),
     );
   }
+}
+
+/// "Dziś dla Zosi": the day's plays, each one tap from playing. No browsing, no deciding.
+class _TodayCard extends ConsumerWidget {
+  const _TodayCard({
+    required this.child,
+    required this.day,
+    required this.done,
+    required this.tomorrow,
+    required this.total,
+    required this.catalog,
+  });
+
+  final ChildProfile child;
+  final PlanDay day;
+  final bool done;
+  final PlanDay? tomorrow;
+  final int total;
+  final Catalog catalog;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    const ink = Colors.white;
+    final title = child.name.isEmpty ? 'Plan na dziś' : 'Dziś dla: ${child.name}';
+    final items = [for (final id in day.itemIds) ?catalog.item(id)];
+    final next = [for (final id in tomorrow?.itemIds ?? const <String>[]) ?catalog.item(id)];
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4A3670), Color(0xFF2B1F45)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'DZIEŃ ${day.day} Z $total · ${levelName(l10n, day.level.number).toUpperCase()}',
+                  style: text.labelMedium?.copyWith(
+                    color: AkBrand.sun,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: .8,
+                  ),
+                ),
+              ),
+              SzopSticker(done ? SzopPose.zadowolony : SzopPose.chytry, height: 54),
+            ],
+          ),
+          Text(
+            done ? 'Na dziś zrobione!' : title,
+            style: text.headlineSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            done
+                ? 'Brawo. Kolejny krok otworzy się jutro.'
+                : 'Gotowe na ${(items.fold(0, (s, i) => s + i.durationSec) / 60).ceil()} min. Wystarczy nacisnąć.',
+            style: text.bodyMedium?.copyWith(color: ink.withValues(alpha: .85)),
+          ),
+          const SizedBox(height: 12),
+          for (final item in done ? next : items) _PlanItemRow(item: item, preview: done),
+          if (!done && day.tip != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.lightbulb_rounded, color: AkBrand.sun, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(tipText(l10n, day.tip!), style: text.bodySmall?.copyWith(color: ink)),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One play of the day on the dark card: cover, title, minutes, and play (or what unlocks it).
+class _PlanItemRow extends ConsumerWidget {
+  const _PlanItemRow({required this.item, this.preview = false});
+
+  final ContentItem item;
+
+  /// Tomorrow's play: shown, not started.
+  final bool preview;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final canPlay = ref.watch(canPlayProvider(item));
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: Colors.white.withValues(alpha: .1),
+        borderRadius: BorderRadius.circular(18),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: () => context.push('/zabawa/${item.id}'),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                SizedBox.square(
+                  dimension: 52,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: ItemArt(item: item),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        preview ? 'Jutro: ${item.title}' : item.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.titleSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
+                      ),
+                      Text(
+                        '${(item.durationSec / 60).ceil()} min${canPlay ? '' : ' · w pakiecie'}',
+                        style: text.bodySmall?.copyWith(color: Colors.white.withValues(alpha: .8)),
+                      ),
+                    ],
+                  ),
+                ),
+                if (!preview)
+                  IconButton.filled(
+                    style: IconButton.styleFrom(
+                      backgroundColor: canPlay ? AkBrand.teal : AkBrand.sun,
+                      foregroundColor: canPlay ? Colors.white : const Color(0xFF211C35),
+                    ),
+                    tooltip: canPlay ? 'Zaczynamy: ${item.title}' : 'Odblokuj: ${item.title}',
+                    onPressed: () => canPlay
+                        ? startItem(context, item)
+                        : (item.packId != null
+                              ? openPack(context, item.packId!)
+                              : context.push('/zabawa/${item.id}')),
+                    icon: Icon(canPlay ? Icons.play_arrow_rounded : Icons.lock_open_rounded),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The current week as seven steps: done, today, still ahead.
+class _WeekStrip extends StatelessWidget {
+  const _WeekStrip({required this.days, required this.position, required this.onOpen});
+
+  final List<PlanDay> days;
+  final PlanPosition position;
+  final ValueChanged<PlanDay> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final palette = context.palette;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+      decoration: BoxDecoration(color: palette.surface, borderRadius: BorderRadius.circular(22)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Tydzień ${(days.first.day - 1) ~/ 7 + 1}',
+            style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (final d in days)
+                () {
+                  final done = d.day <= position.completedDays;
+                  final today = d.day == position.currentDay && !position.todayDone;
+                  final label = done
+                      ? 'Dzień ${d.day}, zrobiony.'
+                      : today
+                      ? 'Dzień ${d.day}, dzisiaj. Otwórz zabawy.'
+                      : 'Dzień ${d.day}, zablokowany.';
+                  return Semantics(
+                    button: true,
+                    label: label,
+                    excludeSemantics: true,
+                    child: GestureDetector(
+                      onTap: () => onOpen(d),
+                      child: Container(
+                        width: 38,
+                        height: 38,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: done
+                              ? AkBrand.teal
+                              : today
+                              ? AkBrand.sun
+                              : palette.surfaceMuted,
+                          border: today ? Border.all(color: const Color(0xFF211C35), width: 2) : null,
+                        ),
+                        child: done
+                            ? const Icon(Icons.check_rounded, color: Colors.white, size: 20)
+                            : d.chest
+                            ? Icon(
+                                Icons.redeem_rounded,
+                                size: 18,
+                                color: today ? const Color(0xFF211C35) : palette.inkMuted,
+                              )
+                            : Text(
+                                '${d.day}',
+                                style: text.labelLarge?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: today ? const Color(0xFF211C35) : palette.inkMuted,
+                                ),
+                              ),
+                      ),
+                    ),
+                  );
+                }(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Numbers extends StatelessWidget {
+  const _Numbers({required this.progress});
+
+  final ChildProgress? progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    Widget n(IconData icon, Color color, String value, String label) => Expanded(
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 22),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(value, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: text.bodySmall),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    return Row(
+      children: [
+        n(Icons.local_fire_department_rounded, AkBrand.orange, '${progress?.streak ?? 0}', 'dni z rzędu'),
+        n(Icons.headphones_rounded, AkBrand.tealDeep, '${progress?.minutes ?? 0} min', 'bez ekranu'),
+        n(Icons.emoji_events_rounded, AkBrand.sunDeep, '${progress?.activities ?? 0}', 'zabaw'),
+      ],
+    );
+  }
+}
+
+/// "Co rozwijamy": each goal of the child with how much it was practised, and the pack that
+/// would add most for it when the family does not have it yet.
+class _Growing extends ConsumerWidget {
+  const _Growing({required this.child, required this.progress, required this.catalog});
+
+  final ChildProfile child;
+  final ChildProgress? progress;
+  final Catalog catalog;
+
+  static const _target = 10;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final scopes = ref.watch(activeScopesProvider);
+    final goals = child.goals.isEmpty
+        ? const [DevGoal.listening, DevGoal.imagination, DevGoal.language]
+        : child.goals.toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Co rozwijamy', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+        const SizedBox(height: 10),
+        for (final goal in goals)
+          () {
+            final practised = goal.skills.fold(0, (s, skill) => s + (progress?.skillPractice[skill] ?? 0));
+            // The pack the family lacks that trains this goal most.
+            Pack? best;
+            var bestCount = 0;
+            for (final pack in catalog.packs) {
+              if (ownsPack(scopes, pack.id)) continue;
+              final count = catalog
+                  .itemsInPack(pack.id)
+                  .where((i) => i.skills.any(goal.skills.contains))
+                  .length;
+              if (count > bestCount) {
+                best = pack;
+                bestCount = count;
+              }
+            }
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          goalName(l10n, goal),
+                          style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      Text('$practised / $_target', style: text.bodySmall),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  LinearProgressIndicator(
+                    value: (practised / _target).clamp(0, 1).toDouble(),
+                    minHeight: 9,
+                    borderRadius: BorderRadius.circular(8),
+                    color: AkBrand.teal,
+                    backgroundColor: context.palette.surfaceMuted,
+                  ),
+                  if (best != null)
+                    TextButton.icon(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      onPressed: () => openPack(context, best!.id),
+                      icon: const Icon(Icons.add_circle_outline_rounded, size: 18),
+                      label: Text(
+                        'Pakiet ${best.title}: +$bestCount ${bestCount == 1 ? 'zabawa' : 'zabaw'} na ten cel',
+                      ),
+                    ),
+                ],
+              ),
+            );
+          }(),
+      ],
+    );
+  }
+}
+
+/// The stages still ahead, with what each brings and which plays wait in packs.
+class _NextStages extends ConsumerWidget {
+  const _NextStages({required this.plan, required this.position, required this.catalog});
+
+  final List<PlanDay> plan;
+  final PlanPosition position;
+  final Catalog catalog;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final current = PlanLevel.of(position.currentDay);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Dalej na ścieżce', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+        const SizedBox(height: 10),
+        for (final level in PlanLevel.all)
+          () {
+            final days = plan.where((d) => d.level.number == level.number).toList();
+            final items = {for (final d in days) ...d.itemIds}.map(catalog.item).nonNulls.toList();
+            final locked = items.where((i) => !ref.watch(canPlayProvider(i))).toList();
+            final packs = {for (final i in locked) ?i.packId};
+            final isCurrent = level.number == current.number;
+            final past = level.number < current.number;
+            return Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: isCurrent ? referenceMint : context.palette.surface,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: LightSurfaceIf(
+                light: isCurrent,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: past
+                          ? AkBrand.teal
+                          : (isCurrent ? AkBrand.sun : context.palette.surfaceMuted),
+                      child: past
+                          ? const Icon(Icons.check_rounded, color: Colors.white)
+                          : Text(
+                              '${level.number}',
+                              style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF211C35)),
+                            ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${levelName(l10n, level.number)} · dni ${level.firstDay}–${level.lastDay}',
+                            style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                          Text(levelNews(l10n, level.number), style: text.bodySmall),
+                          if (locked.isNotEmpty && !past)
+                            Text(
+                              '${locked.length} z ${items.length} zabaw czeka w pakietach',
+                              style: text.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                        ],
+                      ),
+                    ),
+                    if (locked.isNotEmpty && !past && packs.isNotEmpty)
+                      TextButton(
+                        onPressed: () => openPack(context, packs.first),
+                        child: const Text('Odblokuj'),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          }(),
+      ],
+    );
+  }
+}
+
+/// [LightSurface] only when [light] (a fixed light background).
+class LightSurfaceIf extends StatelessWidget {
+  const LightSurfaceIf({super.key, required this.light, required this.child});
+
+  final bool light;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => light ? LightSurface(child: child) : child;
 }
 
 class _ChildSwitcher extends ConsumerWidget {
@@ -202,386 +682,6 @@ class _ChildSwitcher extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _Stats extends StatelessWidget {
-  const _Stats({required this.progress, required this.position, required this.days});
-
-  final ChildProgress? progress;
-  final PlanPosition position;
-  final int days;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final text = Theme.of(context).textTheme;
-    final accuracy = progress?.accuracy;
-    Widget stat(IconData icon, Color color, String value, String label) => Expanded(
-      child: Semantics(
-        label: '$label: $value',
-        excludeSemantics: true,
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 22),
-            const SizedBox(height: 4),
-            Text(value, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
-            Text(
-              label,
-              style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, AkSpace.s),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: AkSpace.m),
-        decoration: BoxDecoration(
-          color: context.palette.surface,
-          borderRadius: BorderRadius.circular(AkRadius.card),
-          boxShadow: akSoftShadow(context),
-        ),
-        child: Row(
-          children: [
-            stat(
-              Icons.music_note_rounded,
-              AkBrand.terracotta,
-              '${position.completedDays}/$days',
-              l10n.planDays,
-            ),
-            stat(Icons.wb_sunny_rounded, AkBrand.orange, '${progress?.streak ?? 0}', l10n.planStreak),
-            stat(
-              Icons.star_rounded,
-              AkBrand.sunDeep,
-              accuracy == null ? '–' : '${(accuracy * 100).round()}%',
-              l10n.planAccuracy,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LevelHeader extends StatelessWidget {
-  const _LevelHeader({required this.level});
-
-  final PlanLevel level;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final text = Theme.of(context).textTheme;
-    return ScrollReveal(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(AkSpace.l, AkSpace.xl, AkSpace.l, AkSpace.m),
-        child: Semantics(
-          header: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.planLevel(level.number, level.firstDay, level.lastDay).toUpperCase(),
-                style: text.labelMedium?.copyWith(
-                  color: context.palette.primary,
-                  letterSpacing: 1.4,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(levelName(l10n, level.number), style: text.headlineMedium),
-              const SizedBox(height: 4),
-              Text(
-                levelNews(l10n, level.number),
-                style: text.bodyLarge?.copyWith(color: context.palette.inkMuted),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-enum _NodeState { done, today, locked }
-
-/// Each week is a short tune: seven notes, one per day. Finishing a day adds its note;
-/// touching a finished note plays it, and the play button plays the tune collected so far.
-/// The whole week together is "Melodia tygodnia", the child's own little song.
-class _WeekStaff extends ConsumerStatefulWidget {
-  const _WeekStaff({required this.week, required this.days, required this.states, required this.onOpen});
-
-  final int week;
-  final List<PlanDay> days;
-  final List<_NodeState> states;
-  final void Function(PlanDay day, _NodeState state) onOpen;
-
-  /// Pitches (0 = C4 … 9 = E5) of each week's tune.
-  static const motifs = [
-    [0, 2, 4, 5, 4, 2, 0],
-    [4, 5, 7, 5, 4, 2, 4],
-    [2, 4, 5, 7, 8, 7, 5],
-    [7, 5, 4, 2, 4, 5, 7],
-    [0, 4, 7, 9, 7, 4, 0],
-  ];
-
-  @override
-  ConsumerState<_WeekStaff> createState() => _WeekStaffState();
-}
-
-class _WeekStaffState extends ConsumerState<_WeekStaff> with SingleTickerProviderStateMixin {
-  late final _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
-  int? _playing;
-  Timer? _timer;
-
-  List<int> get _motif => _WeekStaff.motifs[(widget.week - 1) % _WeekStaff.motifs.length];
-
-  @override
-  void initState() {
-    super.initState();
-    if (ref.read(ambientMotionProvider)) _pulse.repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _pulse.dispose();
-    super.dispose();
-  }
-
-  void _playNote(int i) {
-    ref.read(kiddoVoiceProvider).effect('note_${_motif[i]}');
-    setState(() => _playing = i);
-  }
-
-  void _playTune() {
-    final done = [
-      for (var i = 0; i < widget.states.length; i++)
-        if (widget.states[i] == _NodeState.done) i,
-    ];
-    if (done.isEmpty) return;
-    _timer?.cancel();
-    var step = 0;
-    _playNote(done[step]);
-    _timer = Timer.periodic(const Duration(milliseconds: 420), (t) {
-      step++;
-      if (!mounted || step >= done.length) {
-        t.cancel();
-        if (mounted) setState(() => _playing = null);
-        return;
-      }
-      _playNote(done[step]);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final text = Theme.of(context).textTheme;
-    final done = widget.states.where((s) => s == _NodeState.done).length;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(AkSpace.m, 0, AkSpace.m, AkSpace.m),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.s, AkSpace.m),
-        decoration: BoxDecoration(
-          color: context.palette.surface,
-          borderRadius: BorderRadius.circular(AkRadius.card),
-          boxShadow: akSoftShadow(context),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.planWeek(widget.week), style: text.titleLarge),
-                      Text(
-                        l10n.planWeekNotes(done, widget.days.length),
-                        style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
-                      ),
-                    ],
-                  ),
-                ),
-                if (widget.days.any((d) => d.chest))
-                  Tooltip(
-                    message: l10n.planChest,
-                    child: Icon(
-                      Icons.redeem_rounded,
-                      color: done == widget.days.length ? AkBrand.terracotta : context.palette.inkMuted,
-                    ),
-                  ),
-                IconButton(
-                  tooltip: l10n.planPlayTune,
-                  onPressed: done == 0 ? null : _playTune,
-                  icon: const Icon(Icons.play_circle_fill_rounded, size: 36),
-                  color: context.palette.primary,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 150,
-              child: AnimatedBuilder(
-                animation: _pulse,
-                builder: (context, _) => Stack(
-                  children: [
-                    Positioned.fill(
-                      child: CustomPaint(
-                        painter: _StaffPainter(
-                          motif: _motif,
-                          states: widget.states,
-                          playing: _playing,
-                          pulse: _pulse.value,
-                          ink: context.palette.ink,
-                          faint: context.palette.inkMuted.withValues(alpha: 0.35),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        for (final (i, day) in widget.days.indexed)
-                          Expanded(child: _noteCell(context, l10n, i, day, widget.states[i])),
-                        for (var i = widget.days.length; i < 7; i++) const Expanded(child: SizedBox()),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _noteCell(BuildContext context, AppLocalizations l10n, int i, PlanDay day, _NodeState state) {
-    final label = switch (state) {
-      _NodeState.done => l10n.planNodeDone(day.day),
-      _NodeState.today => l10n.planNodeToday(day.day),
-      _NodeState.locked => l10n.planNodeLocked(day.day),
-    };
-    void open() {
-      if (state == _NodeState.done) _playNote(i);
-      widget.onOpen(day, state);
-    }
-
-    return Semantics(
-      button: true,
-      label: label,
-      onTap: open,
-      excludeSemantics: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: open,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 44,
-              child: state == _NodeState.today
-                  ? const FittedBox(child: Kiddo(size: 44, mood: KiddoMood.idle, wave: true))
-                  : null,
-            ),
-            const Spacer(),
-            Text(
-              '${day.day}',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: state == _NodeState.today ? context.palette.primary : context.palette.inkMuted,
-                fontWeight: state == _NodeState.today ? FontWeight.w800 : FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StaffPainter extends CustomPainter {
-  _StaffPainter({
-    required this.motif,
-    required this.states,
-    required this.playing,
-    required this.pulse,
-    required this.ink,
-    required this.faint,
-  });
-
-  final List<int> motif;
-  final List<_NodeState> states;
-  final int? playing;
-  final double pulse;
-  final Color ink;
-  final Color faint;
-
-  static const _noteColors = [
-    AkBrand.terracotta,
-    AkBrand.orange,
-    AkBrand.sunDeep,
-    AkBrand.tealDeep,
-    AkBrand.lavenderDeep,
-    AkBrand.terracotta,
-    AkBrand.orange,
-  ];
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    const gap = 11.0;
-    const bottomLine = 112.0; // E4
-    final line = Paint()
-      ..color = faint
-      ..strokeWidth = 1.2;
-    for (var i = 0; i < 5; i++) {
-      final y = bottomLine - i * gap;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), line);
-    }
-    final cell = size.width / 7;
-    for (var i = 0; i < states.length; i++) {
-      final pitch = motif[i];
-      // C4 sits a step below the bottom line (E4), on its own ledger line.
-      final y = bottomLine + gap - pitch * gap / 2;
-      final x = cell * (i + 0.5);
-      final state = states[i];
-      if (pitch == 0) canvas.drawLine(Offset(x - 14, y), Offset(x + 14, y), line);
-      final color = _noteColors[i % _noteColors.length];
-      final lift = playing == i ? -6.0 : 0.0;
-      final head = Rect.fromCenter(center: Offset(x, y + lift), width: 18, height: 13);
-      canvas.save();
-      canvas.translate(head.center.dx, head.center.dy);
-      canvas.rotate(-0.35);
-      canvas.translate(-head.center.dx, -head.center.dy);
-      if (state == _NodeState.today) {
-        canvas.drawOval(
-          head.inflate(6 + pulse * 5),
-          Paint()..color = AkBrand.sun.withValues(alpha: 0.45 * (1 - pulse * 0.6)),
-        );
-      }
-      canvas.drawOval(
-        head,
-        state == _NodeState.locked
-            ? (Paint()
-                ..color = faint
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 2)
-            : (Paint()..color = state == _NodeState.today ? AkBrand.sun : color),
-      );
-      canvas.restore();
-      // Stem up for low notes, down for high ones, like real notation.
-      final up = pitch < 6;
-      final stem = Paint()
-        ..color = state == _NodeState.locked ? faint : (state == _NodeState.today ? AkBrand.sunDeep : color)
-        ..strokeWidth = 2;
-      final sx = up ? x + 8 : x - 8;
-      canvas.drawLine(Offset(sx, y + lift - 1), Offset(sx, y + lift + (up ? -34 : 34)), stem);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_StaffPainter old) =>
-      old.pulse != pulse || old.playing != playing || old.states != states || old.ink != ink;
 }
 
 class _Note extends StatelessWidget {
