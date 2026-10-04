@@ -14,6 +14,7 @@ import '../catalog/widgets/item_art.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../family/family.dart';
+import '../home/quick_pick.dart';
 import '../pdf/case_files_card.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
@@ -405,6 +406,46 @@ class PackBanner extends ConsumerWidget {
   }
 }
 
+/// Right under the cover: start the pack without scrolling. An owned pack goes on with the
+/// first play the child has not finished; otherwise its first free play.
+class _PackStartButton extends ConsumerWidget {
+  const _PackStartButton({required this.summary, required this.owned});
+
+  final PackSummary summary;
+  final bool owned;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final family = ref.watch(familyProvider).value;
+    final child = family?.active;
+    final done = child == null
+        ? const <String>{}
+        : {
+            for (final r in family!.resultsOf(child.id))
+              if (r.completed) r.itemId,
+          };
+    final playable = [
+      for (final i in summary.items)
+        if (ref.watch(canPlayProvider(i))) i,
+    ];
+    final next = playable.where((i) => !done.contains(i.id)).firstOrNull ?? playable.firstOrNull;
+    if (next == null) return const SizedBox.shrink();
+    final first = summary.items.indexOf(next) == 0 && !done.contains(next.id);
+    return FilledButton.icon(
+      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+      onPressed: () => startItem(context, next),
+      icon: const Icon(Icons.play_arrow_rounded, size: 28),
+      label: Text(
+        owned
+            ? '${first ? 'Zacznij' : 'Graj dalej'}: ${next.title}'
+            : 'Posłuchaj za darmo: ${next.title}',
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
 class _PackCard extends ConsumerWidget {
   const _PackCard({required this.summary, required this.product, required this.owned});
 
@@ -702,6 +743,9 @@ class PackScreen extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                   children: [
                     PackBanner(summary: summary),
+                    const SizedBox(height: 12),
+                    _PackStartButton(summary: summary, owned: owned),
+                    if (!owned) const Center(child: RedeemAccessLink()),
                     const SizedBox(height: 14),
                     Text('Pakiet', style: text.labelMedium?.copyWith(color: context.palette.inkMuted)),
                     Text(pack.title, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),

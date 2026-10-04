@@ -15,6 +15,7 @@ import '../personal/personal_repository.dart';
 import '../parental_gate/parental_gate.dart';
 import '../kids_mode/kids_mode_setup.dart';
 import '../diploma/diploma.dart';
+import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
 
@@ -85,6 +86,21 @@ class MoreScreen extends ConsumerWidget {
           subtitle: const Text('Przy powrocie i osiągnięciach. Krótko, bez dźwięku.'),
           value: !(ref.watch(discoveryProvider).value?.quiet ?? false),
           onChanged: (v) => ref.read(discoveryProvider.notifier).quiet(!v),
+        ),
+        const RefSection('Pomóż nam rosnąć'),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.star_rounded, color: AkBrand.tealDeep),
+          title: const Text('Oceń AudioKiddo'),
+          subtitle: const Text('Kilka gwiazdek pomaga innym rodzicom nas znaleźć'),
+          onTap: () => rateApp(context, fromList: true),
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.mail_outline_rounded, color: AkBrand.tealDeep),
+          title: const Text('Napisz do nas'),
+          subtitle: const Text(feedbackEmail),
+          onTap: () => sendFeedback(context),
         ),
         const SizedBox(height: 24),
       ],

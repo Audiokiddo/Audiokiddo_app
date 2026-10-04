@@ -176,6 +176,7 @@ class _Browse extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           for (final s in locked) _LockedPackCard(summary: s, product: byId[s.pack.storeProductId]),
+          const RedeemAccessLink(),
         ],
         const RefSection('Dla rodzica'),
         _ParentTools(onFilter: onFilter),

@@ -58,7 +58,7 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space:
 tr.total td { font-weight: 700; background: var(--teal-soft); }
 tr.bad td.n:last-child { color: var(--warn); font-weight: 700; }
 tr.good td.n:last-child { color: var(--teal); font-weight: 700; }
-.pill { display: inline-block; font: 600 11px/1 var(--display); letter-spacing: .05em; text-transform: uppercase; padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
+.pill { display: inline-block; font: 600 11px/1 var(--display); letter-spacing: .05em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; white-space: nowrap; }
 .pill.gpt { background: var(--teal-soft); color: var(--teal); }
 .pill.cl { background: var(--sun-soft); color: var(--ink); }
 .pill.new { background: var(--warn-soft); color: var(--warn); }
@@ -234,6 +234,26 @@ a:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
 
   <h2>Pomiar</h2>
   <p>Zdarzenia na stronie: wyświetlenie oferty, start i ukończenie próbki, rozpoczęcie płatności, opłacone zamówienie z unikalnym ID, zwrot. Aplikacja jest w kategorii Kids, więc nie ma w niej zewnętrznych narzędzi analitycznych ani reklamowych. Powroty do aplikacji liczymy zbiorczo po stronie serwera. Nigdy nie wysyłamy reklamodawcom imion dzieci, nagrań ani wypowiedzi.</p>
+
+  <h2>Jak legalnie ominąć prowizje App Store i Google Play</h2>
+  <p>Prowizja sklepów to 15% (program dla małych firm Apple, Google do miliona dolarów rocznie). Na zestawie 3 pakietów to około 19,50 zł. Da się jej uniknąć bez łamania zasad i bez ryzyka usunięcia aplikacji ze sklepu.</p>
+  <div class="table">
+    <table>
+      <thead><tr><th>Sposób</th><th>Prowizja</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Zakup na audiokiddo.pl, dostęp w aplikacji</strong> po e-mailu, numerze zamówienia lub kodzie (zasada „multiplatform” Apple 3.1.3(b))</td><td>0% dla sklepów, tylko około 2% za płatność</td><td>Działa już dziś</td></tr>
+        <tr><td><strong>Kody prezentowe sprzedawane na stronie</strong>, wpisywane w aplikacji w „Odbierz dostęp”</td><td>0% dla sklepów</td><td>Działa (make_codes.py, redeem-code)</td></tr>
+        <tr><td><strong>Mail do rodziców z kontem</strong> (za zgodą) z ofertą sklepu www</td><td>0%</td><td>Dozwolone, bo komunikacja poza aplikacją</td></tr>
+        <tr><td><strong>Wyższa cena w aplikacji niż na stronie</strong>, na przykład zestaw 179,99 zł w aplikacji i 159,99 zł na stronie</td><td>Rekompensuje prowizję</td><td>Dozwolone; ceny ustawia się w App Store Connect i Google Play</td></tr>
+        <tr><td><strong>Google Play w UE: alternatywne płatności</strong> (User Choice Billing)</td><td>Około 4 punkty procentowe mniej</td><td>Do rozważenia po starcie na Androidzie</td></tr>
+        <tr><td>Przycisk „kup taniej na stronie” w aplikacji</td><td>Nie dotyczy</td><td><strong>Nie robimy.</strong> Apple odrzuca takie aplikacje. Unijna furtka (link do zakupu z opłatą dla Apple) nie jest dostępna dla aplikacji w kategorii Kids.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>W praktyce: reklamy, social media, maile i twórcy prowadzą na stronę. W aplikacji jest tylko „Masz zakup z audiokiddo.pl albo kod? Odbierz dostęp” (na stronie pakietu i w Bibliotece), bez cen i bez linku do sklepu www. Zakup w aplikacji zostaje dla osób, które wolą płacić przez Apple lub Google.</p>
+
+  <h2>Oceny w App Store i Google Play</h2>
+  <p>Po trzeciej ukończonej zabawie Szop’en pyta na Starcie: „Podoba się AudioKiddo?”. „Tak, oceniam” otwiera systemowe okno oceny, „Coś nie gra” otwiera maila do Was. Obie drogi prowadzą przez bramkę rodzica (kategoria Kids), a pytanie wraca najwcześniej po 60 dniach. W menu Więcej są „Oceń AudioKiddo” i „Napisz do nas”. Najlepsze oceny dają rzeczy, które działają bez zawodu: szybki start zabawy, praca bez internetu, brak reklam i jasne zakupy. Na to idą kolejne poprawki.</p>
 
   <h2>Progi na drodze do miliona</h2>
   <ul class="steps">

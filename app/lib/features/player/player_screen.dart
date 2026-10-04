@@ -116,7 +116,13 @@ class _Player extends ConsumerWidget {
                           ),
                         ),
                       )
-                    : ItemHeaderArt(item: item, maxWidth: 360, radius: 28, seed: media.id.length),
+                    : ItemHeaderArt(
+                        item: item,
+                        // The case file button takes room: a smaller cover keeps the tools in view.
+                        maxWidth: item.pdf.isNotEmpty && item.packId == 'detektyw' ? 220 : 360,
+                        radius: 28,
+                        seed: media.id.length,
+                      ),
                 const SizedBox(height: 22),
                 Text(media.title, style: text.headlineSmall),
                 const SizedBox(height: 8),
@@ -235,7 +241,7 @@ class _Player extends ConsumerWidget {
                 ),
                 if (item != null) ...[
                   const SizedBox(height: 16),
-                  SimilarPlays(
+                  PlaysByPack(
                     item: item,
                     title: state?.processingState == AudioProcessingState.completed
                         ? 'Przygoda skończona. Co dalej?'

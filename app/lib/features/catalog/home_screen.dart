@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +17,7 @@ import '../home/quick_pick.dart';
 import '../purchases/offer_catalog.dart';
 import '../purchases/purchase_controller.dart';
 import '../purchases/shop.dart';
+import '../rating/rating.dart';
 import '../purchases/shop_screen.dart';
 import '../purchases/store_gateway.dart';
 import 'catalog_providers.dart';
@@ -45,7 +48,7 @@ class HomeScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  SzopSticker(szopOfTheDay(ref.watch(clockProvider)()).$1, height: 40),
+                  const _SzopButton(),
                   const SizedBox(width: 6),
                   Expanded(
                     child: FittedBox(
@@ -74,6 +77,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+              const _SzopBubble(),
               const SizedBox(height: 10),
               FittedBox(
                 fit: BoxFit.scaleDown,
@@ -114,6 +118,7 @@ class HomeScreen extends ConsumerWidget {
                 for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
               _OwnedPacks(catalog: catalog),
               const PendingDiplomaCard(),
+              const RatingCard(),
               _NextPackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
               const _SeasonShelf(),
@@ -137,6 +142,143 @@ class HomeScreen extends ConsumerWidget {
     final p = ref.watch(progressProvider(item.id)).value;
     if (p == null || p.completed) return '${(item.durationSec / 60).ceil()} min';
     return '${((p.durationMs - p.positionMs).clamp(0, 1 << 40) / 60000).ceil()} min pozostało';
+  }
+}
+
+/// What Szop’en says on Start: a tip for this time of day or a joke. He speaks up once when
+/// Start opens, then whenever he is tapped; each line goes away by itself.
+final startSzopProvider = NotifierProvider<StartSzop, (SzopPose, String)?>(StartSzop.new);
+
+class StartSzop extends Notifier<(SzopPose, String)?> {
+  Timer? _hide;
+  int _next = 0;
+  bool _greeted = false;
+
+  @override
+  (SzopPose, String)? build() {
+    ref.onDispose(() => _hide?.cancel());
+    return null;
+  }
+
+  List<(SzopPose, String)> get _lines {
+    final now = ref.read(clockProvider)();
+    final tips = szopTipsFor(now);
+    // Tips first, a joke every third line.
+    return [
+      for (var i = 0; i < tips.length; i++) ...[
+        tips[i],
+        if (i % 2 == 1) szopNudges[(now.day + i) % szopNudges.length],
+      ],
+    ];
+  }
+
+  /// Once per app start, a moment after Start shows.
+  void greet() {
+    if (_greeted) return;
+    _greeted = true;
+    _next = ref.read(clockProvider)().minute % _lines.length;
+    speak();
+  }
+
+  void speak() {
+    final lines = _lines;
+    state = lines[_next++ % lines.length];
+    _hide?.cancel();
+    _hide = Timer(const Duration(seconds: 12), hush);
+  }
+
+  void hush() {
+    _hide?.cancel();
+    state = null;
+  }
+}
+
+class _SzopButton extends ConsumerStatefulWidget {
+  const _SzopButton();
+
+  @override
+  ConsumerState<_SzopButton> createState() => _SzopButtonState();
+}
+
+class _SzopButtonState extends ConsumerState<_SzopButton> {
+  Timer? _greet;
+
+  @override
+  void initState() {
+    super.initState();
+    _greet = Timer(const Duration(seconds: 2), () {
+      if (mounted && !(ref.read(discoveryProvider).value?.quiet ?? false)) {
+        ref.read(startSzopProvider.notifier).greet();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _greet?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final line = ref.watch(startSzopProvider);
+    final quiet = ref.watch(discoveryProvider).value?.quiet ?? false;
+    return Semantics(
+      button: true,
+      label: 'Szop’en, posłuchaj porady',
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: quiet ? null : () => ref.read(startSzopProvider.notifier).speak(),
+        child: SzopSticker(line?.$1 ?? szopOfTheDay(ref.watch(clockProvider)()).$1, height: 44),
+      ),
+    );
+  }
+}
+
+class _SzopBubble extends ConsumerWidget {
+  const _SzopBubble();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final line = ref.watch(startSzopProvider);
+    final show = line != null && !(ref.watch(discoveryProvider).value?.quiet ?? false);
+    const ink = Color(0xFF211C35);
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.topLeft,
+      child: !show
+          ? const SizedBox(width: double.infinity)
+          : Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: GestureDetector(
+                onTap: () => ref.read(startSzopProvider.notifier).hush(),
+                child: Semantics(
+                  liveRegion: true,
+                  label: 'Szop’en mówi: ${line.$2}',
+                  excludeSemantics: true,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+                    decoration: const BoxDecoration(
+                      color: AkBrand.sun,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(18),
+                        bottomLeft: Radius.circular(18),
+                        bottomRight: Radius.circular(18),
+                      ),
+                    ),
+                    child: Text(
+                      line.$2,
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.3),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+    );
   }
 }
 
@@ -723,8 +865,13 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
       int rank(ContentItem i) => ref.watch(canPlayProvider(i)) ? 0 : 1;
       return rank(a).compareTo(rank(b));
     });
-  return [...fresh, ...rest].take(4).toList();
+  final picks = [...fresh, ...rest].where((i) => i.id != _closingPlayId).take(4).toList();
+  // "Prawda czy nie?" always closes the row: a quick game for any moment.
+  final closing = catalog.item(_closingPlayId);
+  return [...picks, ?closing];
 });
+
+const _closingPlayId = 'prawda-czy-nie';
 
 /// Big covers at the top of Start: one swipe away from something new.
 class HeroShelf extends ConsumerStatefulWidget {
@@ -810,7 +957,11 @@ class _HeroCard extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          fresh ? 'Nowość' : 'Jeszcze nie słuchane',
+                          fresh
+                              ? 'Nowość'
+                              : item.id == _closingPlayId
+                              ? 'Szybka gra'
+                              : 'Jeszcze nie słuchane',
                           style: text.labelMedium?.copyWith(
                             color: const Color(0xFF211C35),
                             fontWeight: FontWeight.w700,

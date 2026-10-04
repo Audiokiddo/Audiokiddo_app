@@ -189,3 +189,16 @@ Future<void> openGuide(BuildContext context, AssetRef guide, Pack pack) async {
     ),
   );
 }
+
+/// For families who bought on audiokiddo.pl or got a gift code: the way to their access.
+/// Only redeeming here; the app itself never sends anyone to buy outside the store.
+class RedeemAccessLink extends StatelessWidget {
+  const RedeemAccessLink({super.key});
+
+  @override
+  Widget build(BuildContext context) => TextButton.icon(
+    onPressed: () => context.push('/dostep'),
+    icon: const Icon(Icons.redeem_rounded),
+    label: const Text('Masz zakup z audiokiddo.pl albo kod? Odbierz dostęp'),
+  );
+}

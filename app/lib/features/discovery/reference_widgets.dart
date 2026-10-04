@@ -12,6 +12,7 @@ import '../catalog/catalog_providers.dart';
 import '../catalog/seasonal.dart';
 import '../catalog/widgets/content_cover.dart';
 import '../home/quick_pick.dart';
+import '../personal/personal_repository.dart';
 import '../purchases/preview_player.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/widgets/labels.dart';
@@ -283,6 +284,7 @@ class AudioRow extends ConsumerWidget {
                         '${(item.durationSec / 60).ceil()} min · ${item.ageMin}${item.ageMax == null ? '+' : '–${item.ageMax}'} lat',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                  ListenedBar(item: item),
                 ],
               ),
             ),
@@ -302,6 +304,60 @@ class AudioRow extends ConsumerWidget {
                       icon: const Icon(Icons.lock_outline_rounded, size: 22),
                     )),
         ],
+      ),
+    );
+  }
+}
+
+/// How much of a play the family has heard: a thin bar and "Słuchane 4 z 12 min" (or "Do końca").
+/// Nothing for plays never started.
+class ListenedBar extends ConsumerWidget {
+  const ListenedBar({super.key, required this.item, this.compact = false});
+
+  final ContentItem item;
+
+  /// Under a cover in a row: the bar only.
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final p = ref.watch(progressProvider(item.id)).value;
+    if (p == null || (p.positionMs <= 0 && !p.completed)) return const SizedBox.shrink();
+    final total = p.durationMs > 0 ? p.durationMs : item.durationSec * 1000;
+    final value = p.completed ? 1.0 : (p.positionMs / total).clamp(0.0, 1.0);
+    final heard = (p.positionMs / 60000).ceil();
+    final minutes = (total / 60000).ceil();
+    final label = p.completed ? 'Wysłuchane do końca' : 'Słuchane $heard z $minutes min';
+    final bar = ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: LinearProgressIndicator(
+        value: value,
+        minHeight: 4,
+        color: AkBrand.teal,
+        backgroundColor: AkBrand.teal.withValues(alpha: .18),
+      ),
+    );
+    return Semantics(
+      label: label,
+      excludeSemantics: true,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: compact
+            ? bar
+            : Row(
+                children: [
+                  SizedBox(width: 72, child: bar),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.palette.inkMuted),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -427,6 +483,53 @@ class SimilarPlays extends ConsumerWidget {
   }
 }
 
+/// What to play next, in the player: the rest of this pack first, then every other pack, then
+/// songs and games, each as its own row so a parent sees where a play comes from.
+class PlaysByPack extends ConsumerWidget {
+  const PlaysByPack({super.key, required this.item, required this.title});
+
+  final ContentItem item;
+  final String title;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(catalogProvider).value;
+    if (catalog == null) return const SizedBox.shrink();
+    bool listed(ContentItem i) => i.id != item.id && (i.audio.isNotEmpty || i.script != null);
+    final packs = [
+      ...catalog.packs.where((p) => p.id == item.packId),
+      ...catalog.packs.where((p) => p.id != item.packId),
+    ];
+    final loose = catalog.items.where((i) => i.packId == null && listed(i)).toList();
+    final text = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RefSection(title),
+        for (final pack in packs)
+          if (catalog.itemsInPack(pack.id).where(listed).toList() case final items when items.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                pack.id == item.packId ? 'Dalej w pakiecie ${pack.title}' : 'Pakiet ${pack.title}',
+                style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+              ),
+            ),
+            CoverRow(items: items, size: 96),
+            const SizedBox(height: 14),
+          ],
+        if (loose.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text('Piosenki i gry', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+          ),
+          CoverRow(items: loose, size: 96),
+        ],
+      ],
+    );
+  }
+}
+
 /// A horizontal row of covers with titles, each opening its play.
 class CoverRow extends ConsumerWidget {
   const CoverRow({super.key, required this.items, this.size = 112});
@@ -459,6 +562,7 @@ class CoverRow extends ConsumerWidget {
                     locked: !ref.watch(canPlayProvider(item)),
                     fresh: ref.watch(isNewItemProvider(item)),
                   ),
+                  ListenedBar(item: item, compact: true),
                   const SizedBox(height: 6),
                   Text(item.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: text.bodySmall),
                 ],

@@ -246,7 +246,7 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!playing) ResumeAside(key: ValueKey(afterPlay), afterPlay: afterPlay?.text),
+        ResumeAside(key: ValueKey((afterPlay, playing)), afterPlay: afterPlay?.text, playing: playing),
         SizedBox(
           height: 76,
           child: Stack(
@@ -374,10 +374,13 @@ class _BreathingState extends ConsumerState<_Breathing> with SingleTickerProvide
 /// One brief comment now and then beside a paused adventure, and always one when a play has
 /// just ended ([afterPlay]). Never speaks over audio.
 class ResumeAside extends ConsumerStatefulWidget {
-  const ResumeAside({super.key, this.afterPlay});
+  const ResumeAside({super.key, this.afterPlay, this.playing = false});
 
   /// Szop’en’s line for the play that just ended: shown at once, outside the daily limit.
   final String? afterPlay;
+
+  /// Something plays: quieter lines for the parent (the bubble never makes a sound).
+  final bool playing;
 
   @override
   ConsumerState<ResumeAside> createState() => _ResumeAsideState();
@@ -400,11 +403,21 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
     for (final (_, line) in szopNudges) line,
   ];
 
+  /// While a play runs: a wink or a tip, never anything for the child to look at.
+  static const _playingLines = [
+    'Ja pilnuję nagrania. Ty pilnuj kawy, zanim wystygnie.',
+    'Dziecko słucha, Ty masz chwilę. Nie zmarnuj jej na składanie skarpetek.',
+    'Jeśli dziecko odpowiada głośno, to znak, że działa. Sąsiedzi niech też się cieszą.',
+    'Możesz zablokować telefon. Nagranie gra dalej, a ja nikomu nie powiem.',
+    'Zabawa za długa? Na dole odtwarzacza jest Timer snu. Szopy też lubią krótkie zmiany.',
+    'Dziecko się zgubiło w zadaniu? Cofnij o 15 sekund, bez stresu.',
+  ];
+
   // Now and then, never nagging: first after a few seconds, then every few minutes while the
   // card is on screen, at most a handful a day (and never with "Komentarze Szop’ena" off).
-  static const _first = Duration(seconds: 4);
-  static const _every = Duration(minutes: 4);
-  static const _perDay = 6;
+  static const _first = Duration(seconds: 3);
+  static const _every = Duration(minutes: 2);
+  static const _perDay = 15;
 
   @override
   void initState() {
@@ -431,7 +444,8 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
       if (count >= _perDay || !mounted) return;
       await db.writeValue('szopen_bubbles', '$day|${count + 1}');
       if (!mounted) return;
-      setState(() => _line = _lines[_random.nextInt(_lines.length)]);
+      final pool = widget.playing ? _playingLines : _lines;
+      setState(() => _line = pool[_random.nextInt(pool.length)]);
       _hide = Timer(const Duration(seconds: 9), () {
         if (mounted) setState(() => _line = null);
       });
