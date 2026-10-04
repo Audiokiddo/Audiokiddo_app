@@ -103,8 +103,8 @@ void main() {
     expect(find.text('Włącz przypomnienia'), findsOneWidget);
     await tester.tap(find.text('Nie teraz'));
     await tester.pumpAndSettle();
-    expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
-    final container = ProviderScope.containerOf(tester.element(find.text('Co dziś\nrobimy?')));
+    expect(find.text('Co dziś robimy?'), findsOneWidget);
+    final container = ProviderScope.containerOf(tester.element(find.text('Co dziś robimy?')));
     final family = container.read(familyProvider).value!;
     expect(
       [for (final c in family.children) (c.name, c.age, c.dailyMinutes)],

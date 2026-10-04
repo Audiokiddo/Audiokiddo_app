@@ -10,6 +10,7 @@ import 'core/theme/appearance.dart';
 import 'features/home/home_widget_sync.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
 import 'features/onboarding/onboarding_controller.dart';
+import 'features/player/now_playing_pill.dart';
 import 'l10n/app_localizations.dart';
 
 class AudioKiddoApp extends ConsumerStatefulWidget {
@@ -85,7 +86,7 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
         value: Theme.of(context).brightness == Brightness.dark
             ? SystemUiOverlayStyle.light
             : SystemUiOverlayStyle.dark,
-        child: child!,
+        child: NowPlayingPill(router: _router, child: child!),
       ),
     );
   }

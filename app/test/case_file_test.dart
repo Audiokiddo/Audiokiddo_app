@@ -13,7 +13,9 @@ Map<String, List<CaseTask>> loadCaseFiles() =>
 Future<void> pumpCard(WidgetTester tester, CaseTask task) => tester.pumpWidget(
   MaterialApp(
     theme: buildTheme(Brightness.light),
-    home: Scaffold(body: SingleChildScrollView(child: CaseTaskCard(task: task))),
+    home: Scaffold(
+      body: SingleChildScrollView(child: CaseTaskCard(task: task)),
+    ),
   ),
 );
 
@@ -69,7 +71,13 @@ void main() {
   testWidgets('a choice: wrong asks to try again, right says good choice', (tester) async {
     await pumpCard(
       tester,
-      const CaseTask(page: 2, prompt: 'Wynik?', kind: CaseTaskKind.choice, options: ['38', '42', '41'], answerIndex: 2),
+      const CaseTask(
+        page: 2,
+        prompt: 'Wynik?',
+        kind: CaseTaskKind.choice,
+        options: ['38', '42', '41'],
+        answerIndex: 2,
+      ),
     );
     await tester.tap(find.text('42'));
     await tester.pump();
@@ -81,7 +89,10 @@ void main() {
   });
 
   testWidgets('a code: two misses offer the answer', (tester) async {
-    await pumpCard(tester, const CaseTask(page: 5, prompt: 'Kod?', kind: CaseTaskKind.code, accepted: ['7895']));
+    await pumpCard(
+      tester,
+      const CaseTask(page: 5, prompt: 'Kod?', kind: CaseTaskKind.code, accepted: ['7895']),
+    );
     for (final guess in ['1234', '5555']) {
       await tester.enterText(find.byType(TextField), guess);
       await tester.tap(find.text('Sprawdź'));

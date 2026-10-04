@@ -74,7 +74,7 @@ Future<void> goBack(WidgetTester tester) async {
 void main() {
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
-    expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
+    expect(find.text('Co dziś robimy?'), findsOneWidget);
     for (final label in ['Mam 20 minut', 'W podróży']) {
       await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
       expect(find.text(label), findsOneWidget);
@@ -93,7 +93,7 @@ void main() {
     expect(find.byTooltip('Wróć'), findsOneWidget);
     await tester.tap(find.byTooltip('Wróć'));
     await tester.pumpAndSettle();
-    expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
+    expect(find.text('Co dziś robimy?'), findsOneWidget);
   });
 
   testWidgets('rescue flow has time, mood and material selection', (tester) async {
@@ -108,6 +108,9 @@ void main() {
   testWidgets('category shortcut opens the filtered library', (tester) async {
     await pumpApp(tester);
     await openLibrary(tester);
+    await tester.scrollUntilVisible(find.text('Przygody\ni wyobraźnia'), 200, scrollable: mainScroll);
+    await Scrollable.ensureVisible(tester.element(find.text('Przygody\ni wyobraźnia')), alignment: .5);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Przygody\ni wyobraźnia'));
     await tester.pumpAndSettle();
     expect(find.text('Magiczny sklep'), findsOneWidget);
@@ -158,7 +161,7 @@ void main() {
     await openLibrary(tester);
     await openItem(tester, 'Złodziej naszyjnika');
     await tester.scrollUntilVisible(find.text('Rozwiązuj w telefonie'), 200, scrollable: mainScroll);
-    expect(find.text('Otwórz akta sprawy'), findsOneWidget, reason: 'printing stays behind the gate');
+    expect(find.text('Wydrukuj lub wyślij'), findsOneWidget, reason: 'printing stays behind the gate');
   });
 
   testWidgets('screens have no overflow with large text', (tester) async {
@@ -259,7 +262,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('47'));
       await tester.pumpAndSettle();
-      expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
+      expect(find.text('Co dziś robimy?'), findsOneWidget);
     });
   });
 }

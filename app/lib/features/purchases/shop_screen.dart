@@ -14,6 +14,7 @@ import '../catalog/widgets/item_art.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../family/family.dart';
+import '../pdf/case_files_card.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
@@ -721,9 +722,19 @@ class PackScreen extends ConsumerWidget {
                     if (pack.guide case final guide?) ...[
                       const SizedBox(height: 14),
                       OutlinedButton.icon(
-                        onPressed: () => openGuide(context, guide, pack.title),
+                        onPressed: () => openGuide(context, guide, pack),
                         icon: const Icon(Icons.menu_book_rounded),
                         label: const Text('Przewodnik po pakiecie (PDF)'),
+                      ),
+                    ],
+                    if (owned && summary.items.any((i) => i.pdf.isNotEmpty) && pack.id == 'detektyw') ...[
+                      const SizedBox(height: 16),
+                      AllCaseFilesCard(
+                        packTitle: pack.title,
+                        items: [
+                          for (final i in summary.items)
+                            if (i.pdf.isNotEmpty) i,
+                        ],
                       ),
                     ],
                     if (summary.skills.isNotEmpty) ...[

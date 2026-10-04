@@ -105,7 +105,7 @@ void main() {
 
   testWidgets('autumn on Start: the packs row and the seasonal row', (tester) async {
     await pumpOn(tester, DateTime(2026, 10, 2));
-    await tester.scrollUntilVisible(find.text('Pakiety'), 200, scrollable: scroll);
+    await tester.scrollUntilVisible(find.text('Pakiety przygód'), 200, scrollable: scroll);
     expect(find.byIcon(Icons.lock_rounded), findsWidgets, reason: 'packs not owned are listed too');
     await tester.scrollUntilVisible(find.text('Jesienne wieczory'), 200, scrollable: scroll);
     expect(find.text('Wakacje w drodze'), findsNothing);

@@ -18,6 +18,7 @@ import '../games/microphone.dart';
 import '../games/speech.dart';
 import '../parental_gate/parental_gate.dart';
 import '../pdf/case_file.dart';
+import '../pdf/case_files_card.dart';
 import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';
 import '../player/playback_controller.dart';
@@ -206,7 +207,11 @@ class _DetailsContent extends ConsumerWidget {
           ],
         },
         const SizedBox(height: AkSpace.l),
-
+        // Detektyw: the case file right under the play button, with Szop’en saying what is in it.
+        if (item.pdf.isNotEmpty && canPlay && pack?.id == 'detektyw') ...[
+          CaseFileCard(item: item),
+          const SizedBox(height: AkSpace.l),
+        ],
         if (item.skills.isNotEmpty)
           _Section(
             title: l10n.detailsPractises,
@@ -221,25 +226,13 @@ class _DetailsContent extends ConsumerWidget {
             title: AppLocalizations.of(context).micTitle,
             child: _MicrophoneCard(words: scriptListensToWords(script)),
           ),
-        if (item.pdf.isNotEmpty && canPlay)
+        if (item.pdf.isNotEmpty && canPlay && pack?.id != 'detektyw')
           _Section(
-            title: pack?.id == 'detektyw' ? 'Akta sprawy do wydrukowania' : l10n.pdfSection,
-            child: Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                if (ref.watch(caseTasksProvider(item.id)) != null)
-                  FilledButton.icon(
-                    onPressed: () => context.push('/akta/${item.id}'),
-                    icon: const Icon(Icons.search_rounded),
-                    label: const Text('Rozwiązuj w telefonie'),
-                  ),
-                OutlinedButton.icon(
-                  onPressed: () => _openPdf(context, item.pdf.first),
-                  icon: const Icon(Icons.print_rounded),
-                  label: Text(pack?.id == 'detektyw' ? 'Otwórz akta sprawy' : l10n.pdfOpen),
-                ),
-              ],
+            title: l10n.pdfSection,
+            child: OutlinedButton.icon(
+              onPressed: () => _openPdf(context, item.pdf.first),
+              icon: const Icon(Icons.print_rounded),
+              label: Text(l10n.pdfOpen),
             ),
           ),
         if (item.requirements.isNotEmpty)

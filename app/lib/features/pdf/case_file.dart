@@ -66,12 +66,8 @@ class CaseTask {
 
 const _plain = {'Ą': 'A', 'Ć': 'C', 'Ę': 'E', 'Ł': 'L', 'Ń': 'N', 'Ó': 'O', 'Ś': 'S', 'Ź': 'Z', 'Ż': 'Z'};
 
-String normalizeAnswer(String s) => s
-    .toUpperCase()
-    .split('')
-    .map((c) => _plain[c] ?? c)
-    .join()
-    .replaceAll(RegExp('[^A-Z0-9@]'), '');
+String normalizeAnswer(String s) =>
+    s.toUpperCase().split('').map((c) => _plain[c] ?? c).join().replaceAll(RegExp('[^A-Z0-9@]'), '');
 
 /// Tasks per item id, from assets/case_files.json.
 Map<String, List<CaseTask>> parseCaseFiles(Map<String, Object?> json) => {

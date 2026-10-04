@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:ak_core/ak_core.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,7 @@ import '../home/quick_pick.dart';
 import '../personal/personal_repository.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
+import 'szop_after_play.dart';
 
 const _barColor = referencePurple;
 const _barHeight = 68.0;
@@ -48,10 +50,8 @@ class BottomDock extends ConsumerWidget {
             direction: DismissDirection.endToStart,
             onDismissed: (_) {
               ref.read(hiddenResumeProvider.notifier).hide(resume.key);
-              // A paused play swiped away is finished with; a playing one keeps playing.
-              if (resume.loaded && !(ref.read(playbackStateProvider).value?.playing ?? false)) {
-                ref.read(audioHandlerProvider).endSession();
-              }
+              // Swiping the card away ends the play too, playing or paused.
+              if (resume.loaded) ref.read(audioHandlerProvider).endSession();
             },
             child: _ResumeCard(resume: resume),
           ),
@@ -224,7 +224,15 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
     final resume = widget.resume;
     final handler = ref.watch(audioHandlerProvider);
     final playing = resume.loaded && (ref.watch(playbackStateProvider).value?.playing ?? false);
-    final pose = playing ? SzopPose.klaszcze : (resume.loaded ? SzopPose.prosi : SzopPose.chytry);
+    final ended =
+        resume.loaded &&
+        ref.watch(playbackStateProvider).value?.processingState == AudioProcessingState.completed;
+    final endedItem = ended ? ref.watch(catalogProvider).value?.item(resume.mediaId!) : null;
+    final afterPlay = ended && !(ref.watch(discoveryProvider).value?.quiet ?? false)
+        ? ref.watch(szopAfterPlayProvider(endedItem))
+        : null;
+    final pose =
+        afterPlay?.pose ?? (playing ? SzopPose.klaszcze : (resume.loaded ? SzopPose.prosi : SzopPose.chytry));
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
     void open() {
@@ -238,7 +246,7 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!playing) const ResumeAside(),
+        if (!playing) ResumeAside(key: ValueKey(afterPlay), afterPlay: afterPlay?.text),
         SizedBox(
           height: 76,
           child: Stack(
@@ -267,6 +275,8 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
                                 Text(
                                   playing
                                       ? 'Teraz słuchacie'
+                                      : ended
+                                      ? 'Brawo! Przygoda skończona'
                                       : resume.loaded
                                       ? 'Wróćmy do zabawy'
                                       : 'Dokończ przygodę',
@@ -361,9 +371,14 @@ class _BreathingState extends ConsumerState<_Breathing> with SingleTickerProvide
   );
 }
 
-/// One brief comment per day, only beside a paused adventure. Never speaks over audio.
+/// One brief comment now and then beside a paused adventure, and always one when a play has
+/// just ended ([afterPlay]). Never speaks over audio.
 class ResumeAside extends ConsumerStatefulWidget {
-  const ResumeAside({super.key});
+  const ResumeAside({super.key, this.afterPlay});
+
+  /// Szop’en’s line for the play that just ended: shown at once, outside the daily limit.
+  final String? afterPlay;
+
   @override
   ConsumerState<ResumeAside> createState() => _ResumeAsideState();
 }
@@ -394,6 +409,13 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
   @override
   void initState() {
     super.initState();
+    if (widget.afterPlay case final line?) {
+      _line = line;
+      _hide = Timer(const Duration(seconds: 12), () {
+        if (mounted) setState(() => _line = null);
+      });
+      return;
+    }
     _next = Timer(_first, _show);
   }
 

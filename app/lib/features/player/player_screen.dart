@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/format.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
+import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/item_art.dart';
 import '../personal/personal_repository.dart';
@@ -21,6 +22,7 @@ import '../pdf/case_file.dart';
 import 'audio_handler.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
+import 'szop_after_play.dart';
 
 class PlayerScreen extends StatelessWidget {
   const PlayerScreen({super.key});
@@ -98,6 +100,7 @@ class _Player extends ConsumerWidget {
                   child: const Text('Otwórz bibliotekę'),
                 ),
               ] else ...[
+                if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
                 if (item != null && state?.processingState == AudioProcessingState.completed)
                   _UpNext(after: item),
                 item == null
@@ -121,6 +124,10 @@ class _Player extends ConsumerWidget {
                   '${formatClock(duration)}${item == null ? '' : ' · od ${item.ageMin} lat'}${media.album == null ? '' : ' · ${media.album}'}',
                   style: text.bodySmall,
                 ),
+                if (item != null && item.pdf.isNotEmpty && item.packId == 'detektyw') ...[
+                  const SizedBox(height: 14),
+                  _CaseFileButton(item: item),
+                ],
                 const SizedBox(height: 20),
                 SeekBar(position: position, duration: duration, onSeek: handler.seek),
                 const SizedBox(height: 18),
@@ -549,6 +556,56 @@ class _PullDownToCloseState extends State<PullDownToClose> with SingleTickerProv
         child: ClipRRect(
           borderRadius: BorderRadius.vertical(top: Radius.circular(math.min(_pull / 3, 28))),
           child: widget.child,
+        ),
+      ),
+    );
+  }
+}
+
+/// Detektyw: the case file as a big button under the title, with Szop’en, not only an icon.
+class _CaseFileButton extends ConsumerWidget {
+  const _CaseFileButton({required this.item});
+
+  final ContentItem item;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final interactive = ref.watch(caseTasksProvider(item.id)) != null;
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    return Material(
+      color: AkBrand.sun,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        // Without tasks to answer on the phone, the details page has the printable file.
+        onTap: () => context.push(interactive ? '/akta/${item.id}' : '/zabawa/${item.id}'),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 6, 14, 6),
+          child: Row(
+            children: [
+              const SzopSticker(SzopPose.chytry, height: 56),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Akta sprawy',
+                      style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                    ),
+                    Text(
+                      interactive
+                          ? 'Zadania i poszlaki do tej zagadki. Odpowiadaj tutaj albo wydrukuj.'
+                          : 'Zadania i poszlaki do wydrukowania.',
+                      style: text.bodySmall?.copyWith(color: ink),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.folder_open_rounded, color: ink),
+            ],
+          ),
         ),
       ),
     );

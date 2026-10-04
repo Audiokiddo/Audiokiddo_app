@@ -38,9 +38,7 @@ class CaseFileScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(item == null ? 'Akta sprawy' : 'Akta: ${item.title}')),
       body: item == null || item.pdf.isEmpty || tasks == null
           ? Center(
-              child: waiting
-                  ? const CircularProgressIndicator()
-                  : const Text('Ta zabawa nie ma akt sprawy.'),
+              child: waiting ? const CircularProgressIndicator() : const Text('Ta zabawa nie ma akt sprawy.'),
             )
           : ref
                 .watch(pdfBytesProvider(item.pdf.first))
@@ -186,7 +184,9 @@ class _PageImage extends StatelessWidget {
             backgroundColor: Colors.white,
             body: InteractiveViewer(
               maxScale: 5,
-              child: Center(child: RawImage(image: image, fit: BoxFit.contain)),
+              child: Center(
+                child: RawImage(image: image, fit: BoxFit.contain),
+              ),
             ),
           ),
         ),
@@ -283,7 +283,10 @@ class _CaseTaskCardState extends State<CaseTaskCard> {
                     autocorrect: false,
                     enableSuggestions: false,
                     style: text.titleMedium?.copyWith(letterSpacing: 1.5),
-                    decoration: const InputDecoration(hintText: 'Wpisz odpowiedź', border: OutlineInputBorder()),
+                    decoration: const InputDecoration(
+                      hintText: 'Wpisz odpowiedź',
+                      border: OutlineInputBorder(),
+                    ),
                     onSubmitted: (v) => _answer(task.isCorrectCode(v)),
                   ),
                 ),
@@ -313,8 +316,15 @@ class _CaseTaskCardState extends State<CaseTaskCard> {
           else if (_right == false) ...[
             _Verdict(pose: SzopPose.zdziwiony, text: 'Spróbuj jeszcze raz', color: palette.inkMuted),
             if (_misses >= 2 && !_shown)
-              TextButton(onPressed: () => setState(() => _shown = true), child: const Text('Pokaż odpowiedź')),
-            if (_shown) Text('Odpowiedź: ${task.solution}', style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
+              TextButton(
+                onPressed: () => setState(() => _shown = true),
+                child: const Text('Pokaż odpowiedź'),
+              ),
+            if (_shown)
+              Text(
+                'Odpowiedź: ${task.solution}',
+                style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+              ),
           ],
         ],
       ),
@@ -371,7 +381,8 @@ class _Verdict extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             text,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: color, fontWeight: FontWeight.w800),
+            style: Theme.of(context).textTheme.titleMedium
+                ?.copyWith(color: color, fontWeight: FontWeight.w800),
           ),
         ],
       ),

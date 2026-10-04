@@ -11,8 +11,12 @@ import '../personal/personal_repository.dart';
 import '../diploma/diploma_screen.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
+import '../home/quick_pick.dart';
+import '../purchases/offer_catalog.dart';
+import '../purchases/purchase_controller.dart';
 import '../purchases/shop.dart';
 import '../purchases/shop_screen.dart';
+import '../purchases/store_gateway.dart';
 import 'catalog_providers.dart';
 import 'seasonal.dart';
 import 'widgets/content_cover.dart';
@@ -71,7 +75,11 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              Text('Co dziś\nrobimy?', style: Theme.of(context).textTheme.headlineLarge),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text('Co dziś robimy?', maxLines: 1, style: Theme.of(context).textTheme.headlineLarge),
+              ),
               const SizedBox(height: 16),
               const HeroShelf(),
               const SizedBox(height: 18),
@@ -104,9 +112,10 @@ class HomeScreen extends ConsumerWidget {
                 )
               else
                 for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
+              _OwnedPacks(catalog: catalog),
               const PendingDiplomaCard(),
               _NextPackCard(catalog: catalog),
-              _PacksShelf(catalog: catalog),
+              _DiscoverPacks(catalog: catalog),
               const _SeasonShelf(),
               const _CategoryGrid(),
               RefSection('Na co dzień', action: 'Wszystkie tryby', onTap: () => context.push('/rutyny')),
@@ -207,69 +216,56 @@ class _NextPackCard extends ConsumerWidget {
   }
 }
 
-/// Every pack, owned or not, as one swipeable row: tapping opens the pack page with its plays
-/// (locked ones can be previewed there).
-class _PacksShelf extends ConsumerWidget {
-  const _PacksShelf({required this.catalog});
+/// The packs the family has: how far the child got and how much is still waiting, so the
+/// next play is one tap away (and an unfinished pack quietly asks to be finished).
+class _OwnedPacks extends ConsumerWidget {
+  const _OwnedPacks({required this.catalog});
 
   final Catalog catalog;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (catalog.packs.isEmpty) return const SizedBox.shrink();
     final scopes = ref.watch(activeScopesProvider);
+    final owned = [
+      for (final p in catalog.packs)
+        if (ownsPack(scopes, p.id)) PackSummary(p, catalog),
+    ];
+    if (owned.isEmpty) return const SizedBox.shrink();
+    final family = ref.watch(familyProvider).value;
+    final child = family?.active;
+    final heardIds = child == null
+        ? const <String>{}
+        : {
+            for (final r in family!.resultsOf(child.id))
+              if (r.completed) r.itemId,
+          };
     final text = Theme.of(context).textTheme;
-    final summaries = [for (final p in catalog.packs) PackSummary(p, catalog)];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const RefSection('Pakiety'),
+        const RefSection('Wasze pakiety'),
         SizedBox(
-          // Cover plus three lines under it, at any text size.
-          height: 150 + MediaQuery.textScalerOf(context).scale(66),
+          height: 128 + MediaQuery.textScalerOf(context).scale(66),
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemCount: summaries.length,
+            itemCount: owned.length,
             separatorBuilder: (_, _) => const SizedBox(width: 12),
             itemBuilder: (context, i) {
-              final s = summaries[i];
-              final owned = ownsPack(scopes, s.pack.id);
+              final s = owned[i];
+              final heard = s.items.where((it) => heardIds.contains(it.id)).length;
+              final left = s.items.length - heard;
               return SizedBox(
-                width: 150,
+                width: 128,
                 child: Pressable(
                   onTap: () => openPack(context, s.pack.id),
                   child: Semantics(
                     button: true,
-                    label: '${s.pack.title}, ${playsCount(s.items.length)}, ${owned ? 'masz' : 'do odblokowania'}',
+                    label: '${s.pack.title}, przesłuchane $heard z ${s.items.length}',
                     excludeSemantics: true,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox.square(
-                          dimension: 150,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              PackArt(summary: s, radius: 22),
-                              Positioned(
-                                right: 8,
-                                top: 8,
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: owned ? AkBrand.teal : AkBrand.sun,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    owned ? Icons.check_rounded : Icons.lock_rounded,
-                                    size: 18,
-                                    color: owned ? Colors.white : const Color(0xFF211C35),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        SizedBox.square(dimension: 128, child: PackArt(summary: s, radius: 20)),
                         const SizedBox(height: 6),
                         Text(
                           s.pack.title,
@@ -277,9 +273,20 @@ class _PacksShelf extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                           style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
                         ),
+                        const SizedBox(height: 4),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: s.items.isEmpty ? 0 : heard / s.items.length,
+                            minHeight: 5,
+                            color: AkBrand.teal,
+                            backgroundColor: AkBrand.teal.withValues(alpha: .15),
+                          ),
+                        ),
+                        const SizedBox(height: 3),
                         Text(
-                          '${playsCount(s.items.length)} · ${owned ? 'masz' : 'do odblokowania'}',
-                          maxLines: 2,
+                          left == 0 ? 'Wszystko przesłuchane!' : 'Czeka jeszcze ${playsCount(left)}',
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
                         ),
@@ -292,6 +299,242 @@ class _PacksShelf extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Packs the family does not have yet, laid out to make the choice easy and honest: what the
+/// child gets (minutes without a screen, what it practises), a free taste before paying, the
+/// price per play next to the pack price, and the bundle when it saves money. Never a timer,
+/// never "only today": buying happens on the pack page, behind the parental gate.
+class _DiscoverPacks extends ConsumerWidget {
+  const _DiscoverPacks({required this.catalog});
+
+  final Catalog catalog;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scopes = ref.watch(activeScopesProvider);
+    if (scopes.contains(Scopes.allContent)) return const SizedBox.shrink();
+    final all = [for (final p in catalog.packs) PackSummary(p, catalog)];
+    final locked = [
+      for (final s in all)
+        if (!ownsPack(scopes, s.pack.id)) s,
+    ];
+    if (locked.isEmpty) return const SizedBox.shrink();
+    final products = ref.watch(storeProductsProvider(productsKey(shopProductIds(catalog))));
+    final byId = {for (final p in products.value ?? const <StoreProduct>[]) p.id: p};
+    final ownedCount = all.length - locked.length;
+    final plays = locked.fold(0, (n, s) => n + s.items.length);
+    final minutes = locked.fold(0, (n, s) => n + s.minutes);
+    final text = Theme.of(context).textTheme;
+    // The bundle that covers the most of what is missing, when the store knows its price.
+    final bundle = [ProductIds.bundleThree, ProductIds.bundleTwo]
+        .map((id) => (id: id, product: byId[id], packs: bundlePacks(id, catalog)))
+        .where((b) => b.product != null && b.packs.where((p) => !ownsPack(scopes, p.id)).length >= 2)
+        .firstOrNull;
+    final saved = bundle == null
+        ? null
+        : bundleSavings(bundle.product!, [for (final p in bundle.packs) byId[p.storeProductId]]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RefSection(ownedCount == 0 ? 'Pakiety przygód' : 'Czeka na odkrycie'),
+        Text(
+          ownedCount == 0
+              ? '$plays zabaw i $minutes minut bez ekranu. W każdym pakiecie część posłuchacie za darmo.'
+              : 'Macie $ownedCount z ${all.length} pakietów. Do pełnej kolekcji brakuje $plays zabaw, '
+                    'czyli $minutes minut bez ekranu.',
+          style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+        ),
+        const SizedBox(height: 10),
+        for (final s in locked) _DiscoverCard(summary: s, product: byId[s.pack.storeProductId]),
+        if (bundle != null && saved != null)
+          _BundleTeaser(
+            title: 'Zestaw ${bundle.packs.length} pakietów',
+            line:
+                'Taniej o ${formatMoney(saved, bundle.product!.currencyCode)} niż osobno. '
+                'Kupujecie raz, zostaje na zawsze.',
+            price: bundle.product!.price,
+          )
+        else
+          _BundleTeaser(
+            title: 'Wszystko w abonamencie',
+            line: 'Każdy pakiet i każda nowość, bez wybierania. Można zrezygnować w każdej chwili.',
+          ),
+      ],
+    );
+  }
+}
+
+class _DiscoverCard extends ConsumerWidget {
+  const _DiscoverCard({required this.summary, this.product});
+
+  final PackSummary summary;
+  final StoreProduct? product;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    final free = summary.freeItems.where((i) => ref.watch(canPlayProvider(i))).firstOrNull;
+    final perPlay = product?.rawPrice == null || summary.items.isEmpty
+        ? null
+        : formatMoney(product!.rawPrice! / summary.items.length, product!.currencyCode);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Pressable(
+        onTap: () => openPack(context, summary.pack.id),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: referenceLilac.withValues(alpha: .5),
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox.square(
+                    dimension: 84,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        PackArt(summary: summary, radius: 16),
+                        Positioned(
+                          right: 4,
+                          top: 4,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(color: AkBrand.sun, shape: BoxShape.circle),
+                            child: const Icon(Icons.lock_rounded, size: 14, color: ink),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          summary.pack.title,
+                          style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                        ),
+                        Text(
+                          '${playsCount(summary.items.length)} · ${summary.minutes} min · od ${summary.pack.ageMin} lat',
+                          style: text.bodySmall?.copyWith(color: ink),
+                        ),
+                        if (summary.skills.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Ćwiczy: ${summary.skills.take(3).join(', ')}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: text.bodySmall?.copyWith(color: ink, fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  if (free != null)
+                    Expanded(
+                      flex: 3,
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AkBrand.tealDeep,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                        onPressed: () => startItem(context, free),
+                        child: const Text('Posłuchaj za darmo', maxLines: 1, overflow: TextOverflow.ellipsis),
+                      ),
+                    ),
+                  if (free != null) const SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        if (product != null)
+                          Text(
+                            product!.price,
+                            style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                          ),
+                        Text(
+                          perPlay == null ? 'Zobacz pakiet' : 'ok. $perPlay za zabawę',
+                          textAlign: TextAlign.end,
+                          style: text.labelSmall?.copyWith(color: ink),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right_rounded, color: ink),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BundleTeaser extends StatelessWidget {
+  const _BundleTeaser({required this.title, required this.line, this.price});
+
+  final String title;
+  final String line;
+  final String? price;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    return Material(
+      color: AkBrand.sun,
+      borderRadius: BorderRadius.circular(22),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(22),
+        onTap: () => context.go('/sklep'),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 14, 10),
+          child: Row(
+            children: [
+              const SzopSticker(SzopPose.chytry, height: 60),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                    ),
+                    Text(line, style: text.bodySmall?.copyWith(color: ink)),
+                  ],
+                ),
+              ),
+              if (price != null) ...[
+                const SizedBox(width: 8),
+                Text(
+                  price!,
+                  style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                ),
+              ],
+              const Icon(Icons.chevron_right_rounded, color: ink),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -492,7 +735,8 @@ class HeroShelf extends ConsumerStatefulWidget {
 }
 
 class _HeroShelfState extends ConsumerState<HeroShelf> {
-  late final _controller = PageController(viewportFraction: .9);
+  static const _fraction = .62;
+  late final _controller = PageController(viewportFraction: _fraction);
   int _page = 0;
 
   @override
@@ -508,7 +752,7 @@ class _HeroShelfState extends ConsumerState<HeroShelf> {
     final width = MediaQuery.sizeOf(context).width - 40;
     return SizedBox(
       // A square cover plus two lines under it.
-      height: width * .9 - 12 + MediaQuery.textScalerOf(context).scale(58),
+      height: width * _fraction - 12 + MediaQuery.textScalerOf(context).scale(58),
       child: PageView.builder(
         padEnds: false,
         controller: _controller,

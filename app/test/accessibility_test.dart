@@ -58,7 +58,13 @@ void main() {
     await pump(tester);
     await tester.tap(find.byIcon(Icons.auto_stories_outlined));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Audiozabawy'));
+    await tester.scrollUntilVisible(
+      find.text('Audiozabawy'),
+      200,
+      scrollable: find
+          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+          .first,
+    );
     await tester.tap(find.text('Audiozabawy'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
@@ -99,7 +105,13 @@ void main() {
       await expectAccessible(tester);
       await tester.tap(find.byIcon(Icons.auto_stories_outlined));
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Audiozabawy'));
+      await tester.scrollUntilVisible(
+        find.text('Audiozabawy'),
+        200,
+        scrollable: find
+            .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+            .first,
+      );
       await tester.tap(find.text('Audiozabawy'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
