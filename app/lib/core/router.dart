@@ -29,6 +29,7 @@ import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
 import '../features/purchases/shop_screen.dart';
 import '../features/reminders/reminder_offer.dart';
+import '../features/games/speech_check_screen.dart';
 import '../features/session/session_screens.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
@@ -106,6 +107,7 @@ GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) =
     GoRoute(path: '/sesja', builder: (context, state) => const SessionScreen()),
     GoRoute(path: '/konto', builder: (context, state) => const AccountScreen()),
     GoRoute(path: '/dostep', builder: (context, state) => const AccessScreen()),
+    GoRoute(path: '/mowa', builder: (context, state) => const SpeechCheckScreen()),
     GoRoute(
       path: '/oferta',
       builder: (context, state) => PaywallScreen(itemId: state.uri.queryParameters['zabawa']),

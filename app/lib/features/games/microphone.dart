@@ -114,10 +114,9 @@ class MicrophoneSettings extends AsyncNotifier<bool> {
   Future<bool> enable({bool words = false}) async {
     final granted = await ref.read(microphoneInputProvider).requestPermission();
     await _db.writeValue(_key, granted ? '1' : '0');
-    if (granted && words) {
-      await ref.read(speechInputProvider).requestPermission();
-      ref.invalidate(speechReadyProvider);
-    }
+    // speechReadyProvider depends on this one: callers refresh it (invalidating it from here
+    // is a circular dependency).
+    if (granted && words) await ref.read(speechInputProvider).requestPermission();
     state = AsyncData(granted);
     return granted;
   }

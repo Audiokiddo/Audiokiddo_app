@@ -46,26 +46,46 @@ class DeviceSpeech implements SpeechInput {
   bool _initialised = false;
   Completer<void>? _session;
 
+  /// What the recogniser did lately (status, errors, what it heard), for the check screen.
+  final log = ValueNotifier<List<String>>(const []);
+
+  void _note(String line) {
+    debugPrint('speech: $line');
+    log.value = [...log.value.length > 40 ? log.value.sublist(log.value.length - 40) : log.value, line];
+  }
+
+  /// The language the recogniser uses, once ready.
+  String? get locale => _locale;
+
   Future<bool> _init() async {
     if (_initialised) return _locale != null;
     final ok = await _speech.initialize(
       onStatus: (status) {
+        _note('status: $status');
         if (status == SpeechToText.doneStatus || status == SpeechToText.notListeningStatus) {
-          _finish();
+          // An error (no offline Polish, recogniser failure) arrives just after "done"; wait for
+          // it so the game can switch to claps instead of hearing silence.
+          final session = _session;
+          Future<void>.delayed(const Duration(milliseconds: 400), () {
+            if (_session == session) _finish();
+          });
         }
       },
       onError: (SpeechRecognitionError e) {
+        _note('błąd: ${e.errorMsg}${e.permanent ? ' (trwały)' : ''}');
         // "No match" and "speech timeout" only mean the child said nothing we know.
         _finish(e.permanent && !_quiet.contains(e.errorMsg) ? SpeechUnavailable(e.errorMsg) : null);
       },
     );
     _initialised = true;
+    _note(ok ? 'gotowy' : 'brak zgody albo rozpoznawania mowy');
     if (!ok) return false;
     final locales = await _speech.locales();
     _locale = locales
         .map((l) => l.localeId)
         .where((id) => id.toLowerCase().replaceAll('-', '_').startsWith('pl'))
         .firstOrNull;
+    _note('język: ${_locale ?? 'brak polskiego'}');
     return _locale != null;
   }
 
@@ -109,21 +129,43 @@ class DeviceSpeech implements SpeechInput {
   }) async {
     if (!await ready()) throw const SpeechUnavailable('not ready');
     final session = _session = Completer<void>();
-    await _speech.listen(
-      onResult: (r) => onHeard([for (final a in r.alternates) a.recognizedWords]),
-      listenOptions: SpeechListenOptions(
-        localeId: _locale,
-        listenFor: window,
-        pauseFor: window,
-        // Never leaves the phone; a phone without offline Polish fails and the game falls back.
-        onDevice: true,
-        listenMode: ListenMode.confirmation,
-        cancelOnError: true,
-        autoPunctuation: false,
-        contextualPhrases: vocabulary,
-      ),
-    );
+    final started = DateTime.now();
+    var heardAnything = false;
+    try {
+      await _speech.listen(
+        onResult: (r) {
+          final heard = [for (final a in r.alternates) a.recognizedWords];
+          heardAnything = heardAnything || heard.any((h) => h.trim().isNotEmpty);
+          _note('słyszę: ${heard.join(' | ')}${r.finalResult ? ' (koniec)' : ''}');
+          onHeard(heard);
+        },
+        listenOptions: SpeechListenOptions(
+          localeId: _locale,
+          listenFor: window,
+          pauseFor: window,
+          // Never leaves the phone; a phone without offline Polish fails and the game falls back.
+          onDevice: true,
+          listenMode: ListenMode.confirmation,
+          cancelOnError: true,
+          autoPunctuation: false,
+          contextualPhrases: vocabulary,
+        ),
+      );
+    } on SpeechUnavailable {
+      rethrow;
+    } on Object catch (e) {
+      _note('nie udało się zacząć słuchać: $e');
+      _finish();
+      throw SpeechUnavailable('listen_failed: $e');
+    }
     await session.future;
+    // A recogniser that stops at once without hearing anything is not working (seen with
+    // error 300 when offline recognition cannot start): let the game ask for claps.
+    final early = window - DateTime.now().difference(started) > const Duration(seconds: 2);
+    if (early && !heardAnything && window > const Duration(seconds: 3)) {
+      _note('rozpoznawanie skończyło się od razu, bez słów');
+      throw const SpeechUnavailable('stopped_at_once');
+    }
   }
 
   void _finish([SpeechUnavailable? error]) {

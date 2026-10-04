@@ -277,6 +277,7 @@ class _MicrophoneCard extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     if (!await showParentalGate(context)) return;
     final granted = await ref.read(microphoneSettingsProvider.notifier).enable(words: words);
+    ref.invalidate(speechReadyProvider);
     if (!granted) messenger.showSnackBar(SnackBar(content: Text(l10n.micDenied)));
   }
 
@@ -305,6 +306,12 @@ class _MicrophoneCard extends ConsumerWidget {
           }, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
           if (on && ref.watch(speechInputProvider).supported && ref.watch(speechReadyProvider).value == false)
             TextButton(onPressed: () => _enable(context, ref), child: const Text('Pozwól rozpoznawać słowa')),
+          if (ref.watch(speechInputProvider).supported)
+            TextButton.icon(
+              onPressed: () => context.push('/mowa'),
+              icon: const Icon(Icons.record_voice_over_rounded),
+              label: const Text('Sprawdź, czy telefon rozumie słowa'),
+            ),
         ],
         if (!on) ...[
           const SizedBox(height: AkSpace.xs),
