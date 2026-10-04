@@ -155,15 +155,14 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('favourite appears on the Moje tab', (tester) async {
+  testWidgets('favourite appears on the Ulubione screen', (tester) async {
     await pumpApp(tester);
     await openLibrary(tester);
     await openItem(tester, 'Magiczny sklep');
     await tester.tap(find.byTooltip('Dodaj do ulubionych'));
     await tester.pumpAndSettle();
     expect(find.byTooltip('Usuń z ulubionych'), findsOneWidget);
-    await goBack(tester);
-    await tester.tap(find.byIcon(Icons.favorite_border_rounded));
+    GoRouter.of(tester.element(find.byType(Scaffold).first)).go('/ulubione');
     await tester.pumpAndSettle();
     expect(find.text('Magiczny sklep'), findsOneWidget);
   });
