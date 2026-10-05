@@ -18,6 +18,7 @@ import '../downloads/pack_download.dart';
 import '../home/quick_pick.dart';
 import '../pdf/case_files_card.dart';
 import '../pdf/guide_links.dart';
+import '../promotions/promotions.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
@@ -49,6 +50,16 @@ class ShopScreen extends ConsumerWidget {
                   'Zabawy bez ekranu na każdy dzień. Kupujesz raz albo masz wszystko w abonamencie.',
                   style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
                 ),
+                const PromotionBanner(),
+                if (!subscribed && catalog.packs.where((p) => ownsPack(scopes, p.id)).length >= 2)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: Text(
+                      'Masz ${catalog.packs.where((p) => ownsPack(scopes, p.id)).length} z ${catalog.packs.length} pakietów. '
+                      'W abonamencie masz wszystkie, z grami i każdą nowością, a Twoje pakiety zostają Twoje na zawsze.',
+                      style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ),
                 const SizedBox(height: 18),
                 if (subscribed)
                   const _FullAccessCard()
@@ -938,6 +949,7 @@ class PackScreen extends ConsumerWidget {
                     _PackStartButton(summary: summary, owned: owned),
                     if (!owned) const Center(child: RedeemAccessLink()),
                     _OfflineHint(items: summary.items),
+                    PromotionBanner(target: pack.id),
                     const SizedBox(height: 14),
                     Text('Pakiet', style: text.labelMedium?.copyWith(color: context.palette.inkMuted)),
                     Text(pack.title, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),

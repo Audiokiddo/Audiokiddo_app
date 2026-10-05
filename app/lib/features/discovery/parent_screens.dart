@@ -13,6 +13,7 @@ import '../downloads/pack_download.dart';
 import '../family/family.dart';
 import '../personal/personal_repository.dart';
 import '../kids_mode/kids_mode_setup.dart';
+import '../alerts/alerts.dart';
 import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
@@ -77,6 +78,8 @@ class MoreScreen extends ConsumerWidget {
           trailing: const Icon(Icons.chevron_right_rounded),
           onTap: () => context.push('/ikona'),
         ),
+        const RefSection('Powiadomienia'),
+        const AlertsSwitch(),
         const RefSection('Szop’en — kolega na dyżurze'),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,

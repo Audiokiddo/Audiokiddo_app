@@ -459,3 +459,7 @@ verify_jwt = false
 # Checks the caller itself (auth.getUser on the bearer token), like the other functions.
 [functions.referral-code]
 verify_jwt = false
+
+# Studio panel; checks the caller itself and allows only accounts in public.admins.
+[functions.admin]
+verify_jwt = false

@@ -24,7 +24,13 @@ abstract interface class ReminderScheduler {
   /// Asks the system for permission (call after the parent chose to turn reminders on).
   Future<bool> requestPermission();
 
+  /// Replaces the daily reminders (ids below 1000); other notifications stay.
   Future<void> replaceAll(List<ReminderSlot> slots);
+
+  /// One notification of its own (ids from 1000), replacing any with the same id.
+  Future<void> schedule(ReminderSlot slot);
+
+  Future<void> cancel(int id);
 
   Future<void> cancelAll();
 }
@@ -74,7 +80,9 @@ class LocalReminderScheduler implements ReminderScheduler {
   @override
   Future<void> replaceAll(List<ReminderSlot> slots) async {
     await _init();
-    await _plugin.cancelAll();
+    for (final pending in await _plugin.pendingNotificationRequests()) {
+      if (pending.id < 1000) await _plugin.cancel(id: pending.id);
+    }
     const details = NotificationDetails(
       android: AndroidNotificationDetails(
         'daily_play',
@@ -95,6 +103,34 @@ class LocalReminderScheduler implements ReminderScheduler {
         body: slot.body,
       );
     }
+  }
+
+  @override
+  Future<void> schedule(ReminderSlot slot) async {
+    await _init();
+    if (!slot.at.isAfter(DateTime.now())) return;
+    await _plugin.zonedSchedule(
+      id: slot.id,
+      scheduledDate: tz.TZDateTime.from(slot.at, tz.local),
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'access_news',
+          'Dostęp i nowości',
+          channelDescription: 'Koniec dostępu i nowe zabawy, tylko gdy je włączysz',
+          importance: Importance.defaultImportance,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      title: slot.title,
+      body: slot.body,
+    );
+  }
+
+  @override
+  Future<void> cancel(int id) async {
+    await _init();
+    await _plugin.cancel(id: id);
   }
 
   @override

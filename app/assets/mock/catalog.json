@@ -34,7 +34,7 @@
   {
    "id": "detektyw",
    "title": "Detektyw",
-   "age_min": 6,
+   "age_min": 7,
    "color": "sun",
    "description": "Detektywistyczne przygody z Maxem i Milą oraz akta spraw do wydrukowania.",
    "store_product_id": "pl.audiokiddo.pack.detektyw",
@@ -73,7 +73,8 @@
     }
    ],
    "store_product_id": "pl.audiokiddo.item.magiczny_sklep",
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "zaginiony-skarb",
@@ -106,7 +107,8 @@
     "bytes": 373187,
     "sha256": "ebf4d17b0e93ae66d6d68eda2c601f49d431601dae4d1e99e343288f1a071103"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "podroz-na-inna-planete",
@@ -139,7 +141,8 @@
     "bytes": 372357,
     "sha256": "6daeb114af750f317b4cc46c7376cb4cc98b3ce83cf29ff82d5213d41d6f8e1f"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "wymysl-znaczenie",
@@ -172,7 +175,8 @@
     "bytes": 372439,
     "sha256": "20127e28a15bbd9d769644556230b2b3ae63cea7dfa7998b8887399aad2ad994"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "mikstura",
@@ -205,7 +209,8 @@
     "bytes": 372849,
     "sha256": "06fbbc6ab98bc58ea5e91d54e615c3ed3870a683da0355d1f10d3d0bbff66d3f"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "moj-superbohater",
@@ -238,7 +243,8 @@
     "bytes": 372440,
     "sha256": "53e277b2b51ae986b3f6429833f474ff172978886098123543ce92f6dc4d0ba2"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "dokoncz-historie",
@@ -271,7 +277,8 @@
     "bytes": 372234,
     "sha256": "939d336e808443b220d3267b2fb04baf96bb2bc25544028812e2ce646d83813a"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "mistrz-kuchni",
@@ -304,7 +311,8 @@
     "bytes": 372294,
     "sha256": "9e868712349101c6a93a4549740831777ccf0abd49a3bf4d746b2bcf2e516d06"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "magiczny-teatr",
@@ -337,7 +345,8 @@
     "bytes": 372286,
     "sha256": "89ac0ed2863ec94009be898e285bc076887cb25256bccbc353c5df25ac91cbb9"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "co-oni-odpowiedzieli",
@@ -370,7 +379,8 @@
     "bytes": 371923,
     "sha256": "fd2c750b1eff2fa5f7259e847c471f93e3fc9f1ef267f1d7eaffc5da9d215182"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "co-to-za-przedmiot",
@@ -410,7 +420,8 @@
     "bytes": 372805,
     "sha256": "65fb1b0a17ec1645467eb37dc0371cbf676dd7c012340052b105a17dc33fde4c"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "co-to-za-dzwiek",
@@ -445,7 +456,8 @@
      "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
     }
    ],
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "szybkie-skojarzenia",
@@ -485,7 +497,8 @@
     "bytes": 373187,
     "sha256": "11df91fa1e5c8a654980d0c208208efcbbb314a5e637e425e7c91ee6f535d578"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "co-tu-nie-pasuje",
@@ -525,7 +538,8 @@
     "bytes": 372138,
     "sha256": "ad15cd473d4011fcb4238bb36a2180b42e322e74a93c00c5edbd2cb7f502feda"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "wymien-trzy",
@@ -565,7 +579,8 @@
     "bytes": 371361,
     "sha256": "5e57721d729fa8e9feee929d3eedf647763516735b88ccecba36b42cfb47ad2b"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "znajdz-przeciwienstwo",
@@ -605,7 +620,8 @@
     "bytes": 372605,
     "sha256": "75e04732246547f2c87a27c45ac139d0a7b0cccd4bf36b31ce1a3a69ca9d4a9e"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "znajdz-synonimy",
@@ -645,7 +661,8 @@
     "bytes": 372521,
     "sha256": "198c57ba3ae7715cec096fde5069f36838dfe417a422036f1094e2e290b3f6ed"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "uloz-zdanie",
@@ -685,7 +702,8 @@
     "bytes": 372494,
     "sha256": "e3b087dd5da46795513817ecc1c370965923758e89c1c48c08acbc4c06cd606b"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "dokoncz-zgodnie-z-prawda",
@@ -725,7 +743,8 @@
     "bytes": 372792,
     "sha256": "e9987766ca5150b42db7235d2a9c94e56310e3fbaba7a735f1aeaa2cd66a5de2"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "kto-to-powiedzial",
@@ -765,7 +784,8 @@
     "bytes": 372856,
     "sha256": "6e20a2804f795b36906a808646f636c42850b9bbe14ec1a71824d7d535a4a29e"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "age_max": 9
   },
   {
    "id": "zlodziej-naszyjnika",
@@ -774,7 +794,7 @@
    "title": "Złodziej naszyjnika",
    "subtitle": "Max i Mila",
    "parent_description": "Max i Mila dostają ostrzeżenie o planowanej kradzieży na balu. Do zabawy przydają się wydrukowane akta sprawy.",
-   "age_min": 6,
+   "age_min": 7,
    "duration_sec": 1080,
    "situations": [
     "w_domu",
@@ -813,7 +833,7 @@
    "title": "Znikające dzwonki rowerowe",
    "subtitle": "Max i Mila",
    "parent_description": "Ktoś zabiera dzwonki rowerowe z całego miasta. Do zabawy przydają się wydrukowane akta sprawy.",
-   "age_min": 6,
+   "age_min": 7,
    "duration_sec": 875,
    "situations": [
     "w_domu",
@@ -857,7 +877,7 @@
    "title": "Na ratunek budce z lodami",
    "subtitle": "Max i Mila",
    "parent_description": "Z budki z lodami zniknęła książka z przepisami. Do zabawy przydają się wydrukowane akta sprawy.",
-   "age_min": 6,
+   "age_min": 7,
    "duration_sec": 742,
    "situations": [
     "w_domu",
@@ -901,7 +921,7 @@
    "title": "Tajemnicze znaki i inne poszlaki",
    "subtitle": "Max i Mila",
    "parent_description": "W mieście pojawiają się tajemnicze znaki. Dokąd prowadzą? Do zabawy przydają się wydrukowane akta sprawy.",
-   "age_min": 6,
+   "age_min": 7,
    "duration_sec": 967,
    "situations": [
     "w_domu",
@@ -945,7 +965,7 @@
    "title": "Gadający śmietnik",
    "subtitle": "Max i Mila",
    "parent_description": "Max i Mila trafiają na gadający śmietnik. Kto go zbudował i po co? Do zabawy przydają się wydrukowane akta sprawy.",
-   "age_min": 6,
+   "age_min": 7,
    "duration_sec": 1155,
    "situations": [
     "w_domu",
@@ -979,83 +999,6 @@
     "path": "previews/detektyw/gadajacy-smietnik.m4a",
     "bytes": 373330,
     "sha256": "f0e387485407888c37a11920ad75858155401373bf990e68bc11bf6397f3a421"
-   },
-   "released": "2026-09-01"
-  },
-  {
-   "id": "piosenka-1",
-   "kind": "song",
-   "title": "Piosenka na dzień dobry (przykład)",
-   "parent_description": "Przykładowa pozycja. TODO(Dawid): prawdziwe piosenki AudioKiddo.",
-   "age_min": 3,
-   "duration_sec": 150,
-   "situations": [
-    "w_domu",
-    "podroz"
-   ],
-   "access": "paid",
-   "audio": [
-    {
-     "path": "audio/piosenki/1.m4a",
-     "bytes": 303909,
-     "sha256": "d7b6de52b8e4ba551f3447e8e9ccdac5c5ecfc5663c2943dff458db8b128dea6"
-    }
-   ],
-   "preview": {
-    "path": "previews/piosenki/piosenka-1.m4a",
-    "bytes": 203653,
-    "sha256": "111e5618d252a97df8e066787a30502d7679e2c26023a88b76a7e16e1666d914"
-   },
-   "released": "2026-09-01"
-  },
-  {
-   "id": "piosenka-2",
-   "kind": "song",
-   "title": "Piosenka do tańca (przykład)",
-   "parent_description": "Przykładowa pozycja. TODO(Dawid): prawdziwe piosenki AudioKiddo.",
-   "age_min": 3,
-   "duration_sec": 150,
-   "situations": [
-    "w_domu",
-    "podroz"
-   ],
-   "access": "paid",
-   "audio": [
-    {
-     "path": "audio/piosenki/2.m4a",
-     "bytes": 303155,
-     "sha256": "88ce3fed7a46e8247952ab80a065901cab58fbf1d8f64e6586b7d92c360630e6"
-    }
-   ],
-   "preview": {
-    "path": "previews/piosenki/piosenka-2.m4a",
-    "bytes": 203242,
-    "sha256": "b4a108f57830c5058b42362e0378fdfa05b2697a5f26a2fb6133758eab431295"
-   },
-   "released": "2026-09-01"
-  },
-  {
-   "id": "piosenka-3",
-   "kind": "song",
-   "title": "Kołysanka (przykład)",
-   "parent_description": "Przykładowa pozycja. TODO(Dawid): prawdziwe piosenki AudioKiddo.",
-   "age_min": 3,
-   "duration_sec": 150,
-   "situations": [
-    "przed_snem"
-   ],
-   "access": "paid",
-   "audio": [
-    {
-     "path": "audio/piosenki/3.m4a",
-     "bytes": 300220,
-     "sha256": "d5dda4fb37abc3a77e855328e885f0754e1cb0a385d7da46574b5929880f9631"
-    }
-   ],
-   "preview": {
-    "path": "previews/piosenki/piosenka-3.m4a",
-    "bytes": 201893,
-    "sha256": "412d13d10befdd08cbe7b6dd69643b36be874dee839d0a7a24b744d170626006"
    },
    "released": "2026-09-01"
   },
@@ -3175,11 +3118,7 @@
    "id": "piosenki",
    "title": "Piosenki",
    "kind": "row",
-   "item_ids": [
-    "piosenka-1",
-    "piosenka-2",
-    "piosenka-3"
-   ]
+   "item_ids": []
   },
   {
    "id": "gry",
@@ -3205,8 +3144,7 @@
     "magiczny-teatr",
     "podroz-na-inna-planete",
     "tajemnicze-znaki",
-    "mikstura",
-    "piosenka-3"
+    "mikstura"
    ],
    "kind": "row"
   },
@@ -3221,8 +3159,7 @@
     "mistrz-kuchni",
     "dokoncz-historie",
     "co-to-za-dzwiek",
-    "znikajace-dzwonki",
-    "piosenka-3"
+    "znikajace-dzwonki"
    ],
    "kind": "row"
   },

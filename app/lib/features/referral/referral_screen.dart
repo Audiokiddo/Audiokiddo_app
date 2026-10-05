@@ -8,6 +8,7 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../account/account_service.dart';
 import '../parental_gate/parental_gate.dart';
+import '../insights/events.dart';
 
 /// Friend's reward and parent's reward, said the same way everywhere.
 const referralFriendGift = '14 dni całej biblioteki za darmo';
@@ -26,7 +27,8 @@ class ReferralScreen extends ConsumerWidget {
       'Mam dla Ciebie $referralFriendGift w AudioKiddo: audiozabawy, w których dziecko jest bohaterem. '
       'Pobierz aplikację i wpisz kod $code (Sklep → Odbierz dostęp → Mam kod). https://audiokiddo.pl';
 
-  Future<void> _share(BuildContext context, String code) async {
+  Future<void> _share(BuildContext context, WidgetRef ref, String code) async {
+    ref.read(eventSinkProvider).track(AppEvent.referralShare);
     final origin = context.findRenderObject() as RenderBox?;
     // Sharing leaves the app, so it asks for an adult (Kids Category).
     if (!await showParentalGate(context) || !context.mounted) return;
@@ -108,7 +110,7 @@ class ReferralScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 FilledButton.icon(
-                  onPressed: () => _share(context, info.code),
+                  onPressed: () => _share(context, ref, info.code),
                   icon: const Icon(Icons.ios_share_rounded),
                   label: const Text('Wyślij znajomym'),
                 ),

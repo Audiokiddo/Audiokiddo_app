@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -5,7 +7,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app.dart';
 import 'core/backend/backend_config.dart';
 import 'core/storage/storage_providers.dart';
+import 'core/storage/database.dart';
 import 'features/account/account_service.dart';
+import 'features/catalog/catalog_providers.dart';
+import 'features/catalog/remote_catalog.dart';
+import 'features/insights/events.dart';
+import 'features/promotions/promotions.dart';
 import 'features/downloads/download_providers.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
 import 'features/onboarding/onboarding_controller.dart';
@@ -13,6 +20,9 @@ import 'features/player/audio_handler.dart';
 import 'features/player/car_library.dart';
 import 'features/player/playback_controller.dart';
 import 'features/player/player_providers.dart';
+
+/// Sent with events, so statistics can tell versions apart.
+const appVersion = '0.2.0';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,14 +32,24 @@ Future<void> main() async {
     url: BackendConfig.url,
     publishableKey: BackendConfig.publishableKey,
   );
+  final database = AppDatabase();
+  final catalogSource = RemoteCatalogSource(supabase.client, database);
+  final events = SupabaseEventSink(supabase.client, database, appVersion: appVersion);
   final container = ProviderContainer(
     overrides: [
+      databaseProvider.overrideWithValue(database),
+      catalogSourceProvider.overrideWithValue(catalogSource),
+      eventSinkProvider.overrideWithValue(events),
+      promotionSourceProvider.overrideWithValue(SupabasePromotions(supabase.client)),
       accountServiceProvider.overrideWithValue(SupabaseAccountService(supabase.client)),
       audioHandlerProvider.overrideWithValue(audioHandler),
       kidsModeProvider.overrideWith((ref) => KidsModeController(ref.watch(databaseProvider))),
       onboardingProvider.overrideWith((ref) => OnboardingController(ref.watch(databaseProvider))),
     ],
   );
+  // A newer catalog from Studio replaces the shown one as soon as it arrives.
+  catalogSource.onChanged = () => container.invalidate(fullCatalogProvider);
+  unawaited(trackLaunch(events));
   // Before the first frame: a restart must not flash the parent zone.
   await container.read(kidsModeProvider).load();
   await container.read(onboardingProvider).load();

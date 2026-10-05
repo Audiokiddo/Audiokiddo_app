@@ -8,6 +8,7 @@ import '../catalog/widgets/item_art.dart';
 import '../downloads/download_providers.dart';
 import '../personal/personal_repository.dart';
 import 'audio_handler.dart';
+import '../insights/events.dart';
 import 'player_providers.dart';
 import '../family/family.dart';
 
@@ -49,6 +50,7 @@ class PlaybackController {
       throw const PlaybackSourceUnavailable();
     }
     final progress = await _ref.read(personalRepositoryProvider).progress(item.id);
+    _ref.read(eventSinkProvider).track(AppEvent.playStart, itemId: item.id, props: {'free': item.isFree});
     await _handler.playItem(
       MediaItem(
         id: item.id,
@@ -69,6 +71,7 @@ class PlaybackController {
     if (media.id.startsWith(gameMediaPrefix)) return; // games have no resume point
     final position = completed ? duration : _handler.position;
     if (completed) {
+      _ref.read(eventSinkProvider).track(AppEvent.playComplete, itemId: media.id);
       // Counts towards the listening child's plan and progress.
       unawaited(_ref.read(familyProvider.notifier).record(itemId: media.id, seconds: duration.inSeconds));
     }

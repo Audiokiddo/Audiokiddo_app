@@ -157,6 +157,20 @@ class _Scene extends CustomPainter {
   bool shouldRepaint(_Scene old) => old.category != category || old.seed != seed;
 }
 
+/// The kinds of play that have at least one play in the catalog (songs return with songs).
+final shownCategoriesProvider = Provider<List<PlayCategory>>((ref) {
+  final items = ref.watch(catalogProvider).value?.items ?? const <ContentItem>[];
+  return [
+    for (final c in PlayCategory.shown)
+      if (items.any(c.matches)) c,
+  ];
+});
+
+/// Whether the catalog has songs at all (their filters hide until it does).
+final hasSongsProvider = Provider<bool>(
+  (ref) => ref.watch(catalogProvider).value?.items.any((i) => i.kind == ContentKind.song) ?? false,
+);
+
 /// Tile colours, foreground and icon per kind of play.
 const categoryLook = <PlayCategory, (Color, Color, IconData)>{
   PlayCategory.creative: (Color(0xFF7B5BA6), Colors.white, Icons.palette_rounded),

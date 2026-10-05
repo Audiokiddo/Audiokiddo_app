@@ -10,6 +10,7 @@ import 'fake_store.dart';
 import 'iap_store.dart';
 import 'offer_catalog.dart';
 import 'store_gateway.dart';
+import '../insights/events.dart';
 
 enum VerificationResult { verified, rejected, retryLater }
 
@@ -124,6 +125,7 @@ class PurchaseController extends Notifier<PurchaseUiState> {
 
   Future<void> buy(StoreProduct product) async {
     state = PurchaseUiState(busyProductId: product.id);
+    ref.read(eventSinkProvider).track(AppEvent.purchaseStart, props: {'product': product.id});
     try {
       // Ties the purchase to our server user (appAccountToken / obfuscatedAccountId), so
       // store notifications find the right account.
@@ -170,6 +172,9 @@ class PurchaseController extends Notifier<PurchaseUiState> {
             // anything we failed to process.
             if (p.needsCompletion) await ref.read(storeGatewayProvider).complete(p);
             await ref.read(accessProvider.notifier).refresh();
+            if (p.status == PurchaseStatus.purchased) {
+              ref.read(eventSinkProvider).track(AppEvent.purchaseDone, props: {'product': p.productId});
+            }
             if (ref.mounted) state = const PurchaseUiState(message: PurchaseMessage.success);
           } else {
             state = const PurchaseUiState(message: PurchaseMessage.verifyLater);

@@ -283,3 +283,44 @@ begin
     and product_ref = 'referral-reward' and valid_until > now() + interval '29 days'), 'reward after purchase';
   assert (public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECZZZZZZ') ->> 'rewards')::int = 1;
 end $$;
+
+-- Statistics, promotions and the published catalog.
+do $$
+declare
+  v integer;
+begin
+  insert into public.app_events (install_id, event, item_id) values
+    ('11111111-1111-1111-1111-111111111111', 'first_open', null),
+    ('11111111-1111-1111-1111-111111111111', 'play_start', 'magiczny-sklep'),
+    ('22222222-2222-2222-2222-222222222222', 'play_start', 'magiczny-sklep');
+  assert (public.admin_stats(30) -> 'events' -> 'play_start' ->> 'installs')::int = 2;
+
+  insert into public.promotions (title, starts_at, ends_at) values
+    ('Mikołajki', now() - interval '1 day', now() + interval '1 day'),
+    ('Za tydzień', now() + interval '7 days', now() + interval '8 days');
+
+  v := public.publish_catalog(
+    '{"packs":[],"items":[{"id":"nowa","pack_id":null,"access":"free","audio":[{"path":"audio/nowa.m4a"}]}]}',
+    'abc', 'test', null);
+  assert (public.published_catalog() ->> 'version')::int = v;
+  assert exists (select 1 from public.content_files where path = 'audio/nowa.m4a' and free and item_id = 'nowa');
+end $$;
+
+-- The app may add events but not read them; it sees only promotions that are running.
+set role anon;
+do $$
+begin
+  insert into public.app_events (install_id, event) values ('33333333-3333-3333-3333-333333333333', 'app_open');
+  assert (select count(*) from public.promotions) = 1, 'only the running promotion';
+  begin
+    perform 1 from public.app_events;
+    assert false, 'anon must not read events';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.app_events (install_id, event) values ('33333333-3333-3333-3333-333333333333', 'hack');
+    assert false, 'unknown event refused';
+  exception when check_violation then null;
+  end;
+end $$;
+reset role;

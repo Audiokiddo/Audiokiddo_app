@@ -7,7 +7,6 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
 import '../../core/widgets/szop.dart';
-import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../downloads/download_providers.dart';
 import '../family/family.dart' hide progressProvider;
@@ -205,7 +204,7 @@ class _Browse extends ConsumerWidget {
         const RefSection('Kategorie'),
         TwoColumns(
           children: [
-            for (final c in PlayCategory.shown)
+            for (final c in ref.watch(shownCategoriesProvider))
               CategoryTile(
                 category: c,
                 onTap: () => onFilter(LibraryFilter(category: c)),
@@ -610,16 +609,17 @@ class _ParentTools extends ConsumerWidget {
 }
 
 /// The most common narrowing, as one row of chips.
-class _QuickFilters extends StatelessWidget {
+class _QuickFilters extends ConsumerWidget {
   const _QuickFilters({required this.onFilter});
 
   final ValueChanged<LibraryFilter> onFilter;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final songs = ref.watch(hasSongsProvider);
     final chips = <(String, LibraryFilter)>[
       ('Audiozabawy', const LibraryFilter(kind: ContentKind.audioGame)),
-      ('Piosenki', const LibraryFilter(kind: ContentKind.song)),
+      if (songs) ('Piosenki', const LibraryFilter(kind: ContentKind.song)),
       ('Gry z odpowiedziami', const LibraryFilter(kind: ContentKind.interactiveGame)),
       ('Bez przygotowań', const LibraryFilter(noPrep: true)),
       ('Do 10 min', const LibraryFilter(maxMinutes: 10)),
@@ -640,14 +640,15 @@ class _QuickFilters extends StatelessWidget {
 }
 
 /// Filters on the result list: each chip toggles one of them.
-class _FilterChips extends StatelessWidget {
+class _FilterChips extends ConsumerWidget {
   const _FilterChips({required this.filter, required this.onChanged});
 
   final LibraryFilter filter;
   final ValueChanged<LibraryFilter> onChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final songs = ref.watch(hasSongsProvider);
     final f = filter;
     Widget chip(String label, bool selected, LibraryFilter Function() toggle) => ChoiceChip(
       label: Text(label),
@@ -664,7 +665,7 @@ class _FilterChips extends StatelessWidget {
         children: [
           for (final (kind, label) in [
             (ContentKind.audioGame, 'Audiozabawy'),
-            (ContentKind.song, 'Piosenki'),
+            if (songs) (ContentKind.song, 'Piosenki'),
             (ContentKind.interactiveGame, 'Gry'),
           ])
             chip(label, f.kind == kind, () => f.copyWith(kind: () => f.kind == kind ? null : kind)),

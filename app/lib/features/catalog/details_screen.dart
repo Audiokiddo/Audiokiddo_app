@@ -27,6 +27,7 @@ import '../discovery/discovery_model.dart';
 import '../discovery/queue_controller.dart';
 import 'widgets/labels.dart';
 import '../../core/router.dart';
+import '../insights/events.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key, required this.itemId});
@@ -79,7 +80,8 @@ class _DetailsContent extends ConsumerWidget {
   }
 
   // The offer itself asks for an adult before any purchase (buyWithGate).
-  Future<void> _unlock(BuildContext context) async {
+  Future<void> _unlock(BuildContext context, WidgetRef ref) async {
+    ref.read(eventSinkProvider).track(AppEvent.paywallView, itemId: item.id);
     await context.push('/oferta?zabawa=${item.id}');
   }
 
@@ -194,7 +196,7 @@ class _DetailsContent extends ConsumerWidget {
               const SizedBox(height: AkSpace.s),
             ],
             FilledButton.icon(
-              onPressed: () => _unlock(context),
+              onPressed: () => _unlock(context, ref),
               icon: const Icon(Icons.lock_open_rounded),
               label: Text(l10n.unlock),
             ),

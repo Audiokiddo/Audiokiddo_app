@@ -7,6 +7,7 @@ import '../../core/theme/tokens.dart';
 import '../catalog/catalog_providers.dart';
 import 'download_manager.dart';
 import 'download_providers.dart';
+import '../insights/events.dart';
 
 /// Downloads every play in [items] the family can play, one after another; reports lack of
 /// space once.
@@ -71,7 +72,10 @@ class PackDownloadButton extends ConsumerWidget {
       );
     }
     return OutlinedButton.icon(
-      onPressed: () => downloadAll(context, ref, playable),
+      onPressed: () {
+        ref.read(eventSinkProvider).track(AppEvent.downloadPack, props: {'count': playable.length - ready});
+        downloadAll(context, ref, playable);
+      },
       icon: const Icon(Icons.download_rounded),
       label: Text(
         '$label (${playable.length - ready}, ${formatBytes(missingBytes)})',

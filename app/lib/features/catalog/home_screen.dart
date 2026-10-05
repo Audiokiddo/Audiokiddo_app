@@ -17,6 +17,9 @@ import '../home/quick_pick.dart';
 import '../purchases/offer_catalog.dart';
 import '../purchases/purchase_controller.dart';
 import '../purchases/shop.dart';
+import '../alerts/alerts.dart';
+import '../home/first_play.dart';
+import '../promotions/promotions.dart';
 import '../rating/rating.dart';
 import '../referral/referral_screen.dart';
 import '../purchases/shop_screen.dart';
@@ -71,6 +74,10 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
               const _SzopBubble(),
+              const AlertsKeeper(),
+              const FirstPlayCard(),
+              const AccessEndingBanner(),
+              const PromotionBanner(),
               const SizedBox(height: 10),
               FittedBox(
                 fit: BoxFit.scaleDown,
@@ -115,6 +122,7 @@ class HomeScreen extends ConsumerWidget {
               const ReferralCard(),
               _NextPackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
+              const UpcomingShelf(),
               const _OfflineCard(),
               const RefSection('Dla wieku'),
               const _AgeRow(),
@@ -584,8 +592,19 @@ class _DiscoverPacks extends ConsumerWidget {
           style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
         ),
         const SizedBox(height: 10),
+        // Two packs or more: the year of everything is the natural next step.
+        if (ownedCount >= 2)
+          _BundleTeaser(
+            title: 'Masz $ownedCount z ${all.length} pakietów',
+            line: byId[ProductIds.yearly] == null
+                ? 'W abonamencie masz wszystkie pakiety, gry i każdą nowość.'
+                : 'Za ${byId[ProductIds.yearly]!.price} rocznie masz wszystkie pakiety, gry i każdą nowość. '
+                      'Twoje pakiety zostają Twoje na zawsze.',
+          ),
         for (final s in locked) _DiscoverCard(summary: s, product: byId[s.pack.storeProductId]),
-        if (bundle != null && saved != null)
+        if (ownedCount >= 2)
+          const SizedBox.shrink()
+        else if (bundle != null && saved != null)
           _BundleTeaser(
             title: 'Zestaw ${bundle.packs.length} pakietów',
             line:
@@ -776,13 +795,13 @@ class _BundleTeaser extends StatelessWidget {
 }
 
 /// Six kinds of play, each opening the library filtered to it.
-class _CategoryGrid extends StatelessWidget {
+class _CategoryGrid extends ConsumerWidget {
   const _CategoryGrid();
 
   @override
-  Widget build(BuildContext context) => TwoColumns(
+  Widget build(BuildContext context, WidgetRef ref) => TwoColumns(
     children: [
-      for (final c in PlayCategory.shown)
+      for (final c in ref.watch(shownCategoriesProvider))
         CategoryTile(category: c, onTap: () => context.push('/biblioteka?kategoria=${c.name}')),
     ],
   );

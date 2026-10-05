@@ -107,7 +107,7 @@ void main() {
     await pumpOn(tester, DateTime(2026, 10, 2));
     await tester.scrollUntilVisible(find.text('Pakiety przygód'), 200, scrollable: scroll);
     expect(find.byIcon(Icons.lock_rounded), findsWidgets, reason: 'packs not owned are listed too');
-    await tester.scrollUntilVisible(find.text('Piosenki'), 200, scrollable: scroll);
+    await tester.scrollUntilVisible(find.text('Fabularne'), 200, scrollable: scroll);
     expect(find.text('Jesienne wieczory'), findsNothing);
   });
 

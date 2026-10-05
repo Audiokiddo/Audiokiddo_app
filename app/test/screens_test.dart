@@ -82,10 +82,11 @@ void main() {
     await tester.scrollUntilVisible(find.text('Kontynuuj słuchanie'), 200, scrollable: mainScroll);
     // Categories deliberately live below the recommendations, not above practical situations.
     await tester.scrollUntilVisible(find.text('Kreatywne'), 200, scrollable: mainScroll);
-    await tester.scrollUntilVisible(find.text('Piosenki'), 200, scrollable: mainScroll);
-    for (final label in ['Kreatywne', 'Ruchowe', 'Logiczne', 'Edukacyjne', 'Fabularne', 'Piosenki']) {
+    await tester.scrollUntilVisible(find.text('Fabularne'), 200, scrollable: mainScroll);
+    for (final label in ['Kreatywne', 'Ruchowe', 'Logiczne', 'Edukacyjne', 'Fabularne']) {
       expect(find.text(label), findsOneWidget);
     }
+    expect(find.text('Piosenki'), findsNothing, reason: 'no songs in the catalog yet, so no empty tile');
   });
   testWidgets('search from Start has a visible back action', (tester) async {
     await pumpApp(tester);
