@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/features/parental_gate/gate_challenge.dart';
 import 'package:audiokiddo/features/parental_gate/parental_gate.dart';
+import 'package:audiokiddo/features/purchases/after_free_play.dart';
 import 'package:audiokiddo/features/purchases/offer_catalog.dart';
 import 'package:audiokiddo/features/purchases/shop.dart';
 import 'package:audiokiddo/features/purchases/store_gateway.dart';
@@ -137,6 +138,25 @@ void main() {
       await tester.tap(find.text('Filmy i materiały do zabaw'));
       await tester.pumpAndSettle();
       expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'a link out asks an adult first');
+    });
+
+    Future<void> showOffer(WidgetTester tester, ContentItem item) async {
+      Navigator.of(tester.element(find.byType(Scaffold).first)).push(
+        MaterialPageRoute<void>(builder: (_) => Scaffold(body: ListView(children: [AfterFreePlayOffer(item: item)]))),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('after a free play from a pack: the pack or the subscription, behind the gate', (tester) async {
+      await pumpApp(tester);
+      final free = catalog.items.firstWhere((i) => i.isFree && i.packId == 'wyobraznia');
+      await showOffer(tester, free);
+      expect(find.text('Spodobało się? To dopiero początek.'), findsOneWidget);
+      expect(find.textContaining('Odblokuj pakiet Wyobraźnia'), findsOneWidget);
+      expect(find.textContaining('jeden nowy pakiet co miesiąc'), findsOneWidget);
+      await tester.tap(find.textContaining('Rocznie'));
+      await tester.pumpAndSettle();
+      expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'buying asks an adult first');
     });
 
     testWidgets('with the subscription everything is unlocked', (tester) async {

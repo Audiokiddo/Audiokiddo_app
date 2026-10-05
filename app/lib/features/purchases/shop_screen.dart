@@ -297,7 +297,7 @@ class _SubscriptionCard extends ConsumerWidget {
           const SizedBox(height: 10),
           for (final line in [
             'Wszystkie ${playsCount(itemCount)}: pakiety, piosenki i gry',
-            'Nowe przygody, gdy tylko się pojawią',
+            'Jeden nowy pakiet zabaw co miesiąc',
             'Na wszystkie dzieci w rodzinie, bez reklam',
           ])
             Padding(

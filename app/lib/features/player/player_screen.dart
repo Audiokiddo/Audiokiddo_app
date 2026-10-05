@@ -18,6 +18,7 @@ import '../discovery/reference_widgets.dart';
 import '../discovery/queue_controller.dart';
 import '../home/quick_pick.dart';
 import '../pdf/case_files_card.dart';
+import '../purchases/after_free_play.dart';
 import 'audio_handler.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
@@ -94,8 +95,10 @@ class _Player extends ConsumerWidget {
                 ),
               ] else ...[
                 if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
-                if (item != null && state?.processingState == AudioProcessingState.completed)
+                if (item != null && state?.processingState == AudioProcessingState.completed) ...[
+                  AfterFreePlayOffer(item: item),
                   _UpNext(after: item),
+                ],
                 item == null
                     ? Center(
                         child: ConstrainedBox(
