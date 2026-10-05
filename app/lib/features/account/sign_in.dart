@@ -10,12 +10,15 @@ import '../../l10n/app_localizations.dart';
 import '../access/access_controller.dart';
 import '../purchases/purchase_controller.dart';
 import '../parental_gate/parental_gate.dart';
+import 'account_data.dart';
 import 'account_service.dart';
 
 String accountErrorText(AppLocalizations l10n, AccountError error) => switch (error) {
   AccountError.invalidEmail => l10n.accountErrorInvalidEmail,
   AccountError.tooManyRequests => l10n.accountErrorTooMany,
   AccountError.wrongCode => l10n.accountErrorWrongCode,
+  AccountError.wrongPassword => l10n.accountErrorWrongPassword,
+  AccountError.weakPassword => l10n.accountErrorWeakPassword,
   AccountError.offline => l10n.accountErrorOffline,
   AccountError.server => l10n.accountErrorServer,
   AccountError.notConfigured => l10n.signInNotConfigured,
@@ -25,6 +28,9 @@ String accountErrorText(AppLocalizations l10n, AccountError error) => switch (er
 /// After any sign-in: assign shop purchases made with this e-mail (not fatal if it fails,
 /// the account screen can retry) and recompute what the device may play.
 Future<void> afterSignIn(WidgetRef ref) async {
+  // Another account than last time: the previous family's data leaves the phone.
+  final user = ref.read(accountServiceProvider).current;
+  if (user != null) await claimFamilyDataFor(ref, user.id);
   try {
     await ref.read(accountServiceProvider).syncWebPurchases();
   } on AccountException {
@@ -238,6 +244,7 @@ class EmailSignInForm extends ConsumerStatefulWidget {
     this.sendLabel,
     this.consent,
     this.autofocus = true,
+    this.offerPassword = false,
   });
 
   final VoidCallback? onSignedIn;
@@ -251,6 +258,9 @@ class EmailSignInForm extends ConsumerStatefulWidget {
   final Widget Function(bool value, ValueChanged<bool> onChanged)? consent;
   final bool autofocus;
 
+  /// New accounts: an optional password, set right after the code is confirmed.
+  final bool offerPassword;
+
   @override
   ConsumerState<EmailSignInForm> createState() => _EmailSignInFormState();
 }
@@ -260,6 +270,7 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
 
   final _email = TextEditingController();
   final _code = TextEditingController();
+  final _password = TextEditingController();
   String? _sentTo;
   bool _busy = false;
   String? _error;
@@ -272,6 +283,7 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
     _timer?.cancel();
     _email.dispose();
     _code.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -292,6 +304,10 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   Future<void> _sendCode() async {
     if (widget.consent != null && !_consented) {
       setState(() => _error = 'Zaznacz zgodę na regulamin i politykę prywatności.');
+      return;
+    }
+    if (widget.offerPassword && _password.text.isNotEmpty && _password.text.length < minPasswordLength) {
+      setState(() => _error = AppLocalizations.of(context).accountErrorWeakPassword);
       return;
     }
     final email = _email.text.trim();
@@ -319,6 +335,9 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
 
   Future<void> _verify() => _run(() async {
     await ref.read(accountServiceProvider).verifyCode(_sentTo!, _code.text);
+    if (widget.offerPassword && _password.text.isNotEmpty) {
+      await ref.read(accountServiceProvider).setPassword(_password.text);
+    }
     await afterSignIn(ref);
     widget.onSignedIn?.call();
   });
@@ -354,6 +373,14 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
             onSubmitted: (_) => _sendCode(),
             decoration: InputDecoration(labelText: l10n.accountEmailLabel, errorText: _error),
           ),
+          if (widget.offerPassword) ...[
+            const SizedBox(height: AkSpace.s),
+            PasswordField(
+              controller: _password,
+              label: 'Hasło (opcjonalnie, min. 8 znaków)',
+              enabled: !_busy,
+            ),
+          ],
           if (widget.consent case final consent?) ...[
             const SizedBox(height: AkSpace.s),
             consent(_consented, (v) => setState(() => _consented = v)),
@@ -394,6 +421,131 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
             child: Text(l10n.accountChangeEmail),
           ),
         ],
+        if (_busy)
+          const Padding(
+            padding: EdgeInsets.all(AkSpace.m),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+      ],
+    );
+  }
+}
+
+/// A password field with a show/hide button.
+class PasswordField extends StatefulWidget {
+  const PasswordField({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.enabled = true,
+    this.onSubmitted,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final bool enabled;
+  final ValueChanged<String>? onSubmitted;
+
+  @override
+  State<PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  bool _hidden = true;
+
+  @override
+  Widget build(BuildContext context) => TextField(
+    controller: widget.controller,
+    enabled: widget.enabled,
+    obscureText: _hidden,
+    autocorrect: false,
+    enableSuggestions: false,
+    autofillHints: const [AutofillHints.password],
+    onSubmitted: widget.onSubmitted,
+    decoration: InputDecoration(
+      labelText: widget.label,
+      suffixIcon: IconButton(
+        tooltip: _hidden ? 'Pokaż hasło' : 'Ukryj hasło',
+        onPressed: () => setState(() => _hidden = !_hidden),
+        icon: Icon(_hidden ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+      ),
+    ),
+  );
+}
+
+/// E-mail and password. "Nie pamiętam hasła" hands over to the code sign-in ([onForgot]);
+/// a new password is then set in the account screen.
+class PasswordSignInForm extends ConsumerStatefulWidget {
+  const PasswordSignInForm({super.key, required this.onForgot});
+
+  final VoidCallback onForgot;
+
+  @override
+  ConsumerState<PasswordSignInForm> createState() => _PasswordSignInFormState();
+}
+
+class _PasswordSignInFormState extends ConsumerState<PasswordSignInForm> {
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    final l10n = AppLocalizations.of(context);
+    if (!_emailPattern.hasMatch(_email.text.trim())) {
+      setState(() => _error = l10n.accountErrorInvalidEmail);
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await ref.read(accountServiceProvider).signInWithPassword(_email.text, _password.text);
+      await afterSignIn(ref);
+    } on AccountException catch (e) {
+      if (mounted) setState(() => _error = accountErrorText(l10n, e.error));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Zaloguj się hasłem',
+          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: AkSpace.m),
+        TextField(
+          controller: _email,
+          enabled: !_busy,
+          keyboardType: TextInputType.emailAddress,
+          autofillHints: const [AutofillHints.email],
+          autocorrect: false,
+          decoration: InputDecoration(labelText: l10n.accountEmailLabel),
+        ),
+        const SizedBox(height: AkSpace.s),
+        PasswordField(controller: _password, label: 'Hasło', enabled: !_busy, onSubmitted: (_) => _signIn()),
+        if (_error != null) ...[
+          const SizedBox(height: AkSpace.s),
+          Text(_error!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error)),
+        ],
+        const SizedBox(height: AkSpace.m),
+        FilledButton(onPressed: _busy ? null : _signIn, child: const Text('Zaloguj')),
+        TextButton(onPressed: _busy ? null : widget.onForgot, child: const Text('Nie pamiętam hasła')),
         if (_busy)
           const Padding(
             padding: EdgeInsets.all(AkSpace.m),

@@ -1,3 +1,4 @@
+import 'package:audiokiddo/features/account/account_data.dart';
 import 'package:audiokiddo/l10n/app_localizations_pl.dart';
 import 'package:audiokiddo/features/account/session_gate.dart';
 import 'package:go_router/go_router.dart';
@@ -100,6 +101,20 @@ class FakeAccountService implements AccountService {
 
   @override
   Future<ClaimResult> claimOrder(String order, String email) => _claim('order:$order:$email');
+
+  String? password;
+
+  @override
+  Future<void> signInWithPassword(String email, String pass) async {
+    if (pass != password) throw const AccountException(AccountError.wrongPassword);
+    await verifyCode(email, '123456');
+  }
+
+  @override
+  Future<void> setPassword(String pass) async {
+    if (pass.length < minPasswordLength) throw const AccountException(AccountError.weakPassword);
+    password = pass;
+  }
 
   @override
   Future<ReferralInfo> referralInfo() async =>
@@ -290,6 +305,8 @@ void main() {
     GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/konto');
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Wyloguj się'), 200);
+    await Scrollable.ensureVisible(tester.element(find.text('Wyloguj się')), alignment: .5);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Wyloguj się'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Wyloguj się').last);
@@ -297,7 +314,7 @@ void main() {
 
     expect(find.text('Załóż konto'), findsOneWidget, reason: 'the sign-in screen with registration');
     expect(find.textContaining('Kontynuuj bez konta'), findsNothing);
-    expect(find.textContaining('Bez haseł'), findsOneWidget);
+    expect(find.textContaining('Nie pamiętasz hasła?'), findsOneWidget);
     // A back gesture or a deep link cannot leave it.
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
@@ -319,6 +336,63 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, AppLocalizationsPl().accountVerify));
     await tester.pumpAndSettle();
     expect(find.text('Co dziś robimy?'), findsOneWidget, reason: 'signed in: the app opens');
+  });
+
+  test('another account on the phone does not see the previous family', () async {
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    await db.writeValue('family_children', '[{"id":"z","name":"Zosia"}]');
+    await db.writeValue('diplomas_z', '{"detektyw":"2026-10-01"}');
+    await db.writeValue('theme_mode', 'dark');
+    expect(await claimFamilyData(db, 'A'), isFalse, reason: 'the first account adopts what is there');
+    expect(await db.readValue('family_children'), isNotNull);
+    expect(await claimFamilyData(db, 'A'), isFalse, reason: 'the same account keeps everything');
+    expect(await claimFamilyData(db, 'B'), isTrue);
+    expect(await db.readValue('family_children'), isNull);
+    expect(await db.readValue('diplomas_z'), isNull);
+    expect(await db.readValue('theme_mode'), 'dark', reason: 'device settings stay');
+  });
+
+  testWidgets('sign in with a password; a forgotten one leads to the code', (tester) async {
+    tester.view.physicalSize = const Size(1170, 2532);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    final account = FakeAccountService()..password = 'tajnehaslo1';
+    final gate = SessionGate(account, required: true);
+    addTearDown(gate.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          ...testOverrides(db),
+          accountServiceProvider.overrideWithValue(account),
+          sessionGateProvider.overrideWithValue(gate),
+        ],
+        child: const AudioKiddoApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Hasłem'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).at(0), 'rodzic@example.com');
+    await tester.enterText(find.byType(TextField).at(1), 'zle-haslo');
+    await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Nieprawidłowy e-mail albo hasło'), findsOneWidget);
+
+    await tester.tap(find.text('Nie pamiętam hasła'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('ustaw nowe hasło w Więcej'), findsOneWidget);
+    expect(find.text('Zaloguj się kodem'), findsOneWidget);
+
+    await tester.tap(find.text('Hasłem'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).at(0), 'rodzic@example.com');
+    await tester.enterText(find.byType(TextField).at(1), 'tajnehaslo1');
+    await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj'));
+    await tester.pumpAndSettle();
+    expect(find.text('Co dziś robimy?'), findsOneWidget);
   });
 
   group('account screen', () {
@@ -373,6 +447,7 @@ void main() {
       await pumpAccount(tester, account);
       expect(find.text('Na tym koncie nie ma jeszcze zakupów.'), findsOneWidget);
 
+      await tester.scrollUntilVisible(find.text('Usuń konto'), 200);
       await tester.tap(find.text('Usuń konto'));
       await tester.pumpAndSettle();
       expect(find.textContaining('nie anuluje subskrypcji'), findsOneWidget);

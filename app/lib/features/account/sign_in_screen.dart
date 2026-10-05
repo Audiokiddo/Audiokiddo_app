@@ -20,6 +20,8 @@ class SignInScreen extends ConsumerStatefulWidget {
 
 class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool _newAccount = false;
+  bool _withPassword = false;
+  String? _hint;
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +42,67 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   const SizedBox(height: 16),
                   SegmentedButton<bool>(
                     segments: const [
-                      ButtonSegment(value: false, label: Text('Zaloguj się'), icon: Icon(Icons.login_rounded)),
-                      ButtonSegment(value: true, label: Text('Załóż konto'), icon: Icon(Icons.person_add_alt_1_rounded)),
+                      ButtonSegment(
+                        value: false,
+                        label: Text('Zaloguj się'),
+                        icon: Icon(Icons.login_rounded),
+                      ),
+                      ButtonSegment(
+                        value: true,
+                        label: Text('Załóż konto'),
+                        icon: Icon(Icons.person_add_alt_1_rounded),
+                      ),
                     ],
                     selected: {_newAccount},
-                    onSelectionChanged: (s) => setState(() => _newAccount = s.single),
+                    onSelectionChanged: (s) => setState(() {
+                      _newAccount = s.single;
+                      _hint = null;
+                    }),
                   ),
                   const SizedBox(height: 16),
-                  EmailSignInForm(
-                    key: ValueKey(_newAccount),
-                    autofocus: false,
-                    title: _newAccount ? 'Załóż konto rodzica' : 'Zaloguj się',
-                    body: _newAccount
-                        ? 'Podaj e-mail, wyślemy na niego kod. Po jego wpisaniu konto będzie gotowe, a zakupy z audiokiddo.pl na ten adres pojawią się same.'
-                        : 'Podaj e-mail, którego używasz w AudioKiddo. Wyślemy na niego kod logowania.',
-                    sendLabel: _newAccount ? 'Załóż konto' : 'Wyślij kod',
-                    consent: _newAccount ? _consent : null,
-                  ),
+                  if (!_newAccount) ...[
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        ChoiceChip(
+                          label: const Text('Kodem na e-mail'),
+                          selected: !_withPassword,
+                          onSelected: (_) => setState(() => _withPassword = false),
+                        ),
+                        ChoiceChip(
+                          label: const Text('Hasłem'),
+                          selected: _withPassword,
+                          onSelected: (_) => setState(() => _withPassword = true),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  if (_hint != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(_hint!, style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                    ),
+                  if (!_newAccount && _withPassword)
+                    PasswordSignInForm(
+                      onForgot: () => setState(() {
+                        _withPassword = false;
+                        _hint =
+                            'Zaloguj się kodem z maila, a potem ustaw nowe hasło w Więcej → Konto i zakupy.';
+                      }),
+                    )
+                  else
+                    EmailSignInForm(
+                      key: ValueKey(_newAccount),
+                      autofocus: false,
+                      title: _newAccount ? 'Załóż konto rodzica' : 'Zaloguj się kodem',
+                      body: _newAccount
+                          ? 'Podaj e-mail, wyślemy na niego kod. Hasło jest opcjonalne: możesz logować się kodem albo hasłem. Zakupy z audiokiddo.pl na ten adres pojawią się same.'
+                          : 'Podaj e-mail, którego używasz w AudioKiddo. Wyślemy na niego kod logowania.',
+                      sendLabel: _newAccount ? 'Załóż konto' : 'Wyślij kod',
+                      consent: _newAccount ? _consent : null,
+                      offerPassword: _newAccount,
+                    ),
                   const SizedBox(height: 4),
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -70,8 +116,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'Bez haseł: za każdym razem wysyłamy nowy kod na e-mail, więc nie ma czego zapominać ani przypominać. '
-                            'Nie ma kodu? Zajrzyj do spamu albo wyślij go ponownie.',
+                            'Logujesz się kodem z maila albo hasłem. Nie pamiętasz hasła? Zaloguj się kodem i ustaw nowe '
+                            'w Konto i zakupy. Nie ma kodu? Zajrzyj do spamu albo wyślij go ponownie.',
                             style: text.bodySmall,
                           ),
                         ),

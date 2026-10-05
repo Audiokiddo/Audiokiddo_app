@@ -1237,6 +1237,18 @@ abstract class AppLocalizations {
   /// **'Kod jest nieprawidłowy albo wygasł. Wyślij nowy.'**
   String get accountErrorWrongCode;
 
+  /// No description provided for @accountErrorWrongPassword.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem.'**
+  String get accountErrorWrongPassword;
+
+  /// No description provided for @accountErrorWeakPassword.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hasło musi mieć co najmniej 8 znaków.'**
+  String get accountErrorWeakPassword;
+
   /// No description provided for @accountErrorOffline.
   ///
   /// In pl, this message translates to:

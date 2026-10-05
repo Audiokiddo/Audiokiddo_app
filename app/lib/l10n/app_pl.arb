@@ -391,6 +391,8 @@
   "accountErrorInvalidEmail": "Sprawdź adres e-mail.",
   "accountErrorTooMany": "Za dużo prób. Odczekaj chwilę i spróbuj ponownie.",
   "accountErrorWrongCode": "Kod jest nieprawidłowy albo wygasł. Wyślij nowy.",
+  "accountErrorWrongPassword": "Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem.",
+  "accountErrorWeakPassword": "Hasło musi mieć co najmniej 8 znaków.",
   "accountErrorOffline": "Brak połączenia z internetem.",
   "accountErrorServer": "Coś poszło nie tak po naszej stronie. Spróbuj za chwilę.",
   "paywallHaveAccess": "Masz już dostęp? Zaloguj się",

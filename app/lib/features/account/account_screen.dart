@@ -12,6 +12,12 @@ import '../catalog/catalog_providers.dart';
 import 'account_service.dart';
 import 'sign_in.dart';
 import '../player/player_providers.dart';
+import '../../core/storage/storage_providers.dart';
+import '../diploma/diploma.dart';
+import '../discovery/discovery_model.dart';
+import '../family/family.dart' hide progressProvider;
+import '../personal/personal_repository.dart';
+import 'account_data.dart';
 
 /// Parent account, laid out like iOS Settings: sign in with Apple, Google or an e-mail code;
 /// see what the account unlocks; sign out; delete the account. Parent zone only — reached
@@ -129,6 +135,35 @@ class _SignedInState extends ConsumerState<_SignedIn> {
     });
   }
 
+  Future<void> _setPassword() async {
+    final password = await showDialog<String>(context: context, builder: (_) => const _PasswordDialog());
+    if (password == null || !mounted) return;
+    await _run(
+      () => ref.read(accountServiceProvider).setPassword(password),
+      done: 'Hasło zapisane. Możesz logować się hasłem albo kodem.',
+    );
+  }
+
+  Future<void> _clearFamily() async {
+    if (!await _confirm(
+      'Wyczyścić dane rodziny?',
+      'Z tego telefonu znikną profile dzieci, wyniki, dyplomy, ulubione, historia i kolejka. Zakupy i dostęp zostają na koncie.',
+      'Wyczyść',
+    )) {
+      return;
+    }
+    await _run(() async {
+      await clearFamilyData(ref.read(databaseProvider));
+      ref
+        ..invalidate(familyProvider)
+        ..invalidate(discoveryProvider)
+        ..invalidate(diplomasProvider)
+        ..invalidate(favoritesProvider)
+        ..invalidate(favoritesOrderedProvider)
+        ..invalidate(recentProvider);
+    }, done: 'Dane rodziny usunięte z telefonu.');
+  }
+
   Future<void> _delete() async {
     final l10n = AppLocalizations.of(context);
     if (!await _confirm(l10n.accountDeleteTitle, l10n.accountDeleteBody, l10n.accountDelete)) return;
@@ -175,6 +210,14 @@ class _SignedInState extends ConsumerState<_SignedIn> {
               title: widget.user.email,
               subtitle: l10n.accountSignedInAs,
             ),
+            GroupedRow(
+              icon: Icons.password_rounded,
+              iconColor: const Color(0xFF2F6FDB),
+              title: 'Ustaw lub zmień hasło',
+              subtitle: 'Logowanie kodem z maila działa zawsze',
+              chevron: true,
+              onTap: _busy ? null : _setPassword,
+            ),
           ],
         ),
         GroupedSection(
@@ -209,6 +252,16 @@ class _SignedInState extends ConsumerState<_SignedIn> {
           ],
         ),
         GroupedSection(
+          footer: 'Usuwa z tego telefonu profile dzieci, wyniki, dyplomy, ulubione i historię. Zakupy zostają na koncie.',
+          children: [
+            GroupedRow(
+              title: 'Wyczyść dane rodziny z tego telefonu',
+              onTap: _busy ? null : _clearFamily,
+              destructive: true,
+            ),
+          ],
+        ),
+        GroupedSection(
           children: [
             GroupedRow(title: l10n.accountSignOut, onTap: _busy ? null : _signOut, destructive: true),
           ],
@@ -231,4 +284,57 @@ class _SignedInState extends ConsumerState<_SignedIn> {
     if (scope.startsWith('item:')) return catalog?.item(scope.substring(5))?.title ?? scope;
     return scope;
   }
+}
+
+/// New password twice; at least [minPasswordLength] characters.
+class _PasswordDialog extends StatefulWidget {
+  const _PasswordDialog();
+
+  @override
+  State<_PasswordDialog> createState() => _PasswordDialogState();
+}
+
+class _PasswordDialogState extends State<_PasswordDialog> {
+  final _first = TextEditingController();
+  final _second = TextEditingController();
+  String? _error;
+
+  @override
+  void dispose() {
+    _first.dispose();
+    _second.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Text('Hasło do konta'),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        PasswordField(controller: _first, label: 'Nowe hasło (min. $minPasswordLength znaków)'),
+        const SizedBox(height: 8),
+        PasswordField(controller: _second, label: 'Powtórz hasło'),
+        if (_error != null) ...[
+          const SizedBox(height: 8),
+          Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+        ],
+      ],
+    ),
+    actions: [
+      TextButton(onPressed: () => Navigator.pop(context), child: Text(AppLocalizations.of(context).cancel)),
+      FilledButton(
+        onPressed: () {
+          if (_first.text.length < minPasswordLength) {
+            setState(() => _error = 'Hasło musi mieć co najmniej $minPasswordLength znaków.');
+          } else if (_first.text != _second.text) {
+            setState(() => _error = 'Hasła się różnią.');
+          } else {
+            Navigator.pop(context, _first.text);
+          }
+        },
+        child: const Text('Zapisz'),
+      ),
+    ],
+  );
 }

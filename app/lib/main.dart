@@ -8,6 +8,7 @@ import 'app.dart';
 import 'core/backend/backend_config.dart';
 import 'core/storage/storage_providers.dart';
 import 'core/storage/database.dart';
+import 'features/account/account_data.dart';
 import 'features/account/account_service.dart';
 import 'features/account/session_gate.dart';
 import 'features/catalog/catalog_providers.dart';
@@ -56,6 +57,9 @@ Future<void> main() async {
   // A newer catalog from Studio replaces the shown one as soon as it arrives.
   catalogSource.onChanged = () => container.invalidate(fullCatalogProvider);
   unawaited(trackLaunch(events));
+  // The phone's family data belongs to the signed-in account (cleared if it changed).
+  final signedIn = container.read(accountServiceProvider).current;
+  if (signedIn != null) await claimFamilyData(database, signedIn.id);
   // Before the first frame: a restart must not flash the parent zone.
   await container.read(kidsModeProvider).load();
   await container.read(onboardingProvider).load();

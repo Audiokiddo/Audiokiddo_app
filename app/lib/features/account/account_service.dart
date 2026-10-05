@@ -22,7 +22,20 @@ class AccountUser {
 /// Why an account action failed, mapped to a message for the parent.
 /// [canceled]: the parent closed the Apple/Google sheet; nothing to show.
 /// [notConfigured]: the sign-in method is not set up for this build yet.
-enum AccountError { invalidEmail, tooManyRequests, wrongCode, offline, server, canceled, notConfigured }
+enum AccountError {
+  invalidEmail,
+  tooManyRequests,
+  wrongCode,
+  wrongPassword,
+  weakPassword,
+  offline,
+  server,
+  canceled,
+  notConfigured,
+}
+
+/// Shortest password accepted (the server's own rule must not be stricter).
+const minPasswordLength = 8;
 
 /// The server's answer about a store purchase (verify-purchase).
 enum ServerVerdict { verified, pending, rejected, retry }
@@ -126,6 +139,13 @@ abstract interface class AccountService {
 
   Future<void> verifyCode(String email, String code);
 
+  /// Sign in with the password the parent set (accounts made with a code have none until they
+  /// set one in the account screen).
+  Future<void> signInWithPassword(String email, String password);
+
+  /// Sets or changes the signed-in parent's password (at least [minPasswordLength] characters).
+  Future<void> setPassword(String password);
+
   /// Sign in with Apple is offered on iOS (App Store guideline 4.8 when Google is offered).
   bool get appleAvailable;
 
@@ -195,6 +215,16 @@ class SupabaseAccountService implements AccountService {
   Future<void> verifyCode(String email, String code) => _guard(
     () => _auth.verifyOTP(type: OtpType.email, email: email.trim().toLowerCase(), token: code.trim()),
   );
+
+  @override
+  Future<void> signInWithPassword(String email, String password) =>
+      _guard(() => _auth.signInWithPassword(email: email.trim().toLowerCase(), password: password));
+
+  @override
+  Future<void> setPassword(String password) => _guard(() async {
+    if (password.length < minPasswordLength) throw const AccountException(AccountError.weakPassword);
+    await _auth.updateUser(UserAttributes(password: password));
+  });
 
   @override
   bool get appleAvailable => Platform.isIOS;
@@ -356,6 +386,8 @@ class SupabaseAccountService implements AccountService {
     'email_address_invalid' || 'validation_failed' => AccountError.invalidEmail,
     'over_email_send_rate_limit' || 'over_request_rate_limit' => AccountError.tooManyRequests,
     'otp_expired' || 'otp_disabled' => AccountError.wrongCode,
+    'invalid_credentials' => AccountError.wrongPassword,
+    'weak_password' || 'same_password' => AccountError.weakPassword,
     _ when e.statusCode == '429' => AccountError.tooManyRequests,
     _ when e.statusCode == '403' || e.statusCode == '401' => AccountError.wrongCode,
     _ => AccountError.server,
@@ -378,6 +410,13 @@ class SignedOutAccountService implements AccountService {
   @override
   Future<void> verifyCode(String email, String code) async =>
       throw const AccountException(AccountError.server);
+
+  @override
+  Future<void> signInWithPassword(String email, String password) async =>
+      throw const AccountException(AccountError.server);
+
+  @override
+  Future<void> setPassword(String password) async => throw const AccountException(AccountError.server);
 
   @override
   bool get appleAvailable => false;
