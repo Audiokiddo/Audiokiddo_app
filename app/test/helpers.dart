@@ -14,6 +14,7 @@ import 'package:audiokiddo/features/games/speech.dart';
 import 'package:audiokiddo/features/kids_mode/kids_home_screen.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
+import 'package:audiokiddo/features/welcome/welcome_controller.dart';
 import 'package:audiokiddo/features/parent_voice/parent_voice.dart';
 import 'package:audiokiddo/features/player/player_providers.dart';
 import 'package:audiokiddo/features/purchases/preview_player.dart';
@@ -75,10 +76,12 @@ List<Override> testOverrides(
   Directory? downloadsDir,
   KidsModeController? kidsMode,
   bool onboardingDone = true,
+  bool welcomeDone = true,
   MediaItem? media,
   SpeechInput? speech,
 }) => [
   onboardingProvider.overrideWithValue(OnboardingController(db, done: onboardingDone)),
+  welcomeProvider.overrideWithValue(WelcomeController(db, done: welcomeDone)),
   databaseProvider.overrideWithValue(db),
   kidsModeProvider.overrideWithValue(kidsMode ?? KidsModeController(db)),
   fileTransferProvider.overrideWithValue(FakeTransfer(downloadsDir ?? Directory.systemTemp)),

@@ -324,3 +324,27 @@ begin
   end;
 end $$;
 reset role;
+
+-- Advanced analytics: completion, replay, next play, retention and conversion.
+do $$
+declare
+  a jsonb;
+begin
+  insert into public.app_events (install_id, event, item_id, props, created_at) values
+    ('44444444-4444-4444-4444-444444444444', 'first_open', null, '{}', now() - interval '9 days'),
+    ('44444444-4444-4444-4444-444444444444', 'play_start', 'magiczny-sklep', '{"free":true}', now() - interval '9 days'),
+    ('44444444-4444-4444-4444-444444444444', 'play_complete', 'magiczny-sklep', '{}', now() - interval '9 days'),
+    ('44444444-4444-4444-4444-444444444444', 'play_start', 'co-to-za-dzwiek', '{"free":true,"next":true}', now() - interval '9 days'),
+    ('44444444-4444-4444-4444-444444444444', 'app_open', null, '{}', now() - interval '8 days'),
+    ('44444444-4444-4444-4444-444444444444', 'play_start', 'magiczny-sklep', '{"free":true,"replay":true}', now() - interval '8 days'),
+    ('44444444-4444-4444-4444-444444444444', 'purchase_done', null, '{}', now() - interval '8 days'),
+    ('55555555-5555-5555-5555-555555555555', 'first_open', null, '{}', now() - interval '9 days'),
+    ('55555555-5555-5555-5555-555555555555', 'welcome_done', null, '{}', now() - interval '9 days');
+  a := public.admin_stats(30) -> 'analytics';
+  assert (a -> 'plays' ->> 'replays')::int = 1, a::text;
+  assert (a -> 'plays' ->> 'next_plays')::int = 1;
+  assert (a -> 'retention' ->> 'd1')::numeric = 50, a -> 'retention';
+  assert (a -> 'conversion' ->> 'paid_after_free')::int = 1, a -> 'conversion';
+  assert (a -> 'onboarding' ->> 'welcome_done')::int = 1;
+  assert jsonb_typeof(a -> 'cohorts') = 'array';
+end $$;

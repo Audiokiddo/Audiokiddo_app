@@ -121,9 +121,10 @@ class _PlayButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final media = ref.watch(currentMediaProvider).value;
     final playing = ref.watch(playbackStateProvider).value?.playing ?? false;
+    final active = media != null && playing;
     return Semantics(
       button: true,
-      label: media == null ? 'Szybki wybór zabawy' : 'Otwórz odtwarzacz: ${media.title}',
+      label: active ? 'Otwórz odtwarzacz: ${media.title}' : 'Co teraz? Szybki wybór zabawy',
       excludeSemantics: true,
       child: GestureDetector(
         // Playing: back to it. Otherwise a choice (with "carry on" on top when something waits).
@@ -134,19 +135,58 @@ class _PlayButton extends ConsumerWidget {
             showQuickPick(context);
           }
         },
-        child: Container(
-          width: 58,
-          height: 58,
-          decoration: BoxDecoration(
-            color: AkBrand.teal,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white.withValues(alpha: .9), width: 3),
-            boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 12, offset: Offset(0, 4))],
-          ),
-          child: Icon(
-            media != null && playing ? Icons.graphic_eq_rounded : Icons.play_arrow_rounded,
-            color: Colors.white,
-            size: 34,
+        // Raised above the bar, warm and round, with a word under it: the one obvious button.
+        child: SizedBox(
+          width: 78,
+          height: _barHeight,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter,
+            children: [
+              Positioned(
+                top: -14,
+                child: Container(
+                  width: 62,
+                  height: 62,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [AkBrand.sun, AkBrand.orange],
+                    ),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                    boxShadow: const [
+                      BoxShadow(color: Color(0x66000000), blurRadius: 14, offset: Offset(0, 5)),
+                    ],
+                  ),
+                  child: Icon(
+                    active ? Icons.graphic_eq_rounded : Icons.play_arrow_rounded,
+                    color: Colors.white,
+                    size: 38,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 6,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    active ? 'Słuchacie' : 'Co teraz?',
+                    maxLines: 1,
+                    textScaler: TextScaler.noScaling,
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 11,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -23,6 +23,7 @@ import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
 import 'store_gateway.dart';
+import 'subscription_value.dart';
 
 /// Shop tab: the subscription, every pack with a free taste, bundles and how to restore.
 /// Parent area; every purchase and link out passes the parental gate.
@@ -70,6 +71,7 @@ class ShopScreen extends ConsumerWidget {
                     itemCount: catalog.items.length,
                     loading: products.isLoading,
                   ),
+                if (!subscribed) SubscriptionValue(catalog: catalog, byId: byId),
                 if (products.hasValue && byId.isEmpty) const _StoreUnavailable(),
                 const RefSection('Pakiety'),
                 for (final pack in catalog.packs)

@@ -143,6 +143,9 @@ class _StatsTabState extends ConsumerState<_StatsTab> {
     'referral_share': 'Wysłane polecenia',
     'promo_tap': 'Kliknięcia promocji',
     'download_pack': 'Pobrane pakiety',
+    'welcome_done': 'Przeszli powitanie',
+    'tour_done': 'Samouczek Szop’ena',
+    'quick_pick': 'Wybór „Co teraz?”',
     'news_alerts_on': 'Włączone powiadomienia',
   };
 
@@ -203,6 +206,10 @@ class _StatsTabState extends ConsumerState<_StatsTab> {
               title: Text(label),
               trailing: Text('$value', style: text.titleMedium),
             ),
+          if (s['analytics'] case final Map a) ...[
+            const Divider(height: 32),
+            _Analytics(a: Map<String, dynamic>.from(a), days: _days),
+          ],
           const Divider(height: 32),
           Text('Zakupy według produktu ($_days dni)', style: text.titleMedium),
           if (purchases.isEmpty)
@@ -231,6 +238,136 @@ class _StatsTabState extends ConsumerState<_StatsTab> {
       );
     },
   );
+}
+
+/// Completions, replays, next plays, how often and how long families come back, conversion
+/// from a free play and how long subscriptions last (admin_analytics on the server).
+class _Analytics extends StatelessWidget {
+  const _Analytics({required this.a, required this.days});
+
+  final Map<String, dynamic> a;
+  final int days;
+
+  static String pct(Object? v) => v == null ? '–' : '$v%';
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    Map<String, dynamic> part(String k) => Map<String, dynamic>.from(a[k] as Map? ?? {});
+    final plays = part('plays');
+    final freq = part('frequency');
+    final ret = part('retention');
+    final conv = part('conversion');
+    final subs = part('subscriptions');
+    final onb = part('onboarding');
+    final top = (a['top_items'] as List? ?? const []).cast<Map>();
+    final cohorts = (a['cohorts'] as List? ?? const []).cast<Map>();
+    Widget row(String label, String value, [String? hint]) => ListTile(
+      dense: true,
+      title: Text(label),
+      subtitle: hint == null ? null : Text(hint),
+      trailing: Text(value, style: text.titleMedium),
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Analityka zaawansowana ($days dni)', style: text.titleLarge),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: [
+            _Tile('Ukończenia zabaw', pct(plays['completion_rate'])),
+            _Tile('Powtórki', pct(plays['replay_rate'])),
+            _Tile('Kolejna zabawa po ukończeniu', pct(plays['next_rate'])),
+            _Tile('Powrót następnego dnia (D1)', pct(ret['d1'])),
+            _Tile('Powrót w 1. tygodniu', pct(ret['week1'])),
+            _Tile('Aktywni w 2. tygodniu', pct(ret['week2'])),
+            _Tile('Aktywni po miesiącu', pct(ret['month1'])),
+            _Tile('Darmowa zabawa → zakup', pct(conv['rate'])),
+            _Tile('Utrzymanie abonamentu', pct(subs['retention'])),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Text('Zabawy', style: text.titleMedium),
+        row('Rozpoczęte / ukończone', '${plays['starts'] ?? 0} / ${plays['completes'] ?? 0}'),
+        row('Powtórki (zabawa znana do końca)', '${plays['replays'] ?? 0}'),
+        row(
+          'Od razu następna zabawa',
+          '${plays['next_plays'] ?? 0}',
+          'Do 10 minut po ukończeniu poprzedniej',
+        ),
+        const SizedBox(height: 12),
+        Text('Częstotliwość', style: text.titleMedium),
+        row('Aktywne urządzenia', '${freq['active_installs'] ?? 0}'),
+        row('Średnio dni z aplikacją', '${freq['avg_active_days'] ?? '–'}'),
+        row('Średnio zabaw na urządzenie', '${freq['avg_plays'] ?? '–'}'),
+        row(
+          'Dni aktywności: 1 / 2–3 / 4–7 / 8+',
+          '${freq['days_1'] ?? 0} / ${freq['days_2_3'] ?? 0} / ${freq['days_4_7'] ?? 0} / ${freq['days_8_plus'] ?? 0}',
+        ),
+        const SizedBox(height: 12),
+        Text('Powroty tygodniowe (kohorty według tygodnia instalacji)', style: text.titleMedium),
+        if (cohorts.isEmpty) const Padding(padding: EdgeInsets.all(8), child: Text('Za mało danych.')),
+        if (cohorts.isNotEmpty)
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Tydzień')),
+                DataColumn(label: Text('Instalacje'), numeric: true),
+                DataColumn(label: Text('Tydz. 1'), numeric: true),
+                DataColumn(label: Text('Tydz. 2'), numeric: true),
+                DataColumn(label: Text('Tydz. 3'), numeric: true),
+                DataColumn(label: Text('Tydz. 4'), numeric: true),
+              ],
+              rows: [
+                for (final c in cohorts)
+                  DataRow(
+                    cells: [
+                      DataCell(Text('${c['week']}')),
+                      DataCell(Text('${c['installs']}')),
+                      for (final k in ['week1', 'week2', 'week3', 'week4']) DataCell(Text(pct(c[k]))),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        const SizedBox(height: 12),
+        Text('Konwersja', style: text.titleMedium),
+        row('Grali za darmo', '${conv['free_players'] ?? 0}'),
+        row('Potem kupili w aplikacji', '${conv['paid_after_free'] ?? 0}'),
+        row(
+          'Oferta → kasa → zakup (urządzenia)',
+          '${conv['paywall_installs'] ?? 0} → ${conv['checkout_installs'] ?? 0} → ${conv['buyer_installs'] ?? 0}',
+        ),
+        for (final e in Map<String, dynamic>.from(conv['paywall_from'] as Map? ?? {}).entries)
+          row('Oferta otwarta z: ${e.key}', '${e.value}'),
+        const SizedBox(height: 12),
+        Text('Abonamenty (od początku)', style: text.titleMedium),
+        row(
+          'Kiedykolwiek / aktywne / zakończone',
+          '${subs['ever'] ?? 0} / ${subs['active'] ?? 0} / ${subs['ended'] ?? 0}',
+        ),
+        row('Aktywne roczne / miesięczne', '${subs['active_yearly'] ?? 0} / ${subs['active_monthly'] ?? 0}'),
+        const SizedBox(height: 12),
+        Text('Pierwsze kroki', style: text.titleMedium),
+        row('Przeszli powitanie', '${onb['welcome_done'] ?? 0}'),
+        row('Obejrzeli samouczek Szop’ena', '${onb['tour_done'] ?? 0}'),
+        row('Użycia „Co teraz?”', '${onb['quick_picks'] ?? 0}'),
+        if (top.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text('Najczęściej włączane zabawy', style: text.titleMedium),
+          for (final t in top)
+            row(
+              '${t['item']}',
+              '${t['starts']}',
+              'Ukończenia ${pct(t['completion_rate'])} · powtórki ${pct(t['replay_rate'])}',
+            ),
+        ],
+      ],
+    );
+  }
 }
 
 class _Tile extends StatelessWidget {

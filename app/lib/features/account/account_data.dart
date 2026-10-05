@@ -2,12 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/storage/database.dart';
 import '../../core/storage/storage_providers.dart';
+import '../access/access_controller.dart';
 import '../diploma/diploma.dart';
 import '../discovery/discovery_model.dart';
 import '../family/family.dart' hide progressProvider;
 import '../home/first_steps.dart';
 import '../kids_mode/kids_mode_controller.dart';
 import '../personal/personal_repository.dart';
+import '../welcome/welcome_controller.dart';
 
 const _ownerKey = 'account_owner';
 
@@ -26,6 +28,8 @@ const familyDataKeys = [
   'szopen_bubbles',
   'reminders',
   'alerts_opt_in',
+  'access_state',
+  'welcome_done',
 ];
 const familyDataPrefixes = ['diplomas_', 'game_resume:', 'lord_'];
 
@@ -56,6 +60,9 @@ Future<bool> claimFamilyData(AppDatabase db, String userId) async {
 /// [claimFamilyData] plus fresh state on screen (and kids mode off) when data was cleared.
 Future<void> claimFamilyDataFor(WidgetRef ref, String userId) async {
   if (!await claimFamilyData(ref.read(databaseProvider), userId)) return;
+  // A new family on this phone gets its own welcome.
+  await ref.read(welcomeProvider).load();
+  ref.invalidate(accessProvider);
   final kids = ref.read(kidsModeProvider);
   if (kids.active) await kids.exit();
   ref

@@ -54,7 +54,7 @@ class HomeScreen extends ConsumerWidget {
               Row(
                 children: [
                   const Expanded(
-                    child: Align(alignment: Alignment.centerLeft, child: AudioKiddoLogo(height: 40)),
+                    child: Align(alignment: Alignment.centerLeft, child: AudioKiddoLogo(height: 30)),
                   ),
                   IconButton(
                     tooltip: 'Szukaj zabawy',

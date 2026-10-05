@@ -16,6 +16,8 @@ import '../games/game_controller.dart';
 import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
 import 'today.dart';
+import '../insights/events.dart';
+import '../../core/widgets/szop.dart';
 
 /// "Mam chwilę": three taps (where, how long, mood) and one activity to start. Parents
 /// should not have to browse a catalogue in a waiting room.
@@ -127,6 +129,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
 
   /// Closes the sheet, then acts from the screen below.
   void _go(Future<Object?> Function() action) {
+    ref.read(eventSinkProvider).track(AppEvent.quickPick, props: {'place': _place.name, 'minutes': _minutes});
     Navigator.of(context).pop();
     unawaited(action());
   }
@@ -154,37 +157,6 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
             canPlay: (i) => ref.watch(canPlayProvider(i)),
             playedToday: playedToday,
           );
-
-    Widget group<T>(
-      String label,
-      List<T> values,
-      T selected,
-      String Function(T) name,
-      void Function(T) pick,
-    ) => Padding(
-      padding: const EdgeInsets.only(top: AkSpace.m),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: text.titleMedium),
-          const SizedBox(height: AkSpace.xs),
-          Wrap(
-            spacing: AkSpace.s,
-            runSpacing: AkSpace.s,
-            children: [
-              for (final v in values)
-                ChoiceChip(
-                  label: Text(name(v)),
-                  selected: v == selected,
-                  showCheckmark: false,
-                  labelStyle: selectableChipLabel(context, selected: v == selected),
-                  onSelected: (_) => setState(() => pick(v)),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
 
     final top = picks.firstOrNull;
     return SafeArea(
@@ -222,74 +194,148 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
                   ),
                 ),
               ),
-            Text(l10n.pickTitle, style: text.headlineSmall),
-            group(
-              l10n.pickWhere,
-              PickPlace.values,
-              _place,
-              (p) => switch (p) {
-                PickPlace.home => l10n.pickHome,
-                PickPlace.car => l10n.pickCar,
-                PickPlace.out => l10n.pickOut,
-                PickPlace.bed => l10n.pickBed,
-              },
-              (p) => _place = p,
+            // Szop’en asks one question; the answer is four big pictures.
+            Row(
+              children: [
+                SzopSticker(_place == PickPlace.bed ? SzopPose.zmeczony : SzopPose.prosi, height: 64),
+                const SizedBox(width: AkSpace.s),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.pickTitle, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+                      Text(l10n.pickWhere, style: text.bodyLarge?.copyWith(color: context.palette.inkMuted)),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            group(l10n.pickHowLong, pickMinutes, _minutes, l10n.tripMinutes, (m) => _minutes = m),
-            group(
-              l10n.pickMood,
-              PickMood.values,
-              _mood,
-              (m) => switch (m) {
-                PickMood.move => l10n.pickMove,
-                PickMood.calm => l10n.pickCalm,
-              },
-              (m) => _mood = m,
+            const SizedBox(height: AkSpace.m),
+            GridView.count(
+              crossAxisCount: 4,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: AkSpace.s,
+              childAspectRatio: .82,
+              children: [
+                for (final place in PickPlace.values)
+                  _PlaceTile(
+                    place: place,
+                    label: switch (place) {
+                      PickPlace.home => l10n.pickHome,
+                      PickPlace.car => l10n.pickCar,
+                      PickPlace.out => l10n.pickOut,
+                      PickPlace.bed => l10n.pickBed,
+                    },
+                    selected: place == _place,
+                    onTap: () => setState(() {
+                      _place = place;
+                      _mood = place == PickPlace.bed ? PickMood.calm : PickMood.move;
+                    }),
+                  ),
+              ],
             ),
-            const SizedBox(height: AkSpace.l),
+            const SizedBox(height: AkSpace.m),
+            Row(
+              children: [
+                const Icon(Icons.timer_outlined, size: 20),
+                const SizedBox(width: AkSpace.xs),
+                for (final m in pickMinutes)
+                  Padding(
+                    padding: const EdgeInsets.only(right: AkSpace.xs),
+                    child: ChoiceChip(
+                      label: Text(l10n.tripMinutes(m)),
+                      selected: m == _minutes,
+                      showCheckmark: false,
+                      labelStyle: selectableChipLabel(context, selected: m == _minutes),
+                      onSelected: (_) => setState(() => _minutes = m),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: AkSpace.m),
             if (top == null)
               Text(l10n.pickNothing, style: text.bodyLarge)
             else ...[
-              Text(l10n.pickResult, style: text.labelLarge?.copyWith(color: context.palette.inkMuted)),
-              const SizedBox(height: AkSpace.s),
-              Row(
-                children: [
-                  ContentCover(item: top, pack: catalog!.pack(top.packId ?? ''), size: 72),
-                  const SizedBox(width: AkSpace.m),
-                  Expanded(
+              // The answer: one big card, start in one tap.
+              Material(
+                color: AkBrand.teal.withValues(alpha: .14),
+                borderRadius: BorderRadius.circular(24),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(24),
+                  onTap: () => _go(() => startItem(widget.host, top)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AkSpace.m),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(top.title, style: text.titleLarge),
-                        Text(
-                          '${l10n.duration(top.durationSec)} · ${l10n.kind(top.kind)}',
-                          style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
+                        Text(l10n.pickResult, style: text.labelLarge?.copyWith(color: AkBrand.tealDeep)),
+                        const SizedBox(height: AkSpace.s),
+                        Row(
+                          children: [
+                            ContentCover(item: top, pack: catalog!.pack(top.packId ?? ''), size: 88),
+                            const SizedBox(width: AkSpace.m),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    top.title,
+                                    style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                                  ),
+                                  Text(
+                                    '${l10n.duration(top.durationSec)} · ${l10n.kind(top.kind)}',
+                                    style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AkSpace.m),
+                        FilledButton.icon(
+                          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(54)),
+                          onPressed: () => _go(() => startItem(widget.host, top)),
+                          icon: const Icon(Icons.play_arrow_rounded, size: 30),
+                          label: Text(l10n.pickStart),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: AkSpace.m),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: () => _go(() => startItem(widget.host, top)),
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: Text(l10n.pickStart),
                 ),
               ),
               if (picks.length > 1) ...[
-                const SizedBox(height: AkSpace.s),
+                const SizedBox(height: AkSpace.m),
                 Text(l10n.pickOr, style: text.labelLarge?.copyWith(color: context.palette.inkMuted)),
-                for (final alt in picks.skip(1))
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(alt.title),
-                    subtitle: Text(l10n.duration(alt.durationSec)),
-                    trailing: const Icon(Icons.play_circle_outline_rounded),
-                    onTap: () => _go(() => startItem(widget.host, alt)),
-                  ),
+                const SizedBox(height: AkSpace.xs),
+                Row(
+                  children: [
+                    for (final alt in picks.skip(1))
+                      Expanded(
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => _go(() => startItem(widget.host, alt)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(AkSpace.xs),
+                            child: Row(
+                              children: [
+                                ContentCover(item: alt, pack: catalog.pack(alt.packId ?? ''), size: 48),
+                                const SizedBox(width: AkSpace.s),
+                                Expanded(
+                                  child: Text(
+                                    alt.title,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ],
             ],
             // A whole ride or the evening ritual is one tap further.
@@ -300,6 +346,59 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
                 icon: Icon(_place == PickPlace.car ? Icons.directions_car_rounded : Icons.bedtime_rounded),
                 label: Text(_place == PickPlace.car ? l10n.pickWholeTrip : l10n.pickWholeRitual),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One big picture answer to "Gdzie jesteście?".
+class _PlaceTile extends StatelessWidget {
+  const _PlaceTile({required this.place, required this.label, required this.selected, required this.onTap});
+
+  final PickPlace place;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, color) = switch (place) {
+      PickPlace.home => (Icons.home_rounded, AkBrand.teal),
+      PickPlace.car => (Icons.directions_car_rounded, AkBrand.orange),
+      PickPlace.out => (Icons.park_rounded, const Color(0xFF2E9D57)),
+      PickPlace.bed => (Icons.bedtime_rounded, AkBrand.lavenderDeep),
+    };
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Column(
+          children: [
+            Expanded(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: selected ? color : color.withValues(alpha: .14),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: selected ? color : Colors.transparent, width: 3),
+                ),
+                child: Icon(icon, size: 34, color: selected ? Colors.white : color),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelLarge
+                  ?.copyWith(fontWeight: selected ? FontWeight.w800 : FontWeight.w500),
+            ),
           ],
         ),
       ),

@@ -7,6 +7,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../insights/events.dart';
+
 import '../../core/storage/database.dart';
 import '../../core/storage/storage_providers.dart';
 import '../downloads/download_providers.dart';
@@ -133,6 +135,12 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       },
     )..setSpeechAvailable(available: _speechUsable);
     state = GameUiState(phase: GamePhase.playing, itemId: item.id, title: item.title);
+    final played = ref.read(familyProvider).value?.results.any((r) => r.itemId == item.id) ?? false;
+    ref.track(
+      AppEvent.playStart,
+      itemId: item.id,
+      props: {'free': item.isFree, 'pack': ?item.packId, 'game': true, if (played) 'replay': true},
+    );
     try {
       var command = runner.start();
       while (generation == _generation) {
@@ -148,6 +156,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         if (event == null) return;
         if (command is Finish) {
           await _stopMicrophone();
+          ref.track(AppEvent.playComplete, itemId: item.id, props: const {'game': true});
           // Games that keep a `score` variable report correct answers to the parent.
           await ref
               .read(familyProvider.notifier)

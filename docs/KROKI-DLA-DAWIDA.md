@@ -123,7 +123,7 @@ Zrobimy to razem, po krokach 3–5:
 - ręcznie w obu panelach (ok. 2 h);
 - albo napiszę skrypt, który **Ty** uruchomisz w swoim terminalu z kluczem API na dysku. Klucz nie trafi do rozmowy.
 
-Ustawienia subskrypcji: grupa „AudioKiddo”, plany 24,99 zł/mies. i 149,99 zł/rok, **oferta wstępna 7 dni za darmo** na obu. Kraj: Polska.
+Ustawienia subskrypcji: grupa „AudioKiddo”, plany 24,99 zł/mies. i 239,88 zł/rok (19,99 zł miesięcznie), **oferta wstępna 7 dni za darmo** na obu. Kraj: Polska.
 
 **Apple: klucz `.p8` nie jest już potrzebny.** Serwer sprawdza podpis Apple na samym zakupie (łańcuch certyfikatów aż do głównego certyfikatu Apple), bez logowania do API Apple.
 1. App Store Connect → Twoja aplikacja → Informacje o aplikacji → **App Store Server Notifications**: wersja 2, ten sam adres dla produkcji i sandboxa:
@@ -266,6 +266,16 @@ Opis: `docs/DOSTEP-Z-SKLEPU.md`. Do wdrożenia przez Ciebie: `supabase db push` 
 3. Supabase → Authentication → Sign In / Providers → **Apple**: włącz, w polu *Client IDs* wpisz `pl.audiokiddo.app`. Dla samej aplikacji iOS klucz `.p8` nie jest potrzebny.
 
 **Widżet na ekranie telefonu (iOS):** aplikacja ma drugi element do podpisania, `pl.audiokiddo.app.widget`. Oba (Runner i widżet) mają funkcję **App Groups** z grupą `group.pl.audiokiddo.app` (widżet czyta z niej postęp dziecka); przy automatycznym podpisywaniu Xcode zarejestruje ją sam, wystarczy potwierdzić. Po dodaniu konta w Xcode (Settings → Accounts) zaznacz w Runner i w **AudioKiddoWidget** → Signing & Capabilities → *Automatically manage signing* i wybierz ten sam zespół. Xcode sam założy identyfikator.
+
+## Krok 17. Analityka zaawansowana (2 min)
+
+W terminalu, w folderze projektu:
+
+```
+supabase db push
+```
+
+To wgrywa migrację `20261007000001_analytics.sql`: nowe zdarzenia (powitanie, samouczek Szop’ena, „Co teraz?”) i liczby w Studio → Serwer → Statystyki: ukończenia, powtórki, przejście do kolejnej zabawy, częstotliwość, powroty po 1 dniu, tygodniu i miesiącu, kohorty tygodniowe, konwersja z darmowej zabawy na zakup i utrzymanie abonamentu. Funkcji nie trzeba wgrywać ponownie. **Dopóki tego nie zrobisz, nowe zdarzenia z aplikacji serwer odrzuca** (reszta działa normalnie).
 
 ---
 

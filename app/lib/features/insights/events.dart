@@ -25,7 +25,10 @@ enum AppEvent {
   promoTap('promo_tap'),
   downloadPack('download_pack'),
   reminderOn('reminder_on'),
-  newsAlertsOn('news_alerts_on');
+  newsAlertsOn('news_alerts_on'),
+  welcomeDone('welcome_done'),
+  tourDone('tour_done'),
+  quickPick('quick_pick');
 
   const AppEvent(this.wire);
   final String wire;

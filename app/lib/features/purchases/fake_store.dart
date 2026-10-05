@@ -21,7 +21,7 @@ class FakeStoreGateway implements StoreGateway {
 
   static const _prices = {
     'pl.audiokiddo.sub.monthly': '24,99 zł',
-    'pl.audiokiddo.sub.yearly': '149,99 zł',
+    'pl.audiokiddo.sub.yearly': '239,88 zł',
     'pl.audiokiddo.pack.wyobraznia': '49,99 zł',
     'pl.audiokiddo.pack.slowa_i_wiedza': '49,99 zł',
     'pl.audiokiddo.pack.detektyw': '69,99 zł',

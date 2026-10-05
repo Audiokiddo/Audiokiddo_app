@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -5,14 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/kiddo.dart';
 import '../../l10n/app_localizations.dart';
-import '../account/account_service.dart';
-import '../account/sign_in.dart';
-import '../family/child_quiz.dart';
-import '../family/family.dart';
 import '../discovery/reference_widgets.dart';
-import '../kids_mode/kids_mode_controller.dart';
 import '../parental_gate/parental_gate.dart';
-import '../reminders/reminder_offer.dart';
 import 'onboarding_controller.dart';
 import '../games/microphone.dart';
 import '../games/speech.dart';
@@ -34,7 +30,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   /// Kiddo's magic way in, the parent pages, then the short parent quiz and reminders.
   _Stage _stage = _Stage.intro;
 
-  static const _pageCount = 3;
+  static const _pageCount = 2;
 
   @override
   void dispose() {
@@ -74,21 +70,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _next() => _pages.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
 
-  /// End of the pages: the quiz next (skipping the pages skips the quiz too).
-  void _finish({bool skipAll = false}) {
-    if (skipAll) {
-      _complete();
-    } else {
-      setState(() => _stage = _Stage.quiz);
-    }
-  }
-
-  Future<void> _complete() async {
-    // Kids mode starts at the first child's age.
-    final first = ref.read(familyProvider).value?.children.firstOrNull;
-    if (first != null) await ref.read(kidsModeProvider).setPreferredAge(first.age);
-    await ref.read(onboardingProvider).complete();
-  }
+  /// End of the pages: sign-in next; the child, theme and reminders come in the family's
+  /// welcome after it.
+  void _finish({bool skipAll = false}) => unawaited(ref.read(onboardingProvider).complete());
 
   Future<void> _openLegal(Uri url) async {
     if (await showParentalGate(context)) await launchUrl(url);
@@ -99,7 +83,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final palette = context.palette;
-    final user = ref.watch(accountUserProvider).value;
     final last = _page == _pageCount - 1;
 
     switch (_stage) {
@@ -141,10 +124,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ),
           ),
         );
-      case _Stage.quiz:
-        return ChildQuiz(onDone: () => setState(() => _stage = _Stage.reminders));
-      case _Stage.reminders:
-        return ReminderOffer(onDone: _complete);
       case _Stage.pages:
         break;
     }
@@ -236,29 +215,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ),
                     ],
                   ),
-                  _Page(
-                    icon: Icons.person_rounded,
-                    iconColor: palette.primary,
-                    title: l10n.onboardingAccountTitle,
-                    subtitle: l10n.onboardingAccountBody,
-                    children: [
-                      if (user == null)
-                        const SignInOptions(askAdultFirst: true)
-                      else
-                        _Feature(
-                          icon: Icons.check_rounded,
-                          color: const Color(0xFF2E9D57),
-                          title: l10n.onboardingAccountDone,
-                          body: user.email,
-                        ),
-                      const SizedBox(height: AkSpace.m),
-                      Text(
-                        l10n.signInFooter,
-                        style: text.bodySmall?.copyWith(color: palette.inkMuted),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -287,25 +243,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Without an account the sign-in buttons are the main choice; carrying on is quiet.
-                  if (last && user == null)
-                    OutlinedButton(
-                      onPressed: _finish,
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(52),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      ),
-                      child: Text(l10n.onboardingStartWithoutAccount),
-                    )
-                  else
-                    FilledButton(
-                      onPressed: last ? _finish : _next,
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(52),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      ),
-                      child: Text(last ? l10n.onboardingStart : l10n.onboardingNext),
+                  FilledButton(
+                    onPressed: last ? _finish : _next,
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(52),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
+                    child: Text(last ? l10n.onboardingStart : l10n.onboardingNext),
+                  ),
                   // Keeps the layout steady on the last page, where skipping makes no sense.
                   Visibility.maintain(
                     visible: !last,
@@ -433,4 +378,4 @@ class _Feature extends StatelessWidget {
 Color symbolColorOn(Color tile) =>
     ThemeData.estimateBrightnessForColor(tile) == Brightness.dark ? Colors.white : AkBrand.ink;
 
-enum _Stage { intro, pages, quiz, reminders }
+enum _Stage { intro, pages }

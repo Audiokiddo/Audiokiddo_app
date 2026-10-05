@@ -21,6 +21,9 @@ import '../features/kids_mode/kids_home_screen.dart';
 import '../features/kids_mode/kids_mode_controller.dart';
 import '../features/onboarding/onboarding_controller.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/welcome/szop_tour.dart';
+import '../features/welcome/welcome_controller.dart';
+import '../features/welcome/welcome_screen.dart';
 import '../features/diploma/diploma_screen.dart';
 import '../features/discovery/parent_screens.dart';
 import '../features/discovery/rescue_screen.dart';
@@ -54,11 +57,14 @@ String? appRedirect(
   OnboardingController onboarding,
   String location, {
   SessionGate? session,
+  WelcomeController? welcome,
 }) {
   if (!onboarding.done) return location == '/powitanie' ? null : '/powitanie';
   // No signed-in parent: nothing but the sign-in screen (every route, back gestures included).
   if (session?.locked ?? false) return location == '/logowanie' ? null : '/logowanie';
-  if (location == '/logowanie') return kids.active ? '/dziecko' : '/';
+  // The family's welcome after its first sign-in (free plays, theme, the child).
+  if (welcome != null && !welcome.done && !kids.active) return location == '/witaj' ? null : '/witaj';
+  if (location == '/logowanie' || location == '/witaj') return kids.active ? '/dziecko' : '/';
   if (location == '/powitanie') return kids.active ? '/dziecko' : '/';
   return kidsModeRedirect(kids, location);
 }
@@ -67,10 +73,12 @@ GoRouter buildRouter(
   KidsModeController kids,
   OnboardingController onboarding, [
   SessionGate? session,
+  WelcomeController? welcome,
 ]) => GoRouter(
   initialLocation: !onboarding.done ? '/powitanie' : (kids.active ? '/dziecko' : '/'),
-  refreshListenable: Listenable.merge([kids, onboarding, ?session]),
-  redirect: (context, state) => appRedirect(kids, onboarding, state.matchedLocation, session: session),
+  refreshListenable: Listenable.merge([kids, onboarding, ?session, ?welcome]),
+  redirect: (context, state) =>
+      appRedirect(kids, onboarding, state.matchedLocation, session: session, welcome: welcome),
   // An unknown or outdated link (old widget, typo) opens Start instead of an error page.
   onException: (context, state, router) => router.go('/'),
   routes: [
@@ -78,6 +86,10 @@ GoRouter buildRouter(
     GoRoute(
       path: '/logowanie',
       pageBuilder: (context, state) => NoTransitionPage(child: const SignInScreen()),
+    ),
+    GoRoute(
+      path: '/witaj',
+      pageBuilder: (context, state) => NoTransitionPage(child: const WelcomeScreen()),
     ),
     GoRoute(path: '/dziecko', pageBuilder: (context, state) => swipePage(state, const KidsHomeScreen())),
     GoRoute(path: '/dziecko/graj', pageBuilder: (context, state) => swipePage(state, const NoLookScreen())),
@@ -208,17 +220,27 @@ class _ParentShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final child = ref.watch(familyProvider).value?.active;
     final todayDone = child == null ? null : ref.watch(planPositionProvider(child.id))?.todayDone;
-    return Scaffold(
-      body: RemindersKeeper(todayDone: todayDone, child: shell),
-      bottomNavigationBar: BottomDock(
-        current: shell.currentIndex,
-        onTab: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
-        tabs: const [
-          (icon: Icons.home_outlined, selected: Icons.home_rounded, label: 'Start'),
-          (icon: Icons.auto_stories_outlined, selected: Icons.auto_stories_rounded, label: 'Biblioteka'),
-          (icon: Icons.shopping_bag_outlined, selected: Icons.shopping_bag_rounded, label: 'Sklep'),
-          (icon: Icons.menu_rounded, selected: Icons.menu_rounded, label: 'Więcej'),
+    final welcome = ref.watch(welcomeProvider);
+    return ListenableBuilder(
+      listenable: welcome,
+      builder: (context, scaffold) => Stack(
+        children: [
+          scaffold!,
+          if (welcome.tourPending) const Positioned.fill(child: SzopTour(barHeight: 68)),
         ],
+      ),
+      child: Scaffold(
+        body: RemindersKeeper(todayDone: todayDone, child: shell),
+        bottomNavigationBar: BottomDock(
+          current: shell.currentIndex,
+          onTab: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
+          tabs: const [
+            (icon: Icons.home_outlined, selected: Icons.home_rounded, label: 'Start'),
+            (icon: Icons.auto_stories_outlined, selected: Icons.auto_stories_rounded, label: 'Biblioteka'),
+            (icon: Icons.shopping_bag_outlined, selected: Icons.shopping_bag_rounded, label: 'Sklep'),
+            (icon: Icons.menu_rounded, selected: Icons.menu_rounded, label: 'Więcej'),
+          ],
+        ),
       ),
     );
   }

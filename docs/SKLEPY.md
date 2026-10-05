@@ -1,6 +1,6 @@
 # AudioKiddo: materiały do formularzy App Store i Google Play
 
-Stan: 6 października 2026, wersja aplikacji 0.2.0 (build 2). Teksty i odpowiedzi do wklejenia przy zakładaniu aplikacji w App Store Connect i Play Console. Przed wysłaniem do recenzji trzeba porównać je z aktualnym formularzem, bo sklepy zmieniają pytania.
+Stan: 5 października 2026 (ceny: 24,99 zł miesięcznie, 239,88 zł rocznie), wersja aplikacji 0.2.0 (build 2). Teksty i odpowiedzi do wklejenia przy zakładaniu aplikacji w App Store Connect i Play Console. Przed wysłaniem do recenzji trzeba porównać je z aktualnym formularzem, bo sklepy zmieniają pytania.
 
 Adresy stron (gotowe fragmenty HTML w `docs/strona/sklepy/`, do wklejenia w WordPressie):
 
@@ -59,7 +59,7 @@ Pytanie „Czy Ty lub partnerzy zbieracie dane z tej aplikacji?”: **Tak**.
 | Informacje kontaktowe: adres e-mail (tylko przy założeniu konta) | Tak | Nie | Działanie aplikacji |
 | Identyfikatory: identyfikator użytkownika (losowy, także konto gościa) | Tak | Nie | Działanie aplikacji |
 | Zakupy: historia zakupów | Tak | Nie | Działanie aplikacji |
-| Dane użycia: interakcja z produktem (start i koniec zabawy, wejście w ofertę, zakup; własny serwer) | Tak | Nie | Analityka |
+| Dane użycia: interakcja z produktem (start, koniec i powtórka zabawy, pakiet, pierwsze kroki, wejście w ofertę, zakup; własny serwer) | Tak | Nie | Analityka |
 | Dźwięk (mikrofon) | **Nie zbierane**: rozpoznawanie w telefonie, nic nie jest nagrywane ani wysyłane | | |
 | Lokalizacja, kontakty, zdjęcia, diagnostyka, dane reklamowe | Nie zbierane | | |
 

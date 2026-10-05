@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -6,12 +8,15 @@ import 'package:go_router/go_router.dart';
 
 import 'core/router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/storage/storage_providers.dart';
 import 'core/theme/appearance.dart';
 import 'features/account/session_gate.dart';
 import 'features/home/home_widget_sync.dart';
+import 'features/personal/app_icon_screen.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
 import 'features/onboarding/onboarding_controller.dart';
 import 'features/player/now_playing_pill.dart';
+import 'features/welcome/welcome_controller.dart';
 import 'l10n/app_localizations.dart';
 
 class AudioKiddoApp extends ConsumerStatefulWidget {
@@ -27,7 +32,12 @@ class AudioKiddoApp extends ConsumerStatefulWidget {
 class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
   late final GoRouter _router =
       widget.router ??
-      buildRouter(ref.read(kidsModeProvider), ref.read(onboardingProvider), ref.read(sessionGateProvider));
+      buildRouter(
+        ref.read(kidsModeProvider),
+        ref.read(onboardingProvider),
+        ref.read(sessionGateProvider),
+        ref.read(welcomeProvider),
+      );
 
   static const _launch = MethodChannel('pl.audiokiddo/launch');
 
@@ -43,7 +53,11 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
       (_, data) => ref.read(homeWidgetSinkProvider).push(data),
       fireImmediately: true,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) => _openLaunchRoute());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _openLaunchRoute();
+      // Szop’en's weekly mood on the home screen, only if the parent chose it.
+      unawaited(maybeRotateIcon(ref.read(databaseProvider), DateTime.now()));
+    });
   }
 
   @override

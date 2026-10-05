@@ -79,7 +79,7 @@ Identyfikatory muszą być **identyczne** w App Store Connect, Play Console i w 
 | ID produktu | Typ | Nazwa | Cena |
 |---|---|---|---|
 | `pl.audiokiddo.sub.monthly` | Subskrypcja auto-odnawialna (grupa „AudioKiddo”) | AudioKiddo miesięcznie | 24,99 zł, oferta wstępna: 7 dni za darmo |
-| `pl.audiokiddo.sub.yearly` | Subskrypcja auto-odnawialna (grupa „AudioKiddo”) | AudioKiddo rocznie | 149,99 zł, oferta wstępna: 7 dni za darmo |
+| `pl.audiokiddo.sub.yearly` | Subskrypcja auto-odnawialna (grupa „AudioKiddo”) | AudioKiddo rocznie | 239,88 zł (19,99 zł miesięcznie), oferta wstępna: 7 dni za darmo |
 | `pl.audiokiddo.pack.wyobraznia` | Jednorazowy (non-consumable) | Pakiet Wyobraźnia | 49,99 zł |
 | `pl.audiokiddo.pack.slowa_i_wiedza` | Jednorazowy (non-consumable) | Pakiet Słowa i Wiedza | 49,99 zł |
 | `pl.audiokiddo.pack.detektyw` | Jednorazowy (non-consumable) | Pakiet Detektyw | 69,99 zł |

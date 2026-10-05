@@ -18,6 +18,7 @@ import 'features/promotions/promotions.dart';
 import 'features/downloads/download_providers.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
 import 'features/onboarding/onboarding_controller.dart';
+import 'features/welcome/welcome_controller.dart';
 import 'features/player/audio_handler.dart';
 import 'features/player/car_library.dart';
 import 'features/player/playback_controller.dart';
@@ -63,6 +64,7 @@ Future<void> main() async {
   // Before the first frame: a restart must not flash the parent zone.
   await container.read(kidsModeProvider).load();
   await container.read(onboardingProvider).load();
+  await container.read(welcomeProvider).load();
   // Resume interrupted downloads and start recording listening progress.
   await container.read(downloadManagerProvider).start();
   container.read(playbackControllerProvider);

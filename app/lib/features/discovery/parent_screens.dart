@@ -18,6 +18,7 @@ import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
+import '../welcome/welcome_controller.dart';
 import '../../core/router.dart';
 
 class MoreScreen extends ConsumerWidget {
@@ -87,6 +88,16 @@ class MoreScreen extends ConsumerWidget {
           subtitle: const Text('Przy powrocie i osiągnięciach. Krótko, bez dźwięku.'),
           value: !(ref.watch(discoveryProvider).value?.quiet ?? false),
           onChanged: (v) => ref.read(discoveryProvider.notifier).quiet(!v),
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.tour_rounded, color: AkBrand.tealDeep),
+          title: const Text('Szop’en pokaże, gdzie co jest'),
+          subtitle: const Text('Krótki samouczek po aplikacji, jeszcze raz'),
+          onTap: () {
+            context.go('/');
+            ref.read(welcomeProvider).startTour();
+          },
         ),
         const RefSection('Pomóż nam rosnąć'),
         ListTile(

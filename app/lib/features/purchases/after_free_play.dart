@@ -86,11 +86,70 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
               ],
             ),
             const SizedBox(height: 14),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: AkBrand.tealDeep,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(52),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(18)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Najlepiej w abonamencie',
+                    style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                  ),
+                  Text(
+                    '$subscriptionPromise.${yearly?.freeTrialDays == null ? '' : ' Pierwsze ${yearly!.freeTrialDays} dni za darmo.'}',
+                    style: text.bodySmall?.copyWith(color: ink),
+                  ),
+                  if (yearly?.rawPrice != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        'Przy płatności rocznej tylko ${formatMoney(yearly!.rawPrice! / 12, yearly.currencyCode)} miesięcznie.',
+                        style: text.bodySmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  const SizedBox(height: 10),
+                  if (yearly != null)
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: ink,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                      onPressed: busy != null ? null : () => buyWithGate(context, ref, yearly),
+                      child: Text('Rocznie ${yearly.price}'),
+                    ),
+                  if (monthly != null) ...[
+                    const SizedBox(height: 8),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: ink,
+                        side: const BorderSide(color: ink),
+                      ),
+                      onPressed: busy != null ? null : () => buyWithGate(context, ref, monthly),
+                      child: Text('Miesięcznie ${monthly.price}'),
+                    ),
+                  ],
+                  if (yearly == null && monthly == null)
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: ink,
+                        side: const BorderSide(color: ink),
+                      ),
+                      onPressed: () => openPack(context, pack.id),
+                      child: const Text('Zobacz ofertę'),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text('Albo tylko ten pakiet, na zawsze:', style: text.bodySmall?.copyWith(color: ink)),
+            const SizedBox(height: 6),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AkBrand.tealDeep,
+                side: const BorderSide(color: AkBrand.tealDeep),
+                minimumSize: const Size.fromHeight(48),
               ),
               onPressed: packProduct == null
                   ? () => openPack(context, pack.id)
@@ -98,65 +157,13 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
                   ? null
                   : () => buyWithGate(context, ref, packProduct),
               child: busy == packProduct?.id
-                  ? const SizedBox.square(
-                      dimension: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                    )
+                  ? const SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
                   : Text(
                       packProduct == null
                           ? 'Zobacz pakiet ${pack.title}'
                           : 'Odblokuj pakiet ${pack.title} · ${packProduct.price}',
                       textAlign: TextAlign.center,
                     ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(18)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Albo abonament',
-                    style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
-                  ),
-                  Text(
-                    '$subscriptionPromise.${yearly?.freeTrialDays == null ? '' : ' Pierwsze ${yearly!.freeTrialDays} dni za darmo.'}',
-                    style: text.bodySmall?.copyWith(color: ink),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      if (yearly != null)
-                        FilledButton(
-                          style: FilledButton.styleFrom(backgroundColor: ink, foregroundColor: Colors.white),
-                          onPressed: busy != null ? null : () => buyWithGate(context, ref, yearly),
-                          child: Text('Rocznie ${yearly.price}'),
-                        ),
-                      if (monthly != null)
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: ink,
-                            side: const BorderSide(color: ink),
-                          ),
-                          onPressed: busy != null ? null : () => buyWithGate(context, ref, monthly),
-                          child: Text('Miesięcznie ${monthly.price}'),
-                        ),
-                      if (yearly == null && monthly == null)
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: ink,
-                            side: const BorderSide(color: ink),
-                          ),
-                          onPressed: () => openPack(context, pack.id),
-                          child: const Text('Zobacz ofertę'),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
             ),
           ],
         ),

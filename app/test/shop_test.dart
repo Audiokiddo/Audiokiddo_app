@@ -38,7 +38,7 @@ void main() {
 
   test('yearly discount is rounded down, never promised when unknown', () {
     final monthly = product(ProductIds.monthly, 24.99);
-    expect(yearlyDiscountPercent(product(ProductIds.yearly, 149.99), monthly), 49);
+    expect(yearlyDiscountPercent(product(ProductIds.yearly, 239.88), monthly), 20);
     expect(yearlyDiscountPercent(product(ProductIds.yearly, 400), monthly), isNull);
   });
 
@@ -93,7 +93,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Wszystko w jednym'), findsOneWidget);
       expect(find.text('7 dni za darmo'), findsOneWidget);
-      expect(find.textContaining('taniej o 49%'), findsOneWidget);
+      expect(find.textContaining('taniej o 20%'), findsWidgets);
       await tester.scrollUntilVisible(find.text('Detektyw'), 200, scrollable: mainScroll);
       expect(find.textContaining('Za darmo:'), findsWidgets);
       await tester.scrollUntilVisible(find.textContaining('taniej o 9,99'), 200, scrollable: mainScroll);

@@ -216,7 +216,7 @@ void main() {
       expect(find.textContaining('7 dni za darmo, zanim dojedziemy'), findsOneWidget, reason: 'the car gag');
       await tester.drag(mainScroll, const Offset(0, -350));
       await tester.pumpAndSettle();
-      expect(find.text('7 dni za darmo, potem 149,99 zł / rok'), findsOneWidget);
+      expect(find.text('7 dni za darmo, potem 239,88 zł / rok'), findsOneWidget);
       expect(find.text('49,99 zł'), findsWidgets);
       await tester.scrollUntilVisible(
         find.textContaining('odnawia się automatycznie'),

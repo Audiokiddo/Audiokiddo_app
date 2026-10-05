@@ -36,6 +36,9 @@ class PlaybackController {
   final _subscriptions = <StreamSubscription<void>>[];
   late final Timer _ticker;
 
+  /// The play heard to the end most recently, and when.
+  (String, DateTime)? _lastCompleted;
+
   AkAudioHandler get _handler => _ref.read(audioHandlerProvider);
 
   Future<void> start(ContentItem item, {required String album, bool fromStart = false}) async {
@@ -50,7 +53,22 @@ class PlaybackController {
       throw const PlaybackSourceUnavailable();
     }
     final progress = await _ref.read(personalRepositoryProvider).progress(item.id);
-    _ref.read(eventSinkProvider).track(AppEvent.playStart, itemId: item.id, props: {'free': item.isFree});
+    // For the statistics: a replay (heard to the end before) and moving straight on to the next
+    // play after finishing one.
+    final last = _lastCompleted;
+    final next = last != null && last.$1 != item.id && DateTime.now().difference(last.$2).inMinutes < 10;
+    _ref
+        .read(eventSinkProvider)
+        .track(
+          AppEvent.playStart,
+          itemId: item.id,
+          props: {
+            'free': item.isFree,
+            'pack': ?item.packId,
+            if (progress?.completed ?? false) 'replay': true,
+            if (next) 'next': true,
+          },
+        );
     await _handler.playItem(
       MediaItem(
         id: item.id,
@@ -71,6 +89,7 @@ class PlaybackController {
     if (media.id.startsWith(gameMediaPrefix)) return; // games have no resume point
     final position = completed ? duration : _handler.position;
     if (completed) {
+      _lastCompleted = (media.id, DateTime.now());
       _ref.read(eventSinkProvider).track(AppEvent.playComplete, itemId: media.id);
       // Counts towards the listening child's plan and progress.
       unawaited(_ref.read(familyProvider.notifier).record(itemId: media.id, seconds: duration.inSeconds));

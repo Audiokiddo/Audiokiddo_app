@@ -197,7 +197,7 @@ class _SignedInState extends ConsumerState<_SignedIn> {
     final now = DateTime.now();
     final active = [
       for (final e in ref.watch(accessProvider).value?.entitlements ?? const <Entitlement>[])
-        if (e.isActiveAt(now) && e.source != EntitlementSource.manual) e,
+        if (e.isActiveAt(now)) e,
     ];
     return ListView(
       padding: const EdgeInsets.only(top: AkSpace.s),
@@ -232,9 +232,11 @@ class _SignedInState extends ConsumerState<_SignedIn> {
                   icon: Icons.check_rounded,
                   iconColor: const Color(0xFF2E9D57),
                   title: _scopeTitle(l10n, e.scope, catalog),
-                  subtitle: e.validUntil == null
-                      ? null
-                      : l10n.accountValidUntil(DateFormat('d.MM.yyyy').format(e.validUntil!.toLocal())),
+                  subtitle: [
+                    if (e.source == EntitlementSource.manual) 'Z kodu, prezentu albo polecenia',
+                    if (e.validUntil != null)
+                      l10n.accountValidUntil(DateFormat('d.MM.yyyy').format(e.validUntil!.toLocal())),
+                  ].join(' · ').ifEmptyNull(),
                 ),
             GroupedRow(
               icon: Icons.refresh_rounded,
@@ -337,4 +339,8 @@ class _PasswordDialogState extends State<_PasswordDialog> {
       ),
     ],
   );
+}
+
+extension on String {
+  String? ifEmptyNull() => isEmpty ? null : this;
 }

@@ -5,6 +5,9 @@ import 'package:audiokiddo/features/account/session_gate.dart';
 import 'package:audiokiddo/features/family/family.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
+import 'package:audiokiddo/features/welcome/welcome_controller.dart';
+import 'package:audiokiddo/features/account/account_data.dart';
+import 'package:audiokiddo/core/theme/appearance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,7 +59,37 @@ void main() {
     );
   });
 
-  testWidgets('first run: welcome, how it works, optional age and account, then Start', (tester) async {
+  test('after the first sign-in the family welcome comes once, then Start', () async {
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    final kids = KidsModeController(db);
+    final onboarding = OnboardingController(db, done: true);
+    final welcome = WelcomeController(db, done: false);
+    expect(appRedirect(kids, onboarding, '/', welcome: welcome), '/witaj');
+    expect(appRedirect(kids, onboarding, '/witaj', welcome: welcome), isNull);
+    await welcome.complete();
+    expect(welcome.tourPending, isTrue, reason: 'Szop’en’s tour follows the welcome');
+    expect(appRedirect(kids, onboarding, '/witaj', welcome: welcome), '/');
+    final restarted = WelcomeController(db, done: false);
+    await restarted.load();
+    expect(restarted.done, isTrue);
+    expect(restarted.tourPending, isFalse);
+  });
+
+  test('a different account on the phone gets its own welcome', () async {
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    await claimFamilyData(db, 'a');
+    await WelcomeController(db).complete();
+    await claimFamilyData(db, 'b');
+    final welcome = WelcomeController(db);
+    await welcome.load();
+    expect(welcome.done, isFalse);
+  });
+
+  testWidgets('first run: hello, sign-in, then fanfare, theme, the child, reminders and the tour', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(1170, 2532);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -65,7 +98,7 @@ void main() {
     final kids = KidsModeController(db);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [...testOverrides(db, onboardingDone: false, kidsMode: kids)],
+        overrides: [...testOverrides(db, onboardingDone: false, welcomeDone: false, kidsMode: kids)],
         child: const AudioKiddoApp(),
       ),
     );
@@ -80,11 +113,19 @@ void main() {
     await tester.tap(find.text('Dalej'));
     await tester.pumpAndSettle();
     expect(find.text('Jak to działa'), findsOneWidget);
-    await tester.tap(find.text('Dalej'));
+    await tester.tap(find.text('Zaczynamy'));
     await tester.pumpAndSettle();
-    expect(find.text('Konto rodzica'), findsOneWidget);
-    expect(find.text('Kontynuuj z e-mailem'), findsOneWidget);
-    await tester.tap(find.text('Dalej').last);
+
+    // The family welcome: free plays, then the look of the app.
+    expect(find.text('Ta-da! Witajcie w AudioKiddo'), findsOneWidget);
+    expect(find.textContaining('po jednej z każdego pakietu'), findsOneWidget);
+    await tester.ensureVisible(find.text('Odbieram!'));
+    await tester.tap(find.text('Odbieram!'));
+    await tester.pumpAndSettle();
+    expect(find.text('Jak ma wyglądać aplikacja?'), findsOneWidget);
+    await tester.tap(find.text('Jak w telefonie'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Dalej'));
     await tester.pumpAndSettle();
 
     // The short parent quiz, for two children.
@@ -130,8 +171,18 @@ void main() {
 
     // Reminders: offered, not forced.
     expect(find.text('Włącz przypomnienia'), findsOneWidget);
+    await tester.ensureVisible(find.text('Nie teraz'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Nie teraz'));
     await tester.pumpAndSettle();
+    // Szop’en's tour over Start, skippable.
+    expect(find.text('Cześć, jestem Szop’en!'), findsOneWidget);
+    await tester.tap(find.text('Dalej').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Start'), findsWidgets);
+    await tester.tap(find.text('Pomiń'));
+    await tester.pumpAndSettle();
+    expect(find.text('Cześć, jestem Szop’en!'), findsNothing);
     expect(find.text('Co dziś robimy?'), findsOneWidget);
     final container = ProviderScope.containerOf(tester.element(find.text('Co dziś robimy?')));
     final family = container.read(familyProvider).value!;
@@ -141,5 +192,6 @@ void main() {
     );
     expect(kids.settings.age, 6, reason: 'age becomes the kids mode default');
     expect(kids.active, isFalse);
+    expect(container.read(appearanceProvider).value, ThemeMode.system);
   });
 }
