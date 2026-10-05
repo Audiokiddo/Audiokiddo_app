@@ -11,7 +11,6 @@ import '../access/access_controller.dart';
 import '../purchases/purchase_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import 'account_service.dart';
-import 'session_gate.dart';
 
 String accountErrorText(AppLocalizations l10n, AccountError error) => switch (error) {
   AccountError.invalidEmail => l10n.accountErrorInvalidEmail,
@@ -32,7 +31,6 @@ Future<void> afterSignIn(WidgetRef ref) async {
     // retried from the account screen
   }
   await ref.read(accessProvider.notifier).refresh();
-  await ref.read(sessionGateProvider).clear();
   // Store purchases made before signing in belong to an anonymous holder; restoring moves
   // them to this account (the verification runs as the purchases come back).
   unawaited(ref.read(purchaseControllerProvider.notifier).restoreQuietly());
@@ -41,10 +39,13 @@ Future<void> afterSignIn(WidgetRef ref) async {
 /// "Continue with Apple / Google / e-mail", Apple-style: full-width, same height, Apple on
 /// top (App Store guideline 4.8 wants it at least as prominent as Google).
 class SignInOptions extends ConsumerStatefulWidget {
-  const SignInOptions({super.key, this.askAdultFirst = false});
+  const SignInOptions({super.key, this.askAdultFirst = false, this.showEmail = true});
 
   /// Onboarding: show the parental gate before the first sign-in attempt.
   final bool askAdultFirst;
+
+  /// The e-mail button (off where the e-mail form is already on screen).
+  final bool showEmail;
 
   @override
   ConsumerState<SignInOptions> createState() => _SignInOptionsState();
@@ -107,14 +108,16 @@ class _SignInOptionsState extends ConsumerState<SignInOptions> {
           leading: const GoogleLogo(size: 20),
           onPressed: _busy ? null : () => _run((a) => a.signInWithGoogle()),
         ),
-        const SizedBox(height: 12),
-        _ProviderButton(
-          label: l10n.signInEmail,
-          background: context.palette.primary,
-          foreground: context.palette.onPrimary,
-          leading: Icon(Icons.mail_rounded, size: 22, color: context.palette.onPrimary),
-          onPressed: _busy ? null : _email,
-        ),
+        if (widget.showEmail) ...[
+          const SizedBox(height: 12),
+          _ProviderButton(
+            label: l10n.signInEmail,
+            background: context.palette.primary,
+            foreground: context.palette.onPrimary,
+            leading: Icon(Icons.mail_rounded, size: 22, color: context.palette.onPrimary),
+            onPressed: _busy ? null : _email,
+          ),
+        ],
         if (_busy) ...[const SizedBox(height: AkSpace.m), const Center(child: CircularProgressIndicator())],
       ],
     );
@@ -227,9 +230,26 @@ final _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
 /// E-mail → one-time code → signed in. Used in a sheet (onboarding, account screen).
 class EmailSignInForm extends ConsumerStatefulWidget {
-  const EmailSignInForm({super.key, this.onSignedIn});
+  const EmailSignInForm({
+    super.key,
+    this.onSignedIn,
+    this.title,
+    this.body,
+    this.sendLabel,
+    this.consent,
+    this.autofocus = true,
+  });
 
   final VoidCallback? onSignedIn;
+
+  /// Replace the default "Logowanie e-mailem" texts (the sign-in screen's two tabs).
+  final String? title;
+  final String? body;
+  final String? sendLabel;
+
+  /// Shown above the send button; the code is sent only once it is ticked (new accounts).
+  final Widget Function(bool value, ValueChanged<bool> onChanged)? consent;
+  final bool autofocus;
 
   @override
   ConsumerState<EmailSignInForm> createState() => _EmailSignInFormState();
@@ -245,6 +265,7 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   String? _error;
   int _resendIn = 0;
   Timer? _timer;
+  bool _consented = false;
 
   @override
   void dispose() {
@@ -269,6 +290,10 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   }
 
   Future<void> _sendCode() async {
+    if (widget.consent != null && !_consented) {
+      setState(() => _error = 'Zaznacz zgodę na regulamin i politykę prywatności.');
+      return;
+    }
     final email = _email.text.trim();
     if (!_emailPattern.hasMatch(email)) {
       setState(() => _error = AppLocalizations.of(context).accountErrorInvalidEmail);
@@ -308,20 +333,20 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
       padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.l),
       children: [
         Text(
-          l10n.signInEmailTitle,
+          widget.title ?? l10n.signInEmailTitle,
           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AkSpace.s),
         if (sentTo == null) ...[
           Text(
-            l10n.signInEmailBody,
+            widget.body ?? l10n.signInEmailBody,
             style: theme.textTheme.bodyMedium?.copyWith(color: context.palette.inkMuted),
           ),
           const SizedBox(height: AkSpace.m),
           TextField(
             controller: _email,
             enabled: !_busy,
-            autofocus: true,
+            autofocus: widget.autofocus,
             keyboardType: TextInputType.emailAddress,
             autofillHints: const [AutofillHints.email],
             autocorrect: false,
@@ -329,8 +354,15 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
             onSubmitted: (_) => _sendCode(),
             decoration: InputDecoration(labelText: l10n.accountEmailLabel, errorText: _error),
           ),
+          if (widget.consent case final consent?) ...[
+            const SizedBox(height: AkSpace.s),
+            consent(_consented, (v) => setState(() => _consented = v)),
+          ],
           const SizedBox(height: AkSpace.m),
-          FilledButton(onPressed: _busy ? null : _sendCode, child: Text(l10n.accountSendCode)),
+          FilledButton(
+            onPressed: _busy ? null : _sendCode,
+            child: Text(widget.sendLabel ?? l10n.accountSendCode),
+          ),
         ] else ...[
           Text(l10n.accountCodeSent(sentTo), style: theme.textTheme.bodyMedium),
           const SizedBox(height: AkSpace.m),

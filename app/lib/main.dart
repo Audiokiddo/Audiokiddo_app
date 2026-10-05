@@ -46,7 +46,11 @@ Future<void> main() async {
       audioHandlerProvider.overrideWithValue(audioHandler),
       kidsModeProvider.overrideWith((ref) => KidsModeController(ref.watch(databaseProvider))),
       onboardingProvider.overrideWith((ref) => OnboardingController(ref.watch(databaseProvider))),
-      sessionGateProvider.overrideWith((ref) => SessionGate(ref.watch(databaseProvider))),
+      sessionGateProvider.overrideWith((ref) {
+        final gate = SessionGate(ref.watch(accountServiceProvider), required: true);
+        ref.onDispose(gate.dispose);
+        return gate;
+      }),
     ],
   );
   // A newer catalog from Studio replaces the shown one as soon as it arrives.
@@ -55,7 +59,6 @@ Future<void> main() async {
   // Before the first frame: a restart must not flash the parent zone.
   await container.read(kidsModeProvider).load();
   await container.read(onboardingProvider).load();
-  await container.read(sessionGateProvider).load();
   // Resume interrupted downloads and start recording listening progress.
   await container.read(downloadManagerProvider).start();
   container.read(playbackControllerProvider);

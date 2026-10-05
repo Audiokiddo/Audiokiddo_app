@@ -1,37 +1,43 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/storage/database.dart';
-import '../../core/storage/storage_providers.dart';
+import 'account_service.dart';
 
-/// After the parent signs out on purpose, the app shows the sign-in screen until they sign in
-/// again or choose to continue without an account. Loaded before the first frame.
+/// Whether the app may be used: only with a signed-in parent account (owners' decision).
+/// Follows the account service, so signing out anywhere sends the app to the sign-in screen
+/// and signing in lets it back. Tests run without the requirement.
 class SessionGate extends ChangeNotifier {
-  SessionGate(this._db);
-
-  static const _key = 'signed_out';
-  final AppDatabase _db;
-  bool _signedOut = false;
-
-  bool get signedOut => _signedOut;
-
-  Future<void> load() async {
-    _signedOut = await _db.readValue(_key) == '1';
-    notifyListeners();
+  SessionGate(this._service, {this.required = false}) : _signedIn = _service.current != null {
+    _subscription = _service.changes.listen((user) {
+      final signedIn = user != null;
+      if (signedIn == _signedIn) return;
+      _signedIn = signedIn;
+      notifyListeners();
+    });
   }
 
-  Future<void> markSignedOut() => _set(true);
+  final AccountService _service;
 
-  /// Signed in again, or continuing without an account (free plays only).
-  Future<void> clear() => _set(false);
+  /// Off in tests and in builds without accounts.
+  final bool required;
+  bool _signedIn;
+  StreamSubscription<AccountUser?>? _subscription;
 
-  Future<void> _set(bool value) async {
-    if (_signedOut == value) return;
-    await _db.writeValue(_key, value ? '1' : '0');
-    _signedOut = value;
-    notifyListeners();
+  /// The sign-in screen has to be shown before anything else.
+  bool get locked => required && !_signedIn;
+
+  @override
+  void dispose() {
+    unawaited(_subscription?.cancel());
+    super.dispose();
   }
 }
 
-/// Overridden in `main` with a loaded gate; tests get a fresh one (not signed out).
-final sessionGateProvider = Provider<SessionGate>((ref) => SessionGate(ref.watch(databaseProvider)));
+/// Overridden in `main` with the requirement on; tests get a gate that never locks.
+final sessionGateProvider = Provider<SessionGate>((ref) {
+  final gate = SessionGate(ref.watch(accountServiceProvider));
+  ref.onDispose(gate.dispose);
+  return gate;
+});

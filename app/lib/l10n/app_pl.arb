@@ -422,7 +422,7 @@
   "onboardingAccountTitle": "Konto rodzica",
   "onboardingAccountBody": "Opcjonalnie. Zaloguj się, jeśli masz już pakiety przypisane do adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.",
   "onboardingAccountDone": "Zalogowano",
-  "onboardingStartWithoutAccount": "Zacznij bez konta",
+  "onboardingStartWithoutAccount": "Dalej",
   "introSkip": "Pomiń",
   "introVolumeTitle": "Podgłośnij!",
   "introVolumeBody": "Żeby dobrze słyszeć Szop’ena.",

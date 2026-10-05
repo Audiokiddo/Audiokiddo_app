@@ -56,8 +56,8 @@ String? appRedirect(
   SessionGate? session,
 }) {
   if (!onboarding.done) return location == '/powitanie' ? null : '/powitanie';
-  // Signed out on purpose: nothing but the sign-in screen until they sign in or skip.
-  if (session?.signedOut ?? false) return location == '/logowanie' ? null : '/logowanie';
+  // No signed-in parent: nothing but the sign-in screen (every route, back gestures included).
+  if (session?.locked ?? false) return location == '/logowanie' ? null : '/logowanie';
   if (location == '/logowanie') return kids.active ? '/dziecko' : '/';
   if (location == '/powitanie') return kids.active ? '/dziecko' : '/';
   return kidsModeRedirect(kids, location);

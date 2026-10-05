@@ -121,7 +121,7 @@ Future<void> openWithGate(BuildContext context, Uri url) async {
 }
 
 final termsUrl = Uri.parse('https://audiokiddo.pl/regulamin/');
-final privacyUrl = Uri.parse('https://audiokiddo.pl/polityka-prywatnosci/');
+final privacyUrl = Uri.parse('https://audiokiddo.pl/polityka-prywatnosci-aplikacji/');
 Uri get manageSubscriptionsUrl => Platform.isIOS
     ? Uri.parse('https://apps.apple.com/account/subscriptions')
     : Uri.parse('https://play.google.com/store/account/subscriptions');

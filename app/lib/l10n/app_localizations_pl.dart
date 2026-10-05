@@ -776,7 +776,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onboardingAccountDone => 'Zalogowano';
 
   @override
-  String get onboardingStartWithoutAccount => 'Zacznij bez konta';
+  String get onboardingStartWithoutAccount => 'Dalej';
 
   @override
   String get introSkip => 'Pomiń';

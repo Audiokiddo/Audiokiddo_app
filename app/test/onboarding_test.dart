@@ -1,5 +1,6 @@
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/core/router.dart';
+import 'package:audiokiddo/features/account/account_service.dart';
 import 'package:audiokiddo/features/account/session_gate.dart';
 import 'package:audiokiddo/features/family/family.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
@@ -28,23 +29,31 @@ void main() {
     expect(restarted.done, isTrue);
   });
 
-  test('after signing out only the sign-in screen opens, until sign-in or skipping', () async {
+  test('without a signed-in parent only the sign-in screen opens', () {
     final db = memoryDatabase();
     addTearDown(db.close);
     final kids = KidsModeController(db);
     final onboarding = OnboardingController(db, done: true);
-    final session = SessionGate(db);
-    expect(appRedirect(kids, onboarding, '/biblioteka', session: session), isNull);
-    await session.markSignedOut();
-    for (final location in ['/', '/biblioteka', '/zabawa/magiczny-sklep', '/odtwarzacz', '/dziecko']) {
-      expect(appRedirect(kids, onboarding, location, session: session), '/logowanie', reason: location);
+    final gate = SessionGate(const SignedOutAccountService(), required: true);
+    addTearDown(gate.dispose);
+    for (final location in [
+      '/',
+      '/biblioteka',
+      '/zabawa/magiczny-sklep',
+      '/odtwarzacz',
+      '/dziecko',
+      '/konto',
+    ]) {
+      expect(appRedirect(kids, onboarding, location, session: gate), '/logowanie', reason: location);
     }
-    expect(appRedirect(kids, onboarding, '/logowanie', session: session), isNull);
-    final restarted = SessionGate(db);
-    await restarted.load();
-    expect(restarted.signedOut, isTrue, reason: 'stays after a restart');
-    await session.clear();
-    expect(appRedirect(kids, onboarding, '/logowanie', session: session), '/');
+    expect(appRedirect(kids, onboarding, '/logowanie', session: gate), isNull);
+    final open = SessionGate(const SignedOutAccountService());
+    addTearDown(open.dispose);
+    expect(
+      appRedirect(kids, onboarding, '/biblioteka', session: open),
+      isNull,
+      reason: 'tests and builds without accounts',
+    );
   });
 
   testWidgets('first run: welcome, how it works, optional age and account, then Start', (tester) async {
@@ -75,7 +84,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Konto rodzica'), findsOneWidget);
     expect(find.text('Kontynuuj z e-mailem'), findsOneWidget);
-    await tester.tap(find.text('Zacznij bez konta'));
+    await tester.tap(find.text('Dalej').last);
     await tester.pumpAndSettle();
 
     // The short parent quiz, for two children.

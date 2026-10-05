@@ -1426,7 +1426,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingStartWithoutAccount.
   ///
   /// In pl, this message translates to:
-  /// **'Zacznij bez konta'**
+  /// **'Dalej'**
   String get onboardingStartWithoutAccount;
 
   /// No description provided for @introSkip.

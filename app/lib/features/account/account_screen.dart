@@ -12,7 +12,6 @@ import '../catalog/catalog_providers.dart';
 import 'account_service.dart';
 import 'sign_in.dart';
 import '../player/player_providers.dart';
-import 'session_gate.dart';
 
 /// Parent account, laid out like iOS Settings: sign in with Apple, Google or an e-mail code;
 /// see what the account unlocks; sign out; delete the account. Parent zone only — reached
@@ -125,9 +124,8 @@ class _SignedInState extends ConsumerState<_SignedIn> {
         // Nothing playing (or no player in this build): signing out goes on.
       }
       await ref.read(accountServiceProvider).signOut();
+      // The router follows the account: the sign-in screen opens by itself.
       await ref.read(accessProvider.notifier).refresh();
-      // Back to the sign-in screen: the router follows the gate.
-      await ref.read(sessionGateProvider).markSignedOut();
     });
   }
 

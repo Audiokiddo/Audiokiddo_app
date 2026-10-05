@@ -1,3 +1,5 @@
+import 'package:audiokiddo/l10n/app_localizations_pl.dart';
+import 'package:audiokiddo/features/account/session_gate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:audiokiddo/app.dart';
 
@@ -263,7 +265,7 @@ void main() {
     });
   });
 
-  testWidgets('signing out leads to the sign-in screen, not back into the plays', (tester) async {
+  testWidgets('signing out locks the app on the sign-in screen until the parent signs in', (tester) async {
     tester.view.physicalSize = const Size(1170, 2532);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -271,13 +273,20 @@ void main() {
     addTearDown(db.close);
     final account = FakeAccountService();
     await account.verifyCode('rodzic@example.com', '123456');
+    final gate = SessionGate(account, required: true);
+    addTearDown(gate.dispose);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [...testOverrides(db), accountServiceProvider.overrideWithValue(account)],
+        overrides: [
+          ...testOverrides(db),
+          accountServiceProvider.overrideWithValue(account),
+          sessionGateProvider.overrideWithValue(gate),
+        ],
         child: const AudioKiddoApp(),
       ),
     );
     await tester.pumpAndSettle();
+    expect(find.text('Co dziś robimy?'), findsOneWidget);
     GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/konto');
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Wyloguj się'), 200);
@@ -285,12 +294,31 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Wyloguj się').last);
     await tester.pumpAndSettle();
-    expect(find.text('Zaloguj się'), findsOneWidget);
-    expect(find.text('Kontynuuj bez konta (tylko darmowe zabawy)'), findsOneWidget);
 
-    await tester.tap(find.text('Kontynuuj bez konta (tylko darmowe zabawy)'));
+    expect(find.text('Załóż konto'), findsOneWidget, reason: 'the sign-in screen with registration');
+    expect(find.textContaining('Kontynuuj bez konta'), findsNothing);
+    expect(find.textContaining('Bez haseł'), findsOneWidget);
+    // A back gesture or a deep link cannot leave it.
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    expect(find.text('Co dziś robimy?'), findsOneWidget);
+    GoRouter.of(tester.element(find.byType(Scaffold).first)).go('/biblioteka');
+    await tester.pumpAndSettle();
+    expect(find.text('Załóż konto'), findsOneWidget);
+
+    // A new account needs the consent first.
+    await tester.tap(find.text('Załóż konto').first);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'nowy@example.com');
+    await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
+    await tester.pumpAndSettle();
+    expect(find.text('Zaznacz zgodę na regulamin i politykę prywatności.'), findsOneWidget);
+    await tester.tap(find.byType(Checkbox));
+    await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, '123456');
+    await tester.tap(find.widgetWithText(FilledButton, AppLocalizationsPl().accountVerify));
+    await tester.pumpAndSettle();
+    expect(find.text('Co dziś robimy?'), findsOneWidget, reason: 'signed in: the app opens');
   });
 
   group('account screen', () {
