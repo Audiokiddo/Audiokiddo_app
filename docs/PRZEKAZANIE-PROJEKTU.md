@@ -126,3 +126,31 @@ gh repo create audiokiddo-app --private --source=. --push
 (albo utworzyć prywatne repo na github.com i `git remote add origin … && git push -u origin main`).
 Potem w Claude Code na claude.ai/code wybrać to repozytorium. **Nie wypychać** kluczy ani plików
 `.env` (są w `.gitignore`; przed pushem sprawdzić `git status`).
+
+---
+
+## Stan na 6.10.2026 (przekazanie do nowej sesji)
+
+Gałąź robocza: `claude/busy-babbage-aeq1ro` (nie wypychać do `main` bez zgody Dawida). Instalacja na iPhonie: `bash tool/phone_build.sh`. Testy: w `app/` `flutter test` (warto plik po pliku z limitem czasu), baza `bash tool/test_db.sh`, funkcje `cd supabase/functions && deno test`.
+
+### Ostatnio zrobione (commity 0089927 i 7d994d7 oraz niezacommitowane poprawki testów)
+- **Samouczek Szop’ena** (`app/lib/features/welcome/szop_tour.dart`): przełącza zakładki, przewija do funkcji (`TourTarget` w home, bibliotece, sklepie, Więcej), żółta ramka, ciemniejsze tło. Dawid zgłosił, że ramki trafiały w złe miejsca: poprawione (pomiar po zakończeniu przewijania), **do sprawdzenia na iPhonie**.
+- **Samouczek detektywa** przy pierwszej zabawie z aktami (`app/lib/features/pdf/case_file_tutorial.dart`).
+- **Tryb samochodu** (`SessionScreen` w `app/lib/features/session/session_screens.dart`): duże przyciski, układ poziomy z przyciskami po prawej. Stary rysowany szop zastąpiony wszędzie obecnym Szop’enem (widżet `Kiddo` rysuje teraz `SzopSticker`).
+- **Abonament pierwszy wszędzie**: wspólny `SubscriptionOffer` (`app/lib/features/purchases/subscription_value.dart`): przekreślona cena miesięczna, 19,99 zł/mies., jedna linia oszczędności, jeden przycisk. Pakiety na zawsze schowane pod „Wolisz kupić pakiet na zawsze?” (Sklep, paywall), na stronie pakietu jako mały link.
+- **Okno po darmowej zabawie** (`after_free_play.dart`, wyzwalane w `now_playing_pill.dart`): najpierw kolejna darmowa zabawa, potem oferta.
+- **„Co teraz?”** (`app/lib/features/home/quick_pick.dart`): czas 15–60 min, losowana kolejność (najpierw niesłuchane), „Jedziemy autem”, zabawa do dokończenia, „Włącz po kolei”.
+- **„Co dziś robimy”**: do 7 zabaw, tylko z naszymi okładkami.
+- **Powitanie Szop’ena po otwarciu** (`app/lib/features/home/launch_greeting.dart`).
+- **Konto**: rejestracja e-mail + hasło (kod tylko potwierdza adres, `signUp`/`verifySignUp`), kod tylko przy zapomnianym haśle i nie zakłada konta (`shouldCreateUser: false`, błąd `noAccount`), po usunięciu konta czyszczone dane z telefonu.
+- **Przypomnienia**: własna godzina, kafelek w Więcej → Powiadomienia.
+- **Tryb jasny/ciemny**: domyślnie automat (ciemny 20:00–6:00), pytanie usunięte z powitania.
+- **Zakupy**: `PreviewStoreGateway` — bez produktów w App Store pokazuje nasze ceny i komunikat zamiast zawieszenia.
+- **CRM w Studio** (zakładka CRM, `studio/lib/crm/`): pulpit, decyzje, zadania, pomysły, kalendarz, reklamy, mailing, użytkownicy, aktualizacje, ustawienia. Agent COO: funkcja `supabase/functions/coo` (Claude API), MailerLite: `supabase/functions/mailerlite`. Opis: `docs/CRM.md`. Migracja `20261008000001_crm.sql` i funkcje **są już wdrożone** przez Dawida.
+
+### Do zrobienia
+1. **Dokończyć testy aplikacji** po ostatnich zmianach. Ostatni pełny przebieg miał błędy w: `screens_test` (cena „7 dni za darmo, potem 239,88 zł / rok” — tekst z nowej oferty), `session_test` („DOBRANOC” w wieczornym hero), `small_screens_test` (przepełnienia o 2–16 px na małych ekranach — prawdopodobnie nowy odtwarzacz samochodowy lub `SubscriptionOffer`), `navigation_motion_test` (animacje widżetu `Kiddo`), `account_test` (nowa rejestracja hasłem — test już poprawiony, sprawdzić), test „parent encounter… large text”. `shop_test` już przechodzi.
+2. Sprawdzić na iPhonie samouczek (ramki), tryb samochodu w poziomie, rejestrację hasłem i usuwanie konta.
+3. Szablon e-maila „Confirm signup” w Supabase musi pokazywać kod (`supabase/templates/kod.html`); jeśli przychodzi link zamiast kodu, Dawid robi `supabase config push`.
+4. Dawid: klucz `ANTHROPIC_API_KEY` (`supabase secrets set`), wgrać `studio/build/web` do `public_html/studio` (zbudowane `bash tool/studio_build.sh`), dopisać swój e-mail do tabeli `admins`, później MailerLite (`MAILERLITE_API_KEY`, `MAILERLITE_FROM`).
+5. Otwarte z wcześniej: konta Apple Developer i Google Play, logowanie Apple/Google, usunięcie `nagrania/pdf/przewodnik.pdf` z serwera, okładka dla „Prawda czy nie?”.
