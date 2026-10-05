@@ -1,3 +1,6 @@
+import 'package:go_router/go_router.dart';
+import 'package:audiokiddo/app.dart';
+
 import 'dart:async';
 
 import 'package:ak_core/ak_core.dart';
@@ -258,6 +261,36 @@ void main() {
       await container.read(accessProvider.notifier).refresh();
       expect(detektyw(), ItemAccess.playable);
     });
+  });
+
+  testWidgets('signing out leads to the sign-in screen, not back into the plays', (tester) async {
+    tester.view.physicalSize = const Size(1170, 2532);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    final account = FakeAccountService();
+    await account.verifyCode('rodzic@example.com', '123456');
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [...testOverrides(db), accountServiceProvider.overrideWithValue(account)],
+        child: const AudioKiddoApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/konto');
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Wyloguj się'), 200);
+    await tester.tap(find.text('Wyloguj się'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Wyloguj się').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Zaloguj się'), findsOneWidget);
+    expect(find.text('Kontynuuj bez konta (tylko darmowe zabawy)'), findsOneWidget);
+
+    await tester.tap(find.text('Kontynuuj bez konta (tylko darmowe zabawy)'));
+    await tester.pumpAndSettle();
+    expect(find.text('Co dziś robimy?'), findsOneWidget);
   });
 
   group('account screen', () {

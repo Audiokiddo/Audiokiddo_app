@@ -11,6 +11,8 @@ import '../access/access_controller.dart';
 import '../catalog/catalog_providers.dart';
 import 'account_service.dart';
 import 'sign_in.dart';
+import '../player/player_providers.dart';
+import 'session_gate.dart';
 
 /// Parent account, laid out like iOS Settings: sign in with Apple, Google or an e-mail code;
 /// see what the account unlocks; sign out; delete the account. Parent zone only — reached
@@ -117,8 +119,15 @@ class _SignedInState extends ConsumerState<_SignedIn> {
     final l10n = AppLocalizations.of(context);
     if (!await _confirm(l10n.accountSignOut, l10n.accountSignOutBody, l10n.accountSignOut)) return;
     await _run(() async {
+      try {
+        await ref.read(audioHandlerProvider).endSession();
+      } on Object {
+        // Nothing playing (or no player in this build): signing out goes on.
+      }
       await ref.read(accountServiceProvider).signOut();
       await ref.read(accessProvider.notifier).refresh();
+      // Back to the sign-in screen: the router follows the gate.
+      await ref.read(sessionGateProvider).markSignedOut();
     });
   }
 

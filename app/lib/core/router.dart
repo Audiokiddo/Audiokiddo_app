@@ -14,6 +14,8 @@ import '../features/catalog/library_screen.dart';
 import '../features/access/dev_tools_screen.dart';
 import '../features/account/access_screen.dart';
 import '../features/account/account_screen.dart';
+import '../features/account/session_gate.dart';
+import '../features/account/sign_in_screen.dart';
 import '../features/games/game_screen.dart';
 import '../features/kids_mode/kids_home_screen.dart';
 import '../features/kids_mode/kids_mode_controller.dart';
@@ -47,20 +49,36 @@ String? kidsModeRedirect(KidsModeController kids, String location) {
 }
 
 /// The welcome runs once, before anything else (kids mode can only be set up after it).
-String? appRedirect(KidsModeController kids, OnboardingController onboarding, String location) {
+String? appRedirect(
+  KidsModeController kids,
+  OnboardingController onboarding,
+  String location, {
+  SessionGate? session,
+}) {
   if (!onboarding.done) return location == '/powitanie' ? null : '/powitanie';
+  // Signed out on purpose: nothing but the sign-in screen until they sign in or skip.
+  if (session?.signedOut ?? false) return location == '/logowanie' ? null : '/logowanie';
+  if (location == '/logowanie') return kids.active ? '/dziecko' : '/';
   if (location == '/powitanie') return kids.active ? '/dziecko' : '/';
   return kidsModeRedirect(kids, location);
 }
 
-GoRouter buildRouter(KidsModeController kids, OnboardingController onboarding) => GoRouter(
+GoRouter buildRouter(
+  KidsModeController kids,
+  OnboardingController onboarding, [
+  SessionGate? session,
+]) => GoRouter(
   initialLocation: !onboarding.done ? '/powitanie' : (kids.active ? '/dziecko' : '/'),
-  refreshListenable: Listenable.merge([kids, onboarding]),
-  redirect: (context, state) => appRedirect(kids, onboarding, state.matchedLocation),
+  refreshListenable: Listenable.merge([kids, onboarding, ?session]),
+  redirect: (context, state) => appRedirect(kids, onboarding, state.matchedLocation, session: session),
   // An unknown or outdated link (old widget, typo) opens Start instead of an error page.
   onException: (context, state, router) => router.go('/'),
   routes: [
     GoRoute(path: '/powitanie', pageBuilder: (context, state) => swipePage(state, const OnboardingScreen())),
+    GoRoute(
+      path: '/logowanie',
+      pageBuilder: (context, state) => NoTransitionPage(child: const SignInScreen()),
+    ),
     GoRoute(path: '/dziecko', pageBuilder: (context, state) => swipePage(state, const KidsHomeScreen())),
     GoRoute(path: '/dziecko/graj', pageBuilder: (context, state) => swipePage(state, const NoLookScreen())),
     GoRoute(path: '/dziecko/gra', pageBuilder: (context, state) => swipePage(state, const GameScreen())),

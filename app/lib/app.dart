@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'core/router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/appearance.dart';
+import 'features/account/session_gate.dart';
 import 'features/home/home_widget_sync.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
 import 'features/onboarding/onboarding_controller.dart';
@@ -25,7 +26,8 @@ class AudioKiddoApp extends ConsumerStatefulWidget {
 
 class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
   late final GoRouter _router =
-      widget.router ?? buildRouter(ref.read(kidsModeProvider), ref.read(onboardingProvider));
+      widget.router ??
+      buildRouter(ref.read(kidsModeProvider), ref.read(onboardingProvider), ref.read(sessionGateProvider));
 
   static const _launch = MethodChannel('pl.audiokiddo/launch');
 

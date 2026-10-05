@@ -130,10 +130,7 @@ void main() {
           .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
           .last;
       await tester.scrollUntilVisible(find.text('Filmy i materiały do zabaw'), 200, scrollable: scroll);
-      await Scrollable.ensureVisible(
-        tester.element(find.text('Filmy i materiały do zabaw')),
-        alignment: .4,
-      );
+      await Scrollable.ensureVisible(tester.element(find.text('Filmy i materiały do zabaw')), alignment: .4);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Filmy i materiały do zabaw'));
       await tester.pumpAndSettle();
@@ -142,12 +139,18 @@ void main() {
 
     Future<void> showOffer(WidgetTester tester, ContentItem item) async {
       Navigator.of(tester.element(find.byType(Scaffold).first)).push(
-        MaterialPageRoute<void>(builder: (_) => Scaffold(body: ListView(children: [AfterFreePlayOffer(item: item)]))),
+        MaterialPageRoute<void>(
+          builder: (_) => Scaffold(
+            body: ListView(children: [AfterFreePlayOffer(item: item)]),
+          ),
+        ),
       );
       await tester.pumpAndSettle();
     }
 
-    testWidgets('after a free play from a pack: the pack or the subscription, behind the gate', (tester) async {
+    testWidgets('after a free play from a pack: the pack or the subscription, behind the gate', (
+      tester,
+    ) async {
       await pumpApp(tester);
       final free = catalog.items.firstWhere((i) => i.isFree && i.packId == 'wyobraznia');
       await showOffer(tester, free);

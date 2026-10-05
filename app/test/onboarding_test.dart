@@ -1,5 +1,6 @@
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/core/router.dart';
+import 'package:audiokiddo/features/account/session_gate.dart';
 import 'package:audiokiddo/features/family/family.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
@@ -25,6 +26,25 @@ void main() {
     final restarted = OnboardingController(db);
     await restarted.load();
     expect(restarted.done, isTrue);
+  });
+
+  test('after signing out only the sign-in screen opens, until sign-in or skipping', () async {
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    final kids = KidsModeController(db);
+    final onboarding = OnboardingController(db, done: true);
+    final session = SessionGate(db);
+    expect(appRedirect(kids, onboarding, '/biblioteka', session: session), isNull);
+    await session.markSignedOut();
+    for (final location in ['/', '/biblioteka', '/zabawa/magiczny-sklep', '/odtwarzacz', '/dziecko']) {
+      expect(appRedirect(kids, onboarding, location, session: session), '/logowanie', reason: location);
+    }
+    expect(appRedirect(kids, onboarding, '/logowanie', session: session), isNull);
+    final restarted = SessionGate(db);
+    await restarted.load();
+    expect(restarted.signedOut, isTrue, reason: 'stays after a restart');
+    await session.clear();
+    expect(appRedirect(kids, onboarding, '/logowanie', session: session), '/');
   });
 
   testWidgets('first run: welcome, how it works, optional age and account, then Start', (tester) async {

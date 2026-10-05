@@ -12,7 +12,7 @@ import 'player_providers.dart';
 /// player and games themselves, the running session and kids mode.
 bool showsNowPlayingPill(String path) =>
     !const {'/', '/biblioteka', '/sklep', '/moje'}.contains(path) &&
-    !['/odtwarzacz', '/gra', '/dziecko', '/sesja', '/powitanie'].any(path.startsWith);
+    !['/odtwarzacz', '/gra', '/dziecko', '/sesja', '/powitanie', '/logowanie'].any(path.startsWith);
 
 /// Height the pill takes at the bottom of a page (pages get it as extra bottom padding).
 const nowPlayingPillSpace = 76.0;

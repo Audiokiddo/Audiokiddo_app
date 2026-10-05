@@ -11,6 +11,7 @@ import '../access/access_controller.dart';
 import '../purchases/purchase_controller.dart';
 import '../parental_gate/parental_gate.dart';
 import 'account_service.dart';
+import 'session_gate.dart';
 
 String accountErrorText(AppLocalizations l10n, AccountError error) => switch (error) {
   AccountError.invalidEmail => l10n.accountErrorInvalidEmail,
@@ -31,6 +32,7 @@ Future<void> afterSignIn(WidgetRef ref) async {
     // retried from the account screen
   }
   await ref.read(accessProvider.notifier).refresh();
+  await ref.read(sessionGateProvider).clear();
   // Store purchases made before signing in belong to an anonymous holder; restoring moves
   // them to this account (the verification runs as the purchases come back).
   unawaited(ref.read(purchaseControllerProvider.notifier).restoreQuietly());
