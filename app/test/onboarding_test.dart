@@ -7,7 +7,6 @@ import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
 import 'package:audiokiddo/features/welcome/welcome_controller.dart';
 import 'package:audiokiddo/features/account/account_data.dart';
-import 'package:audiokiddo/core/theme/appearance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -87,9 +86,7 @@ void main() {
     expect(welcome.done, isFalse);
   });
 
-  testWidgets('first run: hello, sign-in, then fanfare, theme, the child, reminders and the tour', (
-    tester,
-  ) async {
+  testWidgets('first run: hello, sign-in, then fanfare, the child, reminders and the tour', (tester) async {
     tester.view.physicalSize = const Size(1170, 2532);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -122,11 +119,8 @@ void main() {
     await tester.ensureVisible(find.text('Odbieram!'));
     await tester.tap(find.text('Odbieram!'));
     await tester.pumpAndSettle();
-    expect(find.text('Jak ma wyglądać aplikacja?'), findsOneWidget);
-    await tester.tap(find.text('Jak w telefonie'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Dalej'));
-    await tester.pumpAndSettle();
+    expect(find.text('Jak ma wyglądać aplikacja?'), findsNothing, reason: 'the look is automatic');
+    expect(find.text('Pomiń'), findsNothing, reason: 'the age is needed');
 
     // The short parent quiz, for two children.
     Future<void> next() async {
@@ -192,6 +186,5 @@ void main() {
     );
     expect(kids.settings.age, 6, reason: 'age becomes the kids mode default');
     expect(kids.active, isFalse);
-    expect(container.read(appearanceProvider).value, ThemeMode.system);
   });
 }

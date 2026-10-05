@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ambient_motion.dart';
-import '../../core/widgets/kiddo.dart';
+import '../../core/widgets/szop.dart';
 import '../../l10n/app_localizations.dart';
 import 'reminders.dart';
 
@@ -97,7 +97,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Kiddo(size: 80, mood: KiddoMood.talking),
+                        const SzopSticker(SzopPose.prosi, height: 84),
                         const SizedBox(width: AkSpace.s),
                         Expanded(
                           child: Container(

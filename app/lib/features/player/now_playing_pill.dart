@@ -5,6 +5,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
+import '../catalog/catalog_providers.dart';
+import '../discovery/queue_controller.dart';
+import '../kids_mode/kids_mode_controller.dart';
+import '../purchases/after_free_play.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
 
@@ -32,11 +36,34 @@ class NowPlayingPill extends ConsumerStatefulWidget {
 class _NowPlayingPillState extends ConsumerState<NowPlayingPill> {
   String _path = '/';
 
+  /// Free plays that already had their window this launch.
+  final _offered = <String>{};
+
   @override
   void initState() {
     super.initState();
     widget.router.routerDelegate.addListener(_onRoute);
     _onRoute();
+    // A free play heard to the end: its own window with the next free play or the offer.
+    ref.listenManual(playbackStateProvider, (before, now) {
+      final ended = now.value?.processingState == AudioProcessingState.completed;
+      final wasEnded = before?.value?.processingState == AudioProcessingState.completed;
+      if (ended && !wasEnded) _afterPlay();
+    });
+  }
+
+  void _afterPlay() {
+    final id = ref.read(currentMediaProvider).value?.id;
+    final item = id == null ? null : ref.read(catalogProvider).value?.item(id);
+    if (item == null || !item.isFree || _offered.contains(item.id)) return;
+    if (ref.read(kidsModeProvider).active || ref.read(queueRunnerProvider).running) return;
+    // Let the family results catch up with this play first.
+    Future<void>.delayed(const Duration(milliseconds: 600), () {
+      final context = widget.router.routerDelegate.navigatorKey.currentContext;
+      if (!mounted || context == null || !context.mounted || !hasAfterFreePlay(ref, item)) return;
+      _offered.add(item.id);
+      showAfterFreePlay(context, item);
+    });
   }
 
   @override

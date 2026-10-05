@@ -41,12 +41,32 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
 
   static const _launch = MethodChannel('pl.audiokiddo/launch');
 
-  late final AppLifecycleListener _lifecycle = AppLifecycleListener(onResume: _openLaunchRoute);
+  late final AppLifecycleListener _lifecycle = AppLifecycleListener(
+    onResume: () {
+      _openLaunchRoute();
+      _scheduleAppearance();
+    },
+  );
+
+  /// Automatic appearance turns dark at 20:00 and light at 6:00, also with the app open.
+  Timer? _appearanceTimer;
+
+  void _scheduleAppearance() {
+    _appearanceTimer?.cancel();
+    final now = DateTime.now();
+    _appearanceTimer = Timer(nextAppearanceChange(now).difference(now) + const Duration(seconds: 1), () {
+      if (!mounted) return;
+      setState(() {});
+      _scheduleAppearance();
+    });
+    if (mounted) setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
     _lifecycle;
+    _scheduleAppearance();
     // Keep the home-screen widget in step with the child's plan.
     ref.listenManual<HomeWidgetData?>(
       homeWidgetDataProvider,
@@ -63,6 +83,7 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
   @override
   void dispose() {
     _lifecycle.dispose();
+    _appearanceTimer?.cancel();
     super.dispose();
   }
 
@@ -86,7 +107,7 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
       debugShowCheckedModeBanner: false,
       theme: buildTheme(Brightness.light),
       darkTheme: buildTheme(Brightness.dark),
-      themeMode: ref.watch(appearanceProvider).value ?? ThemeMode.light,
+      themeMode: effectiveThemeMode(ref.watch(appearanceProvider).value ?? ThemeMode.light, DateTime.now()),
       locale: const Locale('pl'),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [

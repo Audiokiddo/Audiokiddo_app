@@ -106,12 +106,15 @@ void main() {
       await tester.scrollUntilVisible(find.text('Odbieram!'), 200, scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text('Odbieram!'));
       await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull, reason: 'theme on $name');
-      final next = find.widgetWithText(FilledButton, 'Dalej');
-      await tester.scrollUntilVisible(next, 200, scrollable: find.byType(Scrollable).first);
-      await tester.tap(next);
-      await tester.pumpAndSettle();
-      // The child exists already: reminders next, then the tour over Start.
+      // The known child is confirmed: name, age, goals, situations, minutes.
+      for (var step = 0; step < 5; step++) {
+        expect(tester.takeException(), isNull, reason: 'quiz step ${step + 1} on $name');
+        final next = find.byType(FilledButton).last;
+        await tester.ensureVisible(next);
+        await tester.tap(next);
+        await tester.pumpAndSettle();
+      }
+      // Reminders next, then the tour over Start.
       expect(tester.takeException(), isNull, reason: 'reminders on $name');
       await tester.ensureVisible(find.text('Nie teraz'));
       await tester.pumpAndSettle();

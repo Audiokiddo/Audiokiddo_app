@@ -154,10 +154,14 @@ void main() {
       await pumpApp(tester);
       final free = catalog.items.firstWhere((i) => i.isFree && i.packId == 'wyobraznia');
       await showOffer(tester, free);
-      expect(find.text('Spodobało się? To dopiero początek.'), findsOneWidget);
+      expect(find.text('Brawo! Lecimy dalej?'), findsOneWidget);
+      expect(find.text('Następna darmowa zabawa'), findsOneWidget, reason: 'another free play first');
+      expect(find.text('Oszczędzacie w pierwszym roku'), findsOneWidget);
       expect(find.textContaining('Odblokuj pakiet Wyobraźnia'), findsOneWidget);
       expect(find.textContaining('jeden nowy pakiet co miesiąc'), findsOneWidget);
-      await tester.tap(find.textContaining('Rocznie'));
+      await tester.ensureVisible(find.textContaining('Rocznie 239'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Rocznie 239'));
       await tester.pumpAndSettle();
       expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'buying asks an adult first');
     });

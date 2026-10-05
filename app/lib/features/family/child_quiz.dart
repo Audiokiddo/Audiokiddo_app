@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/doodles.dart';
-import '../../core/widgets/kiddo.dart';
+import '../../core/widgets/szop.dart';
 import '../../l10n/app_localizations.dart';
 import 'family.dart';
 
@@ -12,9 +12,12 @@ import 'family.dart';
 /// minutes a day. Kiddo asks in a speech bubble, a progress bar shows how little is left.
 /// Several children: "Dodaj kolejne dziecko" on the summary starts the quiz again.
 class ChildQuiz extends ConsumerStatefulWidget {
-  const ChildQuiz({super.key, required this.onDone, this.editing});
+  const ChildQuiz({super.key, required this.onDone, this.editing, this.allowSkip = true});
 
   final VoidCallback onDone;
+
+  /// The first sign-in needs at least the child's age, so it hides "Pomiń".
+  final bool allowSkip;
 
   /// Change an existing profile instead of adding a child.
   final ChildProfile? editing;
@@ -34,7 +37,7 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
   int? _minutes;
   ChildProfile? _saved;
 
-  static const ages = [2, 3, 4, 5, 6, 7, 8];
+  static const ages = [3, 4, 5, 6, 7, 8, 9];
 
   @override
   void initState() {
@@ -103,6 +106,25 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
     _step = _Step.name;
   });
 
+  SzopPose get _pose => switch (_step) {
+    _Step.hello => SzopPose.prosi,
+    _Step.name => SzopPose.zadowolony,
+    _Step.age => SzopPose.zdziwiony,
+    _Step.goals => SzopPose.chytry,
+    _Step.situations => SzopPose.nasluchuje,
+    _Step.minutes => SzopPose.zmeczony,
+    _Step.summary => SzopPose.klaszcze,
+  };
+
+  Color get _stageColor => switch (_step) {
+    _Step.hello || _Step.summary => AkBrand.sun,
+    _Step.name => AkBrand.teal,
+    _Step.age => AkBrand.orange,
+    _Step.goals => AkBrand.lavender,
+    _Step.situations => AkBrand.teal,
+    _Step.minutes => AkBrand.lavenderDeep,
+  };
+
   String _who(AppLocalizations l10n) => _name.text.trim().isEmpty ? l10n.quizYourChild : _name.text.trim();
 
   @override
@@ -148,22 +170,41 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
                       ),
                     ),
                   ),
-                  if (widget.editing == null && _step != _Step.summary)
+                  if (widget.allowSkip && widget.editing == null && _step != _Step.summary)
                     TextButton(onPressed: widget.onDone, child: Text(l10n.introSkip)),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.l, AkSpace.m, AkSpace.m),
+            // Szop’en on a coloured stage that changes with every question.
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOutCubic,
+              margin: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.m, AkSpace.m, AkSpace.m),
+              padding: const EdgeInsets.fromLTRB(AkSpace.s, AkSpace.m, AkSpace.m, AkSpace.m),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [_stageColor.withValues(alpha: .28), _stageColor.withValues(alpha: .10)],
+                ),
+                borderRadius: BorderRadius.circular(28),
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Kiddo(size: 86, mood: _step == _Step.summary ? KiddoMood.happy : KiddoMood.idle),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 450),
+                    transitionBuilder: (child, a) => ScaleTransition(
+                      scale: CurvedAnimation(parent: a, curve: Curves.elasticOut),
+                      child: FadeTransition(opacity: a, child: child),
+                    ),
+                    child: SzopSticker(_pose, key: ValueKey(_pose), height: 96),
+                  ),
                   const SizedBox(width: AkSpace.s),
                   Expanded(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
-                      // Short questions stay next to Kiddo instead of floating to the middle.
+                      // Short questions stay next to Szop’en instead of floating to the middle.
                       layoutBuilder: (current, previous) =>
                           Stack(alignment: Alignment.bottomLeft, children: [...previous, ?current]),
                       child: _Bubble(key: ValueKey(question), text: question),
@@ -176,8 +217,17 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
               child: Stack(
                 children: [
                   if (_step == _Step.summary) const Positioned.fill(child: ConfettiBurst()),
+                  // Answers slide in from the right, question by question.
                   AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
+                    duration: const Duration(milliseconds: 320),
+                    switchInCurve: Curves.easeOutCubic,
+                    transitionBuilder: (child, a) => FadeTransition(
+                      opacity: a,
+                      child: SlideTransition(
+                        position: Tween(begin: const Offset(.15, 0), end: Offset.zero).animate(a),
+                        child: child,
+                      ),
+                    ),
                     child: KeyedSubtree(key: ValueKey(_step), child: _answers(context, l10n)),
                   ),
                 ],
@@ -231,8 +281,9 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
     }) => ListView(
       padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
       children: [
-        for (final v in values)
+        for (final (n, v) in values.indexed)
           _Option(
+            color: _optionColors[n % _optionColors.length],
             label: label(v),
             hint: hint?.call(v),
             icon: icon?.call(v),
@@ -279,9 +330,10 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
         mainAxisSpacing: AkSpace.s,
         crossAxisSpacing: AkSpace.s,
         children: [
-          for (final a in ages)
+          for (final (n, a) in ages.indexed)
             _Option(
-              label: a == 8 ? '8+' : '$a',
+              color: _optionColors[n % _optionColors.length],
+              label: a == 9 ? '9+' : '$a',
               selected: _age == a,
               big: true,
               onTap: () => setState(() => _age = a),
@@ -357,6 +409,14 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
   }
 }
 
+const _optionColors = [
+  AkBrand.teal,
+  AkBrand.orange,
+  AkBrand.lavenderDeep,
+  AkBrand.sunDeep,
+  AkBrand.terracotta,
+];
+
 class _Bubble extends StatelessWidget {
   const _Bubble({super.key, required this.text});
 
@@ -394,7 +454,10 @@ class _Option extends StatelessWidget {
     this.hint,
     this.icon,
     this.big = false,
+    this.color = AkBrand.teal,
   });
+
+  final Color color;
 
   final String label;
   final String? hint;
@@ -412,45 +475,59 @@ class _Option extends StatelessWidget {
       child: Semantics(
         selected: selected,
         button: true,
-        child: Material(
-          color: selected ? AkBrand.teal.withValues(alpha: 0.16) : palette.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-            side: BorderSide(
-              color: selected ? AkBrand.teal : palette.inkMuted.withValues(alpha: 0.35),
-              width: 2,
+        child: AnimatedScale(
+          scale: selected ? 1.03 : 1,
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOutBack,
+          child: Material(
+            color: selected ? color.withValues(alpha: 0.18) : palette.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+              side: BorderSide(
+                color: selected ? color : palette.inkMuted.withValues(alpha: 0.25),
+                width: selected ? 3 : 2,
+              ),
             ),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(14),
-            onTap: onTap,
-            child: big
-                ? Center(
-                    child: Text(label, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AkSpace.m, vertical: 14),
-                    child: Row(
-                      children: [
-                        if (icon case final icon?) ...[
-                          ExcludeSemantics(child: Icon(icon, color: AkBrand.tealDeep)),
-                          const SizedBox(width: AkSpace.m),
-                        ],
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(label, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-                              if (hint case final hint?)
-                                Text(hint, style: text.bodySmall?.copyWith(color: palette.inkMuted)),
-                            ],
+            child: InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: onTap,
+              child: big
+                  ? Center(
+                      child: Text(
+                        label,
+                        style: text.headlineMedium?.copyWith(fontWeight: FontWeight.w800, color: color),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AkSpace.m, vertical: 14),
+                      child: Row(
+                        children: [
+                          if (icon case final icon?) ...[
+                            ExcludeSemantics(
+                              child: CircleAvatar(
+                                radius: 20,
+                                backgroundColor: color.withValues(alpha: selected ? 1 : .16),
+                                child: Icon(icon, color: selected ? Colors.white : color),
+                              ),
+                            ),
+                            const SizedBox(width: AkSpace.m),
+                          ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(label, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                                if (hint case final hint?)
+                                  Text(hint, style: text.bodySmall?.copyWith(color: palette.inkMuted)),
+                              ],
+                            ),
                           ),
-                        ),
-                        if (selected)
-                          const ExcludeSemantics(child: Icon(Icons.check_rounded, color: AkBrand.tealDeep)),
-                      ],
+                          if (selected)
+                            ExcludeSemantics(child: Icon(Icons.check_circle_rounded, color: color)),
+                        ],
+                      ),
                     ),
-                  ),
+            ),
           ),
         ),
       ),

@@ -4,7 +4,6 @@ import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/theme/appearance.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
@@ -21,8 +20,9 @@ List<ContentItem> welcomeGifts(Catalog catalog) => [
   for (final pack in catalog.packs) ?catalog.items.where((i) => i.packId == pack.id && i.isFree).firstOrNull,
 ];
 
-/// After the family's first sign-in: a little fanfare with the free plays, the look of the
-/// app, the short quiz about the child (age first) and reminders. Then Szop’en's tour on Start.
+/// After the family's first sign-in: a little fanfare with the free plays, the short quiz
+/// about the child (the age matches the plays) and reminders. Then Szop’en's tour on Start.
+/// The look is automatic (light by day, dark from 20:00), so it is not asked.
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
 
@@ -30,15 +30,10 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-enum _Stage { fanfare, theme, quiz, reminders }
+enum _Stage { fanfare, quiz, reminders }
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   _Stage _stage = _Stage.fanfare;
-
-  void _afterTheme() {
-    final hasChild = ref.read(familyProvider).value?.children.isNotEmpty ?? false;
-    setState(() => _stage = hasChild ? _Stage.reminders : _Stage.quiz);
-  }
 
   Future<void> _complete() async {
     final first = ref.read(familyProvider).value?.children.firstOrNull;
@@ -51,9 +46,13 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   Widget build(BuildContext context) => PopScope(
     canPop: false,
     child: switch (_stage) {
-      _Stage.fanfare => _Fanfare(onNext: () => setState(() => _stage = _Stage.theme)),
-      _Stage.theme => _ThemeChoice(onNext: _afterTheme),
-      _Stage.quiz => ChildQuiz(onDone: () => setState(() => _stage = _Stage.reminders)),
+      _Stage.fanfare => _Fanfare(onNext: () => setState(() => _stage = _Stage.quiz)),
+      // Always the child's age (plays are matched to it); a known child is just confirmed.
+      _Stage.quiz => ChildQuiz(
+        editing: ref.read(familyProvider).value?.active,
+        allowSkip: false,
+        onDone: () => setState(() => _stage = _Stage.reminders),
+      ),
       _Stage.reminders => ReminderOffer(onDone: _complete),
     },
   );
@@ -151,79 +150,6 @@ class _Fanfare extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// Light, dark or as the phone: chosen once here, changed any time in Więcej.
-class _ThemeChoice extends ConsumerWidget {
-  const _ThemeChoice({required this.onNext});
-
-  final VoidCallback onNext;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = Theme.of(context).textTheme;
-    final mode = ref.watch(appearanceProvider).value ?? ThemeMode.light;
-    Widget option(ThemeMode m, IconData icon, String title, String body) => Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: m == mode ? AkBrand.teal.withValues(alpha: .18) : context.palette.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: m == mode ? AkBrand.teal : Colors.transparent, width: 2),
-        ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          leading: Icon(icon, size: 32),
-          title: Text(title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-          subtitle: Text(body),
-          trailing: m == mode ? const Icon(Icons.check_circle_rounded, color: AkBrand.teal) : null,
-          onTap: () => ref.read(appearanceProvider.notifier).set(m),
-        ),
-      ),
-    );
-    return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
-          children: [
-            const Center(child: SzopSticker(SzopPose.zadowolony, height: 110)),
-            const SizedBox(height: 16),
-            Text(
-              'Jak ma wyglądać aplikacja?',
-              textAlign: TextAlign.center,
-              style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Możesz to zmienić w każdej chwili w Więcej → Wygląd aplikacji.',
-              textAlign: TextAlign.center,
-              style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
-            ),
-            const SizedBox(height: 20),
-            option(
-              ThemeMode.light,
-              Icons.light_mode_rounded,
-              'Jasny',
-              'Kolorowo i jasno, najlepiej w dzień.',
-            ),
-            option(ThemeMode.dark, Icons.dark_mode_rounded, 'Ciemny', 'Łagodny dla oczu wieczorem.'),
-            option(
-              ThemeMode.system,
-              Icons.brightness_auto_rounded,
-              'Jak w telefonie',
-              'Zmienia się sam razem z ustawieniem telefonu.',
-            ),
-            const SizedBox(height: 8),
-            FilledButton(
-              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(54)),
-              onPressed: onNext,
-              child: const Text('Dalej'),
-            ),
-          ],
-        ),
       ),
     );
   }

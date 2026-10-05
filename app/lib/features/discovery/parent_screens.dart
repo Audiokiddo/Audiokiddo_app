@@ -61,15 +61,22 @@ class MoreScreen extends ConsumerWidget {
         SegmentedButton<ThemeMode>(
           segments: const [
             ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode_rounded), label: Text('Jasny')),
-            ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode_rounded), label: Text('Ciemny')),
             ButtonSegment(
               value: ThemeMode.system,
-              icon: Icon(Icons.phone_iphone_rounded),
-              label: Text('Jak telefon'),
+              icon: Icon(Icons.brightness_auto_rounded),
+              label: Text('Auto'),
             ),
+            ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode_rounded), label: Text('Ciemny')),
           ],
           selected: {ref.watch(appearanceProvider).value ?? ThemeMode.light},
           onSelectionChanged: (s) => ref.read(appearanceProvider.notifier).set(s.single),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Text(
+            'Auto: jasny w dzień, ciemny wieczorem od 20:00 do 6:00.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ),
         ListTile(
           contentPadding: EdgeInsets.zero,

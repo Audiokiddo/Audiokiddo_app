@@ -876,7 +876,12 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
     ...?ref.watch(recentProvider).value,
     if (child != null) ...family!.resultsOf(child.id).map((r) => r.itemId),
   };
+  // Only plays with our own cover art: the row is the shop window of Start.
+  final covers = ref.watch(coverAssetsProvider).value;
+  if (covers == null) return const [];
+  bool hasCover(ContentItem i) => i.cover != null || covers.contains(coverAssetPath(i.id));
   bool fits(ContentItem i) =>
+      hasCover(i) &&
       !played.contains(i.id) &&
       (i.audio.isNotEmpty || i.script != null) &&
       (child == null || (i.ageMin <= child.age && (i.ageMax == null || i.ageMax! >= child.age)));
@@ -889,7 +894,7 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
   final picks = [...fresh, ...rest].where((i) => i.id != _closingPlayId).take(2).toList();
   // "Prawda czy nie?" always closes the row: a quick game for any moment.
   final closing = catalog.item(_closingPlayId);
-  return [...picks, ?closing];
+  return [...picks, if (closing != null && hasCover(closing)) closing];
 });
 
 const _closingPlayId = 'prawda-czy-nie';
