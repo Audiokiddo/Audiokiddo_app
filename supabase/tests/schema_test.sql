@@ -348,3 +348,39 @@ begin
   assert (a -> 'onboarding' ->> 'welcome_done')::int = 1;
   assert jsonb_typeof(a -> 'cohorts') = 'array';
 end $$;
+
+-- CRM: only admins see or change it.
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-0000000000c1', 'szef@audiokiddo.pl'),
+  ('00000000-0000-0000-0000-0000000000c2', 'rodzic@example.com');
+insert into public.admins (user_id) values ('00000000-0000-0000-0000-0000000000c1');
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c2', false); end $$;
+do $$
+begin
+  assert (select count(*) from public.crm_items) = 0, 'a parent sees no CRM items';
+  begin
+    perform public.crm_overview();
+    assert false, 'a parent cannot read the CRM numbers';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.crm_items (kind, title) values ('task', 'hack');
+    assert false, 'a parent cannot add CRM items';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  o jsonb;
+begin
+  assert (select count(*) from public.crm_items where kind = 'task') >= 5, 'the starting board';
+  insert into public.crm_items (kind, area, title, source, decision) values ('idea', 'pack', 'Pakiet Kosmos', 'ai', 'pending');
+  update public.crm_items set decision = 'approved' where title = 'Pakiet Kosmos';
+  o := public.crm_overview();
+  assert (o ->> 'users_total')::int >= 2, o::text;
+  assert (o ->> 'monthly_costs')::numeric = 107, o::text;
+  assert jsonb_typeof(o -> 'recent_users') = 'array';
+end $$;
+reset role;
+select 'crm tests passed';

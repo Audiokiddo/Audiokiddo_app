@@ -226,7 +226,8 @@ class _ParentShell extends ConsumerWidget {
       builder: (context, scaffold) => Stack(
         children: [
           scaffold!,
-          if (welcome.tourPending) const Positioned.fill(child: SzopTour(barHeight: 68)),
+          if (welcome.tourPending)
+            Positioned.fill(child: SzopTour(barHeight: 68, onBranch: (i) => shell.goBranch(i))),
         ],
       ),
       child: Scaffold(

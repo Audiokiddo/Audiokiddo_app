@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:audiokiddo/features/welcome/szop_tour.dart';
+
 import 'helpers.dart';
 
 /// Every main screen on the smallest iPhone (SE, 320×568 pt) and a large-text dark phone,
@@ -120,7 +122,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Nie teraz'));
       await tester.pumpAndSettle();
-      for (var stop = 0; stop < 7; stop++) {
+      for (var stop = 0; stop < tourStops.length; stop++) {
         expect(tester.takeException(), isNull, reason: 'tour stop ${stop + 1} on $name');
         await tester.tap(find.byType(FilledButton).last);
         await tester.pumpAndSettle();

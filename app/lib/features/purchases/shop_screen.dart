@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../welcome/szop_tour.dart';
+
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/tokens.dart';
@@ -65,11 +68,14 @@ class ShopScreen extends ConsumerWidget {
                 if (subscribed)
                   const _FullAccessCard()
                 else
-                  _SubscriptionCard(
-                    yearly: byId[ProductIds.yearly],
-                    monthly: byId[ProductIds.monthly],
-                    itemCount: catalog.items.length,
-                    loading: products.isLoading,
+                  TourTarget(
+                    id: 'subscription',
+                    child: _SubscriptionCard(
+                      yearly: byId[ProductIds.yearly],
+                      monthly: byId[ProductIds.monthly],
+                      itemCount: catalog.items.length,
+                      loading: products.isLoading,
+                    ),
                   ),
                 if (!subscribed) SubscriptionValue(catalog: catalog, byId: byId),
                 if (products.hasValue && byId.isEmpty) const _StoreUnavailable(),

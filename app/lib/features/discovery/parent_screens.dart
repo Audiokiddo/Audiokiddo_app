@@ -18,11 +18,16 @@ import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
+import '../welcome/szop_tour.dart';
 import '../welcome/welcome_controller.dart';
 import '../../core/router.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
+
+  /// Szop’en's tour lights up the downloads.
+  static Widget _tile(String route, Widget child) =>
+      route == '/pobrane' ? TourTarget(id: 'downloads', child: child) : child;
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
     appBar: AppBar(title: const Text('Więcej')),
@@ -38,12 +43,15 @@ class MoreScreen extends ConsumerWidget {
           (Icons.history_rounded, 'Historia słuchania', '/historia'),
           (Icons.route_rounded, 'Plan rozwoju', '/plan'),
         ])
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(item.$1, color: AkBrand.tealDeep),
-            title: Text(item.$2),
-            trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => context.push(item.$3),
+          _tile(
+            item.$3,
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(item.$1, color: AkBrand.tealDeep),
+              title: Text(item.$2),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => context.push(item.$3),
+            ),
           ),
         ListTile(
           contentPadding: EdgeInsets.zero,

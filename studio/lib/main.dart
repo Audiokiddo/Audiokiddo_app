@@ -2,13 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'crm/crm_screen.dart';
 import 'screens/content_screen.dart';
 import 'screens/packs_and_shelves.dart';
 import 'screens/publish_screen.dart';
 import 'screens/server_screen.dart';
+import 'server/studio_server.dart';
 import 'state/studio_controller.dart';
 
-void main() => runApp(const ProviderScope(child: StudioApp()));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // The admin stays signed in across reloads of the page.
+  final server = StudioServer();
+  await server.restore();
+  runApp(
+    ProviderScope(overrides: [studioServerProvider.overrideWithValue(server)], child: const StudioApp()),
+  );
+}
 
 class StudioApp extends StatelessWidget {
   const StudioApp({super.key});
@@ -91,6 +101,7 @@ class _StudioShellState extends ConsumerState<StudioShell> {
                     NavigationRailDestination(icon: Icon(Icons.view_carousel_outlined), label: Text('Półki')),
                     NavigationRailDestination(icon: Icon(Icons.publish_outlined), label: Text('Publikacja')),
                     NavigationRailDestination(icon: Icon(Icons.insights_outlined), label: Text('Serwer')),
+                    NavigationRailDestination(icon: Icon(Icons.rocket_launch_outlined), label: Text('CRM')),
                   ],
                 ),
                 const VerticalDivider(width: 1),
@@ -100,7 +111,8 @@ class _StudioShellState extends ConsumerState<StudioShell> {
                     1 => const PacksScreen(),
                     2 => const ShelvesScreen(),
                     3 => const PublishScreen(),
-                    _ => const ServerScreen(),
+                    4 => const ServerScreen(),
+                    _ => const CrmScreen(),
                   },
                 ),
               ],

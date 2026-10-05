@@ -29,6 +29,7 @@ import 'catalog_providers.dart';
 import 'library_filter.dart';
 import 'seasonal.dart';
 import 'widgets/item_art.dart';
+import '../welcome/szop_tour.dart';
 import 'widgets/catalog_loader.dart';
 
 final screenFreeMinutesProvider = Provider<int>((ref) {
@@ -85,7 +86,7 @@ class HomeScreen extends ConsumerWidget {
                 child: Text('Co dziś robimy?', maxLines: 1, style: Theme.of(context).textTheme.headlineLarge),
               ),
               const SizedBox(height: 16),
-              const HeroShelf(),
+              TourTarget(id: 'hero', child: const HeroShelf()),
               const SizedBox(height: 18),
 
               const _QuickNeeds(),

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../welcome/szop_tour.dart';
+
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
@@ -564,40 +566,44 @@ class _ParentTools extends ConsumerWidget {
     return TwoColumns(
       children: [
         for (final (icon, title, subtitle, onTap) in tools)
-          Material(
-            color: context.palette.surface,
-            borderRadius: BorderRadius.circular(18),
-            child: InkWell(
+          _tourWrap(
+            title,
+            Material(
+              color: context.palette.surface,
               borderRadius: BorderRadius.circular(18),
-              onTap: onTap,
-              child: Semantics(
-                button: true,
-                label: '$title. $subtitle',
-                excludeSemantics: true,
-                child: Container(
-                  constraints: const BoxConstraints(minHeight: 84),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: context.palette.inkMuted.withValues(alpha: .18)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(icon, color: AkBrand.tealDeep, size: 26),
-                      const SizedBox(height: 6),
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-                      ),
-                      Text(
-                        subtitle,
-                        maxLines: 2,
-                        style: Theme.of(context).textTheme.bodySmall
-                            ?.copyWith(color: context.palette.inkMuted),
-                      ),
-                    ],
+              child: InkWell(
+                borderRadius: BorderRadius.circular(18),
+                onTap: onTap,
+                child: Semantics(
+                  button: true,
+                  label: '$title. $subtitle',
+                  excludeSemantics: true,
+                  child: Container(
+                    constraints: const BoxConstraints(minHeight: 84),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: context.palette.inkMuted.withValues(alpha: .18)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(icon, color: AkBrand.tealDeep, size: 26),
+                        const SizedBox(height: 6),
+                        Text(
+                          title,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        Text(
+                          subtitle,
+                          maxLines: 2,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: context.palette.inkMuted),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -606,6 +612,14 @@ class _ParentTools extends ConsumerWidget {
       ],
     );
   }
+
+  /// Szop’en's tour lights up these tools.
+  Widget _tourWrap(String title, Widget child) => switch (title) {
+    'Bez internetu' => TourTarget(id: 'offline', child: child),
+    'Do druku' => TourTarget(id: 'print', child: child),
+    'Tryb dziecka' => TourTarget(id: 'kids', child: child),
+    _ => child,
+  };
 }
 
 /// The most common narrowing, as one row of chips.

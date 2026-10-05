@@ -463,3 +463,10 @@ verify_jwt = false
 # Studio panel; checks the caller itself and allows only accounts in public.admins.
 [functions.admin]
 verify_jwt = false
+
+# CRM in Studio; both check the caller themselves and allow only accounts in public.admins.
+[functions.coo]
+verify_jwt = false
+
+[functions.mailerlite]
+verify_jwt = false

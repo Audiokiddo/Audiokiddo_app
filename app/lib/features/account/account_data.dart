@@ -30,6 +30,7 @@ const familyDataKeys = [
   'alerts_opt_in',
   'access_state',
   'welcome_done',
+  'case_file_tutorial_done',
 ];
 const familyDataPrefixes = ['diplomas_', 'game_resume:', 'lord_'];
 

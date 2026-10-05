@@ -6,6 +6,7 @@
 //   promotions                          → every promotion, newest first
 //   promotion_save { promotion }        → add or change one (id present = change)
 //   promotion_delete { id }
+import { withCors } from "../_shared/cors.ts";
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
 
 const ID = /^[a-z0-9-]+$/;
@@ -32,7 +33,7 @@ function manifestProblem(m: unknown): string | null {
   return null;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(withCors(async (req) => {
   if (req.method !== "POST") return json({ error: "method" }, 405);
   const admin = adminClient();
   const user = await requestUser(req, admin);
@@ -101,4 +102,4 @@ Deno.serve(async (req) => {
     default:
       return json({ error: "action" }, 400);
   }
-});
+}));

@@ -277,6 +277,18 @@ supabase db push
 
 To wgrywa migrację `20261007000001_analytics.sql`: nowe zdarzenia (powitanie, samouczek Szop’ena, „Co teraz?”) i liczby w Studio → Serwer → Statystyki: ukończenia, powtórki, przejście do kolejnej zabawy, częstotliwość, powroty po 1 dniu, tygodniu i miesiącu, kohorty tygodniowe, konwersja z darmowej zabawy na zakup i utrzymanie abonamentu. Funkcji nie trzeba wgrywać ponownie. **Dopóki tego nie zrobisz, nowe zdarzenia z aplikacji serwer odrzuca** (reszta działa normalnie).
 
+## Krok 18. CRM z agentem COO (15 min)
+
+Szczegóły w `docs/CRM.md`. W skrócie, w terminalu w folderze projektu:
+
+```
+supabase db push
+supabase functions deploy coo mailerlite admin
+supabase secrets set ANTHROPIC_API_KEY=twój_klucz
+```
+
+Klucz Claude bierzesz z console.anthropic.com (ustaw tam limit miesięczny). Potem `bash tool/studio_build.sh` i w FileZilli wgraj zawartość `studio/build/web` do `public_html/studio`. MailerLite podłączysz później (klucze `MAILERLITE_API_KEY` i `MAILERLITE_FROM`).
+
 ---
 
 ## Kolejność w skrócie

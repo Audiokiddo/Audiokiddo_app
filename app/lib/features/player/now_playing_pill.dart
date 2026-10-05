@@ -8,6 +8,7 @@ import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
 import '../discovery/queue_controller.dart';
 import '../kids_mode/kids_mode_controller.dart';
+import '../pdf/case_file_tutorial.dart';
 import '../purchases/after_free_play.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
@@ -49,6 +50,15 @@ class _NowPlayingPillState extends ConsumerState<NowPlayingPill> {
       final ended = now.value?.processingState == AudioProcessingState.completed;
       final wasEnded = before?.value?.processingState == AudioProcessingState.completed;
       if (ended && !wasEnded) _afterPlay();
+    });
+    // The first case with a case file: Szop’en's detective tutorial before it plays.
+    ref.listenManual(currentMediaProvider, (before, now) {
+      final id = now.value?.id;
+      if (id == null || id == before?.value?.id) return;
+      final item = ref.read(catalogProvider).value?.item(id);
+      final context = widget.router.routerDelegate.navigatorKey.currentContext;
+      if (item == null || context == null || ref.read(kidsModeProvider).active) return;
+      maybeShowCaseFileTutorial(context, ref, item);
     });
   }
 
