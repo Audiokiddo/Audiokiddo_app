@@ -32,6 +32,12 @@ enum AccountError {
   server,
   canceled,
   notConfigured,
+
+  /// No account with this e-mail (never made, or deleted): register again.
+  noAccount,
+
+  /// Registering an e-mail that already has an account.
+  accountExists,
 }
 
 /// Shortest password accepted (the server's own rule must not be stricter).
@@ -134,10 +140,17 @@ abstract interface class AccountService {
   /// Emits whenever the parent signs in or out.
   Stream<AccountUser?> get changes;
 
-  /// Sends a one-time code to [email]. Creates the account on first use.
+  /// Sends a one-time sign-in code to an existing account (forgotten password). Never creates
+  /// an account: a deleted or unknown e-mail gets [AccountError.noAccount].
   Future<void> sendCode(String email);
 
   Future<void> verifyCode(String email, String code);
+
+  /// Registers with e-mail and password. Returns true when the e-mail must be confirmed with
+  /// the code just sent ([verifySignUp]), false when the parent is signed in already.
+  Future<bool> signUp(String email, String password);
+
+  Future<void> verifySignUp(String email, String code);
 
   /// Sign in with the password the parent set (accounts made with a code have none until they
   /// set one in the account screen).
@@ -209,7 +222,24 @@ class SupabaseAccountService implements AccountService {
 
   @override
   Future<void> sendCode(String email) =>
-      _guard(() => _auth.signInWithOtp(email: email.trim().toLowerCase(), shouldCreateUser: true));
+      _guard(() => _auth.signInWithOtp(email: email.trim().toLowerCase(), shouldCreateUser: false));
+
+  @override
+  Future<bool> signUp(String email, String password) => _guard(() async {
+    if (password.length < minPasswordLength) throw const AccountException(AccountError.weakPassword);
+    final response = await _auth.signUp(email: email.trim().toLowerCase(), password: password);
+    // With e-mail confirmation on, an e-mail that already has an account comes back with no
+    // identities (Supabase does not reveal it otherwise).
+    if (response.user != null && (response.user!.identities?.isEmpty ?? false)) {
+      throw const AccountException(AccountError.accountExists);
+    }
+    return response.session == null;
+  });
+
+  @override
+  Future<void> verifySignUp(String email, String code) => _guard(
+    () => _auth.verifyOTP(type: OtpType.signup, email: email.trim().toLowerCase(), token: code.trim()),
+  );
 
   @override
   Future<void> verifyCode(String email, String code) => _guard(
@@ -385,7 +415,9 @@ class SupabaseAccountService implements AccountService {
   static AccountError _authError(AuthException e) => switch (e.code) {
     'email_address_invalid' || 'validation_failed' => AccountError.invalidEmail,
     'over_email_send_rate_limit' || 'over_request_rate_limit' => AccountError.tooManyRequests,
-    'otp_expired' || 'otp_disabled' => AccountError.wrongCode,
+    'otp_disabled' || 'signup_disabled' || 'user_not_found' => AccountError.noAccount,
+    'user_already_exists' || 'email_exists' => AccountError.accountExists,
+    'otp_expired' => AccountError.wrongCode,
     'invalid_credentials' => AccountError.wrongPassword,
     'weak_password' || 'same_password' => AccountError.weakPassword,
     _ when e.statusCode == '429' => AccountError.tooManyRequests,
@@ -409,6 +441,14 @@ class SignedOutAccountService implements AccountService {
 
   @override
   Future<void> verifyCode(String email, String code) async =>
+      throw const AccountException(AccountError.server);
+
+  @override
+  Future<bool> signUp(String email, String password) async =>
+      throw const AccountException(AccountError.server);
+
+  @override
+  Future<void> verifySignUp(String email, String code) async =>
       throw const AccountException(AccountError.server);
 
   @override

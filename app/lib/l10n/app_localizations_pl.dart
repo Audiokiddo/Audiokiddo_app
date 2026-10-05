@@ -676,7 +676,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get accountErrorWrongPassword =>
-      'Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem.';
+      'Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem. Konto usunięte? Załóż je na nowo.';
 
   @override
   String get accountErrorWeakPassword => 'Hasło musi mieć co najmniej 8 znaków.';

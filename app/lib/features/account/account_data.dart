@@ -46,6 +46,9 @@ Future<bool> clearFamilyData(AppDatabase db) async {
   return true;
 }
 
+/// After the account was deleted: the phone belongs to nobody until the next sign-in.
+Future<void> forgetAccountOwner(AppDatabase db) => db.deleteValue(_ownerKey);
+
 /// After a sign-in: the phone's family data belongs to the account that signed in. When a
 /// different account signs in than the last one, the previous family's names, results,
 /// diplomas, favourites and history are removed, so nobody sees another family's data. The

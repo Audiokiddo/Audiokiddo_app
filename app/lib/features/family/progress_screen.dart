@@ -301,11 +301,13 @@ class _ReminderRow extends ConsumerWidget {
           ? l10n.progressRemindersAt('${s.hour}:${s.minute.toString().padLeft(2, '0')}')
           : l10n.progressRemindersOff,
       chevron: true,
-      onTap: () => s.enabled
-          ? ref.read(remindersProvider.notifier).disable()
-          : Navigator.of(context).push(
-              swipeRoute<void>(builder: (route) => ReminderOffer(onDone: () => Navigator.of(route).pop())),
-            ),
+      // On: choose a new hour (or turn off there); off: the offer with any hour.
+      onTap: () => Navigator.of(context).push(
+        swipeRoute<void>(
+          builder: (route) =>
+              ReminderOffer(initialTime: (s.hour, s.minute), onDone: () => Navigator.of(route).pop()),
+        ),
+      ),
     );
   }
 }

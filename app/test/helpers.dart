@@ -16,6 +16,7 @@ import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
 import 'package:audiokiddo/features/welcome/welcome_controller.dart';
 import 'package:audiokiddo/core/theme/appearance.dart';
+import 'package:audiokiddo/features/home/launch_greeting.dart';
 import 'package:audiokiddo/features/parent_voice/parent_voice.dart';
 import 'package:audiokiddo/features/player/player_providers.dart';
 import 'package:audiokiddo/features/purchases/preview_player.dart';
@@ -86,6 +87,7 @@ List<Override> testOverrides(
   welcomeProvider.overrideWithValue(WelcomeController(db, done: welcomeDone)),
   databaseProvider.overrideWithValue(db),
   appearanceDefaultProvider.overrideWithValue(ThemeMode.light),
+  launchGreetingEnabledProvider.overrideWithValue(false),
   kidsModeProvider.overrideWithValue(kidsMode ?? KidsModeController(db)),
   fileTransferProvider.overrideWithValue(FakeTransfer(downloadsDir ?? Directory.systemTemp)),
   contentUrlResolverProvider.overrideWithValue(const BaseUrlResolver('http://test.invalid')),

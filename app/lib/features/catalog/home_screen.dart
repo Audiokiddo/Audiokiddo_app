@@ -29,6 +29,7 @@ import 'catalog_providers.dart';
 import 'library_filter.dart';
 import 'seasonal.dart';
 import 'widgets/item_art.dart';
+import '../home/launch_greeting.dart';
 import '../welcome/szop_tour.dart';
 import 'widgets/catalog_loader.dart';
 
@@ -75,6 +76,7 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
               const _SzopBubble(),
+              const LaunchGreeting(),
               const AlertsKeeper(),
               const FirstPlayCard(),
               const AccessEndingBanner(),
@@ -573,14 +575,6 @@ class _DiscoverPacks extends ConsumerWidget {
     final plays = locked.fold(0, (n, s) => n + s.items.length);
     final minutes = locked.fold(0, (n, s) => n + s.minutes);
     final text = Theme.of(context).textTheme;
-    // The bundle that covers the most of what is missing, when the store knows its price.
-    final bundle = [ProductIds.bundleThree, ProductIds.bundleTwo]
-        .map((id) => (id: id, product: byId[id], packs: bundlePacks(id, catalog)))
-        .where((b) => b.product != null && b.packs.where((p) => !ownsPack(scopes, p.id)).length >= 2)
-        .firstOrNull;
-    final saved = bundle == null
-        ? null
-        : bundleSavings(bundle.product!, [for (final p in bundle.packs) byId[p.storeProductId]]);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -593,31 +587,15 @@ class _DiscoverPacks extends ConsumerWidget {
           style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
         ),
         const SizedBox(height: 10),
-        // Two packs or more: the year of everything is the natural next step.
-        if (ownedCount >= 2)
-          _BundleTeaser(
-            title: 'Masz $ownedCount z ${all.length} pakietów',
-            line: byId[ProductIds.yearly] == null
-                ? 'W abonamencie masz wszystkie pakiety, gry i każdą nowość.'
-                : 'Za ${byId[ProductIds.yearly]!.price} rocznie masz wszystkie pakiety, gry i każdą nowość. '
-                      'Twoje pakiety zostają Twoje na zawsze.',
-          ),
+        // The subscription comes first: everything, and a new pack every month.
+        _BundleTeaser(
+          title: ownedCount >= 2 ? 'Masz $ownedCount z ${all.length} pakietów' : 'Wszystko w abonamencie',
+          line: byId[ProductIds.yearly]?.rawPrice == null
+              ? 'Wszystkie pakiety od razu i nowy pakiet co miesiąc.'
+              : 'Wszystkie pakiety od razu i nowy pakiet co miesiąc, za '
+                    '${formatMoney(byId[ProductIds.yearly]!.rawPrice! / 12, byId[ProductIds.yearly]!.currencyCode)} miesięcznie.',
+        ),
         for (final s in locked) _DiscoverCard(summary: s, product: byId[s.pack.storeProductId]),
-        if (ownedCount >= 2)
-          const SizedBox.shrink()
-        else if (bundle != null && saved != null)
-          _BundleTeaser(
-            title: 'Zestaw ${bundle.packs.length} pakietów',
-            line:
-                'Taniej o ${formatMoney(saved, bundle.product!.currencyCode)} niż osobno. '
-                'Kupujecie raz, zostaje na zawsze.',
-            price: bundle.product!.price,
-          )
-        else
-          _BundleTeaser(
-            title: 'Wszystko w abonamencie',
-            line: 'Każdy pakiet i każda nowość, bez wybierania. Można zrezygnować w każdej chwili.',
-          ),
       ],
     );
   }
@@ -745,11 +723,10 @@ class _DiscoverCard extends ConsumerWidget {
 }
 
 class _BundleTeaser extends StatelessWidget {
-  const _BundleTeaser({required this.title, required this.line, this.price});
+  const _BundleTeaser({required this.title, required this.line});
 
   final String title;
   final String line;
-  final String? price;
 
   @override
   Widget build(BuildContext context) {
@@ -779,13 +756,6 @@ class _BundleTeaser extends StatelessWidget {
                   ],
                 ),
               ),
-              if (price != null) ...[
-                const SizedBox(width: 8),
-                Text(
-                  price!,
-                  style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
-                ),
-              ],
               const Icon(Icons.chevron_right_rounded, color: ink),
             ],
           ),
@@ -892,7 +862,11 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
       int rank(ContentItem i) => ref.watch(canPlayProvider(i)) ? 0 : 1;
       return rank(a).compareTo(rank(b));
     });
-  final picks = [...fresh, ...rest].where((i) => i.id != _closingPlayId).take(2).toList();
+  // Up to seven, new ones first; when few are left unheard, favourites heard before fill in.
+  final heard = catalog.items.where(
+    (i) => hasCover(i) && played.contains(i.id) && (child == null || i.ageMin <= child.age),
+  );
+  final picks = [...fresh, ...rest, ...heard].where((i) => i.id != _closingPlayId).take(7).toList();
   // "Prawda czy nie?" always closes the row: a quick game for any moment.
   final closing = catalog.item(_closingPlayId);
   return [...picks, if (closing != null && hasCover(closing)) closing];

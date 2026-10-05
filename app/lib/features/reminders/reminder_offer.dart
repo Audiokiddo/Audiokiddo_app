@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/router.dart';
+
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ambient_motion.dart';
@@ -22,9 +24,12 @@ ReminderTexts reminderTexts(AppLocalizations l10n) => [
 /// "Can I remind you?" with a live preview: a sample notification slides onto a phone,
 /// one of the real texts. The system prompt comes only after "Włącz przypomnienia".
 class ReminderOffer extends ConsumerStatefulWidget {
-  const ReminderOffer({super.key, required this.onDone});
+  const ReminderOffer({super.key, required this.onDone, this.initialTime});
 
   final VoidCallback onDone;
+
+  /// The time to start from (changing the hour of reminders already on).
+  final (int, int)? initialTime;
 
   @override
   ConsumerState<ReminderOffer> createState() => _ReminderOfferState();
@@ -32,7 +37,7 @@ class ReminderOffer extends ConsumerStatefulWidget {
 
 class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTickerProviderStateMixin {
   late final _slide = AnimationController(vsync: this, duration: const Duration(milliseconds: 3200));
-  (int, int) _time = (18, 30);
+  late (int, int) _time = widget.initialTime ?? (18, 30);
   bool _busy = false;
   int _sample = 3;
 
@@ -240,6 +245,24 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                                 labelStyle: selectableChipLabel(context, selected: _time == time),
                                 onSelected: (_) => setState(() => _time = time),
                               ),
+                            // Any hour the family likes.
+                            ChoiceChip(
+                              avatar: const Icon(Icons.schedule_rounded, size: 18),
+                              label: Text(
+                                times.any((t) => t.$2 == _time)
+                                    ? 'Własna godzina'
+                                    : 'Własna: ${_time.$1}:${_time.$2.toString().padLeft(2, '0')}',
+                              ),
+                              selected: !times.any((t) => t.$2 == _time),
+                              labelStyle: selectableChipLabel(
+                                context,
+                                selected: !times.any((t) => t.$2 == _time),
+                              ),
+                              onSelected: (_) async {
+                                final picked = await pickReminderTime(context, _time);
+                                if (picked != null) setState(() => _time = picked);
+                              },
+                            ),
                           ],
                         ),
                         const SizedBox(height: AkSpace.s),
@@ -313,4 +336,74 @@ class _RemindersKeeperState extends ConsumerState<RemindersKeeper> {
 
   @override
   Widget build(BuildContext context) => widget.child;
+}
+
+/// The system time picker for a reminder, in 24-hour format.
+Future<(int, int)?> pickReminderTime(BuildContext context, (int, int) current) async {
+  final picked = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay(hour: current.$1, minute: current.$2),
+    helpText: 'O której przypominać?',
+    builder: (context, child) =>
+        MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
+  );
+  return picked == null ? null : (picked.hour, picked.minute);
+}
+
+/// Reminders in settings: on at a time (tap to change the hour or turn off), or off.
+class ReminderTile extends ConsumerWidget {
+  const ReminderTile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final s = ref.watch(remindersProvider).value ?? const ReminderSettings();
+    final at = '${s.hour}:${s.minute.toString().padLeft(2, '0')}';
+    void open() => Navigator.of(context).push(
+      swipeRoute<void>(
+        builder: (route) =>
+            ReminderOffer(initialTime: (s.hour, s.minute), onDone: () => Navigator.of(route).pop()),
+      ),
+    );
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: const Icon(Icons.notifications_active_rounded, color: AkBrand.orange),
+      title: Text(l10n.progressReminders),
+      subtitle: Text(s.enabled ? l10n.progressRemindersAt(at) : l10n.progressRemindersOff),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: !s.enabled
+          ? open
+          : () => showModalBottomSheet<void>(
+              context: context,
+              showDragHandle: true,
+              builder: (sheet) => SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.schedule_rounded),
+                      title: Text('Zmień godzinę (teraz $at)'),
+                      onTap: () async {
+                        Navigator.of(sheet).pop();
+                        final picked = await pickReminderTime(context, (s.hour, s.minute));
+                        if (picked == null || !context.mounted) return;
+                        await ref
+                            .read(remindersProvider.notifier)
+                            .enable(hour: picked.$1, minute: picked.$2, texts: reminderTexts(l10n));
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.notifications_off_outlined),
+                      title: const Text('Wyłącz przypomnienia'),
+                      onTap: () {
+                        Navigator.of(sheet).pop();
+                        ref.read(remindersProvider.notifier).disable();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
 }

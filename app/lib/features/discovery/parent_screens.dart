@@ -18,6 +18,7 @@ import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
+import '../reminders/reminder_offer.dart';
 import '../welcome/szop_tour.dart';
 import '../welcome/welcome_controller.dart';
 import '../../core/router.dart';
@@ -95,6 +96,7 @@ class MoreScreen extends ConsumerWidget {
           onTap: () => context.push('/ikona'),
         ),
         const RefSection('Powiadomienia'),
+        const ReminderTile(),
         const AlertsSwitch(),
         const RefSection('Szop’en — kolega na dyżurze'),
         SwitchListTile(

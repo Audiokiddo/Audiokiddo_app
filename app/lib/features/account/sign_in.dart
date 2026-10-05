@@ -23,6 +23,8 @@ String accountErrorText(AppLocalizations l10n, AccountError error) => switch (er
   AccountError.server => l10n.accountErrorServer,
   AccountError.notConfigured => l10n.signInNotConfigured,
   AccountError.canceled => '',
+  AccountError.noAccount => 'Nie ma konta z tym adresem e-mail. Jeśli je usunąłeś, załóż konto na nowo.',
+  AccountError.accountExists => 'Konto z tym adresem już istnieje. Zaloguj się hasłem albo kodem.',
 };
 
 /// After any sign-in: assign shop purchases made with this e-mail (not fatal if it fails,
@@ -258,7 +260,7 @@ class EmailSignInForm extends ConsumerStatefulWidget {
   final Widget Function(bool value, ValueChanged<bool> onChanged)? consent;
   final bool autofocus;
 
-  /// New accounts: an optional password, set right after the code is confirmed.
+  /// Registration: e-mail and a required password; the code only confirms the e-mail.
   final bool offerPassword;
 
   @override
@@ -306,7 +308,7 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
       setState(() => _error = 'Zaznacz zgodę na regulamin i politykę prywatności.');
       return;
     }
-    if (widget.offerPassword && _password.text.isNotEmpty && _password.text.length < minPasswordLength) {
+    if (widget.offerPassword && _password.text.length < minPasswordLength) {
       setState(() => _error = AppLocalizations.of(context).accountErrorWeakPassword);
       return;
     }
@@ -316,7 +318,17 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
       return;
     }
     await _run(() async {
-      await ref.read(accountServiceProvider).sendCode(email);
+      final account = ref.read(accountServiceProvider);
+      if (widget.offerPassword) {
+        // Registration: signed in at once, or a code confirms the e-mail first.
+        if (!await account.signUp(email, _password.text)) {
+          await afterSignIn(ref);
+          widget.onSignedIn?.call();
+          return;
+        }
+      } else {
+        await account.sendCode(email);
+      }
       _code.clear();
       setState(() => _sentTo = email);
       _startCooldown();
@@ -334,9 +346,11 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   }
 
   Future<void> _verify() => _run(() async {
-    await ref.read(accountServiceProvider).verifyCode(_sentTo!, _code.text);
-    if (widget.offerPassword && _password.text.isNotEmpty) {
-      await ref.read(accountServiceProvider).setPassword(_password.text);
+    final account = ref.read(accountServiceProvider);
+    if (widget.offerPassword) {
+      await account.verifySignUp(_sentTo!, _code.text);
+    } else {
+      await account.verifyCode(_sentTo!, _code.text);
     }
     await afterSignIn(ref);
     widget.onSignedIn?.call();
@@ -375,11 +389,7 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
           ),
           if (widget.offerPassword) ...[
             const SizedBox(height: AkSpace.s),
-            PasswordField(
-              controller: _password,
-              label: 'Hasło (opcjonalnie, min. 8 znaków)',
-              enabled: !_busy,
-            ),
+            PasswordField(controller: _password, label: 'Hasło (min. 8 znaków)', enabled: !_busy),
           ],
           if (widget.consent case final consent?) ...[
             const SizedBox(height: AkSpace.s),

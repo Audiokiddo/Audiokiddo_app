@@ -8,9 +8,9 @@ import '../catalog/home_screen.dart' show AudioKiddoLogo;
 import '../purchases/shop.dart';
 import 'sign_in.dart';
 
-/// The only screen without a signed-in parent: sign in, or create an account. AudioKiddo has
-/// no passwords: every sign-in sends a one-time code to the e-mail, so there is nothing to
-/// forget or reset. The router opens the app as soon as the account is signed in.
+/// The only screen without a signed-in parent: sign in with a password, or create an account
+/// with e-mail and password (a code confirms the e-mail). A forgotten password: sign in with
+/// a code from the e-mail. The router opens the app as soon as the account is signed in.
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
@@ -20,7 +20,7 @@ class SignInScreen extends ConsumerStatefulWidget {
 
 class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool _newAccount = false;
-  bool _withPassword = false;
+  bool _withPassword = true;
   String? _hint;
 
   @override
@@ -56,28 +56,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     selected: {_newAccount},
                     onSelectionChanged: (s) => setState(() {
                       _newAccount = s.single;
+                      _withPassword = true;
                       _hint = null;
                     }),
                   ),
                   const SizedBox(height: 16),
-                  if (!_newAccount) ...[
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        ChoiceChip(
-                          label: const Text('Kodem na e-mail'),
-                          selected: !_withPassword,
-                          onSelected: (_) => setState(() => _withPassword = false),
-                        ),
-                        ChoiceChip(
-                          label: const Text('Hasłem'),
-                          selected: _withPassword,
-                          onSelected: (_) => setState(() => _withPassword = true),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                  ],
                   if (_hint != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
@@ -97,11 +80,19 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       autofocus: false,
                       title: _newAccount ? 'Załóż konto rodzica' : 'Zaloguj się kodem',
                       body: _newAccount
-                          ? 'Podaj e-mail, wyślemy na niego kod. Hasło jest opcjonalne: możesz logować się kodem albo hasłem. Zakupy z audiokiddo.pl na ten adres pojawią się same.'
-                          : 'Podaj e-mail, którego używasz w AudioKiddo. Wyślemy na niego kod logowania.',
+                          ? 'Podaj e-mail i hasło. Wyślemy kod, który potwierdzi adres. Zakupy z audiokiddo.pl na ten adres pojawią się same.'
+                          : 'Nie pamiętasz hasła? Wyślemy kod logowania na e-mail Twojego konta. Potem ustawisz nowe hasło w Więcej → Konto i zakupy.',
                       sendLabel: _newAccount ? 'Załóż konto' : 'Wyślij kod',
                       consent: _newAccount ? _consent : null,
                       offerPassword: _newAccount,
+                    ),
+                  if (!_newAccount && !_withPassword)
+                    TextButton(
+                      onPressed: () => setState(() {
+                        _withPassword = true;
+                        _hint = null;
+                      }),
+                      child: const Text('Wróć do logowania hasłem'),
                     ),
                   const SizedBox(height: 4),
                   Container(
@@ -116,8 +107,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'Logujesz się kodem z maila albo hasłem. Nie pamiętasz hasła? Zaloguj się kodem i ustaw nowe '
-                            'w Konto i zakupy. Nie ma kodu? Zajrzyj do spamu albo wyślij go ponownie.',
+                            'Logujesz się e-mailem i hasłem. Nie pamiętasz hasła? Stuknij „Nie pamiętam hasła”, '
+                            'zaloguj się kodem z maila i ustaw nowe. Nie ma kodu? Zajrzyj do spamu.',
                             style: text.bodySmall,
                           ),
                         ),

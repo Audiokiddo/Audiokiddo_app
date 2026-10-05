@@ -42,10 +42,31 @@ class FakeAccountService implements AccountService {
   @override
   Stream<AccountUser?> get changes => _changes.stream;
 
+  /// E-mails with an account (registered, or signed in before); deleting removes it.
+  final accounts = <String>{'rodzic@example.com'};
+
   @override
   Future<void> sendCode(String email) async {
     if (offline) throw const AccountException(AccountError.offline);
+    if (!accounts.contains(email.trim().toLowerCase())) throw const AccountException(AccountError.noAccount);
     sentTo.add(email);
+  }
+
+  @override
+  Future<bool> signUp(String email, String password) async {
+    if (password.length < minPasswordLength) throw const AccountException(AccountError.weakPassword);
+    if (accounts.contains(email.trim().toLowerCase()))
+      throw const AccountException(AccountError.accountExists);
+    sentTo.add(email);
+    return true;
+  }
+
+  @override
+  Future<void> verifySignUp(String email, String code) async {
+    if (code != '123456') throw const AccountException(AccountError.wrongCode);
+    accounts.add(email.trim().toLowerCase());
+    _user = AccountUser(id: 'u-$email', email: email);
+    _changes.add(_user);
   }
 
   @override
@@ -135,6 +156,7 @@ class FakeAccountService implements AccountService {
   @override
   Future<void> deleteAccount() async {
     deleted = true;
+    accounts.remove(_user?.email.toLowerCase());
     _entitlements = [];
     await signOut();
   }
@@ -322,10 +344,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Załóż konto'), findsOneWidget);
 
-    // A new account needs the consent first.
+    // A new account: e-mail and a password, the consent first, then the code confirms it.
     await tester.tap(find.text('Załóż konto').first);
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).first, 'nowy@example.com');
+    await tester.enterText(find.byType(TextField).at(0), 'nowy@example.com');
+    await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Hasło musi mieć co najmniej 8 znaków.'),
+      findsOneWidget,
+      reason: 'a password is required',
+    );
+    await tester.enterText(find.byType(TextField).at(1), 'nowehaslo1');
     await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
     await tester.pumpAndSettle();
     expect(find.text('Zaznacz zgodę na regulamin i politykę prywatności.'), findsOneWidget);
@@ -373,8 +403,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Hasłem'));
-    await tester.pumpAndSettle();
+    expect(find.text('Hasłem'), findsNothing, reason: 'the password is the way in');
     await tester.enterText(find.byType(TextField).at(0), 'rodzic@example.com');
     await tester.enterText(find.byType(TextField).at(1), 'zle-haslo');
     await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj'));
@@ -385,8 +414,13 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('ustaw nowe hasło w Więcej'), findsOneWidget);
     expect(find.text('Zaloguj się kodem'), findsOneWidget);
+    // An e-mail without an account (deleted, never made) is told to register again.
+    await tester.enterText(find.byType(TextField).first, 'nikt@example.com');
+    await tester.tap(find.text('Wyślij kod'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Nie ma konta z tym adresem'), findsOneWidget);
 
-    await tester.tap(find.text('Hasłem'));
+    await tester.tap(find.text('Wróć do logowania hasłem'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).at(0), 'rodzic@example.com');
     await tester.enterText(find.byType(TextField).at(1), 'tajnehaslo1');
@@ -455,6 +489,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(account.deleted, isTrue);
       expect(find.text('Kontynuuj z e-mailem'), findsOneWidget);
+      // Gone for good: a code to the same e-mail says there is no account any more.
+      await tester.tap(find.text('Kontynuuj z e-mailem'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'rodzic@example.com');
+      await tester.tap(find.text('Wyślij kod'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Nie ma konta z tym adresem'), findsOneWidget);
     });
 
     testWidgets('Apple, Google and e-mail are offered; a closed Apple sheet shows nothing', (tester) async {

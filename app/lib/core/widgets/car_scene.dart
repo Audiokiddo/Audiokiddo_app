@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/tokens.dart';
 import 'ambient_motion.dart';
-import 'kiddo.dart';
+import 'szop.dart';
 
 /// A little road-trip gag for parents: the family car bumps along, a parent drives, Kiddo
 /// leans out of the back seat with [line]. Decorative; the words are also real text.
@@ -62,7 +62,7 @@ class _CarSceneState extends ConsumerState<CarScene> with SingleTickerProviderSt
                   offset: Offset(0, -math.sin(_drive.value * math.pi * 2) * 2),
                   child: child,
                 ),
-                child: const Kiddo(size: 58, mood: KiddoMood.talking),
+                child: const SzopSticker(SzopPose.zadowolony, height: 58),
               ),
             ),
           ),

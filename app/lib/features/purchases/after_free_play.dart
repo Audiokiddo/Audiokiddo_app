@@ -14,6 +14,7 @@ import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
 import 'store_gateway.dart';
+import 'subscription_value.dart';
 
 /// Promised to subscribers: everything now, and one new pack every month.
 const subscriptionPromise = 'Wszystkie zabawy teraz i jeden nowy pakiet co miesiąc';
@@ -131,14 +132,6 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
     final products = ref.watch(storeProductsProvider(productsKey(ids))).value ?? const <StoreProduct>[];
     final byId = {for (final p in products) p.id: p};
     final packProduct = byId[pack?.storeProductId];
-    final yearly = byId[ProductIds.yearly];
-    final monthly = byId[ProductIds.monthly];
-    final savings = subscriptionSavings(
-      packs: [for (final id in packIds) ?byId[id]],
-      yearly: yearly,
-      monthly: monthly,
-    );
-    String money(double v) => formatMoney(v, yearly?.currencyCode ?? 'PLN');
     final busy = ref.watch(purchaseControllerProvider).busyProductId;
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
@@ -233,119 +226,11 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
               style: text.bodyMedium?.copyWith(color: ink),
             ),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(20)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Abonament: najwięcej za najmniej',
-                        style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
-                      ),
-                    ),
-                    if (savings != null && savings.saving > 0)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(color: ink, borderRadius: BorderRadius.circular(10)),
-                        child: Text(
-                          '−${money(savings.saving)}',
-                          style: text.labelMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                for (final line in [
-                  subscriptionPromise,
-                  'Nowy pakiet w cenie abonamentu, bez dopłat',
-                  if (yearly?.rawPrice != null) 'Rocznie tylko ${money(yearly!.rawPrice! / 12)} miesięcznie',
-                  if (yearly?.freeTrialDays != null) 'Pierwsze ${yearly!.freeTrialDays} dni za darmo',
-                ])
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Icon(Icons.check_circle_rounded, size: 18, color: ink),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(line, style: text.bodyMedium?.copyWith(color: ink)),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (savings != null) ...[
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: .7),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _CompareRow('Pakiety osobno dziś', money(savings.packsToday)),
-                        _CompareRow(
-                          'Do tego 12 nowych pakietów w roku',
-                          money(savings.yearValue - savings.packsToday),
-                        ),
-                        _CompareRow('Razem kupując osobno', money(savings.yearValue), strong: true),
-                        if (yearly != null) _CompareRow('Abonament roczny', yearly.price, strong: true),
-                        const Divider(height: 14),
-                        _CompareRow('Oszczędzacie w pierwszym roku', money(savings.saving), strong: true),
-                        if (savings.vsMonthly > 0)
-                          _CompareRow('Rocznie zamiast co miesiąc', '−${money(savings.vsMonthly)}'),
-                      ],
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 10),
-                if (yearly != null)
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: ink,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(52),
-                    ),
-                    onPressed: busy != null ? null : () => buyWithGate(context, ref, yearly),
-                    child: busy == yearly.id
-                        ? const _Spinner(color: Colors.white)
-                        : Text('Rocznie ${yearly.price}'),
-                  ),
-                if (monthly != null) ...[
-                  const SizedBox(height: 8),
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: ink,
-                      side: const BorderSide(color: ink),
-                      minimumSize: const Size.fromHeight(46),
-                    ),
-                    onPressed: busy != null ? null : () => buyWithGate(context, ref, monthly),
-                    child: busy == monthly.id
-                        ? const _Spinner(color: ink)
-                        : Text('Miesięcznie ${monthly.price}'),
-                  ),
-                ],
-                if (yearly == null && monthly == null)
-                  Text(subscriptionPromise, style: text.bodySmall?.copyWith(color: ink)),
-              ],
-            ),
-          ),
+          SubscriptionOffer(catalog: catalog, byId: byId, compact: true),
           if (pack != null && lockedInPack.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text('Albo tylko ten pakiet, na zawsze:', style: text.bodySmall?.copyWith(color: ink)),
-            const SizedBox(height: 6),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AkBrand.tealDeep,
-                side: const BorderSide(color: AkBrand.tealDeep),
-                minimumSize: const Size.fromHeight(48),
-              ),
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: AkBrand.tealDeep),
               onPressed: packProduct == null
                   ? () => openPack(context, pack.id)
                   : busy != null
@@ -355,37 +240,14 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
                   ? const _Spinner(color: AkBrand.tealDeep)
                   : Text(
                       packProduct == null
-                          ? 'Zobacz pakiet ${pack.title}'
-                          : 'Odblokuj pakiet ${pack.title} · ${packProduct.price}',
+                          ? 'albo zobacz sam pakiet ${pack.title}'
+                          : 'albo tylko pakiet ${pack.title} na zawsze · ${packProduct.price}',
                       textAlign: TextAlign.center,
                     ),
             ),
           ],
         ],
       ],
-    );
-  }
-}
-
-class _CompareRow extends StatelessWidget {
-  const _CompareRow(this.label, this.value, {this.strong = false});
-
-  final String label;
-  final String value;
-  final bool strong;
-
-  @override
-  Widget build(BuildContext context) {
-    final style = Theme.of(context).textTheme.bodyMedium
-        ?.copyWith(color: const Color(0xFF211C35), fontWeight: strong ? FontWeight.w800 : FontWeight.w400);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1),
-      child: Row(
-        children: [
-          Expanded(child: Text(label, style: style)),
-          Text(value, style: style),
-        ],
-      ),
     );
   }
 }

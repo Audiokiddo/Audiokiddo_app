@@ -51,7 +51,7 @@ class ShopScreen extends ConsumerWidget {
                 Text('Sklep', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 4),
                 Text(
-                  'Zabawy bez ekranu na każdy dzień. Kupujesz raz albo masz wszystko w abonamencie.',
+                  'Zabawy bez ekranu na każdy dzień. W abonamencie masz wszystkie i nowy pakiet co miesiąc.',
                   style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
                 ),
                 const PromotionBanner(),
@@ -70,34 +70,57 @@ class ShopScreen extends ConsumerWidget {
                 else
                   TourTarget(
                     id: 'subscription',
-                    child: _SubscriptionCard(
-                      yearly: byId[ProductIds.yearly],
-                      monthly: byId[ProductIds.monthly],
-                      itemCount: catalog.items.length,
-                      loading: products.isLoading,
-                    ),
+                    child: products.isLoading
+                        ? const Center(
+                            child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator()),
+                          )
+                        : SubscriptionOffer(catalog: catalog, byId: byId),
                   ),
-                if (!subscribed) SubscriptionValue(catalog: catalog, byId: byId),
                 if (products.hasValue && byId.isEmpty) const _StoreUnavailable(),
-                const RefSection('Pakiety'),
-                for (final pack in catalog.packs)
-                  _PackCard(
-                    summary: PackSummary(pack, catalog),
-                    product: byId[pack.storeProductId],
-                    owned: ownsPack(scopes, pack.id),
-                  ),
-                if (!subscribed) ...[
-                  const RefSection('Zestawy, taniej razem'),
-                  for (final id in [ProductIds.bundleTwo, ProductIds.bundleThree])
-                    _BundleCard(
-                      productId: id,
-                      packs: bundlePacks(id, catalog),
-                      product: byId[id],
-                      packProducts: [for (final p in bundlePacks(id, catalog)) byId[p.storeProductId]],
-                      owned: bundlePacks(id, catalog).every((p) => ownsPack(scopes, p.id)),
+                // Buying for good is there, but folded: the subscription is the main choice.
+                if (!subscribed)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        tilePadding: EdgeInsets.zero,
+                        title: Text(
+                          'Wolisz kupić pakiet na zawsze?',
+                          style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        subtitle: const Text('Pakiety, zestawy i pojedyncze zabawy'),
+                        children: [
+                          for (final pack in catalog.packs)
+                            _PackCard(
+                              summary: PackSummary(pack, catalog),
+                              product: byId[pack.storeProductId],
+                              owned: ownsPack(scopes, pack.id),
+                            ),
+                          for (final id in [ProductIds.bundleTwo, ProductIds.bundleThree])
+                            _BundleCard(
+                              productId: id,
+                              packs: bundlePacks(id, catalog),
+                              product: byId[id],
+                              packProducts: [
+                                for (final p in bundlePacks(id, catalog)) byId[p.storeProductId],
+                              ],
+                              owned: bundlePacks(id, catalog).every((p) => ownsPack(scopes, p.id)),
+                            ),
+                          _SinglePlays(catalog: catalog, byId: byId),
+                        ],
+                      ),
+                    ),
+                  )
+                else ...[
+                  const RefSection('Pakiety'),
+                  for (final pack in catalog.packs)
+                    _PackCard(
+                      summary: PackSummary(pack, catalog),
+                      product: byId[pack.storeProductId],
+                      owned: ownsPack(scopes, pack.id),
                     ),
                 ],
-                if (!subscribed) _SinglePlays(catalog: catalog, byId: byId),
                 _PriceList(catalog: catalog, byId: byId),
                 const SizedBox(height: 12),
                 const _HelpBlock(),
@@ -263,171 +286,6 @@ class _PriceList extends StatelessWidget {
   static String? _sum(List<StoreProduct?> products, String? currency) {
     if (products.isEmpty || products.any((p) => p?.rawPrice == null)) return null;
     return formatMoney(products.fold(0.0, (a, p) => a + p!.rawPrice!), currency);
-  }
-}
-
-class _SubscriptionCard extends ConsumerWidget {
-  const _SubscriptionCard({this.yearly, this.monthly, required this.itemCount, required this.loading});
-
-  final StoreProduct? yearly;
-  final StoreProduct? monthly;
-  final int itemCount;
-  final bool loading;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = Theme.of(context).textTheme;
-    final busy = ref.watch(purchaseControllerProvider).busyProductId;
-    final trial = yearly?.freeTrialDays ?? monthly?.freeTrialDays;
-    final discount = yearly != null && monthly != null ? yearlyDiscountPercent(yearly!, monthly!) : null;
-    final perMonth = yearly?.rawPrice == null
-        ? null
-        : formatMoney(yearly!.rawPrice! / 12, yearly!.currencyCode);
-    const onDark = Colors.white;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
-      decoration: BoxDecoration(color: referencePurple, borderRadius: BorderRadius.circular(24)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Wszystko w jednym',
-                  style: text.titleLarge?.copyWith(color: onDark, fontWeight: FontWeight.w800),
-                ),
-              ),
-              if (trial != null)
-                _Badge('$trial dni za darmo', color: AkBrand.sun, ink: const Color(0xFF211C35)),
-            ],
-          ),
-          const SizedBox(height: 10),
-          for (final line in [
-            'Wszystkie ${playsCount(itemCount)}: pakiety, piosenki i gry',
-            'Jeden nowy pakiet zabaw co miesiąc',
-            'Na wszystkie dzieci w rodzinie, bez reklam',
-          ])
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.check_circle_rounded, color: AkBrand.sun, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(line, style: text.bodyMedium?.copyWith(color: onDark)),
-                  ),
-                ],
-              ),
-            ),
-          const SizedBox(height: 8),
-          if (loading)
-            const Padding(
-              padding: EdgeInsets.all(12),
-              child: Center(child: CircularProgressIndicator(color: onDark)),
-            ),
-          if (yearly case final y?)
-            _PlanButton(
-              title: 'Rocznie',
-              price: '${y.price} / rok',
-              note: [
-                if (perMonth != null) 'to $perMonth miesięcznie',
-                if (discount != null) 'taniej o $discount%',
-              ].join(' · '),
-              highlight: true,
-              busy: busy == y.id,
-              onTap: busy == null ? () => buyWithGate(context, ref, y) : null,
-            ),
-          if (monthly case final m?)
-            _PlanButton(
-              title: 'Miesięcznie',
-              price: '${m.price} / mies.',
-              note: 'możesz zrezygnować w każdej chwili',
-              busy: busy == m.id,
-              onTap: busy == null ? () => buyWithGate(context, ref, m) : null,
-            ),
-          if (trial != null)
-            Text(
-              'Pierwsze $trial dni za darmo. Zrezygnujesz przed ich końcem, a nie zapłacisz ani grosza.',
-              style: text.bodySmall?.copyWith(color: onDark.withValues(alpha: .8)),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PlanButton extends StatelessWidget {
-  const _PlanButton({
-    required this.title,
-    required this.price,
-    required this.note,
-    required this.busy,
-    required this.onTap,
-    this.highlight = false,
-  });
-
-  final String title;
-  final String price;
-  final String note;
-  final bool busy;
-  final bool highlight;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    final bg = highlight ? AkBrand.sun : Colors.white.withValues(alpha: .12);
-    final ink = highlight ? const Color(0xFF211C35) : Colors.white;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Semantics(
-        button: true,
-        label: '$title, $price${note.isEmpty ? '' : ', $note'}',
-        excludeSemantics: true,
-        child: Pressable(
-          onTap: onTap,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(18)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
-                      ),
-                    ),
-                    if (busy)
-                      SizedBox.square(
-                        dimension: 22,
-                        child: CircularProgressIndicator(strokeWidth: 3, color: ink),
-                      )
-                    else
-                      Flexible(
-                        flex: 2,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            price,
-                            style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                if (note.isNotEmpty) Text(note, style: text.bodySmall?.copyWith(color: ink)),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 
@@ -936,14 +794,6 @@ class PackScreen extends ConsumerWidget {
                   for (final r in ref.watch(familyProvider).value!.resultsOf(child.id))
                     if (r.completed && summary.items.any((i) => i.id == r.itemId)) r.itemId,
                 }.length;
-          final bundle = [ProductIds.bundleTwo, ProductIds.bundleThree]
-              .where((id) => bundlePacks(id, catalog).any((p) => p.id == pack.id))
-              .map((id) => (id: id, product: byId[id], packs: bundlePacks(id, catalog)))
-              .where((b) => b.product != null)
-              .firstOrNull;
-          final bundleSaved = bundle == null
-              ? null
-              : bundleSavings(bundle.product!, [for (final p in bundle.packs) byId[p.storeProductId]]);
           final busy = ref.watch(purchaseControllerProvider).busyProductId;
 
           return Column(
@@ -1045,35 +895,40 @@ class PackScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            onPressed: product == null || busy != null
-                                ? null
-                                : () => buyWithGate(context, ref, product),
-                            child: busy == product?.id && product != null
+                        // The subscription first; this pack alone is the quieter option.
+                        if (byId[ProductIds.yearly] case final yearly?)
+                          SizedBox(
+                            width: double.infinity,
+                            child: FilledButton(
+                              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+                              onPressed: busy != null ? null : () => buyWithGate(context, ref, yearly),
+                              child: busy == yearly.id
+                                  ? const SizedBox.square(
+                                      dimension: 18,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : Text(
+                                      yearly.rawPrice == null
+                                          ? 'Abonament: wszystkie pakiety'
+                                          : 'Wszystkie pakiety za ${formatMoney(yearly.rawPrice! / 12, yearly.currencyCode)} / mies.',
+                                    ),
+                            ),
+                          ),
+                        if (byId[ProductIds.yearly] != null)
+                          Text(
+                            'Abonament roczny, nowy pakiet co miesiąc',
+                            style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+                          ),
+                        if (product != null)
+                          TextButton(
+                            onPressed: busy != null ? null : () => buyWithGate(context, ref, product),
+                            child: busy == product.id
                                 ? const SizedBox.square(
                                     dimension: 18,
                                     child: CircularProgressIndicator(strokeWidth: 2),
                                   )
-                                : Text(
-                                    product == null ? 'Sklep niedostępny' : 'Kup pakiet · ${product.price}',
-                                  ),
+                                : Text('albo tylko ${pack.title} na zawsze · ${product.price}'),
                           ),
-                        ),
-                        if (bundle != null && bundleSaved != null)
-                          TextButton(
-                            onPressed: busy == null ? () => buyWithGate(context, ref, bundle.product!) : null,
-                            child: Text(
-                              'Zestaw z ${bundle.packs.length > 2 ? 'pakietami' : 'pakietem'} ${bundle.packs.where((p) => p.id != pack.id).map((p) => p.title).join(' i ')}: '
-                              '${bundle.product!.price} (taniej o ${formatMoney(bundleSaved, bundle.product!.currencyCode)})',
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        TextButton(
-                          onPressed: () => context.go('/sklep'),
-                          child: const Text('Albo wszystko w abonamencie'),
-                        ),
                       ],
                     ),
                   ),

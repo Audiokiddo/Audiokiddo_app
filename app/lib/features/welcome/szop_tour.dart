@@ -155,26 +155,46 @@ class _SzopTourState extends ConsumerState<SzopTour> {
     }
   }
 
-  /// Opens the stop's tab, scrolls its feature into view and measures it for the light.
+  /// Opens the stop's tab, scrolls its feature into view and measures it for the light. The
+  /// tab may still be building or sliding in, so the frame follows it until it stops moving.
   Future<void> _show() async {
     final stop = tourStops[_i];
     final step = _i;
     if (stop.branch case final branch?) widget.onBranch(branch);
-    final key = stop.target == null ? null : tourTargetKeys[stop.target];
-    if (key == null) return;
-    await Future<void>.delayed(const Duration(milliseconds: 120));
-    final context = key.currentContext;
-    if (!mounted || step != _i || context == null || !context.mounted) return;
+    if (stop.target == null) return;
+    await Future<void>.delayed(const Duration(milliseconds: 350));
+    final first = _targetContext(stop.target!);
+    if (!mounted || step != _i || first == null || !first.mounted) return;
     await Scrollable.ensureVisible(
-      context,
-      alignment: .35,
+      first,
+      alignment: .3,
       duration: const Duration(milliseconds: 350),
       curve: Curves.easeOutCubic,
     );
-    if (!mounted || step != _i || !context.mounted) return;
-    final box = context.findRenderObject() as RenderBox?;
-    if (box == null || !box.hasSize || !box.attached) return;
-    setState(() => _target = box.localToGlobal(Offset.zero) & box.size);
+    Rect? last;
+    for (var i = 0; i < 12 && mounted && step == _i; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 80));
+      final rect = _measure(stop.target!);
+      if (rect == null) continue;
+      if (rect != _target) setState(() => _target = rect);
+      if (rect == last) break;
+      last = rect;
+    }
+  }
+
+  /// The target on screen now: the visible one when a tab kept an older copy offstage.
+  BuildContext? _targetContext(String id) {
+    final context = tourTargetKeys[id]?.currentContext;
+    return context != null && context.mounted ? context : null;
+  }
+
+  Rect? _measure(String id) {
+    final box = _targetContext(id)?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize || !box.attached) return null;
+    final rect = box.localToGlobal(Offset.zero) & box.size;
+    final screen = Offset.zero & MediaQuery.sizeOf(context);
+    // Only a target that is really on screen gets the frame.
+    return screen.overlaps(rect) ? rect.intersect(screen) : null;
   }
 
   @override
@@ -265,8 +285,7 @@ class _SzopTourState extends ConsumerState<SzopTour> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Colors.white, width: 3),
-                      boxShadow: const [BoxShadow(color: Color(0x88FFFFFF), blurRadius: 18)],
+                      border: Border.all(color: const Color(0xFFFAC119), width: 4),
                     ),
                   ),
                 ),
@@ -283,8 +302,7 @@ class _SzopTourState extends ConsumerState<SzopTour> {
                     height: 72,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 3),
-                      boxShadow: const [BoxShadow(color: Color(0x88FFFFFF), blurRadius: 18)],
+                      border: Border.all(color: const Color(0xFFFAC119), width: 4),
                     ),
                   ),
                 ),
@@ -324,7 +342,7 @@ class _Dim extends CustomPainter {
         ..addRRect(RRect.fromRectAndRadius(hole, const Radius.circular(22)))
         ..fillType = PathFillType.evenOdd;
     }
-    canvas.drawPath(path, Paint()..color = Colors.black.withValues(alpha: .62));
+    canvas.drawPath(path, Paint()..color = Colors.black.withValues(alpha: .72));
   }
 
   @override

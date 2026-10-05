@@ -1240,7 +1240,7 @@ abstract class AppLocalizations {
   /// No description provided for @accountErrorWrongPassword.
   ///
   /// In pl, this message translates to:
-  /// **'Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem.'**
+  /// **'Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem. Konto usunięte? Załóż je na nowo.'**
   String get accountErrorWrongPassword;
 
   /// No description provided for @accountErrorWeakPassword.

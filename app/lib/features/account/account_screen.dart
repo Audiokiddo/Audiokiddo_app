@@ -17,6 +17,7 @@ import '../diploma/diploma.dart';
 import '../discovery/discovery_model.dart';
 import '../family/family.dart' hide progressProvider;
 import '../personal/personal_repository.dart';
+import '../welcome/welcome_controller.dart';
 import 'account_data.dart';
 
 /// Parent account, laid out like iOS Settings: sign in with Apple, Google or an e-mail code;
@@ -169,6 +170,18 @@ class _SignedInState extends ConsumerState<_SignedIn> {
     if (!await _confirm(l10n.accountDeleteTitle, l10n.accountDeleteBody, l10n.accountDelete)) return;
     await _run(() async {
       await ref.read(accountServiceProvider).deleteAccount();
+      // The account is gone for good: nothing of the family stays on this phone either.
+      final db = ref.read(databaseProvider);
+      await clearFamilyData(db);
+      await forgetAccountOwner(db);
+      ref
+        ..invalidate(familyProvider)
+        ..invalidate(discoveryProvider)
+        ..invalidate(diplomasProvider)
+        ..invalidate(favoritesProvider)
+        ..invalidate(favoritesOrderedProvider)
+        ..invalidate(recentProvider);
+      await ref.read(welcomeProvider).load();
       await ref.read(accessProvider.notifier).refresh();
     }, done: l10n.accountDeleted);
   }
