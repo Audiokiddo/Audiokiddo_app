@@ -186,7 +186,7 @@ body.ak-site {
 .ak-lead-txt { font-size: 18px; }
 .ak-ticks { list-style: none; padding: 0; margin: 0 0 22px; }
 .ak-ticks li { padding-left: 28px; position: relative; margin-bottom: 6px; }
-.ak-ticks li::before { content: ""; position: absolute; left: 2px; top: .45em; width: 14px; height: 8px; border-left: 3px solid var(--teal-deep); border-bottom: 3px solid var(--teal-deep); transform: rotate(-45deg); }
+.ak-ticks li::before { content: ""; position: absolute; left: 0; top: .3em; width: 18px; height: 18px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M3 9.5l4 4 8-9' fill='none' stroke='%231D7478' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain; }
 .ak-form { max-width: 520px; }
 .ak-admin-note { background: #fff; border: 2px dashed var(--terra); padding: 12px 16px; border-radius: 14px; font-size: 15px; }
 
@@ -310,7 +310,8 @@ body.ak-site {
 .ak-prose h3 { font-size: 21px; margin-top: 1.4em; }
 .ak-prose ul, .ak-prose ol { padding-left: 1.3em; }
 .ak-prose li { margin-bottom: .4em; }
-.ak-prose blockquote { margin: 1.4em 0; padding: 4px 0 4px 22px; border-left: 4px solid var(--sun); font-size: 20px; font-weight: 500; }
+.ak-prose blockquote { position: relative; margin: 1.6em 0; padding: 8px 0 0 52px; font-size: 20px; font-weight: 500; }
+.ak-prose blockquote::before { content: "„"; position: absolute; left: 0; top: -18px; font-size: 72px; font-weight: 700; line-height: 1; color: var(--sun); }
 .ak-prose img { border-radius: 20px; }
 .ak-tldr { background: var(--paper); border: 2px solid var(--ink); border-radius: 22px; padding: 22px 26px 10px; margin: 0 0 2em; box-shadow: 8px 8px 0 var(--sun); }
 .ak-tldr-h { font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: 13px; color: var(--teal-deep); margin: 0 0 6px !important; }
