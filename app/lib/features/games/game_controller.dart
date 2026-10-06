@@ -136,10 +136,19 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     )..setSpeechAvailable(available: _speechUsable);
     state = GameUiState(phase: GamePhase.playing, itemId: item.id, title: item.title);
     final played = ref.read(familyProvider).value?.results.any((r) => r.itemId == item.id) ?? false;
+    final count = await countPlayStart(ref.read(databaseProvider), item.id);
+    _playing = (item.id, startedAt, count.number);
     ref.track(
       AppEvent.playStart,
       itemId: item.id,
-      props: {'free': item.isFree, 'pack': ?item.packId, 'game': true, if (played) 'replay': true},
+      props: {
+        'free': item.isFree,
+        'pack': ?item.packId,
+        'game': true,
+        'duration_total': item.durationSec,
+        if (played) 'replay': true,
+        ...count.props,
+      },
     );
     try {
       var command = runner.start();
@@ -156,7 +165,16 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         if (event == null) return;
         if (command is Finish) {
           await _stopMicrophone();
-          ref.track(AppEvent.playComplete, itemId: item.id, props: const {'game': true});
+          _playing = null;
+          ref.track(
+            AppEvent.playComplete,
+            itemId: item.id,
+            props: {
+              'game': true,
+              'duration_listened': DateTime.now().difference(startedAt).inSeconds,
+              'play_number': count.number,
+            },
+          );
           // Games that keep a `score` variable report correct answers to the parent.
           await ref
               .read(familyProvider.notifier)
@@ -192,9 +210,21 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     if (clip != null && generation == _generation) await store.play(clip);
   }
 
+  /// The game now on (id, start, play number) until it finishes, for play_exit.
+  (String, DateTime, int)? _playing;
+
   /// Leaves the game (long press on the game screen).
   Future<void> stop() async {
     _generation++;
+    if (_playing case (final id, final at, final number)) {
+      _playing = null;
+      // Games branch, so the second is time in the game rather than a point in one recording.
+      ref.track(
+        AppEvent.playExit,
+        itemId: id,
+        props: {'game': true, 'exit_second': DateTime.now().difference(at).inSeconds, 'play_number': number},
+      );
+    }
     await ref.read(parentVoiceStoreProvider).stopPlayback();
     _input?.complete(const InputTimedOut());
     _input = null;

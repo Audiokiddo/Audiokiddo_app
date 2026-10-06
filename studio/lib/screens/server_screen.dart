@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../server/studio_server.dart';
 import '../state/studio_controller.dart';
+import 'kpi_screen.dart';
 
 /// "Serwer": sign in as an admin, see how the app sells, publish the catalog to the app and
 /// manage promotions. Everything goes through the admin function.
@@ -45,7 +46,7 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
   Widget build(BuildContext context) {
     if (!_server.signedIn) return _signIn(context);
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Column(
         children: [
           ListTile(
@@ -61,11 +62,12 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
           const TabBar(
             tabs: [
               Tab(text: 'Statystyki'),
+              Tab(text: 'KPI'),
               Tab(text: 'Katalog w aplikacji'),
               Tab(text: 'Promocje'),
             ],
           ),
-          const Expanded(child: TabBarView(children: [_StatsTab(), _CatalogTab(), _PromotionsTab()])),
+          const Expanded(child: TabBarView(children: [_StatsTab(), KpiScreen(), _CatalogTab(), _PromotionsTab()])),
         ],
       ),
     );

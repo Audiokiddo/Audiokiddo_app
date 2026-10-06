@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../discovery/reference_widgets.dart';
 import '../parental_gate/parental_gate.dart';
 import 'onboarding_controller.dart';
+import '../insights/events.dart';
 import '../games/microphone.dart';
 import '../games/speech.dart';
 
@@ -72,7 +73,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   /// End of the pages: sign-in next; the child, theme and reminders come in the family's
   /// welcome after it.
-  void _finish({bool skipAll = false}) => unawaited(ref.read(onboardingProvider).complete());
+  void _finish({bool skipAll = false}) {
+    ref
+        .read(eventSinkProvider)
+        .track(
+          AppEvent.onboardingDone,
+          props: {
+            'steps_completed': _page + 1,
+            'duration_seconds': DateTime.now().difference(_startedAt).inSeconds,
+            if (skipAll) 'skipped': true,
+          },
+        );
+    unawaited(ref.read(onboardingProvider).complete());
+  }
+
+  /// When the first-run screens were opened, for how long onboarding takes.
+  final _startedAt = DateTime.now();
 
   Future<void> _openLegal(Uri url) async {
     if (await showParentalGate(context)) await launchUrl(url);

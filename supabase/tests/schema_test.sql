@@ -384,3 +384,46 @@ begin
 end $$;
 reset role;
 select 'crm tests passed';
+
+-- Analytics annex: North Star, activation, per-play table, drop-off and growth by source.
+do $$
+declare
+  k jsonb;
+  g jsonb;
+  f constant uuid := '66666666-6666-6666-6666-666666666666';
+  h constant uuid := '77777777-7777-7777-7777-777777777777';
+begin
+  insert into public.app_events (install_id, event, item_id, props, created_at, age_group, source, session_id) values
+    -- Family F: new, finishes a play, starts another (activated), back the next day (returning).
+    (f, 'first_open', null, '{}', now() - interval '3 days', '3-5', 'tiktok', gen_random_uuid()),
+    (f, 'game_viewed', 'zgubiona-gwiazdka', '{}', now() - interval '3 days' + interval '1 minute', '3-5', 'tiktok', null),
+    (f, 'play_start', 'zgubiona-gwiazdka', '{"free":true,"play_number":1}', now() - interval '3 days' + interval '2 minutes', '3-5', 'tiktok', null),
+    (f, 'play_complete', 'zgubiona-gwiazdka', '{}', now() - interval '3 days' + interval '12 minutes', '3-5', 'tiktok', null),
+    (f, 'play_start', 'magiczny-sklep', '{"play_number":1}', now() - interval '3 days' + interval '13 minutes', '3-5', 'tiktok', null),
+    (f, 'play_exit', 'magiczny-sklep', '{"exit_second":395,"pct":40}', now() - interval '3 days' + interval '20 minutes', '3-5', 'tiktok', null),
+    (f, 'play_start', 'zgubiona-gwiazdka', '{"play_number":2}', now() - interval '2 days', '3-5', 'tiktok', null),
+    (f, 'play_complete', 'zgubiona-gwiazdka', '{}', now() - interval '2 days' + interval '10 minutes', '3-5', 'tiktok', null),
+    (f, 'search_performed', null, '{"query":"dinozaury","results":0}', now() - interval '2 days', '3-5', 'tiktok', null),
+    -- Family H: new, starts once and leaves early, never finishes.
+    (h, 'first_open', null, '{}', now() - interval '2 days', '7-9', null, null),
+    (h, 'play_start', 'magiczny-sklep', '{"free":true,"play_number":1}', now() - interval '2 days' + interval '30 minutes', '7-9', null, null),
+    (h, 'play_exit', 'magiczny-sklep', '{"exit_second":410,"pct":42}', now() - interval '2 days' + interval '37 minutes', '7-9', null, null);
+  k := public.admin_kpi(30);
+  assert (k -> 'ceo' ->> 'weekly_returning_families')::int >= 1, k -> 'ceo';
+  assert (k -> 'ceo' ->> 'new_activated')::int >= 1, k -> 'ceo';
+  assert (k -> 'ceo' -> 'funnel' ->> 'first_play')::int >= 2, k -> 'ceo' -> 'funnel';
+  assert k -> 'product' -> 'dropoff' -> 'magiczny-sklep' @> '[[390, 2]]', k -> 'product' -> 'dropoff';
+  assert k -> 'product' -> 'searches' -> 0 ->> 'query' = 'dinozaury', k -> 'product' -> 'searches';
+  select x into g from jsonb_array_elements(k -> 'growth') x where x ->> 'source' = 'tiktok';
+  assert (g ->> 'activated')::int = 1, k -> 'growth';
+  assert (k -> 'data_health' ->> 'events')::int > 0;
+  -- Per age band: only the 7-9 family.
+  k := public.admin_kpi(30, '7-9');
+  assert (k -> 'ceo' ->> 'new_activated')::int = 0, k -> 'ceo';
+  begin
+    insert into public.app_events (install_id, event, age_group) values (h, 'app_open', '4');
+    assert false, 'age groups are bands only';
+  exception when check_violation then null;
+  end;
+end $$;
+select 'analytics annex tests passed';

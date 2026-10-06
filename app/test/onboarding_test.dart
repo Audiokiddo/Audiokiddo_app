@@ -86,7 +86,7 @@ void main() {
     expect(welcome.done, isFalse);
   });
 
-  testWidgets('first run: hello, sign-in, then fanfare, the child, reminders and the tour', (tester) async {
+  testWidgets('first run: hello, sign-in, then fanfare, the child, reminders, the source and the tour', (tester) async {
     tester.view.physicalSize = const Size(1170, 2532);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -168,6 +168,10 @@ void main() {
     await tester.ensureVisible(find.text('Nie teraz'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Nie teraz'));
+    await tester.pumpAndSettle();
+    // Where they heard of us: one optional tap (the attribution, no tracking SDK).
+    expect(find.text('Skąd o nas wiecie?'), findsOneWidget);
+    await tester.tap(find.text('TikTok'));
     await tester.pumpAndSettle();
     // Szop’en's tour over Start, skippable.
     expect(find.text('Cześć, jestem Szop’en!'), findsOneWidget);

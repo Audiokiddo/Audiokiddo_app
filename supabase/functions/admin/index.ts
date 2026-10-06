@@ -58,6 +58,12 @@ Deno.serve(withCors(async (req) => {
       const { data, error } = await admin.rpc("admin_stats", { p_days: days });
       return error ? fail(error.message) : json(data);
     }
+    case "kpi": {
+      const days = Math.min(Math.max(Number(body.days) || 30, 1), 365);
+      const age = ["3-5", "5-7", "7-9"].includes(String(body.age)) ? String(body.age) : null;
+      const { data, error } = await admin.rpc("admin_kpi", { p_days: days, p_age: age });
+      return error ? fail(error.message) : json(data);
+    }
     case "catalog": {
       const { data, error } = await admin.rpc("published_catalog");
       return error ? fail(error.message) : json(data ?? {});

@@ -17,6 +17,7 @@ import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../discovery/queue_controller.dart';
 import '../home/quick_pick.dart';
+import '../insights/events.dart';
 import '../pdf/case_files_card.dart';
 import 'audio_handler.dart';
 import 'playback_controller.dart';
@@ -70,7 +71,7 @@ class _Player extends ConsumerWidget {
             tooltip: favorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych',
             onPressed: item == null
                 ? null
-                : () => ref.read(personalRepositoryProvider).setFavorite(item.id, favorite: !favorite),
+                : () => setFavoriteTracked(ref, item.id, favorite: !favorite),
             icon: Icon(favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded),
           ),
         ],

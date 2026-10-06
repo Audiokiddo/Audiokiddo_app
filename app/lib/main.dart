@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,7 @@ import 'features/account/account_service.dart';
 import 'features/account/session_gate.dart';
 import 'features/catalog/catalog_providers.dart';
 import 'features/catalog/remote_catalog.dart';
+import 'features/insights/acquisition.dart';
 import 'features/insights/events.dart';
 import 'features/promotions/promotions.dart';
 import 'features/downloads/download_providers.dart';
@@ -37,7 +39,13 @@ Future<void> main() async {
   );
   final database = AppDatabase();
   final catalogSource = RemoteCatalogSource(supabase.client, database);
-  final events = SupabaseEventSink(supabase.client, database, appVersion: appVersion);
+  final events = SupabaseEventSink(
+    supabase.client,
+    database,
+    appVersion: appVersion,
+    // "pl_PL" → "PL": the market, not the person.
+    country: Platform.localeName.split(RegExp('[_-]')).skip(1).firstOrNull?.toUpperCase(),
+  );
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(database),
@@ -57,7 +65,9 @@ Future<void> main() async {
   );
   // A newer catalog from Studio replaces the shown one as soon as it arrives.
   catalogSource.onChanged = () => container.invalidate(fullCatalogProvider);
-  unawaited(trackLaunch(events));
+  events.context = () => eventContextOf(container);
+  await loadEventContext(container);
+  unawaited(trackLaunch(events, database));
   // The phone's family data belongs to the signed-in account (cleared if it changed).
   final signedIn = container.read(accountServiceProvider).current;
   if (signedIn != null) await claimFamilyData(database, signedIn.id);

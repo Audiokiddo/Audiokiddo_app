@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +20,7 @@ import '../purchases/shop.dart';
 import '../purchases/purchase_controller.dart';
 import '../purchases/shop_screen.dart';
 import '../purchases/store_gateway.dart';
+import '../insights/events.dart';
 import 'catalog_providers.dart';
 import 'library_filter.dart';
 import 'widgets/catalog_loader.dart';
@@ -35,6 +38,29 @@ class LibraryScreen extends ConsumerStatefulWidget {
 class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   String _search = '';
   bool _searching = false;
+  Timer? _searchPause;
+
+  @override
+  void dispose() {
+    _searchPause?.cancel();
+    super.dispose();
+  }
+
+  /// What parents look for tells what the library lacks: sent once typing pauses.
+  void _typed(String query, int Function(String) results) {
+    setState(() => _search = query);
+    _searchPause?.cancel();
+    final q = query.trim().toLowerCase();
+    if (q.length < 2) return;
+    _searchPause = Timer(const Duration(milliseconds: 1500), () {
+      ref
+          .read(eventSinkProvider)
+          .track(
+            AppEvent.searchPerformed,
+            props: {'query': q.length > 40 ? q.substring(0, 40) : q, 'results': results(q)},
+          );
+    });
+  }
 
   /// From the library a filter opens as its own page (swipe back returns); changing a filter
   /// on that page replaces it.
@@ -126,7 +152,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 prefixIcon: Icon(Icons.search_rounded),
                 border: OutlineInputBorder(),
               ),
-              onChanged: (s) => setState(() => _search = s),
+              onChanged: (s) => _typed(
+                s,
+                (q) => f
+                    .apply(catalog.items, canPlay: (i) => ref.read(canPlayProvider(i)))
+                    .where((i) => i.title.toLowerCase().contains(q))
+                    .length,
+              ),
             ),
           ),
         if (pack != null)
