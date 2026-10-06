@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -176,26 +177,28 @@ int _fnv(String text) {
   return hash;
 }
 
-/// The running tests, fetched at start (at most [wait]; the last known ones otherwise, saved
-/// on the phone), and this install's variants.
+/// This install's variants of the running tests, from the copy saved on the phone, so the
+/// start never waits for the network; the current tests are fetched in the background for
+/// the next launch. (A brand-new install sees the usual offer until then.)
 Future<Map<String, String>> loadVariants(
   ParentCloud cloud,
   String installId,
   Future<String?> Function() readCache,
-  Future<void> Function(String) writeCache, {
-  Duration wait = const Duration(milliseconds: 1500),
-}) async {
+  Future<void> Function(String) writeCache,
+) async {
   Map<String, List<String>> tests;
   try {
-    tests = await cloud.experiments().timeout(wait);
-    await writeCache(jsonEncode(tests));
+    tests = parseExperiments(jsonDecode(await readCache() ?? '{}'));
   } on Object {
-    try {
-      tests = parseExperiments(jsonDecode(await readCache() ?? '{}'));
-    } on Object {
-      tests = const {};
-    }
+    tests = const {};
   }
+  unawaited(() async {
+    try {
+      await writeCache(jsonEncode(await cloud.experiments().timeout(const Duration(seconds: 10))));
+    } on Object {
+      // Next launch.
+    }
+  }());
   return assignVariants(installId, tests);
 }
 
