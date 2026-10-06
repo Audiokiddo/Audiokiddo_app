@@ -60,3 +60,26 @@ Deno.test("a wrong Claude key falls through to Gemini", async () => {
     Deno.env.delete("GEMINI_API_KEY");
   }
 });
+
+Deno.test("Gemini: an 'invalid argument' answer is asked again with plainer settings", async () => {
+  Deno.env.set("GEMINI_API_KEY", "good");
+  const real = globalThis.fetch;
+  const sent: unknown[] = [];
+  globalThis.fetch = ((_input: string | URL | Request, init?: RequestInit) => {
+    const body = JSON.parse(String(init?.body));
+    sent.push(body.generationConfig);
+    const plain = !body.generationConfig.thinkingConfig;
+    return Promise.resolve(
+      plain
+        ? new Response(JSON.stringify({ candidates: [{ finishReason: "STOP", content: { parts: [{ text: "{}" }] } }] }))
+        : new Response('{"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}}', { status: 400 }),
+    );
+  }) as typeof fetch;
+  try {
+    assertEquals(await askClaude("s", "p", 100), "{}");
+    assertEquals(sent.length, 3);
+  } finally {
+    globalThis.fetch = real;
+    Deno.env.delete("GEMINI_API_KEY");
+  }
+});

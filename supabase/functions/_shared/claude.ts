@@ -105,16 +105,26 @@ async function claude(system: string, prompt: string, maxTokens: number, model?:
 
 async function gemini(system: string, prompt: string, maxTokens: number, json: boolean): Promise<string> {
   // The function has about 150 s in all, so every try fits in what is left of 110 s. The chosen
-  // model first, then the lighter one when it is busy; thinking off, so the answer comes quickly.
+  // model first, then the lighter one when it is busy (two tries each, with a pause).
   const deadline = Date.now() + 110_000;
   const models = [...new Set([Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest", "gemini-flash-lite-latest"])];
+  // Models differ in what they accept: when Google says "invalid argument" (an answer that comes
+  // back at once) the same request goes again with the next, plainer setting.
+  const styles: { config: Record<string, unknown>; json: boolean }[] = [
+    { config: { thinkingConfig: { thinkingBudget: 0 } }, json },
+    { config: { thinkingConfig: { thinkingLevel: "low" } }, json },
+    { config: {}, json },
+    { config: {}, json: false },
+  ];
+  let style = 0;
   let last: ClaudeError | null = null;
-  let thinkingOff = true;
   for (const model of models) {
-    for (const wait of [0, 3000]) {
-      if (wait) await pause(wait);
+    let busy = 0;
+    while (true) {
       const left = deadline - Date.now();
       if (left < 15_000) throw last ?? new ClaudeError("gemini timeout", "busy");
+      const started = Date.now();
+      const { config, json: asJson } = styles[style];
       let response: Response;
       try {
         response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -126,31 +136,35 @@ async function gemini(system: string, prompt: string, maxTokens: number, json: b
             contents: [{ role: "user", parts: [{ text: prompt }] }],
             generationConfig: {
               maxOutputTokens: maxTokens + 2000,
-              ...(json ? { responseMimeType: "application/json" } : {}),
-              ...(thinkingOff ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
+              ...(asJson ? { responseMimeType: "application/json" } : {}),
+              ...config,
             },
           }),
         });
       } catch (e) {
         console.error("gemini: no answer in time", model, e);
         last = new ClaudeError("gemini timeout", "busy", "Gemini nie odpowiedział w czasie.");
+        if (++busy >= 2) break;
         continue;
       }
-      const started = deadline - left;
       if (response.ok) {
-        console.log("gemini:", model, "answered in", Date.now() - started, "ms");
+        console.log("gemini:", model, "style", style, "answered in", Date.now() - started, "ms");
         return geminiText(await response.json());
       }
       const body = await response.text();
-      console.error("gemini:", model, response.status, body.slice(0, 500));
-      // A model that cannot switch thinking off says so: ask again without the setting.
-      if (response.status === 400 && thinkingOff && body.toLowerCase().includes("thinking")) {
-        thinkingOff = false;
+      console.error("gemini:", model, "style", style, response.status, body.slice(0, 500));
+      last = new ClaudeError(`gemini ${response.status}`, geminiReason(response.status, body), providerMessage(body));
+      if (response.status === 400 && last.reason === "model" && style < styles.length - 1) {
+        style++;
         continue;
       }
-      last = new ClaudeError(`gemini ${response.status}`, geminiReason(response.status, body), providerMessage(body));
-      if (last.reason !== "busy" && last.reason !== "model_missing") throw last;
+      if (last.reason === "busy") {
+        if (++busy >= 2) break;
+        await pause(3000);
+        continue;
+      }
       if (last.reason === "model_missing") break;
+      throw last;
     }
   }
   throw last!;
