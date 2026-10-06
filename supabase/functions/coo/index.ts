@@ -38,7 +38,21 @@ Deno.serve(withCors(async (req) => {
   const mode = String(body.mode) as Mode;
   if (!MODES.includes(mode)) return json({ error: "mode" }, 400);
   const note = typeof body.note === "string" && body.note.trim() ? body.note.trim().slice(0, 2000) : null;
-  const result = await run(admin, mode, note, typeof body.focus_id === "string" ? body.focus_id : null);
+  const focusId = typeof body.focus_id === "string" ? body.focus_id : null;
+
+  // Without an API key: Studio copies this text into Claude or ChatGPT and brings the answer back.
+  if (body.manual === "prompt") {
+    const { context, focus } = await gather(admin, focusId);
+    return json({ prompt: `${SYSTEM}\n\n${prompt(mode, context, note, focus)}` });
+  }
+  if (body.manual === "answer") {
+    const text = typeof body.text === "string" ? body.text.slice(0, 200_000) : "";
+    const saved = await save(admin, mode, text, note, focusId);
+    if ("error" in saved) return json(saved, saved.error === "save" ? 503 : 400);
+    return json(saved);
+  }
+
+  const result = await run(admin, mode, note, focusId);
   if ("error" in result) return json(result, result.error === "no_key" ? 412 : result.error === "save" ? 503 : 502);
   return json(result);
 }));
@@ -78,10 +92,8 @@ async function rhythm(admin: SupabaseClient, now: Date) {
   return { due, done };
 }
 
-async function run(admin: SupabaseClient, mode: Mode, note: string | null, focusId: string | null) {
-  const key = Deno.env.get("ANTHROPIC_API_KEY");
-  if (!key) return { error: "no_key" as const };
-
+/** The state of the business for the agent (no e-mails), and the item it should focus on. */
+async function gather(admin: SupabaseClient, focusId: string | null) {
   let focus: Record<string, unknown> | null = null;
   if (focusId) {
     const { data } = await admin.from("crm_items").select("title, body, due, data").eq("id", focusId).maybeSingle();
@@ -123,6 +135,13 @@ async function run(admin: SupabaseClient, mode: Mode, note: string | null, focus
     // What the hourly watchdog sees now: the report says what to do about it first.
     alerts: alerts.data ?? [],
   };
+  return { context, focus };
+}
+
+async function run(admin: SupabaseClient, mode: Mode, note: string | null, focusId: string | null) {
+  const key = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!key) return { error: "no_key" as const };
+  const { context, focus } = await gather(admin, focusId);
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -143,6 +162,11 @@ async function run(admin: SupabaseClient, mode: Mode, note: string | null, focus
     return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model" };
   }
 
+  return await save(admin, mode, text, note, focusId);
+}
+
+/** Reads the agent's answer (from the API or pasted from a chat) and saves it as decisions. */
+async function save(admin: SupabaseClient, mode: Mode, text: string, note: string | null, focusId: string | null) {
   let parsed;
   try {
     parsed = parseAnswer(text);

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../server/studio_server.dart';
 import 'ads_screen.dart';
+import 'agent_manual.dart';
 import 'crm_calendar.dart';
 import 'crm_insights.dart';
 import 'crm_quality.dart';
@@ -310,20 +311,29 @@ class _CooBoxState extends ConsumerState<_CooBox> {
     super.dispose();
   }
 
-  Future<void> _ask(String mode) async {
+  Future<void> _ask(String mode, String label) async {
     setState(() => _busy = mode);
-    await crmRun(
+    final ok = await askAgent(
       context,
-      () async {
-        await ref
-            .read(studioServerProvider)
-            .coo(mode, note: _note.text.trim().isEmpty ? null : _note.text.trim());
-        ref.read(crmRefreshProvider.notifier).bump();
-      },
-      done: mode == 'brief'
-          ? 'Raport gotowy. Propozycje zadań czekają w „Decyzje”.'
-          : 'Propozycje czekają w „Decyzje”.',
+      ref,
+      mode,
+      label: label,
+      note: _note.text.trim().isEmpty ? null : _note.text.trim(),
     );
+    if (ok) {
+      ref.read(crmRefreshProvider.notifier).bump();
+      if (mounted && !ref.read(agentManualProvider)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              mode == 'brief'
+                  ? 'Raport gotowy. Propozycje zadań czekają w „Decyzje”.'
+                  : 'Propozycje czekają w „Decyzje”.',
+            ),
+          ),
+        );
+      }
+    }
     if (mounted) setState(() => _busy = null);
   }
 
@@ -350,6 +360,23 @@ class _CooBoxState extends ConsumerState<_CooBox> {
             'trafia do „Decyzje”: Ty wybierasz, co robimy dalej.',
           ),
           const SizedBox(height: 10),
+          SegmentedButton<bool>(
+            segments: const [
+              ButtonSegment(
+                value: true,
+                icon: Icon(Icons.forum_rounded),
+                label: Text('Przez czat (Claude / ChatGPT)'),
+              ),
+              ButtonSegment(
+                value: false,
+                icon: Icon(Icons.bolt_rounded),
+                label: Text('Automatycznie (klucz API)'),
+              ),
+            ],
+            selected: {ref.watch(agentManualProvider)},
+            onSelectionChanged: (s) => ref.read(agentManualProvider.notifier).set(s.single),
+          ),
+          const SizedBox(height: 10),
           TextField(
             controller: _note,
             decoration: const InputDecoration(
@@ -364,7 +391,7 @@ class _CooBoxState extends ConsumerState<_CooBox> {
             children: [
               for (final (mode, icon, label) in modes)
                 FilledButton.tonalIcon(
-                  onPressed: _busy != null ? null : () => _ask(mode),
+                  onPressed: _busy != null ? null : () => _ask(mode, label),
                   icon: _busy == mode
                       ? const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2))
                       : Icon(icon),
@@ -668,10 +695,21 @@ class _IdeasState extends ConsumerState<_Ideas> {
                           ? null
                           : () async {
                               setState(() => _writing = item['id'] as String);
-                              await crmRun(context, () async {
-                                await server.coo('scenario', focusId: item['id'] as String);
+                              final ok = await askAgent(
+                                context,
+                                ref,
+                                'scenario',
+                                label: 'Scenariusz zabawy',
+                                focusId: item['id'] as String,
+                              );
+                              if (ok) {
                                 refresh();
-                              }, done: 'Scenariusz gotowy: czeka w „Decyzje”.');
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Scenariusz gotowy: czeka w „Decyzje”.')),
+                                  );
+                                }
+                              }
                               if (mounted) setState(() => _writing = null);
                             },
                       icon: _writing == item['id']

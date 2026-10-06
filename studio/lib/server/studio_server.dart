@@ -97,6 +97,7 @@ class StudioServer {
       throw StudioServerException(switch (e.status) {
         401 => 'Zaloguj się ponownie.',
         403 => 'To konto nie jest administratorem (tabela admins).',
+        400 when function == 'coo' && '${e.details}'.contains('answer') => 'Nie widzę w tym tekście odpowiedzi agenta. Skopiuj z czatu całą odpowiedź (z nawiasami { }) i wklej jeszcze raz.',
         400 =>
           '${e.details}'.contains('past')
               ? 'Wybierz godzinę co najmniej 10 minut od teraz.'
@@ -161,6 +162,25 @@ class StudioServer {
   Future<Map<String, dynamic>> coo(String mode, {String? note, String? focusId}) async =>
       Map<String, dynamic>.from(
         await _invoke('coo', {'mode': mode, 'note': ?note, 'focus_id': ?focusId}) as Map,
+      );
+
+  /// Manual mode (no API key): the text to paste into Claude or ChatGPT, with the company's state.
+  Future<String> cooPrompt(String mode, {String? note, String? focusId}) async {
+    final data =
+        await _invoke('coo', {'mode': mode, 'note': ?note, 'focus_id': ?focusId, 'manual': 'prompt'}) as Map;
+    return '${data['prompt']}';
+  }
+
+  /// Manual mode: the chat's answer becomes proposals in "Decyzje" (the same as from the API).
+  Future<Map<String, dynamic>> cooAnswer(String mode, String text, {String? note, String? focusId}) async =>
+      Map<String, dynamic>.from(
+        await _invoke('coo', {
+          'mode': mode,
+          'note': ?note,
+          'focus_id': ?focusId,
+          'manual': 'answer',
+          'text': text,
+        }) as Map,
       );
 
   Future<Map<String, dynamic>> mailerLite() async =>
