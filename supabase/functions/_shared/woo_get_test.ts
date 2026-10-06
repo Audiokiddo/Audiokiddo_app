@@ -27,7 +27,7 @@ Deno.test("a buyer who ticked the consent goes to the buyers' group with what th
     status: "completed",
     billing: { email: " Mama@Example.com ", first_name: "Ola" },
     line_items: [{ product_id: 12, name: "Pakiet Detektyw" }],
-    meta_data: [{ key: "_audiokiddo_newsletter", value: "yes" }],
+    meta_data: [{ key: "audiokiddo_newsletter", value: "yes" }],
   })!;
   if (!order.newsletter) throw new Error("consent");
   const s = buyerSubscriber(order, "g1");

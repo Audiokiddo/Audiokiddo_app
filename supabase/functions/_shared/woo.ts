@@ -8,7 +8,8 @@ export interface WooOrder {
   status: WooOrderStatus;
   /** 'woo:<product_id>' for each purchased product (mapped to scopes by store_products). */
   productRefs: string[];
-  /** The buyer ticked "I want letters from AudioKiddo" at checkout (meta _audiokiddo_newsletter). */
+  /** The buyer ticked "I want letters from AudioKiddo" at checkout (order meta
+   * audiokiddo_newsletter; no leading underscore, or the REST API would hide it). */
   newsletter?: boolean;
   firstName?: string;
   productNames?: string[];
@@ -68,7 +69,7 @@ export function parseWooOrder(payload: unknown): WooOrder | null {
     ),
   ];
   const meta = Array.isArray(order.meta_data) ? order.meta_data as Record<string, unknown>[] : [];
-  const newsletter = meta.some((m) => m.key === "_audiokiddo_newsletter" && (m.value === "yes" || m.value === "1"));
+  const newsletter = meta.some((m) => m.key === "audiokiddo_newsletter" && (m.value === "yes" || m.value === "1"));
   const names = items.map((i) => (i as Record<string, unknown>).name).filter((n): n is string => typeof n === "string");
   return {
     orderId: id,
