@@ -166,6 +166,10 @@ abstract interface class AccountService {
   /// Sign in with Apple is offered on iOS (App Store guideline 4.8 when Google is offered).
   bool get appleAvailable;
 
+  /// Google sign-in is offered: configured, and not in the App Store build for the Kids
+  /// Category (a third-party sign-in sends data to Google; Apple and e-mail are enough there).
+  bool get googleAvailable;
+
   Future<void> signInWithApple();
 
   Future<void> signInWithGoogle();
@@ -273,6 +277,9 @@ class SupabaseAccountService implements AccountService {
 
   @override
   bool get appleAvailable => Platform.isIOS;
+
+  @override
+  bool get googleAvailable => BackendConfig.googleConfigured && !(Platform.isIOS && BackendConfig.kidsStoreBuild);
 
   @override
   Future<void> signInWithApple() => _guard(() async {
@@ -478,6 +485,9 @@ class SignedOutAccountService implements AccountService {
 
   @override
   bool get appleAvailable => false;
+
+  @override
+  bool get googleAvailable => false;
 
   @override
   Future<void> signInWithApple() async => throw const AccountException(AccountError.notConfigured);

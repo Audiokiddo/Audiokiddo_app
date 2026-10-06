@@ -434,3 +434,70 @@ begin
 end $$;
 reset role;
 select 'crm support tests passed';
+
+-- Errors, ranking and the watchdog.
+set role anon;
+insert into public.app_errors (install_id, kind, error_type, message, fingerprint, platform)
+select '66666666-6666-6666-6666-666666666666', 'flutter', 'StateError', 'Bad state', 'abcdef12', 'ios'
+from generate_series(1, 105);
+reset role;
+do $$
+begin
+  assert (select count(*) from public.app_errors where install_id = '66666666-6666-6666-6666-666666666666') = 100,
+    'one phone in a loop is capped at 100 a day';
+end $$;
+set role anon;
+do $$
+begin
+  begin
+    perform 1 from public.app_errors;
+    assert (select count(*) from public.app_errors) = 0, 'the app cannot read errors back';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+reset role;
+insert into public.app_errors (install_id, kind, error_type, message, fingerprint, platform)
+select ('77777777-7777-7777-7777-77777777777' || g)::uuid, 'async', 'TypeError', 'null', '12345678', 'android'
+from generate_series(1, 3) g;
+insert into public.app_events (install_id, event, item_id, props) values
+  ('77777777-7777-7777-7777-777777777771', 'play_start', 'magiczny-sklep', '{}'),
+  ('77777777-7777-7777-7777-777777777771', 'play_complete', 'magiczny-sklep', '{}'),
+  ('77777777-7777-7777-7777-777777777772', 'play_start', 'magiczny-sklep', '{"replay":true}');
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c2', false); end $$;
+do $$
+begin
+  begin
+    perform public.crm_alerts_now();
+    assert false, 'a parent sees no alerts';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  e jsonb;
+  p jsonb;
+  a jsonb;
+  sklep jsonb;
+begin
+  e := public.crm_errors(7);
+  assert e -> 0 ->> 'fingerprint' = 'abcdef12' and (e -> 0 ->> 'count')::int = 100, e::text;
+  assert (e -> 1 ->> 'installs')::int = 3;
+  p := public.crm_plays(30);
+  select x into sklep from jsonb_array_elements(p) x where x ->> 'id' = 'magiczny-sklep';
+  assert (sklep ->> 'starts')::int >= 2 and (sklep ->> 'replays')::int >= 1, p::text;
+  a := public.crm_alerts_now();
+  assert exists (select 1 from jsonb_array_elements(a) x where x ->> 'code' = 'errors_spike'), a::text;
+  assert exists (select 1 from jsonb_array_elements(a) x where x ->> 'code' = 'new_error:12345678'), a::text;
+  perform public.crm_ack((a -> 0 ->> 'id')::uuid);
+end $$;
+reset role;
+delete from public.app_errors;
+do $$
+begin
+  perform public.crm_watch();
+  assert not exists (select 1 from public.crm_alerts where code = 'errors_spike' and resolved_at is null),
+    'an alert closes when it passes';
+end $$;
+select 'quality tests passed';

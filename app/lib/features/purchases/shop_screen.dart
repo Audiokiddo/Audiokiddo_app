@@ -8,6 +8,7 @@ import '../welcome/szop_tour.dart';
 
 import 'package:go_router/go_router.dart';
 
+import '../../core/backend/backend_config.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
 import '../../l10n/app_localizations.dart';
@@ -284,7 +285,10 @@ class _PriceList extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          'Ceny są takie same jak na audiokiddo.pl. Pakiety kupujesz raz i zostają na zawsze.',
+          // The App Store build does not talk about prices elsewhere (guideline 3.1.1).
+          BackendConfig.kidsStoreBuild
+              ? 'Pakiety kupujesz raz i zostają na zawsze.'
+              : 'Ceny są takie same jak na audiokiddo.pl. Pakiety kupujesz raz i zostają na zawsze.',
           style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
         ),
       ],

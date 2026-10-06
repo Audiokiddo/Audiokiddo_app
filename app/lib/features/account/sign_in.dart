@@ -108,16 +108,18 @@ class _SignInOptionsState extends ConsumerState<SignInOptions> {
           ),
           const SizedBox(height: 12),
         ],
-        _ProviderButton(
-          label: l10n.signInGoogle,
-          background: Colors.white,
-          foreground: const Color(0xFF1F1F1F),
-          border: const Color(0xFF747775),
-          leading: const GoogleLogo(size: 20),
-          onPressed: _busy ? null : () => _run((a) => a.signInWithGoogle()),
-        ),
-        if (widget.showEmail) ...[
+        if (account.googleAvailable) ...[
+          _ProviderButton(
+            label: l10n.signInGoogle,
+            background: Colors.white,
+            foreground: const Color(0xFF1F1F1F),
+            border: const Color(0xFF747775),
+            leading: const GoogleLogo(size: 20),
+            onPressed: _busy ? null : () => _run((a) => a.signInWithGoogle()),
+          ),
           const SizedBox(height: 12),
+        ],
+        if (widget.showEmail) ...[
           _ProviderButton(
             label: l10n.signInEmail,
             background: context.palette.primary,

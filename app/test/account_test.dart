@@ -86,6 +86,9 @@ class FakeAccountService implements AccountService {
   @override
   bool get appleAvailable => true;
 
+  @override
+  bool get googleAvailable => true;
+
   bool appleCanceled = false;
 
   @override

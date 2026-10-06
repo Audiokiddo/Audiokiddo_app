@@ -68,6 +68,9 @@ class SupabaseEventSink implements EventSink {
     return id;
   }();
 
+  /// The install id, shared with the error log.
+  Future<String> installId() => _installId();
+
   /// Whether this is the first launch on this phone (no install id yet).
   Future<bool> isFirstOpen() async => await _db.readValue(_installKey) == null;
 

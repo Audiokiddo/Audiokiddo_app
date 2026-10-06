@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'features/account/account_service.dart';
 import 'features/account/session_gate.dart';
 import 'features/catalog/catalog_providers.dart';
 import 'features/catalog/remote_catalog.dart';
+import 'features/insights/error_log.dart';
 import 'features/insights/events.dart';
 import 'features/promotions/promotions.dart';
 import 'features/downloads/download_providers.dart';
@@ -39,6 +41,16 @@ Future<void> main() async {
   final database = AppDatabase();
   final catalogSource = RemoteCatalogSource(supabase.client, database);
   final events = SupabaseEventSink(supabase.client, database, appVersion: appVersion);
+  // Our own error log (no third-party crash reporting in the Kids Category).
+  ErrorLog(
+    send: (row) => supabase.client.from('app_errors').insert(row),
+    installId: events.installId,
+    userId: () => supabase.client.auth.currentUser?.id,
+    appVersion: appVersion,
+    platform: Platform.isIOS ? 'ios' : 'android',
+    osVersion: Platform.operatingSystemVersion,
+    database: database,
+  ).install();
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(database),

@@ -27,6 +27,10 @@ abstract final class BackendConfig {
   /// either way (3.1.3(b)). Build such a release with `--dart-define=REDEEM_CODES=false`.
   static const redeemCodes = bool.fromEnvironment('REDEEM_CODES', defaultValue: true);
 
+  /// The App Store build for the Kids Category (tool/release_build.sh ios): the number question
+  /// also in the parent area, no access codes, no Google sign-in, no talk of other prices.
+  static const kidsStoreBuild = bool.fromEnvironment('PARENT_GATE_EVERYWHERE');
+
   static bool get googleConfigured =>
       googleWebClientId.isNotEmpty && (!Platform.isIOS || googleIosClientId.isNotEmpty);
 }
