@@ -8,7 +8,7 @@ import '../server/studio_server.dart';
 import '../theme.dart';
 import 'crm_widgets.dart';
 
-/// Whether the agent goes through a chat (Claude or ChatGPT) instead of the API. Remembered in
+/// Whether the agent goes through a chat (Claude, ChatGPT or Gemini) instead of the API. Remembered in
 /// this browser; on by default, because the API needs paid credits.
 class AgentManualNotifier extends Notifier<bool> {
   static const _key = 'studio_agent_manual';
@@ -188,7 +188,7 @@ class _ManualAgentDialogState extends State<_ManualAgentDialog> {
               _step(
                 2,
                 'Wklej w czacie',
-                'Otwórz nową rozmowę, wklej (Cmd + V) i wyślij. Poczekaj, aż odpowiedź się skończy.',
+                'Claude, ChatGPT albo Gemini: otwórz nową rozmowę, wklej (Cmd + V) i wyślij. Poczekaj, aż odpowiedź się skończy.',
                 Wrap(
                   spacing: 8,
                   children: [
@@ -201,6 +201,11 @@ class _ManualAgentDialogState extends State<_ManualAgentDialog> {
                       onPressed: () => openInBrowser('https://chatgpt.com/'),
                       icon: const Icon(Icons.open_in_new),
                       label: const Text('Otwórz ChatGPT'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => openInBrowser('https://gemini.google.com/app'),
+                      icon: const Icon(Icons.open_in_new),
+                      label: const Text('Otwórz Gemini'),
                     ),
                   ],
                 ),

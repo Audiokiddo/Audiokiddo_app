@@ -66,13 +66,23 @@ Generowanie dźwięku i okładek zostaje ręczne: nagrania Neli i okładki to wy
    ```
 3. Klucze wpisujesz sam, w terminalu albo w Supabase → Edge Functions → Secrets. Nie wklejaj ich do rozmowy:
    ```
-   supabase secrets set ANTHROPIC_API_KEY=twój_klucz
+   supabase secrets set GEMINI_API_KEY=twój_klucz
    supabase secrets set MAILERLITE_API_KEY=twój_klucz MAILERLITE_FROM=kontakt@audiokiddo.pl
    ```
-   Klucz Claude: console.anthropic.com → API Keys (ustaw tam limit miesięczny, np. 100 zł). Klucz MailerLite: MailerLite → Integrations → API.
-4. Studio na stronę: `bash tool/studio_build.sh`, potem w FileZilli wgraj zawartość `studio/build/web` do `public_html/studio`.
+   Klucz MailerLite: MailerLite → Integrations → API.
+4. Studio na stronę: `bash tool/studio_build.sh`, potem w FileZilli wgraj zawartość `studio/build/web` do `public_html/studio` w folderze strony: `public_html/autoinstalator/audiokiddo.pl/wordpress106097/studio`.
 
-Koszt agenta: raport to kilka groszy do kilkunastu groszy, scenariusz do około 1 zł. Przy codziennym użyciu to zwykle 20–60 zł miesięcznie.
+## AI dla agentów: trzy drogi
+
+Agent COO, scenariusze, agent reklam, Fabryka i szkice odpowiedzi na opinie korzystają z jednego połączenia (`supabase/functions/_shared/claude.ts`):
+
+| Droga | Sekret | Koszt | Uwagi |
+|---|---|---|---|
+| **Gemini** (Google AI Studio) | `GEMINI_API_KEY` | darmowy limit dzienny | aistudio.google.com → Get API key. W darmowym planie Google może używać zapytań do ulepszania modeli (agent nie dostaje e-maili klientów). Model: `GEMINI_MODEL`, domyślnie `gemini-flash-latest`. |
+| **Claude** (Anthropic API) | `ANTHROPIC_API_KEY` | płatne z góry, od 5 USD | console.anthropic.com; wyłącz automatyczne doładowanie, ustaw limit. Model: `COO_MODEL`. |
+| **Przez czat** | brak | w ramach abonamentu Claude / ChatGPT / Gemini | Studio → CRM → Decyzje → „Przez czat”: kopiujesz polecenie, wklejasz odpowiedź. Tylko agent COO i scenariusze. |
+
+Gdy są oba klucze, najpierw idzie Claude, a przy złym kluczu, braku środków albo przeciążeniu od razu Gemini. `AI_PROVIDER=gemini` stawia Gemini na pierwszym miejscu. Studio przy błędzie mówi, co zrobić (zły klucz, limit, brak środków).
 
 ## MailerLite: plan maili do rodziców
 

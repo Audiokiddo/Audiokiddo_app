@@ -3,14 +3,13 @@
 //   mode: auto (the daily pg_cron rhythm with the Vault secret: crm_settings.coo_rhythm)
 // Gathers the state of the business (numbers, board, ideas, calendar, past decisions), asks
 // Claude, and saves every proposal as a pending decision. Returns { summary, proposals }.
-// Secrets: ANTHROPIC_API_KEY (required), COO_MODEL (optional).
+// Secrets: ANTHROPIC_API_KEY or GEMINI_API_KEY (see _shared/claude.ts), COO_MODEL (optional).
 import { dueModes, MODES, releaseWindow, type Mode, parseAnswer, prompt, SYSTEM, toRow } from "../_shared/coo.ts";
-import { answerText, ClaudeError, failWith } from "../_shared/claude.ts";
+import { askClaude, ClaudeError, hasAi } from "../_shared/claude.ts";
 import { withCors } from "../_shared/cors.ts";
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 
-const MODEL = Deno.env.get("COO_MODEL") ?? "claude-sonnet-5-5";
 
 Deno.serve(withCors(async (req) => {
   if (req.method !== "POST") return json({ error: "method" }, 405);
@@ -139,26 +138,13 @@ async function gather(admin: SupabaseClient, focusId: string | null) {
 }
 
 async function run(admin: SupabaseClient, mode: Mode, note: string | null, focusId: string | null) {
-  const key = Deno.env.get("ANTHROPIC_API_KEY");
-  if (!key) return { error: "no_key" as const };
+  if (!hasAi()) return { error: "no_key" as const };
   const { context, focus } = await gather(admin, focusId);
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: mode === "scenario" ? 12000 : 8000,
-      system: SYSTEM,
-      messages: [{ role: "user", content: prompt(mode, context, note, focus) }],
-    }),
-  });
   let text: string;
   try {
-    if (!response.ok) await failWith("coo", response);
-    text = answerText(await response.json());
+    text = await askClaude(SYSTEM, prompt(mode, context, note, focus), mode === "scenario" ? 12000 : 8000);
   } catch (e) {
-    // The reason (bad key, no credit, busy…) goes back to Studio, which says what to do.
+    // The reason (bad key, no credit, limit…) goes back to Studio, which says what to do.
     return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model" };
   }
 

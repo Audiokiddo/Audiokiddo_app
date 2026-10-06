@@ -13,7 +13,7 @@ export function configured() {
     meta_pixel: !!(env("META_ACCESS_TOKEN") && env("META_PIXEL_ID")),
     google_ads: google && !!(env("GOOGLE_ADS_DEVELOPER_TOKEN") && env("GOOGLE_ADS_CUSTOMER_ID")),
     ga4: google && !!env("GA4_PROPERTY_ID"),
-    agent: !!env("ANTHROPIC_API_KEY"),
+    agent: !!(env("ANTHROPIC_API_KEY") || env("GEMINI_API_KEY")),
   };
 }
 

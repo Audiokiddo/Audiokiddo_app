@@ -14,7 +14,7 @@
 //     Ads: GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_ADS_CUSTOMER_ID, GOOGLE_ADS_LOGIN_CUSTOMER_ID (optional),
 //          GOOGLE_ADS_API_VERSION (optional)
 //     Analytics: GA4_PROPERTY_ID
-//   Agent: ANTHROPIC_API_KEY, ADS_MODEL (optional)
+//   Agent: ANTHROPIC_API_KEY or GEMINI_API_KEY (_shared/claude.ts), ADS_MODEL (optional, Claude)
 import {
   ADS_SYSTEM,
   adsPrompt,
@@ -34,7 +34,7 @@ import {
   summarize,
 } from "../_shared/ads.ts";
 import { cleanCreative } from "../_shared/ads_growth.ts";
-import { answerText, ClaudeError, failWith } from "../_shared/claude.ts";
+import { askClaude, ClaudeError, hasAi } from "../_shared/claude.ts";
 import { withCors } from "../_shared/cors.ts";
 import {
   applyGrowthAction,
@@ -253,8 +253,7 @@ async function load(admin: SupabaseClient) {
 // The agent ----------------------------------------------------------------------------------
 
 async function propose(admin: SupabaseClient, note: string | null) {
-  const key = env("ANTHROPIC_API_KEY");
-  if (!key) return { error: "no_key" as const };
+  if (!hasAi()) return { error: "no_key" as const };
   const today = new Date().toISOString().slice(0, 10);
   const { entities, metrics, settings } = await load(admin);
   const since = new Date(Date.now() - 30 * 864e5).toISOString();
@@ -283,20 +282,9 @@ async function propose(admin: SupabaseClient, note: string | null) {
     past_actions: history.data ?? [],
   };
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 5000,
-      system: ADS_SYSTEM,
-      messages: [{ role: "user", content: adsPrompt(context, note, today) }],
-    }),
-  });
   let text: string;
   try {
-    if (!response.ok) await failWith("ads", response);
-    text = answerText(await response.json());
+    text = await askClaude(ADS_SYSTEM, adsPrompt(context, note, today), 5000, { model: MODEL });
   } catch (e) {
     return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model" };
   }

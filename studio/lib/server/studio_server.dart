@@ -25,11 +25,15 @@ String agentTrouble(Object? details) {
   final body = details is Map ? details : const {};
   return switch ('${body['reason'] ?? body['error'] ?? ''}') {
     'key' =>
-      'Klucz Claude jest nieprawidłowy albo wyłączony. Utwórz nowy w console.anthropic.com → API Keys '
-          'i wklej go w Supabase → Edge Functions → Secrets jako ANTHROPIC_API_KEY.',
-    'credit' => 'Na koncie Anthropic skończyły się środki. Doładuj je: console.anthropic.com → Billing.',
-    'model_missing' => 'Ten model Claude jest niedostępny dla Twojego klucza. Usuń sekret COO_MODEL w Supabase albo wpisz inny model.',
-    'busy' => 'Claude jest teraz przeciążony. Spróbuj za minutę.',
+      'Klucz AI jest nieprawidłowy. Darmowy klucz Gemini: aistudio.google.com → Get API key, '
+          'w Supabase → Edge Functions → Secrets jako GEMINI_API_KEY. Na razie użyj trybu „Przez czat”.',
+    'credit' =>
+      'Na koncie Anthropic skończyły się środki, a Gemini nie jest ustawiony. Dodaj GEMINI_API_KEY '
+          '(darmowy, aistudio.google.com) albo użyj trybu „Przez czat”.',
+    'quota' => 'Wyczerpany dzienny limit darmowego Gemini. Spróbuj jutro albo użyj trybu „Przez czat”.',
+    'model_missing' =>
+      'Ten model AI jest niedostępny dla Twojego klucza. Usuń sekret COO_MODEL / GEMINI_MODEL w Supabase.',
+    'busy' => 'AI jest teraz przeciążone. Spróbuj za minutę.',
     'too_long' =>
       'Odpowiedź agenta była za długa i się urwała. Spróbuj jeszcze raz albo dopisz węższą wskazówkę.',
     'answer' => 'Agent odpowiedział w złym formacie. Spróbuj jeszcze raz.',
@@ -108,11 +112,12 @@ class StudioServer {
           'Brak kluczy sklepów: ASC_* (App Store) albo GOOGLE_SERVICE_ACCOUNT_JSON (Google Play).',
         404 when function == 'mailer' => 'To zamówienie jest już odebrane albo go nie ma.',
         412 =>
-          function == 'coo' || function == 'ads'
-              ? 'Brak klucza Claude API. Wpisz ANTHROPIC_API_KEY w Supabase → Edge Functions → Secrets.'
+          function == 'coo' || function == 'ads' || function == 'factory'
+              ? 'Brak klucza AI. Dodaj darmowy GEMINI_API_KEY (aistudio.google.com) w Supabase → Edge Functions → Secrets '
+                    'albo użyj trybu „Przez czat”.'
               : 'Brak klucza MailerLite. Wpisz MAILERLITE_API_KEY i MAILERLITE_FROM w Supabase → Edge Functions → Secrets.',
         502 =>
-          function == 'coo' || function == 'ads'
+          function == 'coo' || function == 'ads' || function == 'factory'
               ? agentTrouble(e.details)
               : 'MailerLite odrzucił zapytanie. Sprawdź klucz i adres nadawcy.',
         _ => 'Serwer nie odpowiada. Spróbuj za chwilę.',

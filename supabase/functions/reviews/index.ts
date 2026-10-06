@@ -5,7 +5,8 @@
 //   publish { store, review_id, text }  admins: the approved reply goes to the store
 //   skip { store, review_id }   admins: no reply needed
 // Secrets: App Store: ASC_KEY_ID, ASC_ISSUER_ID, ASC_PRIVATE_KEY (the .p8 text), ASC_APP_ID;
-// Google Play: GOOGLE_SERVICE_ACCOUNT_JSON (as for purchases); agent: ANTHROPIC_API_KEY.
+// Google Play: GOOGLE_SERVICE_ACCOUNT_JSON (as for purchases); agent: ANTHROPIC_API_KEY or GEMINI_API_KEY.
+import { askClaude } from "../_shared/claude.ts";
 import { withCors } from "../_shared/cors.ts";
 import { googlePlayFromEnv } from "../_shared/google_play.ts";
 import {
@@ -21,7 +22,6 @@ import { adminClient, json, requestUser } from "../_shared/supabase.ts";
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 
 const env = (k: string) => Deno.env.get(k)?.trim() || null;
-const MODEL = env("COO_MODEL") ?? "claude-sonnet-5-5";
 const ASC = "https://api.appstoreconnect.apple.com/v1";
 
 const appleReady = () => !!(env("ASC_KEY_ID") && env("ASC_ISSUER_ID") && env("ASC_PRIVATE_KEY") && env("ASC_APP_ID"));
@@ -73,16 +73,12 @@ async function sync(admin: SupabaseClient) {
 }
 
 async function draft(admin: SupabaseClient, r: Pick<Review, "store" | "review_id" | "rating" | "title" | "body">) {
-  const key = env("ANTHROPIC_API_KEY");
-  if (!key) return null;
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: MODEL, max_tokens: 400, system: REPLY_SYSTEM, messages: [{ role: "user", content: replyPrompt(r) }] }),
-  });
-  if (!res.ok) return null;
-  const answer = await res.json() as { content?: { type: string; text?: string }[] };
-  const text = fitReply((answer.content ?? []).filter((c) => c.type === "text").map((c) => c.text ?? "").join(""));
+  let text: string;
+  try {
+    text = fitReply(await askClaude(REPLY_SYSTEM, replyPrompt(r), 400, { json: false }));
+  } catch {
+    return null;
+  }
   if (!text) return null;
   await admin.from("store_reviews").update({ draft: text, status: "draft" }).eq("store", r.store).eq("review_id", r.review_id);
   return text;

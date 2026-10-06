@@ -1,13 +1,32 @@
-// One call to Claude (Anthropic API) for the agents. Secret: ANTHROPIC_API_KEY; model from
-// COO_MODEL or the default.
+// One call to the AI for the agents (COO, ads, factory, reviews). Two providers:
+//   Claude (Anthropic API): ANTHROPIC_API_KEY, model COO_MODEL or the default;
+//   Gemini (Google AI Studio, has a free tier): GEMINI_API_KEY, model GEMINI_MODEL or the default.
+// AI_PROVIDER = claude | gemini puts one first. Otherwise Claude goes first and Gemini steps in
+// when Claude's key is missing, wrong, out of credit or busy.
 
-/** Why a call to Claude failed, in a word Studio turns into advice. */
-export type ClaudeReason = "key" | "credit" | "model_missing" | "busy" | "too_long" | "model";
+/** Why a call failed, in a word Studio turns into advice. */
+export type ClaudeReason = "no_key" | "key" | "credit" | "quota" | "model_missing" | "busy" | "too_long" | "model";
 
 export class ClaudeError extends Error {
   constructor(message: string, readonly reason: ClaudeReason = "model") {
     super(message);
   }
+}
+
+type Provider = "claude" | "gemini";
+
+/** The providers with a key, in the order to try. */
+export function providers(env: (k: string) => string | undefined = (k) => Deno.env.get(k)): Provider[] {
+  const have = (["claude", "gemini"] as Provider[]).filter((p) =>
+    p === "claude" ? !!env("ANTHROPIC_API_KEY") : !!env("GEMINI_API_KEY")
+  );
+  const first = env("AI_PROVIDER")?.toLowerCase();
+  return first === "gemini" ? [...have.filter((p) => p === "gemini"), ...have.filter((p) => p !== "gemini")] : have;
+}
+
+/** Whether any AI is configured (the agents wait otherwise). */
+export function hasAi(): boolean {
+  return providers().length > 0;
 }
 
 /** Reads Anthropic's error answer (status and body) into a reason. Never includes the key. */
@@ -20,27 +39,48 @@ export function claudeReason(status: number, body: string): ClaudeReason {
   return "model";
 }
 
-/** Raises the matching [ClaudeError] for a failed response (and logs it for the function logs). */
+/** The same for Google's Gemini API. */
+export function geminiReason(status: number, body: string): ClaudeReason {
+  const text = body.toLowerCase();
+  if (text.includes("api_key_invalid") || text.includes("api key not valid") || status === 401 || status === 403) return "key";
+  if (status === 429 || text.includes("resource_exhausted") || text.includes("quota")) return "quota";
+  if (status === 404) return "model_missing";
+  if (status === 503 || text.includes("overloaded") || text.includes("unavailable")) return "busy";
+  return "model";
+}
+
+/** Raises the matching [ClaudeError] for a failed Claude response (and logs it). */
 export async function failWith(tag: string, response: Response): Promise<never> {
   const body = await response.text();
   console.error(`${tag}: model`, response.status, body.slice(0, 500));
   throw new ClaudeError(`model ${response.status}`, claudeReason(response.status, body));
 }
 
-/** The text of an answer; an answer cut at the token limit is reported, not parsed half-way. */
+/** The text of a Claude answer; an answer cut at the token limit is reported, not parsed half-way. */
 export function answerText(answer: { content?: { type: string; text?: string }[]; stop_reason?: string }): string {
   if (answer.stop_reason === "max_tokens") throw new ClaudeError("max_tokens", "too_long");
   return (answer.content ?? []).filter((c) => c.type === "text").map((c) => c.text ?? "").join("");
 }
 
-export async function askClaude(system: string, prompt: string, maxTokens: number): Promise<string> {
-  const key = Deno.env.get("ANTHROPIC_API_KEY");
-  if (!key) throw new ClaudeError("no_key");
+/** The text of a Gemini answer, the same way. */
+export function geminiText(answer: {
+  candidates?: { finishReason?: string; content?: { parts?: { text?: string; thought?: boolean }[] } }[];
+}): string {
+  const first = answer.candidates?.[0];
+  if (first?.finishReason === "MAX_TOKENS") throw new ClaudeError("max_tokens", "too_long");
+  return (first?.content?.parts ?? []).filter((p) => !p.thought).map((p) => p.text ?? "").join("");
+}
+
+async function claude(system: string, prompt: string, maxTokens: number, model?: string): Promise<string> {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+    headers: {
+      "x-api-key": Deno.env.get("ANTHROPIC_API_KEY")!,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
     body: JSON.stringify({
-      model: Deno.env.get("COO_MODEL") ?? "claude-sonnet-5-5",
+      model: model ?? Deno.env.get("COO_MODEL") ?? "claude-sonnet-5-5",
       max_tokens: maxTokens,
       system,
       messages: [{ role: "user", content: prompt }],
@@ -48,4 +88,54 @@ export async function askClaude(system: string, prompt: string, maxTokens: numbe
   });
   if (!response.ok) await failWith("claude", response);
   return answerText(await response.json());
+}
+
+async function gemini(system: string, prompt: string, maxTokens: number, json: boolean): Promise<string> {
+  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+    method: "POST",
+    headers: { "x-goog-api-key": Deno.env.get("GEMINI_API_KEY")!, "content-type": "application/json" },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: system }] },
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      // Gemini's thinking counts towards the output, so it gets room on top of the answer.
+      generationConfig: { maxOutputTokens: maxTokens + 8000, ...(json ? { responseMimeType: "application/json" } : {}) },
+    }),
+  });
+  if (!response.ok) {
+    const body = await response.text();
+    console.error("gemini: model", response.status, body.slice(0, 500));
+    throw new ClaudeError(`gemini ${response.status}`, geminiReason(response.status, body));
+  }
+  return geminiText(await response.json());
+}
+
+/** Reasons that mean "try the other provider" rather than "this request is wrong". */
+const SWITCH: ClaudeReason[] = ["key", "credit", "quota", "model_missing", "busy"];
+
+/**
+ * Asks the configured AI. [json]: the answer must be one JSON object (Gemini is told so too).
+ * Throws [ClaudeError] with the reason of the last provider tried ("no_key" when none is set).
+ */
+export async function askClaude(
+  system: string,
+  prompt: string,
+  maxTokens: number,
+  options: { json?: boolean; model?: string } = {},
+): Promise<string> {
+  const list = providers();
+  if (!list.length) throw new ClaudeError("no_key", "no_key");
+  let last: ClaudeError | null = null;
+  for (const provider of list) {
+    try {
+      return provider === "claude"
+        ? await claude(system, prompt, maxTokens, options.model)
+        : await gemini(system, prompt, maxTokens, options.json ?? true);
+    } catch (e) {
+      if (!(e instanceof ClaudeError)) throw e;
+      last = e;
+      if (!SWITCH.includes(e.reason)) break;
+    }
+  }
+  throw last!;
 }

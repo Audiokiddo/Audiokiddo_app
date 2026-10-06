@@ -6,10 +6,10 @@
 //   revise { id, feedback }     the agent redoes the step with the remarks
 //   reject { id }               stop the job
 //   audio_url { path }          a signed link to listen to a voice draft
-// Secrets: ANTHROPIC_API_KEY; blog: WP_URL, WP_USER, WP_APP_PASSWORD (an application password
+// Secrets: ANTHROPIC_API_KEY or GEMINI_API_KEY; blog: WP_URL, WP_USER, WP_APP_PASSWORD (an application password
 // of a WordPress user who may publish); voice drafts: ELEVENLABS_API_KEY (ELEVENLABS_VOICE,
 // ELEVENLABS_MODEL optional).
-import { askClaude, ClaudeError } from "../_shared/claude.ts";
+import { askClaude, ClaudeError, hasAi } from "../_shared/claude.ts";
 import { withCors } from "../_shared/cors.ts";
 import {
   chunks,
@@ -230,7 +230,7 @@ Deno.serve(withCors(async (req) => {
   if (!user) return json({ error: "unauthorized" }, 401);
   const { data: isAdmin } = await admin.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
   if (!isAdmin) return json({ error: "forbidden" }, 403);
-  if (!env("ANTHROPIC_API_KEY") && ["create", "propose_topics", "revise"].includes(String(body.action))) {
+  if (!hasAi() && ["create", "propose_topics", "revise"].includes(String(body.action))) {
     return json({ error: "no_key" }, 412);
   }
 

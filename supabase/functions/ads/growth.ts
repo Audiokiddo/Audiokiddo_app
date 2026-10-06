@@ -33,7 +33,7 @@ import {
   wastedTerms,
 } from "../_shared/ads_growth.ts";
 import { cleanSettings, type ProposedAction } from "../_shared/ads.ts";
-import { askClaude, ClaudeError } from "../_shared/claude.ts";
+import { askClaude, ClaudeError, hasAi } from "../_shared/claude.ts";
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import {
   adsHeaders,
@@ -279,7 +279,7 @@ export async function refreshKeywords(admin: SupabaseClient, settings: ResearchS
 
 /** The agent's weekly research: findings, creatives to approve, keywords, negatives, tasks. */
 export async function research(admin: SupabaseClient, noteText: string | null) {
-  if (!env("ANTHROPIC_API_KEY")) return { error: "no_key" as const };
+  if (!hasAi()) return { error: "no_key" as const };
   const day = today();
   const since = new Date(Date.now() - 30 * 864e5).toISOString();
   const [g, competitors, keywords, creatives, campaigns, numbers] = await Promise.all([

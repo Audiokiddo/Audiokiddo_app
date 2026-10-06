@@ -142,7 +142,7 @@ const _secretsHint = {
   'meta_pixel': 'META_PIXEL_ID (oraz token Meta)',
   'google_ads': 'GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_ADS_CUSTOMER_ID',
   'ga4': 'GA4_PROPERTY_ID (oraz klucze Google)',
-  'agent': 'ANTHROPIC_API_KEY',
+  'agent': 'GEMINI_API_KEY (darmowy) albo ANTHROPIC_API_KEY',
 };
 
 class _Sources extends ConsumerStatefulWidget {
