@@ -124,6 +124,8 @@ Agent korzysta z tego samego klucza Claude co COO (`ANTHROPIC_API_KEY`).
 Na stronie najprościej użyć oficjalnych wtyczek. Dają Pixel razem z Conversions API (zakupy liczone także po stronie serwera) i GA4 z e-commerce:
 
 - **Meta for WooCommerce** (Facebook for WooCommerce): połącz z tym samym Pixelem i kontem reklamowym, włącz „Conversions API”.
+  Na audiokiddo.pl Pixel (1681646562716481) wysyła dziś też **PixelYourSite**. Dwie wtyczki z tym samym Pixelem liczą każdy zakup podwójnie, więc w PixelYourSite wyłącz Meta Pixel (zostaw ją ewentualnie dla innych tagów) albo nie włączaj Pixela w Meta for WooCommerce. Sprawdzenie: Menedżer zdarzeń → Testuj zdarzenia, jedno PageView na jedno wejście.
+- **Weryfikacja domeny** audiokiddo.pl: Ustawienia firmy → Bezpieczeństwo marki → Domeny (rekord TXT w DNS albo meta-tag). Bez niej Meta ogranicza pomiar zakupów z iPhone’ów.
 - **Site Kit by Google** albo **GTM4WP**: GA4 z wydarzeniami e-commerce (purchase z wartością).
 - **Baner zgód (RODO)**, np. Complianz albo CookieYes z trybem zgody Google (Consent Mode v2). Pixel i GA4 ruszają dopiero po zgodzie.
 
