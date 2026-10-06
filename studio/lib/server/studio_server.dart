@@ -128,7 +128,9 @@ class StudioServer {
           function == 'coo' || function == 'ads' || function == 'factory'
               ? agentTrouble(e.details)
               : 'MailerLite odrzucił zapytanie. Sprawdź klucz i adres nadawcy.',
-        _ => 'Serwer nie odpowiada. Spróbuj za chwilę.',
+        _ when function == 'coo' || function == 'ads' || function == 'factory' =>
+          'Agent nie zdążył odpowiedzieć (kod ${e.status}). Spróbuj jeszcze raz albo użyj trybu „Przez czat”.',
+        _ => 'Serwer nie odpowiada (kod ${e.status}). Spróbuj za chwilę.',
       });
     }
   }

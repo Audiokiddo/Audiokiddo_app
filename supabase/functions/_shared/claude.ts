@@ -104,28 +104,50 @@ async function claude(system: string, prompt: string, maxTokens: number, model?:
 }
 
 async function gemini(system: string, prompt: string, maxTokens: number, json: boolean): Promise<string> {
-  // The chosen model, then the lighter one when it is busy; each tried twice with a pause.
+  // The function has about 150 s in all, so every try fits in what is left of 110 s. The chosen
+  // model first, then the lighter one when it is busy; thinking off, so the answer comes quickly.
+  const deadline = Date.now() + 110_000;
   const models = [...new Set([Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest", "gemini-flash-lite-latest"])];
   let last: ClaudeError | null = null;
+  let thinkingOff = true;
   for (const model of models) {
-    for (const wait of [0, 4000]) {
+    for (const wait of [0, 3000]) {
       if (wait) await pause(wait);
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-        method: "POST",
-        headers: { "x-goog-api-key": Deno.env.get("GEMINI_API_KEY")!, "content-type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: system }] },
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          // Gemini's thinking counts towards the output, so it gets room on top of the answer.
-          generationConfig: {
-            maxOutputTokens: maxTokens + 8000,
-            ...(json ? { responseMimeType: "application/json" } : {}),
-          },
-        }),
-      });
-      if (response.ok) return geminiText(await response.json());
+      const left = deadline - Date.now();
+      if (left < 15_000) throw last ?? new ClaudeError("gemini timeout", "busy");
+      let response: Response;
+      try {
+        response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: "POST",
+          signal: AbortSignal.timeout(left),
+          headers: { "x-goog-api-key": Deno.env.get("GEMINI_API_KEY")!, "content-type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: system }] },
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: {
+              maxOutputTokens: maxTokens + 2000,
+              ...(json ? { responseMimeType: "application/json" } : {}),
+              ...(thinkingOff ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
+            },
+          }),
+        });
+      } catch (e) {
+        console.error("gemini: no answer in time", model, e);
+        last = new ClaudeError("gemini timeout", "busy", "Gemini nie odpowiedział w czasie.");
+        continue;
+      }
+      const started = deadline - left;
+      if (response.ok) {
+        console.log("gemini:", model, "answered in", Date.now() - started, "ms");
+        return geminiText(await response.json());
+      }
       const body = await response.text();
       console.error("gemini:", model, response.status, body.slice(0, 500));
+      // A model that cannot switch thinking off says so: ask again without the setting.
+      if (response.status === 400 && thinkingOff && body.toLowerCase().includes("thinking")) {
+        thinkingOff = false;
+        continue;
+      }
       last = new ClaudeError(`gemini ${response.status}`, geminiReason(response.status, body), providerMessage(body));
       if (last.reason !== "busy" && last.reason !== "model_missing") throw last;
       if (last.reason === "model_missing") break;
