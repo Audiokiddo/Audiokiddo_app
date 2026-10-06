@@ -170,10 +170,7 @@ class _KiddoHelloState extends ConsumerState<_KiddoHello> {
                   bottomRight: Radius.circular(20),
                 ),
               ),
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-              ),
+              child: Text(text, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
             ),
           ),
         ],
@@ -190,9 +187,7 @@ List<ContentItem> kidsItems(
   required Set<String> downloaded,
 }) => [
   for (final item in catalog.items)
-    if (item.ageMin <= settings.age &&
-        canPlay(item) &&
-        (!settings.onlyDownloaded || downloaded.contains(item.id)))
+    if (item.ageMin <= settings.age && canPlay(item) && (!settings.onlyDownloaded || downloaded.contains(item.id)))
       item,
 ];
 
@@ -217,11 +212,7 @@ class _KidsGrid extends ConsumerWidget {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(AkSpace.l),
-          child: Text(
-            l10n.kidsEmpty,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          child: Text(l10n.kidsEmpty, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
         ),
       );
     }

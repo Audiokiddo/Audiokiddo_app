@@ -199,19 +199,14 @@ class BedtimeScreen extends ConsumerWidget {
       LineStep() => l10n.bedtimeBreaths,
       ItemStep(:final item) =>
         item.kind == ContentKind.song ? l10n.bedtimeSong(item.title) : l10n.bedtimeQuiet(item.title),
-      ParentStep() =>
-        clips?[ParentClip.goodnight] != null ? l10n.bedtimeParentGoodnight : l10n.bedtimeKiddoGoodnight,
+      ParentStep() => clips?[ParentClip.goodnight] != null ? l10n.bedtimeParentGoodnight : l10n.bedtimeKiddoGoodnight,
     };
     const fg = Color(0xFFFFF3E6);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: const Color(0xFF1E1A3A),
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          foregroundColor: fg,
-          leading: const _CloseToStart(),
-        ),
+        appBar: AppBar(backgroundColor: Colors.transparent, foregroundColor: fg, leading: const _CloseToStart()),
         extendBodyBehindAppBar: true,
         body: Container(
           decoration: const BoxDecoration(
@@ -275,9 +270,7 @@ class BedtimeScreen extends ConsumerWidget {
                     const SizedBox(height: AkSpace.l),
                     FilledButton.icon(
                       onPressed: () {
-                        ref
-                            .read(sessionProvider.notifier)
-                            .start(SessionKind.bedtime, steps, childId: child?.id);
+                        ref.read(sessionProvider.notifier).start(SessionKind.bedtime, steps, childId: child?.id);
                         context.pushReplacement('/sesja');
                       },
                       style: FilledButton.styleFrom(
@@ -400,9 +393,7 @@ class SessionScreen extends ConsumerWidget {
                 icon: waiting
                     ? (session.held ? Icons.play_arrow_rounded : Icons.pause_rounded)
                     : (playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
-                label: waiting
-                    ? (session.held ? l10n.sessionResume : l10n.sessionHold)
-                    : (playing ? 'Pauza' : 'Graj'),
+                label: waiting ? (session.held ? l10n.sessionResume : l10n.sessionHold) : (playing ? 'Pauza' : 'Graj'),
                 size: 112,
                 color: AkBrand.sun,
                 filled: true,
@@ -532,10 +523,7 @@ class _BigButton extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: const Color(0xFFFFF3E6)),
-            ),
+            Text(label, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: const Color(0xFFFFF3E6))),
           ],
         ),
       ),
@@ -699,9 +687,7 @@ class _ParentVoiceScreenState extends ConsumerState<ParentVoiceScreen> {
                     Row(
                       children: [
                         FilledButton.icon(
-                          onPressed: _recording != null && _recording != clip
-                              ? null
-                              : () => _toggle(child.id, clip),
+                          onPressed: _recording != null && _recording != clip ? null : () => _toggle(child.id, clip),
                           icon: Icon(_recording == clip ? Icons.stop_rounded : Icons.mic_rounded),
                           label: Text(
                             _recording == clip

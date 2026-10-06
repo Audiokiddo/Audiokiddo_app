@@ -100,14 +100,14 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
   Future<void> _anotherChild() async {
     if (!await mayAddChild(context, ref) || !mounted) return;
     setState(() {
-    _name.clear();
-    _age = null;
-    _goals.clear();
-    _situations.clear();
-    _minutes = null;
-    _saved = null;
-    _step = _Step.name;
-  });
+      _name.clear();
+      _age = null;
+      _goals.clear();
+      _situations.clear();
+      _minutes = null;
+      _saved = null;
+      _step = _Step.name;
+    });
   }
 
   SzopPose get _pose => switch (_step) {
@@ -398,11 +398,7 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
         padding: const EdgeInsets.all(AkSpace.m),
         children: [
           if (_saved case final child?)
-            for (final line in [
-              l10n.quizSummaryAge(child.age),
-              l10n.quizSummaryLevels,
-              l10n.quizSummaryChange,
-            ])
+            for (final line in [l10n.quizSummaryAge(child.age), l10n.quizSummaryLevels, l10n.quizSummaryChange])
               ListTile(
                 leading: const Icon(Icons.check_circle_rounded, color: AkBrand.teal),
                 title: Text(line),
@@ -413,13 +409,7 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
   }
 }
 
-const _optionColors = [
-  AkBrand.teal,
-  AkBrand.orange,
-  AkBrand.lavenderDeep,
-  AkBrand.sunDeep,
-  AkBrand.terracotta,
-];
+const _optionColors = [AkBrand.teal, AkBrand.orange, AkBrand.lavenderDeep, AkBrand.sunDeep, AkBrand.terracotta];
 
 class _Bubble extends StatelessWidget {
   const _Bubble({super.key, required this.text});
@@ -441,10 +431,7 @@ class _Bubble extends StatelessWidget {
     ),
     child: Semantics(
       liveRegion: true,
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-      ),
+      child: Text(text, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
     ),
   );
 }
@@ -526,8 +513,7 @@ class _Option extends StatelessWidget {
                               ],
                             ),
                           ),
-                          if (selected)
-                            ExcludeSemantics(child: Icon(Icons.check_circle_rounded, color: color)),
+                          if (selected) ExcludeSemantics(child: Icon(Icons.check_circle_rounded, color: color)),
                         ],
                       ),
                     ),

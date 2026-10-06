@@ -10,9 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final catalog = parseCatalog(
-    jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
-  ).catalog;
+  final catalog = parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>)
+      .catalog;
   final now = DateTime(2026, 9, 28, 18);
   final shop = catalog.item('magiczny-sklep')!;
   final sound = catalog.items.firstWhere((i) => i.id != shop.id && i.kind != ContentKind.interactiveGame);

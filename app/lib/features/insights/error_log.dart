@@ -63,9 +63,8 @@ class ErrorLog {
   }
 
   /// Blanks what could identify a person: e-mail addresses and long numbers.
-  static String scrub(String text) => text
-      .replaceAll(RegExp(r'[\w.+-]+@[\w-]+\.[\w.-]+'), '<e-mail>')
-      .replaceAll(RegExp(r'\d{6,}'), '<liczba>');
+  static String scrub(String text) =>
+      text.replaceAll(RegExp(r'[\w.+-]+@[\w-]+\.[\w.-]+'), '<e-mail>').replaceAll(RegExp(r'\d{6,}'), '<liczba>');
 
   /// The first line of the stack that is our own code, else the first line.
   static String origin(String stack) {
@@ -91,16 +90,18 @@ class ErrorLog {
     final print = fingerprint(type, trace);
     if (!_seen.add(print)) return;
     _count++;
-    unawaited(_deliver({
-      'kind': kind,
-      'error_type': type.length > 120 ? type.substring(0, 120) : type,
-      'message': _cut(scrub(error.toString()), 1000),
-      'stack': _cut(scrub(trace.split('\n').take(40).join('\n')), 4000),
-      'fingerprint': print,
-      'app_version': appVersion,
-      'platform': platform,
-      'os_version': osVersion == null ? null : _cut(osVersion!, 80),
-    }));
+    unawaited(
+      _deliver({
+        'kind': kind,
+        'error_type': type.length > 120 ? type.substring(0, 120) : type,
+        'message': _cut(scrub(error.toString()), 1000),
+        'stack': _cut(scrub(trace.split('\n').take(40).join('\n')), 4000),
+        'fingerprint': print,
+        'app_version': appVersion,
+        'platform': platform,
+        'os_version': osVersion == null ? null : _cut(osVersion!, 80),
+      }),
+    );
   }
 
   Future<void> _deliver(Map<String, Object?> row) async {
@@ -117,7 +118,10 @@ class ErrorLog {
     if (db == null) return;
     try {
       final list = _decode(await db.readValue(_pendingKey))..add(row);
-      await db.writeValue(_pendingKey, jsonEncode(list.length > maxPerLaunch ? list.sublist(list.length - maxPerLaunch) : list));
+      await db.writeValue(
+        _pendingKey,
+        jsonEncode(list.length > maxPerLaunch ? list.sublist(list.length - maxPerLaunch) : list),
+      );
     } on Object {
       // The log must never break the app.
     }

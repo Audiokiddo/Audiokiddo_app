@@ -403,10 +403,7 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
             consent(_consented, (v) => setState(() => _consented = v)),
           ],
           const SizedBox(height: AkSpace.m),
-          FilledButton(
-            onPressed: _busy ? null : _sendCode,
-            child: Text(widget.sendLabel ?? l10n.accountSendCode),
-          ),
+          FilledButton(onPressed: _busy ? null : _sendCode, child: Text(widget.sendLabel ?? l10n.accountSendCode)),
         ] else ...[
           Text(l10n.accountCodeSent(sentTo), style: theme.textTheme.bodyMedium),
           const SizedBox(height: AkSpace.m),
@@ -547,10 +544,7 @@ class _PasswordSignInFormState extends ConsumerState<PasswordSignInForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Zaloguj się hasłem',
-          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-        ),
+        Text('Zaloguj się hasłem', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
         const SizedBox(height: AkSpace.m),
         if (widget.email == null) ...[
           TextField(

@@ -62,11 +62,7 @@ class AboutScreen extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final facts = [
       (Icons.flag_rounded, 'Polska marka', 'Wymyślamy i tworzymy wszystko w Polsce, po polsku, dla polskich rodzin.'),
-      (
-        Icons.mic_rounded,
-        'Nasze głosy',
-        'Zabawy nagrywamy sami. Głosy, które słyszy Wasze dziecko, to Nela i Dawid.',
-      ),
+      (Icons.mic_rounded, 'Nasze głosy', 'Zabawy nagrywamy sami. Głosy, które słyszy Wasze dziecko, to Nela i Dawid.'),
       (
         Icons.edit_note_rounded,
         'Wszystko robimy sami',
@@ -88,7 +84,7 @@ class AboutScreen extends StatelessWidget {
             decoration: BoxDecoration(color: AkBrand.peach, borderRadius: BorderRadius.circular(24)),
             child: Column(
               children: [
-                const SzopSticker(SzopPose.klaszcze, height: 120),
+                const SzopSticker(SzopPose.zadowolony, height: 120),
                 const SizedBox(height: 10),
                 const PolishFlag(width: 32),
                 const SizedBox(height: 10),
@@ -131,11 +127,7 @@ class AboutScreen extends StatelessWidget {
             label: const Text('Napisz do nas: odpisujemy sami'),
           ),
           const SizedBox(height: 8),
-          Text(
-            '$feedbackEmail · audiokiddo.pl',
-            textAlign: TextAlign.center,
-            style: text.bodySmall,
-          ),
+          Text('$feedbackEmail · audiokiddo.pl', textAlign: TextAlign.center, style: text.bodySmall),
         ],
       ),
     );

@@ -163,11 +163,7 @@ void main() {
     await container.read(gameControllerProvider.notifier).start(item, resume: true);
     expect(audio.log.first, 'play:stop', reason: '"Stop!" is heard again');
     expect(audio.log.where((l) => l == 'play:intro'), isEmpty);
-    expect(
-      audio.log.where((l) => l == 'loop:silence_1s'),
-      hasLength(3),
-      reason: 'all three freezes still happen',
-    );
+    expect(audio.log.where((l) => l == 'loop:silence_1s'), hasLength(3), reason: 'all three freezes still happen');
     expect(await container.read(gameResumeProvider(item).future), isFalse, reason: 'cleared when finished');
   });
 
@@ -293,10 +289,7 @@ void main() {
       final (mic, c) = await story(speech);
       expect(c.read(gameControllerProvider).phase, GamePhase.finished);
       expect(speech.heard, ['rzeka', 'łódką', '3']);
-      expect(
-        played(),
-        containsAllInOrder(['cross', 'river', 'frog', 'boat', 'ducks', 'count_praise', 'ending_moon']),
-      );
+      expect(played(), containsAllInOrder(['cross', 'river', 'frog', 'boat', 'ducks', 'count_praise', 'ending_moon']));
       expect(played(), isNot(contains('forest')));
       expect(mic.starts, greaterThan(1), reason: 'claps listen again after each spoken answer');
       expect(mic.open, isFalse);

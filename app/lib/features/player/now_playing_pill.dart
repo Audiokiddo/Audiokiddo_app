@@ -99,9 +99,7 @@ class _NowPlayingPillState extends ConsumerState<NowPlayingPill> {
     return Stack(
       children: [
         MediaQuery(
-          data: mq.copyWith(
-            padding: mq.padding.copyWith(bottom: mq.padding.bottom + (show ? nowPlayingPillSpace : 0)),
-          ),
+          data: mq.copyWith(padding: mq.padding.copyWith(bottom: mq.padding.bottom + (show ? nowPlayingPillSpace : 0))),
           child: widget.child,
         ),
         if (show && mq.viewInsets.bottom == 0)
@@ -189,9 +187,7 @@ class _Pill extends ConsumerWidget {
           Positioned(
             left: 8,
             bottom: 2,
-            child: IgnorePointer(
-              child: SzopSticker(playing ? SzopPose.klaszcze : SzopPose.prosi, height: 66),
-            ),
+            child: IgnorePointer(child: SzopSticker(playing ? SzopPose.klaszcze : SzopPose.prosi, height: 66)),
           ),
           Positioned(
             right: 6,

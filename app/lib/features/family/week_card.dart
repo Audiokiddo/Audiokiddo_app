@@ -69,9 +69,7 @@ WeekSummary weekSummary({
   final skills = progress.skillPractice.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
   return WeekSummary(
     name: name,
-    notes: position == null
-        ? 0
-        : weekNotes(currentDay: position.currentDay, completedDays: position.completedDays),
+    notes: position == null ? 0 : weekNotes(currentDay: position.currentDay, completedDays: position.completedDays),
     activities: progress.activities,
     minutes: progress.activities > 0 && progress.minutes == 0 ? 1 : progress.minutes,
     correct: progress.correct,
@@ -135,20 +133,12 @@ class WeekCard extends StatelessWidget {
                       children: [
                         Text(
                           l10n.weekCardKicker.toUpperCase(),
-                          style: text.labelSmall?.copyWith(
-                            color: ink,
-                            letterSpacing: 1.4,
-                            fontWeight: FontWeight.w800,
-                          ),
+                          style: text.labelSmall?.copyWith(color: ink, letterSpacing: 1.4, fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           l10n.weekCardTitle(summary.name),
-                          style: text.headlineSmall?.copyWith(
-                            color: ink,
-                            fontWeight: FontWeight.w800,
-                            height: 1.1,
-                          ),
+                          style: text.headlineSmall?.copyWith(color: ink, fontWeight: FontWeight.w800, height: 1.1),
                         ),
                       ],
                     ),

@@ -24,9 +24,8 @@ class AudioRoute {
     _ => Icons.speaker_rounded,
   };
 
-  static AudioRoute? from(Object? raw) => raw is Map
-      ? AudioRoute('${raw['name'] ?? 'Głośnik'}', '${raw['kind'] ?? 'other'}')
-      : null;
+  static AudioRoute? from(Object? raw) =>
+      raw is Map ? AudioRoute('${raw['name'] ?? 'Głośnik'}', '${raw['kind'] ?? 'other'}') : null;
 
   @override
   bool operator ==(Object other) => other is AudioRoute && other.name == name && other.kind == kind;
@@ -47,9 +46,8 @@ final audioRouteProvider = StreamProvider.autoDispose<AudioRoute?>((ref) async* 
       return;
     }
     yield AudioRoute.from(await _channel.invokeMethod<Object?>('current'));
-    yield* Stream.periodic(const Duration(seconds: 3)).asyncMap(
-      (_) async => AudioRoute.from(await _channel.invokeMethod<Object?>('current')),
-    );
+    yield* Stream.periodic(const Duration(seconds: 3))
+        .asyncMap((_) async => AudioRoute.from(await _channel.invokeMethod<Object?>('current')));
   } on MissingPluginException {
     yield null;
   } on PlatformException {
@@ -87,9 +85,8 @@ class AudioRouteChip extends ConsumerWidget {
           customBorder: const StadiumBorder(),
           onTap: () async {
             if (!await pickAudioRoute() && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Głośnik wybierzesz w Centrum sterowania telefonu.')),
-              );
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Głośnik wybierzesz w Centrum sterowania telefonu.')));
             }
           },
           child: Padding(

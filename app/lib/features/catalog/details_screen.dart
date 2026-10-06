@@ -94,11 +94,7 @@ class _DetailsContent extends ConsumerWidget {
     try {
       await ref
           .read(playbackControllerProvider)
-          .start(
-            item,
-            album: pack?.title ?? AppLocalizations.of(context).kind(item.kind),
-            fromStart: fromStart,
-          );
+          .start(item, album: pack?.title ?? AppLocalizations.of(context).kind(item.kind), fromStart: fromStart);
       if (context.mounted) await context.push('/odtwarzacz');
     } on Exception {
       if (context.mounted) {
@@ -166,20 +162,14 @@ class _DetailsContent extends ConsumerWidget {
                 icon: const Icon(Icons.play_arrow_rounded),
                 label: Text(l10n.resumeGame),
               ),
-              TextButton(
-                onPressed: () => _listen(context, ref, fromStart: true),
-                child: Text(l10n.startOver),
-              ),
+              TextButton(onPressed: () => _listen(context, ref, fromStart: true), child: Text(l10n.startOver)),
             ] else if (!isGame && resumeAt > Duration.zero) ...[
               FilledButton.icon(
                 onPressed: () => _listen(context, ref),
                 icon: const Icon(Icons.play_arrow_rounded),
                 label: Text(l10n.resumeFrom(formatClock(resumeAt))),
               ),
-              TextButton(
-                onPressed: () => _listen(context, ref, fromStart: true),
-                child: Text(l10n.startOver),
-              ),
+              TextButton(onPressed: () => _listen(context, ref, fromStart: true), child: Text(l10n.startOver)),
             ] else
               FilledButton.icon(
                 onPressed: () => _listen(context, ref),
@@ -198,10 +188,7 @@ class _DetailsContent extends ConsumerWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: const Text('Dodano do kolejki'),
-                              action: SnackBarAction(
-                                label: 'Otwórz',
-                                onPressed: () => context.push('/kolejka'),
-                              ),
+                              action: SnackBarAction(label: 'Otwórz', onPressed: () => context.push('/kolejka')),
                             ),
                           );
                         }
@@ -211,19 +198,12 @@ class _DetailsContent extends ConsumerWidget {
               ),
           ],
           ItemAccess.needsRefresh => [
-            FilledButton.icon(
-              onPressed: null,
-              icon: const Icon(Icons.wifi_off_rounded),
-              label: Text(l10n.listen),
-            ),
+            FilledButton.icon(onPressed: null, icon: const Icon(Icons.wifi_off_rounded), label: Text(l10n.listen)),
             const SizedBox(height: AkSpace.s),
             Text(l10n.needsRefresh, style: text.bodyMedium),
           ],
           ItemAccess.locked => [
-            if (item.preview != null) ...[
-              PreviewButton(item: item, wide: true),
-              const SizedBox(height: AkSpace.s),
-            ],
+            if (item.preview != null) ...[PreviewButton(item: item, wide: true), const SizedBox(height: AkSpace.s)],
             FilledButton.icon(
               onPressed: () => _unlock(context, ref),
               icon: const Icon(Icons.lock_open_rounded),

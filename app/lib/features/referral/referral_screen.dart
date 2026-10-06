@@ -76,8 +76,7 @@ class ReferralScreen extends ConsumerWidget {
           _Benefit(
             icon: Icons.celebration_rounded,
             title: 'Ty dostajesz',
-            body:
-                '$referralParentGift, gdy znajomy kupi abonament lub pakiet. Za każdego znajomego, do 12 miesięcy.',
+            body: '$referralParentGift, gdy znajomy kupi abonament lub pakiet. Za każdego znajomego, do 12 miesięcy.',
           ),
           const SizedBox(height: 18),
           info.when(
@@ -119,8 +118,7 @@ class ReferralScreen extends ConsumerWidget {
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(text: info.code));
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(content: Text('Kod skopiowany.')));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Kod skopiowany.')));
                     }
                   },
                   icon: const Icon(Icons.copy_rounded),

@@ -54,11 +54,7 @@ const _tips = <SzopLine>[
 ];
 
 const _songTips = <SzopLine>[
-  SzopLine(
-    SzopPose.klaszcze,
-    'Zaśpiewajcie refren jeszcze raz, już bez nagrania. Ja nie oceniam. Prawie.',
-    tip: true,
-  ),
+  SzopLine(SzopPose.klaszcze, 'Zaśpiewajcie refren jeszcze raz, już bez nagrania. Ja nie oceniam. Prawie.', tip: true),
   SzopLine(SzopPose.zadowolony, 'Wystukajcie rytm na kolanach. Sąsiedzi zrozumieją. Chyba.', tip: true),
 ];
 
@@ -81,11 +77,7 @@ const _calmTips = <SzopLine>[
 ];
 
 const _movementTips = <SzopLine>[
-  SzopLine(
-    SzopPose.zestresowany,
-    'Teraz szklanka wody i trzy głębokie oddechy. Dla dziecka. I dla Ciebie.',
-    tip: true,
-  ),
+  SzopLine(SzopPose.zestresowany, 'Teraz szklanka wody i trzy głębokie oddechy. Dla dziecka. I dla Ciebie.', tip: true),
 ];
 
 const _creativeTips = <SzopLine>[
@@ -118,8 +110,7 @@ SzopLine pickSzopAfterPlay(ContentItem? item, math.Random random, {SzopLine? pre
   return pool[random.nextInt(pool.length)];
 }
 
-bool _fits(SzopLine line, ContentItem? item) =>
-    item != null && !_jokes.contains(line) && !_tips.contains(line);
+bool _fits(SzopLine line, ContentItem? item) => item != null && !_jokes.contains(line) && !_tips.contains(line);
 
 final _random = math.Random();
 SzopLine? _previous;
@@ -201,11 +192,7 @@ class _SzopAfterPlayCardState extends ConsumerState<SzopAfterPlayCard> {
                                 ),
                               Text(
                                 line.text,
-                                style: text.bodyMedium?.copyWith(
-                                  color: ink,
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.25,
-                                ),
+                                style: text.bodyMedium?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.25),
                               ),
                             ],
                           ),

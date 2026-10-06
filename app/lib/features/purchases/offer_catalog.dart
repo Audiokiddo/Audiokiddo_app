@@ -36,8 +36,7 @@ enum SubscriptionPlan {
   String productId({required bool yearly}) => yearly ? yearlyId : monthlyId;
 
   /// The smallest plan that covers [count] children.
-  static SubscriptionPlan forChildren(int count) =>
-      values.firstWhere((p) => p.children >= count, orElse: () => family);
+  static SubscriptionPlan forChildren(int count) => values.firstWhere((p) => p.children >= count, orElse: () => family);
 
   static SubscriptionPlan? ofProduct(String productId) =>
       values.where((p) => p.monthlyId == productId || p.yearlyId == productId).firstOrNull;

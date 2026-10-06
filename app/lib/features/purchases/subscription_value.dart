@@ -35,8 +35,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
   late bool _yearly = ref.read(experimentsProvider)['paywall_period'] != 'miesiecznie';
   SubscriptionPlan? _plan;
 
-  StoreProduct? _product(SubscriptionPlan plan, {required bool yearly}) =>
-      widget.byId[plan.productId(yearly: yearly)];
+  StoreProduct? _product(SubscriptionPlan plan, {required bool yearly}) => widget.byId[plan.productId(yearly: yearly)];
 
   /// What a year costs when paid monthly, minus the yearly price.
   double? _saving(SubscriptionPlan plan) {
@@ -62,7 +61,10 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
     if (plans.isEmpty) {
       return _Card(
         children: [
-          Text('Abonament AudioKiddo', style: text.titleLarge?.copyWith(color: _ink, fontWeight: FontWeight.w900)),
+          Text(
+            'Abonament AudioKiddo',
+            style: text.titleLarge?.copyWith(color: _ink, fontWeight: FontWeight.w900),
+          ),
           const SizedBox(height: 6),
           Text('Wszystkie zabawy teraz i jeden nowy pakiet co miesiąc.', style: text.bodyMedium?.copyWith(color: _ink)),
         ],
@@ -94,7 +96,10 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
       buttonLabel = 'Przechodzę na „${plan.label}” · ${product.price}';
     } else if (lapsed != null && product.comebackPrice != null) {
       buttonLabel = 'Wracam: najpierw ${product.comebackPrice}';
-    } else if (trial != null && ref.watch(experimentsProvider)['paywall_cta'] == 'oszczednosc' && yearly && saving != null) {
+    } else if (trial != null &&
+        ref.watch(experimentsProvider)['paywall_cta'] == 'oszczednosc' &&
+        yearly &&
+        saving != null) {
       // A/B test "paywall_cta": the saving in the button instead of the trial.
       buttonLabel = 'Zacznij za darmo i oszczędzaj ${_round(saving, money)}';
     } else if (trial != null) {
@@ -121,7 +126,10 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
           ),
         ),
         const SizedBox(height: 8),
-        Text('Abonament AudioKiddo', style: text.titleLarge?.copyWith(color: _ink, fontWeight: FontWeight.w900)),
+        Text(
+          'Abonament AudioKiddo',
+          style: text.titleLarge?.copyWith(color: _ink, fontWeight: FontWeight.w900),
+        ),
         const SizedBox(height: 6),
         for (final line in [
           'Wszystkie zabawy od razu',
@@ -134,7 +142,9 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
               children: [
                 const Icon(Icons.check_circle_rounded, size: 18, color: _ink),
                 const SizedBox(width: 6),
-                Expanded(child: Text(line, style: text.bodyMedium?.copyWith(color: _ink))),
+                Expanded(
+                  child: Text(line, style: text.bodyMedium?.copyWith(color: _ink)),
+                ),
               ],
             ),
           ),
@@ -183,7 +193,10 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
                     style: const TextStyle(decoration: TextDecoration.lineThrough, decorationThickness: 2),
                   ),
                   const TextSpan(text: '  →  '),
-                  TextSpan(text: product.price, style: const TextStyle(fontWeight: FontWeight.w900)),
+                  TextSpan(
+                    text: product.price,
+                    style: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
                 ],
               ),
             ),
@@ -264,7 +277,15 @@ class _Card extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(18),
-    decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(24)),
+    // Lavender, not the sun: the yellow belongs to the "carry on" card above the bottom bar.
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [Color(0xFFF1E9F8), Color(0xFFDCCBEB)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(24),
+    ),
     child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
   );
 }
@@ -319,12 +340,7 @@ class _PeriodSwitch extends StatelessWidget {
             ),
             child: Row(children: [segment('Miesięcznie', false), segment('Rocznie', true)]),
           ),
-          if (saving != null)
-            Positioned(
-              right: 8,
-              top: -24,
-              child: _Cloud(text: saving!),
-            ),
+          if (saving != null) Positioned(right: 8, top: -24, child: _Cloud(text: saving!)),
         ],
       ),
     );
@@ -427,10 +443,7 @@ class _PlanTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
-                  selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-                  color: _ink,
-                ),
+                Icon(selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded, color: _ink),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -440,9 +453,15 @@ class _PlanTile extends StatelessWidget {
                         spacing: 6,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Text(plan.label, style: text.titleMedium?.copyWith(color: _ink, fontWeight: FontWeight.w900)),
+                          Text(
+                            plan.label,
+                            style: text.titleMedium?.copyWith(color: _ink, fontWeight: FontWeight.w900),
+                          ),
                           if (current)
-                            Text('Twój plan', style: text.labelSmall?.copyWith(color: _ink, fontWeight: FontWeight.w800)),
+                            Text(
+                              'Twój plan',
+                              style: text.labelSmall?.copyWith(color: _ink, fontWeight: FontWeight.w800),
+                            ),
                           if (!current && extra != null)
                             Text(extra!, style: text.labelMedium?.copyWith(color: _ink.withValues(alpha: .7))),
                         ],

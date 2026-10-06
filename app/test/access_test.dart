@@ -81,18 +81,13 @@ void main() {
 
   group('access screen', () {
     testWidgets('a code unlocks the pack and says so; the access list is refreshed', (tester) async {
-      final account = FakeAccountService()
-        ..claimResult = const ClaimResult(ClaimStatus.ok, ['pack:detektyw']);
+      final account = FakeAccountService()..claimResult = const ClaimResult(ClaimStatus.ok, ['pack:detektyw']);
       final container = await pumpAccess(tester, account);
       await typeInto(tester, 'Kod', 'ak-7k3m-9qxd');
       await tapVisible(tester, find.text('Odbierz dostęp'));
       expect(account.claims, ['code:AK-7K3M-9QXD'], reason: 'typed in capitals');
       expect(find.textContaining('Gotowe. Dodano: pakiet Detektyw'), findsOneWidget);
-      expect(
-        find.text('Zaloguj się, żeby dostęp nie zginął'),
-        findsOneWidget,
-        reason: 'a guest account is told',
-      );
+      expect(find.text('Zaloguj się, żeby dostęp nie zginął'), findsOneWidget, reason: 'a guest account is told');
       expect(container.read(accessProvider).value, isNotNull);
     });
 
@@ -114,19 +109,14 @@ void main() {
       }
     });
 
-    testWidgets('an order needs its number and e-mail; a wrong pair never says which is wrong', (
-      tester,
-    ) async {
+    testWidgets('an order needs its number and e-mail; a wrong pair never says which is wrong', (tester) async {
       final account = FakeAccountService()..claimResult = const ClaimResult(ClaimStatus.notFound);
       await pumpAccess(tester, account);
       await typeInto(tester, 'Numer zamówienia', '7421');
       await typeInto(tester, 'E-mail z zamówienia', 'kupujacy@example.com');
       await tapVisible(tester, find.text('Dodaj zamówienie'));
       expect(account.claims, ['order:7421:kupujacy@example.com']);
-      expect(
-        find.textContaining('Nie znaleźliśmy zamówienia z tym numerem i adresem e-mail'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('Nie znaleźliśmy zamówienia z tym numerem i adresem e-mail'), findsOneWidget);
 
       account.claimResult = const ClaimResult(ClaimStatus.taken);
       await tapVisible(tester, find.text('Dodaj zamówienie'));

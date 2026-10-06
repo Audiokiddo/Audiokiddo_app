@@ -103,10 +103,7 @@ class _CaseFileTutorialState extends ConsumerState<CaseFileTutorial> {
                       children: [
                         Text(
                           'Samouczek detektywa ${_step + 1}/${_steps.length}',
-                          style: text.labelMedium?.copyWith(
-                            color: AkBrand.tealDeep,
-                            fontWeight: FontWeight.w800,
-                          ),
+                          style: text.labelMedium?.copyWith(color: AkBrand.tealDeep, fontWeight: FontWeight.w800),
                         ),
                         Text(title, style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                       ],
@@ -135,8 +132,7 @@ class _CaseFileTutorialState extends ConsumerState<CaseFileTutorial> {
               const SizedBox(height: 20),
               Row(
                 children: [
-                  if (_step > 0)
-                    TextButton(onPressed: () => setState(() => _step--), child: const Text('Wstecz')),
+                  if (_step > 0) TextButton(onPressed: () => setState(() => _step--), child: const Text('Wstecz')),
                   const Spacer(),
                   FilledButton(
                     style: FilledButton.styleFrom(minimumSize: const Size(140, 48)),

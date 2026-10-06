@@ -37,9 +37,7 @@ class CaseFileScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(item == null ? 'Akta sprawy' : 'Akta: ${item.title}')),
       body: item == null || item.pdf.isEmpty || tasks == null
-          ? Center(
-              child: waiting ? const CircularProgressIndicator() : const Text('Ta zabawa nie ma akt sprawy.'),
-            )
+          ? Center(child: waiting ? const CircularProgressIndicator() : const Text('Ta zabawa nie ma akt sprawy.'))
           : ref
                 .watch(pdfBytesProvider(item.pdf.first))
                 .when(
@@ -120,11 +118,7 @@ class _PagesState extends State<_Pages> {
           children: [
             _PageImage(image: _pages[number - 1], number: number),
             for (final task in widget.tasks.where((t) => t.page == number))
-              CaseTaskCard(
-                key: ValueKey(task),
-                task: task,
-                onSolved: () => setState(() => _solved.add(task)),
-              ),
+              CaseTaskCard(key: ValueKey(task), task: task, onSolved: () => setState(() => _solved.add(task))),
             const SizedBox(height: 20),
           ],
         );
@@ -283,10 +277,7 @@ class _CaseTaskCardState extends State<CaseTaskCard> {
                     autocorrect: false,
                     enableSuggestions: false,
                     style: text.titleMedium?.copyWith(letterSpacing: 1.5),
-                    decoration: const InputDecoration(
-                      hintText: 'Wpisz odpowiedź',
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: const InputDecoration(hintText: 'Wpisz odpowiedź', border: OutlineInputBorder()),
                     onSubmitted: (v) => _answer(task.isCorrectCode(v)),
                   ),
                 ),
@@ -303,10 +294,7 @@ class _CaseTaskCardState extends State<CaseTaskCard> {
                 const SzopSticker(SzopPose.nasluchuje, height: 44),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    'Tego nie sprawdzamy w telefonie. Sprawdźcie z Maxem i Milą!',
-                    style: text.bodyMedium,
-                  ),
+                  child: Text('Tego nie sprawdzamy w telefonie. Sprawdźcie z Maxem i Milą!', style: text.bodyMedium),
                 ),
               ],
             ),
@@ -316,15 +304,9 @@ class _CaseTaskCardState extends State<CaseTaskCard> {
           else if (_right == false) ...[
             _Verdict(pose: SzopPose.zdziwiony, text: 'Spróbuj jeszcze raz', color: palette.inkMuted),
             if (_misses >= 2 && !_shown)
-              TextButton(
-                onPressed: () => setState(() => _shown = true),
-                child: const Text('Pokaż odpowiedź'),
-              ),
+              TextButton(onPressed: () => setState(() => _shown = true), child: const Text('Pokaż odpowiedź')),
             if (_shown)
-              Text(
-                'Odpowiedź: ${task.solution}',
-                style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-              ),
+              Text('Odpowiedź: ${task.solution}', style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
           ],
         ],
       ),
@@ -381,8 +363,7 @@ class _Verdict extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             text,
-            style: Theme.of(context).textTheme.titleMedium
-                ?.copyWith(color: color, fontWeight: FontWeight.w800),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: color, fontWeight: FontWeight.w800),
           ),
         ],
       ),

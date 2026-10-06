@@ -37,9 +37,7 @@ import 'widgets/catalog_loader.dart';
 final screenFreeMinutesProvider = Provider<int>((ref) {
   final family = ref.watch(familyProvider).value;
   final since = ref.watch(clockProvider)().subtract(const Duration(days: 7));
-  return ((family?.results.where((r) => r.at.isAfter(since)).fold<int>(0, (s, r) => s + r.seconds) ?? 0) +
-          59) ~/
-      60;
+  return ((family?.results.where((r) => r.at.isAfter(since)).fold<int>(0, (s, r) => s + r.seconds) ?? 0) + 59) ~/ 60;
 });
 
 class HomeScreen extends ConsumerWidget {
@@ -94,11 +92,7 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 18),
 
               const _QuickNeeds(),
-              RefSection(
-                'Kontynuuj słuchanie',
-                action: 'Zobacz wszystkie',
-                onTap: () => context.push('/historia'),
-              ),
+              RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
               if (items.isEmpty)
                 InkWell(
                   onTap: () => context.go('/biblioteka'),
@@ -166,10 +160,7 @@ class StartSzop extends Notifier<(SzopPose, String)?> {
     final tips = szopTipsFor(now);
     // Tips first, a joke every third line.
     return [
-      for (var i = 0; i < tips.length; i++) ...[
-        tips[i],
-        if (i % 2 == 1) szopNudges[(now.day + i) % szopNudges.length],
-      ],
+      for (var i = 0; i < tips.length; i++) ...[tips[i], if (i % 2 == 1) szopNudges[(now.day + i) % szopNudges.length]],
     ];
   }
 
@@ -297,10 +288,7 @@ class _AgeRow extends StatelessWidget {
                     children: [
                       Text(
                         '$from–$to',
-                        style: text.titleLarge?.copyWith(
-                          color: const Color(0xFF211C35),
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: text.titleLarge?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
                       ),
                       Text('lat', style: text.bodySmall?.copyWith(color: const Color(0xFF211C35))),
                     ],
@@ -343,10 +331,7 @@ class _OfflineCard extends ConsumerWidget {
                     children: [
                       Text(
                         'Zabawy bez internetu',
-                        style: text.titleSmall?.copyWith(
-                          color: const Color(0xFF211C35),
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: text.titleSmall?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
                       ),
                       Text(
                         count == 0
@@ -408,9 +393,7 @@ class _NextPackCard extends ConsumerWidget {
     );
     final hidden = ref.watch(hiddenPackSuggestionProvider).value;
     if (next == null || !ref.watch(hiddenPackSuggestionProvider).hasValue) return const SizedBox.shrink();
-    if (hidden != null &&
-        hidden.packId == next.pack.pack.id &&
-        hidden.until.isAfter(ref.watch(clockProvider)())) {
+    if (hidden != null && hidden.packId == next.pack.pack.id && hidden.until.isAfter(ref.watch(clockProvider)())) {
       return const SizedBox.shrink();
     }
     final paid = next.pack.items.where((i) => !i.isFree).toList();
@@ -432,10 +415,7 @@ class _NextPackCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Chcecie więcej takich zabaw?',
-                    style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-                  ),
+                  Text('Chcecie więcej takich zabaw?', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
                   const SizedBox(height: 2),
                   Text(
                     '„${next.tried.title}” jest z pakietu ${next.pack.pack.title}. '
@@ -443,10 +423,7 @@ class _NextPackCard extends ConsumerWidget {
                     style: text.bodySmall,
                   ),
                   TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      visualDensity: VisualDensity.compact,
-                    ),
+                    style: TextButton.styleFrom(padding: EdgeInsets.zero, visualDensity: VisualDensity.compact),
                     onPressed: () => openPack(context, next.pack.pack.id),
                     child: const Text('Zobacz pakiet'),
                   ),
@@ -936,8 +913,7 @@ class _HeroCard extends ConsumerWidget {
       onTap: () => context.push('/zabawa/${item.id}'),
       child: Semantics(
         button: true,
-        label:
-            '${fresh ? 'Nowość' : 'Jeszcze nie słuchane'}: ${item.title}, ${(item.durationSec / 60).ceil()} min',
+        label: '${fresh ? 'Nowość' : 'Jeszcze nie słuchane'}: ${item.title}, ${(item.durationSec / 60).ceil()} min',
         excludeSemantics: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -955,10 +931,7 @@ class _HeroCard extends ConsumerWidget {
                       top: 12,
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AkBrand.sun,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(12)),
                         child: Text(
                           fresh
                               ? 'Nowość'

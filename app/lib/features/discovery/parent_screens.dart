@@ -82,11 +82,7 @@ class MoreScreen extends ConsumerWidget {
         SegmentedButton<ThemeMode>(
           segments: const [
             ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode_rounded), label: Text('Jasny')),
-            ButtonSegment(
-              value: ThemeMode.system,
-              icon: Icon(Icons.brightness_auto_rounded),
-              label: Text('Auto'),
-            ),
+            ButtonSegment(value: ThemeMode.system, icon: Icon(Icons.brightness_auto_rounded), label: Text('Auto')),
             ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode_rounded), label: Text('Ciemny')),
           ],
           selected: {ref.watch(appearanceProvider).value ?? ThemeMode.light},
@@ -227,8 +223,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
       for (final i in items)
         if (ref.watch(canPlayProvider(i))) i,
     ];
-    ItemDownloadStatus status(ContentItem i) =>
-        ref.watch(downloadStatusProvider(i)).value ?? ItemDownloadStatus.none;
+    ItemDownloadStatus status(ContentItem i) => ref.watch(downloadStatusProvider(i)).value ?? ItemDownloadStatus.none;
     final listed = switch (tab) {
       _DownloadsTab.yours => playable,
       _DownloadsTab.onPhone => [
@@ -243,8 +238,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
     final groups = <(String, List<ContentItem>)>[
       for (final pack in catalog?.packs ?? const <Pack>[])
         if (listed.where((i) => i.packId == pack.id).toList() case final g when g.isNotEmpty) (pack.title, g),
-      if (listed.where((i) => i.packId == null).toList() case final g when g.isNotEmpty)
-        ('Piosenki i gry', g),
+      if (listed.where((i) => i.packId == null).toList() case final g when g.isNotEmpty) ('Piosenki i gry', g),
     ];
     return Scaffold(
       appBar: AppBar(title: const Text('Pobrane')),
@@ -373,8 +367,7 @@ class ProfileScreen extends ConsumerWidget {
                     IconButton(
                       tooltip: 'Edytuj profil',
                       onPressed: () =>
-                          Navigator.of(context)
-                              .push(swipeRoute<void>(builder: (_) => _EditProfile(child: child))),
+                          Navigator.of(context).push(swipeRoute<void>(builder: (_) => _EditProfile(child: child))),
                       icon: const Icon(Icons.edit_outlined),
                     ),
                   ],
@@ -398,18 +391,8 @@ class ProfileScreen extends ConsumerWidget {
               spacing: 10,
               runSpacing: 10,
               children: [
-                _Stat(
-                  Icons.favorite_rounded,
-                  '${favorites.length}',
-                  'Ulubione rodziny',
-                  const Color(0xFFD45365),
-                ),
-                _Stat(
-                  Icons.star_rounded,
-                  '${results.where((r) => r.completed).length}',
-                  'Ukończone',
-                  AkBrand.sunDeep,
-                ),
+                _Stat(Icons.favorite_rounded, '${favorites.length}', 'Ulubione rodziny', const Color(0xFFD45365)),
+                _Stat(Icons.star_rounded, '${results.where((r) => r.completed).length}', 'Ukończone', AkBrand.sunDeep),
                 _Stat(
                   Icons.bar_chart_rounded,
                   '${results.fold<int>(0, (s, r) => s + r.seconds) ~/ 60} min',
@@ -427,10 +410,7 @@ class ProfileScreen extends ConsumerWidget {
                   for (final (i, c)
                       in (PlayCategory.values.toList()..sort((a, b) {
                             int score(PlayCategory c) => results
-                                .where(
-                                  (r) =>
-                                      catalog?.item(r.itemId) != null && c.matches(catalog!.item(r.itemId)!),
-                                )
+                                .where((r) => catalog?.item(r.itemId) != null && c.matches(catalog!.item(r.itemId)!))
                                 .length;
                             return score(b).compareTo(score(a));
                           }))
@@ -466,8 +446,7 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ],
               ),
-            if (ref.watch(diplomasProvider(child.id)).value case final diplomas?
-                when diplomas.isNotEmpty) ...[
+            if (ref.watch(diplomasProvider(child.id)).value case final diplomas? when diplomas.isNotEmpty) ...[
               const RefSection('Dyplomy'),
               Wrap(
                 spacing: 8,

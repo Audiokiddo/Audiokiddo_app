@@ -94,10 +94,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   const Center(child: AudioKiddoLogo(height: 44)),
                   const SizedBox(height: 16),
                   Center(
-                    child: SzopSticker(
-                      _step == _Step.register ? SzopPose.zadowolony : SzopPose.prosi,
-                      height: 96,
-                    ),
+                    child: SzopSticker(_step == _Step.register ? SzopPose.zadowolony : SzopPose.prosi, height: 96),
                   ),
                   const SizedBox(height: 16),
                   ...switch (_step) {
@@ -127,10 +124,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       FilledButton(
                         onPressed: _checking ? null : _next,
                         child: _checking
-                            ? const SizedBox.square(
-                                dimension: 22,
-                                child: CircularProgressIndicator(strokeWidth: 2.5),
-                              )
+                            ? const SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2.5))
                             : const Text('Dalej'),
                       ),
                       const SizedBox(height: 24),
@@ -164,7 +158,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         email: email,
                         autofocus: false,
                         title: 'Zaloguj się kodem',
-                        body: 'Wyślemy kod logowania na ten adres. Potem ustawisz nowe hasło w Więcej → Konto i zakupy.',
+                        body:
+                            'Wyślemy kod logowania na ten adres. Potem ustawisz nowe hasło w Więcej → Konto i zakupy.',
                         sendLabel: 'Wyślij kod',
                       ),
                       TextButton(
@@ -191,10 +186,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     _Step.unknown => [
                       emailChip,
                       const SizedBox(height: 8),
-                      Text(
-                        'Nie udało się sprawdzić konta (brak internetu?). Wybierz sam:',
-                        style: text.bodyMedium,
-                      ),
+                      Text('Nie udało się sprawdzić konta (brak internetu?). Wybierz sam:', style: text.bodyMedium),
                       const SizedBox(height: 12),
                       FilledButton(
                         onPressed: () => setState(() => _step = _Step.password),

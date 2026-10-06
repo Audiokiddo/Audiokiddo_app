@@ -132,9 +132,9 @@ class _CaseFilesBulkButtonsState extends ConsumerState<CaseFilesBulkButtons> {
       await action();
     } on Object {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nie udało się pobrać akt. Sprawdź internet i spróbuj ponownie.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Nie udało się pobrać akt. Sprawdź internet i spróbuj ponownie.')));
       }
     } finally {
       if (mounted) setState(() => _busy = null);
@@ -169,9 +169,8 @@ class _CaseFilesBulkButtonsState extends ConsumerState<CaseFilesBulkButtons> {
   @override
   Widget build(BuildContext context) {
     final n = widget.items.length;
-    Widget busy(String what, Widget icon) => _busy == what
-        ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
-        : icon;
+    Widget busy(String what, Widget icon) =>
+        _busy == what ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2)) : icon;
     return Wrap(
       spacing: 10,
       runSpacing: 8,

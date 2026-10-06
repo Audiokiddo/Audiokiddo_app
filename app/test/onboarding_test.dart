@@ -38,14 +38,7 @@ void main() {
     final onboarding = OnboardingController(db, done: true);
     final gate = SessionGate(const SignedOutAccountService(), required: true);
     addTearDown(gate.dispose);
-    for (final location in [
-      '/',
-      '/biblioteka',
-      '/zabawa/magiczny-sklep',
-      '/odtwarzacz',
-      '/dziecko',
-      '/konto',
-    ]) {
+    for (final location in ['/', '/biblioteka', '/zabawa/magiczny-sklep', '/odtwarzacz', '/dziecko', '/konto']) {
       expect(appRedirect(kids, onboarding, location, session: gate), '/logowanie', reason: location);
     }
     expect(appRedirect(kids, onboarding, '/logowanie', session: gate), isNull);
@@ -113,7 +106,18 @@ void main() {
     await tester.tap(find.text('Zaczynamy'));
     await tester.pumpAndSettle();
 
-    // The family welcome: free plays, then the look of the app.
+    // A thank-you from Nela and Dawid, then the family welcome with the free plays.
+    expect(find.text('Dziękujemy, że jesteście z nami!'), findsOneWidget);
+    expect(find.textContaining('Jesteśmy Nela i Dawid'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('thanks-next')),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.ensureVisible(find.byKey(const ValueKey('thanks-next')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('thanks-next')));
+    await tester.pumpAndSettle();
     expect(find.text('Ta-da! Witajcie w AudioKiddo'), findsOneWidget);
     expect(find.textContaining('po jednej z każdego pakietu'), findsOneWidget);
     await tester.ensureVisible(find.text('Odbieram!'));
@@ -188,10 +192,7 @@ void main() {
     expect(find.text('Co dziś robimy?'), findsOneWidget);
     final container = ProviderScope.containerOf(tester.element(find.text('Co dziś robimy?')));
     final family = container.read(familyProvider).value!;
-    expect(
-      [for (final c in family.children) (c.name, c.age, c.dailyMinutes)],
-      [('Zosia', 6, 10), ('', 3, 5)],
-    );
+    expect([for (final c in family.children) (c.name, c.age, c.dailyMinutes)], [('Zosia', 6, 10), ('', 3, 5)]);
     expect(kids.settings.age, 6, reason: 'age becomes the kids mode default');
     expect(kids.active, isFalse);
   });

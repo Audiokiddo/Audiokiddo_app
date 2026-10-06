@@ -58,10 +58,8 @@ class _CarSceneState extends ConsumerState<CarScene> with SingleTickerProviderSt
               alignment: const Alignment(-0.32, 0),
               child: AnimatedBuilder(
                 animation: _drive,
-                builder: (context, child) => Transform.translate(
-                  offset: Offset(0, -math.sin(_drive.value * math.pi * 2) * 2),
-                  child: child,
-                ),
+                builder: (context, child) =>
+                    Transform.translate(offset: Offset(0, -math.sin(_drive.value * math.pi * 2) * 2), child: child),
                 child: const SzopSticker(SzopPose.zadowolony, height: 58),
               ),
             ),
@@ -158,10 +156,7 @@ class _CarPainter extends CustomPainter {
 
     // Body and wheels.
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTRB(left, bodyTop, left + carW, bodyBottom),
-        const Radius.circular(18),
-      ),
+      RRect.fromRectAndRadius(Rect.fromLTRB(left, bodyTop, left + carW, bodyBottom), const Radius.circular(18)),
       Paint()..color = const Color(0xFFE8452C),
     );
     canvas.drawRect(

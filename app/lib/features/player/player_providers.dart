@@ -8,9 +8,7 @@ final audioHandlerProvider = Provider<AkAudioHandler>(
   (ref) => throw UnimplementedError('audioHandlerProvider must be overridden'),
 );
 
-final playbackStateProvider = StreamProvider<PlaybackState>(
-  (ref) => ref.watch(audioHandlerProvider).playbackState,
-);
+final playbackStateProvider = StreamProvider<PlaybackState>((ref) => ref.watch(audioHandlerProvider).playbackState);
 
 final currentMediaProvider = StreamProvider<MediaItem?>((ref) => ref.watch(audioHandlerProvider).mediaItem);
 

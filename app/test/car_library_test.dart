@@ -6,9 +6,8 @@ import 'package:audiokiddo/features/player/car_library.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final catalog = parseCatalog(
-    jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
-  ).catalog;
+  final catalog = parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>)
+      .catalog;
 
   test('car shelves hold only listening the family may play', () {
     final shelves = carShelves(catalog, canPlay: (i) => i.isFree);

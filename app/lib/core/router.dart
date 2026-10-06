@@ -32,6 +32,7 @@ import '../features/discovery/rescue_screen.dart';
 import '../features/discovery/routines_screen.dart';
 import '../features/discovery/queue_screen.dart';
 import '../features/player/bottom_dock.dart';
+import 'widgets/back_to_start.dart';
 import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
@@ -98,7 +99,7 @@ GoRouter buildRouter(
     GoRoute(path: '/dziecko/gra', pageBuilder: (context, state) => swipePage(state, const GameScreen())),
     GoRoute(path: '/gra', pageBuilder: (context, state) => swipePage(state, const GameScreen())),
     StatefulShellRoute.indexedStack(
-      builder: (context, state, shell) => _ParentShell(shell: shell),
+      builder: (context, state, shell) => _ParentShell(shell: shell, atTabRoot: _tabRoots.contains(state.uri.path)),
       branches: [
         StatefulShellBranch(
           routes: [GoRoute(path: '/', pageBuilder: (context, state) => swipePage(state, const HomeScreen()))],
@@ -118,22 +119,15 @@ GoRouter buildRouter(
           ],
         ),
         StatefulShellBranch(
-          routes: [
-            GoRoute(path: '/sklep', pageBuilder: (context, state) => swipePage(state, const ShopScreen())),
-          ],
+          routes: [GoRoute(path: '/sklep', pageBuilder: (context, state) => swipePage(state, const ShopScreen()))],
         ),
         StatefulShellBranch(
-          routes: [
-            GoRoute(path: '/moje', pageBuilder: (context, state) => swipePage(state, const MoreScreen())),
-          ],
+          routes: [GoRoute(path: '/moje', pageBuilder: (context, state) => swipePage(state, const MoreScreen()))],
         ),
       ],
     ),
     // The shop opened from elsewhere (banners, offers): a page with a way back.
-    GoRoute(
-      path: '/abonament',
-      pageBuilder: (context, state) => swipePage(state, const ShopScreen(standalone: true)),
-    ),
+    GoRoute(path: '/abonament', pageBuilder: (context, state) => swipePage(state, const ShopScreen(standalone: true))),
     GoRoute(path: '/ulubione', pageBuilder: (context, state) => swipePage(state, const CollectionScreen())),
     GoRoute(path: '/ratunku', pageBuilder: (context, state) => swipePage(state, const RescueScreen())),
     GoRoute(path: '/rutyny', pageBuilder: (context, state) => swipePage(state, const RoutinesScreen())),
@@ -145,10 +139,7 @@ GoRouter buildRouter(
       pageBuilder: (context, state) => swipePage(state, const CollectionScreen(history: true)),
     ),
     GoRoute(path: '/plan', pageBuilder: (context, state) => swipePage(state, const PlanScreen())),
-    GoRoute(
-      path: '/moje/narzedzia',
-      pageBuilder: (context, state) => swipePage(state, const DevToolsScreen()),
-    ),
+    GoRoute(path: '/moje/narzedzia', pageBuilder: (context, state) => swipePage(state, const DevToolsScreen())),
     GoRoute(path: '/plan/postep', pageBuilder: (context, state) => swipePage(state, const ProgressScreen())),
     GoRoute(
       path: '/plan/dziecko',
@@ -169,8 +160,7 @@ GoRouter buildRouter(
     GoRoute(path: '/ikona', pageBuilder: (context, state) => swipePage(state, const AppIconScreen())),
     GoRoute(
       path: '/oferta',
-      pageBuilder: (context, state) =>
-          swipePage(state, PaywallScreen(itemId: state.uri.queryParameters['zabawa'])),
+      pageBuilder: (context, state) => swipePage(state, PaywallScreen(itemId: state.uri.queryParameters['zabawa'])),
     ),
     GoRoute(
       path: '/pakiet/:id',
@@ -178,8 +168,7 @@ GoRouter buildRouter(
     ),
     GoRoute(
       path: '/pakiet/:id/materialy',
-      pageBuilder: (context, state) =>
-          swipePage(state, PackMaterialsScreen(packId: state.pathParameters['id']!)),
+      pageBuilder: (context, state) => swipePage(state, PackMaterialsScreen(packId: state.pathParameters['id']!)),
     ),
     GoRoute(
       path: '/dyplom/:id',
@@ -207,26 +196,29 @@ GoRouter buildRouter(
         transitionDuration: const Duration(milliseconds: 320),
         reverseTransitionDuration: const Duration(milliseconds: 260),
         transitionBuilder: (context, animation, _, isSwipeGesture, child) => SlideTransition(
-          position: Tween(begin: isSwipeGesture ? const Offset(1, 0) : const Offset(0, 1), end: Offset.zero)
-              .animate(
-                isSwipeGesture ? animation : CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-              ),
+          position: Tween(
+            begin: isSwipeGesture ? const Offset(1, 0) : const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(isSwipeGesture ? animation : CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
           child: child,
         ),
         builder: (_) => const PlayerScreen(),
       ),
     ),
-    GoRoute(
-      path: '/odtwarzacz/bez-patrzenia',
-      pageBuilder: (context, state) => swipePage(state, const NoLookScreen()),
-    ),
+    GoRoute(path: '/odtwarzacz/bez-patrzenia', pageBuilder: (context, state) => swipePage(state, const NoLookScreen())),
   ],
 );
 
+/// The tabs' own pages: from these a swipe from the left edge (or the system back) goes to Start.
+const _tabRoots = {'/biblioteka', '/sklep', '/moje'};
+
 class _ParentShell extends ConsumerWidget {
-  const _ParentShell({required this.shell});
+  const _ParentShell({required this.shell, required this.atTabRoot});
 
   final StatefulNavigationShell shell;
+
+  /// On Biblioteka, Sklep or Więcej itself (not a page opened inside them).
+  final bool atTabRoot;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -238,12 +230,18 @@ class _ParentShell extends ConsumerWidget {
       builder: (context, scaffold) => Stack(
         children: [
           scaffold!,
-          if (welcome.tourPending)
-            Positioned.fill(child: SzopTour(barHeight: 68, onBranch: (i) => shell.goBranch(i))),
+          if (welcome.tourPending) Positioned.fill(child: SzopTour(barHeight: 68, onBranch: (i) => shell.goBranch(i))),
         ],
       ),
       child: Scaffold(
-        body: RemindersKeeper(todayDone: todayDone, child: shell),
+        body: RemindersKeeper(
+          todayDone: todayDone,
+          child: BackToStart(
+            enabled: shell.currentIndex != 0 && atTabRoot,
+            onBack: () => shell.goBranch(0),
+            child: shell,
+          ),
+        ),
         bottomNavigationBar: BottomDock(
           current: shell.currentIndex,
           onTab: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),

@@ -7,10 +7,7 @@ import 'dart:io';
 /// secrets. Another project (e.g. staging) can be used with
 /// `--dart-define=SUPABASE_URL=... --dart-define=SUPABASE_KEY=...`.
 abstract final class BackendConfig {
-  static const url = String.fromEnvironment(
-    'SUPABASE_URL',
-    defaultValue: 'https://ypdxofcwewwdyoelamgy.supabase.co',
-  );
+  static const url = String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://ypdxofcwewwdyoelamgy.supabase.co');
   static const publishableKey = String.fromEnvironment(
     'SUPABASE_KEY',
     defaultValue: 'sb_publishable_GfJcAHEtFYs5IvlKrNZBVw_0WeAneGQ',
@@ -31,6 +28,5 @@ abstract final class BackendConfig {
   /// also in the parent area, no access codes, no Google sign-in, no talk of other prices.
   static const kidsStoreBuild = bool.fromEnvironment('PARENT_GATE_EVERYWHERE');
 
-  static bool get googleConfigured =>
-      googleWebClientId.isNotEmpty && (!Platform.isIOS || googleIosClientId.isNotEmpty);
+  static bool get googleConfigured => googleWebClientId.isNotEmpty && (!Platform.isIOS || googleIosClientId.isNotEmpty);
 }

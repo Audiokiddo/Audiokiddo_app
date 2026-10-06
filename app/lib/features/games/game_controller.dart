@@ -129,10 +129,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final runner = _runner = ScriptRunner(
       script,
       resumeFrom: saved,
-      unavailable: {
-        if (!_micUsable) FallbackReason.noMicrophone,
-        if (!_foreground) FallbackReason.screenLocked,
-      },
+      unavailable: {if (!_micUsable) FallbackReason.noMicrophone, if (!_foreground) FallbackReason.screenLocked},
     )..setSpeechAvailable(available: _speechUsable);
     state = GameUiState(phase: GamePhase.playing, itemId: item.id, title: item.title);
     final played = ref.read(familyProvider).value?.results.any((r) => r.itemId == item.id) ?? false;
@@ -252,9 +249,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         _lastPrompt = asset;
         _set(GamePhase.playing);
         // Save at every instruction: after any interruption the child hears it again.
-        await ref
-            .read(databaseProvider)
-            .writeValue(_snapshotKey(item.id), jsonEncode(_runner!.snapshot().toJson()));
+        await ref.read(databaseProvider).writeValue(_snapshotKey(item.id), jsonEncode(_runner!.snapshot().toJson()));
         final completed = await _audio.playSegment(media, await _uri(asset));
         return completed ? const SegmentFinished() : null;
       case WaitFor(:final duration, :final loopAsset):
@@ -267,9 +262,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       // loudness detector, so any word it catches is the answer.
       case Listen(input: InputKind.voiceActivity, :final window) when _speechUsable:
         return await _listenForWords(window, const [], generation, anySpeech: true) ??
-            (generation == _generation
-                ? await _listen({InputKind.voiceActivity}, window, generation, media)
-                : null);
+            (generation == _generation ? await _listen({InputKind.voiceActivity}, window, generation, media) : null);
       case Listen(:final input, :final window, :final minCount):
         return _listen({input}, window, generation, media, minClaps: minCount ?? 1);
       case ListenForChoice(:final inputs, :final window, :final vocabulary)
@@ -331,9 +324,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       speech
           .listen(
             window: scaled,
-            vocabulary: anySpeech
-                ? const []
-                : [...vocabulary, 'jeszcze raz', 'powtórz', 'czy możesz powtórzyć'],
+            vocabulary: anySpeech ? const [] : [...vocabulary, 'jeszcze raz', 'powtórz', 'czy możesz powtórzyć'],
             onHeard: (transcripts) {
               if (_input != completer) return; // a late result from an earlier question
               if (transcripts.any(
@@ -426,10 +417,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     if (!enabled) return;
     try {
       final samples = await ref.read(microphoneInputProvider).start();
-      _detector = SoundDetector(
-        sampleRate: micSampleRate,
-        voiceMinDuration: const Duration(milliseconds: 120),
-      );
+      _detector = SoundDetector(sampleRate: micSampleRate, voiceMinDuration: const Duration(milliseconds: 120));
       _mic = samples.listen(_onSamples, onError: (Object _) => _onMicrophoneLost());
     } on Exception catch (e) {
       debugPrint('microphone unavailable: $e');

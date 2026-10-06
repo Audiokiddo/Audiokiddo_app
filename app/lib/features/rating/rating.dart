@@ -53,14 +53,9 @@ Future<void> rateApp(BuildContext context, {bool fromList = false}) async {
 /// A message to the team instead of a low rating: an e-mail draft, behind the parental gate.
 Future<void> sendFeedback(BuildContext context) async {
   if (!await showParentalGate(context) || !context.mounted) return;
-  final uri = Uri(
-    scheme: 'mailto',
-    path: feedbackEmail,
-    query: 'subject=${Uri.encodeComponent('AudioKiddo: uwagi')}',
-  );
+  final uri = Uri(scheme: 'mailto', path: feedbackEmail, query: 'subject=${Uri.encodeComponent('AudioKiddo: uwagi')}');
   if (!await launchUrl(uri) && context.mounted) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Napisz do nas: $feedbackEmail')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Napisz do nas: $feedbackEmail')));
   }
 }
 

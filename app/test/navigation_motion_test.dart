@@ -58,9 +58,7 @@ void main() {
     expect(find.text('Dom'), findsOneWidget);
   });
 
-  testWidgets('scrolling keeps the player; pulling past its top follows the finger and closes', (
-    tester,
-  ) async {
+  testWidgets('scrolling keeps the player; pulling past its top follows the finger and closes', (tester) async {
     final router = await mount(tester);
     await tester.drag(find.byType(ListView), const Offset(0, -300));
     await tester.pumpAndSettle();

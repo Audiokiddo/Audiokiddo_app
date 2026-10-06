@@ -215,6 +215,4 @@ List<ReminderSlot> reminderSlots(
   return slots;
 }
 
-final remindersProvider = AsyncNotifierProvider<RemindersController, ReminderSettings>(
-  RemindersController.new,
-);
+final remindersProvider = AsyncNotifierProvider<RemindersController, ReminderSettings>(RemindersController.new);

@@ -132,10 +132,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                           height: 260,
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.vertical(top: Radius.circular(36)),
-                            border: Border.all(
-                              color: context.palette.inkMuted.withValues(alpha: 0.35),
-                              width: 6,
-                            ),
+                            border: Border.all(color: context.palette.inkMuted.withValues(alpha: 0.35), width: 6),
                           ),
                           padding: const EdgeInsets.fromLTRB(10, 26, 10, 0),
                           child: AnimatedBuilder(
@@ -151,10 +148,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                                 alignment: Alignment.topCenter,
                                 child: Opacity(
                                   opacity: inOut.clamp(0, 1),
-                                  child: Transform.translate(
-                                    offset: Offset(0, (inOut - 1) * 60),
-                                    child: child,
-                                  ),
+                                  child: Transform.translate(offset: Offset(0, (inOut - 1) * 60), child: child),
                                 ),
                               );
                             },
@@ -180,11 +174,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                                         color: AkBrand.sun,
                                         borderRadius: BorderRadius.circular(9),
                                       ),
-                                      child: const Icon(
-                                        Icons.headphones_rounded,
-                                        size: 20,
-                                        color: AkBrand.ink,
-                                      ),
+                                      child: const Icon(Icons.headphones_rounded, size: 20, color: AkBrand.ink),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
@@ -197,9 +187,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                                               Expanded(
                                                 child: Text(
                                                   title,
-                                                  style: text.labelLarge?.copyWith(
-                                                    fontWeight: FontWeight.w800,
-                                                  ),
+                                                  style: text.labelLarge?.copyWith(fontWeight: FontWeight.w800),
                                                 ),
                                               ),
                                               Text(l10n.remindersPreviewTime, style: text.labelSmall),
@@ -229,10 +217,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          l10n.remindersWhen,
-                          style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                        ),
+                        Text(l10n.remindersWhen, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
                         const SizedBox(height: AkSpace.s),
                         Wrap(
                           spacing: AkSpace.s,
@@ -254,10 +239,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                                     : 'Własna: ${_time.$1}:${_time.$2.toString().padLeft(2, '0')}',
                               ),
                               selected: !times.any((t) => t.$2 == _time),
-                              labelStyle: selectableChipLabel(
-                                context,
-                                selected: !times.any((t) => t.$2 == _time),
-                              ),
+                              labelStyle: selectableChipLabel(context, selected: !times.any((t) => t.$2 == _time)),
                               onSelected: (_) async {
                                 final picked = await pickReminderTime(context, _time);
                                 if (picked != null) setState(() => _time = picked);
@@ -266,10 +248,7 @@ class _ReminderOfferState extends ConsumerState<ReminderOffer> with SingleTicker
                           ],
                         ),
                         const SizedBox(height: AkSpace.s),
-                        Text(
-                          l10n.remindersNote,
-                          style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
-                        ),
+                        Text(l10n.remindersNote, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
                       ],
                     ),
                   ),
@@ -361,8 +340,7 @@ class ReminderTile extends ConsumerWidget {
     final at = '${s.hour}:${s.minute.toString().padLeft(2, '0')}';
     void open() => Navigator.of(context).push(
       swipeRoute<void>(
-        builder: (route) =>
-            ReminderOffer(initialTime: (s.hour, s.minute), onDone: () => Navigator.of(route).pop()),
+        builder: (route) => ReminderOffer(initialTime: (s.hour, s.minute), onDone: () => Navigator.of(route).pop()),
       ),
     );
     return ListTile(

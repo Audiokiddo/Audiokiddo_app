@@ -36,10 +36,7 @@ class ContentCover extends StatelessWidget {
                 top: 5,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFAC119),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  decoration: BoxDecoration(color: const Color(0xFFFAC119), borderRadius: BorderRadius.circular(8)),
                   child: Text(
                     'NOWE',
                     style: TextStyle(

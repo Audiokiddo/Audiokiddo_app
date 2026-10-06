@@ -119,9 +119,7 @@ class _SpeechCheckScreenState extends ConsumerState<SpeechCheckScreen> {
           else if (!_listening && _heard != null)
             const Padding(
               padding: EdgeInsets.only(top: AkSpace.s),
-              child: Text(
-                'Nie było to żadne ze słów z listy. Spróbujcie jeszcze raz, wyraźnie i blisko telefonu.',
-              ),
+              child: Text('Nie było to żadne ze słów z listy. Spróbujcie jeszcze raz, wyraźnie i blisko telefonu.'),
             ),
           if (_problem != null) Text(_problem!, style: text.titleMedium),
           if (log != null) ...[

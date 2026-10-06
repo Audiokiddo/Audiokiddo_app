@@ -96,14 +96,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 children: [
                   Text('AudioKiddo', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                   const SizedBox(height: 40),
-                  Text(
-                    'Więcej\nniż\nsłuchanie.',
-                    style: text.displaySmall?.copyWith(fontSize: 44, height: 1.12),
-                  ),
+                  Text('Więcej\nniż\nsłuchanie.', style: text.displaySmall?.copyWith(fontSize: 44, height: 1.12)),
                   const SizedBox(height: 18),
-                  const Text(
-                    'Interaktywne audiozabawy, które angażują wyobraźnię i dają Wam chwilę oddechu.',
-                  ),
+                  const Text('Interaktywne audiozabawy, które angażują wyobraźnię i dają Wam chwilę oddechu.'),
                   const SizedBox(height: 28),
                   Container(
                     width: double.infinity,
@@ -207,8 +202,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             child: Text(l10n.paywallTerms),
                           ),
                           TextButton(
-                            onPressed: () =>
-                                _openLegal(Uri.parse('https://audiokiddo.pl/polityka-prywatnosci/')),
+                            onPressed: () => _openLegal(Uri.parse('https://audiokiddo.pl/polityka-prywatnosci/')),
                             child: Text(l10n.paywallPrivacy),
                           ),
                         ],
@@ -254,10 +248,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   // Keeps the layout steady on the last page, where skipping makes no sense.
                   Visibility.maintain(
                     visible: !last,
-                    child: TextButton(
-                      onPressed: () => _finish(skipAll: true),
-                      child: Text(l10n.onboardingSkip),
-                    ),
+                    child: TextButton(onPressed: () => _finish(skipAll: true), child: Text(l10n.onboardingSkip)),
                   ),
                 ],
               ),

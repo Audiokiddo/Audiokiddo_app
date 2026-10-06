@@ -20,21 +20,13 @@ import 'subscription_value.dart';
 const subscriptionPromise = 'Wszystkie zabawy teraz i jeden nowy pakiet co miesiąc';
 
 /// The next free audio play the family has not heard yet, for the child's [age].
-ContentItem? nextFreePlay(
-  Catalog catalog, {
-  required String after,
-  required Set<String> heard,
-  required int age,
-}) => catalog.items
-    .where(
-      (i) =>
-          i.isFree &&
-          i.kind == ContentKind.audioGame &&
-          i.id != after &&
-          !heard.contains(i.id) &&
-          i.ageMin <= age,
-    )
-    .firstOrNull;
+ContentItem? nextFreePlay(Catalog catalog, {required String after, required Set<String> heard, required int age}) =>
+    catalog.items
+        .where(
+          (i) =>
+              i.isFree && i.kind == ContentKind.audioGame && i.id != after && !heard.contains(i.id) && i.ageMin <= age,
+        )
+        .firstOrNull;
 
 /// What a year of the subscription is worth against buying packs one by one: every pack
 /// today plus twelve new ones (one a month) at the average pack price.
@@ -49,12 +41,7 @@ ContentItem? nextFreePlay(
   final today = prices.fold(0.0, (s, p) => s + p);
   final value = today + 12 * today / prices.length;
   final month = monthly?.rawPrice;
-  return (
-    packsToday: today,
-    yearValue: value,
-    saving: value - year,
-    vsMonthly: month == null ? 0 : month * 12 - year,
-  );
+  return (packsToday: today, yearValue: value, saving: value - year, vsMonthly: month == null ? 0 : month * 12 - year);
 }
 
 /// The family's played and finished plays.
@@ -123,9 +110,7 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
     if (next == null && !anyLocked) return const SizedBox.shrink();
     if (!_tracked && anyLocked) {
       _tracked = true;
-      ref
-          .read(eventSinkProvider)
-          .track(AppEvent.paywallView, itemId: item.id, props: {'from': 'after_free_play'});
+      ref.read(eventSinkProvider).track(AppEvent.paywallView, itemId: item.id, props: {'from': 'after_free_play'});
     }
     final packIds = {for (final p in catalog.packs) ?p.storeProductId};
     final ids = {...packIds, ...ProductIds.subscriptions};

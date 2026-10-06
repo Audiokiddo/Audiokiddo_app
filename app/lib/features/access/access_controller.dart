@@ -115,18 +115,13 @@ class DevEntitlementBackend implements EntitlementBackend {
     );
     final purchased = [
       for (final p in await _purchases())
-        e(
-          p['scope']! as String,
-          until: p['valid_until'] == null ? null : DateTime.parse(p['valid_until']! as String),
-        ),
+        e(p['scope']! as String, until: p['valid_until'] == null ? null : DateTime.parse(p['valid_until']! as String)),
     ];
     return [
       ...purchased,
       ...switch (await mode()) {
         DevAccessMode.none => const [],
-        DevAccessMode.subscription => [
-          e(Scopes.allContent, until: DateTime.now().add(const Duration(days: 30))),
-        ],
+        DevAccessMode.subscription => [e(Scopes.allContent, until: DateTime.now().add(const Duration(days: 30)))],
         DevAccessMode.packWyobraznia => [e(Scopes.pack('wyobraznia'))],
         DevAccessMode.packDetektyw => [e(Scopes.pack('detektyw'))],
         DevAccessMode.allPacks => [
@@ -176,9 +171,7 @@ class AccessController extends AsyncNotifier<AccessState> {
   @override
   Future<AccessState> build() async {
     final raw = await _db.readValue(_key);
-    final stored = raw == null
-        ? const AccessState()
-        : AccessState.fromJson(jsonDecode(raw) as Map<String, Object?>);
+    final stored = raw == null ? const AccessState() : AccessState.fromJson(jsonDecode(raw) as Map<String, Object?>);
     unawaited(Future.microtask(refresh));
     // Signing in, out or into another account changes what the device may play.
     ref.listen(accountUserProvider, (previous, next) {
@@ -200,10 +193,7 @@ class AccessController extends AsyncNotifier<AccessState> {
     final paidUntil = entitlements
         .where((e) => e.isActiveAt(now))
         .map((e) => e.validUntil)
-        .fold<DateTime?>(
-          null,
-          (latest, d) => d == null || (latest != null && latest.isAfter(d)) ? latest : d,
-        );
+        .fold<DateTime?>(null, (latest, d) => d == null || (latest != null && latest.isAfter(d)) ? latest : d);
     final hasOneTime = entitlements.any((e) => e.isActiveAt(now) && e.validUntil == null);
     await _saveAndPrune(
       AccessState(
@@ -222,9 +212,7 @@ class AccessController extends AsyncNotifier<AccessState> {
     await _save(next);
     if (!ref.mounted) return;
     // In the background: the refresh never waits for file work.
-    unawaited(
-      pruneLockedDownloads(ref).catchError((Object e) => debugPrint('access: downloads not pruned ($e)')),
-    );
+    unawaited(pruneLockedDownloads(ref).catchError((Object e) => debugPrint('access: downloads not pruned ($e)')));
   }
 
   /// Developer screen: pretend the device was offline for longer than the lease.

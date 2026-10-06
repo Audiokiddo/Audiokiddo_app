@@ -316,10 +316,7 @@ class _FreeStart extends StatelessWidget {
                 children: [
                   Text(
                     'Darmowe zabawy na start',
-                    style: text.titleSmall?.copyWith(
-                      color: const Color(0xFF211C35),
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: text.titleSmall?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
                   ),
                   Text(
                     'Wszystko, czego możecie słuchać od razu, bez zakupu.',
@@ -379,10 +376,7 @@ class _OwnedPackCard extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        summary.pack.title,
-                        style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-                      ),
+                      Text(summary.pack.title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
                       Text(
                         '${playsCount(total)} · ${summary.minutes} min',
                         style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
@@ -399,9 +393,7 @@ class _OwnedPackCard extends ConsumerWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        heard == total && total > 0
-                            ? 'Wszystko przesłuchane!'
-                            : 'Przesłuchane $heard z $total',
+                        heard == total && total > 0 ? 'Wszystko przesłuchane!' : 'Przesłuchane $heard z $total',
                         style: text.labelSmall?.copyWith(color: context.palette.inkMuted),
                       ),
                     ],
@@ -475,10 +467,7 @@ class _LockedPackCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        summary.pack.title,
-                        style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-                      ),
+                      Text(summary.pack.title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
                       Text(
                         summary.pack.description,
                         maxLines: 2,
@@ -554,12 +543,7 @@ class _ParentTools extends ConsumerWidget {
         () => onFilter(const LibraryFilter(printable: true)),
       ),
       (Icons.queue_music_rounded, 'Kolejka', 'Ułóż własną listę', () => context.push('/kolejka')),
-      (
-        Icons.child_care_rounded,
-        'Tryb dziecka',
-        'Telefon tylko z zabawami',
-        () => showKidsModeSetup(context, ref),
-      ),
+      (Icons.child_care_rounded, 'Tryb dziecka', 'Telefon tylko z zabawami', () => showKidsModeSetup(context, ref)),
       (Icons.favorite_rounded, 'Ulubione', 'Te, do których wracacie', () => context.push('/ulubione')),
       (Icons.history_rounded, 'Historia', 'Co już słuchaliście', () => context.push('/historia')),
     ];
@@ -593,14 +577,12 @@ class _ParentTools extends ConsumerWidget {
                         const SizedBox(height: 6),
                         Text(
                           title,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w800),
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         Text(
                           subtitle,
                           maxLines: 2,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: context.palette.inkMuted),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.palette.inkMuted),
                         ),
                       ],
                     ),
@@ -646,9 +628,7 @@ class _QuickFilters extends ConsumerWidget {
     return Wrap(
       spacing: 6,
       runSpacing: 6,
-      children: [
-        for (final (label, f) in chips) ActionChip(label: Text(label), onPressed: () => onFilter(f)),
-      ],
+      children: [for (final (label, f) in chips) ActionChip(label: Text(label), onPressed: () => onFilter(f))],
     );
   }
 }
@@ -687,15 +667,10 @@ class _FilterChips extends ConsumerWidget {
             chip(
               label,
               f.age == age,
-              () =>
-                  f.copyWith(age: () => f.age == age ? null : age, ageFrom: () => f.age == age ? null : from),
+              () => f.copyWith(age: () => f.age == age ? null : age, ageFrom: () => f.age == age ? null : from),
             ),
           for (final m in [10, 20, 30])
-            chip(
-              'Do $m min',
-              f.maxMinutes == m,
-              () => f.copyWith(maxMinutes: () => f.maxMinutes == m ? null : m),
-            ),
+            chip('Do $m min', f.maxMinutes == m, () => f.copyWith(maxMinutes: () => f.maxMinutes == m ? null : m)),
           chip('Bez przygotowań', f.noPrep, () => f.copyWith(noPrep: !f.noPrep)),
           chip('Tylko dostępne', f.available, () => f.copyWith(available: !f.available)),
         ],

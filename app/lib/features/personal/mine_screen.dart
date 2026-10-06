@@ -48,9 +48,7 @@ class _MineContent extends ConsumerWidget {
 
   final Catalog catalog;
 
-  List<ContentItem> _items(List<String>? ids) => [
-    for (final id in ids ?? const <String>[]) ?catalog.item(id),
-  ];
+  List<ContentItem> _items(List<String>? ids) => [for (final id in ids ?? const <String>[]) ?catalog.item(id)];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -142,9 +140,6 @@ class _Empty extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: AkSpace.m, vertical: AkSpace.s),
-    child: Text(
-      message,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.palette.inkMuted),
-    ),
+    child: Text(message, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.palette.inkMuted)),
   );
 }

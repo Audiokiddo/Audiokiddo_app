@@ -36,10 +36,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final audioHandler = await initAudio();
   // Works offline: the saved session is read from the device, nothing waits for the network.
-  final supabase = await Supabase.initialize(
-    url: BackendConfig.url,
-    publishableKey: BackendConfig.publishableKey,
-  );
+  final supabase = await Supabase.initialize(url: BackendConfig.url, publishableKey: BackendConfig.publishableKey);
   final database = AppDatabase();
   final catalogSource = RemoteCatalogSource(supabase.client, database);
   final events = SupabaseEventSink(supabase.client, database, appVersion: appVersion);

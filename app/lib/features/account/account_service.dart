@@ -84,11 +84,7 @@ class ReferralInfo {
   static ReferralInfo? fromJson(Object? json) {
     if (json is! Map || json['code'] is! String) return null;
     int count(Object? v) => v is int ? v : int.tryParse('$v') ?? 0;
-    return ReferralInfo(
-      code: json['code'] as String,
-      friends: count(json['friends']),
-      rewards: count(json['rewards']),
-    );
+    return ReferralInfo(code: json['code'] as String, friends: count(json['friends']), rewards: count(json['rewards']));
   }
 }
 
@@ -256,14 +252,12 @@ class SupabaseAccountService implements AccountService {
   });
 
   @override
-  Future<void> verifySignUp(String email, String code) => _guard(
-    () => _auth.verifyOTP(type: OtpType.signup, email: email.trim().toLowerCase(), token: code.trim()),
-  );
+  Future<void> verifySignUp(String email, String code) =>
+      _guard(() => _auth.verifyOTP(type: OtpType.signup, email: email.trim().toLowerCase(), token: code.trim()));
 
   @override
-  Future<void> verifyCode(String email, String code) => _guard(
-    () => _auth.verifyOTP(type: OtpType.email, email: email.trim().toLowerCase(), token: code.trim()),
-  );
+  Future<void> verifyCode(String email, String code) =>
+      _guard(() => _auth.verifyOTP(type: OtpType.email, email: email.trim().toLowerCase(), token: code.trim()));
 
   @override
   Future<void> signInWithPassword(String email, String password) =>
@@ -324,8 +318,7 @@ class SupabaseAccountService implements AccountService {
   Future<ClaimResult> redeemCode(String code) => _claim('redeem-code', {'code': code});
 
   @override
-  Future<ClaimResult> claimOrder(String order, String email) =>
-      _claim('claim-order', {'order': order, 'email': email});
+  Future<ClaimResult> claimOrder(String order, String email) => _claim('claim-order', {'order': order, 'email': email});
 
   @override
   Future<ReferralInfo> referralInfo() => _guard(() async {
@@ -350,9 +343,7 @@ class SupabaseAccountService implements AccountService {
     // until the server has that function.
     final rows = await _guard<List<Map<String, dynamic>>>(() async {
       try {
-        return [
-          for (final r in await _client.rpc('my_entitlements') as List) Map<String, dynamic>.from(r as Map),
-        ];
+        return [for (final r in await _client.rpc('my_entitlements') as List) Map<String, dynamic>.from(r as Map)];
       } on PostgrestException catch (e) {
         if (e.code != 'PGRST202') rethrow;
         return await _client.from('entitlements').select('scope, status, source, valid_until');
@@ -425,9 +416,7 @@ class SupabaseAccountService implements AccountService {
     } on AccountException {
       rethrow;
     } on SignInWithAppleAuthorizationException catch (e) {
-      throw AccountException(
-        e.code == AuthorizationErrorCode.canceled ? AccountError.canceled : AccountError.server,
-      );
+      throw AccountException(e.code == AuthorizationErrorCode.canceled ? AccountError.canceled : AccountError.server);
     } on SignInWithAppleNotSupportedException {
       throw const AccountException(AccountError.notConfigured);
     } on GoogleSignInException catch (e) {
@@ -474,16 +463,13 @@ class SignedOutAccountService implements AccountService {
   Future<bool?> accountExists(String email) async => null;
 
   @override
-  Future<void> verifyCode(String email, String code) async =>
-      throw const AccountException(AccountError.server);
+  Future<void> verifyCode(String email, String code) async => throw const AccountException(AccountError.server);
 
   @override
-  Future<bool> signUp(String email, String password) async =>
-      throw const AccountException(AccountError.server);
+  Future<bool> signUp(String email, String password) async => throw const AccountException(AccountError.server);
 
   @override
-  Future<void> verifySignUp(String email, String code) async =>
-      throw const AccountException(AccountError.server);
+  Future<void> verifySignUp(String email, String code) async => throw const AccountException(AccountError.server);
 
   @override
   Future<void> signInWithPassword(String email, String password) async =>
@@ -511,8 +497,7 @@ class SignedOutAccountService implements AccountService {
   Future<ClaimResult> redeemCode(String code) async => throw const AccountException(AccountError.server);
 
   @override
-  Future<ClaimResult> claimOrder(String order, String email) async =>
-      throw const AccountException(AccountError.server);
+  Future<ClaimResult> claimOrder(String order, String email) async => throw const AccountException(AccountError.server);
 
   @override
   Future<ReferralInfo> referralInfo() async => throw const AccountException(AccountError.notConfigured);

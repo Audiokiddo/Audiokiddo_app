@@ -96,9 +96,7 @@ List<SessionStep> buildTrip(
     total += item.durationSec;
     sinceBreak += item.durationSec;
     if (sinceBreak >= 15 * 60 && total < target - 300) {
-      steps.add(
-        LineStep(windowLines[breaks++ % windowLines.length], pauseAfter: const Duration(seconds: 40)),
-      );
+      steps.add(LineStep(windowLines[breaks++ % windowLines.length], pauseAfter: const Duration(seconds: 40)));
       total += 50;
       sinceBreak = 0;
     }
@@ -114,11 +112,7 @@ const bedtimeFade = Duration(seconds: 25);
 
 /// The evening ritual behind one "Dobranoc" button: three calm breaths, one quiet
 /// activity, one lullaby, goodnight in the parent's voice (or Kiddo's).
-List<SessionStep> buildBedtime(
-  Catalog catalog, {
-  required int age,
-  required bool Function(ContentItem) canPlay,
-}) {
+List<SessionStep> buildBedtime(Catalog catalog, {required int age, required bool Function(ContentItem) canPlay}) {
   final playable = [
     for (final i in catalog.items)
       if (i.ageMin <= age && canPlay(i) && i.audio.isNotEmpty && i.kind != ContentKind.interactiveGame) i,
@@ -172,9 +166,7 @@ class AppSessionAudio implements SessionAudio {
         .firstWhere((s) => s.processingState == AudioProcessingState.ready)
         .timeout(const Duration(seconds: 30), onTimeout: () => handler.playbackState.value);
     await handler.playbackState.firstWhere(
-      (s) =>
-          s.processingState == AudioProcessingState.completed ||
-          s.processingState == AudioProcessingState.idle,
+      (s) => s.processingState == AudioProcessingState.completed || s.processingState == AudioProcessingState.idle,
     );
   }
 

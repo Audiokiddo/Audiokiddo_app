@@ -16,13 +16,7 @@ import '../lord/lord_lines.dart';
 /// (one tap starts it) and the unfinished play to pick up.
 @immutable
 class HomeWidgetData {
-  const HomeWidgetData({
-    this.line = '',
-    this.notes = 0,
-    this.todayDone = false,
-    this.next,
-    this.resume,
-  });
+  const HomeWidgetData({this.line = '', this.notes = 0, this.todayDone = false, this.next, this.resume});
 
   /// "Zosia · dzień 3 · 2 z 7 nut" or "Zosia: dzisiejsza nuta zebrana"; empty without a child.
   final String line;

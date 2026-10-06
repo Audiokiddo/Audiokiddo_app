@@ -221,10 +221,7 @@ class CategoryTile extends ConsumerWidget {
                       style: text.titleSmall?.copyWith(color: fg, fontWeight: FontWeight.w800),
                     ),
                     if (count != null)
-                      Text(
-                        playsLabel(count),
-                        style: text.bodySmall?.copyWith(color: fg.withValues(alpha: .85)),
-                      ),
+                      Text(playsLabel(count), style: text.bodySmall?.copyWith(color: fg.withValues(alpha: .85))),
                   ],
                 ),
               ),
@@ -281,10 +278,7 @@ class RefSection extends StatelessWidget {
     child: Row(
       children: [
         Expanded(
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
+          child: Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
         ),
         if (action != null)
           TextButton(
@@ -312,12 +306,7 @@ class AudioRow extends ConsumerWidget {
             // The title next to it opens the same page and carries the label for VoiceOver.
             excludeFromSemantics: true,
             onTap: () => context.push('/zabawa/${item.id}'),
-            child: ContentCover(
-              item: item,
-              size: 64,
-              locked: !playable,
-              fresh: ref.watch(isNewItemProvider(item)),
-            ),
+            child: ContentCover(item: item, size: 64, locked: !playable, fresh: ref.watch(isNewItemProvider(item))),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -402,8 +391,7 @@ class ListenedBar extends ConsumerWidget {
                       label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.labelSmall
-                          ?.copyWith(color: context.palette.inkMuted),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.palette.inkMuted),
                     ),
                   ),
                 ],
@@ -460,11 +448,7 @@ class MetaStrip extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  value,
-                  maxLines: 2,
-                  style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700, height: 1.1),
-                ),
+                Text(value, maxLines: 2, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700, height: 1.1)),
                 Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: text.bodySmall),
               ],
             ),
@@ -564,8 +548,7 @@ class _PlaysByPackState extends ConsumerState<PlaysByPack> {
       for (final pack in packs)
         if (catalog.itemsInPack(pack.id).where(listed).toList() case final items when items.isNotEmpty)
           (pack.id == item.packId ? 'Dalej w pakiecie ${pack.title}' : 'Pakiet ${pack.title}', items),
-      if (catalog.items.where((i) => i.packId == null && listed(i)).toList() case final loose
-          when loose.isNotEmpty)
+      if (catalog.items.where((i) => i.packId == null && listed(i)).toList() case final loose when loose.isNotEmpty)
         ('Piosenki i gry', loose),
     ];
     final shown = _expanded ? rows : rows.take(_rowsFirst).toList();

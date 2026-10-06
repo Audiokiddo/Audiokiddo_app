@@ -219,10 +219,7 @@ class UpcomingShelf extends ConsumerWidget {
                 ),
                 const SizedBox(width: 12),
                 Expanded(child: Text(item.title, style: text.titleSmall)),
-                Text(
-                  dayAndMonth(item.releasedOn!),
-                  style: text.labelLarge?.copyWith(color: AkBrand.tealDeep),
-                ),
+                Text(dayAndMonth(item.releasedOn!), style: text.labelLarge?.copyWith(color: AkBrand.tealDeep)),
               ],
             ),
           ),
@@ -231,9 +228,8 @@ class UpcomingShelf extends ConsumerWidget {
             onPressed: () async {
               final ok = await ref.read(alertsOptInProvider.notifier).set(true);
               if (!ok && context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Powiadomienia są wyłączone w ustawieniach telefonu.')),
-                );
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(content: Text('Powiadomienia są wyłączone w ustawieniach telefonu.')));
               }
             },
             icon: const Icon(Icons.notifications_active_outlined),
@@ -257,9 +253,8 @@ class AlertsSwitch extends ConsumerWidget {
     onChanged: (v) async {
       final ok = await ref.read(alertsOptInProvider.notifier).set(v);
       if (!ok && context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Powiadomienia są wyłączone w ustawieniach telefonu.')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Powiadomienia są wyłączone w ustawieniach telefonu.')));
       }
     },
   );

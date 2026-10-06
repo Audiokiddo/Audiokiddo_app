@@ -236,13 +236,7 @@ class _GreetingSheet extends StatelessWidget {
 }
 
 class _Line extends StatelessWidget {
-  const _Line({
-    required this.icon,
-    required this.color,
-    required this.text,
-    required this.action,
-    required this.onTap,
-  });
+  const _Line({required this.icon, required this.color, required this.text, required this.action, required this.onTap});
 
   final IconData icon;
   final Color color;

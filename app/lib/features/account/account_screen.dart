@@ -55,10 +55,7 @@ class _SignedOut extends StatelessWidget {
             child: Container(
               width: 72,
               height: 72,
-              decoration: BoxDecoration(
-                color: context.palette.primary,
-                borderRadius: BorderRadius.circular(18),
-              ),
+              decoration: BoxDecoration(color: context.palette.primary, borderRadius: BorderRadius.circular(18)),
               child: Icon(Icons.person_rounded, size: 44, color: context.palette.onPrimary),
             ),
           ),
@@ -199,10 +196,7 @@ class _SignedInState extends ConsumerState<_SignedIn> {
           title: Text(title),
           content: Text(body),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialog, false),
-              child: Text(AppLocalizations.of(dialog).cancel),
-            ),
+            TextButton(onPressed: () => Navigator.pop(dialog, false), child: Text(AppLocalizations.of(dialog).cancel)),
             FilledButton(onPressed: () => Navigator.pop(dialog, true), child: Text(action)),
           ],
         ),
@@ -224,11 +218,7 @@ class _SignedInState extends ConsumerState<_SignedIn> {
         GroupedSection(
           header: l10n.accountSectionAccount,
           children: [
-            GroupedRow(
-              icon: Icons.person_rounded,
-              title: widget.user.email,
-              subtitle: l10n.accountSignedInAs,
-            ),
+            GroupedRow(icon: Icons.person_rounded, title: widget.user.email, subtitle: l10n.accountSignedInAs),
             GroupedRow(
               icon: Icons.password_rounded,
               iconColor: const Color(0xFF2F6FDB),
@@ -273,7 +263,8 @@ class _SignedInState extends ConsumerState<_SignedIn> {
           ],
         ),
         GroupedSection(
-          footer: 'Usuwa z tego telefonu profile dzieci, wyniki, dyplomy, ulubione i historię. Zakupy zostają na koncie.',
+          footer:
+              'Usuwa z tego telefonu profile dzieci, wyniki, dyplomy, ulubione i historię. Zakupy zostają na koncie.',
           children: [
             GroupedRow(
               title: 'Wyczyść dane rodziny z tego telefonu',
@@ -283,9 +274,7 @@ class _SignedInState extends ConsumerState<_SignedIn> {
           ],
         ),
         GroupedSection(
-          children: [
-            GroupedRow(title: l10n.accountSignOut, onTap: _busy ? null : _signOut, destructive: true),
-          ],
+          children: [GroupedRow(title: l10n.accountSignOut, onTap: _busy ? null : _signOut, destructive: true)],
         ),
         GroupedSection(
           footer: l10n.accountDeleteFooter,

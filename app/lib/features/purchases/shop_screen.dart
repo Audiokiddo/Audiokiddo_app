@@ -111,9 +111,7 @@ class ShopScreen extends ConsumerWidget {
                               productId: id,
                               packs: bundlePacks(id, catalog),
                               product: byId[id],
-                              packProducts: [
-                                for (final p in bundlePacks(id, catalog)) byId[p.storeProductId],
-                              ],
+                              packProducts: [for (final p in bundlePacks(id, catalog)) byId[p.storeProductId]],
                               owned: bundlePacks(id, catalog).every((p) => ownsPack(scopes, p.id)),
                             ),
                           _SinglePlays(catalog: catalog, byId: byId),
@@ -193,9 +191,7 @@ class _SinglePlaysState extends ConsumerState<_SinglePlays> {
               AudioRow(
                 item: item,
                 trailing: FilledButton.tonal(
-                  onPressed: busy == null
-                      ? () => buyWithGate(context, ref, widget.byId[item.storeProductId]!)
-                      : null,
+                  onPressed: busy == null ? () => buyWithGate(context, ref, widget.byId[item.storeProductId]!) : null,
                   child: busy == item.storeProductId
                       ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
                       : Text(widget.byId[item.storeProductId]!.price),
@@ -470,10 +466,7 @@ class _OfflineHint extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AkBrand.teal.withValues(alpha: .12),
-        borderRadius: BorderRadius.circular(16),
-      ),
+      decoration: BoxDecoration(color: AkBrand.teal.withValues(alpha: .12), borderRadius: BorderRadius.circular(16)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -565,10 +558,7 @@ class _PackCard extends ConsumerWidget {
                         Row(
                           children: [
                             Flexible(
-                              child: Text(
-                                pack.title,
-                                style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-                              ),
+                              child: Text(pack.title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
                             ),
                             if (isNewAt(pack.releasedOn, ref.watch(clockProvider)())) ...[
                               const SizedBox(width: 6),
@@ -582,11 +572,7 @@ class _PackCard extends ConsumerWidget {
                           style: text.bodySmall,
                         ),
                         const SizedBox(height: 6),
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: [for (final s in summary.skills.take(2)) _Badge(s)],
-                        ),
+                        Wrap(spacing: 6, runSpacing: 6, children: [for (final s in summary.skills.take(2)) _Badge(s)]),
                       ],
                     ),
                   ),
@@ -600,18 +586,14 @@ class _PackCard extends ConsumerWidget {
                   else if (free != null)
                     Expanded(
                       child: TextButton.icon(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          visualDensity: VisualDensity.compact,
-                        ),
+                        style: TextButton.styleFrom(padding: EdgeInsets.zero, visualDensity: VisualDensity.compact),
                         onPressed: () => context.push('/zabawa/${free.id}'),
                         icon: const Icon(Icons.play_circle_outline_rounded, size: 18),
                         label: Text('Za darmo: ${free.title}', overflow: TextOverflow.ellipsis),
                       ),
                     ),
                   if (owned || free == null) const Spacer(),
-                  if (!owned)
-                    Text(product?.price ?? '', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+                  if (!owned) Text(product?.price ?? '', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
                   const SizedBox(width: 4),
                   const Icon(Icons.chevron_right_rounded),
                 ],
@@ -749,10 +731,7 @@ class _Badge extends StatelessWidget {
     final fg = ink ?? const Color(0xFF211C35);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color ?? context.palette.surfaceMuted,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: BoxDecoration(color: color ?? context.palette.surfaceMuted, borderRadius: BorderRadius.circular(20)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -867,9 +846,7 @@ class PackScreen extends ConsumerWidget {
                     ],
                     if (owned && child != null) ...[
                       const RefSection('Postęp'),
-                      Text(
-                        '${child.name.isEmpty ? 'Dziecko' : child.name}: ukończone $done z ${summary.items.length}',
-                      ),
+                      Text('${child.name.isEmpty ? 'Dziecko' : child.name}: ukończone $done z ${summary.items.length}'),
                       const SizedBox(height: 8),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
@@ -902,10 +879,7 @@ class PackScreen extends ConsumerWidget {
                   top: false,
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    decoration: BoxDecoration(
-                      color: context.palette.surface,
-                      boxShadow: akSoftShadow(context),
-                    ),
+                    decoration: BoxDecoration(color: context.palette.surface, boxShadow: akSoftShadow(context)),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -937,10 +911,7 @@ class PackScreen extends ConsumerWidget {
                           TextButton(
                             onPressed: busy != null ? null : () => buyWithGate(context, ref, product),
                             child: busy == product.id
-                                ? const SizedBox.square(
-                                    dimension: 18,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  )
+                                ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
                                 : Text('albo tylko ${pack.title} na zawsze · ${product.price}'),
                           ),
                       ],

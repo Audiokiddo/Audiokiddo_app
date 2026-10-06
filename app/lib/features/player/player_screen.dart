@@ -93,15 +93,10 @@ class _Player extends ConsumerWidget {
                 const SizedBox(height: 24),
                 const Text('Wybierz nagranie w bibliotece.', textAlign: TextAlign.center),
                 const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: () => context.go('/biblioteka'),
-                  child: const Text('Otwórz bibliotekę'),
-                ),
+                FilledButton(onPressed: () => context.go('/biblioteka'), child: const Text('Otwórz bibliotekę')),
               ] else ...[
                 if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
-                if (item != null && state?.processingState == AudioProcessingState.completed) ...[
-                  _UpNext(after: item),
-                ],
+                if (item != null && state?.processingState == AudioProcessingState.completed) ...[_UpNext(after: item)],
                 item == null
                     ? Center(
                         child: ConstrainedBox(
@@ -195,9 +190,7 @@ class _Player extends ConsumerWidget {
                                 for (final speed in [.75, 1.0, 1.25])
                                   ListTile(
                                     title: Text('$speed×'),
-                                    trailing: (state?.speed ?? 1) == speed
-                                        ? const Icon(Icons.check_rounded)
-                                        : null,
+                                    trailing: (state?.speed ?? 1) == speed ? const Icon(Icons.check_rounded) : null,
                                     onTap: () {
                                       handler.setSpeed(speed);
                                       Navigator.pop(c);
@@ -208,11 +201,7 @@ class _Player extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    _Tool(
-                      label: 'Timer snu',
-                      icon: Icons.bedtime_outlined,
-                      onTap: () => showSleepPicker(context),
-                    ),
+                    _Tool(label: 'Timer snu', icon: Icons.bedtime_outlined, onTap: () => showSleepPicker(context)),
                     _Tool(
                       label: 'Pobierz',
                       icon: Icons.download_outlined,
@@ -229,11 +218,7 @@ class _Player extends ConsumerWidget {
                               ),
                             ),
                     ),
-                    _Tool(
-                      label: 'Kolejka',
-                      icon: Icons.queue_music_rounded,
-                      onTap: () => context.push('/kolejka'),
-                    ),
+                    _Tool(label: 'Kolejka', icon: Icons.queue_music_rounded, onTap: () => context.push('/kolejka')),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -271,10 +256,7 @@ class _Tool extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
     width: 68,
     child: TextButton(
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 8),
-      ),
+      style: TextButton.styleFrom(foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 8)),
       onPressed: onTap,
       child: Column(
         children: [
@@ -490,9 +472,7 @@ class _SeekBarState extends ConsumerState<SeekBar> {
           children: [
             Text(formatClock(at)),
             if (buffering) const Text('Wczytuję…', style: TextStyle(fontSize: 12)),
-            Text(
-              '-${formatClock(Duration(milliseconds: (widget.duration - at).inMilliseconds.clamp(0, 1 << 40)))}',
-            ),
+            Text('-${formatClock(Duration(milliseconds: (widget.duration - at).inMilliseconds.clamp(0, 1 << 40)))}'),
           ],
         ),
       ],
@@ -518,10 +498,8 @@ class _PullDownToCloseState extends State<PullDownToClose> with SingleTickerProv
   double _pull = 0;
   double _from = 0;
   bool _closing = false;
-  late final AnimationController _settle = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 280),
-  )..addListener(() => setState(() => _pull = _from * (1 - Curves.easeOutCubic.transform(_settle.value))));
+  late final AnimationController _settle = AnimationController(vsync: this, duration: const Duration(milliseconds: 280))
+    ..addListener(() => setState(() => _pull = _from * (1 - Curves.easeOutCubic.transform(_settle.value))));
 
   @override
   void dispose() {
@@ -655,19 +633,13 @@ class _UpNext extends ConsumerWidget {
                 children: [
                   Text(
                     'Brawo! Co dalej?',
-                    style: text.labelLarge?.copyWith(
-                      color: const Color(0xFF211C35),
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: text.labelLarge?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
                   ),
                   Text(
                     next.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: text.titleMedium?.copyWith(
-                      color: const Color(0xFF211C35),
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: text.titleMedium?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w700),
                   ),
                   Text(
                     '${(next.durationSec / 60).ceil()} min',

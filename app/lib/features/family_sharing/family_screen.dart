@@ -12,6 +12,8 @@ import 'parent_cloud.dart';
 
 final familyStatusProvider = FutureProvider.autoDispose<FamilyStatus>(
   (ref) => ref.watch(parentCloudProvider).familyStatus(),
+  // A clear message right away instead of a spinner while it quietly retries.
+  retry: (_, _) => null,
 );
 
 /// Więcej → Drugi rodzic: one partner shares the family's plan on their own phone (plans for
@@ -70,7 +72,23 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
         error: (e, _) => Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Text(e is FamilyException ? e.message : 'Nie udało się połączyć z serwerem.'),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SzopSticker(SzopPose.zdziwiony, height: 96),
+                const SizedBox(height: 12),
+                Text(
+                  e is FamilyException ? e.message : 'Nie udało się połączyć z serwerem.',
+                  textAlign: TextAlign.center,
+                  style: text.bodyLarge,
+                ),
+                const SizedBox(height: 12),
+                FilledButton.tonal(
+                  onPressed: () => ref.invalidate(familyStatusProvider),
+                  child: const Text('Spróbuj ponownie'),
+                ),
+              ],
+            ),
           ),
         ),
         data: (s) => ListView(
@@ -91,9 +109,7 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
                 _Card(
                   icon: Icons.people_alt_rounded,
                   title: 'Połączono z ${s.partner ?? 'drugim rodzicem'}',
-                  body: s.shared
-                      ? 'Oboje macie te same zabawy.'
-                      : 'Twój obecny plan nie obejmuje drugiego rodzica, więc teraz korzysta on tylko z darmowych zabaw.',
+                  body: s.shared ? 'Oboje macie te same zabawy.' : 'Twój obecny plan nie obejmuje drugiego rodzica, więc teraz korzysta on tylko z darmowych zabaw.',
                 ),
                 if (!s.shared) _PlansButton(),
                 TextButton(
@@ -220,7 +236,11 @@ class _CodeCard extends StatelessWidget {
           ),
           const Text('Kod jest ważny 7 dni i działa raz.'),
           const SizedBox(height: 8),
-          FilledButton.icon(onPressed: onShare, icon: const Icon(Icons.ios_share_rounded), label: const Text('Wyślij kod')),
+          FilledButton.icon(
+            onPressed: onShare,
+            icon: const Icon(Icons.ios_share_rounded),
+            label: const Text('Wyślij kod'),
+          ),
         ],
       ),
     ),

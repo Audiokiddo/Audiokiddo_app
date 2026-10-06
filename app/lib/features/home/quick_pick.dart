@@ -116,9 +116,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
 
   /// Closes the sheet, then acts from the screen below.
   void _go(Future<Object?> Function() action, {int plays = 1}) {
-    ref
-        .read(eventSinkProvider)
-        .track(AppEvent.quickPick, props: {'minutes': _minutes, 'car': _car, 'plays': plays});
+    ref.read(eventSinkProvider).track(AppEvent.quickPick, props: {'minutes': _minutes, 'car': _car, 'plays': plays});
     Navigator.of(context).pop();
     unawaited(action());
   }
@@ -206,16 +204,11 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
                     resume.loaded ? 'Wróćcie do: ${resume.title}' : 'Do dokończenia: ${resume.title}',
                     style: const TextStyle(color: ink, fontWeight: FontWeight.w800),
                   ),
-                  subtitle: const Text(
-                    'Ostatnim razem nie dosłuchaliście do końca',
-                    style: TextStyle(color: ink),
-                  ),
+                  subtitle: const Text('Ostatnim razem nie dosłuchaliście do końca', style: TextStyle(color: ink)),
                   trailing: const Icon(Icons.play_circle_fill_rounded, color: ink, size: 34),
                   onTap: () => _go(
                     () => resume.loaded
-                        ? widget.host.push(
-                            resume.mediaId!.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz',
-                          )
+                        ? widget.host.push(resume.mediaId!.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz')
                         : startItem(widget.host, resume.item!),
                   ),
                 ),
@@ -288,10 +281,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
                         children: [
                           SizedBox(
                             width: 22,
-                            child: Text(
-                              '${n + 1}.',
-                              style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-                            ),
+                            child: Text('${n + 1}.', style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
                           ),
                           ContentCover(item: item, pack: catalog!.pack(item.packId ?? ''), size: 48),
                         ],

@@ -16,8 +16,7 @@ class TourTarget extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) =>
-      KeyedSubtree(key: tourTargetKeys.putIfAbsent(id, GlobalKey.new), child: child);
+  Widget build(BuildContext context) => KeyedSubtree(key: tourTargetKeys.putIfAbsent(id, GlobalKey.new), child: child);
 }
 
 /// One stop of the tour: the tab it opens ([branch]: 0 Start, 1 Biblioteka, 2 Sklep,
@@ -48,8 +47,7 @@ const tourStops = <TourStop>[
     slot: 2,
     pose: SzopPose.klaszcze,
     title: 'Co teraz?',
-    body:
-        'Najszybsza droga: wybierz, ile macie czasu, a ja wylosuję zabawy po kolei. Jedno stuknięcie i gra.',
+    body: 'Najszybsza droga: wybierz, ile macie czasu, a ja wylosuję zabawy po kolei. Jedno stuknięcie i gra.',
   ),
   (
     branch: 1,
@@ -65,8 +63,7 @@ const tourStops = <TourStop>[
     slot: null,
     pose: SzopPose.zdziwiony,
     title: 'Bez internetu',
-    body:
-        'Przed wyjazdem pobierz zabawy na telefon: zadziałają w aucie, samolocie i na działce, bez zasięgu.',
+    body: 'Przed wyjazdem pobierz zabawy na telefon: zadziałają w aucie, samolocie i na działce, bez zasięgu.',
   ),
   (
     branch: 1,
@@ -90,8 +87,7 @@ const tourStops = <TourStop>[
     slot: 3,
     pose: SzopPose.klaszcze,
     title: 'Sklep',
-    body:
-        'Abonament otwiera wszystkie zabawy i co miesiąc dokłada nowy pakiet. Możesz też kupić jeden pakiet.',
+    body: 'Abonament otwiera wszystkie zabawy i co miesiąc dokłada nowy pakiet. Możesz też kupić jeden pakiet.',
   ),
   (
     branch: 3,
@@ -99,8 +95,7 @@ const tourStops = <TourStop>[
     slot: 4,
     pose: SzopPose.nasluchuje,
     title: 'Więcej',
-    body:
-        'Tu są pobrane zabawy, profil dziecka, wygląd aplikacji i konto. Samouczek obejrzysz tu jeszcze raz.',
+    body: 'Tu są pobrane zabawy, profil dziecka, wygląd aplikacji i konto. Samouczek obejrzysz tu jeszcze raz.',
   ),
   (
     branch: 0,
@@ -346,7 +341,9 @@ class _SzopTourState extends ConsumerState<SzopTour> with SingleTickerProviderSt
         child: Stack(
           children: [
             Positioned.fill(
-              child: CustomPaint(painter: _Dim(hole: hole, radius: radius)),
+              child: CustomPaint(
+                painter: _Dim(hole: hole, radius: radius),
+              ),
             ),
             // A bright frame around the feature, or a ring around the tab.
             if (hole != null)

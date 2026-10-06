@@ -42,9 +42,7 @@ class PackDownloadButton extends ConsumerWidget {
         if (ref.watch(canPlayProvider(i)) && i.downloadBytes > 0) i,
     ];
     if (playable.isEmpty) return const SizedBox.shrink();
-    final statuses = [
-      for (final i in playable) ref.watch(downloadStatusProvider(i)).value ?? ItemDownloadStatus.none,
-    ];
+    final statuses = [for (final i in playable) ref.watch(downloadStatusProvider(i)).value ?? ItemDownloadStatus.none];
     final ready = statuses.where((s) => s.phase == DownloadPhase.ready).length;
     final active = statuses.where((s) => s.isActive).toList();
     final missingBytes = [
@@ -107,10 +105,7 @@ class ItemDownloadIcon extends ConsumerWidget {
         dimension: 48,
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: CircularProgressIndicator(
-            value: status.progress > 0 ? status.progress : null,
-            strokeWidth: 3,
-          ),
+          child: CircularProgressIndicator(value: status.progress > 0 ? status.progress : null, strokeWidth: 3),
         ),
       );
     }

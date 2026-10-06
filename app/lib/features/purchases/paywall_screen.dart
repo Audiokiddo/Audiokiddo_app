@@ -117,9 +117,7 @@ class _PaywallContent extends ConsumerWidget {
             const SizedBox(height: AkSpace.m),
             Center(
               child: TextButton(
-                onPressed: busy == null
-                    ? () => ref.read(purchaseControllerProvider.notifier).restore()
-                    : null,
+                onPressed: busy == null ? () => ref.read(purchaseControllerProvider.notifier).restore() : null,
                 child: Text(l10n.paywallRestore),
               ),
             ),
@@ -141,10 +139,7 @@ class _PaywallContent extends ConsumerWidget {
             Wrap(
               children: [
                 TextButton(onPressed: () => openWithGate(context, termsUrl), child: Text(l10n.paywallTerms)),
-                TextButton(
-                  onPressed: () => openWithGate(context, privacyUrl),
-                  child: Text(l10n.paywallPrivacy),
-                ),
+                TextButton(onPressed: () => openWithGate(context, privacyUrl), child: Text(l10n.paywallPrivacy)),
               ],
             ),
           ],
@@ -181,10 +176,7 @@ class _OfferTile extends ConsumerWidget {
         color: palette.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AkRadius.card),
-          side: BorderSide(
-            color: highlight ? palette.primary : palette.surfaceMuted,
-            width: highlight ? 2 : 1,
-          ),
+          side: BorderSide(color: highlight ? palette.primary : palette.surfaceMuted, width: highlight ? 2 : 1),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(AkRadius.card),

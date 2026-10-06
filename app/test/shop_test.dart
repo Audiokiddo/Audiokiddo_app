@@ -24,9 +24,8 @@ StoreProduct product(String id, double price, {String currency = 'PLN'}) => Stor
 );
 
 void main() {
-  final catalog = parseCatalog(
-    jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
-  ).catalog;
+  final catalog = parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>)
+      .catalog;
 
   test('bundle savings are the honest difference, only in one currency', () {
     final bundle = product(ProductIds.bundleTwo, 89.99);
@@ -72,10 +71,7 @@ void main() {
     final next = nextPackSuggestion(results: results, catalog: catalog, scopes: const {});
     expect(next?.tried.id, free.id);
     expect(next?.pack.pack.id, free.packId);
-    expect(
-      nextPackSuggestion(results: results, catalog: catalog, scopes: {Scopes.pack(free.packId!)}),
-      isNull,
-    );
+    expect(nextPackSuggestion(results: results, catalog: catalog, scopes: {Scopes.pack(free.packId!)}), isNull);
     expect(nextPackSuggestion(results: results, catalog: catalog, scopes: {Scopes.allContent}), isNull);
     final unfinished = [
       ActivityResult(childId: 'c', itemId: free.id, at: DateTime(2026, 10, 1), seconds: 20, completed: false),
@@ -111,66 +107,54 @@ void main() {
       expect(find.textContaining(RegExp(r'^29,99\s+zł / miesiąc$')), findsOneWidget);
       // Buying for good is folded below.
       expect(find.text('Detektyw'), findsNothing);
-      await tester.scrollUntilVisible(
-        find.text('Wolisz kupić pakiet na zawsze?'),
-        200,
-        scrollable: mainScroll,
-      );
+      await tester.scrollUntilVisible(find.text('Wolisz kupić pakiet na zawsze?'), 200, scrollable: mainScroll);
       await tester.tap(find.text('Wolisz kupić pakiet na zawsze?'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(find.text('Detektyw').first, 200, scrollable: mainScroll);
       expect(find.textContaining('Za darmo:'), findsWidgets);
       await tester.scrollUntilVisible(find.textContaining('taniej o 9,99'), 200, scrollable: mainScroll);
       expect(find.textContaining('taniej o 9,98'), findsOneWidget, reason: 'three packs: 169,97 − 159,99');
-      await tester.scrollUntilVisible(
-        find.text('Masz już dostęp z audiokiddo.pl?'),
-        200,
-        scrollable: mainScroll,
-      );
+      await tester.scrollUntilVisible(find.text('Masz już dostęp z audiokiddo.pl?'), 200, scrollable: mainScroll);
     });
 
     testWidgets('a pack page sells; owned packs say so', (tester) async {
       await pumpApp(tester);
       await tester.tap(find.text('Sklep').last);
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.text('Wolisz kupić pakiet na zawsze?'),
-        200,
-        scrollable: mainScroll,
-      );
+      await tester.scrollUntilVisible(find.text('Wolisz kupić pakiet na zawsze?'), 200, scrollable: mainScroll);
       await tester.tap(find.text('Wolisz kupić pakiet na zawsze?'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(find.text('Wyobraźnia').first, 200, scrollable: mainScroll);
       await tester.tap(find.text('Wyobraźnia').first);
       await tester.pumpAndSettle();
-      final packScroll = find
-          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
-          .last;
+      final packScroll = find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).last;
       await tester.scrollUntilVisible(find.text('Wypróbuj za darmo'), 200, scrollable: packScroll);
       expect(find.text('Wypróbuj za darmo'), findsOneWidget);
-      expect(
-        find.textContaining('Wszystkie pakiety za 19,99'),
-        findsOneWidget,
-        reason: 'the subscription first',
-      );
+      expect(find.textContaining('Wszystkie pakiety za 19,99'), findsOneWidget, reason: 'the subscription first');
       await tester.tap(find.text('albo tylko Wyobraźnia na zawsze · 49,99 zł'));
       await tester.pumpAndSettle();
-      expect(find.byType(ParentalGateScreen), askInParentArea ? findsOneWidget : findsNothing, reason: 'the parent area buys without the number question');
+      expect(
+        find.byType(ParentalGateScreen),
+        askInParentArea ? findsOneWidget : findsNothing,
+        reason: 'the parent area buys without the number question',
+      );
     });
 
     testWidgets('the pack page offers films and materials', (tester) async {
       await pumpApp(tester);
       GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/pakiet/detektyw');
       await tester.pumpAndSettle();
-      final scroll = find
-          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
-          .last;
+      final scroll = find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).last;
       await tester.scrollUntilVisible(find.text('Filmy i materiały do zabaw'), 200, scrollable: scroll);
       await Scrollable.ensureVisible(tester.element(find.text('Filmy i materiały do zabaw')), alignment: .4);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Filmy i materiały do zabaw'));
       await tester.pumpAndSettle();
-      expect(find.byType(ParentalGateScreen), askInParentArea ? findsOneWidget : findsNothing, reason: 'the parent area opens links without the number question');
+      expect(
+        find.byType(ParentalGateScreen),
+        askInParentArea ? findsOneWidget : findsNothing,
+        reason: 'the parent area opens links without the number question',
+      );
     });
 
     Future<void> showOffer(WidgetTester tester, ContentItem item) async {
@@ -184,9 +168,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('after a free play from a pack: the pack or the subscription', (
-      tester,
-    ) async {
+    testWidgets('after a free play from a pack: the pack or the subscription', (tester) async {
       await pumpApp(tester);
       final free = catalog.items.firstWhere((i) => i.isFree && i.packId == 'wyobraznia');
       await showOffer(tester, free);
@@ -199,18 +181,18 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Wypróbuj 7 dni za darmo'));
       await tester.pumpAndSettle();
-      expect(find.byType(ParentalGateScreen), askInParentArea ? findsOneWidget : findsNothing, reason: 'the parent area buys without the number question');
+      expect(
+        find.byType(ParentalGateScreen),
+        askInParentArea ? findsOneWidget : findsNothing,
+        reason: 'the parent area buys without the number question',
+      );
     });
 
     testWidgets('with the subscription everything is unlocked', (tester) async {
       await pumpApp(
         tester,
         entitlements: [
-          Entitlement(
-            scope: Scopes.allContent,
-            status: EntitlementStatus.active,
-            source: EntitlementSource.appStore,
-          ),
+          Entitlement(scope: Scopes.allContent, status: EntitlementStatus.active, source: EntitlementSource.appStore),
         ],
       );
       await tester.tap(find.text('Sklep').last);

@@ -26,29 +26,25 @@ String describeScopes(List<String> scopes, Catalog? catalog) {
 }
 
 /// What to tell the parent about [result]; [forOrder] picks the wording for an order number.
-String claimMessage(ClaimResult result, {required bool forOrder, Catalog? catalog}) =>
-    switch (result.status) {
-      ClaimStatus.ok => 'Gotowe. Dodano: ${describeScopes(result.scopes, catalog)}.',
-      ClaimStatus.already => 'Masz już ten dostęp na tym koncie.',
-      ClaimStatus.notFound =>
-        forOrder
-            ? 'Nie znaleźliśmy zamówienia z tym numerem i adresem e-mail. Numer jest w mailu '
-                  'z potwierdzeniem, a e-mail to ten, który podałeś w sklepie.'
-            : 'Nie znamy takiego kodu. Sprawdź, czy wszystkie znaki się zgadzają.',
-      ClaimStatus.expired => 'Ten kod już wygasł.',
-      ClaimStatus.usedUp => 'Ten kod został już wykorzystany.',
-      ClaimStatus.notPaid =>
-        'To zamówienie nie jest opłacone albo zostało zwrócone, więc nie możemy go dodać.',
-      ClaimStatus.taken =>
-        'To zamówienie jest już przypisane do innego konta. Zaloguj się na to konto albo napisz do '
-            'nas: kontakt@audiokiddo.pl.',
-      ClaimStatus.nothing => 'W tym zamówieniu nie ma niczego, co można dodać do aplikacji.',
-      ClaimStatus.rateLimited => 'Za dużo prób. Spróbuj ponownie za godzinę.',
-      ClaimStatus.format =>
-        forOrder
-            ? 'Podaj numer zamówienia (same cyfry) i adres e-mail z zamówienia.'
-            : 'Kod wygląda tak: AK-XXXX-XXXX.',
-    };
+String claimMessage(ClaimResult result, {required bool forOrder, Catalog? catalog}) => switch (result.status) {
+  ClaimStatus.ok => 'Gotowe. Dodano: ${describeScopes(result.scopes, catalog)}.',
+  ClaimStatus.already => 'Masz już ten dostęp na tym koncie.',
+  ClaimStatus.notFound =>
+    forOrder
+        ? 'Nie znaleźliśmy zamówienia z tym numerem i adresem e-mail. Numer jest w mailu '
+              'z potwierdzeniem, a e-mail to ten, który podałeś w sklepie.'
+        : 'Nie znamy takiego kodu. Sprawdź, czy wszystkie znaki się zgadzają.',
+  ClaimStatus.expired => 'Ten kod już wygasł.',
+  ClaimStatus.usedUp => 'Ten kod został już wykorzystany.',
+  ClaimStatus.notPaid => 'To zamówienie nie jest opłacone albo zostało zwrócone, więc nie możemy go dodać.',
+  ClaimStatus.taken =>
+    'To zamówienie jest już przypisane do innego konta. Zaloguj się na to konto albo napisz do '
+        'nas: kontakt@audiokiddo.pl.',
+  ClaimStatus.nothing => 'W tym zamówieniu nie ma niczego, co można dodać do aplikacji.',
+  ClaimStatus.rateLimited => 'Za dużo prób. Spróbuj ponownie za godzinę.',
+  ClaimStatus.format =>
+    forOrder ? 'Podaj numer zamówienia (same cyfry) i adres e-mail z zamówienia.' : 'Kod wygląda tak: AK-XXXX-XXXX.',
+};
 
 /// Turns what a user types into capitals, so a code reads the same however it was typed.
 class _UpperCase extends TextInputFormatter {
@@ -136,8 +132,7 @@ class _AccessScreenState extends ConsumerState<AccessScreen> {
                               'same.',
                     style: text.bodyMedium,
                   ),
-                  if (!signedIn)
-                    TextButton(onPressed: () => context.push('/konto'), child: const Text('Zaloguj się')),
+                  if (!signedIn) TextButton(onPressed: () => context.push('/konto'), child: const Text('Zaloguj się')),
                 ],
               ),
             ),
@@ -167,9 +162,7 @@ class _AccessScreenState extends ConsumerState<AccessScreen> {
                   ),
                   const SizedBox(height: 12),
                   FilledButton(
-                    onPressed: _busy
-                        ? null
-                        : () => _run((a) => a.claimOrder(_order.text, _email.text), forOrder: true),
+                    onPressed: _busy ? null : () => _run((a) => a.claimOrder(_order.text, _email.text), forOrder: true),
                     child: const Text('Dodaj zamówienie'),
                   ),
                 ],
@@ -284,10 +277,7 @@ class _Result extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                good ? Icons.check_circle_rounded : Icons.info_outline_rounded,
-                color: const Color(0xFF211C35),
-              ),
+              Icon(good ? Icons.check_circle_rounded : Icons.info_outline_rounded, color: const Color(0xFF211C35)),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(

@@ -67,24 +67,9 @@ class ProgressScreen extends ConsumerWidget {
                 crossAxisSpacing: AkSpace.s,
                 childAspectRatio: 1.9,
                 children: [
-                  _Tile(
-                    Icons.local_fire_department_rounded,
-                    AkBrand.orange,
-                    '${progress.streak}',
-                    l10n.progressStreak,
-                  ),
-                  _Tile(
-                    Icons.calendar_month_rounded,
-                    AkBrand.teal,
-                    '${progress.activeDays}',
-                    l10n.progressDays,
-                  ),
-                  _Tile(
-                    Icons.headphones_rounded,
-                    AkBrand.lavenderDeep,
-                    '${progress.minutes}',
-                    l10n.progressMinutes,
-                  ),
+                  _Tile(Icons.local_fire_department_rounded, AkBrand.orange, '${progress.streak}', l10n.progressStreak),
+                  _Tile(Icons.calendar_month_rounded, AkBrand.teal, '${progress.activeDays}', l10n.progressDays),
+                  _Tile(Icons.headphones_rounded, AkBrand.lavenderDeep, '${progress.minutes}', l10n.progressMinutes),
                   _Tile(
                     Icons.star_rounded,
                     AkBrand.sunDeep,
@@ -238,12 +223,10 @@ class ProgressScreen extends ConsumerWidget {
     final skill = skillLabel(a.skill ?? '');
     final pack = a.packId == null ? null : catalog.pack(a.packId!)?.title;
     return switch (a.kind) {
-      AdviceKind.excelling =>
-        pack == null ? l10n.adviceExcelling(skill) : l10n.adviceExcellingPack(skill, pack),
+      AdviceKind.excelling => pack == null ? l10n.adviceExcelling(skill) : l10n.adviceExcellingPack(skill, pack),
       AdviceKind.needsPractice =>
         pack == null ? l10n.adviceNeedsPractice(skill) : l10n.adviceNeedsPracticePack(skill, pack),
-      AdviceKind.untouchedGoal =>
-        pack == null ? l10n.adviceUntouched(skill) : l10n.adviceUntouchedPack(skill, pack),
+      AdviceKind.untouchedGoal => pack == null ? l10n.adviceUntouched(skill) : l10n.adviceUntouchedPack(skill, pack),
       AdviceKind.comeBack => l10n.adviceComeBack,
       AdviceKind.levelUp => l10n.adviceLevelUp,
     };
@@ -274,10 +257,7 @@ class _Tile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-                ),
+                Text(value, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                 Text(label, style: Theme.of(context).textTheme.bodySmall, maxLines: 2),
               ],
             ),
@@ -304,8 +284,7 @@ class _ReminderRow extends ConsumerWidget {
       // On: choose a new hour (or turn off there); off: the offer with any hour.
       onTap: () => Navigator.of(context).push(
         swipeRoute<void>(
-          builder: (route) =>
-              ReminderOffer(initialTime: (s.hour, s.minute), onDone: () => Navigator.of(route).pop()),
+          builder: (route) => ReminderOffer(initialTime: (s.hour, s.minute), onDone: () => Navigator.of(route).pop()),
         ),
       ),
     );

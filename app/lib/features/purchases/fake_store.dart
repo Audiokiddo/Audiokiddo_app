@@ -76,8 +76,7 @@ class FakeStoreGateway implements StoreGateway {
         ),
   ];
 
-  static double _raw(String price) =>
-      double.parse(price.replaceAll(RegExp(r'[^0-9,]'), '').replaceAll(',', '.'));
+  static double _raw(String price) => double.parse(price.replaceAll(RegExp(r'[^0-9,]'), '').replaceAll(',', '.'));
 
   static bool _isDetektywItem(String id) => const [
     'zlodziej_naszyjnika',

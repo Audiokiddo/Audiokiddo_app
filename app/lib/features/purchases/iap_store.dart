@@ -43,9 +43,7 @@ class InAppPurchaseGateway implements gw.StoreGateway {
         title: d.title,
         price: _basePrice(d),
         kind: subscription ? gw.StoreProductKind.subscription : gw.StoreProductKind.oneTime,
-        period: subscription
-            ? (ProductIds.isYearly(d.id) ? gw.BillingPeriod.year : gw.BillingPeriod.month)
-            : null,
+        period: subscription ? (ProductIds.isYearly(d.id) ? gw.BillingPeriod.year : gw.BillingPeriod.month) : null,
         freeTrialDays: trial,
         rawPrice: _baseRawPrice(d),
         currencyCode: d.currencyCode,
@@ -67,12 +65,7 @@ class InAppPurchaseGateway implements gw.StoreGateway {
   /// The regular (after-trial) price.
   static String _basePrice(ProductDetails d) {
     if (d is GooglePlayProductDetails && d.subscriptionIndex != null) {
-      return d
-          .productDetails
-          .subscriptionOfferDetails![d.subscriptionIndex!]
-          .pricingPhases
-          .last
-          .formattedPrice;
+      return d.productDetails.subscriptionOfferDetails![d.subscriptionIndex!].pricingPhases.last.formattedPrice;
     }
     return d.price;
   }
@@ -85,7 +78,9 @@ class InAppPurchaseGateway implements gw.StoreGateway {
     if (!offer.offerTags.contains('winback')) return null;
     final first = offer.pricingPhases.first;
     final base = offer.pricingPhases.last;
-    return first.priceAmountMicros > 0 && first.priceAmountMicros < base.priceAmountMicros ? first.formattedPrice : null;
+    return first.priceAmountMicros > 0 && first.priceAmountMicros < base.priceAmountMicros
+        ? first.formattedPrice
+        : null;
   }
 
   static int? _freeTrialDays(ProductDetails d) {
@@ -129,8 +124,7 @@ class InAppPurchaseGateway implements gw.StoreGateway {
 
   @override
   Future<void> buy(gw.StoreProduct product, {String? accountToken}) async {
-    final details =
-        _details[product.id] ?? (await _iap.queryProductDetails({product.id})).productDetails.first;
+    final details = _details[product.id] ?? (await _iap.queryProductDetails({product.id})).productDetails.first;
     // Moving to another plan on Google Play replaces the current subscription (the App Store
     // does this by itself: all plans are in one subscription group).
     if (Platform.isAndroid && ProductIds.subscriptions.contains(product.id)) {

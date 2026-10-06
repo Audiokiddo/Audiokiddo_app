@@ -6,9 +6,8 @@ import 'package:audiokiddo/features/home/quick_pick.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final catalog = parseCatalog(
-    jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
-  ).catalog;
+  final catalog = parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>)
+      .catalog;
   bool all(ContentItem _) => true;
   int minutes(List<ContentItem> run) => run.fold(0, (s, i) => s + i.durationSec) ~/ 60;
 

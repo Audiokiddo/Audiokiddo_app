@@ -42,9 +42,7 @@ Future<void> maybeRotateIcon(AppDatabase db, DateTime now) async {
   final week = now.difference(DateTime(2026)).inDays ~/ 7;
   final (pose, _) = appIcons[week % appIcons.length];
   try {
-    await _channel.invokeMethod<void>('set', {
-      'name': pose == SzopPose.prosi ? null : 'AppIcon-${pose.name}',
-    });
+    await _channel.invokeMethod<void>('set', {'name': pose == SzopPose.prosi ? null : 'AppIcon-${pose.name}'});
     await db.writeValue(_autoLastKey, now.toIso8601String());
   } on Object {
     // The system may refuse while the app is not in front; next time then.
@@ -67,9 +65,7 @@ class AppIconScreen extends ConsumerWidget {
   Future<void> _set(BuildContext context, WidgetRef ref, SzopPose pose) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
-      await _channel.invokeMethod<void>('set', {
-        'name': pose == SzopPose.prosi ? null : 'AppIcon-${pose.name}',
-      });
+      await _channel.invokeMethod<void>('set', {'name': pose == SzopPose.prosi ? null : 'AppIcon-${pose.name}'});
       ref.invalidate(_currentIconProvider);
     } on Object {
       messenger.showSnackBar(const SnackBar(content: Text('Nie udało się zmienić ikony.')));

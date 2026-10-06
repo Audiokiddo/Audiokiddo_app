@@ -46,11 +46,7 @@ class ServerPurchaseVerifier implements PurchaseVerifier {
         .verifyStorePurchase(
           ios
               ? {'platform': 'ios', 'signedTransaction': purchase.verificationData}
-              : {
-                  'platform': 'android',
-                  'productId': purchase.productId,
-                  'purchaseToken': purchase.verificationData,
-                },
+              : {'platform': 'android', 'productId': purchase.productId, 'purchaseToken': purchase.verificationData},
         );
     return switch (verdict) {
       ServerVerdict.verified => VerificationResult.verified,
@@ -79,10 +75,7 @@ class DevPurchaseVerifier implements PurchaseVerifier {
         : ProductIds.subscriptions.contains(purchase.productId)
         ? 30
         : null;
-    await backend.addPurchase(
-      scopes,
-      validUntil: days == null ? null : DateTime.now().add(Duration(days: days)),
-    );
+    await backend.addPurchase(scopes, validUntil: days == null ? null : DateTime.now().add(Duration(days: days)));
     return VerificationResult.verified;
   }
 }
@@ -262,9 +255,7 @@ class PurchaseController extends Notifier<PurchaseUiState> {
   }
 }
 
-final purchaseControllerProvider = NotifierProvider<PurchaseController, PurchaseUiState>(
-  PurchaseController.new,
-);
+final purchaseControllerProvider = NotifierProvider<PurchaseController, PurchaseUiState>(PurchaseController.new);
 
 /// Store products for the paywall, prices from the store. Key: sorted ids joined by ','
 /// (a Set would not compare by value and would refetch on every build).

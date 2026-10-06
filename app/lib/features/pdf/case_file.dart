@@ -79,8 +79,7 @@ Map<String, List<CaseTask>> parseCaseFiles(Map<String, Object?> json) => {
 final caseFilesProvider = FutureProvider<Map<String, List<CaseTask>>>((ref) async {
   final bytes = await rootBundle.load('assets/case_files.json');
   return parseCaseFiles(
-    jsonDecode(utf8.decode(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes)))
-        as Map<String, Object?>,
+    jsonDecode(utf8.decode(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes))) as Map<String, Object?>,
   );
 });
 

@@ -30,12 +30,9 @@ enum PlayCategory {
           i.skills.any((s) => s.contains('wyobraź') || s.contains('kreatyw')),
     movement => i.skills.contains('ruch') || i.requirements.contains(Requirement.miejsceDoRuchu),
     detective => i.packId == 'detektyw' || i.skills.any((s) => s.contains('logicz')),
-    education =>
-      i.packId == 'slowa-i-wiedza' || i.skills.any((s) => s.contains('słownict') || s.contains('wiedz')),
+    education => i.packId == 'slowa-i-wiedza' || i.skills.any((s) => s.contains('słownict') || s.contains('wiedz')),
     adventure =>
-      i.packId == 'wyobraznia' ||
-          i.skills.any((s) => s.contains('opowiad')) ||
-          (i.script != null && i.audio.isEmpty),
+      i.packId == 'wyobraznia' || i.skills.any((s) => s.contains('opowiad')) || (i.script != null && i.audio.isEmpty),
     songs => i.kind == ContentKind.song,
     calm => i.situations.contains(Situation.przedSnem),
   };
@@ -92,17 +89,13 @@ class DiscoveryState {
   final List<SavedRoutine> routines;
   final bool quiet;
   final String? cameoDay;
-  DiscoveryState copyWith({
-    List<String>? queue,
-    List<SavedRoutine>? routines,
-    bool? quiet,
-    String? cameoDay,
-  }) => DiscoveryState(
-    queue: queue ?? this.queue,
-    routines: routines ?? this.routines,
-    quiet: quiet ?? this.quiet,
-    cameoDay: cameoDay ?? this.cameoDay,
-  );
+  DiscoveryState copyWith({List<String>? queue, List<SavedRoutine>? routines, bool? quiet, String? cameoDay}) =>
+      DiscoveryState(
+        queue: queue ?? this.queue,
+        routines: routines ?? this.routines,
+        quiet: quiet ?? this.quiet,
+        cameoDay: cameoDay ?? this.cameoDay,
+      );
 }
 
 class DiscoveryController extends AsyncNotifier<DiscoveryState> {

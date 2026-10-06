@@ -63,11 +63,7 @@ class SupabasePromotions implements PromotionSource {
   Future<List<Promotion>> running() async {
     try {
       // The table's policy returns only promotions running right now.
-      final rows = await _client
-          .from('promotions')
-          .select()
-          .order('ends_at')
-          .timeout(const Duration(seconds: 5));
+      final rows = await _client.from('promotions').select().order('ends_at').timeout(const Duration(seconds: 5));
       return [for (final r in rows) ?Promotion.fromJson(r)];
     } on Object {
       return const [];
@@ -77,9 +73,7 @@ class SupabasePromotions implements PromotionSource {
 
 final promotionSourceProvider = Provider<PromotionSource>((ref) => const NoPromotions());
 
-final promotionsProvider = FutureProvider<List<Promotion>>(
-  (ref) => ref.watch(promotionSourceProvider).running(),
-);
+final promotionsProvider = FutureProvider<List<Promotion>>((ref) => ref.watch(promotionSourceProvider).running());
 
 /// "do 6 grudnia" or "jeszcze dziś".
 String promotionDeadline(DateTime ends, DateTime now) {
@@ -146,10 +140,7 @@ class PromotionBanner extends ConsumerWidget {
                               decoration: BoxDecoration(color: ink, borderRadius: BorderRadius.circular(8)),
                               child: Text(
                                 promo.badge!,
-                                style: text.labelSmall?.copyWith(
-                                  color: AkBrand.sun,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                                style: text.labelSmall?.copyWith(color: AkBrand.sun, fontWeight: FontWeight.w800),
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -163,8 +154,7 @@ class PromotionBanner extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      if (promo.body.isNotEmpty)
-                        Text(promo.body, style: text.bodySmall?.copyWith(color: ink)),
+                      if (promo.body.isNotEmpty) Text(promo.body, style: text.bodySmall?.copyWith(color: ink)),
                       Text(
                         deadline,
                         style: text.labelSmall?.copyWith(color: ink, fontWeight: FontWeight.w700),

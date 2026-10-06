@@ -31,10 +31,7 @@ Map<CarShelf, List<ContentItem>> carShelves(
 }) {
   final listenable = [
     for (final i in catalog.items)
-      if (i.kind != ContentKind.interactiveGame &&
-          i.audio.isNotEmpty &&
-          canPlay(i) &&
-          (age == null || i.ageMin <= age))
+      if (i.kind != ContentKind.interactiveGame && i.audio.isNotEmpty && canPlay(i) && (age == null || i.ageMin <= age))
         i,
   ];
   int downloadedFirst(ContentItem a, ContentItem b) =>
@@ -69,12 +66,7 @@ class CarLibrary {
     final catalog = await _container.read(catalogProvider.future);
     final downloaded = {...?_container.read(downloadSummaryProvider).value?.itemIds};
     final age = _container.read(familyProvider).value?.active?.age;
-    return carShelves(
-      catalog,
-      canPlay: (i) => _container.read(canPlayProvider(i)),
-      downloaded: downloaded,
-      age: age,
-    );
+    return carShelves(catalog, canPlay: (i) => _container.read(canPlayProvider(i)), downloaded: downloaded, age: age);
   }
 
   Future<List<MediaItem>> children(String parentId) async {
