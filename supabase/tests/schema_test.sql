@@ -501,3 +501,93 @@ begin
     'an alert closes when it passes';
 end $$;
 select 'quality tests passed';
+
+-- Family, letters and orders.
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-0000000000f1', 'mama@example.com'),
+  ('00000000-0000-0000-0000-0000000000f2', 'tata@example.com'),
+  ('00000000-0000-0000-0000-0000000000f3', 'ktos@example.com');
+insert into public.entitlements (user_id, source, scope, status, valid_until, product_ref, store_original_tx_id) values
+  ('00000000-0000-0000-0000-0000000000f1', 'app_store', 'all_content', 'active', now() + interval '1 month', 'ios:pl.audiokiddo.sub.monthly', 'fam-1'),
+  ('00000000-0000-0000-0000-0000000000f1', 'app_store', 'children:1', 'active', now() + interval '1 month', 'ios:pl.audiokiddo.sub.monthly', 'fam-1');
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f1', false); end $$;
+do $$
+begin
+  begin
+    perform public.family_invite();
+    assert false, 'the plan for one child is for one account';
+  exception when invalid_parameter_value then null;
+  end;
+  assert (public.family_status() ->> 'can_invite')::boolean = false;
+end $$;
+reset role;
+update public.entitlements set scope = 'children:2' where store_original_tx_id = 'fam-1' and scope = 'children:1';
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f1', false); end $$;
+create temporary table invite as select public.family_invite() ->> 'code' code;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f2', false); end $$;
+do $$
+declare
+  v_code text := (select code from invite);
+begin
+  assert (select count(*) from public.my_entitlements()) = 0, 'nothing before joining';
+  perform public.family_join(lower(v_code));
+  assert (select count(*) from public.my_entitlements() where shared and scope = 'all_content') = 1, 'the owner''s plan is shared';
+  assert public.family_status() ->> 'role' = 'member';
+  assert public.family_status() ->> 'partner' = 'ma•••@example.com', public.family_status()::text;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f3', false); end $$;
+do $$
+begin
+  begin
+    perform public.family_join((select code from invite));
+    assert false, 'a code works once';
+  exception when invalid_parameter_value then null;
+  end;
+  insert into public.parent_letters (user_id, weekly, missed) values ('00000000-0000-0000-0000-0000000000f3', true, true);
+  begin
+    update public.parent_letters set last_weekly_at = now() where user_id = '00000000-0000-0000-0000-0000000000f3';
+    assert false, 'only the server marks letters as sent';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+reset role;
+do $$
+begin
+  assert public.can_download('00000000-0000-0000-0000-0000000000f2', 'audio/detektyw/gadajacy-smietnik.m4a'),
+    'the partner downloads the family''s recordings';
+  assert not public.can_download('00000000-0000-0000-0000-0000000000f3', 'audio/detektyw/gadajacy-smietnik.m4a');
+  assert exists (select 1 from public.letters_due('weekly') where email = 'ktos@example.com'), 'weekly letter due';
+  assert not exists (select 1 from public.letters_due('missed') where email = 'ktos@example.com'), 'never played: no "we miss you"';
+end $$;
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$ begin assert jsonb_typeof(public.crm_orders(60)) = 'array'; end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f2', false); end $$;
+do $$ begin perform public.family_leave(); assert (select count(*) from public.my_entitlements()) = 0, 'after leaving'; end $$;
+reset role;
+select 'family and letters tests passed';
+
+-- LTV, cohorts and experiments.
+update public.experiments set active = true, started_at = now() - interval '1 day' where key = 'paywall_cta';
+set role anon;
+do $$ begin assert public.app_experiments() = '{"paywall_cta": ["proba", "oszczednosc"]}'::jsonb, public.app_experiments()::text; end $$;
+insert into public.app_events (install_id, event, props) values
+  ('88888888-8888-8888-8888-888888888881', 'paywall_view', '{"ab": {"paywall_cta": "proba"}}'),
+  ('88888888-8888-8888-8888-888888888881', 'purchase_done', '{"ab": {"paywall_cta": "proba"}}'),
+  ('88888888-8888-8888-8888-888888888882', 'paywall_view', '{"ab": {"paywall_cta": "oszczednosc"}}');
+reset role;
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  r jsonb := public.crm_experiment('paywall_cta');
+  l jsonb := public.crm_ltv();
+begin
+  assert r -> 1 ->> 'variant' = 'proba' and (r -> 1 ->> 'conversion')::numeric = 100, r::text;
+  assert (r -> 0 ->> 'bought')::int = 0, r::text;
+  assert jsonb_typeof(l -> 'cohorts') = 'array' and (l ->> 'paying')::int >= 1, l::text;
+end $$;
+reset role;
+select 'ltv and experiment tests passed';

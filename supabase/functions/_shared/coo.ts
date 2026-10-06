@@ -1,8 +1,8 @@
 // The AI director (COO) of AudioKiddo: what it is asked, and how its answer becomes proposals
 // in the CRM. Nothing it proposes is acted on until Dawid approves it in Studio.
 
-export type Mode = "brief" | "packs" | "scenario" | "ads" | "newsletter" | "improve";
-export const MODES: Mode[] = ["brief", "packs", "scenario", "ads", "newsletter", "improve"];
+export type Mode = "brief" | "packs" | "scenario" | "ads" | "newsletter" | "improve" | "release";
+export const MODES: Mode[] = ["brief", "packs", "scenario", "ads", "newsletter", "improve", "release"];
 
 export type Proposal = {
   kind: "task" | "idea" | "calendar" | "mailing" | "change";
@@ -33,7 +33,7 @@ export function task(mode: Mode, note: string | null, focus: Record<string, unkn
   const extra = note ? `\nDodatkowa wskazówka Dawida: ${note}` : "";
   switch (mode) {
     case "brief":
-      return `Przygotuj codzienny raport COO. W "summary": co zrobione, co utknęło, 3 priorytety na dziś, ryzyka i jedna liczba do obserwowania (Markdown, maks. 15 linii).
+      return `Przygotuj codzienny raport COO. W "summary": najpierw alarmy ze stanu firmy ("alerts"), jeśli są: co oznaczają i co zrobić; potem co zrobione, co utknęło, 3 priorytety na dziś, ryzyka i jedna liczba do obserwowania (Markdown, maks. 15 linii).
 W "proposals": 3–6 zadań (kind "task") na najbliższe dni, z właścicielem i terminem, które najszybciej zwiększą przychód lub zadowolenie rodziców. Nie powtarzaj otwartych zadań.${extra}`;
     case "packs":
       return `Zaproponuj 4 pomysły na nowe pakiety (kind "idea", area "pack"), pasujące do kalendarza (pakiet co miesiąc) i do tego, co rodzice kupują.
@@ -52,6 +52,12 @@ W "summary": którą przetestować najpierw i jak mierzyć wynik.${extra}`;
       return `Przygotuj newsletter dla rodziców (kind "mailing", area "newsletter"), który chce się otwierać: temat (maks. 45 znaków) i podtytuł w "data" {"subject": "…", "preheader": "…"},
 w "body" treść w Markdown: krótkie powitanie od Szop’ena, jeden tip wychowawczy, jedna zabawa bez ekranu na dziś, miejsce na rolkę (opis, o czym ma być), nowość lub promocja w aplikacji, P.S.
 Dodaj też 1–2 propozycje automatyzacji maili (kind "mailing", area "automation") z wyzwalaczem i treścią w skrócie.${extra}`;
+    case "release":
+      return `Za 2 dni premiera z kalendarza: ${JSON.stringify(focus ?? {})}
+Przygotuj newsletter na dzień premiery (kind "mailing", area "newsletter", "due" = data premiery). W "data": {"subject": "maks. 45 znaków", "preheader": "…"}.
+W "body" (Markdown): Szop’en ogłasza nowość w 2 zdaniach z humorem; dla kogo i po co (wiek, co rozwija); 2–3 zabawy z pakietu, każda w jednym zdaniu; jedna z nich za darmo na start; jak włączyć (aplikacja AudioKiddo → Biblioteka); abonament z nowym pakietem co miesiąc; P.S. z pytaniem do rodziców.
+Dodaj też 1–2 rolki zapowiadające premierę (kind "idea", area "reel") z haczykiem i tekstem na ekranie.
+W "summary": co zawiera numer i o której najlepiej wysłać.${extra}`;
     case "improve":
       return `Przejrzyj liczby (ukończenia, powtórki, powroty, konwersja) i zaproponuj 4–6 zmian w aplikacji lub ofercie (kind "change", area "proposal"), które poprawią wynik.
 W "body": problem w liczbach, zmiana, oczekiwany efekt, jak zmierzymy. Priorytet 1 dla największego wpływu przy małym koszcie.${extra}`;
@@ -122,6 +128,7 @@ export function toRow(p: Proposal) {
 /** The modes due this morning (Warsaw time): the report daily, ad ideas on Mondays and a
  * newsletter draft on Thursdays of even ISO weeks, each as switched on in [setting]. */
 export function dueModes(setting: unknown, now: Date): Mode[] {
+  // (Premieres are found separately: dueReleases.)
   const s = (setting && typeof setting === "object" ? setting : {}) as Record<string, unknown>;
   const on = (key: string) => s[key] !== false;
   const local = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Warsaw" }));
@@ -139,4 +146,13 @@ function isoWeek(d: Date): number {
   t.setUTCDate(t.getUTCDate() + 4 - day);
   const yearStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
   return Math.ceil(((t.getTime() - yearStart.getTime()) / 864e5 + 1) / 7);
+}
+
+/** Calendar premieres whose newsletter should be written today: in 0–2 days (Warsaw time). */
+export function releaseWindow(now: Date): { from: string; to: string } {
+  const local = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Warsaw" }));
+  const day = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const later = new Date(local);
+  later.setDate(later.getDate() + 2);
+  return { from: day(local), to: day(later) };
 }

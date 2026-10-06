@@ -1,6 +1,7 @@
 // WooCommerce webhook (topic `order.updated`) from audiokiddo.pl.
-// Secrets: WOO_WEBHOOK_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
-import { isWooPing, parseWooOrder, sha256Hex, verifyWooSignature } from "../_shared/woo.ts";
+// Secrets: WOO_WEBHOOK_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY; for the buyers'
+// newsletter (only with the checkout consent): MAILERLITE_API_KEY, MAILERLITE_BUYERS_GROUP.
+import { buyerSubscriber, isWooPing, parseWooOrder, sha256Hex, verifyWooSignature, type WooOrder } from "../_shared/woo.ts";
 import { adminClient, env, json } from "../_shared/supabase.ts";
 
 Deno.serve(async (req) => {
@@ -43,5 +44,25 @@ Deno.serve(async (req) => {
     console.error("woo-webhook: apply_woo_order failed:", error.message);
     return json({ error: "store" }, 500); // WooCommerce retries
   }
+  await addBuyerToNewsletter(order);
   return json({ ok: true, result });
 });
+
+/** A completed order whose buyer ticked the newsletter consent joins the buyers' group in
+ * MailerLite. Never fails the webhook: the order matters more than the letter. */
+async function addBuyerToNewsletter(order: WooOrder) {
+  const key = Deno.env.get("MAILERLITE_API_KEY");
+  const group = Deno.env.get("MAILERLITE_BUYERS_GROUP");
+  if (order.status !== "completed" || !order.newsletter || !key || !group) return;
+  try {
+    const r = await fetch("https://connect.mailerlite.com/api/subscribers", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(buyerSubscriber(order, group)),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!r.ok) console.error("woo-webhook: mailerlite", r.status, (await r.text()).slice(0, 300));
+  } catch (e) {
+    console.error("woo-webhook: mailerlite", e);
+  }
+}

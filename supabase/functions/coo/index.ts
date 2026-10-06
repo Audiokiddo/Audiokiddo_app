@@ -4,7 +4,7 @@
 // Gathers the state of the business (numbers, board, ideas, calendar, past decisions), asks
 // Claude, and saves every proposal as a pending decision. Returns { summary, proposals }.
 // Secrets: ANTHROPIC_API_KEY (required), COO_MODEL (optional).
-import { dueModes, MODES, type Mode, parseAnswer, prompt, SYSTEM, toRow } from "../_shared/coo.ts";
+import { dueModes, MODES, releaseWindow, type Mode, parseAnswer, prompt, SYSTEM, toRow } from "../_shared/coo.ts";
 import { withCors } from "../_shared/cors.ts";
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
@@ -59,6 +59,21 @@ async function rhythm(admin: SupabaseClient, now: Date) {
     const result = await run(admin, mode, null, null);
     done[mode] = "error" in result ? result.error : "ok";
   }
+  // A newsletter for every premiere in the next two days, once.
+  if ((setting?.value as Record<string, unknown> | undefined)?.release_newsletter !== false) {
+    const { from, to } = releaseWindow(now);
+    const { data: releases } = await admin.from("crm_items").select("id, title, body, due, data")
+      .eq("kind", "calendar").eq("area", "release").gte("due", from).lte("due", to)
+      // Dawid's own entries (no decision) and approved ones; NOT IN would drop the nulls.
+      .or("decision.is.null,decision.eq.approved");
+    for (const r of releases ?? []) {
+      const { count } = await admin.from("crm_items").select("id", { count: "exact", head: true })
+        .eq("kind", "briefing").eq("area", "release").eq("data->>focus_id", r.id);
+      if ((count ?? 0) > 0) continue;
+      const result = await run(admin, "release", null, r.id);
+      done[`release:${r.title}`] = "error" in result ? result.error : "ok";
+    }
+  }
   return { due, done };
 }
 
@@ -68,13 +83,14 @@ async function run(admin: SupabaseClient, mode: Mode, note: string | null, focus
 
   let focus: Record<string, unknown> | null = null;
   if (focusId) {
-    const { data } = await admin.from("crm_items").select("title, body, data").eq("id", focusId).maybeSingle();
+    const { data } = await admin.from("crm_items").select("title, body, due, data").eq("id", focusId).maybeSingle();
     focus = data;
   }
 
   // The state of the business, trimmed to what helps decide.
   const since = new Date(Date.now() - 45 * 864e5).toISOString();
-  const [numbers, stats, catalog, open, ideas, calendar, decided] = await Promise.all([
+  await admin.rpc("crm_watch");
+  const [numbers, stats, catalog, open, ideas, calendar, decided, alerts] = await Promise.all([
     admin.rpc("crm_numbers"),
     admin.rpc("admin_stats", { p_days: 30 }),
     admin.rpc("published_catalog"),
@@ -86,6 +102,7 @@ async function run(admin: SupabaseClient, mode: Mode, note: string | null, focus
       .gte("due", new Date().toISOString().slice(0, 10)).order("due").limit(30),
     admin.from("crm_items").select("title, kind, area, decision").in("decision", ["approved", "rejected"])
       .gte("updated_at", since).order("updated_at", { ascending: false }).limit(40),
+    admin.from("crm_alerts").select("level, title, detail").is("resolved_at", null),
   ]);
   const numbersData = { ...(numbers.data ?? {}) } as Record<string, unknown>;
   delete numbersData.recent_users; // no e-mails to the model
@@ -102,6 +119,8 @@ async function run(admin: SupabaseClient, mode: Mode, note: string | null, focus
     ideas: ideas.data ?? [],
     calendar: calendar.data ?? [],
     recent_decisions: decided.data ?? [],
+    // What the hourly watchdog sees now: the report says what to do about it first.
+    alerts: alerts.data ?? [],
   };
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -156,4 +175,5 @@ const labels: Record<Mode, string> = {
   ads: "Pomysły na reklamy",
   newsletter: "Newsletter",
   improve: "Propozycje zmian",
+  release: "Newsletter o premierze",
 };
