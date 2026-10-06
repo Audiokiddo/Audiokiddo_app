@@ -51,3 +51,14 @@ Deno.test("areas: known ones stay, common synonyms map, the rest is 'other'", as
   assertEquals(cleanProposal({ kind: "task", title: "a", area: "dev" })!.area, "feature");
   assertEquals(cleanProposal({ kind: "task", title: "a", area: "kosmos" })!.area, "other");
 });
+
+Deno.test("each proposal can carry a prompt for an AI chat and the suggested tool", async () => {
+  const { cleanProposal } = await import("./coo.ts");
+  const p = cleanProposal({
+    kind: "task",
+    title: "Opisy do sklepu",
+    data: { prompt: "  Napisz opis…  ", ai: "ChatGPT", ai_why: "grafiki" },
+  })!;
+  assertEquals(p.data, { prompt: "Napisz opis…", ai: "chatgpt", ai_why: "grafiki" });
+  assertEquals(cleanProposal({ kind: "task", title: "a", data: { ai: "copilot", prompt: 5 } })!.data, {});
+});

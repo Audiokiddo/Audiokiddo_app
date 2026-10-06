@@ -27,9 +27,13 @@ Zasady: kategoria Kids w App Store (bez reklam w aplikacji, bez analityki firm t
 Cel: szybko rosnący zysk (kamień milowy 50 000 zł zysku miesięcznie), zadowoleni rodzice, coraz lepszy produkt.
 Właściciele: Dawid (technika, sprzedaż, marketing) i Nela (treści, nagrania). Masz do pomocy Claude (programista: kod aplikacji, strony, serwera).
 Każda Twoja propozycja trafia do decyzji Dawida: proponuj rzeczy wykonalne, z jasnym pierwszym krokiem i uzasadnieniem w liczbach, jeśli je masz.
+Do każdej propozycji dodaj w "data" trzy pola, żeby Dawid mógł od razu zlecić ją AI:
+- "prompt": gotowe polecenie do wklejenia w czat AI, po polsku, które wykona zadanie albo przygotuje wszystko, czego Dawid potrzebuje. Zawiera: 2–3 zdania o AudioKiddo potrzebne do tego zadania, samo zadanie, czego AI ma się dopytać, jeśli czegoś nie wie, i oczekiwany wynik z formatem (lista, tabela, tekst do wklejenia, plik). Bez odwołań do „danych powyżej”: prompt ma działać sam.
+- "ai": "claude", "chatgpt" albo "gemini": które narzędzie zrobi to najlepiej. Dawid ma: Claude (2 konta Pro: teksty i scenariusze po polsku, kod aplikacji i strony, analiza długich dokumentów, staranna redakcja), ChatGPT (płatny: grafiki i obrazy, tabele i analiza danych, research z wyszukiwaniem w sieci), Gemini Pro (sprawy Google: Google Play, YouTube, Google Ads, Arkusze i Dokumenty; wyszukiwanie w Google).
+- "ai_why": jedno krótkie zdanie, dlaczego to narzędzie.
 Odpowiadasz WYŁĄCZNIE jednym obiektem JSON, bez komentarzy i bez bloku kodu.`;
 
-const SHAPE = `{"summary": "tekst dla Dawida", "proposals": [{"kind": "task|idea|calendar|mailing|change", "area": "launch|marketing|feature|crm|server|support|pack|scenario|ad|post|reel|newsletter|automation|promotion|release|proposal", "title": "…", "body": "…", "priority": 1, "due": "RRRR-MM-DD albo null", "owner": "Dawid|Nela|Claude|null", "data": {}}]}`;
+const SHAPE = `{"summary": "tekst dla Dawida", "proposals": [{"kind": "task|idea|calendar|mailing|change", "area": "launch|marketing|feature|crm|server|support|pack|scenario|ad|post|reel|newsletter|automation|promotion|release|proposal", "title": "…", "body": "…", "priority": 1, "due": "RRRR-MM-DD albo null", "owner": "Dawid|Nela|Claude|null", "data": {"prompt": "…", "ai": "claude|chatgpt|gemini", "ai_why": "…"}}]}`;
 
 /** What to ask for in each mode. [note] is Dawid's own instruction, [focus] an approved idea. */
 export function task(mode: Mode, note: string | null, focus: Record<string, unknown> | null): string {
@@ -91,6 +95,19 @@ export function parseAnswer(text: string): { summary: string; proposals: Proposa
 
 const KINDS = new Set(["task", "idea", "calendar", "mailing", "change"]);
 
+/** The proposal's extra data, with the prompt for an AI chat and the suggested tool tidied. */
+function cleanData(raw: unknown): Record<string, unknown> {
+  const data = typeof raw === "object" && raw !== null && !Array.isArray(raw) ? { ...raw as Record<string, unknown> } : {};
+  if (typeof data.prompt === "string") data.prompt = data.prompt.trim().slice(0, 12000);
+  else delete data.prompt;
+  const ai = typeof data.ai === "string" ? data.ai.toLowerCase().replace(/[^a-z]/g, "") : "";
+  if (["claude", "chatgpt", "gemini"].includes(ai)) data.ai = ai;
+  else delete data.ai;
+  if (typeof data.ai_why === "string") data.ai_why = data.ai_why.trim().slice(0, 240);
+  else delete data.ai_why;
+  return data;
+}
+
 /** The areas Studio knows (crm_widgets.dart areaLabels); others are mapped or left as "other". */
 const AREAS = new Set([
   "launch", "marketing", "feature", "crm", "server", "support", "pack", "scenario", "ad", "post", "reel",
@@ -122,7 +139,7 @@ export function cleanProposal(p: unknown): Proposal | null {
     priority,
     due,
     owner: typeof r.owner === "string" && r.owner !== "null" ? r.owner.slice(0, 40) : null,
-    data: typeof r.data === "object" && r.data !== null && !Array.isArray(r.data) ? r.data as Record<string, unknown> : {},
+    data: cleanData(r.data),
   };
 }
 

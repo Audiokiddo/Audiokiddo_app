@@ -10,6 +10,7 @@ import 'crm_quality.dart';
 import '../theme.dart';
 import 'crm_widgets.dart';
 import 'factory_tab.dart';
+import 'task_prompt.dart';
 
 /// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
 /// proposes; nothing it proposes happens before Dawid approves it under "Decyzje".
@@ -602,6 +603,7 @@ class _Tasks extends ConsumerWidget {
                                       dense: true,
                                       onTap: () => edit(t),
                                       onDelete: () => remove(t),
+                                      actions: [if (status != 'done') TaskAiActions(t)],
                                     ),
                                   ),
                                 ),
@@ -688,6 +690,7 @@ class _IdeasState extends ConsumerState<_Ideas> {
                 },
                 actions: [
                   Chip(label: Text(statusLabels[item['status']] ?? '${item['status']}')),
+                  TaskAiActions(item),
                   TextButton(onPressed: () => edit(item), child: const Text('Edytuj')),
                   if (item['area'] == 'pack' || item['area'] == 'feature')
                     TextButton.icon(
