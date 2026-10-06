@@ -1,29 +1,31 @@
 # Nowa strona audiokiddo.pl (wtyczka „AudioKiddo – strona”)
 
-Stan: 6 października 2026. Wtyczka rysuje trzy widoki we własnym stylu: stronę główną, blog i każdy wpis. Koszyk, zamówienie i strony produktów zostają w WooCommerce i obecnym motywie, więc płatności działają tak jak dziś.
+Stan: 6 października 2026 (wersja 2: slajdy i Szop’en). Wtyczka rysuje trzy widoki we własnym stylu: stronę główną, blog i każdy wpis. Koszyk, zamówienie i strony produktów zostają w WooCommerce i obecnym motywie, więc płatności działają tak jak dziś.
 
 ## Co jest na stronie
 
-- **Start:**
-  - hero „telefon leży ekranem w dół”;
-  - „Jeden dzień z AudioKiddo”;
-  - jak to działa;
-  - trzy pakiety jako „tył płyty” z listą zabaw i odsłuchem próbki;
-  - zestawy;
-  - cennik abonamentu (miesięcznie / rocznie);
-  - przewodnik PDF;
-  - O nas (Nela i Dawid);
-  - opinie rodziców;
-  - wpisy z bloga;
-  - pytania rodziców;
-  - „AudioKiddo w sześciu zdaniach”.
+- **Start, podzielony na slajdy** (każdy na pełny ekran). Treści i zdjęcia ze starej strony, po nowemu:
+  - hero „Nie wiesz, jak zająć dziecko… w samochodzie? / bez ekranów? / …” (słowa same się piszą), Max i Mila;
+  - „Poznaj interaktywne audiozabawy”: zdanie zapala się słowo po słowie przy przewijaniu, cztery kółka (słucha, odpowiada, rozwiązuje, zdobywa wiedzę);
+  - „Posłuchaj fragmentu”: nasze trzy próbki MP3 z biblioteki mediów;
+  - „Audiozabawy w akcji”: trzy filmy z dziećmi, włączają się z dźwiękiem po kliknięciu;
+  - „Poznaj nasze produkty” (ciemny slajd): pakiety według wieku (od 4 lat, od 7 lat), lista zabaw, zestawy z wyliczoną oszczędnością;
+  - „Dlaczego rodzice wybierają AudioKiddo” (sześć ikon);
+  - specjalistki: Julia Kasielska i Maria Lewandowska-Nawrocka;
+  - opinie rodziców (Laura, Agata, Ewelina, Agata, Pam) do przesuwania;
+  - darmowy pakiet 3 zabaw za zapis (formularz MailerLite XQ2HmS);
+  - aplikacja z abonamentem: pokaże się sama, gdy w ustawieniach będzie link do App Store albo Google Play;
+  - Kim jesteśmy (Nela i Dawid, Dawid = głos Profesora Fantazjusza);
+  - 14 pytań i odpowiedzi, „AudioKiddo w sześciu zdaniach”, blog, nocne pożegnanie.
+- **Szop’en oprowadza:** przy przewijaniu w rogu ekranu Szop’en zmienia pozę, z przymrużeniem oka mówi, co jest na slajdzie, i podświetla po kolei najważniejsze rzeczy (resztę strony lekko przyciemnia). „Dalej” przechodzi do następnej rzeczy albo slajdu, „Ucisz mnie” chowa dymek (strona to zapamiętuje), kliknięcie w Szop’ena opowiada slajd od nowa. Z boku kropki slajdów. Kwestie Szop’ena: `ak_tour()` w `inc/data.php`. Wyłączenie: Ustawienia → AudioKiddo strona → „Szop’en oprowadza”.
+- **Animacje:** wejścia przy przewijaniu, żółty marker pod słowem w nagłówkach, przesuwający się pasek „w samochodzie • przed snem • …”, uniesienia kart po najechaniu, okładki pochylające się za myszką, korektor dźwięku przy odtwarzaniu, nagłówek chowający się przy czytaniu w dół, pasek postępu. Kto ma w systemie „ogranicz ruch”, dostaje stronę bez animacji.
 - **Sklep na żywo:** ceny, promocje i dostępność pobierane z WooCommerce. Przycisk „Do koszyka” dodaje bez przeładowania, licznik koszyka w nagłówku odświeża się sam, także przy włączonym cache.
 - **Blog:**
   - wyszukiwarka;
   - tematy (kategorie);
   - wyróżniony najnowszy wpis;
   - karty z rysunkiem Szop’ena, gdy wpis nie ma zdjęcia;
-  - zapis na przewodnik w środku listy.
+  - zapis na darmowy pakiet w środku listy.
 - **Wpis:**
   - ramka „Najważniejsze w skrócie”;
   - spis treści, który podświetla czytany rozdział;
@@ -58,12 +60,12 @@ WordPress → **Ustawienia → AudioKiddo strona**:
 
 | Pole | Co wpisać |
 |---|---|
-| Link do App Store / Google Play | Po publikacji aplikacji. Do tego czasu przyciski „Wkrótce w…” prowadzą do zapisu na przewodnik. |
+| Link do App Store / Google Play | Po publikacji aplikacji. Wtedy na stronie pojawi się slajd aplikacji z abonamentem. |
 | Numery produktów | Domyślnie: 372 Wyobraźnia, 373 Słowa i Wiedza, 7339 Detektyw, 371 zestaw 2, 6235 zestaw 3. Sprawdź w Produkty (najedź na produkt, pokaże się „ID”). |
-| Kod formularza MailerLite | Z `docs/marketing/NEWSLETTER.md`, krok 3. |
+| Kod formularza MailerLite | Domyślnie formularz ze starej strony (`XQ2HmS`, darmowy pakiet). Skrypt MailerLite ładuje się z tagów strony (GTM); jeśli formularz się nie pokaże, po 7 s pojawia się przycisk „Poproś o pakiet mailem”. |
 | Adres opinii | Zostaw puste. Wypełnimy, gdy ruszą opinie z aplikacji (punkt 12). |
-| Zdjęcia Neli i Dawida | Media → Dodaj → skopiuj adres. Kwadrat 600×600. Bez zdjęć są duże inicjały. |
-| Polityka prywatności, regulamin | Adresy istniejących stron. |
+| Zdjęcia Neli i Dawida | Puste: zdjęcia ze starej strony (już we wtyczce). |
+| Strona kontaktu, polityka, regulamin | Domyślnie `/kontakt/`, `/polityka-prywatnosci/`, `/regulamin-sklepu/`. |
 | Instagram, Facebook… | Profile marki (trafiają też do danych dla Google). |
 
 ## Krok 3. Strona główna i blog (5 min)
@@ -102,7 +104,9 @@ Jeśli wtyczka bezpieczeństwa (np. Wordfence) blokuje REST albo hasła aplikacj
   - ceny pakietów zgadzają się z WooCommerce;
   - „Do koszyka” dodaje produkt, pojawia się dymek „Dodano…”, licznik w nagłówku rośnie.
 - [ ] Koszyk → zamówienie testowe przelewem → przychodzi mail. W Studio → Zamówienia widać zamówienie (webhook).
-- [ ] Odsłuch: przycisk na okładce gra próbkę, drugi klik zatrzymuje.
+- [ ] Odsłuch: przycisk przy pakiecie gra próbkę, drugi klik zatrzymuje. Filmy z dziećmi grają po kliknięciu.
+- [ ] Szop’en: przewiń stronę, przy każdym slajdzie mówi i podświetla. „Ucisz mnie” działa, klik w Szop’ena wraca.
+- [ ] Formularz darmowego pakietu się pokazuje i zapis przychodzi w MailerLite.
 - [ ] Telefon:
   - menu otwiera się z ikonki;
   - nic nie wystaje w bok;
@@ -128,9 +132,11 @@ Powstają `strona/podglad/start.html`, `blog.html`, `wpis.html` i `llms.txt`, na
 
 ## Co zmieniać w treściach
 
-Teksty pakietów, cennik abonamentu, pytania i „fakty” są w jednym pliku: `strona/audiokiddo-strona/inc/data.php`. Po zmianie cen w App Store i Google Play popraw też `ak_plans()`.
+Teksty pakietów, opinie, specjaliści, kwestie Szop’ena, cennik abonamentu, pytania i „fakty” są w jednym pliku: `strona/audiokiddo-strona/inc/data.php`. Po zmianie cen w App Store i Google Play popraw też `ak_plans()`.
 
-Nowe okładki: `python3 tool/site_assets.py`, potem `tool/strona_zip.sh`.
+Nowe okładki aplikacji i Szop’en: `python3 tool/site_assets.py`. Zdjęcia ze starej strony (`strona/stare-zasoby`, nasze zdjęcia, specjalistki, okładki, ikony, kadry filmów, awatary z opinii): `python3 tool/site_old_assets.py`. Potem `tool/strona_zip.sh`.
+
+Wiek pakietów jest w `ak_packs()` (`age_from`), jak na stronach produktów: Wyobraźnia i Słowa i Wiedza od 4 lat, Detektyw od 7. Stara strona główna miała 3+ i 6+.
 
 ## Czego wtyczka nie robi (świadomie)
 

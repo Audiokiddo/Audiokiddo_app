@@ -79,6 +79,9 @@ add_action('wp_head', function () {
     // The bold Poppins is the headline voice: fetched early so headings do not jump.
     echo '<link rel="preload" href="' . esc_url(ak_asset('fonts/Poppins-Bold.ttf')) . '" as="font" type="font/ttf" crossorigin>' . "\n";
     echo '<meta name="theme-color" content="#FFFBF2">' . "\n";
+    // Things wait hidden for their entrance only when the script runs; if it does not come
+    // within 3 seconds, everything is shown as it is.
+    echo "<script>document.documentElement.classList.add('ak-js');setTimeout(function(){if(!window.akReady)document.documentElement.classList.remove('ak-js')},3000);</script>\n";
 }, 2);
 
 add_filter('body_class', function ($classes) {

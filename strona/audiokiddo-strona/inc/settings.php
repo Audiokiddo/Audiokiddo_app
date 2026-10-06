@@ -34,16 +34,17 @@ function ak_settings_fields(): array
             'woo_bundle2' => ['Zestaw 2 pakietów', 'int', '0 ukrywa zestaw.'],
             'woo_bundle3' => ['Zestaw 3 pakietów', 'int', ''],
         ],
-        'Zapis za przewodnik PDF' => [
-            'mailerlite_form' => ['Kod formularza MailerLite (HTML)', 'html', 'MailerLite → Forms → Embedded → HTML code. Instrukcja: docs/marketing/NEWSLETTER.md.'],
+        'Darmowy pakiet za zapis' => [
+            'mailerlite_form' => ['Kod formularza MailerLite (HTML)', 'html', 'Domyślnie formularz XQ2HmS ze starej strony. MailerLite → Forms → Embedded → HTML code.'],
         ],
         'Opinie rodziców' => [
             'testimonials_url' => ['Adres opinii (JSON)', 'url', 'Opinie zatwierdzone w Studio. Puste: sekcja się nie pokazuje.'],
         ],
         'O nas' => [
-            'photo_nela' => ['Zdjęcie Neli (adres z Mediów)', 'url', 'Kwadrat, najlepiej 600×600.'],
+            'photo_nela' => ['Zdjęcie Neli (adres z Mediów)', 'url', 'Puste: zdjęcie ze starej strony.'],
             'photo_dawid' => ['Zdjęcie Dawida (adres z Mediów)', 'url', ''],
             'contact_email' => ['E-mail kontaktowy', 'email', ''],
+            'contact_url' => ['Strona kontaktu', 'url', ''],
         ],
         'Stopka i profile' => [
             'privacy_url' => ['Polityka prywatności', 'url', ''],
@@ -55,6 +56,7 @@ function ak_settings_fields(): array
         ],
         'SEO i wygląd' => [
             'home_description' => ['Opis strony głównej (Google)', 'text', 'Do 160 znaków.'],
+            'tour' => ['Szop’en oprowadza po stronie głównej', 'bool', 'Przy przewijaniu pokazuje i podświetla najważniejsze rzeczy.'],
             'seo_head' => ['Tytuły, opisy i dane strukturalne z tej wtyczki', 'bool', 'Na stronach AudioKiddo wyłącza nagłówek Yoast / Rank Math, żeby nie było dubli.'],
             'style_posts' => ['Wygląd AudioKiddo dla wszystkich wpisów', 'bool', ''],
             'style_blog' => ['Wygląd AudioKiddo dla strony bloga i kategorii', 'bool', ''],
@@ -114,7 +116,7 @@ function ak_settings_page(): void
             } elseif ($type === 'html') {
                 echo '<textarea id="ak-' . esc_attr($key) . '" name="' . esc_attr($name) . '" rows="6" class="large-text code">' . esc_textarea((string) $value) . '</textarea>';
             } else {
-                $input = $type === 'int' ? 'number' : ($type === 'email' ? 'email' : ($type === 'url' ? 'url' : 'text'));
+                $input = $type === 'int' ? 'number' : ($type === 'email' ? 'email' : 'text');
                 echo '<input type="' . $input . '" id="ak-' . esc_attr($key) . '" name="' . esc_attr($name) . '" value="' . esc_attr((string) $value) . '" class="regular-text">';
             }
             if ($help) {

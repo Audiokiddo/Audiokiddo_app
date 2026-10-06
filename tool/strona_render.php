@@ -145,8 +145,9 @@ function get_transient($k) { return false; }
 function set_transient(...$a) {}
 function wc_get_product($id)
 {
-    $all = [372 => ['Pakiet Wyobraźnia', 49.0, 59.0], 373 => ['Pakiet Słowa i Wiedza', 49.0, 49.0], 7339 => ['Pakiet Detektyw', 39.0, 39.0],
-        371 => ['Zestaw 2 pakietów', 89.0, 89.0], 6235 => ['Zestaw 3 pakietów', 119.0, 129.0]];
+    // Prices as in the shop on audiokiddo.pl.
+    $all = [372 => ['Pakiet Wyobraźnia', 49.99, 69.99], 373 => ['Pakiet Słowa i Wiedza', 49.99, 69.99], 7339 => ['Pakiet Detektyw', 69.99, 99.99],
+        371 => ['Zestaw dwóch zabaw', 89.99, 139.98], 6235 => ['Zestaw trzech zabaw', 159.99, 239.97]];
     return isset($all[$id]) ? new Fake_Product($id, ...$all[$id]) : false;
 }
 function wc_get_price_to_display($product, $args = []) { return (float) ($args['price'] ?? $product->get_price()); }

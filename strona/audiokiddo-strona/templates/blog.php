@@ -24,8 +24,8 @@ require AK_DIR . 'parts/header.php';
 <section class="ak-blog-hero" aria-labelledby="ak-blog-h">
     <div class="ak-wrap">
         <p class="ak-kicker"><?php echo $term ? 'Blog · temat' : 'Blog AudioKiddo'; ?></p>
-        <h1 id="ak-blog-h"><?php echo $term ? esc_html($term->name) : 'Pomysły na czas ' . ak_mark('bez ekranu'); ?></h1>
-        <p class="ak-lead-p"><?php echo $term && $term->description ? esc_html($term->description) : 'Zabawy do auta, na wieczór i na deszczowy dzień. Piszemy to, co sami sprawdzamy z dziećmi, krótko i do rzeczy.'; ?></p>
+        <h1 id="ak-blog-h"><?php echo $term ? esc_html($term->name) : 'Blog z wiedzą ' . ak_mark('dla rodziców'); ?></h1>
+        <p class="ak-lead-p"><?php echo $term && $term->description ? esc_html($term->description) : 'Zabawy do auta, na wieczór i na deszczowy dzień, mowa, koncentracja i czas bez ekranu. Krótko i do rzeczy.'; ?></p>
         <form class="ak-search" role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
             <label class="ak-sr" for="ak-s">Szukaj na blogu</label>
             <input id="ak-s" type="search" name="s" placeholder="Np. zabawy w aucie" value="<?php echo esc_attr(get_search_query()); ?>">

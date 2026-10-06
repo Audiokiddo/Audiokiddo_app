@@ -1,6 +1,6 @@
 <?php
 /**
- * Pieces used on several views: store buttons, the guide sign-up, parents' words.
+ * Pieces used on several views: store buttons, the free pack sign-up, parents' words.
  */
 
 if (!defined('ABSPATH')) {
@@ -21,7 +21,7 @@ function ak_store_buttons(string $class = ''): void
         printf(
             '<a class="ak-store%s" href="%s"%s><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="currentColor">%s</svg><span><small>%s</small>%s</span></a>',
             $live ? '' : ' ak-store-soon',
-            esc_url($live ? $url : home_url('/#przewodnik')),
+            esc_url($live ? $url : home_url('/#darmowy')),
             $live ? ' rel="noopener"' : '',
             $icon, // static markup above
             $live ? 'Pobierz z' : 'Wkrótce w',
@@ -31,31 +31,31 @@ function ak_store_buttons(string $class = ''): void
     echo '</div>';
 }
 
-function ak_leadmagnet(): void
+/** The free pack for the newsletter (MailerLite form from the settings). A slide on the home page. */
+function ak_leadmagnet(bool $slide = false): void
 {
     $form = (string) ak_opt('mailerlite_form');
+    $mail = (string) ak_opt('contact_email');
     ?>
-    <section class="ak-lead" id="przewodnik" aria-labelledby="ak-lead-h">
-        <div class="ak-wrap ak-lead-in">
-            <div class="ak-lead-pdf">
-                <span class="ak-tape" aria-hidden="true"></span>
-                <img src="<?php echo esc_url(ak_asset('img/przewodnik.webp')); ?>" alt="Okładka przewodnika Podróż bez ekranu" width="520" height="735" loading="lazy">
+    <section class="ak-free<?php echo $slide ? ' ak-slide' : ''; ?>" id="darmowy"<?php echo $slide ? ' data-slide="Za darmo"' : ''; ?> aria-labelledby="ak-free-h">
+        <div class="ak-wrap ak-free-in">
+            <div class="ak-free-img" data-reveal="left">
+                <img src="<?php echo esc_url(ak_img('darmowy-pakiet')); ?>" alt="Darmowy pakiet 3 audiozabaw i akta sprawy detektywistycznej" width="1100" height="619" loading="lazy">
+                <span class="ak-badge" aria-hidden="true">0 zł</span>
             </div>
-            <div>
-                <p class="ak-kicker">Za darmo, PDF na 12 stron</p>
-                <h2 id="ak-lead-h">Podróż bez ekranu</h2>
-                <p class="ak-lead-txt">30 zabaw do auta według wieku, plan na trasę 2, 4 i 6 godzin, SOS na marudzenie i bingo podróżne do wydrukowania. Wpisz e-mail, a przewodnik przyjdzie od razu.</p>
+            <div data-reveal="right">
+                <h2 id="ak-free-h">Odbierz <span class="ak-hl-word">darmowy</span> pakiet audiozabaw!</h2>
+                <p class="ak-sub">3 audiozabawy, po jednej z każdego pakietu, i akta sprawy do wydrukowania. Zapisz się do newslettera, a pakiet przyjdzie na Twój e-mail.</p>
                 <ul class="ak-ticks">
-                    <li>Raz na dwa tygodnie list od Szop’ena: jedna zabawa, jeden trik dla rodzica</li>
+                    <li>Sprawdzisz, czy dziecku się spodoba, zanim cokolwiek kupisz</li>
                     <li>Wypiszesz się jednym kliknięciem</li>
                 </ul>
-                <?php if ($form !== '') : ?>
-                    <div class="ak-form"><?php echo $form; // Saved by an admin with unfiltered_html (settings). ?></div>
-                <?php elseif (current_user_can('manage_options')) : ?>
-                    <p class="ak-admin-note">Widzi to tylko administrator: wklej kod formularza MailerLite w Ustawienia → AudioKiddo strona.</p>
-                <?php else : ?>
-                    <p><a class="ak-btn ak-btn-main" href="mailto:<?php echo esc_attr(ak_opt('contact_email')); ?>?subject=Przewodnik%20Podr%C3%B3%C5%BC%20bez%20ekranu">Poproś o przewodnik mailem</a></p>
-                <?php endif; ?>
+                <div class="ak-free-form">
+                    <?php if ($form !== '') : ?>
+                        <div class="ak-form"><?php echo $form; // Saved by an admin with unfiltered_html (settings). ?></div>
+                    <?php endif; ?>
+                    <p class="ak-form-fallback"<?php echo $form !== '' ? ' hidden' : ''; ?>><a class="ak-btn ak-btn-sun" href="mailto:<?php echo esc_attr($mail); ?>?subject=Darmowy%20pakiet%20audiozabaw">Poproś o pakiet mailem</a></p>
+                </div>
             </div>
         </div>
     </section>
@@ -97,8 +97,8 @@ function ak_testimonials(): array
     return $items;
 }
 
-/** The wavy underline for a word in a heading. */
+/** One word in a heading, painted over with the brand's yellow when it comes into view. */
 function ak_mark(string $word): string
 {
-    return '<span class="ak-mark">' . esc_html($word) . '</span>';
+    return '<span class="ak-hl-word">' . esc_html($word) . '</span>';
 }

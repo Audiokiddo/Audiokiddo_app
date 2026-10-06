@@ -138,8 +138,8 @@ function ak_schema(): array
             'description' => ak_facts()['Czym jest'],
             'foundingLocation' => ['@type' => 'Country', 'name' => 'Polska'],
             'founder' => [
-                ['@type' => 'Person', '@id' => home_url('/#nela'), 'name' => 'Nela'],
-                ['@type' => 'Person', '@id' => home_url('/#dawid'), 'name' => 'Dawid'],
+                ['@type' => 'Person', '@id' => home_url('/#nela'), 'name' => 'Nela Mariak', 'jobTitle' => 'Animatorka'],
+                ['@type' => 'Person', '@id' => home_url('/#dawid'), 'name' => 'Dawid Kubiak', 'jobTitle' => 'Lektor'],
             ],
             'sameAs' => ak_same_as(),
         ],
@@ -158,7 +158,7 @@ function ak_schema(): array
         ],
     ];
 
-    if (ak_view() === 'start') {
+    if (ak_view() === 'start' && ak_app_live()) {
         $graph[] = [
             '@type' => 'MobileApplication',
             'name' => 'AudioKiddo',
@@ -168,8 +168,10 @@ function ak_schema(): array
             'audience' => ['@type' => 'PeopleAudience', 'suggestedMinAge' => 3, 'suggestedMaxAge' => 9],
             'description' => ak_opt('home_description'),
             'author' => ['@id' => ak_org_id()],
-            'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'PLN', 'description' => 'Pobranie za darmo, abonament od 24,99 zł miesięcznie z 7 dniami za darmo'],
+            'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'PLN', 'description' => 'Pobranie za darmo, abonament od ' . ak_plans()[0]['month'] . ' zł miesięcznie z 7 dniami za darmo'],
         ];
+    }
+    if (ak_view() === 'start') {
         foreach (ak_packs() as $id => $pack) {
             $offer = ak_offer($pack['woo']);
             if (!$offer) {
@@ -179,9 +181,9 @@ function ak_schema(): array
                 '@type' => 'Product',
                 'name' => 'AudioKiddo – pakiet ' . $pack['title'],
                 'description' => $pack['lead'],
-                'image' => ak_asset('img/covers/' . $pack['cover'] . '.webp'),
+                'image' => ak_img($pack['cover']),
                 'brand' => ['@type' => 'Brand', 'name' => 'AudioKiddo'],
-                'audience' => ['@type' => 'PeopleAudience', 'suggestedMinAge' => $id === 'detektyw' ? 7 : 3],
+                'audience' => ['@type' => 'PeopleAudience', 'suggestedMinAge' => $pack['age_from']],
                 'offers' => [
                     '@type' => 'Offer',
                     'price' => number_format($offer['price'], 2, '.', ''),
@@ -291,19 +293,28 @@ function ak_llms_txt(): string
         $lines[] = '- **' . $label . ':** ' . $fact;
     }
     $lines[] = '';
-    $lines[] = '## Pakiety zabaw (zakup jednorazowy na audiokiddo.pl, MP3 + zabawy w aplikacji)';
+    $lines[] = '## Pakiety zabaw (zakup jednorazowy na audiokiddo.pl, pliki do pobrania od razu po zakupie)';
     foreach (ak_packs() as $pack) {
         $offer = ak_offer($pack['woo']);
         $price = $offer ? ': ' . ak_money($offer['price']) : '';
         $url = $offer ? ' (' . $offer['url'] . ')' : '';
-        $lines[] = '- **' . $pack['title'] . '**, ' . $pack['age'] . ', ' . count($pack['plays']) . ' zabaw' . $price . $url . '. ' . $pack['lead'];
+        $lines[] = '- **' . $pack['title'] . '**, ' . ak_age($pack) . ', ' . count($pack['plays']) . ' zabaw' . $price . $url . '. ' . $pack['lead'];
     }
-    $lines[] = '';
-    $lines[] = '## Abonament w aplikacji (App Store, Google Play), 7 dni za darmo';
-    foreach (ak_plans() as $plan) {
-        $lines[] = '- ' . $plan['name'] . ': ' . $plan['month'] . ' zł miesięcznie albo ' . $plan['year'] . ' zł rocznie';
+    foreach (ak_bundles() as $bundle) {
+        $offer = ak_offer($bundle['woo']);
+        if ($offer) {
+            $lines[] = '- **' . $bundle['title'] . '**: ' . ak_money($offer['price']) . ' (' . $offer['url'] . '). ' . $bundle['desc'];
+        }
     }
+    $lines[] = '- **Darmowy pakiet 3 audiozabaw**: po zapisie do newslettera (' . home_url('/#darmowy') . ').';
     $lines[] = '';
+    if (ak_app_live()) {
+        $lines[] = '## Abonament w aplikacji (App Store, Google Play), 7 dni za darmo';
+        foreach (ak_plans() as $plan) {
+            $lines[] = '- ' . $plan['name'] . ': ' . $plan['month'] . ' zł miesięcznie albo ' . $plan['year'] . ' zł rocznie';
+        }
+        $lines[] = '';
+    }
     $lines[] = '## Pytania rodziców';
     foreach (ak_faq() as [$q, $a]) {
         $lines[] = '- **' . $q . '** ' . $a;
