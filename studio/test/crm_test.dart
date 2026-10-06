@@ -9,7 +9,11 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('the CRM asks an admin to sign in first', (tester) async {
     final server = StudioServer(
-      SupabaseClient('http://localhost', 'test', authOptions: const AuthClientOptions(autoRefreshToken: false)),
+      SupabaseClient(
+        'http://localhost',
+        'test',
+        authOptions: const AuthClientOptions(autoRefreshToken: false),
+      ),
     );
     await tester.pumpWidget(
       ProviderScope(

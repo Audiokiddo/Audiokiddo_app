@@ -76,7 +76,10 @@ class KpiTile extends StatelessWidget {
         children: [
           Text(label, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 4),
-          Text(value, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+          ),
           if (hint != null) Text(hint!, style: Theme.of(context).textTheme.labelSmall),
         ],
       ),
@@ -86,11 +89,21 @@ class KpiTile extends StatelessWidget {
 
 /// One CRM item as a card: type, title, owner and date, the text folded, actions.
 class CrmCard extends StatefulWidget {
-  const CrmCard({super.key, required this.item, this.actions = const [], this.onTap, this.dense = false});
+  const CrmCard({
+    super.key,
+    required this.item,
+    this.actions = const [],
+    this.onTap,
+    this.onDelete,
+    this.dense = false,
+  });
 
   final Map<String, dynamic> item;
   final List<Widget> actions;
   final VoidCallback? onTap;
+
+  /// Shows a bin; the caller asks and removes.
+  final VoidCallback? onDelete;
   final bool dense;
 
   @override
@@ -134,8 +147,18 @@ class _CrmCardState extends State<CrmCard> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text('${item['title']}', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                    child: Text(
+                      '${item['title']}',
+                      style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                    ),
                   ),
+                  if (widget.onDelete != null)
+                    IconButton(
+                      tooltip: 'Usuń',
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(Icons.delete_outline, color: Colors.red.shade400, size: 20),
+                      onPressed: widget.onDelete,
+                    ),
                 ],
               ),
               if (meta.isNotEmpty) Text(meta, style: text.labelSmall),
@@ -227,7 +250,9 @@ class _ItemDialogState extends State<_ItemDialog> {
                     child: DropdownButtonFormField<String>(
                       initialValue: widget.areas.contains(_area) ? _area : widget.areas.first,
                       decoration: const InputDecoration(labelText: 'Typ'),
-                      items: [for (final a in widget.areas) DropdownMenuItem(value: a, child: Text(areaLabel(a)))],
+                      items: [
+                        for (final a in widget.areas) DropdownMenuItem(value: a, child: Text(areaLabel(a))),
+                      ],
                       onChanged: (v) => setState(() => _area = v),
                     ),
                   ),
@@ -237,7 +262,8 @@ class _ItemDialogState extends State<_ItemDialog> {
                     initialValue: widget.statuses.contains(_status) ? _status : widget.statuses.first,
                     decoration: const InputDecoration(labelText: 'Status'),
                     items: [
-                      for (final s in widget.statuses) DropdownMenuItem(value: s, child: Text(statusLabels[s] ?? s)),
+                      for (final s in widget.statuses)
+                        DropdownMenuItem(value: s, child: Text(statusLabels[s] ?? s)),
                     ],
                     onChanged: (v) => setState(() => _status = v ?? _status),
                   ),
@@ -248,9 +274,18 @@ class _ItemDialogState extends State<_ItemDialog> {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _owner,
-                    decoration: const InputDecoration(labelText: 'Kto'),
+                  child: Wrap(
+                    spacing: 6,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      const Text('Kto: '),
+                      for (final who in const ['Dawid', 'Nela', 'Razem'])
+                        ChoiceChip(
+                          label: Text(who),
+                          selected: _owner.text == who,
+                          onSelected: (on) => setState(() => _owner.text = on ? who : ''),
+                        ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 8),

@@ -60,7 +60,10 @@ class AlertsCard extends ConsumerWidget {
                   trailing: a['acknowledged_at'] == null
                       ? TextButton(
                           onPressed: () async {
-                            if (await crmRun(context, () => ref.read(studioServerProvider).ackAlert('${a['id']}'))) {
+                            if (await crmRun(
+                              context,
+                              () => ref.read(studioServerProvider).ackAlert('${a['id']}'),
+                            )) {
                               ref.invalidate(alertsProvider);
                             }
                           },
@@ -130,7 +133,11 @@ class _ErrorsTabState extends ConsumerState<ErrorsTab> {
                 Card(
                   child: ExpansionTile(
                     leading: CircleAvatar(child: Text('${e['count']}')),
-                    title: Text('${e['error_type']}: ${e['message']}', maxLines: 2, overflow: TextOverflow.ellipsis),
+                    title: Text(
+                      '${e['error_type']}: ${e['message']}',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     subtitle: Text(
                       'telefonów: ${e['installs']} · ostatnio ${_date(e['last_seen'])} · '
                       'wersje ${(e['versions'] as List? ?? const []).join(', ')} · ${(e['platforms'] as List? ?? const []).join(', ')}',
@@ -184,7 +191,10 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        Text('LTV: ile wart jest płacący rodzic', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+        Text(
+          'LTV: ile wart jest płacący rodzic',
+          style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+        ),
         const SizedBox(height: 8),
         FutureBuilder<Map<String, dynamic>>(
           future: _ltv,
@@ -202,11 +212,17 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
                   runSpacing: 12,
                   children: [
                     KpiTile('Płacące rodziny', '${l['paying'] ?? 0}'),
-                    KpiTile('Średnio miesięcznie (netto)', zl(l['arpu_net']), hint: 'brutto ${zl(l['arpu_gross'])}'),
+                    KpiTile(
+                      'Średnio miesięcznie (netto)',
+                      zl(l['arpu_net']),
+                      hint: 'brutto ${zl(l['arpu_gross'])}',
+                    ),
                     KpiTile(
                       'Odchodzi w miesiąc',
                       l['churn_month'] == null ? '–' : '${l['churn_month']}%',
-                      hint: l['lifetime_months'] == null ? null : 'zostaje średnio ${l['lifetime_months']} mies.',
+                      hint: l['lifetime_months'] == null
+                          ? null
+                          : 'zostaje średnio ${l['lifetime_months']} mies.',
                     ),
                     KpiTile('LTV (netto)', zl(ltv), color: Colors.green.shade50),
                     KpiTile(
@@ -281,7 +297,11 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
           spacing: 6,
           children: [
             for (final (key, label) in _sorts)
-              ChoiceChip(label: Text(label), selected: _sort == key, onSelected: (_) => setState(() => _sort = key)),
+              ChoiceChip(
+                label: Text(label),
+                selected: _sort == key,
+                onSelected: (_) => setState(() => _sort = key),
+              ),
           ],
         ),
         const SizedBox(height: 8),
@@ -530,7 +550,10 @@ class _ReviewCardState extends ConsumerState<_ReviewCard> {
           children: [
             Row(
               children: [
-                Text('★' * _n(r['rating']).toInt(), style: const TextStyle(color: Colors.amber, fontSize: 18)),
+                Text(
+                  '★' * _n(r['rating']).toInt(),
+                  style: const TextStyle(color: Colors.amber, fontSize: 18),
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -541,7 +564,8 @@ class _ReviewCardState extends ConsumerState<_ReviewCard> {
                 ),
               ],
             ),
-            if ('${r['title']}'.isNotEmpty) Text('${r['title']}', style: const TextStyle(fontWeight: FontWeight.w800)),
+            if ('${r['title']}'.isNotEmpty)
+              Text('${r['title']}', style: const TextStyle(fontWeight: FontWeight.w800)),
             Text('${r['body']}'),
             const SizedBox(height: 8),
             if (r['status'] == 'published')
@@ -555,7 +579,8 @@ class _ReviewCardState extends ConsumerState<_ReviewCard> {
                 maxLength: 350,
                 decoration: const InputDecoration(labelText: 'Odpowiedź', border: OutlineInputBorder()),
               ),
-              if (r['status'] == 'failed') Text('Nie wyszło: ${r['error']}', style: const TextStyle(color: Colors.red)),
+              if (r['status'] == 'failed')
+                Text('Nie wyszło: ${r['error']}', style: const TextStyle(color: Colors.red)),
               Wrap(
                 spacing: 8,
                 children: [
@@ -578,7 +603,10 @@ class _ReviewCardState extends ConsumerState<_ReviewCard> {
                         ? null
                         : () async {
                             setState(() => _busy = true);
-                            await crmRun(context, () async => _reply.text = await server.reviewDraft(store, id));
+                            await crmRun(
+                              context,
+                              () async => _reply.text = await server.reviewDraft(store, id),
+                            );
                             if (mounted) setState(() => _busy = false);
                           },
                     child: Text(_reply.text.isEmpty ? 'Agent: napisz odpowiedź' : 'Agent: inna wersja'),

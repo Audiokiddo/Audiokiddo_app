@@ -315,7 +315,7 @@ export async function research(admin: SupabaseClient, noteText: string | null) {
     answer = await askClaude(RESEARCH_SYSTEM, researchPrompt(context, noteText, day), 9000);
   } catch (e) {
     console.error("ads: research model", e instanceof ClaudeError ? e.message : e);
-    return { error: "model" as const };
+    return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model" };
   }
   let parsed;
   try {

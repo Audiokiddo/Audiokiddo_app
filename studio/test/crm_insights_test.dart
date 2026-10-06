@@ -11,7 +11,8 @@ void main() {
     final weeks = [
       for (var i = 0; i < 12; i++)
         {
-          'week': '2026-${(7 + i ~/ 4).toString().padLeft(2, '0')}-${(1 + i % 4 * 7).toString().padLeft(2, '0')}',
+          'week':
+              '2026-${(7 + i ~/ 4).toString().padLeft(2, '0')}-${(1 + i % 4 * 7).toString().padLeft(2, '0')}',
           'active': i == 11 ? 30 : 20,
           'accounts': i,
           'plays': 0,

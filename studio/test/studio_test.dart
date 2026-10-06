@@ -19,6 +19,9 @@ class FakeIo implements StudioIo {
 
   @override
   Future<String?> readDraft() async => draft;
+
+  @override
+  Future<String?> readStarterCatalog() async => null;
   @override
   Future<void> writeDraft(String json) async => draft = json;
   @override
@@ -132,7 +135,7 @@ void main() {
       ProviderScope(overrides: [studioIoProvider.overrideWithValue(io)], child: const StudioApp()),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Katalog poprawny'), findsOneWidget);
+    expect(find.text('Katalog gotowy'), findsOneWidget);
 
     await tester.tap(find.text('Magiczny sklep'));
     await tester.pumpAndSettle();

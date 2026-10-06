@@ -15,7 +15,8 @@ final adsGrowthProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref)
 
 /// Drafts waiting for a decision (for the tab's badge).
 final creativesPendingProvider = Provider.autoDispose<int>(
-  (ref) => _list(ref.watch(adsGrowthProvider).value?['creatives']).where((c) => c['status'] == 'draft').length,
+  (ref) =>
+      _list(ref.watch(adsGrowthProvider).value?['creatives']).where((c) => c['status'] == 'draft').length,
 );
 
 Map<String, dynamic> _map(Object? v) => v is Map ? Map<String, dynamic>.from(v) : {};
@@ -55,11 +56,16 @@ class _Box extends StatelessWidget {
   );
 }
 
-Future<void> _report(BuildContext context, WidgetRef ref, Future<Map<String, dynamic>> Function() action) async {
+Future<void> _report(
+  BuildContext context,
+  WidgetRef ref,
+  Future<Map<String, dynamic>> Function() action,
+) async {
   final ok = await crmRun(context, () async {
     final result = await action();
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${result['message'] ?? 'Gotowe.'}')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${result['message'] ?? 'Gotowe.'}')));
     }
   });
   if (ok) ref.read(crmRefreshProvider.notifier).bump();
@@ -75,8 +81,13 @@ class CreativesView extends ConsumerWidget {
     final creatives = _list(data['creatives']);
     final groups = _list(data['groups']);
     final drafts = creatives.where((c) => c['status'] == 'draft').toList();
-    final approvedGoogle = creatives.where((c) => c['status'] == 'approved' && c['platform'] == 'google_ads').toList();
-    final done = creatives.where((c) => c['status'] != 'draft' && !approvedGoogle.contains(c)).take(20).toList();
+    final approvedGoogle = creatives
+        .where((c) => c['status'] == 'approved' && c['platform'] == 'google_ads')
+        .toList();
+    final done = creatives
+        .where((c) => c['status'] != 'draft' && !approvedGoogle.contains(c))
+        .take(20)
+        .toList();
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
@@ -88,7 +99,9 @@ class CreativesView extends ConsumerWidget {
               'Google: po zatwierdzeniu reklama powstaje w wybranej grupie jako wstrzymana. '
               'Meta: tekst i brief trafiają do zadania (grafikę albo wideo robicie Wy).',
           child: drafts.isEmpty
-              ? const Text('Nic nie czeka. Nowe kreacje agent pisze w poniedziałki albo po „Zrób badanie teraz”.')
+              ? const Text(
+                  'Nic nie czeka. Nowe kreacje agent pisze w poniedziałki albo po „Zrób badanie teraz”.',
+                )
               : Column(
                   children: [for (final c in drafts) CreativeCard(creative: c, groups: groups)],
                 ),
@@ -169,7 +182,9 @@ class _ResearchState extends ConsumerState<_Research> {
     setState(() => _busy = true);
     final ok = await crmRun(
       context,
-      () => ref.read(studioServerProvider).adsResearch(note: _note.text.trim().isEmpty ? null : _note.text.trim()),
+      () => ref
+          .read(studioServerProvider)
+          .adsResearch(note: _note.text.trim().isEmpty ? null : _note.text.trim()),
       done: 'Badanie gotowe: nowe kreacje czekają niżej.',
     );
     if (mounted) setState(() => _busy = false);
@@ -302,7 +317,12 @@ class _CreativeCardState extends ConsumerState<CreativeCard> {
     ref,
     () => ref
         .read(studioServerProvider)
-        .adsCreative('${widget.creative['id']}', approve: true, content: _edited(), groupId: _google ? _group : null),
+        .adsCreative(
+          '${widget.creative['id']}',
+          approve: true,
+          content: _edited(),
+          groupId: _google ? _group : null,
+        ),
   );
 
   Future<void> _reject() async {
@@ -351,7 +371,9 @@ class _CreativeCardState extends ConsumerState<CreativeCard> {
           maxLines: lines == 1 ? 3 : 16,
           decoration: InputDecoration(
             labelText: label,
-            helperText: lines == 1 ? '${value.text.length}/$max znaków' : 'Każdy w osobnej linii, do $max znaków',
+            helperText: lines == 1
+                ? '${value.text.length}/$max znaków'
+                : 'Każdy w osobnej linii, do $max znaków',
             errorText: over > 0 ? (lines == 1 ? 'Za długie' : '$over za długie: Google je pominie') : null,
             border: const OutlineInputBorder(),
           ),
@@ -387,12 +409,16 @@ class _CreativeCardState extends ConsumerState<CreativeCard> {
                         : 'Meta: grafika',
                   ),
                 ),
-                if (c['moment'] != null) Chip(avatar: const Icon(Icons.event, size: 16), label: Text('${c['moment']}')),
+                if (c['moment'] != null)
+                  Chip(avatar: const Icon(Icons.event, size: 16), label: Text('${c['moment']}')),
                 Text('${c['angle']}', style: const TextStyle(fontWeight: FontWeight.w800)),
               ],
             ),
             if ('${c['why']}'.isNotEmpty)
-              Padding(padding: const EdgeInsets.only(top: 6, bottom: 10), child: Text('Dlaczego: ${c['why']}')),
+              Padding(
+                padding: const EdgeInsets.only(top: 6, bottom: 10),
+                child: Text('Dlaczego: ${c['why']}'),
+              ),
             for (final p in problems)
               Padding(
                 padding: const EdgeInsets.only(bottom: 6),
@@ -411,10 +437,16 @@ class _CreativeCardState extends ConsumerState<CreativeCard> {
               ),
               DropdownButtonFormField<String>(
                 initialValue: _group,
-                decoration: const InputDecoration(labelText: 'Grupa reklam w Google Ads', border: OutlineInputBorder()),
+                decoration: const InputDecoration(
+                  labelText: 'Grupa reklam w Google Ads',
+                  border: OutlineInputBorder(),
+                ),
                 items: [
                   for (final g in googleGroups)
-                    DropdownMenuItem(value: '${g['group_id']}', child: Text('${g['campaign_name']} › ${g['name']}')),
+                    DropdownMenuItem(
+                      value: '${g['group_id']}',
+                      child: Text('${g['campaign_name']} › ${g['name']}'),
+                    ),
                 ],
                 onChanged: (v) => setState(() => _group = v),
               ),
@@ -449,7 +481,11 @@ class _CreativeCardState extends ConsumerState<CreativeCard> {
                         : 'Zatwierdzam i utwórz w Google Ads (wstrzymana)',
                   ),
                 ),
-                OutlinedButton.icon(onPressed: _reject, icon: const Icon(Icons.close), label: const Text('Odrzucam')),
+                OutlinedButton.icon(
+                  onPressed: _reject,
+                  icon: const Icon(Icons.close),
+                  label: const Text('Odrzucam'),
+                ),
               ],
             ),
           ],
@@ -557,7 +593,9 @@ class _Verdicts extends StatelessWidget {
                             message: '${v['note']}',
                             child: Chip(
                               visualDensity: VisualDensity.compact,
-                              backgroundColor: (_labels[v['verdict']]?.$2 ?? Colors.grey).withValues(alpha: .15),
+                              backgroundColor: (_labels[v['verdict']]?.$2 ?? Colors.grey).withValues(
+                                alpha: .15,
+                              ),
                               label: Text(_labels[v['verdict']]?.$1 ?? '${v['verdict']}'),
                             ),
                           ),
@@ -597,7 +635,9 @@ class CompetitorsView extends ConsumerWidget {
                       ExpansionTile(
                         tilePadding: EdgeInsets.zero,
                         title: Text('${page['page']}', style: const TextStyle(fontWeight: FontWeight.w800)),
-                        subtitle: Text('Aktywne reklamy: ${_int(page['active_ads'])} · id strony ${page['page_id']}'),
+                        subtitle: Text(
+                          'Aktywne reklamy: ${_int(page['active_ads'])} · id strony ${page['page_id']}',
+                        ),
                         children: [
                           for (final ad in _list(page['longest']))
                             ListTile(
@@ -681,13 +721,21 @@ class _ResearchSettingsState extends ConsumerState<_ResearchSettings> {
             spacing: 12,
             runSpacing: 12,
             children: [
-              field('search_terms', 'Frazy w Bibliotece reklam', 'Np. bajki dla dzieci, audiobooki dla dzieci.'),
+              field(
+                'search_terms',
+                'Frazy w Bibliotece reklam',
+                'Np. bajki dla dzieci, audiobooki dla dzieci.',
+              ),
               field(
                 'competitor_pages',
                 'Strony konkurencji na Facebooku (id)',
                 'Numer strony z adresu w Bibliotece reklam.',
               ),
-              field('competitor_sites', 'Witryny konkurencji', 'https://… Google podpowie frazy, na które celują.'),
+              field(
+                'competitor_sites',
+                'Witryny konkurencji',
+                'https://… Google podpowie frazy, na które celują.',
+              ),
               field('keyword_seeds', 'Nasze frazy wyjściowe', 'Z nich Google proponuje podobne.'),
             ],
           ),
@@ -738,13 +786,16 @@ class _KeywordsViewState extends ConsumerState<KeywordsView> {
     final wasted = _list(data['wasted']);
     final terms = _list(data['terms']);
     final q = _filter.text.trim().toLowerCase();
-    final keywords = _list(data['keywords']).where((k) => q.isEmpty || '${k['keyword']}'.contains(q)).toList();
+    final keywords = _list(data['keywords'])
+        .where((k) => q.isEmpty || '${k['keyword']}'.contains(q))
+        .toList();
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
         _Box(
           'Frazy, które kosztują i nie sprzedają (${wasted.length})',
-          subtitle: '30 dni, Google Ads. „Wyklucz” dodaje wykluczenie (dopasowanie do wyrażenia) w tej kampanii.',
+          subtitle:
+              '30 dni, Google Ads. „Wyklucz” dodaje wykluczenie (dopasowanie do wyrażenia) w tej kampanii.',
           child: wasted.isEmpty
               ? const Text('Brak takich fraz albo Google Ads nie jest jeszcze połączone.')
               : Column(
@@ -761,7 +812,9 @@ class _KeywordsViewState extends ConsumerState<KeywordsView> {
                           onPressed: () => _report(
                             context,
                             ref,
-                            () => ref.read(studioServerProvider).adsExclude('${t['campaign_id']}', '${t['term']}'),
+                            () => ref
+                                .read(studioServerProvider)
+                                .adsExclude('${t['campaign_id']}', '${t['term']}'),
                           ),
                           child: const Text('Wyklucz'),
                         ),
@@ -772,8 +825,7 @@ class _KeywordsViewState extends ConsumerState<KeywordsView> {
         const SizedBox(height: 16),
         _Box(
           'Słowa kluczowe (${keywords.length})',
-          subtitle:
-              'Popyt i konkurencja z Google (odświeżane w poniedziałki). Z tej listy korzysta agent bloga i reklam.',
+          subtitle: 'Popyt i konkurencja z Google (odświeżane w poniedziałki). Z tej listy korzysta agent bloga i reklam.',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -798,7 +850,10 @@ class _KeywordsViewState extends ConsumerState<KeywordsView> {
                     width: 280,
                     child: TextField(
                       controller: _new,
-                      decoration: const InputDecoration(labelText: 'Nowa fraza', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(
+                        labelText: 'Nowa fraza',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
                   ),
                   DropdownButton<String>(
@@ -856,7 +911,9 @@ class _KeywordsViewState extends ConsumerState<KeywordsView> {
                               _ => '–',
                             }),
                           ),
-                          DataCell(Text(k['cpc_low'] == null ? '–' : '${zl(k['cpc_low'])}–${zl(k['cpc_high'])}')),
+                          DataCell(
+                            Text(k['cpc_low'] == null ? '–' : '${zl(k['cpc_low'])}–${zl(k['cpc_high'])}'),
+                          ),
                           DataCell(Text(_peak(k['trend']))),
                           DataCell(
                             Text(switch ('${k['use_for']}') {

@@ -42,7 +42,9 @@ class ItemEditor extends ConsumerWidget {
     }
 
     Future<void> pickAudio() async {
-      final picked = await ref.read(studioIoProvider).pickAsset(extensions: const ['m4a', 'mp3', 'aac', 'wav']);
+      final picked = await ref
+          .read(studioIoProvider)
+          .pickAsset(extensions: const ['m4a', 'mp3', 'aac', 'wav']);
       if (picked == null) return;
       final folder = item['pack_id'] as String? ?? (kind == 'song' ? 'piosenki' : 'inne');
       set('audio', [
@@ -54,7 +56,11 @@ class ItemEditor extends ConsumerWidget {
       final picked = await ref.read(studioIoProvider).pickAsset(extensions: const ['pdf']);
       if (picked == null) return;
       set('pdf', [
-        {'path': 'pdf/${item['pack_id'] ?? 'inne'}/$itemId.pdf', 'bytes': picked.bytes, 'sha256': picked.sha256},
+        {
+          'path': 'pdf/${item['pack_id'] ?? 'inne'}/$itemId.pdf',
+          'bytes': picked.bytes,
+          'sha256': picked.sha256,
+        },
       ]);
     }
 
@@ -67,10 +73,16 @@ class ItemEditor extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Text(item['title'] as String? ?? itemId, style: Theme.of(context).textTheme.headlineSmall)),
-            IconButton(
-              tooltip: 'Usuń pozycję',
+            Expanded(
+              child: Text(
+                item['title'] as String? ?? itemId,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(foregroundColor: Colors.red.shade700),
               icon: const Icon(Icons.delete_outline),
+              label: const Text('Usuń zabawę'),
               onPressed: () async {
                 final ok = await showDialog<bool>(
                   context: context,
@@ -100,7 +112,8 @@ class ItemEditor extends ConsumerWidget {
               subtitle: Text(error),
             ),
           ),
-        for (final w in warnings) ListTile(dense: true, leading: const Icon(Icons.info_outline), title: Text(w)),
+        for (final w in warnings)
+          ListTile(dense: true, leading: const Icon(Icons.info_outline), title: Text(w)),
         const SectionTitle('Podstawowe'),
         _IdField(
           itemId: itemId,
@@ -110,7 +123,12 @@ class ItemEditor extends ConsumerWidget {
           },
           taken: {for (final i in state.items) i['id'] as String?},
         ),
-        LabeledDropdown<String>(label: 'Rodzaj', value: kind, options: kindLabels, onChanged: (v) => set('kind', v)),
+        LabeledDropdown<String>(
+          label: 'Rodzaj',
+          value: kind,
+          options: kindLabels,
+          onChanged: (v) => set('kind', v),
+        ),
         LabeledDropdown<String>(
           label: 'Pakiet',
           value: item['pack_id'] as String? ?? '',
@@ -120,7 +138,11 @@ class ItemEditor extends ConsumerWidget {
           },
           onChanged: (v) => set('pack_id', v.isEmpty ? null : v),
         ),
-        SyncedTextField(label: 'Tytuł', value: item['title'] as String? ?? '', onChanged: (v) => set('title', v)),
+        SyncedTextField(
+          label: 'Tytuł',
+          value: item['title'] as String? ?? '',
+          onChanged: (v) => set('title', v),
+        ),
         SyncedTextField(
           label: 'Podtytuł (opcjonalnie)',
           value: item['subtitle'] as String? ?? '',
@@ -233,7 +255,8 @@ class ItemEditor extends ConsumerWidget {
             icon: const Icon(Icons.account_tree_outlined),
             label: const Text('Edytuj skrypt'),
             onPressed: () =>
-                Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ScriptEditorScreen(itemId: itemId))),
+                Navigator.of(context)
+                    .push(MaterialPageRoute<void>(builder: (_) => ScriptEditorScreen(itemId: itemId))),
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
@@ -320,7 +343,8 @@ class _AssetRow extends StatelessWidget {
         trailing: Wrap(
           spacing: 8,
           children: [
-            if (onRemove != null) IconButton(tooltip: 'Usuń', onPressed: onRemove, icon: const Icon(Icons.close)),
+            if (onRemove != null)
+              IconButton(tooltip: 'Usuń', onPressed: onRemove, icon: const Icon(Icons.close)),
             OutlinedButton(onPressed: onPick, child: Text(buttonLabel)),
           ],
         ),

@@ -8,8 +8,18 @@ final overview = <String, dynamic>{
   'configured': {'meta': true, 'meta_pixel': true, 'google_ads': false, 'ga4': true, 'agent': true},
   'sources': [
     {'source': 'meta', 'ok': true, 'message': '3 kampanii i zestawów', 'updated_at': '2026-10-06T05:00:00Z'},
-    {'source': 'meta_pixel', 'ok': false, 'message': 'Pixel milczy od 70 h', 'updated_at': '2026-10-06T05:00:00Z'},
-    {'source': 'agent', 'ok': true, 'message': 'Rodzice 3–6 działa najlepiej.', 'updated_at': '2026-10-06T05:01:00Z'},
+    {
+      'source': 'meta_pixel',
+      'ok': false,
+      'message': 'Pixel milczy od 70 h',
+      'updated_at': '2026-10-06T05:00:00Z',
+    },
+    {
+      'source': 'agent',
+      'ok': true,
+      'message': 'Rodzice 3–6 działa najlepiej.',
+      'updated_at': '2026-10-06T05:01:00Z',
+    },
   ],
   'settings': {'enabled': true, 'max_daily': 150, 'max_change': .5, 'target_cpa': 40},
   'summary': {

@@ -22,7 +22,13 @@ String isoDay(DateTime d) => '${d.year}-${'${d.month}'.padLeft(2, '0')}-${'${d.d
 /// The publication calendar as a month: premieres, posts, reels, newsletters on their days.
 /// Drag a card to another day (or to "Bez daty") to move it; tap to edit.
 class CalendarMonth extends StatefulWidget {
-  const CalendarMonth({super.key, required this.items, required this.onTap, required this.onMove, this.today});
+  const CalendarMonth({
+    super.key,
+    required this.items,
+    required this.onTap,
+    required this.onMove,
+    this.today,
+  });
 
   final List<Map<String, dynamic>> items;
   final ValueChanged<Map<String, dynamic>> onTap;
@@ -36,7 +42,10 @@ class CalendarMonth extends StatefulWidget {
 }
 
 class _CalendarMonthState extends State<CalendarMonth> {
-  late DateTime _month = DateTime((widget.today ?? DateTime.now()).year, (widget.today ?? DateTime.now()).month);
+  late DateTime _month = DateTime(
+    (widget.today ?? DateTime.now()).year,
+    (widget.today ?? DateTime.now()).month,
+  );
 
   static const _colors = {
     'release': Color(0xFFFAC119),
@@ -170,7 +179,10 @@ class _CalendarMonthState extends State<CalendarMonth> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
-                                      Text('$n', style: text.labelSmall?.copyWith(fontWeight: FontWeight.w700)),
+                                      Text(
+                                        '$n',
+                                        style: text.labelSmall?.copyWith(fontWeight: FontWeight.w700),
+                                      ),
                                       for (final i in byDay[day] ?? const <Map<String, dynamic>>[]) card(i),
                                     ],
                                   ),

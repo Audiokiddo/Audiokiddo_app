@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../state/studio_controller.dart';
+import '../theme.dart';
 import '../widgets/fields.dart';
 import 'item_editor.dart';
 
@@ -52,70 +53,106 @@ class _ContentScreenState extends ConsumerState<ContentScreen> {
 
     return Row(
       children: [
-        SizedBox(
-          width: 380,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: TextField(
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    hintText: 'Szukaj',
-                    border: OutlineInputBorder(),
+        Material(
+          color: Colors.white,
+          child: SizedBox(
+            width: 380,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Zabawy (${state.items.length})',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      FilledButton.icon(
+                        onPressed: _add,
+                        icon: const Icon(Icons.add),
+                        label: const Text('Dodaj zabawę'),
+                      ),
+                    ],
                   ),
-                  onChanged: (v) => setState(() => _query = v),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                child: LabeledDropdown<String>(
-                  label: 'Pakiet',
-                  value: _pack,
-                  options: {
-                    '': 'Wszystkie',
-                    for (final p in state.packs) p['id'] as String: p['title'] as String? ?? '',
-                  },
-                  onChanged: (v) => setState(() => _pack = v),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      hintText: 'Szukaj',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (v) => setState(() => _query = v),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, i) {
-                    final item = items[i];
-                    final id = item['id'] as String? ?? '';
-                    final error = validation.itemErrors[id];
-                    return ListTile(
-                      selected: id == _selected,
-                      leading: Icon(
-                        error != null ? Icons.error : Icons.check_circle_outline,
-                        color: error != null ? Theme.of(context).colorScheme.error : null,
-                      ),
-                      title: Text(item['title'] as String? ?? id),
-                      subtitle: Text(
-                        '${kindLabels[item['kind']] ?? item['kind']} · ${item['access'] == 'free' ? 'za darmo' : 'płatna'} · $id',
-                      ),
-                      onTap: () => setState(() => _selected = id),
-                    );
-                  },
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: LabeledDropdown<String>(
+                    label: 'Pakiet',
+                    value: _pack,
+                    options: {
+                      '': 'Wszystkie',
+                      for (final p in state.packs) p['id'] as String: p['title'] as String? ?? '',
+                    },
+                    onChanged: (v) => setState(() => _pack = v),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: FilledButton.icon(
-                  onPressed: _add,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Dodaj pozycję'),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, i) {
+                      final item = items[i];
+                      final id = item['id'] as String? ?? '';
+                      final error = validation.itemErrors[id];
+                      final pack = state.packs.where((p) => p['id'] == item['pack_id']).firstOrNull;
+                      final tint = Tint.ofPack(pack?['color'] as String?);
+                      return ListTile(
+                        selected: id == _selected,
+                        selectedTileColor: tint.soft,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        leading: CircleAvatar(
+                          backgroundColor: error != null ? Brand.coralSoft : tint.soft,
+                          child: Icon(
+                            error != null
+                                ? Icons.priority_high_rounded
+                                : item['kind'] == 'song'
+                                ? Icons.music_note_rounded
+                                : Icons.headphones_rounded,
+                            color: error != null ? Brand.coral : tint.deep,
+                          ),
+                        ),
+                        title: Text(item['title'] as String? ?? id),
+                        subtitle: Text(
+                          '${pack?['title'] ?? 'bez pakietu'} · ${item['access'] == 'free' ? 'za darmo' : 'płatna'}',
+                        ),
+                        onTap: () => setState(() => _selected = id),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         const VerticalDivider(width: 1),
         Expanded(
           child: _selected == null
-              ? const Center(child: Text('Wybierz pozycję z listy albo dodaj nową.'))
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset('assets/brand/szop-nasluchuje.png', width: 140),
+                      const SizedBox(height: 12),
+                      Text('Wybierz zabawę z listy', style: Theme.of(context).textTheme.titleLarge),
+                      const SizedBox(height: 4),
+                      const Text('albo dodaj nową przyciskiem „Dodaj zabawę”.'),
+                    ],
+                  ),
+                )
               : ItemEditor(
                   key: ValueKey(_selected),
                   itemId: _selected!,

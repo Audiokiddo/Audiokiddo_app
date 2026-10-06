@@ -286,7 +286,8 @@ class _StepCard extends StatelessWidget {
                   label: 'Zmienna',
                   value: (step['if'] as Json?)?['var'] as String? ?? '',
                   options: {for (final v in variableNames) v: v},
-                  onChanged: (v) => edit((s) => ((s['if'] ??= <String, Object?>{'lt': 1}) as Json)['var'] = v),
+                  onChanged: (v) =>
+                      edit((s) => ((s['if'] ??= <String, Object?>{'lt': 1}) as Json)['var'] = v),
                 ),
                 _int(
                   'Jeśli mniejsza niż',
@@ -331,7 +332,9 @@ class _StepCard extends StatelessWidget {
 
   List<Widget> _inputFields() {
     final fallback = (step['fallback'] as Json?) ?? {};
-    final noMic = fallback['no_microphone'] is Json ? fallback['no_microphone']! as Json : <String, Object?>{};
+    final noMic = fallback['no_microphone'] is Json
+        ? fallback['no_microphone']! as Json
+        : <String, Object?>{};
     void editNoMic(void Function(Json) change) => edit((s) {
       final f = (s['fallback'] ??= <String, Object?>{}) as Json;
       final w = (f['no_microphone'] is Json ? f['no_microphone'] : <String, Object?>{'type': 'wait'}) as Json;

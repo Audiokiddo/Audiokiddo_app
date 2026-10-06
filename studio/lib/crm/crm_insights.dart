@@ -157,7 +157,8 @@ const _statusLabels = {
 
 String scopeLabel(String scope) => switch (scope) {
   'all_content' => 'Abonament: wszystko',
-  final s when s.startsWith('children:') => 'Plan: ${s.substring(9)} ${s.endsWith(':1') ? 'dziecko' : 'dzieci'}',
+  final s when s.startsWith('children:') =>
+    'Plan: ${s.substring(9)} ${s.endsWith(':1') ? 'dziecko' : 'dzieci'}',
   final s when s.startsWith('pack:') => 'Pakiet ${s.substring(5)}',
   final s when s.startsWith('item:') => 'Zabawa ${s.substring(5)}',
   final s => s,
@@ -201,7 +202,10 @@ class _CustomerLookupState extends ConsumerState<CustomerLookup> {
 
   Future<void> _grant() async {
     final c = _customer!;
-    final result = await showDialog<(String, int, String)>(context: context, builder: (_) => const _GrantDialog());
+    final result = await showDialog<(String, int, String)>(
+      context: context,
+      builder: (_) => const _GrantDialog(),
+    );
     if (result == null || !mounted) return;
     final (scope, days, note) = result;
     final ok = await crmRun(
@@ -275,13 +279,16 @@ class _CustomerLookupState extends ConsumerState<CustomerLookup> {
               ),
               const SizedBox(height: 12),
               Text('Zakupy i dostęp', style: text.titleSmall),
-              if ((c['entitlements'] as List).isEmpty) const Text('Brak zakupów: korzysta z darmowych zabaw.'),
+              if ((c['entitlements'] as List).isEmpty)
+                const Text('Brak zakupów: korzysta z darmowych zabaw.'),
               for (final e in (c['entitlements'] as List).cast<Map>())
                 ListTile(
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                   leading: Icon(
-                    e['status'] == 'active' || e['status'] == 'grace' ? Icons.check_circle : Icons.cancel_outlined,
+                    e['status'] == 'active' || e['status'] == 'grace'
+                        ? Icons.check_circle
+                        : Icons.cancel_outlined,
                     color: e['status'] == 'billing_retry' ? Colors.orange : null,
                   ),
                   title: Text(scopeLabel('${e['scope']}')),
@@ -297,7 +304,9 @@ class _CustomerLookupState extends ConsumerState<CustomerLookup> {
                           onPressed: () async {
                             final ok = await crmRun(
                               context,
-                              () => ref.read(studioServerProvider).crmRevoke(c['id'] as String, '${e['scope']}'),
+                              () => ref
+                                  .read(studioServerProvider)
+                                  .crmRevoke(c['id'] as String, '${e['scope']}'),
                               done: 'Cofnięto dostęp ręczny.',
                             );
                             if (ok) await _search();
@@ -408,8 +417,16 @@ class _RhythmSettingsState extends ConsumerState<RhythmSettings> {
   Map<String, dynamic>? _value;
 
   static const switches = [
-    ('brief_daily', 'Raport COO codziennie rano', 'Co zrobione, co utknęło, 3 priorytety i propozycje zadań.'),
-    ('ads_weekly', 'Pomysły na reklamy i rolki w poniedziałki', '5 koncepcji z haczykiem, tekstem i budżetem testu.'),
+    (
+      'brief_daily',
+      'Raport COO codziennie rano',
+      'Co zrobione, co utknęło, 3 priorytety i propozycje zadań.',
+    ),
+    (
+      'ads_weekly',
+      'Pomysły na reklamy i rolki w poniedziałki',
+      '5 koncepcji z haczykiem, tekstem i budżetem testu.',
+    ),
     (
       'newsletter_biweekly',
       'Newsletter co drugi czwartek',
@@ -459,11 +476,14 @@ class _RhythmSettingsState extends ConsumerState<RhythmSettings> {
 // Planowanie newslettera --------------------------------------------------------------------------
 
 /// Group, day and hour for an approved newsletter; returns (groupId, date, time).
-Future<(String, String, String)?> askNewsletterSchedule(BuildContext context, StudioServer server, {DateTime? day}) =>
-    showDialog<(String, String, String)>(
-      context: context,
-      builder: (_) => _ScheduleDialog(server: server, day: day),
-    );
+Future<(String, String, String)?> askNewsletterSchedule(
+  BuildContext context,
+  StudioServer server, {
+  DateTime? day,
+}) => showDialog<(String, String, String)>(
+  context: context,
+  builder: (_) => _ScheduleDialog(server: server, day: day),
+);
 
 class _ScheduleDialog extends StatefulWidget {
   const _ScheduleDialog({required this.server, this.day});
@@ -587,7 +607,8 @@ class MailTools extends ConsumerWidget {
               label: const Text('Wyślij poranny raport teraz'),
             ),
             OutlinedButton.icon(
-              onPressed: () => crmRun(context, server.letterPreview, done: 'Wysłano przykładowy list na Twój adres.'),
+              onPressed: () =>
+                  crmRun(context, server.letterPreview, done: 'Wysłano przykładowy list na Twój adres.'),
               icon: const Icon(Icons.drafts_outlined),
               label: const Text('Przykładowy list do mnie'),
             ),

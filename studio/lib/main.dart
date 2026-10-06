@@ -9,13 +9,16 @@ import 'screens/publish_screen.dart';
 import 'screens/server_screen.dart';
 import 'server/studio_server.dart';
 import 'state/studio_controller.dart';
+import 'theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // The admin stays signed in across reloads of the page.
   final server = StudioServer();
   await server.restore();
-  runApp(ProviderScope(overrides: [studioServerProvider.overrideWithValue(server)], child: const StudioApp()));
+  runApp(
+    ProviderScope(overrides: [studioServerProvider.overrideWithValue(server)], child: const StudioApp()),
+  );
 }
 
 class StudioApp extends StatelessWidget {
@@ -25,7 +28,7 @@ class StudioApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     title: 'AudioKiddo Studio',
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(colorSchemeSeed: const Color(0xFF2F5249), useMaterial3: true),
+    theme: studioTheme(),
     locale: const Locale('pl'),
     supportedLocales: const [Locale('pl')],
     localizationsDelegates: const [
@@ -54,9 +57,19 @@ class _StudioShellState extends ConsumerState<StudioShell> {
       ref.read(studioProvider.notifier).importCatalog(raw);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Wczytano katalog.')));
     } on FormatException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Nie udało się wczytać: ${e.message}')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Nie udało się wczytać: ${e.message}')));
     }
   }
+
+  static const _places = [
+    (Icons.library_music_rounded, 'Treści', Tint.content),
+    (Icons.inventory_2_rounded, 'Pakiety', Tint.packs),
+    (Icons.view_carousel_rounded, 'Półki', Tint.shelves),
+    (Icons.rocket_rounded, 'Publikacja', Tint.publish),
+    (Icons.insights_rounded, 'Serwer', Tint.server),
+    (Icons.dashboard_customize_rounded, 'CRM', Tint.crm),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -64,17 +77,42 @@ class _StudioShellState extends ConsumerState<StudioShell> {
     final loaded = ref.watch(studioProvider.select((s) => s.loaded));
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AudioKiddo Studio'),
+        toolbarHeight: 68,
+        titleSpacing: 20,
+        title: Row(
+          children: [
+            Image.asset('assets/brand/logo.png', height: 28),
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+              decoration: BoxDecoration(color: Brand.sun, borderRadius: BorderRadius.circular(99)),
+              child: const Text('Studio', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+            ),
+          ],
+        ),
         actions: [
+          // The catalog's state; a click goes where it can be fixed.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Chip(
-              avatar: Icon(validation.canPublish ? Icons.check_circle_outline : Icons.error_outline),
-              label: Text(validation.canPublish ? 'Katalog poprawny' : 'Błędy: ${validation.errorCount}'),
+            child: ActionChip(
+              backgroundColor: validation.canPublish ? Brand.tealSoft : Brand.coralSoft,
+              avatar: Icon(
+                validation.canPublish ? Icons.check_circle_rounded : Icons.edit_note_rounded,
+                color: validation.canPublish ? Brand.tealDeep : Brand.coral,
+              ),
+              label: Text(
+                validation.canPublish ? 'Katalog gotowy' : 'Katalog: ${validation.errorCount} do poprawy',
+              ),
+              tooltip: 'Sprawdzenie zabaw, pakietów i półek przed publikacją',
+              onPressed: () => setState(() => _tab = 3),
             ),
           ),
-          TextButton.icon(onPressed: _import, icon: const Icon(Icons.upload_file), label: const Text('Importuj JSON')),
-          const SizedBox(width: 8),
+          IconButton(
+            tooltip: 'Wczytaj katalog z pliku JSON',
+            onPressed: _import,
+            icon: const Icon(Icons.upload_file),
+          ),
+          const SizedBox(width: 12),
         ],
       ),
       body: !loaded
@@ -84,14 +122,15 @@ class _StudioShellState extends ConsumerState<StudioShell> {
                 NavigationRail(
                   selectedIndex: _tab,
                   labelType: NavigationRailLabelType.all,
+                  minWidth: 92,
                   onDestinationSelected: (i) => setState(() => _tab = i),
-                  destinations: const [
-                    NavigationRailDestination(icon: Icon(Icons.library_music_outlined), label: Text('Treści')),
-                    NavigationRailDestination(icon: Icon(Icons.inventory_2_outlined), label: Text('Pakiety')),
-                    NavigationRailDestination(icon: Icon(Icons.view_carousel_outlined), label: Text('Półki')),
-                    NavigationRailDestination(icon: Icon(Icons.publish_outlined), label: Text('Publikacja')),
-                    NavigationRailDestination(icon: Icon(Icons.insights_outlined), label: Text('Serwer')),
-                    NavigationRailDestination(icon: Icon(Icons.rocket_launch_outlined), label: Text('CRM')),
+                  destinations: [
+                    for (final (icon, label, tint) in _places)
+                      NavigationRailDestination(
+                        icon: Icon(icon, color: tint.deep.withValues(alpha: .75)),
+                        selectedIcon: Icon(icon, color: tint.deep),
+                        label: Text(label),
+                      ),
                   ],
                 ),
                 const VerticalDivider(width: 1),

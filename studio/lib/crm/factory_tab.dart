@@ -91,7 +91,10 @@ class _FactoryTabState extends ConsumerState<FactoryTab> {
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Anuluj')),
-          FilledButton(onPressed: () => Navigator.pop(c, true), child: const Text('Agent: zaproponuj pakiet')),
+          FilledButton(
+            onPressed: () => Navigator.pop(c, true),
+            child: const Text('Agent: zaproponuj pakiet'),
+          ),
         ],
       ),
     );
@@ -130,7 +133,11 @@ class _FactoryTabState extends ConsumerState<FactoryTab> {
           children: [
             FilledButton.tonalIcon(
               onPressed: () async {
-                await crmRun(context, () => server.factoryProposeTopics(3), done: 'Agent szuka 3 tematów na blog.');
+                await crmRun(
+                  context,
+                  () => server.factoryProposeTopics(3),
+                  done: 'Agent szuka 3 tematów na blog.',
+                );
                 ref.invalidate(factoryJobsProvider);
               },
               icon: const Icon(Icons.lightbulb_outline),
@@ -282,7 +289,9 @@ class _JobCardState extends ConsumerState<JobCard> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '${job['title']}'.isEmpty ? (kind == 'blog' ? 'Nowy artykuł' : 'Nowy pakiet') : '${job['title']}',
+                    '${job['title']}'.isEmpty
+                        ? (kind == 'blog' ? 'Nowy artykuł' : 'Nowy pakiet')
+                        : '${job['title']}',
                     style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                   ),
                 ),
@@ -302,12 +311,16 @@ class _JobCardState extends ConsumerState<JobCard> {
                       s == 'script' && stage == 'script'
                           ? 'Scenariusz ${(job['step_index'] as int? ?? 0) + 1}/$scriptCount'
                           : stageLabels[s] ?? s,
-                      style: TextStyle(fontWeight: s == stage ? FontWeight.w800 : FontWeight.normal, fontSize: 12),
+                      style: TextStyle(
+                        fontWeight: s == stage ? FontWeight.w800 : FontWeight.normal,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
               ],
             ),
-            if (status == 'failed') Text('Nie wyszło: ${job['error']}', style: const TextStyle(color: Colors.red)),
+            if (status == 'failed')
+              Text('Nie wyszło: ${job['error']}', style: const TextStyle(color: Colors.red)),
             if (status == 'working') const Text('Agent pracuje nad tym krokiem…'),
             if (status == 'done' && _map(_map(job['data'])['wp'])['url'] != null)
               TextButton.icon(
@@ -368,12 +381,17 @@ class _JobCardState extends ConsumerState<JobCard> {
                     OutlinedButton.icon(
                       onPressed: _busy
                           ? null
-                          : () => _act(() => server.factoryRevise('${job['id']}', _feedback.text), 'Agent poprawia.'),
+                          : () => _act(
+                              () => server.factoryRevise('${job['id']}', _feedback.text),
+                              'Agent poprawia.',
+                            ),
                       icon: const Icon(Icons.edit_note),
                       label: const Text('Popraw'),
                     ),
                   TextButton(
-                    onPressed: _busy ? null : () => _act(() => server.factoryReject('${job['id']}'), 'Odrzucone.'),
+                    onPressed: _busy
+                        ? null
+                        : () => _act(() => server.factoryReject('${job['id']}'), 'Odrzucone.'),
                     child: const Text('Odrzuć'),
                   ),
                 ],

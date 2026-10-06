@@ -34,6 +34,7 @@ import {
   summarize,
 } from "../_shared/ads.ts";
 import { cleanCreative } from "../_shared/ads_growth.ts";
+import { answerText, ClaudeError, failWith } from "../_shared/claude.ts";
 import { withCors } from "../_shared/cors.ts";
 import {
   applyGrowthAction,
@@ -292,12 +293,13 @@ async function propose(admin: SupabaseClient, note: string | null) {
       messages: [{ role: "user", content: adsPrompt(context, note, today) }],
     }),
   });
-  if (!response.ok) {
-    console.error("ads: model", response.status, await response.text());
-    return { error: "model" as const };
+  let text: string;
+  try {
+    if (!response.ok) await failWith("ads", response);
+    text = answerText(await response.json());
+  } catch (e) {
+    return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model" };
   }
-  const answer = await response.json() as { content?: { type: string; text?: string }[] };
-  const text = (answer.content ?? []).filter((c) => c.type === "text").map((c) => c.text ?? "").join("");
   let parsed;
   try {
     parsed = parseAdsAnswer(text, entities);
@@ -510,8 +512,8 @@ Deno.serve(withCors(async (req) => {
       case "research": {
         const note = typeof body.note === "string" && body.note.trim() ? body.note.trim().slice(0, 2000) : null;
         const result = await weekly(admin, note);
-        const agent = result.agent as { error?: string };
-        if (agent.error) return json({ ...result, error: agent.error }, agent.error === "no_key" ? 412 : 502);
+        const agent = result.agent as { error?: string; reason?: string };
+        if (agent.error) return json({ ...result, error: agent.error, reason: agent.reason }, agent.error === "no_key" ? 412 : 502);
         return json(result);
       }
       case "exclude": {

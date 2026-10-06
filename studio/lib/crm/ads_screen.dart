@@ -28,7 +28,9 @@ class CampaignsTab extends ConsumerWidget {
               const Tab(text: 'Słowa kluczowe'),
             ],
           ),
-          const Expanded(child: TabBarView(children: [_Results(), CreativesView(), CompetitorsView(), KeywordsView()])),
+          const Expanded(
+            child: TabBarView(children: [_Results(), CreativesView(), CompetitorsView(), KeywordsView()]),
+          ),
         ],
       ),
     );
@@ -71,7 +73,8 @@ final adsOverviewProvider = FutureProvider.autoDispose<Map<String, dynamic>>((re
 
 /// How many proposals wait (for the tab's badge); 0 while loading or offline.
 final adsPendingProvider = Provider.autoDispose<int>(
-  (ref) => _list(ref.watch(adsOverviewProvider).value?['actions']).where((a) => a['status'] == 'pending').length,
+  (ref) =>
+      _list(ref.watch(adsOverviewProvider).value?['actions']).where((a) => a['status'] == 'pending').length,
 );
 
 Map<String, dynamic> _map(Object? v) => v is Map ? Map<String, dynamic>.from(v) : {};
@@ -300,7 +303,9 @@ class _AgentBoxState extends ConsumerState<_AgentBox> {
   Future<void> _ask() async {
     setState(() => _busy = true);
     await crmRun(context, () async {
-      await ref.read(studioServerProvider).adsPropose(note: _note.text.trim().isEmpty ? null : _note.text.trim());
+      await ref
+          .read(studioServerProvider)
+          .adsPropose(note: _note.text.trim().isEmpty ? null : _note.text.trim());
       ref.read(crmRefreshProvider.notifier).bump();
     }, done: 'Agent skończył przegląd. Propozycje czekają poniżej.');
     if (mounted) setState(() => _busy = false);
@@ -431,7 +436,8 @@ class _ProposalCardState extends ConsumerState<ProposalCard> {
             ),
             const SizedBox(height: 6),
             Text('${a['title']}', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
-            if ('${a['entity_name']}'.isNotEmpty) Text('Kampania: ${a['entity_name']}', style: text.bodySmall),
+            if ('${a['entity_name']}'.isNotEmpty)
+              Text('Kampania: ${a['entity_name']}', style: text.bodySmall),
             if ('${a['reason']}'.isNotEmpty) ...[const SizedBox(height: 6), Text('${a['reason']}')],
             if ('${a['expected']}'.isNotEmpty) ...[
               const SizedBox(height: 4),
@@ -570,7 +576,10 @@ class _Campaigns extends ConsumerWidget {
                                   tooltip: 'Zmień budżet',
                                   icon: const Icon(Icons.payments_outlined),
                                   onPressed: () async {
-                                    final budget = await askBudget(context, _num(c['daily_budget']).toDouble());
+                                    final budget = await askBudget(
+                                      context,
+                                      _num(c['daily_budget']).toDouble(),
+                                    );
                                     if (budget != null && context.mounted) {
                                       await apply(c, 'set_budget', budget: budget);
                                     }
@@ -652,7 +661,9 @@ class _Limits extends ConsumerStatefulWidget {
 class _LimitsState extends ConsumerState<_Limits> {
   late bool _enabled = widget.settings['enabled'] != false;
   late final _maxDaily = TextEditingController(text: '${widget.settings['max_daily'] ?? 150}');
-  late final _maxChange = TextEditingController(text: '${(_num(widget.settings['max_change'] ?? .5) * 100).round()}');
+  late final _maxChange = TextEditingController(
+    text: '${(_num(widget.settings['max_change'] ?? .5) * 100).round()}',
+  );
   late final _targetCpa = TextEditingController(text: '${widget.settings['target_cpa'] ?? ''}');
 
   @override

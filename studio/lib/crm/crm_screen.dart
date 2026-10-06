@@ -6,6 +6,7 @@ import 'ads_screen.dart';
 import 'crm_calendar.dart';
 import 'crm_insights.dart';
 import 'crm_quality.dart';
+import '../theme.dart';
 import 'crm_widgets.dart';
 import 'factory_tab.dart';
 
@@ -19,6 +20,15 @@ class CrmScreen extends ConsumerStatefulWidget {
 }
 
 class _CrmScreenState extends ConsumerState<CrmScreen> {
+  static Tab _tab(IconData icon, String label, Color color, {int badge = 0}) => Tab(
+    icon: Badge(
+      isLabelVisible: badge > 0,
+      label: Text('$badge'),
+      child: Icon(icon, color: color),
+    ),
+    text: label,
+  );
+
   @override
   Widget build(BuildContext context) {
     final server = ref.watch(studioServerProvider);
@@ -29,41 +39,30 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
       length: 16,
       child: Column(
         children: [
-          TabBar(
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
-            tabs: [
-              const Tab(icon: Icon(Icons.dashboard_outlined), text: 'Pulpit'),
-              Tab(
-                icon: Badge(
-                  isLabelVisible: pending > 0,
-                  label: Text('$pending'),
-                  child: const Icon(Icons.how_to_vote_outlined),
-                ),
-                text: 'Decyzje',
-              ),
-              const Tab(icon: Icon(Icons.view_kanban_outlined), text: 'Zadania'),
-              const Tab(icon: Icon(Icons.lightbulb_outline), text: 'Pomysły'),
-              const Tab(icon: Icon(Icons.calendar_month_outlined), text: 'Kalendarz'),
-              const Tab(icon: Icon(Icons.campaign_outlined), text: 'Reklamy'),
-              Tab(
-                icon: Badge(
-                  isLabelVisible: adsPending > 0,
-                  label: Text('$adsPending'),
-                  child: const Icon(Icons.insights_outlined),
-                ),
-                text: 'Kampanie',
-              ),
-              const Tab(icon: Icon(Icons.mail_outline), text: 'Mailing'),
-              const Tab(icon: Icon(Icons.precision_manufacturing_outlined), text: 'Fabryka'),
-              const Tab(icon: Icon(Icons.query_stats), text: 'Analiza'),
-              const Tab(icon: Icon(Icons.reviews_outlined), text: 'Opinie'),
-              const Tab(icon: Icon(Icons.receipt_long_outlined), text: 'Zamówienia'),
-              const Tab(icon: Icon(Icons.bug_report_outlined), text: 'Błędy'),
-              const Tab(icon: Icon(Icons.people_outline), text: 'Użytkownicy'),
-              const Tab(icon: Icon(Icons.update), text: 'Aktualizacje'),
-              const Tab(icon: Icon(Icons.tune), text: 'Ustawienia'),
-            ],
+          Container(
+            color: Colors.white,
+            child: TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              tabs: [
+                _tab(Icons.dashboard_rounded, 'Pulpit', Brand.tealDeep),
+                _tab(Icons.how_to_vote_rounded, 'Decyzje', Brand.lavDeep, badge: pending),
+                _tab(Icons.view_kanban_rounded, 'Zadania', Brand.sunDeep),
+                _tab(Icons.lightbulb_rounded, 'Pomysły', Brand.sunDeep),
+                _tab(Icons.calendar_month_rounded, 'Kalendarz', Brand.tealDeep),
+                _tab(Icons.campaign_rounded, 'Reklamy', Brand.coral),
+                _tab(Icons.insights_rounded, 'Kampanie', Brand.coral, badge: adsPending),
+                _tab(Icons.mail_rounded, 'Mailing', Brand.lavDeep),
+                _tab(Icons.precision_manufacturing_rounded, 'Fabryka', Brand.tealDeep),
+                _tab(Icons.query_stats_rounded, 'Analiza', Brand.tealDeep),
+                _tab(Icons.reviews_rounded, 'Opinie', Brand.sunDeep),
+                _tab(Icons.receipt_long_rounded, 'Zamówienia', Brand.lavDeep),
+                _tab(Icons.bug_report_rounded, 'Błędy z telefonów', Brand.coral),
+                _tab(Icons.people_rounded, 'Użytkownicy', Brand.tealDeep),
+                _tab(Icons.update_rounded, 'Aktualizacje', Brand.lavDeep),
+                _tab(Icons.tune_rounded, 'Ustawienia', Brand.ink),
+              ],
+            ),
           ),
           const Divider(height: 1),
           const Expanded(
@@ -145,7 +144,13 @@ class _AdminSignInState extends ConsumerState<AdminSignIn> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('CRM AudioKiddo', style: Theme.of(context).textTheme.headlineSmall),
+            Image.asset('assets/brand/szop-zadowolony.png', height: 120),
+            const SizedBox(height: 8),
+            Text(
+              'CRM AudioKiddo',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 8),
             const Text('Wyślemy kod na Twój e-mail. Wejdzie tylko konto z listy administratorów.'),
             const SizedBox(height: 16),
@@ -310,7 +315,9 @@ class _CooBoxState extends ConsumerState<_CooBox> {
     await crmRun(
       context,
       () async {
-        await ref.read(studioServerProvider).coo(mode, note: _note.text.trim().isEmpty ? null : _note.text.trim());
+        await ref
+            .read(studioServerProvider)
+            .coo(mode, note: _note.text.trim().isEmpty ? null : _note.text.trim());
         ref.read(crmRefreshProvider.notifier).bump();
       },
       done: mode == 'brief'
@@ -331,7 +338,10 @@ class _CooBoxState extends ConsumerState<_CooBox> {
             children: [
               const Icon(Icons.smart_toy_outlined),
               const SizedBox(width: 8),
-              Text('Agent COO', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+              Text(
+                'Agent COO',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -448,7 +458,11 @@ List<Map<String, dynamic>> decided(List<Map<String, dynamic>> list) => [
 class _Tasks extends ConsumerWidget {
   const _Tasks();
 
-  static const columns = [('todo', 'Do zrobienia'), ('doing', 'W toku'), ('done', 'Zrobione')];
+  static const columns = [
+    ('todo', 'Do zrobienia', Brand.lavDeep, Brand.lavSoft),
+    ('doing', 'W toku', Brand.sunDeep, Brand.sunSoft),
+    ('done', 'Zrobione', Brand.tealDeep, Brand.tealSoft),
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -465,61 +479,112 @@ class _Tasks extends ConsumerWidget {
       if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
     }
 
+    Future<void> moveTo(Map<String, dynamic> task, String status) async {
+      if (task['status'] == status) return;
+      if (await crmRun(context, () => server.saveCrmItem({'id': task['id'], 'status': status}))) refresh();
+    }
+
+    Future<void> remove(Map<String, dynamic> task) async {
+      if (!await confirmDelete(context, 'zadanie „${task['title']}”')) return;
+      if (!context.mounted) return;
+      if (await crmRun(context, () => server.deleteCrmItem('${task['id']}'))) refresh();
+    }
+
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: edit,
         icon: const Icon(Icons.add),
-        label: const Text('Zadanie'),
+        label: const Text('Dodaj zadanie'),
       ),
       body: crmAsync(ref.watch(crmItemsProvider('task')), (all) {
         final list = decided(all)..sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.all(16),
-          child: Row(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final (status, label) in columns)
-                Container(
-                  width: 340,
-                  margin: const EdgeInsets.only(right: 16),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '$label (${list.where((t) => t['status'] == status).length})',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      for (final t in list.where((t) => t['status'] == status))
-                        CrmCard(
-                          item: t,
-                          dense: true,
-                          onTap: () => edit(t),
-                          actions: [
-                            for (final (next, nextLabel) in columns)
-                              if (next != status)
-                                TextButton(
-                                  onPressed: () async {
-                                    if (await crmRun(
-                                      context,
-                                      () => server.saveCrmItem({'id': t['id'], 'status': next}),
-                                    )) {
-                                      refresh();
-                                    }
-                                  },
-                                  child: Text('→ $nextLabel'),
+              const Padding(
+                padding: EdgeInsets.only(left: 4, bottom: 10),
+                child: Text('Przeciągnij kartę myszką do innej kolumny. Kliknij kartę, żeby ją zmienić.'),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final (status, label, deep, soft) in columns)
+                    DragTarget<Map<String, dynamic>>(
+                      onWillAcceptWithDetails: (d) => d.data['status'] != status,
+                      onAcceptWithDetails: (d) => moveTo(d.data, status),
+                      builder: (context, hovering, _) {
+                        final tasks = list.where((t) => t['status'] == status).toList();
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          width: 340,
+                          constraints: const BoxConstraints(minHeight: 420),
+                          margin: const EdgeInsets.only(right: 16),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: soft,
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(
+                              color: hovering.isNotEmpty ? deep : Colors.transparent,
+                              width: 2.5,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  CircleAvatar(radius: 6, backgroundColor: deep),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '$label (${tasks.length})',
+                                    style: Theme.of(context).textTheme.titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.w700, color: deep),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              if (tasks.isEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 24),
+                                  child: Center(child: Text(hovering.isNotEmpty ? 'Upuść tutaj' : 'Pusto')),
                                 ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
+                              for (final t in tasks)
+                                Draggable<Map<String, dynamic>>(
+                                  data: t,
+                                  feedback: Material(
+                                    color: Colors.transparent,
+                                    child: SizedBox(
+                                      width: 316,
+                                      child: Transform.rotate(
+                                        angle: -.03,
+                                        child: CrmCard(item: t, dense: true),
+                                      ),
+                                    ),
+                                  ),
+                                  childWhenDragging: Opacity(
+                                    opacity: .35,
+                                    child: CrmCard(item: t, dense: true),
+                                  ),
+                                  child: MouseRegion(
+                                    cursor: SystemMouseCursors.grab,
+                                    child: CrmCard(
+                                      item: t,
+                                      dense: true,
+                                      onTap: () => edit(t),
+                                      onDelete: () => remove(t),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
             ],
           ),
         );
@@ -589,6 +654,11 @@ class _IdeasState extends ConsumerState<_Ideas> {
             for (final item in list)
               CrmCard(
                 item: item,
+                onDelete: () async {
+                  if (!await confirmDelete(context, 'pomysł „${item['title']}”')) return;
+                  if (!context.mounted) return;
+                  if (await crmRun(context, () => server.deleteCrmItem('${item['id']}'))) refresh();
+                },
                 actions: [
                   Chip(label: Text(statusLabels[item['status']] ?? '${item['status']}')),
                   TextButton(onPressed: () => edit(item), child: const Text('Edytuj')),
@@ -605,7 +675,10 @@ class _IdeasState extends ConsumerState<_Ideas> {
                               if (mounted) setState(() => _writing = null);
                             },
                       icon: _writing == item['id']
-                          ? const SizedBox.square(dimension: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                          ? const SizedBox.square(
+                              dimension: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
                           : const Icon(Icons.auto_stories_outlined),
                       label: const Text('Agent: napisz scenariusz zabawy'),
                     ),
@@ -671,7 +744,9 @@ class _Calendar extends ConsumerWidget {
               items: list,
               onTap: edit,
               onMove: (item, day) async {
-                if (await crmRun(context, () => server.saveCrmItem({'id': item['id'], 'due': day}))) refresh();
+                if (await crmRun(context, () => server.saveCrmItem({'id': item['id'], 'due': day}))) {
+                  refresh();
+                }
               },
             ),
           ],
@@ -772,7 +847,10 @@ class _AdPreview extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text('audiokiddo', style: text.labelMedium?.copyWith(color: Colors.white)),
                         const Spacer(),
-                        Text('${data['format'] ?? 'rolka'}', style: text.labelSmall?.copyWith(color: Colors.white70)),
+                        Text(
+                          '${data['format'] ?? 'rolka'}',
+                          style: text.labelSmall?.copyWith(color: Colors.white70),
+                        ),
                       ],
                     ),
                     const Spacer(),
@@ -840,7 +918,12 @@ class _MailingState extends ConsumerState<_Mailing> {
     final text = Theme.of(context).textTheme;
     void refresh() => ref.read(crmRefreshProvider.notifier).bump();
     Future<void> edit([Map<String, dynamic>? item]) async {
-      final saved = await editCrmItem(context, kind: 'mailing', item: item, areas: const ['newsletter', 'automation']);
+      final saved = await editCrmItem(
+        context,
+        kind: 'mailing',
+        item: item,
+        areas: const ['newsletter', 'automation'],
+      );
       if (saved == null || !context.mounted) return;
       if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
     }
@@ -860,7 +943,9 @@ class _MailingState extends ConsumerState<_Mailing> {
               child: _overview == null
                   ? Row(
                       children: [
-                        const Expanded(child: Text('MailerLite: subskrybenci, wyniki kampanii i automatyzacje.')),
+                        const Expanded(
+                          child: Text('MailerLite: subskrybenci, wyniki kampanii i automatyzacje.'),
+                        ),
                         FilledButton.tonal(
                           onPressed: () => setState(() => _overview = server.mailerLite()),
                           child: const Text('Wczytaj z MailerLite'),
@@ -880,7 +965,9 @@ class _MailingState extends ConsumerState<_Mailing> {
                             const SizedBox(height: 8),
                             Text('Grupy', style: text.labelLarge),
                             for (final g in (o['groups'] as List? ?? const []).cast<Map>())
-                              Text('• ${g['name']}: ${g['active']} aktywnych, otwarcia ${g['open_rate'] ?? '–'}'),
+                              Text(
+                                '• ${g['name']}: ${g['active']} aktywnych, otwarcia ${g['open_rate'] ?? '–'}',
+                              ),
                             const SizedBox(height: 8),
                             Text('Ostatnie kampanie', style: text.labelLarge),
                             for (final c in (o['campaigns'] as List? ?? const []).cast<Map>())
@@ -1037,7 +1124,12 @@ class _Updates extends ConsumerWidget {
     final server = ref.read(studioServerProvider);
     void refresh() => ref.read(crmRefreshProvider.notifier).bump();
     Future<void> edit([Map<String, dynamic>? item]) async {
-      final saved = await editCrmItem(context, kind: 'change', item: item, areas: const ['update', 'proposal']);
+      final saved = await editCrmItem(
+        context,
+        kind: 'change',
+        item: item,
+        areas: const ['update', 'proposal'],
+      );
       if (saved == null || !context.mounted) return;
       if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
     }
@@ -1122,7 +1214,9 @@ class _SettingsState extends ConsumerState<_Settings> {
     super.initState();
     ref.read(studioServerProvider).crmSetting('monthly_costs').then((v) {
       if (mounted) {
-        setState(() => _costs = {for (final e in v.entries) e.key: TextEditingController(text: '${e.value}')});
+        setState(
+          () => _costs = {for (final e in v.entries) e.key: TextEditingController(text: '${e.value}')},
+        );
       }
     });
   }

@@ -1,5 +1,6 @@
 import 'package:crypto/crypto.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
@@ -22,6 +23,9 @@ class PickedAsset {
 abstract interface class StudioIo {
   Future<String?> readDraft();
   Future<void> writeDraft(String json);
+
+  /// The catalog built into the app (what families see before anything is published).
+  Future<String?> readStarterCatalog();
   Future<String?> pickCatalogJson();
   Future<PickedAsset?> pickAsset({required List<String> extensions});
   void download(String fileName, String content);
@@ -34,7 +38,17 @@ class BrowserStudioIo implements StudioIo {
   Future<String?> readDraft() async => (await SharedPreferences.getInstance()).getString(_draftKey);
 
   @override
-  Future<void> writeDraft(String json) async => (await SharedPreferences.getInstance()).setString(_draftKey, json);
+  Future<void> writeDraft(String json) async =>
+      (await SharedPreferences.getInstance()).setString(_draftKey, json);
+
+  @override
+  Future<String?> readStarterCatalog() async {
+    try {
+      return await rootBundle.loadString('assets/app_catalog.json');
+    } on Object {
+      return null;
+    }
+  }
 
   @override
   Future<String?> pickCatalogJson() async {

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../server/studio_server.dart';
 import '../state/studio_controller.dart';
+import '../theme.dart';
 
 /// "Serwer": sign in as an admin, see how the app sells, publish the catalog to the app and
 /// manage promotions. Everything goes through the admin function.
@@ -82,7 +83,9 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
           children: [
             Text('Logowanie administratora', style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
-            const Text('Wyślemy kod na Twój e-mail. Konto musi być na liście administratorów (tabela admins).'),
+            const Text(
+              'Wyślemy kod na Twój e-mail. Konto musi być na liście administratorów (tabela admins).',
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _email,
@@ -183,7 +186,10 @@ class _StatsTabState extends ConsumerState<_StatsTab> {
               _Tile('Płacące rodziny (teraz)', '${s['paying_families'] ?? 0}'),
               _Tile('Aktywne abonamenty', '${s['active_subscriptions'] ?? 0}'),
               _Tile('Nowe instalacje', '${installs('first_open')}'),
-              _Tile('Polecenia: użyte / nagrodzone', '${referrals['redeemed'] ?? 0} / ${referrals['rewarded'] ?? 0}'),
+              _Tile(
+                'Polecenia: użyte / nagrodzone',
+                '${referrals['redeemed'] ?? 0} / ${referrals['rewarded'] ?? 0}',
+              ),
             ],
           ),
           const SizedBox(height: 24),
@@ -207,7 +213,8 @@ class _StatsTabState extends ConsumerState<_StatsTab> {
           ],
           const Divider(height: 32),
           Text('Zakupy według produktu ($_days dni)', style: text.titleMedium),
-          if (purchases.isEmpty) const Padding(padding: EdgeInsets.all(8), child: Text('Brak zakupów w tym okresie.')),
+          if (purchases.isEmpty)
+            const Padding(padding: EdgeInsets.all(8), child: Text('Brak zakupów w tym okresie.')),
           for (final p in purchases)
             ListTile(
               dense: true,
@@ -286,7 +293,11 @@ class _Analytics extends StatelessWidget {
         Text('Zabawy', style: text.titleMedium),
         row('Rozpoczęte / ukończone', '${plays['starts'] ?? 0} / ${plays['completes'] ?? 0}'),
         row('Powtórki (zabawa znana do końca)', '${plays['replays'] ?? 0}'),
-        row('Od razu następna zabawa', '${plays['next_plays'] ?? 0}', 'Do 10 minut po ukończeniu poprzedniej'),
+        row(
+          'Od razu następna zabawa',
+          '${plays['next_plays'] ?? 0}',
+          'Do 10 minut po ukończeniu poprzedniej',
+        ),
         const SizedBox(height: 12),
         Text('Częstotliwość', style: text.titleMedium),
         row('Aktywne urządzenia', '${freq['active_installs'] ?? 0}'),
@@ -415,7 +426,8 @@ class _CatalogTabState extends ConsumerState<_CatalogTab> {
       final raw = ref.read(studioProvider.notifier).exportForPublishing();
       final version = await ref.read(studioServerProvider).publish(jsonDecode(raw) as Json, _note.text);
       setState(
-        () => _status = 'Opublikowano wersję $version. Rodziny zobaczą zmiany przy następnym otwarciu aplikacji.',
+        () => _status =
+            'Opublikowano wersję $version. Rodziny zobaczą zmiany przy następnym otwarciu aplikacji.',
       );
     } on Object catch (e) {
       setState(() => _status = '$e');
@@ -503,10 +515,18 @@ class _PromotionsTabState extends ConsumerState<_PromotionsTab> {
 
   void _reload() => setState(() => _list = ref.read(studioServerProvider).promotions());
 
+  /// What a promotion can be about: the whole offer, the subscription, the sets or one pack.
+  Map<String, String> _targets() => {
+    '': 'Cała oferta',
+    'subscription': 'Abonament',
+    'bundle': 'Zestawy pakietów',
+    for (final p in ref.read(studioProvider).packs) '${p['id']}': 'Pakiet ${p['title']}',
+  };
+
   Future<void> _edit([Map<String, dynamic>? existing]) async {
     final saved = await showDialog<Map<String, Object?>>(
       context: context,
-      builder: (_) => _PromotionDialog(existing: existing),
+      builder: (_) => _PromotionDialog(existing: existing, targets: _targets()),
     );
     if (saved == null) return;
     try {
@@ -548,7 +568,7 @@ class _PromotionsTabState extends ConsumerState<_PromotionsTab> {
                 title: Text('${p['title']}'),
                 subtitle: Text(
                   '${_fmt(p['starts_at'])} – ${_fmt(p['ends_at'])}'
-                  '${p['target'] == null ? '' : ' · dotyczy: ${p['target']}'}'
+                  ' · ${_targets()[p['target'] ?? ''] ?? p['target']}'
                   '${_running(p, now) ? ' · TRWA' : ''}${p['active'] == false ? ' · wyłączona' : ''}',
                 ),
                 onTap: () => _edit(p),
@@ -556,6 +576,7 @@ class _PromotionsTabState extends ConsumerState<_PromotionsTab> {
                   tooltip: 'Usuń',
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () async {
+                    if (!await confirmDelete(context, 'promocję „${p['title']}”')) return;
                     await ref.read(studioServerProvider).deletePromotion(p['id'] as String);
                     _reload();
                   },
@@ -580,9 +601,10 @@ class _PromotionsTabState extends ConsumerState<_PromotionsTab> {
 }
 
 class _PromotionDialog extends StatefulWidget {
-  const _PromotionDialog({this.existing});
+  const _PromotionDialog({this.existing, required this.targets});
 
   final Map<String, dynamic>? existing;
+  final Map<String, String> targets;
 
   @override
   State<_PromotionDialog> createState() => _PromotionDialogState();
@@ -592,10 +614,11 @@ class _PromotionDialogState extends State<_PromotionDialog> {
   late final _title = TextEditingController(text: widget.existing?['title'] as String? ?? '');
   late final _body = TextEditingController(text: widget.existing?['body'] as String? ?? '');
   late final _badge = TextEditingController(text: widget.existing?['badge'] as String? ?? '');
-  late final _target = TextEditingController(text: widget.existing?['target'] as String? ?? '');
+  late String _target = widget.existing?['target'] as String? ?? '';
   late DateTime _start = DateTime.tryParse('${widget.existing?['starts_at']}')?.toLocal() ?? DateTime.now();
   late DateTime _end =
-      DateTime.tryParse('${widget.existing?['ends_at']}')?.toLocal() ?? DateTime.now().add(const Duration(days: 7));
+      DateTime.tryParse('${widget.existing?['ends_at']}')?.toLocal() ??
+      DateTime.now().add(const Duration(days: 7));
   late bool _active = widget.existing?['active'] as bool? ?? true;
 
   Future<void> _pick(bool start) async {
@@ -633,9 +656,18 @@ class _PromotionDialogState extends State<_PromotionDialog> {
             controller: _badge,
             decoration: const InputDecoration(labelText: 'Etykieta (np. −20%)'),
           ),
-          TextField(
-            controller: _target,
-            decoration: const InputDecoration(labelText: 'Dotyczy: id pakietu, subscription, bundle albo puste'),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<String>(
+            initialValue: _target,
+            decoration: const InputDecoration(labelText: 'Czego dotyczy'),
+            items: [
+              for (final MapEntry(:key, :value) in {
+                ...widget.targets,
+                if (!widget.targets.containsKey(_target)) _target: _target,
+              }.entries)
+                DropdownMenuItem(value: key, child: Text(value)),
+            ],
+            onChanged: (v) => setState(() => _target = v ?? ''),
           ),
           const SizedBox(height: 12),
           Row(
@@ -655,7 +687,11 @@ class _PromotionDialogState extends State<_PromotionDialog> {
               ),
             ],
           ),
-          SwitchListTile(title: const Text('Włączona'), value: _active, onChanged: (v) => setState(() => _active = v)),
+          SwitchListTile(
+            title: const Text('Włączona'),
+            value: _active,
+            onChanged: (v) => setState(() => _active = v),
+          ),
         ],
       ),
     ),
@@ -667,7 +703,7 @@ class _PromotionDialogState extends State<_PromotionDialog> {
           'title': _title.text.trim(),
           'body': _body.text.trim(),
           'badge': _badge.text.trim(),
-          'target': _target.text.trim(),
+          'target': _target,
           'starts_at': _start.toUtc().toIso8601String(),
           'ends_at': _end.toUtc().toIso8601String(),
           'active': _active,

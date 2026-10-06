@@ -20,6 +20,23 @@ class StudioServerException implements Exception {
   String toString() => message;
 }
 
+/// What to do when the agent (Claude) failed, from the reason the function sends back.
+String agentTrouble(Object? details) {
+  final body = details is Map ? details : const {};
+  return switch ('${body['reason'] ?? body['error'] ?? ''}') {
+    'key' =>
+      'Klucz Claude jest nieprawidłowy albo wyłączony. Utwórz nowy w console.anthropic.com → API Keys '
+          'i wklej go w Supabase → Edge Functions → Secrets jako ANTHROPIC_API_KEY.',
+    'credit' => 'Na koncie Anthropic skończyły się środki. Doładuj je: console.anthropic.com → Billing.',
+    'model_missing' => 'Ten model Claude jest niedostępny dla Twojego klucza. Usuń sekret COO_MODEL w Supabase albo wpisz inny model.',
+    'busy' => 'Claude jest teraz przeciążony. Spróbuj za minutę.',
+    'too_long' =>
+      'Odpowiedź agenta była za długa i się urwała. Spróbuj jeszcze raz albo dopisz węższą wskazówkę.',
+    'answer' => 'Agent odpowiedział w złym formacie. Spróbuj jeszcze raz.',
+    _ => 'Agent nie odpowiedział poprawnie. Spróbuj ponownie za chwilę.',
+  };
+}
+
 /// Studio's connection to the server: sign-in with an e-mail code and the admin function
 /// (only accounts listed in public.admins may use it).
 class StudioServer {
@@ -95,7 +112,7 @@ class StudioServer {
               : 'Brak klucza MailerLite. Wpisz MAILERLITE_API_KEY i MAILERLITE_FROM w Supabase → Edge Functions → Secrets.',
         502 =>
           function == 'coo' || function == 'ads'
-              ? 'Agent nie odpowiedział poprawnie. Spróbuj ponownie za chwilę.'
+              ? agentTrouble(e.details)
               : 'MailerLite odrzucił zapytanie. Sprawdź klucz i adres nadawcy.',
         _ => 'Serwer nie odpowiada. Spróbuj za chwilę.',
       });
