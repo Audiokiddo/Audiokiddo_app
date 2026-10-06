@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../server/studio_server.dart';
+import 'ads_screen.dart';
 import 'crm_widgets.dart';
 
 /// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
@@ -19,8 +20,9 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
     final server = ref.watch(studioServerProvider);
     if (!server.signedIn) return AdminSignIn(onSignedIn: () => setState(() {}));
     final pending = ref.watch(crmPendingProvider).value?.length ?? 0;
+    final adsPending = ref.watch(adsPendingProvider);
     return DefaultTabController(
-      length: 10,
+      length: 11,
       child: Column(
         children: [
           TabBar(
@@ -40,6 +42,14 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
               const Tab(icon: Icon(Icons.lightbulb_outline), text: 'Pomysły'),
               const Tab(icon: Icon(Icons.calendar_month_outlined), text: 'Kalendarz'),
               const Tab(icon: Icon(Icons.campaign_outlined), text: 'Reklamy'),
+              Tab(
+                icon: Badge(
+                  isLabelVisible: adsPending > 0,
+                  label: Text('$adsPending'),
+                  child: const Icon(Icons.insights_outlined),
+                ),
+                text: 'Kampanie',
+              ),
               const Tab(icon: Icon(Icons.mail_outline), text: 'Mailing'),
               const Tab(icon: Icon(Icons.people_outline), text: 'Użytkownicy'),
               const Tab(icon: Icon(Icons.update), text: 'Aktualizacje'),
@@ -56,6 +66,7 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
                 _Ideas(),
                 _Calendar(),
                 _Ads(),
+                CampaignsTab(),
                 _Mailing(),
                 _Users(),
                 _Updates(),

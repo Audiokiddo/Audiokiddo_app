@@ -473,3 +473,6 @@ verify_jwt = false
 
 [functions.account-status]
 verify_jwt = false
+
+[functions.ads]
+verify_jwt = false

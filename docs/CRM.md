@@ -12,6 +12,7 @@ Stan: 5 października 2026. CRM jest częścią AudioKiddo Studio (zakładka **C
 | **Pomysły** | Pakiety, scenariusze, funkcje, posty i rolki ze statusem (nowy, wybrany, w produkcji, opublikowany). Przy pakiecie przycisk „Agent: napisz scenariusz zabawy” oraz „Do kalendarza” |
 | **Kalendarz** | Premiery pakietów, rolki, posty, newslettery i promocje, miesiąc po miesiącu |
 | **Reklamy** | Podgląd reklam i rolek jak na telefonie: haczyk, tekst, grupa docelowa, budżet testu |
+| **Kampanie** | Meta Ads, Pixel, Google Ads i Google Analytics: wyniki, propozycje agenta reklam do zatwierdzenia, ręczne zmiany budżetów i wstrzymywanie kampanii. Szczegóły i podłączenie kont: `docs/REKLAMY.md` |
 | **Mailing** | Wyniki z MailerLite (subskrybenci, otwarcia, kliknięcia, automatyzacje), newslettery i automatyzacje z podglądem. Przycisk „Szkic w MailerLite” tworzy kampanię, którą sprawdzasz i wysyłasz sam |
 | **Użytkownicy** | Liczby kont, nowe konta, płacący, sprzedane pakiety, lista ostatnich kont |
 | **Aktualizacje** | Historia wersji i propozycje zmian w aplikacji. „Jako zadanie” robi z propozycji zadanie dla Claude |

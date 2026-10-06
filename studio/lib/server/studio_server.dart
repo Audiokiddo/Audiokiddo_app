@@ -72,12 +72,13 @@ class StudioServer {
         401 => 'Zaloguj się ponownie.',
         403 => 'To konto nie jest administratorem (tabela admins).',
         400 => 'Serwer odrzucił dane: ${e.details}',
+        409 => 'Ta propozycja jest już rozstrzygnięta. Odśwież widok.',
         412 =>
-          function == 'coo'
+          function == 'coo' || function == 'ads'
               ? 'Brak klucza Claude API. Wpisz ANTHROPIC_API_KEY w Supabase → Edge Functions → Secrets.'
               : 'Brak klucza MailerLite. Wpisz MAILERLITE_API_KEY i MAILERLITE_FROM w Supabase → Edge Functions → Secrets.',
         502 =>
-          function == 'coo'
+          function == 'coo' || function == 'ads'
               ? 'Agent nie odpowiedział poprawnie. Spróbuj ponownie za chwilę.'
               : 'MailerLite odrzucił zapytanie. Sprawdź klucz i adres nadawcy.',
         _ => 'Serwer nie odpowiada. Spróbuj za chwilę.',
@@ -134,6 +135,44 @@ class StudioServer {
 
   Future<void> mailerLiteDraft(String itemId, {String? groupId}) =>
       _invoke('mailerlite', {'action': 'draft', 'item_id': itemId, 'group_id': ?groupId});
+
+  // Kampanie (Meta Ads, Pixel, Google Ads, GA4) ---------------------------------------------
+
+  /// Everything the Kampanie tab shows: sources, campaigns, numbers, proposals, limits.
+  Future<Map<String, dynamic>> adsOverview() async =>
+      Map<String, dynamic>.from(await _invoke('ads', {'action': 'overview'}) as Map);
+
+  /// Fetches campaigns and numbers from the platforms now. Returns a line per source.
+  Future<Map<String, dynamic>> adsSync() async =>
+      Map<String, dynamic>.from((await _invoke('ads', {'action': 'sync'}) as Map)['report'] as Map? ?? {});
+
+  /// Asks the ads agent; its proposals wait for a decision. Returns { summary, proposed }.
+  Future<Map<String, dynamic>> adsPropose({String? note}) async =>
+      Map<String, dynamic>.from(await _invoke('ads', {'action': 'propose', 'note': ?note}) as Map);
+
+  /// Approving applies the change on the platform right away. Returns { ok, message }.
+  Future<Map<String, dynamic>> adsDecide(String id, {required bool approve, double? dailyBudget}) async =>
+      Map<String, dynamic>.from(
+        await _invoke('ads', {'action': 'decide', 'id': id, 'approve': approve, 'daily_budget': ?dailyBudget})
+            as Map,
+      );
+
+  /// A change made by hand: pause, enable or a new daily budget.
+  Future<Map<String, dynamic>> adsApply(
+    String platform,
+    String entityId,
+    String action, {
+    double? dailyBudget,
+  }) async => Map<String, dynamic>.from(
+    await _invoke('ads', {
+          'action': 'apply',
+          'platform': platform,
+          'entity_id': entityId,
+          'action_kind': action,
+          'daily_budget': ?dailyBudget,
+        })
+        as Map,
+  );
 
   Future<Map<String, dynamic>> crmSetting(String key) async {
     final row = await client.from('crm_settings').select('value').eq('key', key).maybeSingle();
