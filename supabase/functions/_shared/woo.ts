@@ -77,7 +77,7 @@ export function parseWooOrder(payload: unknown): WooOrder | null {
     status,
     productRefs,
     newsletter,
-    firstName: typeof billing?.first_name === "string" ? billing.first_name.trim().slice(0, 60) : undefined,
+    ...(typeof billing?.first_name === "string" ? { firstName: billing.first_name.trim().slice(0, 60) } : {}),
     productNames: names.map((n) => n.slice(0, 120)),
   };
 }
