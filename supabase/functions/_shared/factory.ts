@@ -77,12 +77,12 @@ Wymagania SEO i GEO (żeby Google i asystenci AI cytowali ten tekst):
 - 1000–1500 słów, fraza główna w tytule, pierwszym akapicie i jednym nagłówku H2, naturalnie, bez upychania;
 - zaraz po wstępie lista „Najważniejsze w skrócie” (3–5 konkretnych zdań-faktów, każde zrozumiałe samodzielnie);
 - każdy H2 zaczyna się od bezpośredniej odpowiedzi w 1–2 zdaniach, potem rozwinięcie i przykłady;
-- konkretne liczby z doświadczenia rodziców (wiek, minuty, liczba zabaw), żadnych zmyślonych badań;
+- konkretne liczby praktyczne (wiek, minuty, liczba zabaw), żadnych zmyślonych badań;
 - co najmniej jedna lista kroków albo zabaw;
 - na końcu sekcja „Najczęstsze pytania” z 4–6 pytaniami (H3) i krótkimi odpowiedziami (p);
 - 2–3 linki wewnętrzne: https://audiokiddo.pl/ (aplikacja), https://audiokiddo.pl/blog/ (blog), przewodnik do pobrania: https://audiokiddo.pl/#przewodnik;
 - jedno subtelne wezwanie do działania (aplikacja albo przewodnik), bez nachalności;
-- autor: Nela albo Dawid (pierwsza osoba liczby mnogiej „my” jako rodzice i twórcy AudioKiddo).
+- autor: Nela albo Dawid (pierwsza osoba liczby mnogiej „my” jako twórcy AudioKiddo); nie wymyślaj historii z ich życia ani dzieci, których nie podano w notatce.
 content_html: tylko znaczniki h2, h3, p, ul, ol, li, strong, em, a (href https), blockquote. Bez h1 (tytuł jest osobno). Pierwszy element to <p> wstępu, potem <h2>Najważniejsze w skrócie</h2><ul>…</ul>.
 JSON: {"title": "…", "slug": "male-litery-z-myslnikami", "meta_description": "140–155 znaków", "excerpt": "1–2 zdania", "content_html": "…", "faq": [{"q": "…", "a": "…"}], "category": "Zabawy | W podróży | Przed snem | Rozwój mowy | Ekran i rodzina", "tags": ["…"], "author": "Nela albo Dawid", "image_alt": "opis grafiki"}${fb(job)}`,
       };
@@ -153,20 +153,32 @@ export function slugify(text: string): string {
 
 /** The article as a WordPress post: our template, the FAQ kept in the content for the schema. */
 export function wpPost(article: Record<string, unknown>, categoryId: number | null, status: string) {
-  const faq = (article.faq as { q: string; a: string }[] | undefined) ?? [];
+  const faq = ((article.faq as { q: string; a: string }[] | undefined) ?? [])
+    .filter((f) => f && typeof f.q === "string" && typeof f.a === "string")
+    .map((f) => ({ q: f.q.trim(), a: f.a.trim() }));
   let html = cleanHtml(String(article.content_html ?? ""));
   if (faq.length && !/Najczęstsze pytania/i.test(html)) {
-    html += `<h2>Najczęstsze pytania</h2>${faq.map((f) => `<h3>${f.q}</h3><p>${f.a}</p>`).join("")}`;
+    html += `<h2>Najczęstsze pytania</h2>${faq.map((f) => `<h3>${escapeHtml(f.q)}</h3><p>${escapeHtml(f.a)}</p>`).join("")}`;
   }
+  const author = String(article.author ?? "").toLowerCase();
   return {
     title: String(article.title ?? "").slice(0, 200),
     slug: slugify(String(article.slug ?? article.title ?? "")),
     excerpt: String(article.meta_description ?? article.excerpt ?? "").slice(0, 300),
     content: html,
     status,
-    template: "audiokiddo-wpis.php",
+    // Read by the audiokiddo-strona plugin: questions for the FAQ data, the author's box.
+    meta: {
+      ak_faq: JSON.stringify(faq),
+      ak_author: author.includes("nela") && author.includes("dawid") ? "razem" : author.includes("nela") ? "nela" : author.includes("dawid") ? "dawid" : "razem",
+      ak_image_alt: String(article.image_alt ?? "").slice(0, 200),
+    },
     ...(categoryId ? { categories: [categoryId] } : {}),
   };
+}
+
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 /** Script text for a voice draft: role labels and stage directions out, pauses as silence marks. */

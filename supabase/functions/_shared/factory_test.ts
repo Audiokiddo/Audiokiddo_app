@@ -24,7 +24,11 @@ Deno.test("article HTML: only safe tags, https links, the FAQ kept for the schem
     '<p>Hej <a>a</a><a href="https://audiokiddo.pl/">b</a></p>',
   );
   const post = wpPost({ title: "Zabawy w aucie", slug: "Zabawy w Aucie!", content_html: "<p>x</p>", faq: [{ q: "Ile?", a: "Pięć." }], meta_description: "Opis" }, 7, "publish");
-  assertEquals([post.slug, post.excerpt, post.template], ["zabawy-w-aucie", "Opis", "audiokiddo-wpis.php"]);
+  assertEquals([post.slug, post.excerpt, post.meta.ak_author], ["zabawy-w-aucie", "Opis", "razem"]);
+  assertEquals(JSON.parse(post.meta.ak_faq), [{ q: "Ile?", a: "Pięć." }]);
+  const nela = wpPost({ title: "T", content_html: "", faq: [{ q: "<b>Czy?</b>", a: "Tak" }], author: "Nela" }, null, "draft");
+  assertEquals(nela.meta.ak_author, "nela");
+  assertEquals(nela.content.includes("&lt;b&gt;Czy?&lt;/b&gt;"), true);
   assert(post.content.includes("<h2>Najczęstsze pytania</h2><h3>Ile?</h3><p>Pięć.</p>"));
   assertEquals(slugify("Żółć gęślą jaźń"), "zolc-gesla-jazn");
 });
