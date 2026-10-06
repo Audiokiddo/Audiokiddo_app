@@ -62,3 +62,12 @@ Deno.test("each proposal can carry a prompt for an AI chat and the suggested too
   assertEquals(p.data, { prompt: "Napisz opis…", ai: "chatgpt", ai_why: "grafiki" });
   assertEquals(cleanProposal({ kind: "task", title: "a", data: { ai: "copilot", prompt: 5 } })!.data, {});
 });
+
+Deno.test("owners: Dawid, Nela or Razem; Claude's work goes to Dawid", async () => {
+  const { cleanProposal } = await import("./coo.ts");
+  const owner = (o: unknown) => cleanProposal({ kind: "task", title: "a", owner: o })!.owner;
+  assertEquals(owner("Nela"), "Nela");
+  assertEquals(owner("Claude"), "Dawid");
+  assertEquals(owner("razem"), "Razem");
+  assertEquals(owner("null"), null);
+});

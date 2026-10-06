@@ -10,6 +10,7 @@ import 'crm_quality.dart';
 import '../theme.dart';
 import 'crm_widgets.dart';
 import 'factory_tab.dart';
+import 'owners.dart';
 import 'task_prompt.dart';
 
 /// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
@@ -483,8 +484,16 @@ List<Map<String, dynamic>> decided(List<Map<String, dynamic>> list) => [
 
 // Zadania --------------------------------------------------------------------------------------
 
-class _Tasks extends ConsumerWidget {
+class _Tasks extends ConsumerStatefulWidget {
   const _Tasks();
+
+  @override
+  ConsumerState<_Tasks> createState() => _TasksState();
+}
+
+class _TasksState extends ConsumerState<_Tasks> {
+  /// Whose tasks are shown: null for everyone's.
+  Owner? _who;
 
   static const columns = [
     ('todo', 'Do zrobienia', Brand.lavDeep, Brand.lavSoft),
@@ -493,7 +502,7 @@ class _Tasks extends ConsumerWidget {
   ];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final server = ref.read(studioServerProvider);
     void refresh() => ref.read(crmRefreshProvider.notifier).bump();
     Future<void> edit([Map<String, dynamic>? item]) async {
@@ -512,6 +521,17 @@ class _Tasks extends ConsumerWidget {
       if (await crmRun(context, () => server.saveCrmItem({'id': task['id'], 'status': status}))) refresh();
     }
 
+    Future<void> assign(Map<String, dynamic> task, String owner) async {
+      if (await crmRun(context, () => server.saveCrmItem({'id': task['id'], 'owner': owner}))) refresh();
+    }
+
+    // Shared tasks show for both; unassigned ones only under "Wszystkie".
+    bool mine(Map<String, dynamic> t) {
+      if (_who == null) return true;
+      final owner = Owner.of(t['owner']);
+      return owner == _who || owner == Owner.razem;
+    }
+
     Future<void> remove(Map<String, dynamic> task) async {
       if (!await confirmDelete(context, 'zadanie „${task['title']}”')) return;
       if (!context.mounted) return;
@@ -525,16 +545,43 @@ class _Tasks extends ConsumerWidget {
         label: const Text('Dodaj zadanie'),
       ),
       body: crmAsync(ref.watch(crmItemsProvider('task')), (all) {
-        final list = decided(all)..sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
+        final list = [
+          for (final t in decided(all))
+            if (mine(t)) t,
+        ]..sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 4, bottom: 10),
-                child: Text('Przeciągnij kartę myszką do innej kolumny. Kliknij kartę, żeby ją zmienić.'),
+              Padding(
+                padding: const EdgeInsets.only(left: 4, bottom: 12),
+                child: Wrap(
+                  spacing: 16,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    SegmentedButton<Owner?>(
+                      segments: [
+                        const ButtonSegment(
+                          value: null,
+                          icon: Icon(Icons.groups_rounded),
+                          label: Text('Wszystkie'),
+                        ),
+                        for (final o in const [Owner.dawid, Owner.nela])
+                          ButtonSegment(
+                            value: o,
+                            icon: Icon(o.icon, color: o.color),
+                            label: Text('Zadania: ${o.name}'),
+                          ),
+                      ],
+                      selected: {_who},
+                      onSelectionChanged: (v) => setState(() => _who = v.single),
+                    ),
+                    const Text('Przeciągnij kartę do innej kolumny. Kliknij kartę, żeby ją zmienić.'),
+                  ],
+                ),
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -603,7 +650,10 @@ class _Tasks extends ConsumerWidget {
                                       dense: true,
                                       onTap: () => edit(t),
                                       onDelete: () => remove(t),
-                                      actions: [if (status != 'done') TaskAiActions(t)],
+                                      actions: [
+                                        OwnerPicker(item: t, onChange: (o) => assign(t, o)),
+                                        if (status != 'done') TaskAiActions(t),
+                                      ],
                                     ),
                                   ),
                                 ),

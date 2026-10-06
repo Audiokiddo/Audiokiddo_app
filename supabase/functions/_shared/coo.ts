@@ -25,7 +25,11 @@ CO JUŻ JEST ZROBIONE (nie proponuj tego od nowa): aplikacja jest gotowa i testo
 CO BLOKUJE START: konta Apple Developer i Google Play Console (zakłada Nela), nagrania nowych zabaw, konfiguracja MailerLite. Patrz też otwarte zadania w danych.
 Zasady: kategoria Kids w App Store (bez reklam w aplikacji, bez analityki firm trzecich, bramka rodzica), RODO, żadnych danych dziecka.
 Cel: szybko rosnący zysk (kamień milowy 50 000 zł zysku miesięcznie), zadowoleni rodzice, coraz lepszy produkt.
-Właściciele: Dawid (technika, sprzedaż, marketing) i Nela (treści, nagrania). Masz do pomocy Claude (programista: kod aplikacji, strony, serwera).
+Właściciele i podział pracy (pole "owner"):
+- Nela: scenariusze i nowe zabawy, nagrania, cała strona kreatywna, grafiki, montaż wideo i rolek, posty.
+- Dawid: technika, nowe funkcje w aplikacji i na stronie, naprawa błędów, sklep i płatności, konfiguracja narzędzi, raporty i liczby, sprawy formalne.
+- Razem: decyzje o ofercie i cenach, plan na miesiąc, rzeczy, które wymagają obojga.
+Kod pisze Claude (programista AI), ale zlecenie i sprawdzenie to zadanie Dawida, więc owner = Dawid.
 Każda Twoja propozycja trafia do decyzji Dawida: proponuj rzeczy wykonalne, z jasnym pierwszym krokiem i uzasadnieniem w liczbach, jeśli je masz.
 Do każdej propozycji dodaj w "data" trzy pola, żeby Dawid mógł od razu zlecić ją AI:
 - "prompt": gotowe polecenie do wklejenia w czat AI, po polsku, które wykona zadanie albo przygotuje wszystko, czego Dawid potrzebuje. Zawiera: 2–3 zdania o AudioKiddo potrzebne do tego zadania, samo zadanie, czego AI ma się dopytać, jeśli czegoś nie wie, i oczekiwany wynik z formatem (lista, tabela, tekst do wklejenia, plik). Bez odwołań do „danych powyżej”: prompt ma działać sam.
@@ -33,7 +37,7 @@ Do każdej propozycji dodaj w "data" trzy pola, żeby Dawid mógł od razu zleci
 - "ai_why": jedno krótkie zdanie, dlaczego to narzędzie.
 Odpowiadasz WYŁĄCZNIE jednym obiektem JSON, bez komentarzy i bez bloku kodu.`;
 
-const SHAPE = `{"summary": "tekst dla Dawida", "proposals": [{"kind": "task|idea|calendar|mailing|change", "area": "launch|marketing|feature|crm|server|support|pack|scenario|ad|post|reel|newsletter|automation|promotion|release|proposal", "title": "…", "body": "…", "priority": 1, "due": "RRRR-MM-DD albo null", "owner": "Dawid|Nela|Claude|null", "data": {"prompt": "…", "ai": "claude|chatgpt|gemini", "ai_why": "…"}}]}`;
+const SHAPE = `{"summary": "tekst dla Dawida", "proposals": [{"kind": "task|idea|calendar|mailing|change", "area": "launch|marketing|feature|crm|server|support|pack|scenario|ad|post|reel|newsletter|automation|promotion|release|proposal", "title": "…", "body": "…", "priority": 1, "due": "RRRR-MM-DD albo null", "owner": "Dawid|Nela|Razem", "data": {"prompt": "…", "ai": "claude|chatgpt|gemini", "ai_why": "…"}}]}`;
 
 /** What to ask for in each mode. [note] is Dawid's own instruction, [focus] an approved idea. */
 export function task(mode: Mode, note: string | null, focus: Record<string, unknown> | null): string {
@@ -95,6 +99,15 @@ export function parseAnswer(text: string): { summary: string; proposals: Proposa
 
 const KINDS = new Set(["task", "idea", "calendar", "mailing", "change"]);
 
+/** Dawid, Nela or Razem; Claude's work is Dawid's to order and check. */
+function cleanOwner(raw: unknown): string | null {
+  const who = typeof raw === "string" ? raw.trim().toLowerCase() : "";
+  if (who.startsWith("nel")) return "Nela";
+  if (who.startsWith("dawid") || who.startsWith("claude")) return "Dawid";
+  if (who.startsWith("razem") || who.includes("oboje") || who.includes("both")) return "Razem";
+  return null;
+}
+
 /** The proposal's extra data, with the prompt for an AI chat and the suggested tool tidied. */
 function cleanData(raw: unknown): Record<string, unknown> {
   const data = typeof raw === "object" && raw !== null && !Array.isArray(raw) ? { ...raw as Record<string, unknown> } : {};
@@ -138,7 +151,7 @@ export function cleanProposal(p: unknown): Proposal | null {
     body: typeof r.body === "string" ? r.body.slice(0, 20000) : "",
     priority,
     due,
-    owner: typeof r.owner === "string" && r.owner !== "null" ? r.owner.slice(0, 40) : null,
+    owner: cleanOwner(r.owner),
     data: cleanData(r.data),
   };
 }
