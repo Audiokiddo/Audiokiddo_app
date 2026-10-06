@@ -13,6 +13,7 @@ import '../family/family.dart';
 import '../insights/events.dart';
 import '../kids_mode/kids_mode_controller.dart';
 import '../reminders/reminder_offer.dart';
+import 'microphone_offer.dart';
 import 'welcome_controller.dart';
 
 /// The free plays a family gets at the start: one from each pack.
@@ -30,7 +31,7 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-enum _Stage { fanfare, quiz, reminders }
+enum _Stage { fanfare, quiz, microphone, reminders }
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   _Stage _stage = _Stage.fanfare;
@@ -51,8 +52,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       _Stage.quiz => ChildQuiz(
         editing: ref.read(familyProvider).value?.active,
         allowSkip: false,
-        onDone: () => setState(() => _stage = _Stage.reminders),
+        onDone: () => setState(() => _stage = _Stage.microphone),
       ),
+      _Stage.microphone => MicrophoneOffer(onDone: () => setState(() => _stage = _Stage.reminders)),
       _Stage.reminders => ReminderOffer(onDone: _complete),
     },
   );

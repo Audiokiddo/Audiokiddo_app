@@ -19,6 +19,8 @@ import '../discovery/queue_controller.dart';
 import '../home/quick_pick.dart';
 import '../pdf/case_files_card.dart';
 import 'audio_handler.dart';
+import 'audio_route.dart';
+import 'bottom_dock.dart' show hiddenResumeProvider;
 import 'playback_controller.dart';
 import 'player_providers.dart';
 import 'szop_after_play.dart';
@@ -61,8 +63,11 @@ class _Player extends ConsumerWidget {
             onPressed: media == null
                 ? null
                 : () {
-                    handler.endSession();
+                    // The parent ended it: no "Dokończ" card for it, and the player slides
+                    // away first so it never flashes empty.
+                    ref.read(hiddenResumeProvider.notifier).hide(media.id);
                     context.canPop() ? context.pop() : context.go('/');
+                    Future<void>.delayed(const Duration(milliseconds: 400), handler.endSession);
                   },
             icon: const Icon(Icons.stop_circle_outlined),
           ),
@@ -162,7 +167,10 @@ class _Player extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
+                // Like music apps: where it plays, and one tap to a Bluetooth or AirPlay speaker.
+                const Center(child: AudioRouteChip()),
+                const SizedBox(height: 16),
                 Wrap(
                   alignment: WrapAlignment.spaceAround,
                   spacing: 8,

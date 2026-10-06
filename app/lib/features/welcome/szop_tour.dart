@@ -127,14 +127,32 @@ class SzopTour extends ConsumerStatefulWidget {
   ConsumerState<SzopTour> createState() => _SzopTourState();
 }
 
-class _SzopTourState extends ConsumerState<SzopTour> {
+class _SzopTourState extends ConsumerState<SzopTour> with SingleTickerProviderStateMixin {
   int _i = 0;
-  Rect? _target;
+
+  /// What is lit up now, in this overlay's coordinates; followed every frame until the page
+  /// has settled, so the frame stays on the feature when it scrolls or rebuilds after it was
+  /// found. (The tour covers the screen, so nothing moves it afterwards.)
+  Rect? _light;
+  late final _ticker = createTicker(_follow);
+  Duration _stableSince = Duration.zero;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _show());
+  }
+
+  void _track() {
+    _stableSince = Duration.zero;
+    if (_ticker.isActive) _ticker.stop();
+    _ticker.start();
+  }
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    super.dispose();
   }
 
   void _end({bool finished = false}) {
@@ -149,36 +167,51 @@ class _SzopTourState extends ConsumerState<SzopTour> {
     } else {
       setState(() {
         _i++;
-        _target = null;
+        _light = null;
       });
       _show();
     }
   }
 
-  /// Opens the stop's tab, scrolls its feature into view and measures it for the light. The
-  /// tab may still be building or sliding in, so the frame follows it until it stops moving.
+  /// The id lit up at this stop: a feature on the page, else a slot of the bottom bar.
+  static String? _lightId(TourStop stop) => stop.target ?? (stop.slot == null ? null : 'slot-${stop.slot}');
+
+  /// Opens the stop's tab and scrolls its feature into view; [_follow] then keeps the frame on it.
   Future<void> _show() async {
     final stop = tourStops[_i];
     final step = _i;
     if (stop.branch case final branch?) widget.onBranch(branch);
+    _track();
     if (stop.target == null) return;
-    await Future<void>.delayed(const Duration(milliseconds: 350));
-    final first = _targetContext(stop.target!);
-    if (!mounted || step != _i || first == null || !first.mounted) return;
-    await Scrollable.ensureVisible(
-      first,
-      alignment: .3,
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeOutCubic,
-    );
-    Rect? last;
-    for (var i = 0; i < 12 && mounted && step == _i; i++) {
-      await Future<void>.delayed(const Duration(milliseconds: 80));
-      final rect = _measure(stop.target!);
-      if (rect == null) continue;
-      if (rect != _target) setState(() => _target = rect);
-      if (rect == last) break;
-      last = rect;
+    // The tab may still be building or sliding in.
+    for (var attempt = 0; attempt < 2; attempt++) {
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+      final target = _targetContext(stop.target!);
+      if (!mounted || step != _i) return;
+      if (target == null || !target.mounted) continue;
+      await Scrollable.ensureVisible(
+        target,
+        alignment: .15,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
+      );
+      if (mounted && step == _i) _track();
+    }
+  }
+
+  void _follow(Duration elapsed) {
+    if (!mounted) return;
+    final id = _lightId(tourStops[_i]);
+    final rect = id == null ? null : _measure(id);
+    final old = _light;
+    final moved = rect == null || old == null
+        ? rect != old
+        : (rect.topLeft - old.topLeft).distance > .5 || (rect.size - old.size as Offset).distance > .5;
+    if (moved) {
+      _stableSince = elapsed;
+      setState(() => _light = rect);
+    } else if (elapsed - _stableSince > const Duration(milliseconds: 900)) {
+      _ticker.stop();
     }
   }
 
@@ -188,13 +221,25 @@ class _SzopTourState extends ConsumerState<SzopTour> {
     return context != null && context.mounted ? context : null;
   }
 
+  /// The target's box in this overlay's coordinates, only when it is really on screen.
   Rect? _measure(String id) {
     final box = _targetContext(id)?.findRenderObject() as RenderBox?;
-    if (box == null || !box.hasSize || !box.attached) return null;
-    final rect = box.localToGlobal(Offset.zero) & box.size;
-    final screen = Offset.zero & MediaQuery.sizeOf(context);
-    // Only a target that is really on screen gets the frame.
-    return screen.overlaps(rect) ? rect.intersect(screen) : null;
+    final overlay = context.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize || !box.attached || overlay == null || !overlay.hasSize) return null;
+    final topLeft = overlay.globalToLocal(box.localToGlobal(Offset.zero));
+    final rect = topLeft & box.size;
+    // A feature is lit only between the status bar and the bottom bar (a tall card would
+    // otherwise frame the bar too); the bar's own slots are lit where they are.
+    final padding = MediaQuery.paddingOf(context);
+    final visible = id.startsWith('slot-')
+        ? Offset.zero & overlay.size
+        : Rect.fromLTRB(
+            0,
+            padding.top,
+            overlay.size.width,
+            overlay.size.height - padding.bottom - widget.barHeight - 4,
+          );
+    return visible.overlaps(rect) ? rect.intersect(visible) : null;
   }
 
   @override
@@ -204,67 +249,93 @@ class _SzopTourState extends ConsumerState<SzopTour> {
     final padding = MediaQuery.paddingOf(context);
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
-    final target = _target;
-    final slotX = stop.slot == null || target != null ? null : size.width * (stop.slot! + .5) / 5;
     final last = _i == tourStops.length - 1;
-    // The bubble sits away from what it explains: under a feature in the top half, else above.
-    final below = target != null && target.center.dy < size.height * .45;
     final small = size.height < 700;
+    final slot = stop.target == null && stop.slot != null;
+    // A tab gets a ring around it, a feature a rounded frame.
+    final light = _light;
+    final hole = light == null
+        ? null
+        : slot
+        ? Rect.fromCircle(center: light.center, radius: light.shortestSide / 2 + 10)
+        : light.inflate(6);
+    final radius = slot && hole != null ? hole.width / 2 : 22.0;
 
-    final bubble = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Small phones with large text: the bubble scrolls rather than overflowing.
-        Flexible(
-          child: SingleChildScrollView(
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+    // The bubble goes where it fits whole: under the feature, above it, or (a feature taller
+    // than half the screen) over its lower part, just above the bar.
+    final barTop = size.height - padding.bottom - widget.barHeight;
+    final need = small ? 190.0 : 220.0;
+    final top = padding.top + 12;
+    double? bubbleTop;
+    double? bubbleBottom;
+    var alignEnd = true;
+    if (hole == null || slot) {
+      bubbleTop = top;
+      bubbleBottom = size.height - (slot && hole != null ? hole.top : barTop) + 16;
+    } else if (barTop - 12 - (hole.bottom + 12) >= need) {
+      bubbleTop = hole.bottom + 12;
+      bubbleBottom = size.height - barTop + 12;
+      alignEnd = false;
+    } else if (hole.top - 12 - top >= need) {
+      bubbleTop = top;
+      bubbleBottom = size.height - hole.top + 12;
+    } else {
+      bubbleTop = top;
+      bubbleBottom = size.height - barTop + 12;
+    }
+
+    final bubble = Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: const [BoxShadow(color: Color(0x40000000), blurRadius: 16, offset: Offset(0, 6))],
+      ),
+      // Small phones with large text: the bubble scrolls rather than overflowing.
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Text(
                     stop.title,
                     style: text.titleLarge?.copyWith(color: ink, fontWeight: FontWeight.w800),
                   ),
-                  const SizedBox(height: 4),
-                  Text(stop.body, style: text.bodyLarge?.copyWith(color: ink, height: 1.3)),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '${_i + 1} / ${tourStops.length}',
-                          style: text.labelMedium?.copyWith(color: ink.withValues(alpha: .6)),
-                        ),
-                      ),
-                      if (!last) TextButton(onPressed: _end, child: const Text('Pomiń')),
-                      FilledButton(
-                        style: FilledButton.styleFrom(minimumSize: const Size(80, 44)),
-                        onPressed: _next,
-                        child: Text(last ? 'Zaczynamy' : 'Dalej'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+                // Szop’en in the bubble's corner: he never covers what he explains.
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: SzopSticker(stop.pose, key: ValueKey(_i), height: small ? 48 : 60),
+                ),
+              ],
             ),
-          ),
+            const SizedBox(height: 4),
+            Text(stop.body, style: text.bodyLarge?.copyWith(color: ink, height: 1.3)),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${_i + 1} / ${tourStops.length}',
+                    style: text.labelMedium?.copyWith(color: ink.withValues(alpha: .6)),
+                  ),
+                ),
+                if (!last) TextButton(onPressed: _end, child: const Text('Pomiń')),
+                FilledButton(
+                  style: FilledButton.styleFrom(minimumSize: const Size(80, 44)),
+                  onPressed: _next,
+                  child: Text(last ? 'Zaczynamy' : 'Dalej'),
+                ),
+              ],
+            ),
+          ],
         ),
-        // Szop’en under the bubble, leaning towards the tab.
-        AnimatedAlign(
-          duration: const Duration(milliseconds: 300),
-          alignment: slotX == null
-              ? Alignment.center
-              : Alignment(((slotX - 16) / (size.width - 32)) * 2 - 1, 0),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: SzopSticker(stop.pose, key: ValueKey(_i), height: small ? 60 : 88),
-          ),
-        ),
-      ],
+      ),
     );
 
     return Material(
@@ -275,33 +346,16 @@ class _SzopTourState extends ConsumerState<SzopTour> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: CustomPaint(painter: _Dim(hole: target?.inflate(6))),
+              child: CustomPaint(painter: _Dim(hole: hole, radius: radius)),
             ),
             // A bright frame around the feature, or a ring around the tab.
-            if (target != null)
+            if (hole != null)
               Positioned.fromRect(
-                rect: target.inflate(6),
+                rect: hole,
                 child: IgnorePointer(
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: const Color(0xFFFAC119), width: 4),
-                    ),
-                  ),
-                ),
-              ),
-            if (slotX != null)
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOutCubic,
-                left: slotX - 36,
-                bottom: padding.bottom + widget.barHeight / 2 - 36 + (stop.slot == 2 ? 8 : 0),
-                child: IgnorePointer(
-                  child: Container(
-                    width: 72,
-                    height: 72,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(radius),
                       border: Border.all(color: const Color(0xFFFAC119), width: 4),
                     ),
                   ),
@@ -310,14 +364,10 @@ class _SzopTourState extends ConsumerState<SzopTour> {
             Positioned(
               left: 16,
               right: 16,
-              top: below ? target.bottom + 16 : padding.top + 12,
-              bottom: below
-                  ? padding.bottom + widget.barHeight + 8
-                  : target != null
-                  ? (size.height - target.top + 16).clamp(0, size.height - padding.top - 120)
-                  : padding.bottom + widget.barHeight + 40,
+              top: bubbleTop,
+              bottom: bubbleBottom.clamp(0, size.height - bubbleTop - 120),
               child: Column(
-                mainAxisAlignment: below ? MainAxisAlignment.start : MainAxisAlignment.end,
+                mainAxisAlignment: alignEnd ? MainAxisAlignment.end : MainAxisAlignment.start,
                 children: [Flexible(child: bubble)],
               ),
             ),
@@ -330,21 +380,22 @@ class _SzopTourState extends ConsumerState<SzopTour> {
 
 /// The dim layer, with a clear window over the feature being explained.
 class _Dim extends CustomPainter {
-  _Dim({this.hole});
+  _Dim({this.hole, this.radius = 22});
 
   final Rect? hole;
+  final double radius;
 
   @override
   void paint(Canvas canvas, Size size) {
     final path = Path()..addRect(Offset.zero & size);
     if (hole case final hole?) {
       path
-        ..addRRect(RRect.fromRectAndRadius(hole, const Radius.circular(22)))
+        ..addRRect(RRect.fromRectAndRadius(hole, Radius.circular(radius)))
         ..fillType = PathFillType.evenOdd;
     }
     canvas.drawPath(path, Paint()..color = Colors.black.withValues(alpha: .72));
   }
 
   @override
-  bool shouldRepaint(_Dim old) => old.hole != hole;
+  bool shouldRepaint(_Dim old) => old.hole != hole || old.radius != radius;
 }

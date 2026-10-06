@@ -216,11 +216,13 @@ void main() {
       expect(find.textContaining('7 dni za darmo, zanim dojedziemy'), findsOneWidget, reason: 'the car gag');
       await tester.drag(mainScroll, const Offset(0, -350));
       await tester.pumpAndSettle();
-      expect(find.text('Wypróbuj 7 dni za darmo'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Wypróbuj 7 dni za darmo'), 200, scrollable: mainScroll);
       expect(find.textContaining('Potem 239,88 zł za rok'), findsOneWidget);
       // Buying for good is folded under the subscription.
-      await tester.scrollUntilVisible(find.byType(ExpansionTile), 200, scrollable: mainScroll);
-      await tester.tap(find.byType(ExpansionTile));
+      await tester.scrollUntilVisible(find.text('Na zawsze, bez subskrypcji'), 200, scrollable: mainScroll);
+      await Scrollable.ensureVisible(tester.element(find.text('Na zawsze, bez subskrypcji')), alignment: .3);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Na zawsze, bez subskrypcji'));
       await tester.pumpAndSettle();
       expect(find.textContaining('49,99 zł'), findsWidgets);
       await tester.scrollUntilVisible(

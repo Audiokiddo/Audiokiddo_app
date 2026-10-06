@@ -6,6 +6,7 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/doodles.dart';
 import '../../core/widgets/szop.dart';
 import '../../l10n/app_localizations.dart';
+import '../purchases/plan_limit.dart';
 import 'family.dart';
 
 /// The short parent quiz (about a minute per child): name, age, goals, when you listen,
@@ -96,7 +97,9 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
     setState(() => _step = _Step.values[_step.index - 1]);
   }
 
-  void _anotherChild() => setState(() {
+  Future<void> _anotherChild() async {
+    if (!await mayAddChild(context, ref) || !mounted) return;
+    setState(() {
     _name.clear();
     _age = null;
     _goals.clear();
@@ -105,6 +108,7 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
     _saved = null;
     _step = _Step.name;
   });
+  }
 
   SzopPose get _pose => switch (_step) {
     _Step.hello => SzopPose.prosi,

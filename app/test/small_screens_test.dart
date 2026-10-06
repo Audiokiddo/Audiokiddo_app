@@ -116,7 +116,13 @@ void main() {
         await tester.tap(next);
         await tester.pumpAndSettle();
       }
-      // Reminders next, then the tour over Start.
+      // The microphone, reminders, then the tour over Start.
+      expect(tester.takeException(), isNull, reason: 'microphone on $name');
+      expect(find.text('Zezwól na mikrofon'), findsOneWidget);
+      await tester.ensureVisible(find.text('Nie teraz'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Nie teraz'));
+      await tester.pumpAndSettle();
       expect(tester.takeException(), isNull, reason: 'reminders on $name');
       await tester.ensureVisible(find.text('Nie teraz'));
       await tester.pumpAndSettle();

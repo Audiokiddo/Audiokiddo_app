@@ -128,7 +128,7 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
           .track(AppEvent.paywallView, itemId: item.id, props: {'from': 'after_free_play'});
     }
     final packIds = {for (final p in catalog.packs) ?p.storeProductId};
-    final ids = {...packIds, ProductIds.yearly, ProductIds.monthly};
+    final ids = {...packIds, ...ProductIds.subscriptions};
     final products = ref.watch(storeProductsProvider(productsKey(ids))).value ?? const <StoreProduct>[];
     final byId = {for (final p in products) p.id: p};
     final packProduct = byId[pack?.storeProductId];

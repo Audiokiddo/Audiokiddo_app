@@ -163,6 +163,14 @@ void main() {
     await tester.tap(find.text('Gotowe'));
     await tester.pumpAndSettle();
 
+    // The microphone and speech recognition: why, and one button for both.
+    expect(find.text('Niech zabawy słyszą odpowiedzi'), findsOneWidget);
+    expect(find.text('Zezwól na mikrofon'), findsOneWidget);
+    await tester.ensureVisible(find.text('Nie teraz'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Nie teraz'));
+    await tester.pumpAndSettle();
+
     // Reminders: offered, not forced.
     expect(find.text('Włącz przypomnienia'), findsOneWidget);
     await tester.ensureVisible(find.text('Nie teraz'));

@@ -15,6 +15,7 @@ import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
 import '../discovery/reference_widgets.dart';
 import '../home/quick_pick.dart';
+import '../welcome/szop_tour.dart';
 import '../personal/personal_repository.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
@@ -66,7 +67,12 @@ class BottomDock extends ConsumerWidget {
           child: Row(
             children: [
               for (var i = 0; i < 2; i++) _tab(i),
-              const Expanded(child: Center(child: _PlayButton())),
+              // Szop’en's tour lights up the bar's slots (0–4, the play button is 2).
+              Expanded(
+                child: Center(
+                  child: TourTarget(id: 'slot-2', child: const _PlayButton()),
+                ),
+              ),
               for (var i = 2; i < 4; i++) _tab(i),
             ],
           ),
@@ -80,32 +86,35 @@ class BottomDock extends ConsumerWidget {
     final selected = i == current;
     final color = selected ? Colors.white : Colors.white.withValues(alpha: .62);
     return Expanded(
-      child: Semantics(
-        selected: selected,
-        button: true,
-        label: tab.label,
-        excludeSemantics: true,
-        child: InkResponse(
-          onTap: () => onTab(i),
-          radius: 36,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(selected ? tab.selected : tab.icon, color: color, size: 25),
-              const SizedBox(height: 3),
-              Text(
-                tab.label,
-                maxLines: 1,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 11,
-                  color: color,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+      child: TourTarget(
+        id: 'slot-${i < 2 ? i : i + 1}',
+        child: Semantics(
+          selected: selected,
+          button: true,
+          label: tab.label,
+          excludeSemantics: true,
+          child: InkResponse(
+            onTap: () => onTab(i),
+            radius: 36,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(selected ? tab.selected : tab.icon, color: color, size: 25),
+                const SizedBox(height: 3),
+                Text(
+                  tab.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 11,
+                    color: color,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -156,9 +165,7 @@ class _PlayButton extends ConsumerWidget {
                     ),
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 3),
-                    boxShadow: const [
-                      BoxShadow(color: Color(0x66000000), blurRadius: 14, offset: Offset(0, 5)),
-                    ],
+                    boxShadow: const [BoxShadow(color: Color(0x66000000), blurRadius: 14, offset: Offset(0, 5))],
                   ),
                   child: Icon(
                     active ? Icons.graphic_eq_rounded : Icons.play_arrow_rounded,
@@ -266,14 +273,12 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
     final handler = ref.watch(audioHandlerProvider);
     final playing = resume.loaded && (ref.watch(playbackStateProvider).value?.playing ?? false);
     final ended =
-        resume.loaded &&
-        ref.watch(playbackStateProvider).value?.processingState == AudioProcessingState.completed;
+        resume.loaded && ref.watch(playbackStateProvider).value?.processingState == AudioProcessingState.completed;
     final endedItem = ended ? ref.watch(catalogProvider).value?.item(resume.mediaId!) : null;
     final afterPlay = ended && !(ref.watch(discoveryProvider).value?.quiet ?? false)
         ? ref.watch(szopAfterPlayProvider(endedItem))
         : null;
-    final pose =
-        afterPlay?.pose ?? (playing ? SzopPose.klaszcze : (resume.loaded ? SzopPose.prosi : SzopPose.chytry));
+    final pose = afterPlay?.pose ?? (playing ? SzopPose.klaszcze : (resume.loaded ? SzopPose.prosi : SzopPose.chytry));
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
     void open() {

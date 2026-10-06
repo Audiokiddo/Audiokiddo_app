@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -49,7 +50,12 @@ Future<void> main() async {
       kidsModeProvider.overrideWith((ref) => KidsModeController(ref.watch(databaseProvider))),
       onboardingProvider.overrideWith((ref) => OnboardingController(ref.watch(databaseProvider))),
       sessionGateProvider.overrideWith((ref) {
-        final gate = SessionGate(ref.watch(accountServiceProvider), required: true);
+        // Debug builds for screen previews on a simulator may skip signing in
+        // (--dart-define=PREVIEW_NO_SIGN_IN=true); release builds always require it.
+        final gate = SessionGate(
+          ref.watch(accountServiceProvider),
+          required: !(kDebugMode && const bool.fromEnvironment('PREVIEW_NO_SIGN_IN')),
+        );
         ref.onDispose(gate.dispose);
         return gate;
       }),

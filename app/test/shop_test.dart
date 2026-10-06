@@ -94,11 +94,21 @@ void main() {
       // The subscription first, said simply: crossed-out monthly price, the yearly per month.
       expect(find.text('Abonament AudioKiddo'), findsOneWidget);
       expect(find.text('NAJLEPIEJ SIĘ OPŁACA'), findsOneWidget);
-      expect(find.text('24,99 zł'), findsOneWidget);
+      // Yearly first, with the cloud saying how much it saves and the year crossed out
+      // against twelve months; plans for 1, 2 and 3–5 children with what they add.
+      expect(find.text('Rocznie'), findsOneWidget);
+      expect(find.textContaining('oszczędzasz 60'), findsOneWidget);
+      expect(find.textContaining('299,88'), findsOneWidget, reason: '12 × 24,99 crossed out');
       expect(find.textContaining('19,99'), findsWidgets);
-      expect(find.textContaining('Rocznie oszczędzasz 60'), findsOneWidget);
+      expect(find.text('2 dzieci'), findsOneWidget);
+      expect(find.textContaining(RegExp(r'^\+5\s+zł miesięcznie$')), findsOneWidget);
+      expect(find.text('3–5 dzieci'), findsOneWidget);
+      expect(find.textContaining(RegExp(r'Drugie dziecko \+5\s+zł')), findsOneWidget);
       expect(find.text('Wypróbuj 7 dni za darmo'), findsOneWidget);
-      expect(find.text('albo miesięcznie 24,99 zł'), findsOneWidget);
+      await tester.tap(find.text('Miesięcznie'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining(RegExp(r'^24,99\s+zł / miesiąc$')), findsOneWidget);
+      expect(find.textContaining(RegExp(r'^29,99\s+zł / miesiąc$')), findsOneWidget);
       // Buying for good is folded below.
       expect(find.text('Detektyw'), findsNothing);
       await tester.scrollUntilVisible(
@@ -210,5 +220,20 @@ void main() {
       await tester.scrollUntilVisible(find.text('Masz ten pakiet').first, 200, scrollable: mainScroll);
       expect(find.byType(FilledButton), findsNothing, reason: 'nothing left to buy');
     });
+  });
+
+  testWidgets('Więcej: manage the subscription, change the plan or restore', (tester) async {
+    await pumpApp(tester);
+    await tester.tap(find.text('Więcej').last);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Zarządzaj subskrypcją'), 200, scrollable: mainScroll);
+    expect(find.textContaining('1, 2 lub 3–5 dzieci'), findsOneWidget);
+    await tester.tap(find.text('Zarządzaj subskrypcją'));
+    await tester.pumpAndSettle();
+    expect(find.text('Wybierz abonament'), findsOneWidget);
+    expect(find.text('Przywróć zakupy'), findsOneWidget);
+    await tester.tap(find.text('Wybierz abonament'));
+    await tester.pumpAndSettle();
+    expect(find.text('Abonament i pakiety'), findsOneWidget, reason: 'the plans as a closable page');
   });
 }

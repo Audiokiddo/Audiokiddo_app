@@ -216,8 +216,10 @@ class _PriceList extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     final rows = <(String, StoreProduct, String?)>[
-      if (byId[ProductIds.monthly] case final m?) ('Abonament miesięczny', m, null),
-      if (byId[ProductIds.yearly] case final y?) ('Abonament roczny', y, null),
+      for (final plan in SubscriptionPlan.values) ...[
+        if (byId[plan.monthlyId] case final m?) ('Abonament miesięczny, ${plan.label}', m, null),
+        if (byId[plan.yearlyId] case final y?) ('Abonament roczny, ${plan.label}', y, null),
+      ],
       for (final pack in catalog.packs)
         if (byId[pack.storeProductId] case final p?) ('Pakiet ${pack.title}', p, null),
       for (final id in [ProductIds.bundleTwo, ProductIds.bundleThree])
