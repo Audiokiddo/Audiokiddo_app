@@ -47,7 +47,12 @@ Future<bool> crmRun(BuildContext context, Future<void> Function() action, {Strin
     }
     return true;
   } on Object catch (e) {
-    if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+    // Errors stay until read (with a close button): they often say what to do.
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$e'), duration: const Duration(seconds: 20), showCloseIcon: true),
+      );
+    }
     return false;
   }
 }

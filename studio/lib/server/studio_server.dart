@@ -23,7 +23,13 @@ class StudioServerException implements Exception {
 /// What to do when the agent (Claude) failed, from the reason the function sends back.
 String agentTrouble(Object? details) {
   final body = details is Map ? details : const {};
-  return switch ('${body['reason'] ?? body['error'] ?? ''}') {
+  final said = '${body['detail'] ?? ''}'.trim();
+  final advice = _agentAdvice('${body['reason'] ?? body['error'] ?? ''}');
+  return said.isEmpty ? advice : '$advice\nOdpowiedź serwera AI: $said';
+}
+
+String _agentAdvice(String reason) {
+  return switch (reason) {
     'key' =>
       'Klucz AI jest nieprawidłowy. Darmowy klucz Gemini: aistudio.google.com → Get API key, '
           'w Supabase → Edge Functions → Secrets jako GEMINI_API_KEY. Na razie użyj trybu „Przez czat”.',
@@ -33,7 +39,9 @@ String agentTrouble(Object? details) {
     'quota' => 'Wyczerpany dzienny limit darmowego Gemini. Spróbuj jutro albo użyj trybu „Przez czat”.',
     'model_missing' =>
       'Ten model AI jest niedostępny dla Twojego klucza. Usuń sekret COO_MODEL / GEMINI_MODEL w Supabase.',
-    'busy' => 'AI jest teraz przeciążone. Spróbuj za minutę.',
+    'busy' =>
+      'AI jest teraz przeciążone (próbowałem dwa razy i lżejszym modelem). Spróbuj za kilka minut '
+          'albo użyj trybu „Przez czat”.',
     'too_long' =>
       'Odpowiedź agenta była za długa i się urwała. Spróbuj jeszcze raz albo dopisz węższą wskazówkę.',
     'answer' => 'Agent odpowiedział w złym formacie. Spróbuj jeszcze raz.',

@@ -8,10 +8,23 @@
 export type ClaudeReason = "no_key" | "key" | "credit" | "quota" | "model_missing" | "busy" | "too_long" | "model";
 
 export class ClaudeError extends Error {
-  constructor(message: string, readonly reason: ClaudeReason = "model") {
+  /** [detail]: the provider's own short message (never the key), shown in Studio. */
+  constructor(message: string, readonly reason: ClaudeReason = "model", readonly detail = "") {
     super(message);
   }
 }
+
+/** The provider's error message from its JSON answer, short. */
+export function providerMessage(body: string): string {
+  try {
+    const parsed = JSON.parse(body) as { error?: { message?: string } };
+    return (parsed.error?.message ?? "").slice(0, 300);
+  } catch {
+    return body.slice(0, 200);
+  }
+}
+
+const pause = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 type Provider = "claude" | "gemini";
 
@@ -53,7 +66,7 @@ export function geminiReason(status: number, body: string): ClaudeReason {
 export async function failWith(tag: string, response: Response): Promise<never> {
   const body = await response.text();
   console.error(`${tag}: model`, response.status, body.slice(0, 500));
-  throw new ClaudeError(`model ${response.status}`, claudeReason(response.status, body));
+  throw new ClaudeError(`model ${response.status}`, claudeReason(response.status, body), providerMessage(body));
 }
 
 /** The text of a Claude answer; an answer cut at the token limit is reported, not parsed half-way. */
@@ -91,23 +104,34 @@ async function claude(system: string, prompt: string, maxTokens: number, model?:
 }
 
 async function gemini(system: string, prompt: string, maxTokens: number, json: boolean): Promise<string> {
-  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-    method: "POST",
-    headers: { "x-goog-api-key": Deno.env.get("GEMINI_API_KEY")!, "content-type": "application/json" },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: system }] },
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      // Gemini's thinking counts towards the output, so it gets room on top of the answer.
-      generationConfig: { maxOutputTokens: maxTokens + 8000, ...(json ? { responseMimeType: "application/json" } : {}) },
-    }),
-  });
-  if (!response.ok) {
-    const body = await response.text();
-    console.error("gemini: model", response.status, body.slice(0, 500));
-    throw new ClaudeError(`gemini ${response.status}`, geminiReason(response.status, body));
+  // The chosen model, then the lighter one when it is busy; each tried twice with a pause.
+  const models = [...new Set([Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest", "gemini-flash-lite-latest"])];
+  let last: ClaudeError | null = null;
+  for (const model of models) {
+    for (const wait of [0, 4000]) {
+      if (wait) await pause(wait);
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: "POST",
+        headers: { "x-goog-api-key": Deno.env.get("GEMINI_API_KEY")!, "content-type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: system }] },
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          // Gemini's thinking counts towards the output, so it gets room on top of the answer.
+          generationConfig: {
+            maxOutputTokens: maxTokens + 8000,
+            ...(json ? { responseMimeType: "application/json" } : {}),
+          },
+        }),
+      });
+      if (response.ok) return geminiText(await response.json());
+      const body = await response.text();
+      console.error("gemini:", model, response.status, body.slice(0, 500));
+      last = new ClaudeError(`gemini ${response.status}`, geminiReason(response.status, body), providerMessage(body));
+      if (last.reason !== "busy" && last.reason !== "model_missing") throw last;
+      if (last.reason === "model_missing") break;
+    }
   }
-  return geminiText(await response.json());
+  throw last!;
 }
 
 /** Reasons that mean "try the other provider" rather than "this request is wrong". */

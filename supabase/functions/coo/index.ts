@@ -145,7 +145,7 @@ async function run(admin: SupabaseClient, mode: Mode, note: string | null, focus
     text = await askClaude(SYSTEM, prompt(mode, context, note, focus), mode === "scenario" ? 12000 : 8000);
   } catch (e) {
     // The reason (bad key, no credit, limit…) goes back to Studio, which says what to do.
-    return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model" };
+    return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model", detail: e instanceof ClaudeError ? e.detail : String(e).slice(0, 200) };
   }
 
   return await save(admin, mode, text, note, focusId);

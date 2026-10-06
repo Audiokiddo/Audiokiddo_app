@@ -286,7 +286,7 @@ async function propose(admin: SupabaseClient, note: string | null) {
   try {
     text = await askClaude(ADS_SYSTEM, adsPrompt(context, note, today), 5000, { model: MODEL });
   } catch (e) {
-    return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model" };
+    return { error: "model" as const, reason: e instanceof ClaudeError ? e.reason : "model", detail: e instanceof ClaudeError ? e.detail : String(e).slice(0, 200) };
   }
   let parsed;
   try {
@@ -500,8 +500,8 @@ Deno.serve(withCors(async (req) => {
       case "research": {
         const note = typeof body.note === "string" && body.note.trim() ? body.note.trim().slice(0, 2000) : null;
         const result = await weekly(admin, note);
-        const agent = result.agent as { error?: string; reason?: string };
-        if (agent.error) return json({ ...result, error: agent.error, reason: agent.reason }, agent.error === "no_key" ? 412 : 502);
+        const agent = result.agent as { error?: string; reason?: string; detail?: string };
+        if (agent.error) return json({ ...result, error: agent.error, reason: agent.reason, detail: agent.detail }, agent.error === "no_key" ? 412 : 502);
         return json(result);
       }
       case "exclude": {
