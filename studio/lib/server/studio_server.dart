@@ -255,6 +255,33 @@ class StudioServer {
 
   Future<void> letterPreview() => _invoke('mailer', {'action': 'letter_preview'});
 
+  // Fabryka ---------------------------------------------------------------------------------
+
+  Future<List<Map<String, dynamic>>> factoryJobs() async => _rows(
+    await client
+        .from('factory_jobs')
+        .select()
+        .neq('status', 'rejected')
+        .order('updated_at', ascending: false)
+        .limit(100),
+  );
+
+  Future<void> factoryCreate(String kind, {String? title, String? note}) =>
+      _invoke('factory', {'action': 'create', 'kind': kind, 'title': ?title, 'note': ?note});
+
+  Future<void> factoryProposeTopics(int count) => _invoke('factory', {'action': 'propose_topics', 'count': count});
+
+  Future<void> factoryApprove(String id, {Map<String, dynamic>? output}) =>
+      _invoke('factory', {'action': 'approve', 'id': id, 'output': ?output});
+
+  Future<void> factoryRevise(String id, String feedback) =>
+      _invoke('factory', {'action': 'revise', 'id': id, 'feedback': feedback});
+
+  Future<void> factoryReject(String id) => _invoke('factory', {'action': 'reject', 'id': id});
+
+  Future<String> factoryAudioUrl(String path) async =>
+      '${(await _invoke('factory', {'action': 'audio_url', 'path': path}) as Map)['url']}';
+
   Future<Map<String, dynamic>> crmSetting(String key) async {
     final row = await client.from('crm_settings').select('value').eq('key', key).maybeSingle();
     return Map<String, dynamic>.from((row?['value'] as Map?) ?? {});

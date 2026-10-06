@@ -7,6 +7,7 @@ import 'crm_calendar.dart';
 import 'crm_insights.dart';
 import 'crm_quality.dart';
 import 'crm_widgets.dart';
+import 'factory_tab.dart';
 
 /// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
 /// proposes; nothing it proposes happens before Dawid approves it under "Decyzje".
@@ -25,7 +26,7 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
     final pending = ref.watch(crmPendingProvider).value?.length ?? 0;
     final adsPending = ref.watch(adsPendingProvider);
     return DefaultTabController(
-      length: 15,
+      length: 16,
       child: Column(
         children: [
           TabBar(
@@ -54,6 +55,7 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
                 text: 'Kampanie',
               ),
               const Tab(icon: Icon(Icons.mail_outline), text: 'Mailing'),
+              const Tab(icon: Icon(Icons.precision_manufacturing_outlined), text: 'Fabryka'),
               const Tab(icon: Icon(Icons.query_stats), text: 'Analiza'),
               const Tab(icon: Icon(Icons.reviews_outlined), text: 'Opinie'),
               const Tab(icon: Icon(Icons.receipt_long_outlined), text: 'Zamówienia'),
@@ -75,6 +77,7 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
                 _Ads(),
                 CampaignsTab(),
                 _Mailing(),
+                FactoryTab(),
                 AnalysisTab(),
                 ReviewsTab(),
                 OrdersTab(),

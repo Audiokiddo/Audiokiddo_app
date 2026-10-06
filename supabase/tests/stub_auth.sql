@@ -36,3 +36,7 @@ create function vault.create_secret(new_secret text, new_name text, new_descript
 returns uuid language sql as $$
   insert into vault.secrets (name, secret, description) values (new_name, new_secret, new_description) returning id
 $$;
+
+-- Supabase Storage, enough for migrations that create buckets.
+create schema storage;
+create table storage.buckets (id text primary key, name text not null, public boolean not null default false);

@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
 
+export 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart' show openInBrowser;
+
 /// A file picked for a catalog asset: size and SHA-256 are computed in the browser.
 /// In local mode the file itself is not uploaded; Etap 3 uploads it to Supabase Storage.
 class PickedAsset {
