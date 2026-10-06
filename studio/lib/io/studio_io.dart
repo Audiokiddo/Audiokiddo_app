@@ -32,8 +32,7 @@ class BrowserStudioIo implements StudioIo {
   Future<String?> readDraft() async => (await SharedPreferences.getInstance()).getString(_draftKey);
 
   @override
-  Future<void> writeDraft(String json) async =>
-      (await SharedPreferences.getInstance()).setString(_draftKey, json);
+  Future<void> writeDraft(String json) async => (await SharedPreferences.getInstance()).setString(_draftKey, json);
 
   @override
   Future<String?> pickCatalogJson() async {

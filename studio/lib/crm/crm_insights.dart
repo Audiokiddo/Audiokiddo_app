@@ -415,6 +415,11 @@ class _RhythmSettingsState extends ConsumerState<RhythmSettings> {
       'Newsletter co drugi czwartek',
       'Gotowy numer do zatwierdzenia; potem „Zaplanuj wysyłkę” w Mailing.',
     ),
+    (
+      'release_newsletter',
+      'Newsletter o premierze 2 dni przed nią',
+      'Dla każdej premiery w Kalendarzu: numer i rolki zapowiadające, z datą wysyłki w dniu premiery.',
+    ),
   ];
 
   @override
@@ -454,16 +459,19 @@ class _RhythmSettingsState extends ConsumerState<RhythmSettings> {
 // Planowanie newslettera --------------------------------------------------------------------------
 
 /// Group, day and hour for an approved newsletter; returns (groupId, date, time).
-Future<(String, String, String)?> askNewsletterSchedule(BuildContext context, StudioServer server) =>
+Future<(String, String, String)?> askNewsletterSchedule(BuildContext context, StudioServer server, {DateTime? day}) =>
     showDialog<(String, String, String)>(
       context: context,
-      builder: (_) => _ScheduleDialog(server: server),
+      builder: (_) => _ScheduleDialog(server: server, day: day),
     );
 
 class _ScheduleDialog extends StatefulWidget {
-  const _ScheduleDialog({required this.server});
+  const _ScheduleDialog({required this.server, this.day});
 
   final StudioServer server;
+
+  /// The premiere's day for a premiere newsletter.
+  final DateTime? day;
 
   @override
   State<_ScheduleDialog> createState() => _ScheduleDialogState();
@@ -472,7 +480,9 @@ class _ScheduleDialog extends StatefulWidget {
 class _ScheduleDialogState extends State<_ScheduleDialog> {
   late final Future<Map<String, dynamic>> _overview = widget.server.mailerLite();
   String? _group;
-  DateTime _day = DateTime.now().add(const Duration(days: 1));
+  late DateTime _day = widget.day != null && widget.day!.isAfter(DateTime.now())
+      ? widget.day!
+      : DateTime.now().add(const Duration(days: 1));
   TimeOfDay _time = const TimeOfDay(hour: 19, minute: 30);
 
   String get _date => '${_day.year}-${'${_day.month}'.padLeft(2, '0')}-${'${_day.day}'.padLeft(2, '0')}';
@@ -547,4 +557,43 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
       ),
     ],
   );
+}
+
+// Poczta ----------------------------------------------------------------------------------------
+
+/// Ustawienia: the morning e-mail to Dawid and the letters to parents, tried by hand.
+class MailTools extends ConsumerWidget {
+  const MailTools({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final server = ref.read(studioServerProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Poczta', style: Theme.of(context).textTheme.titleMedium),
+        const Text(
+          'Co rano o 7:30 przychodzi do Ciebie mail: alarmy, raport COO, liczby i to, co czeka na decyzję. '
+          'Rodzice, którzy włączyli „Listy od Szop’ena”, dostają list w niedzielę o 18:00.',
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            OutlinedButton.icon(
+              onPressed: () => crmRun(context, server.digestNow, done: 'Wysłano poranny raport.'),
+              icon: const Icon(Icons.wb_sunny_outlined),
+              label: const Text('Wyślij poranny raport teraz'),
+            ),
+            OutlinedButton.icon(
+              onPressed: () => crmRun(context, server.letterPreview, done: 'Wysłano przykładowy list na Twój adres.'),
+              icon: const Icon(Icons.drafts_outlined),
+              label: const Text('Przykładowy list do mnie'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }

@@ -95,8 +95,7 @@ class ShelvesScreen extends ConsumerWidget {
                   SyncedTextField(
                     label: 'Tytuł półki',
                     value: shelf['title'] as String? ?? '',
-                    onChanged: (v) =>
-                        controller.update((c) => ((c['shelves'] as List)[i] as Json)['title'] = v),
+                    onChanged: (v) => controller.update((c) => ((c['shelves'] as List)[i] as Json)['title'] = v),
                   ),
                   ReorderableListView(
                     shrinkWrap: true,
@@ -111,10 +110,7 @@ class ShelvesScreen extends ConsumerWidget {
                       for (final (j, id) in ids(shelf).indexed)
                         ListTile(
                           key: ValueKey('$i-$id'),
-                          leading: ReorderableDragStartListener(
-                            index: j,
-                            child: const Icon(Icons.drag_indicator),
-                          ),
+                          leading: ReorderableDragStartListener(index: j, child: const Icon(Icons.drag_indicator)),
                           title: Text(titles[id] ?? '⚠ brak pozycji „$id”'),
                           trailing: IconButton(
                             tooltip: 'Usuń z półki',

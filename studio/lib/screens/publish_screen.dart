@@ -23,10 +23,7 @@ class PublishScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        Text(
-          'Katalog w wersji ${state.catalog['version']}',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
+        Text('Katalog w wersji ${state.catalog['version']}', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8),
         Text(
           '${state.items.length} pozycji, w tym $free za darmo · ${state.packs.length} pakiety · ${state.shelves.length} półki',

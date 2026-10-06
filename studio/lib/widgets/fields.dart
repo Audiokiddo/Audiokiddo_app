@@ -86,8 +86,7 @@ class LabeledDropdown<T> extends StatelessWidget {
       initialValue: options.containsKey(value) ? value : null,
       decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
       items: [
-        for (final MapEntry(:key, value: text) in options.entries)
-          DropdownMenuItem(value: key, child: Text(text)),
+        for (final MapEntry(:key, value: text) in options.entries) DropdownMenuItem(value: key, child: Text(text)),
       ],
       onChanged: (v) {
         if (v != null) onChanged(v);
@@ -109,12 +108,7 @@ class SectionTitle extends StatelessWidget {
 }
 
 /// Snake-case wire names used in the catalog, with Polish labels.
-const situationLabels = {
-  'podroz': 'W podróży',
-  'przed_snem': 'Przed snem',
-  'w_domu': 'W domu',
-  'czekanie': 'Czekamy',
-};
+const situationLabels = {'podroz': 'W podróży', 'przed_snem': 'Przed snem', 'w_domu': 'W domu', 'czekanie': 'Czekamy'};
 const requirementLabels = {
   'mikrofon': 'Mikrofon',
   'miejsce_do_ruchu': 'Miejsce do ruchu',

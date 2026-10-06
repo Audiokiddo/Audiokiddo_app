@@ -12,13 +12,7 @@ typedef Json = Map<String, Object?>;
 Json deepCopy(Json json) => jsonDecode(jsonEncode(json)) as Json;
 
 /// An empty but valid catalog to start from.
-Json emptyCatalog() => {
-  'schema_version': catalogSchemaVersion,
-  'version': 1,
-  'packs': [],
-  'items': [],
-  'shelves': [],
-};
+Json emptyCatalog() => {'schema_version': catalogSchemaVersion, 'version': 1, 'packs': [], 'items': [], 'shelves': []};
 
 class StudioState {
   const StudioState({required this.catalog, required this.revision, this.loaded = false});

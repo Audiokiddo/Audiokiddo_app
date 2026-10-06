@@ -15,9 +15,7 @@ Future<void> main() async {
   // The admin stays signed in across reloads of the page.
   final server = StudioServer();
   await server.restore();
-  runApp(
-    ProviderScope(overrides: [studioServerProvider.overrideWithValue(server)], child: const StudioApp()),
-  );
+  runApp(ProviderScope(overrides: [studioServerProvider.overrideWithValue(server)], child: const StudioApp()));
 }
 
 class StudioApp extends StatelessWidget {
@@ -56,8 +54,7 @@ class _StudioShellState extends ConsumerState<StudioShell> {
       ref.read(studioProvider.notifier).importCatalog(raw);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Wczytano katalog.')));
     } on FormatException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Nie udało się wczytać: ${e.message}')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Nie udało się wczytać: ${e.message}')));
     }
   }
 
@@ -76,11 +73,7 @@ class _StudioShellState extends ConsumerState<StudioShell> {
               label: Text(validation.canPublish ? 'Katalog poprawny' : 'Błędy: ${validation.errorCount}'),
             ),
           ),
-          TextButton.icon(
-            onPressed: _import,
-            icon: const Icon(Icons.upload_file),
-            label: const Text('Importuj JSON'),
-          ),
+          TextButton.icon(onPressed: _import, icon: const Icon(Icons.upload_file), label: const Text('Importuj JSON')),
           const SizedBox(width: 8),
         ],
       ),
@@ -93,10 +86,7 @@ class _StudioShellState extends ConsumerState<StudioShell> {
                   labelType: NavigationRailLabelType.all,
                   onDestinationSelected: (i) => setState(() => _tab = i),
                   destinations: const [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.library_music_outlined),
-                      label: Text('Treści'),
-                    ),
+                    NavigationRailDestination(icon: Icon(Icons.library_music_outlined), label: Text('Treści')),
                     NavigationRailDestination(icon: Icon(Icons.inventory_2_outlined), label: Text('Pakiety')),
                     NavigationRailDestination(icon: Icon(Icons.view_carousel_outlined), label: Text('Półki')),
                     NavigationRailDestination(icon: Icon(Icons.publish_outlined), label: Text('Publikacja')),

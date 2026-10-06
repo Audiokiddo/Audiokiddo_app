@@ -58,8 +58,7 @@ String humanizeScriptIssue(ScriptIssue issue) {
     _ when m.startsWith('unknown asset') => 'nieznane nagranie „${quoted(m)}” (dodaj je w sekcji Nagrania)',
     _ when m.startsWith('jumps to missing step') => 'prowadzi do nieistniejącego kroku „${quoted(m)}”',
     _ when m.startsWith('missing fallback') => 'brakuje wariantu bez mikrofonu / przy zablokowanym ekranie',
-    _ when m.startsWith('loop without max_visits') =>
-      'pętla bez limitu przejść (ustaw „Maksymalna liczba przejść”)',
+    _ when m.startsWith('loop without max_visits') => 'pętla bez limitu przejść (ustaw „Maksymalna liczba przejść”)',
     _ when m.startsWith('no path from this step') => 'z tego kroku nie da się dojść do końca zabawy',
     _ when m.startsWith('step is never reached') => 'ten krok nigdy nie zostanie użyty',
     _ when m.startsWith('undeclared variable') => 'nieznana zmienna „${quoted(m)}”',
@@ -67,8 +66,7 @@ String humanizeScriptIssue(ScriptIssue issue) {
     _ when m.startsWith('input window longer') => 'nasłuch może trwać najwyżej 30 s',
     _ when m.startsWith('start step') => 'brak kroku startowego „${quoted(m)}”',
     _ when m.startsWith('script has no end step') => 'skrypt nie ma kroku „Koniec”',
-    _ when m.contains('is not supported by this engine') =>
-      'ten rodzaj nasłuchu nie jest jeszcze obsługiwany',
+    _ when m.contains('is not supported by this engine') => 'ten rodzaj nasłuchu nie jest jeszcze obsługiwany',
     _ when m.startsWith('requires engine') => 'wymaga nowszej wersji aplikacji',
     _ => m,
   };

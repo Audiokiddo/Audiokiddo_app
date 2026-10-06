@@ -82,9 +82,7 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
           children: [
             Text('Logowanie administratora', style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
-            const Text(
-              'Wyślemy kod na Twój e-mail. Konto musi być na liście administratorów (tabela admins).',
-            ),
+            const Text('Wyślemy kod na Twój e-mail. Konto musi być na liście administratorów (tabela admins).'),
             const SizedBox(height: 16),
             TextField(
               controller: _email,
@@ -185,10 +183,7 @@ class _StatsTabState extends ConsumerState<_StatsTab> {
               _Tile('Płacące rodziny (teraz)', '${s['paying_families'] ?? 0}'),
               _Tile('Aktywne abonamenty', '${s['active_subscriptions'] ?? 0}'),
               _Tile('Nowe instalacje', '${installs('first_open')}'),
-              _Tile(
-                'Polecenia: użyte / nagrodzone',
-                '${referrals['redeemed'] ?? 0} / ${referrals['rewarded'] ?? 0}',
-              ),
+              _Tile('Polecenia: użyte / nagrodzone', '${referrals['redeemed'] ?? 0} / ${referrals['rewarded'] ?? 0}'),
             ],
           ),
           const SizedBox(height: 24),
@@ -212,8 +207,7 @@ class _StatsTabState extends ConsumerState<_StatsTab> {
           ],
           const Divider(height: 32),
           Text('Zakupy według produktu ($_days dni)', style: text.titleMedium),
-          if (purchases.isEmpty)
-            const Padding(padding: EdgeInsets.all(8), child: Text('Brak zakupów w tym okresie.')),
+          if (purchases.isEmpty) const Padding(padding: EdgeInsets.all(8), child: Text('Brak zakupów w tym okresie.')),
           for (final p in purchases)
             ListTile(
               dense: true,
@@ -292,11 +286,7 @@ class _Analytics extends StatelessWidget {
         Text('Zabawy', style: text.titleMedium),
         row('Rozpoczęte / ukończone', '${plays['starts'] ?? 0} / ${plays['completes'] ?? 0}'),
         row('Powtórki (zabawa znana do końca)', '${plays['replays'] ?? 0}'),
-        row(
-          'Od razu następna zabawa',
-          '${plays['next_plays'] ?? 0}',
-          'Do 10 minut po ukończeniu poprzedniej',
-        ),
+        row('Od razu następna zabawa', '${plays['next_plays'] ?? 0}', 'Do 10 minut po ukończeniu poprzedniej'),
         const SizedBox(height: 12),
         Text('Częstotliwość', style: text.titleMedium),
         row('Aktywne urządzenia', '${freq['active_installs'] ?? 0}'),
@@ -425,8 +415,7 @@ class _CatalogTabState extends ConsumerState<_CatalogTab> {
       final raw = ref.read(studioProvider.notifier).exportForPublishing();
       final version = await ref.read(studioServerProvider).publish(jsonDecode(raw) as Json, _note.text);
       setState(
-        () => _status =
-            'Opublikowano wersję $version. Rodziny zobaczą zmiany przy następnym otwarciu aplikacji.',
+        () => _status = 'Opublikowano wersję $version. Rodziny zobaczą zmiany przy następnym otwarciu aplikacji.',
       );
     } on Object catch (e) {
       setState(() => _status = '$e');
@@ -606,8 +595,7 @@ class _PromotionDialogState extends State<_PromotionDialog> {
   late final _target = TextEditingController(text: widget.existing?['target'] as String? ?? '');
   late DateTime _start = DateTime.tryParse('${widget.existing?['starts_at']}')?.toLocal() ?? DateTime.now();
   late DateTime _end =
-      DateTime.tryParse('${widget.existing?['ends_at']}')?.toLocal() ??
-      DateTime.now().add(const Duration(days: 7));
+      DateTime.tryParse('${widget.existing?['ends_at']}')?.toLocal() ?? DateTime.now().add(const Duration(days: 7));
   late bool _active = widget.existing?['active'] as bool? ?? true;
 
   Future<void> _pick(bool start) async {
@@ -647,9 +635,7 @@ class _PromotionDialogState extends State<_PromotionDialog> {
           ),
           TextField(
             controller: _target,
-            decoration: const InputDecoration(
-              labelText: 'Dotyczy: id pakietu, subscription, bundle albo puste',
-            ),
+            decoration: const InputDecoration(labelText: 'Dotyczy: id pakietu, subscription, bundle albo puste'),
           ),
           const SizedBox(height: 12),
           Row(
@@ -669,11 +655,7 @@ class _PromotionDialogState extends State<_PromotionDialog> {
               ),
             ],
           ),
-          SwitchListTile(
-            title: const Text('Włączona'),
-            value: _active,
-            onChanged: (v) => setState(() => _active = v),
-          ),
+          SwitchListTile(title: const Text('Włączona'), value: _active, onChanged: (v) => setState(() => _active = v)),
         ],
       ),
     ),

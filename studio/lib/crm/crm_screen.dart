@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../server/studio_server.dart';
 import 'ads_screen.dart';
+import 'crm_calendar.dart';
 import 'crm_insights.dart';
+import 'crm_quality.dart';
 import 'crm_widgets.dart';
 
 /// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
@@ -23,7 +25,7 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
     final pending = ref.watch(crmPendingProvider).value?.length ?? 0;
     final adsPending = ref.watch(adsPendingProvider);
     return DefaultTabController(
-      length: 11,
+      length: 15,
       child: Column(
         children: [
           TabBar(
@@ -52,6 +54,10 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
                 text: 'Kampanie',
               ),
               const Tab(icon: Icon(Icons.mail_outline), text: 'Mailing'),
+              const Tab(icon: Icon(Icons.query_stats), text: 'Analiza'),
+              const Tab(icon: Icon(Icons.reviews_outlined), text: 'Opinie'),
+              const Tab(icon: Icon(Icons.receipt_long_outlined), text: 'Zamówienia'),
+              const Tab(icon: Icon(Icons.bug_report_outlined), text: 'Błędy'),
               const Tab(icon: Icon(Icons.people_outline), text: 'Użytkownicy'),
               const Tab(icon: Icon(Icons.update), text: 'Aktualizacje'),
               const Tab(icon: Icon(Icons.tune), text: 'Ustawienia'),
@@ -69,6 +75,10 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
                 _Ads(),
                 CampaignsTab(),
                 _Mailing(),
+                AnalysisTab(),
+                ReviewsTab(),
+                OrdersTab(),
+                ErrorsTab(),
                 _Users(),
                 _Updates(),
                 _Settings(),
@@ -175,6 +185,8 @@ class _Dashboard extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
+        const AlertsCard(),
+        const SizedBox(height: 16),
         crmAsync(
           overview,
           (o) => Wrap(
@@ -628,20 +640,6 @@ class _Calendar extends ConsumerWidget {
   const _Calendar();
 
   static const areas = ['release', 'post', 'reel', 'newsletter', 'promotion', 'update'];
-  static const months = [
-    'Styczeń',
-    'Luty',
-    'Marzec',
-    'Kwiecień',
-    'Maj',
-    'Czerwiec',
-    'Lipiec',
-    'Sierpień',
-    'Wrzesień',
-    'Październik',
-    'Listopad',
-    'Grudzień',
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -660,32 +658,19 @@ class _Calendar extends ConsumerWidget {
         label: const Text('Publikacja'),
       ),
       body: crmAsync(ref.watch(crmItemsProvider('calendar')), (all) {
-        final list = decided(all)
-          ..sort((a, b) => ((a['due'] as String?) ?? '9999').compareTo((b['due'] as String?) ?? '9999'));
-        final byMonth = <String, List<Map<String, dynamic>>>{};
-        for (final c in list) {
-          final due = DateTime.tryParse(c['due'] as String? ?? '');
-          final key = due == null ? 'Bez daty' : '${months[due.month - 1]} ${due.year}';
-          byMonth.putIfAbsent(key, () => []).add(c);
-        }
+        final list = decided(all);
         return ListView(
           padding: const EdgeInsets.all(20),
           children: [
             const Text('Plan: jeden nowy pakiet w miesiącu, 3 rolki w tygodniu, newsletter co 2 tygodnie.'),
             const SizedBox(height: 12),
-            if (byMonth.isEmpty) const Text('Kalendarz jest pusty.'),
-            for (final MapEntry(key: month, value: items) in byMonth.entries) ...[
-              Text(month, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 6),
-              for (final c in items)
-                CrmCard(
-                  item: c,
-                  dense: true,
-                  onTap: () => edit(c),
-                  actions: [Chip(label: Text(statusLabels[c['status']] ?? '${c['status']}'))],
-                ),
-              const SizedBox(height: 12),
-            ],
+            CalendarMonth(
+              items: list,
+              onTap: edit,
+              onMove: (item, day) async {
+                if (await crmRun(context, () => server.saveCrmItem({'id': item['id'], 'due': day}))) refresh();
+              },
+            ),
           ],
         );
       }),
@@ -959,7 +944,11 @@ class _MailingState extends ConsumerState<_Mailing> {
                           onPressed: _busy != null
                               ? null
                               : () async {
-                                  final plan = await askNewsletterSchedule(context, server);
+                                  final plan = await askNewsletterSchedule(
+                                    context,
+                                    server,
+                                    day: DateTime.tryParse('${m['due'] ?? ''}'),
+                                  );
                                   if (plan == null || !context.mounted) return;
                                   final (group, date, time) = plan;
                                   setState(() => _busy = m['id'] as String);
@@ -1153,6 +1142,8 @@ class _SettingsState extends ConsumerState<_Settings> {
       padding: const EdgeInsets.all(20),
       children: [
         const RhythmSettings(),
+        const Divider(height: 32),
+        const MailTools(),
         const Divider(height: 32),
         Text('Koszty miesięczne (zł)', style: Theme.of(context).textTheme.titleMedium),
         const Text('Odejmowane od przychodu w „Zysk w tym miesiącu”.'),
