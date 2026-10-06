@@ -7,7 +7,10 @@ import 'package:supabase/supabase.dart';
 
 /// The project Studio publishes to (same as the app; the key is the public one).
 const _url = String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://ypdxofcwewwdyoelamgy.supabase.co');
-const _key = String.fromEnvironment('SUPABASE_KEY', defaultValue: 'sb_publishable_GfJcAHEtFYs5IvlKrNZBVw_0WeAneGQ');
+const _key = String.fromEnvironment(
+  'SUPABASE_KEY',
+  defaultValue: 'sb_publishable_GfJcAHEtFYs5IvlKrNZBVw_0WeAneGQ',
+);
 
 /// Thrown with a message for the person at the keyboard.
 class StudioServerException implements Exception {
@@ -20,7 +23,16 @@ class StudioServerException implements Exception {
 /// Studio's connection to the server: sign-in with an e-mail code and the admin function
 /// (only accounts listed in public.admins may use it).
 class StudioServer {
-  StudioServer([SupabaseClient? client]) : client = client ?? SupabaseClient(_url, _key);
+  // The code from the e-mail is typed in Studio, so no redirect and no PKCE: PKCE would need a
+  // storage for its verifier, which a bare SupabaseClient does not have (null check on send).
+  StudioServer([SupabaseClient? client])
+    : client =
+          client ??
+          SupabaseClient(
+            _url,
+            _key,
+            authOptions: const AuthClientOptions(authFlowType: AuthFlowType.implicit),
+          );
 
   final SupabaseClient client;
   static const _sessionKey = 'studio_session';
@@ -50,7 +62,8 @@ class StudioServer {
   bool get signedIn => client.auth.currentUser != null;
   String? get email => client.auth.currentUser?.email;
 
-  Future<void> sendCode(String email) => client.auth.signInWithOtp(email: email.trim(), shouldCreateUser: false);
+  Future<void> sendCode(String email) =>
+      client.auth.signInWithOtp(email: email.trim(), shouldCreateUser: false);
 
   Future<void> verify(String email, String code) =>
       client.auth.verifyOTP(email: email.trim(), token: code.trim(), type: OtpType.email);
@@ -129,7 +142,9 @@ class StudioServer {
 
   /// Asks the AI director. Returns { summary, proposals }.
   Future<Map<String, dynamic>> coo(String mode, {String? note, String? focusId}) async =>
-      Map<String, dynamic>.from(await _invoke('coo', {'mode': mode, 'note': ?note, 'focus_id': ?focusId}) as Map);
+      Map<String, dynamic>.from(
+        await _invoke('coo', {'mode': mode, 'note': ?note, 'focus_id': ?focusId}) as Map,
+      );
 
   Future<Map<String, dynamic>> mailerLite() async =>
       Map<String, dynamic>.from(await _invoke('mailerlite', {'action': 'overview'}) as Map);
@@ -154,20 +169,25 @@ class StudioServer {
   /// Approving applies the change on the platform right away. Returns { ok, message }.
   Future<Map<String, dynamic>> adsDecide(String id, {required bool approve, double? dailyBudget}) async =>
       Map<String, dynamic>.from(
-        await _invoke('ads', {'action': 'decide', 'id': id, 'approve': approve, 'daily_budget': ?dailyBudget}) as Map,
+        await _invoke('ads', {'action': 'decide', 'id': id, 'approve': approve, 'daily_budget': ?dailyBudget})
+            as Map,
       );
 
   /// A change made by hand: pause, enable or a new daily budget.
-  Future<Map<String, dynamic>> adsApply(String platform, String entityId, String action, {double? dailyBudget}) async =>
-      Map<String, dynamic>.from(
-        await _invoke('ads', {
-          'action': 'apply',
-          'platform': platform,
-          'entity_id': entityId,
-          'action_kind': action,
-          'daily_budget': ?dailyBudget,
-        }) as Map,
-      );
+  Future<Map<String, dynamic>> adsApply(
+    String platform,
+    String entityId,
+    String action, {
+    double? dailyBudget,
+  }) async => Map<String, dynamic>.from(
+    await _invoke('ads', {
+      'action': 'apply',
+      'platform': platform,
+      'entity_id': entityId,
+      'action_kind': action,
+      'daily_budget': ?dailyBudget,
+    }) as Map,
+  );
 
   /// Kreacje, konkurencja, słowa kluczowe: verdicts, creatives, research, competitors, keywords.
   Future<Map<String, dynamic>> adsGrowth() async =>
@@ -234,8 +254,10 @@ class StudioServer {
   ];
 
   /// Sends an approved newsletter to [groupId] on [date] at [time] ("HH:MM", Warsaw time).
-  Future<void> mailerLiteSchedule(String itemId, String groupId, String date, String time) =>
-      _invoke('mailerlite', {'action': 'schedule', 'item_id': itemId, 'group_id': groupId, 'date': date, 'time': time});
+  Future<void> mailerLiteSchedule(String itemId, String groupId, String date, String time) => _invoke(
+    'mailerlite',
+    {'action': 'schedule', 'item_id': itemId, 'group_id': groupId, 'date': date, 'time': time},
+  );
 
   // Jakość, analiza, opinie, zamówienia, poczta ------------------------------------------
 
@@ -282,9 +304,10 @@ class StudioServer {
   Future<String> reviewDraft(String store, String id) async =>
       '${(await _invoke('reviews', {'action': 'draft', 'store': store, 'review_id': id}) as Map)['draft']}';
 
-  Future<Map<String, dynamic>> reviewPublish(String store, String id, String text) async => Map<String, dynamic>.from(
-    await _invoke('reviews', {'action': 'publish', 'store': store, 'review_id': id, 'text': text}) as Map,
-  );
+  Future<Map<String, dynamic>> reviewPublish(String store, String id, String text) async =>
+      Map<String, dynamic>.from(
+        await _invoke('reviews', {'action': 'publish', 'store': store, 'review_id': id, 'text': text}) as Map,
+      );
 
   Future<void> reviewSkip(String store, String id) =>
       _invoke('reviews', {'action': 'skip', 'store': store, 'review_id': id});
@@ -312,7 +335,8 @@ class StudioServer {
   Future<void> factoryCreate(String kind, {String? title, String? note}) =>
       _invoke('factory', {'action': 'create', 'kind': kind, 'title': ?title, 'note': ?note});
 
-  Future<void> factoryProposeTopics(int count) => _invoke('factory', {'action': 'propose_topics', 'count': count});
+  Future<void> factoryProposeTopics(int count) =>
+      _invoke('factory', {'action': 'propose_topics', 'count': count});
 
   Future<void> factoryApprove(String id, {Map<String, dynamic>? output}) =>
       _invoke('factory', {'action': 'approve', 'id': id, 'output': ?output});
@@ -330,8 +354,11 @@ class StudioServer {
     return Map<String, dynamic>.from((row?['value'] as Map?) ?? {});
   }
 
-  Future<void> saveCrmSetting(String key, Map<String, Object?> value) =>
-      client.from('crm_settings').upsert({'key': key, 'value': value, 'updated_at': DateTime.now().toIso8601String()});
+  Future<void> saveCrmSetting(String key, Map<String, Object?> value) => client.from('crm_settings').upsert({
+    'key': key,
+    'value': value,
+    'updated_at': DateTime.now().toIso8601String(),
+  });
 
   Future<Map<String, dynamic>> stats(int days) async =>
       Map<String, dynamic>.from(await _admin({'action': 'stats', 'days': days}) as Map);
