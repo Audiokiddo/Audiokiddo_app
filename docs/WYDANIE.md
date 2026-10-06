@@ -74,6 +74,8 @@ Wysyłka: aplikacja **Transporter** (z App Store) albo Xcode → Organizer → D
 
 ## 5. Produkty w sklepach
 
+> **Aktualizacja 6.10.2026:** doszły plany dla 2 i 3–5 dzieci (4 nowe subskrypcje) i poziomy w grupie subskrypcji. Aktualna lista i kolejność kroków: `docs/PUBLIKACJA.md`, etap 6.
+
 Identyfikatory muszą być **identyczne** w App Store Connect, Play Console i w aplikacji (`app/lib/features/purchases/offer_catalog.dart`, katalog treści). Ceny jak na audiokiddo.pl, pojedyncze zabawy tańsze, żeby pakiet był bardziej opłacalny.
 
 | ID produktu | Typ | Nazwa | Cena |
