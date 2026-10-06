@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../server/studio_server.dart';
 import 'ads_screen.dart';
+import 'crm_insights.dart';
 import 'crm_widgets.dart';
 
 /// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
@@ -188,7 +189,11 @@ class _Dashboard extends ConsumerWidget {
               ),
               KpiTile('MRR brutto', zl(o['mrr_gross']), hint: 'netto ${zl(o['mrr_net'])}'),
               KpiTile('Płacące rodziny', '${o['paying_families']}'),
-              KpiTile('Abonamenty', '${o['subs_yearly']} roczne · ${o['subs_monthly']} mies.'),
+              KpiTile(
+                'Abonamenty',
+                '${o['subs_yearly']} roczne · ${o['subs_monthly']} mies.',
+                hint: o['subs_multi_child'] == null ? null : 'w tym dla 2+ dzieci: ${o['subs_multi_child']}',
+              ),
               KpiTile('Użytkownicy', '${o['users_total']}', hint: '+${o['users_7d']} w 7 dni'),
               KpiTile('Przychód 30 dni (brutto)', zl(o['revenue_30d_gross'])),
               KpiTile('Otwarte zadania', '${o['open_tasks']}'),
@@ -196,6 +201,8 @@ class _Dashboard extends ConsumerWidget {
             ],
           ),
         ),
+        const SizedBox(height: 16),
+        const TrendCard(),
         const SizedBox(height: 24),
         const _CooBox(),
         const SizedBox(height: 16),
@@ -288,9 +295,7 @@ class _CooBoxState extends ConsumerState<_CooBox> {
     await crmRun(
       context,
       () async {
-        await ref
-            .read(studioServerProvider)
-            .coo(mode, note: _note.text.trim().isEmpty ? null : _note.text.trim());
+        await ref.read(studioServerProvider).coo(mode, note: _note.text.trim().isEmpty ? null : _note.text.trim());
         ref.read(crmRefreshProvider.notifier).bump();
       },
       done: mode == 'brief'
@@ -311,10 +316,7 @@ class _CooBoxState extends ConsumerState<_CooBox> {
             children: [
               const Icon(Icons.smart_toy_outlined),
               const SizedBox(width: 8),
-              Text(
-                'Agent COO',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-              ),
+              Text('Agent COO', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
             ],
           ),
           const SizedBox(height: 4),
@@ -588,10 +590,7 @@ class _IdeasState extends ConsumerState<_Ideas> {
                               if (mounted) setState(() => _writing = null);
                             },
                       icon: _writing == item['id']
-                          ? const SizedBox.square(
-                              dimension: 14,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
+                          ? const SizedBox.square(dimension: 14, child: CircularProgressIndicator(strokeWidth: 2))
                           : const Icon(Icons.auto_stories_outlined),
                       label: const Text('Agent: napisz scenariusz zabawy'),
                     ),
@@ -785,10 +784,7 @@ class _AdPreview extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text('audiokiddo', style: text.labelMedium?.copyWith(color: Colors.white)),
                         const Spacer(),
-                        Text(
-                          '${data['format'] ?? 'rolka'}',
-                          style: text.labelSmall?.copyWith(color: Colors.white70),
-                        ),
+                        Text('${data['format'] ?? 'rolka'}', style: text.labelSmall?.copyWith(color: Colors.white70)),
                       ],
                     ),
                     const Spacer(),
@@ -856,12 +852,7 @@ class _MailingState extends ConsumerState<_Mailing> {
     final text = Theme.of(context).textTheme;
     void refresh() => ref.read(crmRefreshProvider.notifier).bump();
     Future<void> edit([Map<String, dynamic>? item]) async {
-      final saved = await editCrmItem(
-        context,
-        kind: 'mailing',
-        item: item,
-        areas: const ['newsletter', 'automation'],
-      );
+      final saved = await editCrmItem(context, kind: 'mailing', item: item, areas: const ['newsletter', 'automation']);
       if (saved == null || !context.mounted) return;
       if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
     }
@@ -881,9 +872,7 @@ class _MailingState extends ConsumerState<_Mailing> {
               child: _overview == null
                   ? Row(
                       children: [
-                        const Expanded(
-                          child: Text('MailerLite: subskrybenci, wyniki kampanii i automatyzacje.'),
-                        ),
+                        const Expanded(child: Text('MailerLite: subskrybenci, wyniki kampanii i automatyzacje.')),
                         FilledButton.tonal(
                           onPressed: () => setState(() => _overview = server.mailerLite()),
                           child: const Text('Wczytaj z MailerLite'),
@@ -903,9 +892,7 @@ class _MailingState extends ConsumerState<_Mailing> {
                             const SizedBox(height: 8),
                             Text('Grupy', style: text.labelLarge),
                             for (final g in (o['groups'] as List? ?? const []).cast<Map>())
-                              Text(
-                                '• ${g['name']}: ${g['active']} aktywnych, otwarcia ${g['open_rate'] ?? '–'}',
-                              ),
+                              Text('• ${g['name']}: ${g['active']} aktywnych, otwarcia ${g['open_rate'] ?? '–'}'),
                             const SizedBox(height: 8),
                             Text('Ostatnie kampanie', style: text.labelLarge),
                             for (final c in (o['campaigns'] as List? ?? const []).cast<Map>())
@@ -967,6 +954,28 @@ class _MailingState extends ConsumerState<_Mailing> {
                           icon: const Icon(Icons.outbox_outlined),
                           label: const Text('Szkic w MailerLite'),
                         ),
+                      if (m['area'] == 'newsletter' && (m['data'] as Map?)?['scheduled'] == null)
+                        FilledButton.tonalIcon(
+                          onPressed: _busy != null
+                              ? null
+                              : () async {
+                                  final plan = await askNewsletterSchedule(context, server);
+                                  if (plan == null || !context.mounted) return;
+                                  final (group, date, time) = plan;
+                                  setState(() => _busy = m['id'] as String);
+                                  final ok = await crmRun(
+                                    context,
+                                    () => server.mailerLiteSchedule(m['id'] as String, group, date, time),
+                                    done: 'Zaplanowano: $date o $time. Zmienisz to jeszcze w MailerLite.',
+                                  );
+                                  if (ok) refresh();
+                                  if (mounted) setState(() => _busy = null);
+                                },
+                          icon: const Icon(Icons.schedule_send_outlined),
+                          label: const Text('Zaplanuj wysyłkę'),
+                        ),
+                      if ((m['data'] as Map?)?['scheduled'] case final at?)
+                        Chip(avatar: const Icon(Icons.schedule_send, size: 16), label: Text('Wysyłka $at')),
                     ],
                   ),
               ],
@@ -989,6 +998,8 @@ class _Users extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
+        const CustomerLookup(),
+        const SizedBox(height: 20),
         Wrap(
           spacing: 12,
           runSpacing: 12,
@@ -1034,12 +1045,7 @@ class _Updates extends ConsumerWidget {
     final server = ref.read(studioServerProvider);
     void refresh() => ref.read(crmRefreshProvider.notifier).bump();
     Future<void> edit([Map<String, dynamic>? item]) async {
-      final saved = await editCrmItem(
-        context,
-        kind: 'change',
-        item: item,
-        areas: const ['update', 'proposal'],
-      );
+      final saved = await editCrmItem(context, kind: 'change', item: item, areas: const ['update', 'proposal']);
       if (saved == null || !context.mounted) return;
       if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
     }
@@ -1124,9 +1130,7 @@ class _SettingsState extends ConsumerState<_Settings> {
     super.initState();
     ref.read(studioServerProvider).crmSetting('monthly_costs').then((v) {
       if (mounted) {
-        setState(
-          () => _costs = {for (final e in v.entries) e.key: TextEditingController(text: '${e.value}')},
-        );
+        setState(() => _costs = {for (final e in v.entries) e.key: TextEditingController(text: '${e.value}')});
       }
     });
   }
@@ -1148,6 +1152,8 @@ class _SettingsState extends ConsumerState<_Settings> {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
+        const RhythmSettings(),
+        const Divider(height: 32),
         Text('Koszty miesięczne (zł)', style: Theme.of(context).textTheme.titleMedium),
         const Text('Odejmowane od przychodu w „Zysk w tym miesiącu”.'),
         const SizedBox(height: 8),

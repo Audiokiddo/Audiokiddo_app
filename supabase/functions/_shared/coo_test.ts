@@ -1,5 +1,5 @@
 import { assertEquals, assertThrows } from "jsr:@std/assert@1";
-import { cleanProposal, parseAnswer, prompt, toRow } from "./coo.ts";
+import { cleanProposal, dueModes, parseAnswer, prompt, toRow } from "./coo.ts";
 
 Deno.test("the answer becomes clean proposals, wrapped or not", () => {
   const answer = 'Oto plan:\n```json\n{"summary": "Dziś: abonament.", "proposals": [' +
@@ -27,4 +27,12 @@ Deno.test("the prompt carries the business state and the approved idea", () => {
   for (const part of ['"paying_families":3', "Kosmos", "krócej", "proposals"]) {
     if (!text.includes(part)) throw new Error(`missing ${part}`);
   }
+});
+
+Deno.test("the morning rhythm: report daily, ads on Monday, newsletter every other Thursday", () => {
+  // 2026-10-05 is a Monday; 2026-10-08 a Thursday of ISO week 41 (odd), 2026-10-15 of week 42.
+  assertEquals(dueModes(null, new Date("2026-10-05T05:00:00Z")), ["brief", "ads"]);
+  assertEquals(dueModes(null, new Date("2026-10-08T05:00:00Z")), ["brief"]);
+  assertEquals(dueModes(null, new Date("2026-10-15T05:00:00Z")), ["brief", "newsletter"]);
+  assertEquals(dueModes({ brief_daily: false, ads_weekly: false }, new Date("2026-10-05T05:00:00Z")), []);
 });

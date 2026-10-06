@@ -10,7 +10,9 @@ create table auth.users (
   email text,
   email_confirmed_at timestamptz,
   is_anonymous boolean not null default false,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  last_sign_in_at timestamptz,
+  deleted_at timestamptz
 );
 
 create function auth.uid() returns uuid language sql stable as $$
@@ -19,3 +21,18 @@ $$;
 
 grant usage on schema public, auth to anon, authenticated, service_role;
 grant execute on function auth.uid() to anon, authenticated, service_role;
+
+-- Supabase Vault, enough for the migrations that keep a cron secret in it.
+create schema vault;
+create table vault.secrets (
+  id uuid primary key default gen_random_uuid(),
+  name text unique,
+  secret text not null,
+  description text not null default ''
+);
+create view vault.decrypted_secrets as
+  select id, name, secret as decrypted_secret, description from vault.secrets;
+create function vault.create_secret(new_secret text, new_name text, new_description text default '')
+returns uuid language sql as $$
+  insert into vault.secrets (name, secret, description) values (new_name, new_secret, new_description) returning id
+$$;

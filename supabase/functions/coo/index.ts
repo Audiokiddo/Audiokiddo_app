@@ -1,38 +1,74 @@
-// The AI director (COO) for the CRM in Studio. Admins only. Body: { mode, note?, focus_id? }
-//   mode: brief | packs | scenario | ads | newsletter | improve
+// The AI director (COO) for the CRM in Studio. Body: { mode, note?, focus_id? }
+//   mode: brief | packs | scenario | ads | newsletter | improve (admins)
+//   mode: auto (the daily pg_cron rhythm with the Vault secret: crm_settings.coo_rhythm)
 // Gathers the state of the business (numbers, board, ideas, calendar, past decisions), asks
 // Claude, and saves every proposal as a pending decision. Returns { summary, proposals }.
 // Secrets: ANTHROPIC_API_KEY (required), COO_MODEL (optional).
-import { MODES, type Mode, parseAnswer, prompt, SYSTEM, toRow } from "../_shared/coo.ts";
+import { dueModes, MODES, type Mode, parseAnswer, prompt, SYSTEM, toRow } from "../_shared/coo.ts";
 import { withCors } from "../_shared/cors.ts";
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
+import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 
 const MODEL = Deno.env.get("COO_MODEL") ?? "claude-sonnet-5-5";
 
 Deno.serve(withCors(async (req) => {
   if (req.method !== "POST") return json({ error: "method" }, 405);
   const admin = adminClient();
-  const user = await requestUser(req, admin);
-  if (!user) return json({ error: "unauthorized" }, 401);
-  const { data: isAdmin } = await admin.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
-  if (!isAdmin) return json({ error: "forbidden" }, 403);
-
-  const key = Deno.env.get("ANTHROPIC_API_KEY");
-  if (!key) return json({ error: "no_key" }, 412);
-
   let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
     return json({ error: "body" }, 400);
   }
+
+  // The daily rhythm comes from pg_cron with the Vault secret (the same one as the ads cycle).
+  const cronSecret = req.headers.get("x-cron-secret");
+  if (cronSecret) {
+    const { data: ok } = await admin.rpc("ads_cron_ok", { p_secret: cronSecret });
+    if (ok !== true || body.mode !== "auto") return json({ error: "unauthorized" }, 401);
+    return json(await rhythm(admin, new Date()));
+  }
+
+  const user = await requestUser(req, admin);
+  if (!user) return json({ error: "unauthorized" }, 401);
+  const { data: isAdmin } = await admin.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+  if (!isAdmin) return json({ error: "forbidden" }, 403);
+
   const mode = String(body.mode) as Mode;
   if (!MODES.includes(mode)) return json({ error: "mode" }, 400);
   const note = typeof body.note === "string" && body.note.trim() ? body.note.trim().slice(0, 2000) : null;
+  const result = await run(admin, mode, note, typeof body.focus_id === "string" ? body.focus_id : null);
+  if ("error" in result) return json(result, result.error === "no_key" ? 412 : result.error === "save" ? 503 : 502);
+  return json(result);
+}));
+
+/** What the morning brings: the report every day, ad ideas on Mondays, a newsletter draft
+ * every other Thursday (crm_settings.coo_rhythm). Skips what already ran today. */
+async function rhythm(admin: SupabaseClient, now: Date) {
+  const { data: setting } = await admin.from("crm_settings").select("value").eq("key", "coo_rhythm").maybeSingle();
+  const due = dueModes(setting?.value, now);
+  const today = now.toISOString().slice(0, 10);
+  const done: Record<string, string> = {};
+  for (const mode of due) {
+    const { count } = await admin.from("crm_items").select("id", { count: "exact", head: true })
+      .eq("kind", "briefing").eq("area", mode).gte("created_at", `${today}T00:00:00Z`);
+    if ((count ?? 0) > 0) {
+      done[mode] = "already";
+      continue;
+    }
+    const result = await run(admin, mode, null, null);
+    done[mode] = "error" in result ? result.error : "ok";
+  }
+  return { due, done };
+}
+
+async function run(admin: SupabaseClient, mode: Mode, note: string | null, focusId: string | null) {
+  const key = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!key) return { error: "no_key" as const };
 
   let focus: Record<string, unknown> | null = null;
-  if (typeof body.focus_id === "string") {
-    const { data } = await admin.from("crm_items").select("title, body, data").eq("id", body.focus_id).maybeSingle();
+  if (focusId) {
+    const { data } = await admin.from("crm_items").select("title, body, data").eq("id", focusId).maybeSingle();
     focus = data;
   }
 
@@ -80,7 +116,7 @@ Deno.serve(withCors(async (req) => {
   });
   if (!response.ok) {
     console.error("coo: model", response.status, await response.text());
-    return json({ error: "model", status: response.status }, 502);
+    return { error: "model" as const };
   }
   const answer = await response.json() as { content?: { type: string; text?: string }[] };
   const text = (answer.content ?? []).filter((c) => c.type === "text").map((c) => c.text ?? "").join("");
@@ -90,7 +126,7 @@ Deno.serve(withCors(async (req) => {
     parsed = parseAnswer(text);
   } catch (e) {
     console.error("coo: answer", e, text.slice(0, 500));
-    return json({ error: "answer" }, 502);
+    return { error: "answer" as const };
   }
 
   const rows = [
@@ -101,17 +137,17 @@ Deno.serve(withCors(async (req) => {
       body: parsed.summary,
       status: "done",
       source: "ai",
-      data: { note, focus_id: body.focus_id ?? null },
+      data: { note, focus_id: focusId },
     },
     ...parsed.proposals.map(toRow),
   ];
   const { error } = await admin.from("crm_items").insert(rows);
   if (error) {
     console.error("coo: save", error.message);
-    return json({ error: "save" }, 503);
+    return { error: "save" as const };
   }
-  return json(parsed);
-}));
+  return parsed;
+}
 
 const labels: Record<Mode, string> = {
   brief: "Raport COO",

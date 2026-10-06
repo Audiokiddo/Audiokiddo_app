@@ -106,8 +106,7 @@ class _Section extends StatelessWidget {
 const _secretsHint = {
   'meta': 'META_ACCESS_TOKEN, META_AD_ACCOUNT_ID',
   'meta_pixel': 'META_PIXEL_ID (oraz token Meta)',
-  'google_ads':
-      'GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_ADS_CUSTOMER_ID',
+  'google_ads': 'GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_ADS_CUSTOMER_ID',
   'ga4': 'GA4_PROPERTY_ID (oraz klucze Google)',
   'agent': 'ANTHROPIC_API_KEY',
 };
@@ -622,9 +621,7 @@ class _Limits extends ConsumerStatefulWidget {
 class _LimitsState extends ConsumerState<_Limits> {
   late bool _enabled = widget.settings['enabled'] != false;
   late final _maxDaily = TextEditingController(text: '${widget.settings['max_daily'] ?? 150}');
-  late final _maxChange = TextEditingController(
-    text: '${(_num(widget.settings['max_change'] ?? .5) * 100).round()}',
-  );
+  late final _maxChange = TextEditingController(text: '${(_num(widget.settings['max_change'] ?? .5) * 100).round()}');
   late final _targetCpa = TextEditingController(text: '${widget.settings['target_cpa'] ?? ''}');
 
   @override

@@ -22,6 +22,7 @@ const areaLabels = <String, String>{
   'crm': 'CRM',
   'server': 'Serwer',
   'brief': 'Raport',
+  'support': 'Obsługa klienta',
 };
 
 const statusLabels = <String, String>{
@@ -75,10 +76,7 @@ class KpiTile extends StatelessWidget {
         children: [
           Text(label, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
-          ),
+          Text(value, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
           if (hint != null) Text(hint!, style: Theme.of(context).textTheme.labelSmall),
         ],
       ),
@@ -136,10 +134,7 @@ class _CrmCardState extends State<CrmCard> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      '${item['title']}',
-                      style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                    ),
+                    child: Text('${item['title']}', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                   ),
                 ],
               ),
@@ -232,9 +227,7 @@ class _ItemDialogState extends State<_ItemDialog> {
                     child: DropdownButtonFormField<String>(
                       initialValue: widget.areas.contains(_area) ? _area : widget.areas.first,
                       decoration: const InputDecoration(labelText: 'Typ'),
-                      items: [
-                        for (final a in widget.areas) DropdownMenuItem(value: a, child: Text(areaLabel(a))),
-                      ],
+                      items: [for (final a in widget.areas) DropdownMenuItem(value: a, child: Text(areaLabel(a)))],
                       onChanged: (v) => setState(() => _area = v),
                     ),
                   ),
@@ -244,8 +237,7 @@ class _ItemDialogState extends State<_ItemDialog> {
                     initialValue: widget.statuses.contains(_status) ? _status : widget.statuses.first,
                     decoration: const InputDecoration(labelText: 'Status'),
                     items: [
-                      for (final s in widget.statuses)
-                        DropdownMenuItem(value: s, child: Text(statusLabels[s] ?? s)),
+                      for (final s in widget.statuses) DropdownMenuItem(value: s, child: Text(statusLabels[s] ?? s)),
                     ],
                     onChanged: (v) => setState(() => _status = v ?? _status),
                   ),

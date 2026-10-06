@@ -108,22 +108,28 @@ returns boolean language sql stable security definer set search_path = public, v
 $$;
 revoke all on function public.ads_cron_ok(text) from public, anon, authenticated;
 
-create extension if not exists pg_cron;
-create extension if not exists pg_net;
-
 -- 5:00 UTC: 7:00 in Polish summer time, 6:00 in winter. Rescheduling by name replaces the job.
-select cron.schedule(
-  'ads-daily-cycle',
-  '0 5 * * *',
-  $job$
-  select net.http_post(
-    url := 'https://ypdxofcwewwdyoelamgy.supabase.co/functions/v1/ads',
-    headers := jsonb_build_object(
-      'content-type', 'application/json',
-      'x-cron-secret', (select decrypted_secret from vault.decrypted_secrets where name = 'ads_cron_secret')
-    ),
-    body := '{"action": "cycle"}'::jsonb,
-    timeout_milliseconds := 150000
-  )
-  $job$
-);
+-- (Only where pg_cron exists: always on Supabase, not in the local test database.)
+do $do$
+begin
+  if exists (select 1 from pg_available_extensions where name = 'pg_cron') then
+    create extension if not exists pg_cron;
+    create extension if not exists pg_net;
+    perform cron.schedule(
+      'ads-daily-cycle',
+      '0 5 * * *',
+      $job$
+      select net.http_post(
+        url := 'https://ypdxofcwewwdyoelamgy.supabase.co/functions/v1/ads',
+        headers := jsonb_build_object(
+          'content-type', 'application/json',
+          'x-cron-secret', (select decrypted_secret from vault.decrypted_secrets where name = 'ads_cron_secret')
+        ),
+        body := '{"action": "cycle"}'::jsonb,
+        timeout_milliseconds := 150000
+      )
+      $job$
+    );
+  end if;
+end;
+$do$;

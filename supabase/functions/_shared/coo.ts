@@ -118,3 +118,25 @@ export function toRow(p: Proposal) {
     decision: "pending",
   };
 }
+
+/** The modes due this morning (Warsaw time): the report daily, ad ideas on Mondays and a
+ * newsletter draft on Thursdays of even ISO weeks, each as switched on in [setting]. */
+export function dueModes(setting: unknown, now: Date): Mode[] {
+  const s = (setting && typeof setting === "object" ? setting : {}) as Record<string, unknown>;
+  const on = (key: string) => s[key] !== false;
+  const local = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Warsaw" }));
+  const weekday = local.getDay(); // 0 Sunday … 6 Saturday
+  const due: Mode[] = [];
+  if (on("brief_daily")) due.push("brief");
+  if (on("ads_weekly") && weekday === 1) due.push("ads");
+  if (on("newsletter_biweekly") && weekday === 4 && isoWeek(local) % 2 === 0) due.push("newsletter");
+  return due;
+}
+
+function isoWeek(d: Date): number {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return Math.ceil(((t.getTime() - yearStart.getTime()) / 864e5 + 1) / 7);
+}

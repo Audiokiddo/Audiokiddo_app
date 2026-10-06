@@ -6,7 +6,7 @@ Stan: 5 października 2026. CRM jest częścią AudioKiddo Studio (zakładka **C
 
 | Zakładka | Do czego |
 |---|---|
-| **Pulpit** | Zysk w tym miesiącu (szacunek: MRR netto po VAT i prowizjach minus koszty), MRR, płacące rodziny, abonamenty, użytkownicy, przychód z 30 dni. Ostatni raport COO, zadania na dziś i zaległe, kalendarz na 14 dni |
+| **Pulpit** | Trend 12 tygodni (aktywne rodziny, nowe konta, zabawy, oferta, zakupy, przychód; zmiana do zeszłego tygodnia). Zysk w tym miesiącu (szacunek: MRR netto po VAT i prowizjach minus koszty), MRR, płacące rodziny, abonamenty, użytkownicy, przychód z 30 dni. Ostatni raport COO, zadania na dziś i zaległe, kalendarz na 14 dni |
 | **Decyzje** | Wszystko, co zaproponował agent: zatwierdzasz, odrzucasz albo poprawiasz. Bez Twojej decyzji nic nie trafia na tablice |
 | **Zadania** | Tablica: Do zrobienia, W toku, Zrobione. Właściciel (Dawid, Nela, Claude), termin, priorytet |
 | **Pomysły** | Pakiety, scenariusze, funkcje, posty i rolki ze statusem (nowy, wybrany, w produkcji, opublikowany). Przy pakiecie przycisk „Agent: napisz scenariusz zabawy” oraz „Do kalendarza” |
@@ -14,9 +14,9 @@ Stan: 5 października 2026. CRM jest częścią AudioKiddo Studio (zakładka **C
 | **Reklamy** | Podgląd reklam i rolek jak na telefonie: haczyk, tekst, grupa docelowa, budżet testu |
 | **Kampanie** | Meta Ads, Pixel, Google Ads i Google Analytics: wyniki, propozycje agenta reklam do zatwierdzenia, ręczne zmiany budżetów i wstrzymywanie kampanii. Szczegóły i podłączenie kont: `docs/REKLAMY.md` |
 | **Mailing** | Wyniki z MailerLite (subskrybenci, otwarcia, kliknięcia, automatyzacje), newslettery i automatyzacje z podglądem. Przycisk „Szkic w MailerLite” tworzy kampanię, którą sprawdzasz i wysyłasz sam |
-| **Użytkownicy** | Liczby kont, nowe konta, płacący, sprzedane pakiety, lista ostatnich kont |
+| **Użytkownicy** | **Obsługa klienta**: wyszukanie rodzica po e-mailu, jego zakupy, aktywność z 30 dni, „Daj dostęp ręcznie” (prezent, reklamacja, tester) i cofnięcie. Liczby kont, nowe konta, płacący, sprzedane pakiety, lista ostatnich kont |
 | **Aktualizacje** | Historia wersji i propozycje zmian w aplikacji. „Jako zadanie” robi z propozycji zadanie dla Claude |
-| **Ustawienia** | Koszty miesięczne liczone w zysku |
+| **Ustawienia** | Rytm agenta (co przygotowuje sam rano) i koszty miesięczne liczone w zysku |
 
 Statystyki zachowania w aplikacji (ukończenia, powtórki, powroty, konwersja) są w zakładce **Serwer → Statystyki**, agent też je widzi.
 
@@ -33,6 +33,10 @@ Przyciski:
 - **Napisz scenariusz zabawy** (przy zatwierdzonym pakiecie w Pomysłach): pełny scenariusz do nagrania z rolami i pauzami.
 
 W polu „Wskazówka dla agenta” możesz dopisać kierunek, np. „skup się na Bożym Narodzeniu” albo „krótsze zabawy dla 3-latków”.
+
+**Rytm agenta (sam, około 6:30):** codziennie Raport COO, w poniedziałki pomysły na reklamy i rolki, co drugi czwartek gotowy newsletter. Wszystko czeka w „Decyzje”. Włączasz i wyłączasz w Ustawieniach.
+
+**Newsletter od pomysłu do wysyłki:** agent pisze numer → zatwierdzasz w „Decyzje” → Mailing → „Zaplanuj wysyłkę” (grupa, dzień, godzina). Kampania powstaje w MailerLite i wyjdzie sama; do tego czasu możesz ją jeszcze zmienić w MailerLite.
 
 **Codzienny rytm (10 minut):** rano Raport COO, potem Decyzje (zatwierdź lub odrzuć), przesuń zadania na tablicy. W poniedziałki pomysły na reklamy, co drugi czwartek newsletter.
 
@@ -52,9 +56,9 @@ Generowanie dźwięku i okładek zostaje ręczne: nagrania Neli i okładki to wy
    ```
    supabase db push
    ```
-2. Funkcje (agent, MailerLite i poprawiona funkcja `admin`, która teraz odpowiada przeglądarce):
+2. Funkcje (agent, MailerLite, kampanie i `admin`):
    ```
-   supabase functions deploy coo mailerlite admin
+   supabase functions deploy coo mailerlite admin ads
    ```
 3. Klucze wpisujesz sam, w terminalu albo w Supabase → Edge Functions → Secrets. Nie wklejaj ich do rozmowy:
    ```

@@ -134,14 +134,18 @@ select 'shop product tests passed';
 -- 11. Store products: both stores, subscriptions give everything, a store purchase upserts.
 insert into auth.users (id, email) values ('00000000-0000-0000-0000-000000000009', null);
 do $$ begin
-  assert (select scopes from public.store_products where product_ref = 'ios:pl.audiokiddo.sub.yearly') = '{all_content}', 'yearly';
-  assert (select scopes from public.store_products where product_ref = 'android:pl.audiokiddo.sub.monthly') = '{all_content}', 'monthly';
+  -- A subscription opens everything and says how many children it covers.
+  assert (select scopes from public.store_products where product_ref = 'ios:pl.audiokiddo.sub.yearly') = '{all_content,children:1}', 'yearly';
+  assert (select scopes from public.store_products where product_ref = 'android:pl.audiokiddo.sub.monthly') = '{all_content,children:1}', 'monthly';
+  assert (select scopes from public.store_products where product_ref = 'ios:pl.audiokiddo.sub.duo.yearly') = '{all_content,children:2}', 'duo';
+  assert (select scopes from public.store_products where product_ref = 'android:pl.audiokiddo.sub.family.monthly') = '{all_content,children:5}', 'family';
   assert (select cardinality(scopes) from public.store_products where product_ref = 'ios:pl.audiokiddo.bundle.three') = 3, 'bundle of three';
   assert exists (select 1 from public.store_products where product_ref = 'android:pl.audiokiddo.item.magiczny_sklep'), 'single item';
   perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-1', 'active', now() + interval '1 year');
   perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-1', 'refunded', null);
-  assert (select status from public.entitlements where store_original_tx_id = 'orig-1') = 'refunded', 'same purchase is updated, not duplicated';
-  assert (select count(*) from public.entitlements where store_original_tx_id = 'orig-1') = 1;
+  assert (select status from public.entitlements where store_original_tx_id = 'orig-1' and scope = 'all_content') = 'refunded', 'same purchase is updated, not duplicated';
+  assert (select count(*) from public.entitlements where store_original_tx_id = 'orig-1') = 2, 'all_content and children:1';
+  assert (select bool_and(status = 'refunded') from public.entitlements where store_original_tx_id = 'orig-1'), 'both rows follow the store';
 end $$;
 select 'store product tests passed';
 
@@ -384,3 +388,49 @@ begin
 end $$;
 reset role;
 select 'crm tests passed';
+
+-- CRM support and trends: admins find a customer, give and take back access; parents cannot.
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c2', false); end $$;
+do $$
+begin
+  begin
+    perform public.crm_customer('rodzic@example.com');
+    assert false, 'a parent cannot look customers up';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'all_content', 30, 'hack');
+    assert false, 'a parent cannot give themselves access';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  c jsonb;
+  t jsonb;
+begin
+  assert public.crm_customer('nikt@example.com') is null, 'unknown e-mail';
+  perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'pack:detektyw', 30, 'reklamacja');
+  c := public.crm_customer('  Rodzic@Example.com ');
+  assert c ->> 'email' = 'rodzic@example.com', c::text;
+  assert jsonb_array_length(c -> 'entitlements') = 1, c::text;
+  assert c -> 'entitlements' -> 0 ->> 'status' = 'active';
+  assert (select count(*) from public.crm_items where area = 'support') = 1, 'noted in the history';
+  perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'pack:detektyw', 60, null);
+  c := public.crm_customer('rodzic@example.com');
+  assert jsonb_array_length(c -> 'entitlements') = 1, 'extended, not doubled';
+  perform public.crm_revoke('00000000-0000-0000-0000-0000000000c2', 'pack:detektyw');
+  assert public.crm_customer('rodzic@example.com') -> 'entitlements' -> 0 ->> 'status' = 'revoked';
+  begin
+    perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'children:5', 30, null);
+    assert false, 'only content scopes by hand';
+  exception when invalid_parameter_value then null;
+  end;
+  t := public.crm_trend(8);
+  assert jsonb_array_length(t) = 8, t::text;
+  assert (t -> 7 ->> 'week') = to_char(date_trunc('week', now()), 'YYYY-MM-DD'), 'the current week last';
+end $$;
+reset role;
+select 'crm support tests passed';

@@ -2,6 +2,9 @@
 //   overview                          → subscribers, groups, recent campaigns, automations
 //   draft { item_id, group_id? }      → a draft campaign from an approved newsletter item
 //                                       (sent by Dawid himself in MailerLite)
+//   schedule { item_id, group_id, date: "YYYY-MM-DD", time: "HH:MM" }
+//                                     → the approved newsletter goes out then, to that group
+//                                       (Warsaw time, the MailerLite account's time zone)
 // Secrets: MAILERLITE_API_KEY, MAILERLITE_FROM (verified sender), MAILERLITE_FROM_NAME.
 import { withCors } from "../_shared/cors.ts";
 import { markdownToEmail } from "../_shared/mail_html.ts";
@@ -70,6 +73,49 @@ Deno.serve(withCors(async (req) => {
             completed: (a.stats as Record<string, unknown> | undefined)?.completed_subscribers_count ?? null,
           })),
         });
+      }
+      case "schedule": {
+        const date = String(body.date ?? "");
+        const time = String(body.time ?? "");
+        if (typeof body.item_id !== "string" || typeof body.group_id !== "string" ||
+          !/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) {
+          return json({ error: "body" }, 400);
+        }
+        if (Date.parse(`${date}T${time}:00+02:00`) < Date.now() + 10 * 60 * 1000) return json({ error: "past" }, 400);
+        const { data: item } = await admin.from("crm_items").select("*").eq("id", body.item_id).maybeSingle();
+        if (!item || item.kind !== "mailing" || item.area !== "newsletter" || item.decision === "rejected") {
+          return json({ error: "item" }, 400);
+        }
+        const from = Deno.env.get("MAILERLITE_FROM");
+        if (!from) return json({ error: "no_from" }, 412);
+        // A fresh campaign for the chosen group (an earlier draft stays for reference).
+        const campaign = await ml("/campaigns", {
+          method: "POST",
+          body: JSON.stringify({
+            name: `AudioKiddo: ${item.title}`.slice(0, 255),
+            type: "regular",
+            emails: [{
+              subject: String(item.data?.subject ?? item.title).slice(0, 150),
+              from_name: Deno.env.get("MAILERLITE_FROM_NAME") ?? "Szop’en z AudioKiddo",
+              from,
+              content: markdownToEmail(item.body, String(item.data?.preheader ?? "")),
+            }],
+            groups: [body.group_id],
+          }),
+        });
+        const id = (campaign.data as Record<string, unknown> | undefined)?.id;
+        if (!id) return json({ error: "mailerlite" }, 502);
+        const [hours, minutes] = time.split(":");
+        await ml(`/campaigns/${id}/schedule`, {
+          method: "POST",
+          body: JSON.stringify({ delivery: "scheduled", schedule: { date, hours, minutes } }),
+        });
+        await admin.from("crm_items").update({
+          status: "done",
+          due: date,
+          data: { ...(item.data ?? {}), mailerlite_campaign_id: id, scheduled: `${date} ${time}`, group_id: body.group_id },
+        }).eq("id", item.id);
+        return json({ campaign_id: id, scheduled: `${date} ${time}` });
       }
       case "draft": {
         if (typeof body.item_id !== "string") return json({ error: "item" }, 400);

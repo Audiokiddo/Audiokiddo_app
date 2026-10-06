@@ -71,7 +71,10 @@ class StudioServer {
       throw StudioServerException(switch (e.status) {
         401 => 'Zaloguj się ponownie.',
         403 => 'To konto nie jest administratorem (tabela admins).',
-        400 => 'Serwer odrzucił dane: ${e.details}',
+        400 =>
+          '${e.details}'.contains('past')
+              ? 'Wybierz godzinę co najmniej 10 minut od teraz.'
+              : 'Serwer odrzucił dane: ${e.details}',
         409 => 'Ta propozycja jest już rozstrzygnięta. Odśwież widok.',
         412 =>
           function == 'coo' || function == 'ads'
@@ -172,6 +175,35 @@ class StudioServer {
           'daily_budget': ?dailyBudget,
         })
         as Map,
+  );
+
+  // Klienci i trendy ----------------------------------------------------------------------
+
+  /// A customer by e-mail: account, purchases, 30 days of activity; null when there is none.
+  Future<Map<String, dynamic>?> crmCustomer(String email) async {
+    final data = await client.rpc('crm_customer', params: {'p_email': email.trim()});
+    return data == null ? null : Map<String, dynamic>.from(data as Map);
+  }
+
+  /// Access by hand for [days] (`all_content` or `pack:<id>`), noted in the CRM history.
+  Future<void> crmGrant(String userId, String scope, int days, {String? note}) => client.rpc(
+    'crm_grant',
+    params: {'p_user': userId, 'p_scope': scope, 'p_days': days, 'p_note': note},
+  );
+
+  Future<void> crmRevoke(String userId, String scope) =>
+      client.rpc('crm_revoke', params: {'p_user': userId, 'p_scope': scope});
+
+  /// Week by week: accounts, active families, plays, offers seen, purchases, revenue.
+  Future<List<Map<String, dynamic>>> crmTrend({int weeks = 12}) async => [
+    for (final w in (await client.rpc('crm_trend', params: {'p_weeks': weeks}) as List? ?? const []))
+      Map<String, dynamic>.from(w as Map),
+  ];
+
+  /// Sends an approved newsletter to [groupId] on [date] at [time] ("HH:MM", Warsaw time).
+  Future<void> mailerLiteSchedule(String itemId, String groupId, String date, String time) => _invoke(
+    'mailerlite',
+    {'action': 'schedule', 'item_id': itemId, 'group_id': groupId, 'date': date, 'time': time},
   );
 
   Future<Map<String, dynamic>> crmSetting(String key) async {
