@@ -24,7 +24,7 @@ Stan: 6 października 2026, wersja 0.2.0 (build 2). Ten plik zbiera wszystko w j
   supabase db push
   ```
   Jeśli zapyta o hasło bazy, wklej je z aplikacji Hasła (tylko w terminalu). Na pytanie „Do you want to push these migrations?” wpisz `Y` i Enter.
-- [ ] 1.3 Wgraj wszystkie funkcje serwera jedną komendą:
+- [ ] 1.3 Wgraj wszystkie funkcje serwera jedną komendą (są wśród nich nowe: `mailer`, `reviews`, `ads`, `account-status`):
   ```
   supabase functions deploy
   ```
@@ -35,6 +35,21 @@ Stan: 6 października 2026, wersja 0.2.0 (build 2). Ten plik zbiera wszystko w j
   3. Supabase (supabase.com/dashboard) → projekt audiokiddo → Edge Functions → **Secrets**.
   4. Przy `ANTHROPIC_API_KEY` kliknij edycję, wklej klucz i zapisz.
 - [ ] 1.5 Sprawdź, że działa. W aplikacji wpisz swój e-mail i stuknij „Dalej”: przy istniejącym koncie ma się pokazać pole hasła. Agenta sprawdzisz w Studio (etap 9).
+
+## Etap 1a. Nowe funkcje: sekrety (15 min, gdy chcesz je włączyć)
+
+Każdą funkcję włączasz osobno. Bez swojego sekretu po prostu czeka. Wpisujesz je w Supabase → Edge Functions → **Secrets**, nigdy w rozmowie.
+
+| Funkcja | Sekrety | Skąd |
+|---|---|---|
+| Poranny mail do Ciebie i listy do rodziców | `SMTP_HOST` = `mail-serwer335689.lh.pl`, `SMTP_PORT` = `465`, `SMTP_USER` = `no-reply@audiokiddo.pl`, `SMTP_PASS` = hasło skrzynki, `MAIL_FROM` = `Szop’en z AudioKiddo <no-reply@audiokiddo.pl>`, `REPORT_TO` = Twój e-mail | skrzynka z kroku 14 w KROKI-DLA-DAWIDA |
+| Kupujący ze sklepu w MailerLite | `MAILERLITE_BUYERS_GROUP` | `docs/marketing/NEWSLETTER.md` |
+| Opinie z App Store | `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_APP_ID`, `ASC_PRIVATE_KEY` (cała treść pliku .p8) | App Store Connect → Użytkownicy i dostęp → Integracje → **App Store Connect API** → klucz z rolą „Customer Support”; `ASC_APP_ID` to „Apple ID” aplikacji w Informacjach o aplikacji |
+| Opinie z Google Play | ten sam `GOOGLE_SERVICE_ACCOUNT_JSON` co do zakupów | konto usługi potrzebuje w Play Console uprawnienia „Odpowiadanie na opinie” |
+
+Codzienna kopia bazy ustawia się w GitHubie, nie w Supabase: `docs/KOPIA-BAZY.md`.
+
+Sprawdzenie: Studio → CRM → Ustawienia → „Wyślij poranny raport teraz” i „Przykładowy list do mnie”.
 
 ## Etap 2. Konta deweloperskie (czeka się na weryfikację, więc zacznij dziś)
 

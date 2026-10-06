@@ -100,6 +100,31 @@ class CarLibrary {
     ];
   }
 
+  /// The shelves for CarPlay: title and at most 20 plays each, with the cover file if the
+  /// cover is on the phone (CarPlay shows only local pictures).
+  Future<List<Map<String, Object?>>> carPlayShelves() async {
+    final shelves = await _shelves();
+    return [
+      for (final shelf in CarShelf.values)
+        if (shelves[shelf]!.isNotEmpty)
+          {
+            'title': shelf.title,
+            'items': [
+              for (final item in shelves[shelf]!.take(20))
+                {
+                  'id': item.id,
+                  'title': item.title,
+                  'detail': '${(item.durationSec / 60).ceil()} min',
+                  'image': switch (await coverArtUri(item)) {
+                    final uri? when uri.scheme == 'file' => uri.toFilePath(),
+                    _ => null,
+                  },
+                },
+            ],
+          },
+    ];
+  }
+
   Future<void> play(String itemId) async {
     final catalog = await _container.read(catalogProvider.future);
     final item = catalog.item(itemId);

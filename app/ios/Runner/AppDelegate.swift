@@ -26,6 +26,9 @@ import UIKit
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AudioRoutePlugin") {
       AudioRoutePlugin.register(with: registrar)
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "CarPlayBridge") {
+      CarPlayBridge.channel = FlutterMethodChannel(name: "pl.audiokiddo/carplay", binaryMessenger: registrar.messenger())
+    }
   }
 }
 

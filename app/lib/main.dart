@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -102,5 +103,16 @@ Future<void> main() async {
   audioHandler
     ..browse = car.children
     ..playById = car.play;
+  // CarPlay asks for the same shelves (ios/Runner/SceneDelegate.swift, CarPlaySceneDelegate).
+  const MethodChannel('pl.audiokiddo/carplay').setMethodCallHandler((call) async {
+    switch (call.method) {
+      case 'shelves':
+        return car.carPlayShelves();
+      case 'play':
+        await car.play('${call.arguments}');
+        return null;
+    }
+    return null;
+  });
   runApp(UncontrolledProviderScope(container: container, child: const AudioKiddoApp()));
 }

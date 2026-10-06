@@ -6,13 +6,17 @@ Stan: 5 października 2026. CRM jest częścią AudioKiddo Studio (zakładka **C
 
 | Zakładka | Do czego |
 |---|---|
-| **Pulpit** | Trend 12 tygodni (aktywne rodziny, nowe konta, zabawy, oferta, zakupy, przychód; zmiana do zeszłego tygodnia). Zysk w tym miesiącu (szacunek: MRR netto po VAT i prowizjach minus koszty), MRR, płacące rodziny, abonamenty, użytkownicy, przychód z 30 dni. Ostatni raport COO, zadania na dziś i zaległe, kalendarz na 14 dni |
+| **Pulpit** | „Do uwagi”: alarmy strażnika (płatności, błędy, zakupy, aktywność, sklep www, reklamy) sprawdzane co godzinę. Trend 12 tygodni (aktywne rodziny, nowe konta, zabawy, oferta, zakupy, przychód; zmiana do zeszłego tygodnia). Zysk w tym miesiącu (szacunek: MRR netto po VAT i prowizjach minus koszty), MRR, płacące rodziny, abonamenty, użytkownicy, przychód z 30 dni. Ostatni raport COO, zadania na dziś i zaległe, kalendarz na 14 dni |
 | **Decyzje** | Wszystko, co zaproponował agent: zatwierdzasz, odrzucasz albo poprawiasz. Bez Twojej decyzji nic nie trafia na tablice |
 | **Zadania** | Tablica: Do zrobienia, W toku, Zrobione. Właściciel (Dawid, Nela, Claude), termin, priorytet |
 | **Pomysły** | Pakiety, scenariusze, funkcje, posty i rolki ze statusem (nowy, wybrany, w produkcji, opublikowany). Przy pakiecie przycisk „Agent: napisz scenariusz zabawy” oraz „Do kalendarza” |
-| **Kalendarz** | Premiery pakietów, rolki, posty, newslettery i promocje, miesiąc po miesiącu |
+| **Kalendarz** | Siatka miesiąca: premiery, rolki, posty, newslettery i promocje; przeciągasz kartę na inny dzień |
 | **Reklamy** | Podgląd reklam i rolek jak na telefonie: haczyk, tekst, grupa docelowa, budżet testu |
 | **Kampanie** | Meta Ads, Pixel, Google Ads i Google Analytics: wyniki, propozycje agenta reklam do zatwierdzenia, ręczne zmiany budżetów i wstrzymywanie kampanii. Szczegóły i podłączenie kont: `docs/REKLAMY.md` |
+| **Analiza** | Ranking zabaw (włączane, kończone, przerywane, powtarzane), LTV i kohorty (ile wart jest płacący rodzic, maks. koszt pozyskania), testy A/B oferty |
+| **Opinie** | Opinie z App Store i Google Play, odpowiedzi pisane przez agenta, publikacja po Twojej akceptacji |
+| **Zamówienia** | Zamówienia z audiokiddo.pl i czy kupujący odebrał je w aplikacji; „Czeka: przypomnij” wysyła mu instrukcję |
+| **Błędy** | Błędy z telefonów rodziców, zgrupowane, ze szczegółami dla Claude |
 | **Mailing** | Wyniki z MailerLite (subskrybenci, otwarcia, kliknięcia, automatyzacje), newslettery i automatyzacje z podglądem. Przycisk „Szkic w MailerLite” tworzy kampanię, którą sprawdzasz i wysyłasz sam |
 | **Użytkownicy** | **Obsługa klienta**: wyszukanie rodzica po e-mailu, jego zakupy, aktywność z 30 dni, „Daj dostęp ręcznie” (prezent, reklamacja, tester) i cofnięcie. Liczby kont, nowe konta, płacący, sprzedane pakiety, lista ostatnich kont |
 | **Aktualizacje** | Historia wersji i propozycje zmian w aplikacji. „Jako zadanie” robi z propozycji zadanie dla Claude |
