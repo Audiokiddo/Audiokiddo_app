@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../server/studio_server.dart';
+import 'ads_growth.dart';
 import 'crm_widgets.dart';
 
 /// CRM → Kampanie: Meta Ads, Meta Pixel, Google Ads and Google Analytics in one place. The ads
@@ -9,6 +10,33 @@ import 'crm_widgets.dart';
 /// after "Zatwierdzam i wprowadź" (or when made here by hand), always within the limits below.
 class CampaignsTab extends ConsumerWidget {
   const CampaignsTab({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final drafts = ref.watch(creativesPendingProvider);
+    return DefaultTabController(
+      length: 4,
+      child: Column(
+        children: [
+          TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            tabs: [
+              const Tab(text: 'Wyniki i budżety'),
+              Tab(text: drafts > 0 ? 'Kreacje ($drafts)' : 'Kreacje'),
+              const Tab(text: 'Konkurencja'),
+              const Tab(text: 'Słowa kluczowe'),
+            ],
+          ),
+          const Expanded(child: TabBarView(children: [_Results(), CreativesView(), CompetitorsView(), KeywordsView()])),
+        ],
+      ),
+    );
+  }
+}
+
+class _Results extends ConsumerWidget {
+  const _Results();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => crmAsync(
@@ -63,6 +91,9 @@ const platformLabels = {
   'ga4': 'Google Analytics',
   'agent': 'Agent reklam',
   'site': 'Strona i kreacje',
+  'ad_library': 'Biblioteka reklam Meta',
+  'keywords': 'Słowa kluczowe Google',
+  'research': 'Badanie tygodniowe',
 };
 
 class _Section extends StatelessWidget {

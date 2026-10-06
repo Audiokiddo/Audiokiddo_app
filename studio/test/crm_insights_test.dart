@@ -23,7 +23,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [crmTrendProvider.overrideWith((ref) async => weeks)],
-        child: const MaterialApp(home: Scaffold(body: SingleChildScrollView(child: TrendCard()))),
+        child: const MaterialApp(
+          home: Scaffold(body: SingleChildScrollView(child: TrendCard())),
+        ),
       ),
     );
     await tester.pumpAndSettle();

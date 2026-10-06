@@ -31,6 +31,47 @@ Kreacji i grup odbiorców nie zmienia sam, bo to praca dla człowieka.
 
 W aplikacji dla dzieci **nie ma** żadnego SDK Meta ani Google (kategoria Kids w App Store). Wszystko mierzymy na audiokiddo.pl i w panelach reklamowych.
 
+## Kreacje, Konkurencja, Słowa kluczowe (badanie co tydzień)
+
+Zakładka Kampanie ma cztery podzakładki: **Wyniki i budżety**, **Kreacje**, **Konkurencja**, **Słowa kluczowe**.
+
+**Co poniedziałek o 7:30 (zimą 6:30) serwer sam:**
+1. Pobiera z **Biblioteki reklam Meta** wszystkie reklamy, które w ostatnich 90 dniach dotarły do Polski, według Waszych fraz (np. „bajki dla dzieci”) i stron konkurencji. W UE Meta pokazuje każdą reklamę, nie tylko polityczne. Reklamy emitowane najdłużej zwykle się opłacają, więc agent patrzy na ich kąty, oferty i formaty.
+2. Pobiera z **Google Ads** pomysły na słowa kluczowe z liczbą wyszukiwań, konkurencją i stawkami. Źródła: Wasze frazy wyjściowe i **witryny konkurencji**. Google podpowiada wtedy frazy, na które te witryny celują. Odświeża też liczby dla fraz już zapisanych. Z tej listy korzysta agent bloga (Fabryka).
+3. Agent robi **badanie**: co robi konkurencja, gdzie są luki, które frazy są okazją, co działa w Waszych reklamach, jakie okazje są w kalendarzu (ferie, Wielkanoc, majówka, Dzień Dziecka, wakacje, wrzesień, Wszystkich Świętych, Mikołajki, Święta). Z tego pisze **2–4 kreacje Google i 2–4 Meta**.
+
+**Codziennie (razem z budżetami):**
+- wyniki każdej reklamy osobno, z uczciwym werdyktem:
+  - „Zwycięzca” to co najmniej 95% szans na najlepszy CTR w grupie;
+  - poniżej 1000 wyświetleń nie oceniamy;
+- **frazy, które kosztują i nie sprzedają** (z raportu wyszukiwanych haseł Google). Agent proponuje ich wykluczenie, a Ty możesz wykluczyć ręcznie przyciskiem „Wyklucz”;
+- agent może zaproponować **wstrzymanie przegrywającej reklamy**, ale nigdy ostatniej w grupie.
+
+**Kreacje: każda czeka na Was.**
+- Tekst możecie poprawić przed zatwierdzeniem. Liczniki pilnują limitów: nagłówek Google do 30 znaków, opis do 90.
+- **Google:** wybierz grupę reklam, a potem „Zatwierdzam i utwórz w Google Ads”. Reklama powstaje **wstrzymana**, a włączacie ją sami w Google Ads.
+- **Meta:** po zatwierdzeniu tekst, nagłówek, brief grafiki i scenariusz wideo trafiają do zadania na tablicy. Grafikę albo wideo robicie Wy (Canva, telefon) i wgrywacie w Menedżerze reklam.
+- „Odrzucam” z uwagą: agent bierze ją pod uwagę w następnym badaniu.
+
+**Konkurencja → „Co obserwujemy”:**
+- frazy do Biblioteki reklam;
+- id stron konkurencji na Facebooku: adres w Bibliotece reklam zawiera `view_all_page_id=…`;
+- witryny konkurencji;
+- Wasze frazy wyjściowe.
+
+Pomysły na start: Toniebox (tonies), Yoto, Storytel Kids, Audioteka, Empik Go, polskie kanały z bajkami do słuchania.
+
+### Klucze do badania
+
+- **Biblioteka reklam Meta:**
+  1. Raz potwierdź tożsamość na facebook.com/ID. To wymóg Meta dla dostępu do API Biblioteki.
+  2. W developers.facebook.com → Twoja aplikacja → Narzędzia → **Graph API Explorer** wygeneruj token użytkownika, a potem w „Access Token Debugger” przedłuż go do 60 dni („Extend”).
+  3. Wpisz go jako sekret `META_AD_LIBRARY_TOKEN`.
+
+  Co dwa miesiące token trzeba odnowić: kafelek „Biblioteka reklam Meta” pokaże błąd. Bez tego sekretu serwer spróbuje tokenu `META_ACCESS_TOKEN`.
+- **Słowa kluczowe Google** działają na tych samych kluczach co Google Ads, ale wymagają tokenu programisty z dostępem **Podstawowym** (Basic). Przy dostępie Testowym Google zwraca dane próbne. Wniosek: Google Ads → Narzędzia → Centrum API.
+- Nowe kreacje Google Ads tworzy w kampaniach **w sieci wyszukiwania**. Gdy takiej kampanii jeszcze nie ma, zatwierdź kreację bez tworzenia i dodaj ją później.
+
 ## Wdrożenie (robisz Ty, w terminalu w folderze projektu)
 
 ```

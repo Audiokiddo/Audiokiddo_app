@@ -169,6 +169,49 @@ class StudioServer {
         }) as Map,
       );
 
+  /// Kreacje, konkurencja, słowa kluczowe: verdicts, creatives, research, competitors, keywords.
+  Future<Map<String, dynamic>> adsGrowth() async =>
+      Map<String, dynamic>.from(await _invoke('ads', {'action': 'growth'}) as Map);
+
+  /// The weekly research now: competitors, keywords, then the agent writes creatives.
+  Future<Map<String, dynamic>> adsResearch({String? note}) async =>
+      Map<String, dynamic>.from(await _invoke('ads', {'action': 'research', 'note': ?note}) as Map);
+
+  /// Approve (optionally edited; a Google one straight into [groupId]) or reject a creative.
+  Future<Map<String, dynamic>> adsCreative(
+    String id, {
+    required bool approve,
+    Map<String, Object?>? content,
+    String? feedback,
+    String? groupId,
+  }) async => Map<String, dynamic>.from(
+    await _invoke('ads', {
+      'action': 'creative',
+      'id': id,
+      'approve': approve,
+      'content': ?content,
+      'feedback': ?feedback,
+      'group_id': ?groupId,
+    }) as Map,
+  );
+
+  /// An approved Google creative created (paused) in an ad group.
+  Future<Map<String, dynamic>> adsCreativeLive(String id, String groupId) async => Map<String, dynamic>.from(
+    await _invoke('ads', {'action': 'creative_live', 'id': id, 'group_id': groupId}) as Map,
+  );
+
+  /// A search term excluded in a Google campaign (phrase match).
+  Future<Map<String, dynamic>> adsExclude(String campaignId, String term) async => Map<String, dynamic>.from(
+    await _invoke('ads', {'action': 'exclude', 'campaign_id': campaignId, 'term': term}) as Map,
+  );
+
+  /// Adds a keyword by hand (blog, ads or both).
+  Future<void> addKeyword(String keyword, String useFor) => client.from('seo_keywords').upsert({
+    'keyword': keyword.trim().toLowerCase(),
+    'source': 'manual',
+    'use_for': useFor,
+  });
+
   // Klienci i trendy ----------------------------------------------------------------------
 
   /// A customer by e-mail: account, purchases, 30 days of activity; null when there is none.

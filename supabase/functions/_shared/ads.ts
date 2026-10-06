@@ -2,7 +2,7 @@
 // change must pass; and what the ads agent is asked. Nothing here talks to the network.
 
 export type AdPlatform = "meta" | "google_ads";
-export type ActionKind = "set_budget" | "pause" | "enable" | "task";
+export type ActionKind = "set_budget" | "pause" | "enable" | "task" | "pause_ad" | "add_negative";
 
 export type AdsSettings = {
   /** The daily run proposes changes (the sync runs anyway). */
@@ -222,7 +222,7 @@ export type ProposedAction = {
   entity_id: string | null;
   entity_name: string;
   action: ActionKind;
-  params: { daily_budget?: number };
+  params: { daily_budget?: number; term?: string; match?: "PHRASE" | "EXACT" };
   title: string;
   reason: string;
   expected: string;
@@ -235,9 +235,32 @@ export type ProposedAction = {
  * Checked when the agent proposes and again right before applying; [manual] (a change made
  * by hand in Studio) skips the step limit but not the daily maximum.
  */
-export function checkAction(a: ProposedAction, entities: Entity[], settings: AdsSettings, manual = false): string | null {
+export function checkAction(
+  a: ProposedAction,
+  entities: Entity[],
+  settings: AdsSettings,
+  manual = false,
+  ads: { platform: string; ad_id: string; status: string; group_id: string | null }[] = [],
+): string | null {
   if (a.action === "task") return null;
   if (a.platform !== "meta" && a.platform !== "google_ads") return "Ta platforma pozwala tylko na zadania.";
+  if (a.action === "pause_ad") {
+    const ad = ads.find((x) => x.platform === a.platform && x.ad_id === a.entity_id);
+    if (!ad) return "Nie ma takiej reklamy po ostatnim pobraniu danych.";
+    if (ad.status !== "active") return "Ta reklama już nie jest aktywna.";
+    // Never the last running ad of a group: the group would stop.
+    const others = ads.filter((x) => x.platform === ad.platform && x.group_id === ad.group_id && x.ad_id !== ad.ad_id && x.status === "active");
+    return others.length ? null : "To ostatnia aktywna reklama w grupie: najpierw dodaj nową.";
+  }
+  if (a.action === "add_negative") {
+    if (a.platform !== "google_ads") return "Wykluczenia słów są tylko w Google Ads.";
+    const term = a.params.term?.trim() ?? "";
+    if (term.length < 2 || term.length > 80 || term.split(/\s+/).length > 10) return "Fraza do wykluczenia musi mieć 2–80 znaków.";
+    if (!entities.some((x) => x.platform === "google_ads" && x.entity_id === a.entity_id && x.kind === "campaign")) {
+      return "Nie ma takiej kampanii Google po ostatnim pobraniu danych.";
+    }
+    return null;
+  }
   const e = entities.find((x) => x.platform === a.platform && x.entity_id === a.entity_id);
   if (!e) return "Nie ma takiej kampanii po ostatnim pobraniu danych.";
   switch (a.action) {
@@ -265,7 +288,7 @@ export function checkAction(a: ProposedAction, entities: Entity[], settings: Ads
 export function cleanAction(raw: unknown, entities: Entity[]): ProposedAction | null {
   const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
   const action = r.action as ActionKind;
-  if (!["set_budget", "pause", "enable", "task"].includes(action)) return null;
+  if (!["set_budget", "pause", "enable", "task", "pause_ad", "add_negative"].includes(action)) return null;
   const platform = (["meta", "google_ads", "ga4", "site"].includes(r.platform as string) ? r.platform : "site") as
     ProposedAction["platform"];
   const title = text(r.title, 200).trim();
@@ -273,12 +296,17 @@ export function cleanAction(raw: unknown, entities: Entity[]): ProposedAction | 
   const entityId = r.entity_id == null ? null : text(r.entity_id, 80);
   const known = entities.find((e) => e.platform === platform && e.entity_id === entityId);
   const budget = Number(r.daily_budget ?? (r.params as Record<string, unknown> | undefined)?.daily_budget);
+  const term = text(r.term ?? (r.params as Record<string, unknown> | undefined)?.term, 80).trim().toLowerCase();
   return {
     platform,
     entity_id: entityId,
     entity_name: known?.name ?? text(r.entity_name, 300),
     action,
-    params: action === "set_budget" && Number.isFinite(budget) ? { daily_budget: money(budget) } : {},
+    params: action === "set_budget" && Number.isFinite(budget)
+      ? { daily_budget: money(budget) }
+      : action === "add_negative"
+      ? { term, match: r.match === "EXACT" ? "EXACT" : "PHRASE" }
+      : {},
     title,
     reason: text(r.reason, 4000),
     expected: text(r.expected, 2000),
@@ -369,11 +397,14 @@ Zasady:
 - Nie oceniaj kampanii po 1–2 dniach ani przy mniej niż ok. 1000 wyświetleń; daj czas na naukę algorytmu (zwykle 7 dni).
 - Wstrzymuj, gdy kampania wydała co najmniej 2× docelowy koszt zakupu bez zakupu albo jej CPA długo jest dużo powyżej celu.
 - Zwiększaj budżet, gdy CPA jest poniżej celu i ROAS stabilny przez tydzień.
-- Kreacje, grupy odbiorców, Pixel i śledzenie: proponuj jako zadanie ("task"), bo wymagają pracy człowieka.
+- Pojedyncze reklamy: "pause_ad" (entity_id = id reklamy) tylko dla reklam z werdyktem "przegrywa" w creatives; nigdy ostatniej aktywnej w grupie.
+- Wykluczenia: "add_negative" (entity_id = id kampanii Google, term = fraza) tylko dla fraz z wasted_terms.
+- Nowe kreacje, grupy odbiorców, Pixel i śledzenie: proponuj jako zadanie ("task"); kreacje pisze też cotygodniowe badanie.
+- Zbliżające się okazje (moments): z wyprzedzeniem 2–3 tygodni zaproponuj przygotowanie kampanii (zadanie).
 - Jeśli danych jest za mało, powiedz to i zaproponuj najwyżej zadania. Lepiej nic nie zmieniać niż zmieniać na ślepo.
 Odpowiadasz WYŁĄCZNIE jednym obiektem JSON, bez komentarzy i bez bloku kodu.`;
 
-const ADS_SHAPE = `{"summary": "Markdown dla Dawida: co działa, co nie, co proponujesz i dlaczego (maks. 12 linii)", "actions": [{"platform": "meta|google_ads|ga4|site", "entity_id": "id kampanii albo null", "action": "set_budget|pause|enable|task", "daily_budget": 60, "title": "krótko, co zrobić", "reason": "dlaczego, z liczbami", "expected": "czego się spodziewamy i po czym poznamy", "priority": 1}]}`;
+const ADS_SHAPE = `{"summary": "Markdown dla Dawida: co działa, co nie, co proponujesz i dlaczego (maks. 12 linii)", "actions": [{"platform": "meta|google_ads|ga4|site", "entity_id": "id kampanii albo null", "action": "set_budget|pause|enable|task|pause_ad|add_negative", "daily_budget": 60, "term": "tylko przy add_negative", "title": "krótko, co zrobić", "reason": "dlaczego, z liczbami", "expected": "czego się spodziewamy i po czym poznamy", "priority": 1}]}`;
 
 export function adsPrompt(context: Record<string, unknown>, note: string | null, today: string): string {
   return `Dzisiaj: ${today}.
@@ -406,6 +437,10 @@ export function describe(a: Pick<ProposedAction, "action" | "entity_name" | "par
       return `Wstrzymać „${a.entity_name}”`;
     case "enable":
       return `Wznowić „${a.entity_name}”`;
+    case "pause_ad":
+      return `Wstrzymać reklamę „${a.entity_name}”`;
+    case "add_negative":
+      return `Wykluczyć frazę „${a.params.term}” w „${a.entity_name}”`;
     case "task":
       return "Zadanie";
   }

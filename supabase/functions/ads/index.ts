@@ -33,60 +33,37 @@ import {
   type ProposedAction,
   summarize,
 } from "../_shared/ads.ts";
+import { cleanCreative } from "../_shared/ads_growth.ts";
 import { withCors } from "../_shared/cors.ts";
+import {
+  applyGrowthAction,
+  createRsa,
+  dailyContext,
+  growthOverview,
+  syncGoogleAdsDetail,
+  syncMetaAds,
+  weekly,
+} from "./growth.ts";
+import {
+  adsHeaders,
+  call,
+  configured,
+  customer,
+  env,
+  GOOGLE_ADS,
+  googleSearch,
+  googleToken,
+  META,
+  metaAccount,
+  metaHeaders,
+  metaPages,
+  SourceError,
+} from "./platforms.ts";
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 
-const env = (name: string) => Deno.env.get(name)?.trim() || null;
 const MODEL = env("ADS_MODEL") ?? env("COO_MODEL") ?? "claude-sonnet-5-5";
-const META = `https://graph.facebook.com/${env("META_API_VERSION") ?? "v23.0"}`;
-const GOOGLE_ADS = `https://googleads.googleapis.com/${env("GOOGLE_ADS_API_VERSION") ?? "v21"}`;
-
-/** Which sources have their secrets set (never the values). */
-function configured() {
-  const google = !!(env("GOOGLE_CLIENT_ID") && env("GOOGLE_CLIENT_SECRET") && env("GOOGLE_REFRESH_TOKEN"));
-  return {
-    meta: !!(env("META_ACCESS_TOKEN") && env("META_AD_ACCOUNT_ID")),
-    meta_pixel: !!(env("META_ACCESS_TOKEN") && env("META_PIXEL_ID")),
-    google_ads: google && !!(env("GOOGLE_ADS_DEVELOPER_TOKEN") && env("GOOGLE_ADS_CUSTOMER_ID")),
-    ga4: google && !!env("GA4_PROPERTY_ID"),
-    agent: !!env("ANTHROPIC_API_KEY"),
-  };
-}
-
-class SourceError extends Error {}
-
-/** A platform call that throws a short, key-free message on failure. */
-async function call(url: string, init: RequestInit, label: string): Promise<Record<string, unknown>> {
-  const response = await fetch(url, { ...init, signal: AbortSignal.timeout(30_000) });
-  const body = await response.json().catch(() => ({})) as Record<string, unknown>;
-  if (!response.ok) {
-    const error = body.error as Record<string, unknown> | undefined;
-    const message = typeof error?.message === "string" ? error.message : `HTTP ${response.status}`;
-    console.error(`ads: ${label}`, response.status, JSON.stringify(body).slice(0, 800));
-    throw new SourceError(`${label}: ${message.slice(0, 300)}`);
-  }
-  return body;
-}
-
 // Meta ---------------------------------------------------------------------------------------
-
-const metaHeaders = () => ({ Authorization: `Bearer ${env("META_ACCESS_TOKEN")}` });
-const metaAccount = () => {
-  const id = env("META_AD_ACCOUNT_ID")!.replace(/^act_/, "");
-  return `act_${id}`;
-};
-
-async function metaPages(url: string, label: string, pages = 10): Promise<unknown[]> {
-  const rows: unknown[] = [];
-  let next: string | null = url;
-  for (let i = 0; next && i < pages; i++) {
-    const body = await call(next, { headers: metaHeaders() }, label);
-    rows.push(...((body.data as unknown[]) ?? []));
-    next = ((body.paging as Record<string, unknown> | undefined)?.next as string | undefined) ?? null;
-  }
-  return rows;
-}
 
 async function syncMeta(): Promise<{ entities: Entity[]; metrics: Metric[]; info: Record<string, unknown> }> {
   const act = metaAccount();
@@ -134,47 +111,8 @@ async function applyMeta(a: ProposedAction): Promise<Record<string, unknown>> {
 
 // Google -------------------------------------------------------------------------------------
 
-async function googleToken(): Promise<string> {
-  const body = await call("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    body: new URLSearchParams({
-      client_id: env("GOOGLE_CLIENT_ID")!,
-      client_secret: env("GOOGLE_CLIENT_SECRET")!,
-      refresh_token: env("GOOGLE_REFRESH_TOKEN")!,
-      grant_type: "refresh_token",
-    }),
-  }, "Google logowanie");
-  return String(body.access_token);
-}
-
-const customer = () => env("GOOGLE_ADS_CUSTOMER_ID")!.replace(/-/g, "");
-
-function adsHeaders(token: string): Record<string, string> {
-  const headers: Record<string, string> = {
-    Authorization: `Bearer ${token}`,
-    "developer-token": env("GOOGLE_ADS_DEVELOPER_TOKEN")!,
-    "content-type": "application/json",
-  };
-  const login = env("GOOGLE_ADS_LOGIN_CUSTOMER_ID");
-  if (login) headers["login-customer-id"] = login.replace(/-/g, "");
-  return headers;
-}
-
 async function syncGoogleAds(token: string) {
-  const response = await fetch(`${GOOGLE_ADS}/customers/${customer()}/googleAds:searchStream`, {
-    method: "POST",
-    headers: adsHeaders(token),
-    body: JSON.stringify({ query: GOOGLE_ADS_QUERY }),
-    signal: AbortSignal.timeout(45_000),
-  });
-  const body = await response.json().catch(() => null);
-  if (!response.ok) {
-    console.error("ads: Google Ads", response.status, JSON.stringify(body).slice(0, 800));
-    const first = Array.isArray(body) ? body[0] : body;
-    const message = first?.error?.message ?? `HTTP ${response.status}`;
-    throw new SourceError(`Google Ads: ${String(message).slice(0, 300)}`);
-  }
-  return parseGoogleAds(Array.isArray(body) ? body : [body]);
+  return parseGoogleAds(await googleSearch(token, GOOGLE_ADS_QUERY, "Google Ads"));
 }
 
 async function applyGoogleAds(a: ProposedAction, entity: Entity, token: string) {
@@ -252,7 +190,12 @@ async function sync(admin: SupabaseClient) {
     const { entities, metrics, info } = await syncMeta();
     await saveEntities(admin, "meta", entities);
     await saveMetrics(admin, metrics);
-    const message = `${entities.length} kampanii i zestawów, ${metrics.length} wierszy statystyk.`;
+    // Single ads come second: a failure there must not hide the campaigns.
+    const detail = await syncMetaAds(admin).catch((e) => {
+      console.error("ads: meta ads", e);
+      return e instanceof SourceError ? e.message : "reklamy: błąd";
+    });
+    const message = `${entities.length} kampanii i zestawów, ${metrics.length} wierszy statystyk; ${detail}.`;
     await status(admin, "meta", true, message, info);
     return message;
   });
@@ -268,7 +211,11 @@ async function sync(admin: SupabaseClient) {
       const { entities, metrics } = await syncGoogleAds(await google());
       await saveEntities(admin, "google_ads", entities);
       await saveMetrics(admin, metrics);
-      const message = `${entities.length} kampanii, ${metrics.length} wierszy statystyk.`;
+      const detail = await syncGoogleAdsDetail(admin, await google()).catch((e) => {
+        console.error("ads: google detail", e);
+        return e instanceof SourceError ? e.message : "reklamy: błąd";
+      });
+      const message = `${entities.length} kampanii, ${metrics.length} wierszy statystyk; ${detail}.`;
       await status(admin, "google_ads", true, message);
       return message;
     });
@@ -318,7 +265,9 @@ async function propose(admin: SupabaseClient, note: string | null) {
   ]);
   const business = { ...(numbers.data ?? {}) } as Record<string, unknown>;
   delete business.recent_users; // no e-mails to the model
+  const growth = await dailyContext(admin);
   const context = {
+    ...growth.context,
     limits: settings,
     connected: configured(),
     sources: pixel.data ?? [],
@@ -359,7 +308,7 @@ async function propose(admin: SupabaseClient, note: string | null) {
   // Only what passes the limits now reaches Dawid; the rest is noted in the summary.
   const rejected: string[] = [];
   const rows = parsed.actions.flatMap((a) => {
-    const problem = checkAction(a, entities, settings);
+    const problem = checkAction(a, entities, settings, false, growth.ads);
     if (problem) {
       rejected.push(`${a.title}: ${problem}`);
       return [];
@@ -400,6 +349,31 @@ async function applyAction(admin: SupabaseClient, row: Record<string, unknown>, 
   }
 
   const { entities, settings } = await load(admin);
+  if (a.action === "pause_ad" || a.action === "add_negative") {
+    const { data: ads } = await admin.from("ads_ads").select("*");
+    const problem = checkAction(a, entities, settings, row.source === "dawid", ads ?? []);
+    if (problem) {
+      await admin.from("ads_actions").update({ status: "failed", result: { error: problem }, ...decided }).eq("id", a.id);
+      return { ok: false, message: problem };
+    }
+    const ad = (ads ?? []).find((x) => x.platform === a.platform && x.ad_id === a.entity_id);
+    try {
+      await applyGrowthAction(a, ad);
+    } catch (e) {
+      const message = e instanceof SourceError ? e.message : "Platforma nie odpowiada.";
+      if (!(e instanceof SourceError)) console.error("ads: apply growth", e);
+      await admin.from("ads_actions").update({ status: "failed", result: { error: message }, ...decided }).eq("id", a.id);
+      return { ok: false, message };
+    }
+    if (a.action === "pause_ad") {
+      await admin.from("ads_ads").update({ status: "paused" }).eq("platform", a.platform).eq("ad_id", a.entity_id!);
+    } else {
+      await admin.from("ads_search_terms").update({ google_status: "excluded" }).eq("campaign_id", a.entity_id!).eq("term", a.params.term!);
+    }
+    const message = `Wprowadzone: ${describe({ ...a, entity_name: a.entity_name || ad?.name || "" })}.`;
+    await admin.from("ads_actions").update({ status: "applied", result: { message }, ...decided }).eq("id", a.id);
+    return { ok: true, message };
+  }
   const problem = checkAction(a, entities, settings, row.source === "dawid");
   const entity = entities.find((e) => e.platform === a.platform && e.entity_id === a.entity_id);
   if (problem || !entity) {
@@ -450,7 +424,7 @@ Deno.serve(withCors(async (req) => {
   let userId: string | null = null;
   if (cronSecret) {
     const { data: ok } = await admin.rpc("ads_cron_ok", { p_secret: cronSecret });
-    if (ok !== true || !["sync", "propose", "cycle"].includes(action)) return json({ error: "unauthorized" }, 401);
+    if (ok !== true || !["sync", "propose", "cycle", "research"].includes(action)) return json({ error: "unauthorized" }, 401);
   } else {
     const user = await requestUser(req, admin);
     if (!user) return json({ error: "unauthorized" }, 401);
@@ -530,6 +504,110 @@ Deno.serve(withCors(async (req) => {
           .insert({ ...manual, status: "pending", source: "dawid" }).select("*").single();
         if (error) throw new Error(`manual: ${error.message}`);
         return json(await applyAction(admin, row, userId));
+      }
+      case "growth":
+        return json(await growthOverview(admin));
+      case "research": {
+        const note = typeof body.note === "string" && body.note.trim() ? body.note.trim().slice(0, 2000) : null;
+        const result = await weekly(admin, note);
+        const agent = result.agent as { error?: string };
+        if (agent.error) return json({ ...result, error: agent.error }, agent.error === "no_key" ? 412 : 502);
+        return json(result);
+      }
+      case "exclude": {
+        // Dawid excludes a search term by hand (CRM → Słowa kluczowe).
+        const term = String(body.term ?? "").trim().toLowerCase().slice(0, 80);
+        const { data: campaign } = await admin.from("ads_entities").select("name")
+          .eq("platform", "google_ads").eq("entity_id", String(body.campaign_id ?? "")).maybeSingle();
+        const manual: ProposedAction = {
+          platform: "google_ads",
+          entity_id: String(body.campaign_id ?? ""),
+          entity_name: campaign?.name ?? "",
+          action: "add_negative",
+          params: { term, match: body.match === "EXACT" ? "EXACT" : "PHRASE" },
+          title: `Wykluczyć „${term}”`,
+          reason: "Zmiana ręczna w Studio.",
+          expected: "",
+          priority: 2,
+        };
+        const { data: row, error } = await admin.from("ads_actions")
+          .insert({ ...manual, status: "pending", source: "dawid" }).select("*").single();
+        if (error) throw new Error(`exclude: ${error.message}`);
+        return json(await applyAction(admin, row, userId));
+      }
+      case "creative": {
+        // Approve (optionally edited, optionally straight into a Google ad group) or reject.
+        const { data: row } = await admin.from("ads_creatives").select("*").eq("id", String(body.id)).maybeSingle();
+        if (!row || row.status !== "draft") return json({ error: "gone" }, 409);
+        const decided = { decided_at: new Date().toISOString() };
+        if (body.approve !== true) {
+          const feedback = typeof body.feedback === "string" ? body.feedback.trim().slice(0, 2000) : null;
+          await admin.from("ads_creatives").update({ status: "rejected", feedback, ...decided }).eq("id", row.id);
+          return json({ ok: true, message: "Odrzucone. Agent weźmie uwagę pod uwagę przy kolejnym badaniu." });
+        }
+        const edited = body.content && typeof body.content === "object"
+          ? cleanCreative({ ...(body.content as Record<string, unknown>), platform: row.platform, format: row.format })
+          : null;
+        const content = edited?.content ?? row.content;
+        const problems = edited?.problems ?? row.problems ?? [];
+        if (row.platform === "google_ads") {
+          const group = typeof body.group_id === "string" ? body.group_id : null;
+          if (!group) {
+            await admin.from("ads_creatives").update({ status: "approved", content, problems, ...decided }).eq("id", row.id);
+            return json({ ok: true, message: "Zatwierdzone. Wybierz grupę reklam, by utworzyć ją w Google Ads." });
+          }
+          if ((content.headlines?.length ?? 0) < 3 || (content.descriptions?.length ?? 0) < 2) {
+            return json({ ok: false, message: "Reklama Google potrzebuje co najmniej 3 nagłówków i 2 opisów." });
+          }
+          try {
+            const resource = await createRsa(content, group);
+            await admin.from("ads_creatives").update({ status: "live", content, problems, result: { resource, group_id: group }, ...decided })
+              .eq("id", row.id);
+            return json({ ok: true, message: "Reklama utworzona w Google Ads jako wstrzymana. Włącz ją w Google Ads albo w Studio, gdy będziecie gotowi." });
+          } catch (e) {
+            const message = e instanceof SourceError ? e.message : "Google Ads nie odpowiada.";
+            if (!(e instanceof SourceError)) console.error("ads: rsa", e);
+            return json({ ok: false, message });
+          }
+        }
+        // Meta: pictures and video are made by people, so the copy and brief become a task.
+        const brief = [
+          `Tekst główny:\n${content.primary_text ?? ""}`,
+          `Nagłówek: ${content.headline ?? ""}`,
+          content.description ? `Opis: ${content.description}` : "",
+          `Przycisk: ${content.cta ?? ""}`,
+          `Link: ${content.final_url ?? "https://audiokiddo.pl/"}`,
+          content.visual_brief ? `Grafika / kadr:\n${content.visual_brief}` : "",
+          content.hook_script ? `Wideo (scenariusz):\n${content.hook_script}` : "",
+          row.why ? `Dlaczego: ${row.why}` : "",
+        ].filter(Boolean).join("\n\n");
+        const { data: task, error } = await admin.from("crm_items").insert({
+          kind: "task",
+          area: "marketing",
+          title: `Kreacja Meta: ${row.angle || "nowa reklama"}`.slice(0, 200),
+          body: brief.slice(0, 8000),
+          status: "todo",
+          priority: 2,
+          owner: "Dawid",
+          source: "ai",
+          decision: "approved",
+        }).select("id").single();
+        if (error) throw new Error(`creative task: ${error.message}`);
+        await admin.from("ads_creatives").update({ status: "approved", content, problems, result: { crm_item: task.id }, ...decided })
+          .eq("id", row.id);
+        return json({ ok: true, message: "Zatwierdzone. Tekst i brief są w zadaniu na tablicy." });
+      }
+      case "creative_live": {
+        // An approved Google creative placed in an ad group later.
+        const { data: row } = await admin.from("ads_creatives").select("*").eq("id", String(body.id)).maybeSingle();
+        if (!row || row.status !== "approved" || row.platform !== "google_ads") return json({ error: "gone" }, 409);
+        try {
+          const resource = await createRsa(row.content, String(body.group_id ?? ""));
+          await admin.from("ads_creatives").update({ status: "live", result: { resource, group_id: body.group_id } }).eq("id", row.id);
+          return json({ ok: true, message: "Reklama utworzona w Google Ads jako wstrzymana." });
+        } catch (e) {
+          return json({ ok: false, message: e instanceof SourceError ? e.message : "Google Ads nie odpowiada." });
+        }
       }
       default:
         return json({ error: "action" }, 400);

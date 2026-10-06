@@ -591,3 +591,27 @@ begin
 end $$;
 reset role;
 select 'ltv and experiment tests passed';
+
+-- Ads growth: new kinds of change, creatives, keywords; admins read, others do not.
+insert into public.ads_actions (platform, entity_id, action, params, title)
+  values ('google_ads', '1', 'add_negative', '{"term": "bajki youtube"}', 'Wykluczyć');
+insert into public.ads_creatives (platform, format, content) values ('google_ads', 'rsa', '{"headlines": ["a", "b", "c"]}');
+insert into public.ads_competitor_ads (ad_archive_id, page_id, bodies) values ('1', 'p', '{"Tekst"}');
+update public.seo_keywords set trend = '[{"month": "2026-07", "searches": 10}]', use_for = 'blog' where keyword = 'zabawy w aucie dla dzieci';
+do $$ begin
+  begin
+    insert into public.ads_creatives (platform, format) values ('tiktok', 'rsa');
+    assert false, 'unknown platform accepted';
+  exception when check_violation then null;
+  end;
+end $$;
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$ begin
+  assert (select count(*) from public.ads_creatives) = 1, 'admin reads creatives';
+  assert (select count(*) from public.ads_competitor_ads) = 1, 'admin reads competitors';
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f2', false); end $$;
+do $$ begin assert (select count(*) from public.ads_creatives) = 0, 'a parent reads no creatives'; end $$;
+reset role;
+select 'ads growth tests passed';

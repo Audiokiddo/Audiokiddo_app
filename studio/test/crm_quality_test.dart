@@ -11,12 +11,27 @@ void main() {
         overrides: [
           alertsProvider.overrideWith(
             (ref) async => [
-              {'id': '1', 'level': 'critical', 'title': 'Zakupy się nie kończą', 'detail': 'Sprawdź.', 'first_seen': '2026-10-07T05:00:00Z'},
-              {'id': '2', 'level': 'info', 'title': '2 zamówienia czekają', 'detail': 'Przypomnij.', 'first_seen': '2026-10-06T05:00:00Z', 'acknowledged_at': '2026-10-07T06:00:00Z'},
+              {
+                'id': '1',
+                'level': 'critical',
+                'title': 'Zakupy się nie kończą',
+                'detail': 'Sprawdź.',
+                'first_seen': '2026-10-07T05:00:00Z',
+              },
+              {
+                'id': '2',
+                'level': 'info',
+                'title': '2 zamówienia czekają',
+                'detail': 'Przypomnij.',
+                'first_seen': '2026-10-06T05:00:00Z',
+                'acknowledged_at': '2026-10-07T06:00:00Z',
+              },
             ],
           ),
         ],
-        child: const MaterialApp(home: Scaffold(body: SingleChildScrollView(child: AlertsCard()))),
+        child: const MaterialApp(
+          home: Scaffold(body: SingleChildScrollView(child: AlertsCard())),
+        ),
       ),
     );
     await tester.pumpAndSettle();
