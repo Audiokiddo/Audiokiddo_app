@@ -25,16 +25,17 @@ class DayPartWidget : AppWidgetProvider() {
         val action: Int,
         val background: Int,
         val url: String,
+        val mascot: Int,
         val night: Boolean = false,
     ) {
         MORNING(R.string.widget_morning_title, R.string.widget_morning_subtitle, R.string.widget_play,
-            R.drawable.widget_bg_morning, "audiokiddo://open/"),
+            R.drawable.widget_bg_morning, "audiokiddo://open/", R.drawable.szop_rano),
         MIDDAY(R.string.widget_midday_title, R.string.widget_midday_subtitle, R.string.widget_play,
-            R.drawable.widget_bg_midday, "audiokiddo://open/"),
+            R.drawable.widget_bg_midday, "audiokiddo://open/", R.drawable.szop_dzien),
         AFTERNOON(R.string.widget_afternoon_title, R.string.widget_afternoon_subtitle, R.string.widget_trip,
-            R.drawable.widget_bg_afternoon, "audiokiddo://open/podroz"),
+            R.drawable.widget_bg_afternoon, "audiokiddo://open/podroz", R.drawable.szop_droga),
         EVENING(R.string.widget_evening_title, R.string.widget_evening_subtitle, R.string.widget_bedtime,
-            R.drawable.widget_bg_evening, "audiokiddo://open/dobranoc", night = true),
+            R.drawable.widget_bg_evening, "audiokiddo://open/dobranoc", R.drawable.szop_wieczor, night = true),
     }
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
@@ -51,17 +52,32 @@ class DayPartWidget : AppWidgetProvider() {
         val notes = data.getString("notes", null)?.toIntOrNull()
         return RemoteViews(context.packageName, R.layout.day_part_widget).apply {
             setInt(R.id.widget_root, "setBackgroundResource", part.background)
-            setImageViewResource(R.id.widget_golden, when (part) {
-                // Szop’en von Ekran in his officer's coat for the parent; in pajamas at night.
-                Part.MORNING, Part.MIDDAY, Part.AFTERNOON -> R.drawable.golden_official
-                Part.EVENING -> R.drawable.golden_pajamas
-            })
-            setTextViewText(R.id.widget_title, context.getString(part.title))
+            // Szop’en in his current look for this part of the day.
+            setImageViewResource(R.id.widget_golden, part.mascot)
+            // The play to start with one tap: the one stopped halfway, else today's from the plan.
+            val resume = link(data, "resume")
+            val next = link(data, "next")
+            val main = resume?.let { Triple(context.getString(R.string.widget_resume), it.first, it) }
+                ?: next?.let { Triple(context.getString(R.string.widget_today) + " · " + it.second, it.first, it) }
             // Szop’en's line of the day (written by the app); the built-in one until the app has run.
             val joke = data.getString("joke_${part.name.lowercase()}", null).orEmpty()
                 .ifEmpty { context.getString(part.subtitle) }
-            setTextViewText(R.id.widget_subtitle, "„$joke”")
-            setTextViewText(R.id.widget_action, context.getString(part.action))
+            if (main != null) {
+                setTextViewText(R.id.widget_title, main.second)
+                setTextViewText(R.id.widget_subtitle, main.first)
+                setTextViewText(R.id.widget_action, "▶ " + context.getString(R.string.widget_play))
+                setTextViewText(R.id.widget_shortcut, context.getString(part.action))
+                setOnClickPendingIntent(R.id.widget_action, open(context, main.third.third, 10 + part.ordinal))
+                setOnClickPendingIntent(R.id.widget_shortcut, open(context, part.url, 20 + part.ordinal))
+            } else {
+                setTextViewText(R.id.widget_title, context.getString(part.title))
+                setTextViewText(R.id.widget_subtitle, "„$joke”")
+                setTextViewText(R.id.widget_action, context.getString(part.action))
+                val other = if (part.night) "audiokiddo://open/podroz" else "audiokiddo://open/dobranoc"
+                setTextViewText(R.id.widget_shortcut, context.getString(if (part.night) R.string.widget_trip else R.string.widget_bedtime))
+                setOnClickPendingIntent(R.id.widget_action, open(context, part.url, 10 + part.ordinal))
+                setOnClickPendingIntent(R.id.widget_shortcut, open(context, other, 20 + part.ordinal))
+            }
             if (notes != null && line.isNotEmpty()) {
                 // This week's melody: a filled dot for every note collected.
                 setTextViewText(R.id.widget_notes, "●".repeat(notes.coerceIn(0, 7)) + "○".repeat(7 - notes.coerceIn(0, 7)))
@@ -72,18 +88,27 @@ class DayPartWidget : AppWidgetProvider() {
                 setViewVisibility(R.id.widget_notes, View.GONE)
                 setViewVisibility(R.id.widget_brand, View.VISIBLE)
             }
-            for (view in listOf(R.id.widget_brand, R.id.widget_notes, R.id.widget_title, R.id.widget_subtitle, R.id.widget_action)) {
+            for (view in listOf(R.id.widget_brand, R.id.widget_notes, R.id.widget_title, R.id.widget_subtitle, R.id.widget_action, R.id.widget_shortcut)) {
                 setTextColor(view, ink)
             }
-            val open = Intent(Intent.ACTION_VIEW, Uri.parse(part.url)).setPackage(context.packageName)
-            setOnClickPendingIntent(
-                R.id.widget_root,
-                PendingIntent.getActivity(
-                    context, part.ordinal, open,
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-                ),
-            )
+            setOnClickPendingIntent(R.id.widget_root, open(context, main?.third?.third ?: part.url, part.ordinal))
         }
+    }
+
+    /** A play the app wrote: (title, detail, audiokiddo:// url), or null. */
+    private fun link(data: android.content.SharedPreferences, key: String): Triple<String, String, String>? {
+        val title = data.getString("${key}_title", null).orEmpty()
+        val path = data.getString("${key}_path", null).orEmpty()
+        if (title.isEmpty() || path.isEmpty()) return null
+        return Triple(title, data.getString("${key}_detail", null).orEmpty(), "audiokiddo://open$path")
+    }
+
+    private fun open(context: Context, url: String, code: Int): PendingIntent {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).setPackage(context.packageName)
+        return PendingIntent.getActivity(
+            context, code, intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
     }
 
     /** Refreshes the widget when the next part of the day begins (inexact; no permission needed). */

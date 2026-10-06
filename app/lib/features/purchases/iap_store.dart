@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart' show ReplacementMode;
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 
@@ -38,7 +41,7 @@ class InAppPurchaseGateway implements gw.StoreGateway {
         price: _basePrice(d),
         kind: subscription ? gw.StoreProductKind.subscription : gw.StoreProductKind.oneTime,
         period: subscription
-            ? (d.id == ProductIds.yearly ? gw.BillingPeriod.year : gw.BillingPeriod.month)
+            ? (ProductIds.isYearly(d.id) ? gw.BillingPeriod.year : gw.BillingPeriod.month)
             : null,
         freeTrialDays: trial,
         rawPrice: _baseRawPrice(d),
@@ -113,6 +116,27 @@ class InAppPurchaseGateway implements gw.StoreGateway {
   Future<void> buy(gw.StoreProduct product, {String? accountToken}) async {
     final details =
         _details[product.id] ?? (await _iap.queryProductDetails({product.id})).productDetails.first;
+    // Moving to another plan on Google Play replaces the current subscription (the App Store
+    // does this by itself: all plans are in one subscription group).
+    if (Platform.isAndroid && ProductIds.subscriptions.contains(product.id)) {
+      final past = await _iap.getPlatformAddition<InAppPurchaseAndroidPlatformAddition>().queryPastPurchases();
+      final current = past.pastPurchases
+          .where((p) => ProductIds.subscriptions.contains(p.productID) && p.productID != product.id)
+          .firstOrNull;
+      if (current != null) {
+        await _iap.buyNonConsumable(
+          purchaseParam: GooglePlayPurchaseParam(
+            productDetails: details,
+            applicationUserName: accountToken,
+            changeSubscriptionParam: ChangeSubscriptionParam(
+              oldPurchaseDetails: current,
+              replacementMode: ReplacementMode.withTimeProration,
+            ),
+          ),
+        );
+        return;
+      }
+    }
     // Subscriptions and one-time unlocks both use the non-consumable path of the plugin.
     await _iap.buyNonConsumable(
       purchaseParam: PurchaseParam(productDetails: details, applicationUserName: accountToken),

@@ -1,3 +1,4 @@
+import 'package:ak_core/ak_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter/services.dart';
@@ -5,29 +6,73 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../catalog/catalog_providers.dart';
 import '../family/family.dart';
+import '../player/bottom_dock.dart' show ResumeCard, resumeCardProvider;
 import '../family/plan_texts.dart';
 import '../lord/lord_lines.dart';
 
-/// What the home-screen widget shows under the part of the day: the active child's week.
+/// What the home-screen widget shows: the active child's week, today's play from the plan
+/// (one tap starts it) and the unfinished play to pick up.
 @immutable
 class HomeWidgetData {
-  const HomeWidgetData({required this.line, required this.notes, required this.todayDone});
+  const HomeWidgetData({
+    this.line = '',
+    this.notes = 0,
+    this.todayDone = false,
+    this.next,
+    this.resume,
+  });
 
-  /// "Zosia · dzień 3 · 2 z 7 nut" or "Zosia: dzisiejsza nuta zebrana".
+  /// "Zosia · dzień 3 · 2 z 7 nut" or "Zosia: dzisiejsza nuta zebrana"; empty without a child.
   final String line;
 
   /// Notes collected this week, 0–7 (dots on the widget).
   final int notes;
   final bool todayDone;
 
-  @override
-  bool operator ==(Object other) =>
-      other is HomeWidgetData && other.line == line && other.notes == notes && other.todayDone == todayDone;
+  /// Today's play from the plan, not done yet.
+  final WidgetLink? next;
+
+  /// The last play, stopped halfway.
+  final WidgetLink? resume;
 
   @override
-  int get hashCode => Object.hash(line, notes, todayDone);
+  bool operator ==(Object other) =>
+      other is HomeWidgetData &&
+      other.line == line &&
+      other.notes == notes &&
+      other.todayDone == todayDone &&
+      other.next == next &&
+      other.resume == resume;
+
+  @override
+  int get hashCode => Object.hash(line, notes, todayDone, next, resume);
 }
+
+/// A play on the widget: its title, a short detail ("6 min") and the app path it opens.
+@immutable
+class WidgetLink {
+  const WidgetLink({required this.title, required this.detail, required this.path});
+
+  final String title;
+  final String detail;
+
+  /// Opened as `audiokiddo://open<path>`.
+  final String path;
+
+  @override
+  bool operator ==(Object other) =>
+      other is WidgetLink && other.title == title && other.detail == detail && other.path == path;
+
+  @override
+  int get hashCode => Object.hash(title, detail, path);
+}
+
+String _minutes(ContentItem item) => '${(item.durationSec / 60).ceil().clamp(1, 999)} min';
+
+/// The widget's start: the play opens and starts at once (`?graj=1`).
+String widgetPlayPath(ContentItem item) => '/zabawa/${item.id}?graj=1';
 
 /// Notes of the current week, as on the melody staff in the Plan tab.
 int weekNotes({required int currentDay, required int completedDays}) {
@@ -37,10 +82,30 @@ int weekNotes({required int currentDay, required int completedDays}) {
 
 final homeWidgetDataProvider = Provider<HomeWidgetData?>((ref) {
   final family = ref.watch(familyProvider).value;
+  final catalog = ref.watch(catalogProvider).value;
+  final resumeCard = ref.watch(resumeCardProvider);
+  final resume = switch (resumeCard) {
+    null => null,
+    ResumeCard(loaded: true) => WidgetLink(title: resumeCard.title, detail: 'w odtwarzaczu', path: '/odtwarzacz'),
+    ResumeCard(:final item?) => WidgetLink(title: item.title, detail: 'dokończ', path: widgetPlayPath(item)),
+    _ => null,
+  };
   final child = family?.active;
-  if (family == null || child == null) return null;
-  final position = ref.watch(planPositionProvider(child.id));
-  if (position == null) return null;
+  final position = child == null ? null : ref.watch(planPositionProvider(child.id));
+  if (family == null || child == null || position == null) {
+    return resume == null ? null : HomeWidgetData(resume: resume);
+  }
+  WidgetLink? next;
+  if (!position.todayDone && catalog != null) {
+    final today = ref.watch(planProvider(child.id)).where((d) => d.day == position.currentDay).firstOrNull;
+    for (final id in today?.itemIds ?? const <String>[]) {
+      final item = catalog.item(id);
+      if (item != null && item.id != resumeCard?.item?.id && ref.watch(canPlayProvider(item))) {
+        next = WidgetLink(title: item.title, detail: _minutes(item), path: widgetPlayPath(item));
+        break;
+      }
+    }
+  }
   final l10n = lookupAppLocalizations(const Locale('pl'));
   final name = childLabel(l10n, child, family.children.indexOf(child));
   final notes = weekNotes(currentDay: position.currentDay, completedDays: position.completedDays);
@@ -48,6 +113,8 @@ final homeWidgetDataProvider = Provider<HomeWidgetData?>((ref) {
     line: position.todayDone ? l10n.widgetDone(name) : l10n.widgetProgress(name, position.currentDay, notes),
     notes: notes,
     todayDone: position.todayDone,
+    next: next,
+    resume: resume,
   );
 });
 
@@ -82,6 +149,11 @@ class PlatformHomeWidgetSink implements HomeWidgetSink {
       await HomeWidget.saveWidgetData<String>('line', data?.line ?? '');
       await HomeWidget.saveWidgetData<String>('notes', data == null ? '' : '${data.notes}');
       await HomeWidget.saveWidgetData<String>('done', data?.todayDone ?? false ? '1' : '');
+      for (final (key, link) in [('next', data?.next), ('resume', data?.resume)]) {
+        await HomeWidget.saveWidgetData<String>('${key}_title', link?.title ?? '');
+        await HomeWidget.saveWidgetData<String>('${key}_detail', link?.detail ?? '');
+        await HomeWidget.saveWidgetData<String>('${key}_path', link?.path ?? '');
+      }
       for (final MapEntry(:key, :value) in widgetJokes(DateTime.now()).entries) {
         await HomeWidget.saveWidgetData<String>(key, value);
       }

@@ -25,14 +25,18 @@ import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/queue_controller.dart';
+import '../home/quick_pick.dart' show startItem;
 import 'widgets/labels.dart';
 import '../../core/router.dart';
 import '../insights/events.dart';
 
 class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({super.key, required this.itemId});
+  const DetailsScreen({super.key, required this.itemId, this.autoplay = false});
 
   final String itemId;
+
+  /// Opened from the home-screen widget (`?graj=1`): starts at once when the family can play it.
+  final bool autoplay;
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +46,36 @@ class DetailsScreen extends StatelessWidget {
         builder: (context, catalog) {
           final item = catalog.item(itemId);
           if (item == null) return Center(child: Text(AppLocalizations.of(context).notFound));
-          return _DetailsContent(item: item, pack: item.packId == null ? null : catalog.pack(item.packId!));
+          final content = _DetailsContent(item: item, pack: item.packId == null ? null : catalog.pack(item.packId!));
+          return autoplay ? _AutoPlay(item: item, child: content) : content;
         },
       ),
     );
   }
+}
+
+/// Starts [item] once, right after the screen appears (from the widget's one-tap start).
+class _AutoPlay extends ConsumerStatefulWidget {
+  const _AutoPlay({required this.item, required this.child});
+
+  final ContentItem item;
+  final Widget child;
+
+  @override
+  ConsumerState<_AutoPlay> createState() => _AutoPlayState();
+}
+
+class _AutoPlayState extends ConsumerState<_AutoPlay> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ref.read(canPlayProvider(widget.item))) unawaited(startItem(context, widget.item));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class _DetailsContent extends ConsumerWidget {

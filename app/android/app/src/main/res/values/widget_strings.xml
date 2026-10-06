@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="widget_golden">Golden von Ekran</string>
+    <string name="widget_golden">Szop’en</string>
     <string name="widget_name">Szop’en na dziś</string>
-    <string name="widget_description">Zabawa na tę porę dnia: rano rozgrzewka, po południu droga, wieczorem kołysanka.</string>
+    <string name="widget_description">Jednym dotknięciem: dokończ zabawę, włącz dzisiejszą z planu, W drogę albo Dobranoc.</string>
     <string name="widget_morning_title">Poranna rozgrzewka</string>
     <string name="widget_morning_subtitle">Ty ogarnij kawę. Ja ogarnę zagadki.</string>
     <string name="widget_midday_title">Czas na przygodę</string>
@@ -14,5 +14,7 @@
     <string name="widget_play">Graj</string>
     <string name="widget_trip">W drogę</string>
     <string name="widget_bedtime">Dobranoc</string>
+    <string name="widget_resume">Dokończ</string>
+    <string name="widget_today">Na dziś</string>
     <string name="widget_notes">%1$d z 7 nut w tym tygodniu</string>
 </resources>

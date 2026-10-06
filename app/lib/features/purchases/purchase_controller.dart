@@ -74,9 +74,9 @@ class DevPurchaseVerifier implements PurchaseVerifier {
     if (scopes.isEmpty) return VerificationResult.rejected;
     final backend = _ref.read(devEntitlementBackendProvider);
     if (backend == null) return VerificationResult.retryLater;
-    final days = purchase.productId == ProductIds.yearly
+    final days = ProductIds.isYearly(purchase.productId)
         ? 365
-        : purchase.productId == ProductIds.monthly
+        : ProductIds.subscriptions.contains(purchase.productId)
         ? 30
         : null;
     await backend.addPurchase(

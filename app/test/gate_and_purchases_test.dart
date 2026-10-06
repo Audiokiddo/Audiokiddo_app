@@ -115,7 +115,11 @@ void main() {
     });
 
     test('products map to scopes', () {
-      expect(scopesForProduct(ProductIds.yearly, catalog), [Scopes.allContent]);
+      expect(scopesForProduct(ProductIds.yearly, catalog), [Scopes.allContent, 'children:1']);
+      expect(scopesForProduct(ProductIds.duoMonthly, catalog), [Scopes.allContent, 'children:2']);
+      expect(scopesForProduct(ProductIds.familyYearly, catalog), [Scopes.allContent, 'children:5']);
+      expect(SubscriptionPlan.forChildren(2), SubscriptionPlan.duo);
+      expect(SubscriptionPlan.forChildren(4), SubscriptionPlan.family);
       expect(scopesForProduct('pl.audiokiddo.pack.detektyw', catalog), [Scopes.pack('detektyw')]);
       expect(scopesForProduct(ProductIds.bundleThree, catalog), hasLength(3));
       expect(scopesForProduct(ProductIds.bundleTwo, catalog), [

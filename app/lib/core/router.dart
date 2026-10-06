@@ -187,7 +187,10 @@ GoRouter buildRouter(
     ),
     GoRoute(
       path: '/zabawa/:id',
-      pageBuilder: (context, state) => swipePage(state, DetailsScreen(itemId: state.pathParameters['id']!)),
+      pageBuilder: (context, state) => swipePage(
+        state,
+        DetailsScreen(itemId: state.pathParameters['id']!, autoplay: state.uri.queryParameters['graj'] == '1'),
+      ),
     ),
     // The player slides up like a sheet: pulled down to minimise it, or swiped from the left
     // edge like any other page (then it follows the finger sideways).
