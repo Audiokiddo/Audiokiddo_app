@@ -346,9 +346,18 @@ class SupabaseAccountService implements AccountService {
   @override
   Future<List<Entitlement>> entitlements() async {
     if (_auth.currentUser == null) return const [];
-    final rows = await _guard<List<Map<String, dynamic>>>(
-      () async => await _client.from('entitlements').select('scope, status, source, valid_until'),
-    );
+    // Own access plus, for a second parent, the family's (my_entitlements); the table itself
+    // until the server has that function.
+    final rows = await _guard<List<Map<String, dynamic>>>(() async {
+      try {
+        return [
+          for (final r in await _client.rpc('my_entitlements') as List) Map<String, dynamic>.from(r as Map),
+        ];
+      } on PostgrestException catch (e) {
+        if (e.code != 'PGRST202') rethrow;
+        return await _client.from('entitlements').select('scope, status, source, valid_until');
+      }
+    });
     return [for (final row in rows) ?entitlementFromRow(row)];
   }
 

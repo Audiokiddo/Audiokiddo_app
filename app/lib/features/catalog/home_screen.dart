@@ -14,6 +14,7 @@ import '../diploma/diploma_screen.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../home/quick_pick.dart';
+import '../purchases/winback.dart';
 import '../purchases/offer_catalog.dart';
 import '../purchases/purchase_controller.dart';
 import '../purchases/shop.dart';
@@ -80,6 +81,7 @@ class HomeScreen extends ConsumerWidget {
               const AlertsKeeper(),
               const FirstPlayCard(),
               const AccessEndingBanner(),
+              const WinBackCard(),
               const PromotionBanner(),
               const SizedBox(height: 10),
               FittedBox(

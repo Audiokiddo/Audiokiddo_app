@@ -15,6 +15,7 @@ import 'features/account/account_service.dart';
 import 'features/account/session_gate.dart';
 import 'features/catalog/catalog_providers.dart';
 import 'features/catalog/remote_catalog.dart';
+import 'features/family_sharing/parent_cloud.dart';
 import 'features/insights/error_log.dart';
 import 'features/insights/events.dart';
 import 'features/promotions/promotions.dart';
@@ -51,8 +52,18 @@ Future<void> main() async {
     osVersion: Platform.operatingSystemVersion,
     database: database,
   ).install();
+  final cloud = SupabaseParentCloud(supabase.client);
+  final variants = await loadVariants(
+    cloud,
+    await events.installId(),
+    () => database.readValue('experiments'),
+    (v) => database.writeValue('experiments', v),
+  );
+  events.abTests = variants;
   final container = ProviderContainer(
     overrides: [
+      parentCloudProvider.overrideWithValue(cloud),
+      experimentsProvider.overrideWithValue(variants),
       databaseProvider.overrideWithValue(database),
       catalogSourceProvider.overrideWithValue(catalogSource),
       eventSinkProvider.overrideWithValue(events),

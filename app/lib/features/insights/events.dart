@@ -54,6 +54,10 @@ class SupabaseEventSink implements EventSink {
   final SupabaseClient _client;
   final AppDatabase _db;
   final String? appVersion;
+
+  /// Variants of the running A/B tests, sent with the offer and purchase events.
+  Map<String, String> abTests = const {};
+  static const _abEvents = {AppEvent.paywallView, AppEvent.purchaseStart, AppEvent.purchaseDone};
   static const _installKey = 'install_id';
   Future<String>? _install;
 
@@ -83,7 +87,7 @@ class SupabaseEventSink implements EventSink {
           'user_id': _client.auth.currentUser?.id,
           'event': event.wire,
           'item_id': ?itemId,
-          'props': props,
+          'props': abTests.isNotEmpty && _abEvents.contains(event) ? {...props, 'ab': abTests} : props,
           'app_version': ?appVersion,
           'platform': kIsWeb ? 'web' : (Platform.isIOS ? 'ios' : 'android'),
         });

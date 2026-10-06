@@ -51,6 +51,23 @@ int? childSeats(Set<String> scopes) {
 
 final childSeatsProvider = Provider<int?>((ref) => childSeats(ref.watch(activeScopesProvider)));
 
+/// When the family's subscription ended (and none is active now): a "come back" moment.
+final lapsedSubscriptionProvider = Provider<DateTime?>((ref) {
+  final now = ref.watch(clockProvider)();
+  final subs = [
+    for (final e in ref.watch(entitlementsProvider))
+      if (e.scope == Scopes.allContent && e.source != EntitlementSource.manual) e,
+  ];
+  if (subs.isEmpty || subs.any((e) => e.isActiveAt(now))) return null;
+  return subs.map((e) => e.validUntil ?? now).reduce((a, b) => a.isAfter(b) ? a : b);
+});
+
+/// Plays released since [since], newest first (what the family missed during the break).
+List<ContentItem> releasedSince(Catalog catalog, DateTime since) => [
+  for (final i in catalog.items)
+    if (i.releasedOn != null && i.releasedOn!.isAfter(since)) i,
+]..sort((a, b) => b.releasedOn!.compareTo(a.releasedOn!));
+
 bool ownsPack(Set<String> scopes, String packId) =>
     scopes.contains(Scopes.allContent) || scopes.contains(Scopes.pack(packId));
 

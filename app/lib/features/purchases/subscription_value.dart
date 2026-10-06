@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/tokens.dart';
 import '../family/family.dart';
+import '../family_sharing/parent_cloud.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
@@ -29,7 +30,8 @@ class SubscriptionOffer extends ConsumerStatefulWidget {
 const _ink = Color(0xFF211C35);
 
 class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
-  bool _yearly = true;
+  // A/B test "paywall_period": which period is picked at first (yearly unless the test says).
+  late bool _yearly = ref.read(experimentsProvider)['paywall_period'] != 'miesiecznie';
   SubscriptionPlan? _plan;
 
   StoreProduct? _product(SubscriptionPlan plan, {required bool yearly}) =>
@@ -78,6 +80,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
     final trial = product.freeTrialDays;
     final saving = _saving(plan);
     final current = seats == null ? null : SubscriptionPlan.values.where((p) => p.children == seats).firstOrNull;
+    final lapsed = ref.watch(lapsedSubscriptionProvider);
 
     // A year of packs bought one by one: today's packs plus a new one every month.
     final packPrices = [for (final p in widget.catalog.packs) ?widget.byId[p.storeProductId]?.rawPrice];
@@ -88,6 +91,11 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
       buttonLabel = 'To Twój plan';
     } else if (seats != null) {
       buttonLabel = 'Przechodzę na „${plan.label}” · ${product.price}';
+    } else if (lapsed != null && product.comebackPrice != null) {
+      buttonLabel = 'Wracam: najpierw ${product.comebackPrice}';
+    } else if (trial != null && ref.watch(experimentsProvider)['paywall_cta'] == 'oszczednosc' && yearly && saving != null) {
+      // A/B test "paywall_cta": the saving in the button instead of the trial.
+      buttonLabel = 'Zacznij za darmo i oszczędzaj ${_round(saving, money)}';
     } else if (trial != null) {
       buttonLabel = 'Wypróbuj $trial dni za darmo';
     } else {
@@ -233,7 +241,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
       if (duo != null) 'Drugie dziecko +$duo',
       if (family != null) 'cała rodzina (do 5 dzieci) +$family',
     ].join(', ').replaceFirstMapped(RegExp('^.'), (m) => m[0]!.toUpperCase());
-    return '$rule miesięcznie.';
+    return '$rule miesięcznie. W planach dla 2+ dzieci także konto drugiego rodzica.';
   }
 
   /// 5.00 → "5 zł", 4.5 → "4,50 zł".

@@ -28,6 +28,7 @@ import 'purchase_controller.dart';
 import 'shop.dart';
 import 'store_gateway.dart';
 import 'subscription_value.dart';
+import 'winback.dart';
 
 /// Shop tab: the subscription, every pack with a free taste, bundles and how to restore.
 /// Parent area; every purchase and link out passes the parental gate.
@@ -72,6 +73,7 @@ class ShopScreen extends ConsumerWidget {
                     ),
                   ),
                 const SizedBox(height: 18),
+                if (!subscribed) const WinBackCard(withButton: false),
                 if (subscribed)
                   const _FullAccessCard()
                 else

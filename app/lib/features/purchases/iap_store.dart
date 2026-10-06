@@ -32,8 +32,11 @@ class InAppPurchaseGateway implements gw.StoreGateway {
     for (final d in response.productDetails) {
       final subscription = ProductIds.subscriptions.contains(d.id);
       final trial = subscription ? _freeTrialDays(d) : null;
-      // Google returns one entry per subscription offer; prefer the one with a trial.
-      if (result[d.id]?.freeTrialDays != null) continue;
+      final comeback = subscription ? _comebackPrice(d) : null;
+      // Google returns one entry per subscription offer, only those this user may take: a
+      // win-back offer (tag "winback") first, then one with a trial, then the base plan.
+      final kept = result[d.id];
+      if (kept?.comebackPrice != null || (kept?.freeTrialDays != null && comeback == null)) continue;
       _details[d.id] = d;
       result[d.id] = gw.StoreProduct(
         id: d.id,
@@ -46,6 +49,7 @@ class InAppPurchaseGateway implements gw.StoreGateway {
         freeTrialDays: trial,
         rawPrice: _baseRawPrice(d),
         currencyCode: d.currencyCode,
+        comebackPrice: comeback,
       );
     }
     return result.values.toList();
@@ -71,6 +75,17 @@ class InAppPurchaseGateway implements gw.StoreGateway {
           .formattedPrice;
     }
     return d.price;
+  }
+
+  /// The first, lower price of a Google Play offer tagged "winback" (Play Console → the
+  /// subscription → Offers → tag), or null.
+  static String? _comebackPrice(ProductDetails d) {
+    if (d is! GooglePlayProductDetails || d.subscriptionIndex == null) return null;
+    final offer = d.productDetails.subscriptionOfferDetails![d.subscriptionIndex!];
+    if (!offer.offerTags.contains('winback')) return null;
+    final first = offer.pricingPhases.first;
+    final base = offer.pricingPhases.last;
+    return first.priceAmountMicros > 0 && first.priceAmountMicros < base.priceAmountMicros ? first.formattedPrice : null;
   }
 
   static int? _freeTrialDays(ProductDetails d) {

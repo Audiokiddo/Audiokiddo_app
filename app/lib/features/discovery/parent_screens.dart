@@ -18,6 +18,7 @@ import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
+import '../family_sharing/family_screen.dart';
 import '../purchases/plan_limit.dart';
 import '../reminders/reminder_offer.dart';
 import '../welcome/szop_tour.dart';
@@ -68,6 +69,14 @@ class MoreScreen extends ConsumerWidget {
           onTap: () => context.push('/konto'),
         ),
         const ManageSubscriptionTile(),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.family_restroom_rounded, color: AkBrand.tealDeep),
+          title: const Text('Drugi rodzic'),
+          subtitle: const Text('Ten sam abonament na drugim telefonie'),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push('/rodzina'),
+        ),
         const RefSection('Wygląd aplikacji'),
         SegmentedButton<ThemeMode>(
           segments: const [
@@ -100,6 +109,7 @@ class MoreScreen extends ConsumerWidget {
         const RefSection('Powiadomienia'),
         const ReminderTile(),
         const AlertsSwitch(),
+        const LettersSwitch(),
         const RefSection('Szop’en — kolega na dyżurze'),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
