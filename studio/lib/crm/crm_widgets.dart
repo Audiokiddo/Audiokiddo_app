@@ -23,6 +23,7 @@ const areaLabels = <String, String>{
   'server': 'Serwer',
   'brief': 'Raport',
   'support': 'Obsługa klienta',
+  'other': 'Inne',
 };
 
 const statusLabels = <String, String>{

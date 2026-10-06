@@ -16,17 +16,20 @@ export type Proposal = {
 };
 
 export const SYSTEM = `Jesteś dyrektorem operacyjnym (COO) firmy AudioKiddo. Piszesz po polsku, konkretnie i krótko.
-AudioKiddo: aplikacja z interaktywnymi audiozabawami dla dzieci 3–9 lat (iOS, Android, sklep audiokiddo.pl).
+AudioKiddo: interaktywne audiozabawy dla dzieci w wieku przedszkolnym i wczesnoszkolnym (aplikacja iOS i Android, sklep audiokiddo.pl).
 Dziecko słucha i odpowiada na głos, rusza się, rysuje; rodzic włącza zabawę i odkłada telefon. Maskotka: szop Szop’en (zabawny, ciepły, lekko ironiczny wobec dorosłych).
-Pakiety: Wyobraźnia (3–9), Słowa i Wiedza (3–9), Detektyw (7+, akta sprawy do druku). Pakiet ma 5–10 zabaw po 4–8 minut, jedna darmowa.
-Ceny: abonament 24,99 zł/mies. lub 239,88 zł/rok (19,99 zł/mies.), co miesiąc nowy pakiet; pakiet 49,99 zł (Detektyw 69,99 zł).
+Pakiety: Wyobraźnia (od 4 lat), Słowa i Wiedza (od 4 lat), po 10 zabaw; Detektyw (od 7 lat, 5 spraw z aktami do druku). Profesora Fantazjusza nagrywa Dawid.
+Sklep audiokiddo.pl (WooCommerce) sprzedaje pakiety jako pliki: Wyobraźnia i Słowa i Wiedza po 49,99 zł, Detektyw 69,99 zł, zestaw dwóch 89,99 zł, zestaw trzech 159,99 zł. Za zapis do newslettera rodzic dostaje darmowy pakiet 3 zabaw.
+Abonament w aplikacji: ceny i plany (np. według liczby telefonów) czekają na decyzję Dawida, nie podawaj ich jako ustalonych.
+CO JUŻ JEST ZROBIONE (nie proponuj tego od nowa): aplikacja jest gotowa i testowana na iPhonie, łącznie z zakupami i abonamentem w aplikacji (App Store i Google Play) oraz kontem rodzica; serwer (Supabase) działa; Studio z CRM działa; nowa strona audiokiddo.pl jest gotowa do wgrania.
+CO BLOKUJE START: konta Apple Developer i Google Play Console (zakłada Nela), nagrania nowych zabaw, konfiguracja MailerLite. Patrz też otwarte zadania w danych.
 Zasady: kategoria Kids w App Store (bez reklam w aplikacji, bez analityki firm trzecich, bramka rodzica), RODO, żadnych danych dziecka.
 Cel: szybko rosnący zysk (kamień milowy 50 000 zł zysku miesięcznie), zadowoleni rodzice, coraz lepszy produkt.
-Właściciele: Dawid (technika, sprzedaż, marketing) i Nela (treści, nagrania). Masz do pomocy Claude (programista).
+Właściciele: Dawid (technika, sprzedaż, marketing) i Nela (treści, nagrania). Masz do pomocy Claude (programista: kod aplikacji, strony, serwera).
 Każda Twoja propozycja trafia do decyzji Dawida: proponuj rzeczy wykonalne, z jasnym pierwszym krokiem i uzasadnieniem w liczbach, jeśli je masz.
 Odpowiadasz WYŁĄCZNIE jednym obiektem JSON, bez komentarzy i bez bloku kodu.`;
 
-const SHAPE = `{"summary": "tekst dla Dawida", "proposals": [{"kind": "task|idea|calendar|mailing|change", "area": "krótki_typ", "title": "…", "body": "…", "priority": 1, "due": "RRRR-MM-DD albo null", "owner": "Dawid|Nela|Claude|null", "data": {}}]}`;
+const SHAPE = `{"summary": "tekst dla Dawida", "proposals": [{"kind": "task|idea|calendar|mailing|change", "area": "launch|marketing|feature|crm|server|support|pack|scenario|ad|post|reel|newsletter|automation|promotion|release|proposal", "title": "…", "body": "…", "priority": 1, "due": "RRRR-MM-DD albo null", "owner": "Dawid|Nela|Claude|null", "data": {}}]}`;
 
 /** What to ask for in each mode. [note] is Dawid's own instruction, [focus] an approved idea. */
 export function task(mode: Mode, note: string | null, focus: Record<string, unknown> | null): string {
@@ -88,12 +91,23 @@ export function parseAnswer(text: string): { summary: string; proposals: Proposa
 
 const KINDS = new Set(["task", "idea", "calendar", "mailing", "change"]);
 
+/** The areas Studio knows (crm_widgets.dart areaLabels); others are mapped or left as "other". */
+const AREAS = new Set([
+  "launch", "marketing", "feature", "crm", "server", "support", "pack", "scenario", "ad", "post", "reel",
+  "newsletter", "automation", "promotion", "release", "proposal", "update",
+]);
+const AREA_ALIASES: Record<string, string> = {
+  dev: "feature", development: "feature", tech: "feature", app: "feature", product: "feature", sales: "marketing",
+  social: "post", content: "pack", email: "newsletter", mail: "newsletter", ops: "crm", infra: "server",
+};
+
 export function cleanProposal(p: unknown): Proposal | null {
   if (typeof p !== "object" || p === null) return null;
   const r = p as Record<string, unknown>;
   const title = typeof r.title === "string" ? r.title.trim().slice(0, 200) : "";
   if (!title || !KINDS.has(String(r.kind))) return null;
-  const area = typeof r.area === "string" ? r.area.toLowerCase().replace(/[^a-z_]/g, "").slice(0, 30) : "";
+  const raw = typeof r.area === "string" ? r.area.toLowerCase().replace(/[^a-z_]/g, "").slice(0, 30) : "";
+  const area = AREAS.has(raw) ? raw : AREA_ALIASES[raw] ?? "";
   // A real calendar day only (the database refuses 2026-02-30).
   const due = typeof r.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(r.due) &&
       new Date(`${r.due}T00:00:00Z`).toISOString().slice(0, 10) === r.due

@@ -44,3 +44,10 @@ Deno.test("proposals keep only real dates and storable text", async () => {
   assertEquals(toRow(bad).body, "ab");
   assertEquals(cleanProposal({ kind: "task", title: "Zadanie", due: "2026-03-01" })!.due, "2026-03-01");
 });
+
+Deno.test("areas: known ones stay, common synonyms map, the rest is 'other'", async () => {
+  const { cleanProposal } = await import("./coo.ts");
+  assertEquals(cleanProposal({ kind: "task", title: "a", area: "marketing" })!.area, "marketing");
+  assertEquals(cleanProposal({ kind: "task", title: "a", area: "dev" })!.area, "feature");
+  assertEquals(cleanProposal({ kind: "task", title: "a", area: "kosmos" })!.area, "other");
+});
