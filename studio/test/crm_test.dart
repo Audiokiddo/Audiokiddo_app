@@ -21,7 +21,7 @@ void main() {
         child: const MaterialApp(home: Scaffold(body: CrmScreen())),
       ),
     );
-    expect(find.text('CRM AudioKiddo'), findsOneWidget);
+    expect(find.text('Zaloguj się'), findsOneWidget);
     expect(find.text('Wyślij kod'), findsOneWidget);
   });
 

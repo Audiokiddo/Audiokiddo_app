@@ -150,12 +150,15 @@ class _AdminSignInState extends ConsumerState<AdminSignIn> {
             Image.asset('assets/brand/szop-zadowolony.png', height: 120),
             const SizedBox(height: 8),
             Text(
-              'CRM AudioKiddo',
+              'Zaloguj się',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
-            const Text('Wyślemy kod na Twój e-mail. Wejdzie tylko konto z listy administratorów.'),
+            const Text(
+              'Wyślemy kod na Twój e-mail. Wejdą tylko konta właścicieli: Neli i Dawida.',
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _email,

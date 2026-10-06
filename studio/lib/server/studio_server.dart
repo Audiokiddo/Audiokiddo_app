@@ -99,6 +99,16 @@ class StudioServer {
 
   Future<void> signOut() => client.auth.signOut();
 
+  /// Whether the signed-in account is one of the owners (public.admins); false when signed out.
+  Future<bool> isAdmin() async {
+    if (!signedIn) return false;
+    try {
+      return await client.rpc('is_admin') == true;
+    } on Object {
+      return false;
+    }
+  }
+
   Future<dynamic> _admin(Map<String, Object?> body) => _invoke('admin', body);
 
   Future<dynamic> _invoke(String function, Map<String, Object?> body) async {
@@ -438,3 +448,16 @@ class StudioServer {
 }
 
 final studioServerProvider = Provider<StudioServer>((ref) => StudioServer());
+
+/// Whether this browser may see Studio at all: an owner signed in with the code from e-mail.
+class StudioAccess extends Notifier<bool> {
+  StudioAccess([this._initial = false]);
+  final bool _initial;
+
+  @override
+  bool build() => _initial;
+
+  void set(bool allowed) => state = allowed;
+}
+
+final studioAccessProvider = NotifierProvider<StudioAccess, bool>(StudioAccess.new);

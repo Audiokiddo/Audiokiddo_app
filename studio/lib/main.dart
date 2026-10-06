@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase/supabase.dart' show AuthChangeEvent;
 
 import 'crm/crm_screen.dart';
 import 'screens/content_screen.dart';
@@ -16,9 +17,20 @@ Future<void> main() async {
   // The admin stays signed in across reloads of the page.
   final server = StudioServer();
   await server.restore();
-  runApp(
-    ProviderScope(overrides: [studioServerProvider.overrideWithValue(server)], child: const StudioApp()),
+  // The whole of Studio is for the owners only: a saved session of anyone else is dropped.
+  final owner = await server.isAdmin();
+  if (server.signedIn && !owner) await server.signOut();
+  final container = ProviderContainer(
+    overrides: [
+      studioServerProvider.overrideWithValue(server),
+      studioAccessProvider.overrideWith(() => StudioAccess(owner)),
+    ],
   );
+  // Signing out (in Studio or when the session ends) locks Studio again.
+  server.client.auth.onAuthStateChange.listen((state) {
+    if (state.event == AuthChangeEvent.signedOut) container.read(studioAccessProvider.notifier).set(false);
+  });
+  runApp(UncontrolledProviderScope(container: container, child: const StudioApp()));
 }
 
 class StudioApp extends StatelessWidget {
@@ -36,8 +48,58 @@ class StudioApp extends StatelessWidget {
       GlobalWidgetsLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
     ],
-    home: const StudioShell(),
+    home: const StudioGate(),
   );
+}
+
+/// Studio opens only after the code from e-mail, and only for accounts on the owners' list.
+class StudioGate extends ConsumerStatefulWidget {
+  const StudioGate({super.key});
+
+  @override
+  ConsumerState<StudioGate> createState() => _StudioGateState();
+}
+
+class _StudioGateState extends ConsumerState<StudioGate> {
+  Future<void> _signedIn() async {
+    final server = ref.read(studioServerProvider);
+    if (await server.isAdmin()) {
+      ref.read(studioAccessProvider.notifier).set(true);
+      return;
+    }
+    await server.signOut();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'To konto nie jest na liście właścicieli AudioKiddo. Studio jest tylko dla Neli i Dawida.',
+        ),
+        duration: Duration(seconds: 12),
+        showCloseIcon: true,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (ref.watch(studioAccessProvider)) return const StudioShell();
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset('assets/brand/logo.png', height: 34),
+              const SizedBox(height: 8),
+              const Text('Studio · tylko dla właścicieli', style: TextStyle(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              AdminSignIn(onSignedIn: _signedIn),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class StudioShell extends ConsumerStatefulWidget {
@@ -111,6 +173,14 @@ class _StudioShellState extends ConsumerState<StudioShell> {
             tooltip: 'Wczytaj katalog z pliku JSON',
             onPressed: _import,
             icon: const Icon(Icons.upload_file),
+          ),
+          IconButton(
+            tooltip: 'Wyloguj',
+            onPressed: () async {
+              await ref.read(studioServerProvider).signOut();
+              ref.read(studioAccessProvider.notifier).set(false);
+            },
+            icon: const Icon(Icons.logout_rounded),
           ),
           const SizedBox(width: 12),
         ],
