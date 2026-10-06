@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
+import '../player/audio_handler.dart';
 import '../player/player_providers.dart';
 import '../../core/widgets/szop.dart';
 import '../../core/widgets/doodles.dart';
@@ -329,7 +330,8 @@ class SessionScreen extends ConsumerWidget {
       _ => SzopPose.prosi,
     };
     final notifier = ref.read(sessionProvider.notifier);
-    final handler = ref.read(audioHandlerProvider);
+    // Read on tap: the handler starts with the app, not with this screen.
+    AkAudioHandler handler() => ref.read(audioHandlerProvider);
 
     Future<void> close() async {
       await notifier.stop();
@@ -392,7 +394,7 @@ class SessionScreen extends ConsumerWidget {
                 label: 'Od początku',
                 size: 76,
                 color: fg,
-                onTap: session.current is ItemStep ? () => handler.seek(Duration.zero) : null,
+                onTap: session.current is ItemStep ? () => handler().seek(Duration.zero) : null,
               ),
               _BigButton(
                 icon: waiting
@@ -408,7 +410,7 @@ class SessionScreen extends ConsumerWidget {
                   if (waiting) {
                     session.held ? notifier.resume() : notifier.hold();
                   } else {
-                    playing ? handler.pause() : handler.play();
+                    playing ? handler().pause() : handler().play();
                   }
                 },
               ),

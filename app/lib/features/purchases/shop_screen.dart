@@ -31,13 +31,19 @@ import 'subscription_value.dart';
 /// Shop tab: the subscription, every pack with a free taste, bundles and how to restore.
 /// Parent area; every purchase and link out passes the parental gate.
 class ShopScreen extends ConsumerWidget {
-  const ShopScreen({super.key});
+  const ShopScreen({super.key, this.standalone = false});
+
+  /// Opened on top of another screen (a banner, the subscription card): with a back arrow
+  /// and swipe-back, unlike the Shop tab itself.
+  final bool standalone;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     listenPurchaseMessages(context, ref);
     return Scaffold(
+      appBar: standalone ? AppBar(title: const Text('Abonament i pakiety')) : null,
       body: SafeArea(
+        top: !standalone,
         child: CatalogLoader(
           builder: (context, catalog) {
             final products = ref.watch(storeProductsProvider(productsKey(shopProductIds(catalog))));
@@ -772,7 +778,7 @@ class PackScreen extends ConsumerWidget {
             ? null
             : IconButton(
                 tooltip: 'Sklep',
-                onPressed: () => context.go('/sklep'),
+                onPressed: () => context.push('/abonament'),
                 icon: const Icon(Icons.arrow_back_rounded),
               ),
       ),

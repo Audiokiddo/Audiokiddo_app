@@ -17,6 +17,7 @@ import '../diploma/diploma.dart';
 import '../discovery/discovery_model.dart';
 import '../family/family.dart' hide progressProvider;
 import '../personal/personal_repository.dart';
+import '../onboarding/onboarding_controller.dart';
 import '../welcome/welcome_controller.dart';
 import 'account_data.dart';
 
@@ -167,22 +168,27 @@ class _SignedInState extends ConsumerState<_SignedIn> {
 
   Future<void> _delete() async {
     final l10n = AppLocalizations.of(context);
+    // Deleting signs out, which closes this screen: everything needed afterwards is taken
+    // from the app-wide container first (this widget's ref is gone by then).
+    final container = ProviderScope.containerOf(context, listen: false);
+    final db = container.read(databaseProvider);
     if (!await _confirm(l10n.accountDeleteTitle, l10n.accountDeleteBody, l10n.accountDelete)) return;
     await _run(() async {
-      await ref.read(accountServiceProvider).deleteAccount();
-      // The account is gone for good: nothing of the family stays on this phone either.
-      final db = ref.read(databaseProvider);
+      // The account is gone for good: nothing of the family stays on this phone either, and
+      // whoever registers next gets the first-run questions and Szop’en's tour again.
+      await container.read(accountServiceProvider).deleteAccount();
       await clearFamilyData(db);
       await forgetAccountOwner(db);
-      ref
+      await container.read(onboardingProvider).reset();
+      await container.read(welcomeProvider).load();
+      container
         ..invalidate(familyProvider)
         ..invalidate(discoveryProvider)
         ..invalidate(diplomasProvider)
         ..invalidate(favoritesProvider)
         ..invalidate(favoritesOrderedProvider)
         ..invalidate(recentProvider);
-      await ref.read(welcomeProvider).load();
-      await ref.read(accessProvider.notifier).refresh();
+      await container.read(accessProvider.notifier).refresh();
     }, done: l10n.accountDeleted);
   }
 

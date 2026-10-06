@@ -247,9 +247,13 @@ class EmailSignInForm extends ConsumerStatefulWidget {
     this.consent,
     this.autofocus = true,
     this.offerPassword = false,
+    this.email,
   });
 
   final VoidCallback? onSignedIn;
+
+  /// Already given on the sign-in screen's first step: shown, not asked again.
+  final String? email;
 
   /// Replace the default "Logowanie e-mailem" texts (the sign-in screen's two tabs).
   final String? title;
@@ -270,7 +274,7 @@ class EmailSignInForm extends ConsumerStatefulWidget {
 class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   static const resendAfter = 60;
 
-  final _email = TextEditingController();
+  late final _email = TextEditingController(text: widget.email);
   final _code = TextEditingController();
   final _password = TextEditingController();
   String? _sentTo;
@@ -379,7 +383,8 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
           TextField(
             controller: _email,
             enabled: !_busy,
-            autofocus: widget.autofocus,
+            readOnly: widget.email != null,
+            autofocus: widget.autofocus && widget.email == null,
             keyboardType: TextInputType.emailAddress,
             autofillHints: const [AutofillHints.email],
             autocorrect: false,
@@ -449,11 +454,13 @@ class PasswordField extends StatefulWidget {
     required this.label,
     this.enabled = true,
     this.onSubmitted,
+    this.autofocus = false,
   });
 
   final TextEditingController controller;
   final String label;
   final bool enabled;
+  final bool autofocus;
   final ValueChanged<String>? onSubmitted;
 
   @override
@@ -467,6 +474,7 @@ class _PasswordFieldState extends State<PasswordField> {
   Widget build(BuildContext context) => TextField(
     controller: widget.controller,
     enabled: widget.enabled,
+    autofocus: widget.autofocus,
     obscureText: _hidden,
     autocorrect: false,
     enableSuggestions: false,
@@ -486,16 +494,19 @@ class _PasswordFieldState extends State<PasswordField> {
 /// E-mail and password. "Nie pamiętam hasła" hands over to the code sign-in ([onForgot]);
 /// a new password is then set in the account screen.
 class PasswordSignInForm extends ConsumerStatefulWidget {
-  const PasswordSignInForm({super.key, required this.onForgot});
+  const PasswordSignInForm({super.key, required this.onForgot, this.email});
 
   final VoidCallback onForgot;
+
+  /// Already given on the sign-in screen's first step.
+  final String? email;
 
   @override
   ConsumerState<PasswordSignInForm> createState() => _PasswordSignInFormState();
 }
 
 class _PasswordSignInFormState extends ConsumerState<PasswordSignInForm> {
-  final _email = TextEditingController();
+  late final _email = TextEditingController(text: widget.email);
   final _password = TextEditingController();
   bool _busy = false;
   String? _error;
@@ -539,16 +550,24 @@ class _PasswordSignInFormState extends ConsumerState<PasswordSignInForm> {
           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AkSpace.m),
-        TextField(
-          controller: _email,
+        if (widget.email == null) ...[
+          TextField(
+            controller: _email,
+            enabled: !_busy,
+            keyboardType: TextInputType.emailAddress,
+            autofillHints: const [AutofillHints.email],
+            autocorrect: false,
+            decoration: InputDecoration(labelText: l10n.accountEmailLabel),
+          ),
+          const SizedBox(height: AkSpace.s),
+        ],
+        PasswordField(
+          controller: _password,
+          label: 'Hasło',
           enabled: !_busy,
-          keyboardType: TextInputType.emailAddress,
-          autofillHints: const [AutofillHints.email],
-          autocorrect: false,
-          decoration: InputDecoration(labelText: l10n.accountEmailLabel),
+          autofocus: widget.email != null,
+          onSubmitted: (_) => _signIn(),
         ),
-        const SizedBox(height: AkSpace.s),
-        PasswordField(controller: _password, label: 'Hasło', enabled: !_busy, onSubmitted: (_) => _signIn()),
         if (_error != null) ...[
           const SizedBox(height: AkSpace.s),
           Text(_error!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error)),

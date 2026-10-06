@@ -127,6 +127,11 @@ GoRouter buildRouter(
         ),
       ],
     ),
+    // The shop opened from elsewhere (banners, offers): a page with a way back.
+    GoRoute(
+      path: '/abonament',
+      pageBuilder: (context, state) => swipePage(state, const ShopScreen(standalone: true)),
+    ),
     GoRoute(path: '/ulubione', pageBuilder: (context, state) => swipePage(state, const CollectionScreen())),
     GoRoute(path: '/ratunku', pageBuilder: (context, state) => swipePage(state, const RescueScreen())),
     GoRoute(path: '/rutyny', pageBuilder: (context, state) => swipePage(state, const RoutinesScreen())),

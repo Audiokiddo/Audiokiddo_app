@@ -46,9 +46,12 @@ class SubscriptionOffer extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Container(
+          // Shrinks a little on the narrowest phones instead of overflowing.
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(color: ink, borderRadius: BorderRadius.circular(8)),
                 child: Text(
@@ -56,7 +59,7 @@ class SubscriptionOffer extends ConsumerWidget {
                   style: text.labelSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
                 ),
               ),
-            ],
+            ),
           ),
           const SizedBox(height: 8),
           Text(

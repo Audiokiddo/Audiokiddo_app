@@ -205,7 +205,7 @@ void main() {
     setUp(() => debugGateChallengeFactory = () => GateChallenge.fixed(47, [74, 47, 12, 33]));
     tearDown(() => debugGateChallengeFactory = null);
 
-    testWidgets('unlock shows store prices; buying asks an adult first', (tester) async {
+    testWidgets('unlock shows store prices', (tester) async {
       await pumpApp(tester);
       await openLibrary(tester);
       await openItem(tester, 'Zaginiony skarb');
@@ -216,8 +216,13 @@ void main() {
       expect(find.textContaining('7 dni za darmo, zanim dojedziemy'), findsOneWidget, reason: 'the car gag');
       await tester.drag(mainScroll, const Offset(0, -350));
       await tester.pumpAndSettle();
-      expect(find.text('7 dni za darmo, potem 239,88 zł / rok'), findsOneWidget);
-      expect(find.text('49,99 zł'), findsWidgets);
+      expect(find.text('Wypróbuj 7 dni za darmo'), findsOneWidget);
+      expect(find.textContaining('Potem 239,88 zł za rok'), findsOneWidget);
+      // Buying for good is folded under the subscription.
+      await tester.scrollUntilVisible(find.byType(ExpansionTile), 200, scrollable: mainScroll);
+      await tester.tap(find.byType(ExpansionTile));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('49,99 zł'), findsWidgets);
       await tester.scrollUntilVisible(
         find.textContaining('odnawia się automatycznie'),
         200,

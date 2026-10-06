@@ -154,7 +154,7 @@ class AccessEndingBanner extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onTap: () => context.go('/sklep'),
+          onTap: () => context.push('/abonament'),
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Row(

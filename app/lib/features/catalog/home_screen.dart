@@ -737,7 +737,7 @@ class _BundleTeaser extends StatelessWidget {
       borderRadius: BorderRadius.circular(22),
       child: InkWell(
         borderRadius: BorderRadius.circular(22),
-        onTap: () => context.go('/sklep'),
+        onTap: () => context.push('/abonament'),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 14, 10),
           child: Row(

@@ -119,7 +119,7 @@ void main() {
       );
     });
 
-    testWidgets('a pack page sells after the gate; owned packs say so', (tester) async {
+    testWidgets('a pack page sells; owned packs say so', (tester) async {
       await pumpApp(tester);
       await tester.tap(find.text('Sklep').last);
       await tester.pumpAndSettle();
@@ -145,10 +145,10 @@ void main() {
       );
       await tester.tap(find.text('albo tylko Wyobraźnia na zawsze · 49,99 zł'));
       await tester.pumpAndSettle();
-      expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'buying asks an adult first');
+      expect(find.byType(ParentalGateScreen), askInParentArea ? findsOneWidget : findsNothing, reason: 'the parent area buys without the number question');
     });
 
-    testWidgets('the pack page offers films and materials behind the gate', (tester) async {
+    testWidgets('the pack page offers films and materials', (tester) async {
       await pumpApp(tester);
       GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/pakiet/detektyw');
       await tester.pumpAndSettle();
@@ -160,7 +160,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Filmy i materiały do zabaw'));
       await tester.pumpAndSettle();
-      expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'a link out asks an adult first');
+      expect(find.byType(ParentalGateScreen), askInParentArea ? findsOneWidget : findsNothing, reason: 'the parent area opens links without the number question');
     });
 
     Future<void> showOffer(WidgetTester tester, ContentItem item) async {
@@ -174,7 +174,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('after a free play from a pack: the pack or the subscription, behind the gate', (
+    testWidgets('after a free play from a pack: the pack or the subscription', (
       tester,
     ) async {
       await pumpApp(tester);
@@ -189,7 +189,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Wypróbuj 7 dni za darmo'));
       await tester.pumpAndSettle();
-      expect(find.text('czterdzieści siedem'), findsOneWidget, reason: 'buying asks an adult first');
+      expect(find.byType(ParentalGateScreen), askInParentArea ? findsOneWidget : findsNothing, reason: 'the parent area buys without the number question');
     });
 
     testWidgets('with the subscription everything is unlocked', (tester) async {

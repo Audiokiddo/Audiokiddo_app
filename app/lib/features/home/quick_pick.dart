@@ -312,7 +312,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
               Padding(
                 padding: const EdgeInsets.only(top: AkSpace.xs),
                 child: TextButton.icon(
-                  onPressed: () => _go(() async => widget.host.go('/sklep')),
+                  onPressed: () => _go(() async => widget.host.push('/abonament')),
                   icon: const Icon(Icons.lock_open_rounded),
                   label: Text('Z abonamentem Szop’en ma do wyboru $lockedMore zabaw więcej'),
                 ),

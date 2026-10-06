@@ -144,6 +144,10 @@ abstract interface class AccountService {
   /// an account: a deleted or unknown e-mail gets [AccountError.noAccount].
   Future<void> sendCode(String email);
 
+  /// Sign-in step one: whether a parent account uses [email]. Null when it cannot be told
+  /// (offline, too many lookups): the screen then offers both signing in and registering.
+  Future<bool?> accountExists(String email);
+
   Future<void> verifyCode(String email, String code);
 
   /// Registers with e-mail and password. Returns true when the e-mail must be confirmed with
@@ -223,6 +227,17 @@ class SupabaseAccountService implements AccountService {
   @override
   Future<void> sendCode(String email) =>
       _guard(() => _auth.signInWithOtp(email: email.trim().toLowerCase(), shouldCreateUser: false));
+
+  @override
+  Future<bool?> accountExists(String email) async {
+    try {
+      final response = await _client.functions.invoke('account-status', body: {'email': email.trim()});
+      final data = response.data;
+      return data is Map && data['exists'] is bool ? data['exists'] as bool : null;
+    } on Object {
+      return null;
+    }
+  }
 
   @override
   Future<bool> signUp(String email, String password) => _guard(() async {
@@ -438,6 +453,9 @@ class SignedOutAccountService implements AccountService {
 
   @override
   Future<void> sendCode(String email) async => throw const AccountException(AccountError.server);
+
+  @override
+  Future<bool?> accountExists(String email) async => null;
 
   @override
   Future<void> verifyCode(String email, String code) async =>

@@ -200,7 +200,7 @@ class _GreetingSheet extends StatelessWidget {
           text:
               'Przesłuchaliście wszystko, co macie. Szacun! W abonamencie czeka jeszcze ${news.locked} zabaw i nowy pakiet co miesiąc.',
           action: 'Zobacz',
-          onTap: () => go(() => host.go('/sklep')),
+          onTap: () => go(() => host.push('/abonament')),
         ),
     ];
 

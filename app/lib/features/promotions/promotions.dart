@@ -126,7 +126,7 @@ class PromotionBanner extends ConsumerWidget {
           onTap: () {
             ref.read(eventSinkProvider).track(AppEvent.promoTap, props: {'promo': promo.id});
             final t = promo.target;
-            context.push(t == null || t == 'subscription' || t == 'bundle' ? '/sklep' : '/pakiet/$t');
+            context.push(t == null || t == 'subscription' || t == 'bundle' ? '/abonament' : '/pakiet/$t');
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 10, 14, 10),

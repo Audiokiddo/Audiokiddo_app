@@ -470,3 +470,6 @@ verify_jwt = false
 
 [functions.mailerlite]
 verify_jwt = false
+
+[functions.account-status]
+verify_jwt = false

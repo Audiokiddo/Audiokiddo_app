@@ -36,6 +36,12 @@ class FakeAccountService implements AccountService {
   bool offline = false;
   bool deleted = false;
 
+  /// Addresses that already have an account (sign-in step one).
+  final knownEmails = <String>{};
+
+  @override
+  Future<bool?> accountExists(String email) async => offline ? null : knownEmails.contains(email.trim());
+
   @override
   AccountUser? get current => _user;
 
@@ -55,8 +61,9 @@ class FakeAccountService implements AccountService {
   @override
   Future<bool> signUp(String email, String password) async {
     if (password.length < minPasswordLength) throw const AccountException(AccountError.weakPassword);
-    if (accounts.contains(email.trim().toLowerCase()))
+    if (accounts.contains(email.trim().toLowerCase())) {
       throw const AccountException(AccountError.accountExists);
+    }
     sentTo.add(email);
     return true;
   }
@@ -334,20 +341,24 @@ void main() {
     await tester.tap(find.text('Wyloguj się').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Załóż konto'), findsOneWidget, reason: 'the sign-in screen with registration');
+    expect(find.text('Zaloguj się lub załóż konto'), findsOneWidget, reason: 'the sign-in screen asks the e-mail');
     expect(find.textContaining('Kontynuuj bez konta'), findsNothing);
-    expect(find.textContaining('Nie pamiętasz hasła?'), findsOneWidget);
     // A back gesture or a deep link cannot leave it.
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     GoRouter.of(tester.element(find.byType(Scaffold).first)).go('/biblioteka');
     await tester.pumpAndSettle();
-    expect(find.text('Załóż konto'), findsOneWidget);
+    expect(find.text('Zaloguj się lub załóż konto'), findsOneWidget);
 
-    // A new account: e-mail and a password, the consent first, then the code confirms it.
-    await tester.tap(find.text('Załóż konto').first);
+    // A new address: registration with a password, the consent first, then the code confirms it.
+    await tester.enterText(find.byType(TextField).first, 'nowy@example.com');
+    await tester.tap(find.widgetWithText(FilledButton, 'Dalej'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).at(0), 'nowy@example.com');
+    expect(find.text('Załóż konto rodzica'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
+    await tester.pumpAndSettle();
+    expect(find.text('Zaznacz zgodę na regulamin i politykę prywatności.'), findsOneWidget);
+    await tester.tap(find.byType(Checkbox));
     await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
     await tester.pumpAndSettle();
     expect(
@@ -356,10 +367,6 @@ void main() {
       reason: 'a password is required',
     );
     await tester.enterText(find.byType(TextField).at(1), 'nowehaslo1');
-    await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
-    await tester.pumpAndSettle();
-    expect(find.text('Zaznacz zgodę na regulamin i politykę prywatności.'), findsOneWidget);
-    await tester.tap(find.byType(Checkbox));
     await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, '123456');
@@ -389,7 +396,9 @@ void main() {
     addTearDown(tester.view.reset);
     final db = memoryDatabase();
     addTearDown(db.close);
-    final account = FakeAccountService()..password = 'tajnehaslo1';
+    final account = FakeAccountService()
+      ..password = 'tajnehaslo1'
+      ..knownEmails.add('rodzic@example.com');
     final gate = SessionGate(account, required: true);
     addTearDown(gate.dispose);
     await tester.pumpWidget(
@@ -403,27 +412,24 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Hasłem'), findsNothing, reason: 'the password is the way in');
-    await tester.enterText(find.byType(TextField).at(0), 'rodzic@example.com');
-    await tester.enterText(find.byType(TextField).at(1), 'zle-haslo');
+    // First the e-mail only; a known address then asks for its password.
+    await tester.enterText(find.byType(TextField).first, 'rodzic@example.com');
+    await tester.tap(find.widgetWithText(FilledButton, 'Dalej'));
+    await tester.pumpAndSettle();
+    expect(find.text('rodzic@example.com'), findsOneWidget);
+    await tester.enterText(find.byType(TextField).first, 'zle-haslo');
     await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Nieprawidłowy e-mail albo hasło'), findsOneWidget);
 
     await tester.tap(find.text('Nie pamiętam hasła'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('ustaw nowe hasło w Więcej'), findsOneWidget);
+    expect(find.textContaining('ustawisz nowe hasło w Więcej'), findsOneWidget);
     expect(find.text('Zaloguj się kodem'), findsOneWidget);
-    // An e-mail without an account (deleted, never made) is told to register again.
-    await tester.enterText(find.byType(TextField).first, 'nikt@example.com');
-    await tester.tap(find.text('Wyślij kod'));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('Nie ma konta z tym adresem'), findsOneWidget);
 
     await tester.tap(find.text('Wróć do logowania hasłem'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).at(0), 'rodzic@example.com');
-    await tester.enterText(find.byType(TextField).at(1), 'tajnehaslo1');
+    await tester.enterText(find.byType(TextField).first, 'tajnehaslo1');
     await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj'));
     await tester.pumpAndSettle();
     expect(find.text('Co dziś robimy?'), findsOneWidget);

@@ -6,11 +6,13 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../catalog/home_screen.dart' show AudioKiddoLogo;
 import '../purchases/shop.dart';
+import 'account_service.dart';
 import 'sign_in.dart';
 
-/// The only screen without a signed-in parent: sign in with a password, or create an account
-/// with e-mail and password (a code confirms the e-mail). A forgotten password: sign in with
-/// a code from the e-mail. The router opens the app as soon as the account is signed in.
+/// The only screen without a signed-in parent. Step one asks only for the e-mail; then a
+/// known account gets its password field (a forgotten password: a code from the e-mail) and
+/// a new address gets the registration (password, consent, a code confirms the e-mail).
+/// The router opens the app as soon as the account is signed in.
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
@@ -18,16 +20,69 @@ class SignInScreen extends ConsumerStatefulWidget {
   ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
+enum _Step { email, password, code, register, unknown }
+
 class _SignInScreenState extends ConsumerState<SignInScreen> {
-  bool _newAccount = false;
-  bool _withPassword = true;
-  String? _hint;
+  final _email = TextEditingController();
+  _Step _step = _Step.email;
+  bool _checking = false;
+  String? _error;
+
+  static final _pattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+
+  @override
+  void dispose() {
+    _email.dispose();
+    super.dispose();
+  }
+
+  Future<void> _next() async {
+    final email = _email.text.trim();
+    if (!_pattern.hasMatch(email)) {
+      setState(() => _error = 'Wpisz poprawny adres e-mail.');
+      return;
+    }
+    setState(() {
+      _checking = true;
+      _error = null;
+    });
+    final exists = await ref.read(accountServiceProvider).accountExists(email);
+    if (!mounted) return;
+    setState(() {
+      _checking = false;
+      _step = switch (exists) {
+        true => _Step.password,
+        false => _Step.register,
+        null => _Step.unknown,
+      };
+    });
+  }
+
+  void _back() => setState(() {
+    _step = _Step.email;
+    _error = null;
+  });
 
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final email = _email.text.trim();
+    final emailChip = Row(
+      children: [
+        const Icon(Icons.mail_outline_rounded, size: 20),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(email, overflow: TextOverflow.ellipsis, style: text.titleSmall),
+        ),
+        TextButton(onPressed: _back, child: const Text('Zmień')),
+      ],
+    );
     return PopScope(
+      // Back from a later step returns to the e-mail; from the e-mail there is nowhere to go.
       canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _step != _Step.email) _back();
+      },
       child: Scaffold(
         body: SafeArea(
           child: Center(
@@ -38,96 +93,120 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 children: [
                   const Center(child: AudioKiddoLogo(height: 44)),
                   const SizedBox(height: 16),
-                  const Center(child: SzopSticker(SzopPose.prosi, height: 96)),
-                  const SizedBox(height: 16),
-                  SegmentedButton<bool>(
-                    segments: const [
-                      ButtonSegment(
-                        value: false,
-                        label: Text('Zaloguj się'),
-                        icon: Icon(Icons.login_rounded),
-                      ),
-                      ButtonSegment(
-                        value: true,
-                        label: Text('Załóż konto'),
-                        icon: Icon(Icons.person_add_alt_1_rounded),
-                      ),
-                    ],
-                    selected: {_newAccount},
-                    onSelectionChanged: (s) => setState(() {
-                      _newAccount = s.single;
-                      _withPassword = true;
-                      _hint = null;
-                    }),
+                  Center(
+                    child: SzopSticker(
+                      _step == _Step.register ? SzopPose.zadowolony : SzopPose.prosi,
+                      height: 96,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  if (_hint != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(_hint!, style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
-                    ),
-                  if (!_newAccount && _withPassword)
-                    PasswordSignInForm(
-                      onForgot: () => setState(() {
-                        _withPassword = false;
-                        _hint =
-                            'Zaloguj się kodem z maila, a potem ustaw nowe hasło w Więcej → Konto i zakupy.';
-                      }),
-                    )
-                  else
-                    EmailSignInForm(
-                      key: ValueKey(_newAccount),
-                      autofocus: false,
-                      title: _newAccount ? 'Załóż konto rodzica' : 'Zaloguj się kodem',
-                      body: _newAccount
-                          ? 'Podaj e-mail i hasło. Wyślemy kod, który potwierdzi adres. Zakupy z audiokiddo.pl na ten adres pojawią się same.'
-                          : 'Nie pamiętasz hasła? Wyślemy kod logowania na e-mail Twojego konta. Potem ustawisz nowe hasło w Więcej → Konto i zakupy.',
-                      sendLabel: _newAccount ? 'Załóż konto' : 'Wyślij kod',
-                      consent: _newAccount ? _consent : null,
-                      offerPassword: _newAccount,
-                    ),
-                  if (!_newAccount && !_withPassword)
-                    TextButton(
-                      onPressed: () => setState(() {
-                        _withPassword = true;
-                        _hint = null;
-                      }),
-                      child: const Text('Wróć do logowania hasłem'),
-                    ),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AkBrand.teal.withValues(alpha: .12),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.key_off_rounded, color: AkBrand.tealDeep),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'Logujesz się e-mailem i hasłem. Nie pamiętasz hasła? Stuknij „Nie pamiętam hasła”, '
-                            'zaloguj się kodem z maila i ustaw nowe. Nie ma kodu? Zajrzyj do spamu.',
-                            style: text.bodySmall,
+                  ...switch (_step) {
+                    _Step.email => [
+                      Text(
+                        'Zaloguj się lub załóż konto',
+                        style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Podaj e-mail rodzica. Sprawdzimy, czy masz już konto.',
+                        style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _email,
+                        enabled: !_checking,
+                        autofocus: true,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.email],
+                        autocorrect: false,
+                        textInputAction: TextInputAction.next,
+                        onSubmitted: (_) => _next(),
+                        decoration: InputDecoration(labelText: 'E-mail', errorText: _error),
+                      ),
+                      const SizedBox(height: 16),
+                      FilledButton(
+                        onPressed: _checking ? null : _next,
+                        child: _checking
+                            ? const SizedBox.square(
+                                dimension: 22,
+                                child: CircularProgressIndicator(strokeWidth: 2.5),
+                              )
+                            : const Text('Dalej'),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          const Expanded(child: Divider()),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('albo', style: text.bodySmall),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('albo', style: text.bodySmall),
+                          const Expanded(child: Divider()),
+                        ],
                       ),
-                      const Expanded(child: Divider()),
+                      const SizedBox(height: 16),
+                      const SignInOptions(showEmail: false),
                     ],
-                  ),
-                  const SizedBox(height: 16),
-                  const SignInOptions(showEmail: false),
+                    _Step.password => [
+                      emailChip,
+                      const SizedBox(height: 8),
+                      PasswordSignInForm(
+                        key: const ValueKey('password'),
+                        email: email,
+                        onForgot: () => setState(() => _step = _Step.code),
+                      ),
+                    ],
+                    _Step.code => [
+                      emailChip,
+                      const SizedBox(height: 8),
+                      EmailSignInForm(
+                        key: const ValueKey('code'),
+                        email: email,
+                        autofocus: false,
+                        title: 'Zaloguj się kodem',
+                        body: 'Wyślemy kod logowania na ten adres. Potem ustawisz nowe hasło w Więcej → Konto i zakupy.',
+                        sendLabel: 'Wyślij kod',
+                      ),
+                      TextButton(
+                        onPressed: () => setState(() => _step = _Step.password),
+                        child: const Text('Wróć do logowania hasłem'),
+                      ),
+                    ],
+                    _Step.register => [
+                      emailChip,
+                      const SizedBox(height: 8),
+                      EmailSignInForm(
+                        key: const ValueKey('register'),
+                        email: email,
+                        autofocus: false,
+                        title: 'Załóż konto rodzica',
+                        body:
+                            'Tego adresu jeszcze nie znamy. Ustaw hasło, a wyślemy kod, który potwierdzi e-mail. '
+                            'Zakupy z audiokiddo.pl na ten adres pojawią się same.',
+                        sendLabel: 'Załóż konto',
+                        consent: _consent,
+                        offerPassword: true,
+                      ),
+                    ],
+                    _Step.unknown => [
+                      emailChip,
+                      const SizedBox(height: 8),
+                      Text(
+                        'Nie udało się sprawdzić konta (brak internetu?). Wybierz sam:',
+                        style: text.bodyMedium,
+                      ),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: () => setState(() => _step = _Step.password),
+                        child: const Text('Mam konto: zaloguj hasłem'),
+                      ),
+                      const SizedBox(height: 8),
+                      OutlinedButton(
+                        onPressed: () => setState(() => _step = _Step.register),
+                        child: const Text('Nie mam konta: załóż'),
+                      ),
+                    ],
+                  },
                 ],
               ),
             ),
