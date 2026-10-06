@@ -1,7 +1,7 @@
 # Newsletter: zapis za PDF, powitanie i kupujący ze sklepu
 
 Stan: 7 października 2026. Ta instrukcja obejmuje trzy rzeczy:
-- zapis na stronie za darmowy PDF **„10 zabaw bez ekranu w aucie”** (`docs/marketing/10-zabaw-w-aucie.pdf`, generuje go `tool/lead_magnet_pdf.py`);
+- zapis na stronie za darmowy przewodnik **„Podróż bez ekranu”** (`docs/marketing/podroz-bez-ekranu.pdf`, 12 stron, generuje go `tool/lead_magnet_pdf.py`). W środku: 30 zabaw do auta według wieku, plan na trasę 2, 4 i 6 godzin, SOS na marudzenie, zabawy na postój, lista do spakowania, dwie karty bingo do druku, 10 początków historii i 20 pytań do rozmowy;
 - powitanie w 3 mailach;
 - kupujących w sklepie www, którzy zaznaczą zgodę.
 
@@ -27,16 +27,16 @@ Pole na kupiony produkt: Subscribers → **Fields** → Create field → nazwa `
 
 ## 2. PDF do pobrania (2 min)
 
-1. WordPress → Media → Dodaj nowy → wgraj `10-zabaw-w-aucie.pdf`.
-2. Skopiuj jego adres, np. `https://audiokiddo.pl/wp-content/uploads/2026/10/10-zabaw-w-aucie.pdf`.
+1. WordPress → Media → Dodaj nowy → wgraj `podroz-bez-ekranu.pdf`.
+2. Skopiuj jego adres, np. `https://audiokiddo.pl/wp-content/uploads/2026/10/podroz-bez-ekranu.pdf`.
 
 ## 3. Formularz zapisu na stronie (10 min)
 
 1. MailerLite → Forms → **Embedded forms** → Create:
    - nazwa „PDF auto”, grupa **Zapisani z PDF**;
    - pola: e-mail i imię;
-   - nagłówek: „10 zabaw bez ekranu w aucie”;
-   - przycisk: „Wyślij mi PDF”;
+   - nagłówek: „Podróż bez ekranu: darmowy przewodnik”;
+   - przycisk: „Wyślij mi przewodnik”;
    - pod przyciskiem: „Raz na dwa tygodnie list od Szop’ena. Wypiszesz się jednym kliknięciem.”
 2. Włącz **double opt-in** (potwierdzenie zapisu mailem). Wymaga tego RODO przy marketingu.
 3. Skopiuj kod HTML formularza (zakładka „Embed form” → HTML code).
@@ -44,9 +44,9 @@ Pole na kupiony produkt: Subscribers → **Fields** → Create field → nazwa `
 
 ```html
 <div style="background:#FFE3CC;border-radius:24px;padding:24px;max-width:640px;margin:24px auto;font-family:inherit">
-  <h2 style="margin:0 0 8px">10 zabaw bez ekranu w aucie</h2>
-  <p style="margin:0 0 16px">Na korki i „daleko jeszcze?”. Bez przygotowań, bez rzeczy, bez telefonu w rękach dziecka.
-  Wpisz e-mail, a PDF przyjdzie do Ciebie od razu.</p>
+  <h2 style="margin:0 0 8px">Podróż bez ekranu: darmowy przewodnik</h2>
+  <p style="margin:0 0 16px">30 zabaw do auta dla dzieci 3–9 lat, plan na trasę 2, 4 i 6 godzin, SOS na marudzenie
+  i bingo podróżne do druku. Wpisz e-mail, a przewodnik przyjdzie do Ciebie od razu.</p>
   <!-- Tu wklej kod formularza MailerLite -->
 </div>
 ```
@@ -55,20 +55,24 @@ Pole na kupiony produkt: Subscribers → **Fields** → Create field → nazwa `
 
 MailerLite → Automations → Create → wyzwalacz **„When subscriber joins a group”** → Zapisani z PDF. Kroki: mail 1, odczekaj 2 dni, mail 2, odczekaj 3 dni, mail 3.
 
-**Mail 1 (od razu).** Temat: „Twój PDF: 10 zabaw w aucie”. Podtytuł: „Plus jedna zabawa, którą sprawdzisz dziś”.
+**Mail 1 (od razu).** Temat: „Twój przewodnik: Podróż bez ekranu”. Podtytuł: „Od czego zacząć, żeby zadziałało”.
 
 > Cześć {$name|default:''}!
 >
-> Szop’en tu. Obiecałem PDF, więc jest: **[10 zabaw bez ekranu w aucie](ADRES_PDF)**. Wydrukuj albo zapisz w telefonie. Najlepiej sprawdza się nr 6, „Opowieść z tablic”: zaczyna się niewinnie, a kończy na krowie, która piecze babeczki.
+> Szop’en tu. Obiecałem przewodnik, więc jest: **[Podróż bez ekranu](ADRES_PDF)**. 12 stron, ale nie musisz czytać wszystkiego.
 >
-> Mała prośba na dziś: zagrajcie w jedną zabawę jeszcze przed wyjazdem, na przykład przy kolacji. Dzieci wolą zasady, które już znają.
+> - Wybierz 5 zabaw dla wieku dziecka (strony 3–6) i wpisz je w „Naszą piątkę”.
+> - Wydrukuj bingo (strona 9). To najmocniejszy punkt na długą trasę.
+> - Zapamiętaj jedną rzecz z SOS (strona 7): „Zamrażarka” działa w każdym wieku.
+>
+> Mała prośba: zagrajcie w jedną zabawę jeszcze przed wyjazdem, na przykład przy kolacji. Dzieci wolą zasady, które już znają.
 >
 > Do usłyszenia,
 > **Szop’en z AudioKiddo**
 
 **Mail 2 (po 2 dniach).** Temat: „Co robić, gdy zabawy się skończą”. Podtytuł: „Audiozabawy na całą trasę, bez ekranu”.
 
-> W aucie zabawy kończą się zwykle po 40 minutach. Do celu zostają jeszcze dwie godziny.
+> Nawet z przewodnikiem przychodzi moment, gdy rodzic ma dość wymyślania. Zwykle w drugiej godzinie, w korku.
 >
 > Na to jest **AudioKiddo**. Dziecko słucha i odpowiada na głos, rusza się, wymyśla zakończenia. Tryb **„Do auta”** układa zabawy na całą drogę, z chwilą przerwy przed kolejną. Pobrane działają bez internetu, a telefon leży ekranem do dołu.
 >
