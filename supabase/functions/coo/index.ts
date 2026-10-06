@@ -4,7 +4,7 @@
 // Gathers the state of the business (numbers, board, ideas, calendar, past decisions), asks
 // Claude, and saves every proposal as a pending decision. Returns { summary, proposals }.
 // Secrets: ANTHROPIC_API_KEY or GEMINI_API_KEY (see _shared/claude.ts), COO_MODEL (optional).
-import { dueModes, MODES, releaseWindow, type Mode, parseAnswer, prompt, SYSTEM, toRow } from "../_shared/coo.ts";
+import { dueModes, MODES, releaseWindow, type Mode, parseAnswer, prompt, storable, SYSTEM, toRow } from "../_shared/coo.ts";
 import { askClaude, ClaudeError, hasAi } from "../_shared/claude.ts";
 import { withCors } from "../_shared/cors.ts";
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
@@ -161,7 +161,7 @@ async function save(admin: SupabaseClient, mode: Mode, text: string, note: strin
     return { error: "answer" as const };
   }
 
-  const rows = [
+  const rows: Record<string, unknown>[] = [
     {
       kind: "briefing",
       area: mode,
@@ -173,10 +173,17 @@ async function save(admin: SupabaseClient, mode: Mode, text: string, note: strin
     },
     ...parsed.proposals.map(toRow),
   ];
-  const { error } = await admin.from("crm_items").insert(rows);
+  const { error } = await admin.from("crm_items").insert(storable(rows));
   if (error) {
+    // One odd row should not lose the rest: save them one by one and keep what goes in.
     console.error("coo: save", error.message);
-    return { error: "save" as const };
+    const failed: string[] = [];
+    for (const row of rows) {
+      const { error: one } = await admin.from("crm_items").insert(storable(row));
+      if (one) failed.push(`${row.title}: ${one.message}`);
+    }
+    if (failed.length === rows.length) return { error: "save" as const, detail: failed[0].slice(0, 300) };
+    if (failed.length) console.error("coo: skipped", failed);
   }
   return parsed;
 }

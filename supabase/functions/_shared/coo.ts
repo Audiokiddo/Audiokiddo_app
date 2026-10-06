@@ -94,7 +94,11 @@ export function cleanProposal(p: unknown): Proposal | null {
   const title = typeof r.title === "string" ? r.title.trim().slice(0, 200) : "";
   if (!title || !KINDS.has(String(r.kind))) return null;
   const area = typeof r.area === "string" ? r.area.toLowerCase().replace(/[^a-z_]/g, "").slice(0, 30) : "";
-  const due = typeof r.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(r.due) ? r.due : null;
+  // A real calendar day only (the database refuses 2026-02-30).
+  const due = typeof r.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(r.due) &&
+      new Date(`${r.due}T00:00:00Z`).toISOString().slice(0, 10) === r.due
+    ? r.due
+    : null;
   const priority = [1, 2, 3].includes(Number(r.priority)) ? Number(r.priority) as 1 | 2 | 3 : 2;
   return {
     kind: r.kind as Proposal["kind"],
@@ -109,8 +113,13 @@ export function cleanProposal(p: unknown): Proposal | null {
 }
 
 /** A new proposal starts as a pending decision in the right column. */
+/** Text the database stores: no NUL characters (Postgres refuses them, also inside JSON). */
+export function storable<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value).replaceAll("\\u0000", "")) as T;
+}
+
 export function toRow(p: Proposal) {
-  return {
+  return storable({
     kind: p.kind,
     area: p.area,
     title: p.title,
@@ -122,7 +131,7 @@ export function toRow(p: Proposal) {
     status: p.kind === "task" ? "todo" : "new",
     source: "ai",
     decision: "pending",
-  };
+  });
 }
 
 /** The modes due this morning (Warsaw time): the report daily, ad ideas on Mondays and a

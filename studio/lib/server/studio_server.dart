@@ -128,6 +128,9 @@ class StudioServer {
           function == 'coo' || function == 'ads' || function == 'factory'
               ? agentTrouble(e.details)
               : 'MailerLite odrzucił zapytanie. Sprawdź klucz i adres nadawcy.',
+        503 when function == 'coo' && '${e.details}'.contains('save') =>
+          'Agent odpowiedział, ale nie udało się zapisać propozycji. Spróbuj jeszcze raz.'
+              '${e.details is Map && (e.details as Map)['detail'] != null ? '\nBaza: ${(e.details as Map)['detail']}' : ''}',
         _ when function == 'coo' || function == 'ads' || function == 'factory' =>
           'Agent nie zdążył odpowiedzieć (kod ${e.status}). Spróbuj jeszcze raz albo użyj trybu „Przez czat”.',
         _ => 'Serwer nie odpowiada (kod ${e.status}). Spróbuj za chwilę.',

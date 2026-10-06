@@ -36,3 +36,11 @@ Deno.test("the morning rhythm: report daily, ads on Monday, newsletter every oth
   assertEquals(dueModes(null, new Date("2026-10-15T05:00:00Z")), ["brief", "newsletter"]);
   assertEquals(dueModes({ brief_daily: false, ads_weekly: false }, new Date("2026-10-05T05:00:00Z")), []);
 });
+
+Deno.test("proposals keep only real dates and storable text", async () => {
+  const { cleanProposal, toRow } = await import("./coo.ts");
+  const bad = cleanProposal({ kind: "task", title: "Zadanie", due: "2026-02-30", body: "a\u0000b" })!;
+  assertEquals(bad.due, null);
+  assertEquals(toRow(bad).body, "ab");
+  assertEquals(cleanProposal({ kind: "task", title: "Zadanie", due: "2026-03-01" })!.due, "2026-03-01");
+});
