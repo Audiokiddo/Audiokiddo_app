@@ -13,6 +13,7 @@ import '../family/family.dart';
 import '../insights/events.dart';
 import '../kids_mode/kids_mode_controller.dart';
 import '../reminders/reminder_offer.dart';
+import '../about/about_screen.dart';
 import 'microphone_offer.dart';
 import 'welcome_controller.dart';
 
@@ -148,6 +149,8 @@ class _Fanfare extends ConsumerWidget {
                   icon: const Icon(Icons.redeem_rounded),
                   label: const Text('Odbieram!'),
                 ),
+                const SizedBox(height: 14),
+                PolishBrandLine(color: ink, center: true),
               ],
             ),
           ),

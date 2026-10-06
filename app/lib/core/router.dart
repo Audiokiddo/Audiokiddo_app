@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+import '../features/about/about_screen.dart';
 import '../features/family_sharing/family_screen.dart';
 import '../features/catalog/details_screen.dart';
 import '../features/family/child_quiz.dart';
@@ -162,6 +163,7 @@ GoRouter buildRouter(
     GoRoute(path: '/polec', pageBuilder: (context, state) => swipePage(state, const ReferralScreen())),
     GoRoute(path: '/konto', pageBuilder: (context, state) => swipePage(state, const AccountScreen())),
     GoRoute(path: '/rodzina', pageBuilder: (context, state) => swipePage(state, const FamilyScreen())),
+    GoRoute(path: '/o-nas', pageBuilder: (context, state) => swipePage(state, const AboutScreen())),
     GoRoute(path: '/dostep', pageBuilder: (context, state) => swipePage(state, const AccessScreen())),
     GoRoute(path: '/mowa', pageBuilder: (context, state) => swipePage(state, const SpeechCheckScreen())),
     GoRoute(path: '/ikona', pageBuilder: (context, state) => swipePage(state, const AppIconScreen())),

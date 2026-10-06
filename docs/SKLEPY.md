@@ -16,13 +16,15 @@ Adresy stron (gotowe fragmenty HTML w `docs/strona/sklepy/`, do wklejenia w Word
 |---|---|---|
 | Nazwa | 30 | **AudioKiddo** |
 | Podtytuł (App Store) | 30 | Audiozabawy dla dzieci 3–9 lat |
-| Krótki opis (Google Play) | 80 | Interaktywne audiozabawy: dziecko jest bohaterem, rodzic ma chwilę dla siebie. |
-| Tekst promocyjny (App Store) | 170 | Włącz zabawę, połóż telefon i wróć do swoich spraw. Dziecko odpowiada, rusza się i wymyśla, a Szop’en pilnuje, żeby było śmiesznie. |
-| Słowa kluczowe (App Store) | 100 | audiozabawy,zabawy dla dzieci,przedszkolak,bez ekranu,zagadki,detektyw,podróż,wyobraźnia,słowa |
+| Krótki opis (Google Play) | 80 | Polskie audiozabawy bez ekranu od Neli i Dawida. Dziecko jest bohaterem. |
+| Tekst promocyjny (App Store) | 170 | Polska rodzinna marka: zabawy piszą i nagrywają Nela i Dawid. Włącz, połóż telefon, a dziecko odpowiada, rusza się i wymyśla. |
+| Słowa kluczowe (App Store) | 100 | audiozabawy,polska,zabawy dla dzieci,przedszkolak,bez ekranu,zagadki,detektyw,podróż,słowa |
 
 **Pełny opis:**
 
-> AudioKiddo to interaktywne audiozabawy dla dzieci w wieku 3–9 lat. Dziecko nie tylko słucha: odpowiada, szuka, rusza się, wymyśla i decyduje. Jest bohaterem przygody. Ty włączasz zabawę, kładziesz telefon i masz chwilę dla siebie.
+> AudioKiddo to polska aplikacja tworzona przez parę: Nelę i Dawida. Sami wymyślamy zabawy, piszemy scenariusze, podkładamy głosy i odpowiadamy na Wasze maile. Bez korporacji, bez reklam, z sercem.
+>
+> To interaktywne audiozabawy dla dzieci w wieku 3–9 lat. Dziecko nie tylko słucha: odpowiada, szuka, rusza się, wymyśla i decyduje. Jest bohaterem przygody. Ty włączasz zabawę, kładziesz telefon i masz chwilę dla siebie.
 >
 > **Co znajdziesz w aplikacji**
 > • Pakiet Wyobraźnia (3–9 lat): magiczny sklep, podróż na inną planetę, mistrz kuchni i inne zabawy, w których dziecko tworzy własne historie
@@ -107,6 +109,7 @@ Uwaga: pole „Mam kod” (kody prezentowe i polecenia) może być przez Apple u
 Rozmiary: iPhone 6,9″ (1320 × 2868) i 6,5″ (1284 × 2778), iPad 13″ tylko jeśli wspieramy iPada, Android telefon (min. 1080 × 1920). 4–8 zrzutów, każdy z krótkim napisem nad ekranem.
 
 1. Start z logo, Szop’enem i „Zacznij tutaj”. Napis: „Włącz, połóż telefon, odpocznij”.
+8. Ekran „O nas” z flagą. Napis: „Polska marka. Zabawy nagrywają Nela i Dawid”.
 2. Odtwarzacz z okładką. Napis: „Dziecko jest bohaterem przygody”.
 3. Biblioteka z pakietami. Napis: „Setki minut zabaw bez ekranu”.
 4. Pobrane. Napis: „Działa bez internetu, w aucie i w samolocie”.

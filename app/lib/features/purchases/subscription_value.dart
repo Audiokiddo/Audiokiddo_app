@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/tokens.dart';
+import '../about/about_screen.dart';
 import '../family/family.dart';
 import '../family_sharing/parent_cloud.dart';
 import 'offer_catalog.dart';
@@ -215,6 +216,9 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
             style: text.bodySmall?.copyWith(color: _ink),
           ),
         ),
+        // Who the money goes to: a Polish couple who make every play themselves.
+        const SizedBox(height: 10),
+        const PolishBrandLine(color: _ink, center: true),
       ],
     );
   }

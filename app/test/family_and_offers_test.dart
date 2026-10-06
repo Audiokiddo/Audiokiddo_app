@@ -117,4 +117,24 @@ void main() {
     await tester.scrollUntilVisible(find.text('Wracacie? Wszystko na Was czeka'), 200, scrollable: mainScroll);
     expect(find.text('Wróć do abonamentu'), findsOneWidget);
   });
+
+  testWidgets('O nas: a Polish brand made by Nela and Dawid, shown next to the offer too', (tester) async {
+    await pumpWith(tester, const []);
+    await tester.tap(find.text('Sklep').last);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Polska rodzinna marka · zabawy nagrywają Nela i Dawid'),
+      200,
+      scrollable: mainScroll,
+    );
+    GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/o-nas');
+    await tester.pumpAndSettle();
+    expect(find.text('Cześć, jesteśmy Nela i Dawid'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Nasze głosy'),
+      200,
+      scrollable: find.ancestor(of: find.text('Cześć, jesteśmy Nela i Dawid'), matching: find.byType(Scrollable)).first,
+    );
+    expect(find.text('Nasze głosy'), findsOneWidget);
+  });
 }

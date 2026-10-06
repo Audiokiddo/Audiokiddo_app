@@ -18,6 +18,7 @@ import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
+import '../about/about_screen.dart';
 import '../family_sharing/family_screen.dart';
 import '../purchases/plan_limit.dart';
 import '../reminders/reminder_offer.dart';
@@ -129,6 +130,14 @@ class MoreScreen extends ConsumerWidget {
           },
         ),
         const RefSection('Pomóż nam rosnąć'),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const PolishFlag(width: 24),
+          title: const Text('O nas: Nela i Dawid'),
+          subtitle: const Text('Polska rodzinna marka. Sami piszemy i nagrywamy zabawy'),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push('/o-nas'),
+        ),
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.card_giftcard_rounded, color: AkBrand.tealDeep),
