@@ -359,8 +359,8 @@
     var t = Math.max(r.top - pad, 72);
     var b = Math.min(r.bottom + pad, vh - 8);
     if (b - t < 40) { spotOff(); return; }
-    spot.style.top = t + 'px';
-    spot.style.left = Math.max(r.left - pad, 6) + 'px';
+    // The position glides (transform); the size simply follows the element.
+    spot.style.transform = 'translate(' + Math.max(r.left - pad, 6) + 'px, ' + t + 'px)';
     spot.style.width = Math.min(r.width + pad * 2, window.innerWidth - 12) + 'px';
     spot.style.height = (b - t) + 'px';
     spotFrame = window.requestAnimationFrame(placeSpot);
