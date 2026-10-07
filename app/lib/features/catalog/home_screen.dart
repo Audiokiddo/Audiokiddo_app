@@ -28,6 +28,7 @@ import '../downloads/download_providers.dart';
 import 'catalog_providers.dart';
 import 'library_filter.dart';
 import 'seasonal.dart';
+import '../purchases/win_back.dart';
 import 'widgets/item_art.dart';
 import '../home/launch_greeting.dart';
 import '../welcome/szop_tour.dart';
@@ -124,6 +125,7 @@ class HomeScreen extends ConsumerWidget {
               const RatingCard(),
               const ReferralCard(),
               _NextPackCard(catalog: catalog),
+              WinBackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
               const UpcomingShelf(),
               const _OfflineCard(),

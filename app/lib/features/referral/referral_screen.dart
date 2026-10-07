@@ -28,17 +28,20 @@ class ReferralScreen extends ConsumerWidget {
       'Pobierz aplikację i wpisz kod $code (Sklep → Odbierz dostęp → Mam kod). https://audiokiddo.pl';
 
   Future<void> _share(BuildContext context, WidgetRef ref, String code) async {
-    ref.read(eventSinkProvider).track(AppEvent.referralShare);
     final origin = context.findRenderObject() as RenderBox?;
     // Sharing leaves the app, so it asks for an adult (Kids Category).
     if (!await showParentalGate(context) || !context.mounted) return;
-    await SharePlus.instance.share(
+    final result = await SharePlus.instance.share(
       ShareParams(
         text: _message(code),
         subject: 'Prezent od AudioKiddo',
         sharePositionOrigin: origin == null ? null : origin.localToGlobal(Offset.zero) & origin.size,
       ),
     );
+    // Counted unless dismissed, with the app it went to when the system says (WhatsApp, Messenger…).
+    if (result.status != ShareResultStatus.dismissed) {
+      ref.read(eventSinkProvider).track(AppEvent.referralShare, props: {'channel': shareChannel(result.raw)});
+    }
   }
 
   @override

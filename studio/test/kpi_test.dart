@@ -45,9 +45,17 @@ final _sample = <String, dynamic>{
       {'channel': 'meta', 'spend': 300, 'new_paying_app': 4, 'cac_app': 75.0},
     ],
   },
+  'signals': {
+    'cancel_reasons': {'price': 3},
+    'referral_channels': {'whatsapp': 5},
+    'referral_families': 4,
+  },
   'monetization': {'free_to_paywall': 30.0, 'checkout': {'started': 5, 'done': 3, 'failed': {'canceled': 2}}},
   'data_health': {'events': 1200, 'with_age_group': 97.5, 'versions': {'0.2.0 ios': 30}},
 };
+
+Finder get _vertical =>
+    find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first;
 
 void main() {
   testWidgets('the four annex dashboards show the numbers', (tester) async {
@@ -73,6 +81,8 @@ void main() {
     expect(find.text('Weekly Returning Families'), findsOneWidget);
     expect(find.text('823'), findsOneWidget);
     expect(find.textContaining('700 → 823'), findsOneWidget, reason: 'the weekly trend');
+    await tester.scrollUntilVisible(find.text('Za drogo'), 300, scrollable: _vertical);
+    expect(find.text('Za drogo'), findsOneWidget, reason: 'why parents leave');
     expect(find.text('20.00 zł'), findsOneWidget, reason: 'ARPU = MRR / subscribers');
 
     await tester.tap(find.text('3–5'));
@@ -90,6 +100,8 @@ void main() {
     expect(find.text('TikTok'), findsWidgets);
     expect(find.text('25.0 zł'), findsOneWidget, reason: 'CAC from the ad spend');
     expect(find.text('Zapisz wydatek'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Kanał: whatsapp'), 300, scrollable: _vertical);
+    expect(find.text('Kanał: whatsapp'), findsOneWidget);
 
     await tester.tap(find.text('Tech i dane'));
     await tester.pumpAndSettle();

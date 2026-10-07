@@ -468,3 +468,17 @@ begin
   end;
 end $$;
 select 'ad spend tests passed';
+
+-- Cancel reasons and referral channels.
+do $$
+declare
+  s jsonb;
+begin
+  insert into public.app_events (install_id, event, props) values
+    ('88888888-8888-8888-8888-888888888888', 'cancel_reason', '{"reason":"price"}'),
+    ('88888888-8888-8888-8888-888888888888', 'referral_share', '{"channel":"whatsapp"}');
+  s := public.admin_signals(30);
+  assert (s -> 'cancel_reasons' ->> 'price')::int = 1, s::text;
+  assert (s -> 'referral_channels' ->> 'whatsapp')::int = 1, s::text;
+end $$;
+select 'signals tests passed';

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart' show DateUtils;
+import 'package:flutter/material.dart' show DateUtils, Widget, BuildContext;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -38,7 +38,8 @@ enum AppEvent {
   favoriteAdded('favorite_added'),
   favoriteRemoved('favorite_removed'),
   searchPerformed('search_performed'),
-  sourceAnswered('source_answered');
+  sourceAnswered('source_answered'),
+  cancelReason('cancel_reason');
 
   const AppEvent(this.wire);
   final String wire;
@@ -213,4 +214,51 @@ extension TrackRef on Ref {
 Future<void> setFavoriteTracked(WidgetRef ref, String itemId, {required bool favorite}) async {
   await ref.read(personalRepositoryProvider).setFavorite(itemId, favorite: favorite);
   ref.read(eventSinkProvider).track(favorite ? AppEvent.favoriteAdded : AppEvent.favoriteRemoved, itemId: itemId);
+}
+
+/// Sends [event] once when it first appears (a screen view), not on every rebuild.
+class TrackOnce extends ConsumerStatefulWidget {
+  const TrackOnce({super.key, required this.event, this.itemId, this.props = const {}, required this.child});
+
+  final AppEvent event;
+  final String? itemId;
+  final Map<String, Object?> props;
+  final Widget child;
+
+  @override
+  ConsumerState<TrackOnce> createState() => _TrackOnceState();
+}
+
+class _TrackOnceState extends ConsumerState<TrackOnce> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(eventSinkProvider).track(widget.event, itemId: widget.itemId, props: widget.props);
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
+
+/// The app a parent shared to, from the system share sheet ("net.whatsapp…" → "whatsapp").
+String shareChannel(String raw) {
+  final r = raw.toLowerCase();
+  for (final (needle, channel) in const [
+    ('whatsapp', 'whatsapp'),
+    ('messenger', 'messenger'),
+    ('orca', 'messenger'),
+    ('facebook', 'facebook'),
+    ('instagram', 'instagram'),
+    ('activity.message', 'sms'),
+    ('sms', 'sms'),
+    ('mobilesms', 'sms'),
+    ('mms', 'sms'),
+    ('mail', 'email'),
+    ('gm', 'email'),
+    ('copy', 'link_copy'),
+    ('clipboard', 'link_copy'),
+  ]) {
+    if (r.contains(needle)) return channel;
+  }
+  return r.isEmpty ? 'unknown' : 'other';
 }

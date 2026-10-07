@@ -38,6 +38,7 @@ class MoreScreen extends ConsumerWidget {
         for (final item in [
           (Icons.favorite_rounded, 'Ulubione', '/ulubione'),
           (Icons.face_rounded, 'Profil dziecka', '/profil'),
+          (Icons.collections_rounded, 'Album naklejek', '/naklejki'),
           (Icons.auto_awesome_rounded, 'Tryby i rutyny', '/rutyny'),
           (Icons.queue_music_rounded, 'Kolejka', '/kolejka'),
           (Icons.download_done_rounded, 'Pobrane', '/pobrane'),

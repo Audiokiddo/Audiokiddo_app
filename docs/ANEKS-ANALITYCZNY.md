@@ -443,13 +443,13 @@ Zasada techniczna: tylko nasza baza (tabela `app_events` w Supabase), bez narzę
 | game_abandoned (+ exit_second) | `play_exit` (`exit_second`, `pct`, `play_number`); porzucenie = wyjście bez ukończenia | ✅ (zamknięcie aplikacji w trakcie liczy się jako „start bez końca”) |
 | game_replayed | `play_start` z `play_number` ≥ 2 i `hours_since_previous` | ✅ |
 | next_game_started | `play_start` z `next` i `previous_item` (do 10 min po ukończeniu) | ✅ |
-| paywall_viewed (+ entry_point) | `paywall_view` (`from`: `locked_game`, `after_free_play`) | ✅ (dopisać Sklep i stronę pakietu) |
+| paywall_viewed (+ entry_point) | `paywall_view` (`from`: `locked_game`, `after_free_play`, `subscription_screen`, `package_open`, `win_back`) | ✅ |
 | checkout_started | `purchase_start` (`product`, `price`, `currency`) | ✅ |
 | checkout_failed | `checkout_failed` (`error_type`) | ✅ |
 | subscription_started | `purchase_done` + tabela `entitlements` | ✅ |
-| subscription_cancelled / expired / renewed | z `entitlements` (status, `valid_until`) | częściowo: churn liczony z wygaśnięć; powód rezygnacji i numer odnowienia do zrobienia |
+| subscription_cancelled / expired / renewed | z `entitlements` (status, `valid_until`); powód: `cancel_reason` (pytanie przed ustawieniami sklepu) | ✅ churn i powód; numer odnowienia do zrobienia |
 | package_purchased | `purchase_done` + `entitlements` (scope `pack:`) | ✅ |
-| referral_shared / redeemed | `referral_share`, tabela `referral_redemptions` | ✅ (bez kanału) |
+| referral_shared / redeemed | `referral_share` (`channel`: whatsapp, messenger, sms…), tabela `referral_redemptions` | ✅ |
 | search_performed | `search_performed` (`query`, `results`) | ✅ |
 | favorite_added / removed | `favorite_added`, `favorite_removed` | ✅ |
 | game_impression, filter_applied, game_paused/resumed, new_release_*, notification_* | (brak) | SHOULD HAVE, do zrobienia |
@@ -467,10 +467,9 @@ Poprzednia zakładka „Statystyki” zostaje bez zmian.
 
 ### Czego jeszcze brakuje (kolejność)
 
-1. **CAC, LTV, payback:** wydatki na reklamę według kanału i miesiąca. Najprościej w CRM → Ustawienia, obok kosztów miesięcznych. Potem CAC = wydatki / płacące rodziny z kanału.
+1. ~~CAC~~: zrobione (Studio › KPI › Growth, wydatki według miesiąca i kanału). LTV i payback po kilku miesiącach danych.
 2. **Kampanie:** linki z parametrem (np. `audiokiddo.pl/app?src=tiktok&c=banan`) na stronie przed App Store, zapisujące kampanię. Dziś znamy tylko odpowiedź rodzica.
-3. **Rezygnacja:** jedno pytanie „Dlaczego rezygnujesz?” i numer odnowienia z powiadomień App Store / Google Play (`verify-purchase`).
-4. **Wejścia w ofertę:** `from` dla Sklepu i strony pakietu.
+3. **Rezygnacja:** ~~pytanie~~ zrobione; numer odnowienia z powiadomień App Store / Google Play (`verify-purchase`) do zrobienia.
 5. **SHOULD HAVE:** filtry, wyświetlenia kafli (game_impression), pauzy, powiadomienia, nowości.
 6. **Game ID i tagi:** dziś ID to nazwy (np. `zgubiona-gwiazdka`). Tagi (typ interakcji, temat, postać, trudność) warto dodać w Studio do katalogu, wtedy dashboard Produkt dostanie filtry.
 7. **Rejestr eksperymentów:** w CRM jako osobny rodzaj wpisu (hipoteza, zmiana, KPI, wynik, decyzja, wniosek).

@@ -72,12 +72,13 @@ class _KpiScreenState extends ConsumerState<KpiScreen> {
               final k = snap.data!;
               return TabBarView(
                 children: [
-                  _Ceo(k: _map(k['ceo'])),
+                  _Ceo(k: _map(k['ceo']), signals: _map(k['signals'])),
                   _Product(p: _map(k['product'])),
                   _Growth(
                     rows: _list(k['growth']),
                     money: _map(k['monetization']),
                     economics: _map(k['economics']),
+                    signals: _map(k['signals']),
                     onSpendSaved: () => _set(),
                   ),
                   _Tech(h: _map(k['data_health']), money: _map(k['monetization'])),
@@ -98,9 +99,10 @@ String _num(Object? v) => v == null ? '–' : '$v';
 
 /// Business health in five minutes: the eight numbers, the funnel and the cohorts.
 class _Ceo extends StatelessWidget {
-  const _Ceo({required this.k});
+  const _Ceo({required this.k, required this.signals});
 
   final Map<String, dynamic> k;
+  final Map<String, dynamic> signals;
 
   @override
   Widget build(BuildContext context) {
@@ -154,6 +156,12 @@ class _Ceo extends StatelessWidget {
           ('Zobaczyły ofertę', funnel['paywall']),
           ('Zapłaciły', funnel['paid']),
         ]),
+        const SizedBox(height: 16),
+        Text('Dlaczego rodzice rezygnują', style: text.titleMedium),
+        if (_map(signals['cancel_reasons']).isEmpty)
+          const Padding(padding: EdgeInsets.all(8), child: Text('Brak odpowiedzi w tym okresie.')),
+        for (final e in _map(signals['cancel_reasons']).entries)
+          ListTile(dense: true, title: Text(_cancelName(e.key)), trailing: Text('${e.value}')),
         const SizedBox(height: 16),
         Text('Retencja kohortowa (tydzień aktywacji)', style: text.titleMedium),
         if (cohorts.isEmpty) const Padding(padding: EdgeInsets.all(8), child: Text('Za mało danych.')),
@@ -308,11 +316,18 @@ class _ProductState extends ConsumerState<_Product> {
 
 /// Where good families come from: by the parent's answer "Skąd o nas wiecie?".
 class _Growth extends StatelessWidget {
-  const _Growth({required this.rows, required this.money, required this.economics, required this.onSpendSaved});
+  const _Growth({
+    required this.rows,
+    required this.money,
+    required this.economics,
+    required this.signals,
+    required this.onSpendSaved,
+  });
 
   final List<Map<String, dynamic>> rows;
   final Map<String, dynamic> money;
   final Map<String, dynamic> economics;
+  final Map<String, dynamic> signals;
   final VoidCallback onSpendSaved;
 
   @override
@@ -388,6 +403,20 @@ class _Growth extends StatelessWidget {
         KpiTile('Free → Paid 7 dni', _pct(money['free_to_paid_7d'])),
         KpiTile('Free → Paid 30 dni', _pct(money['free_to_paid_30d'])),
       ]),
+      const SizedBox(height: 16),
+      Text('Polecenia', style: Theme.of(context).textTheme.titleMedium),
+      ListTile(
+        dense: true,
+        title: const Text('Rodziny, które poleciły AudioKiddo'),
+        trailing: Text(_num(signals['referral_families'])),
+      ),
+      for (final e in _map(signals['referral_channels']).entries)
+        ListTile(dense: true, title: Text('Kanał: ${e.key}'), trailing: Text('${e.value}')),
+      ListTile(
+        dense: true,
+        title: const Text('Wrócili do oferty z karty „Wracacie?”'),
+        trailing: Text(_num(signals['win_back_views'])),
+      ),
       for (final e in _map(money['paywall_from']).entries)
         ListTile(dense: true, title: Text('Oferta otwarta z: ${_entryName(e.key)}'), trailing: Text('${e.value} rodzin')),
     ],
@@ -540,9 +569,21 @@ String _sourceName(String s) => switch (s) {
   _ => s,
 };
 
+String _cancelName(String s) => switch (s) {
+  'price' => 'Za drogo',
+  'not_using' => 'Dziecko już nie korzysta',
+  'few_new' => 'Za mało nowych zabaw',
+  'technical' => 'Coś nie działało',
+  'changing_plan' => 'Tylko zmiana planu',
+  _ => 'Inny powód',
+};
+
 String _entryName(String s) => switch (s) {
   'locked_game' => 'zablokowana zabawa',
   'after_free_play' => 'po darmowej zabawie',
+  'subscription_screen' => 'zakładka Sklep',
+  'package_open' => 'strona pakietu',
+  'win_back' => 'karta „Wracacie?”',
   _ => s,
 };
 
