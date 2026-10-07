@@ -37,7 +37,11 @@ class FakeCloud implements ParentCloud {
   Future<Map<String, List<String>>> experiments() async => const {};
 }
 
-Future<void> pumpWith(WidgetTester tester, List<Override> extra, {List<Entitlement> entitlements = const []}) async {
+Future<void> pumpWith(
+  WidgetTester tester,
+  List<Override> extra, {
+  List<Entitlement> entitlements = const [],
+}) async {
   tester.view.physicalSize = const Size(1170, 2532);
   tester.view.devicePixelRatio = 3;
   addTearDown(tester.view.reset);
@@ -137,7 +141,11 @@ void main() {
         ),
       ],
     );
-    await tester.scrollUntilVisible(find.text('Wracacie? Wszystko na Was czeka'), 200, scrollable: mainScroll);
+    await tester.scrollUntilVisible(
+      find.text('Wracacie? Wszystko na Was czeka'),
+      200,
+      scrollable: mainScroll,
+    );
     expect(find.text('Wróć do abonamentu'), findsOneWidget);
   });
 
@@ -156,7 +164,9 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Nasze głosy'),
       200,
-      scrollable: find.ancestor(of: find.text('Cześć, jesteśmy Nela i Dawid'), matching: find.byType(Scrollable)).first,
+      scrollable: find
+          .ancestor(of: find.text('Cześć, jesteśmy Nela i Dawid'), matching: find.byType(Scrollable))
+          .first,
     );
     expect(find.text('Nasze głosy'), findsOneWidget);
   });

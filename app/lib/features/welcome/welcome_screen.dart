@@ -33,10 +33,10 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-enum _Stage { thanks, fanfare, quiz, microphone, reminders, source }
+enum _Stage { fanfare, quiz, microphone, reminders, source }
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
-  _Stage _stage = _Stage.thanks;
+  _Stage _stage = _Stage.fanfare;
 
   Future<void> _complete() async {
     final first = ref.read(familyProvider).value?.children.firstOrNull;
@@ -49,7 +49,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   Widget build(BuildContext context) => PopScope(
     canPop: false,
     child: switch (_stage) {
-      _Stage.thanks => _Thanks(onNext: () => setState(() => _stage = _Stage.fanfare)),
       _Stage.fanfare => _Fanfare(onNext: () => setState(() => _stage = _Stage.quiz)),
       // Always the child's age (plays are matched to it); a known child is just confirmed.
       _Stage.quiz => ChildQuiz(
@@ -62,85 +61,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       _Stage.source => SourceQuestion(onDone: _complete),
     },
   );
-}
-
-/// The first thing after signing in: who made this, in their own words, and thank you.
-class _Thanks extends StatelessWidget {
-  const _Thanks({required this.onNext});
-
-  final VoidCallback onNext;
-
-  @override
-  Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    const ink = Color(0xFF211C35);
-    return Scaffold(
-      backgroundColor: AkBrand.peach,
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-          children: [
-            const Center(child: SzopSticker(SzopPose.zadowolony, height: 140)),
-            const SizedBox(height: 12),
-            const Center(child: PolishFlag(width: 32)),
-            const SizedBox(height: 14),
-            Text(
-              'Dziękujemy, że jesteście z nami!',
-              textAlign: TextAlign.center,
-              style: text.headlineMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Cześć! Jesteśmy Nela i Dawid, para z Polski. AudioKiddo robimy we dwoje: sami wymyślamy '
-                    'zabawy, piszemy scenariusze, podkładamy głosy i budujemy aplikację.',
-                    style: text.bodyLarge?.copyWith(color: ink, height: 1.45),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Chcemy, żeby Wasze dziecko miało chwilę na słuchanie i wyobraźnię zamiast ekranu, '
-                    'a Wy chwilę dla siebie. Każde pobranie to dla nas ogromna radość.',
-                    style: text.bodyLarge?.copyWith(color: ink, height: 1.45),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Jeśli coś nie działa albo macie pomysł na zabawę, napiszcie: kontakt@audiokiddo.pl. '
-                    'Odpisujemy sami.',
-                    style: text.bodyMedium?.copyWith(color: ink, height: 1.45),
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    'Nela i Dawid',
-                    style: text.titleMedium?.copyWith(
-                      color: ink,
-                      fontWeight: FontWeight.w800,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 22),
-            FilledButton(
-              key: const ValueKey('thanks-next'),
-              style: FilledButton.styleFrom(
-                backgroundColor: ink,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(56),
-              ),
-              onPressed: onNext,
-              child: const Text('Dalej'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _Fanfare extends ConsumerWidget {

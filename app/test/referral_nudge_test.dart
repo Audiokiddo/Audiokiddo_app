@@ -10,7 +10,13 @@ void main() {
   });
 
   test('"Nie teraz" hides it for the chosen time only', () {
-    expect(showReferralNudge(finishedPlays: 5, hiddenUntil: now.add(const Duration(days: 3)), now: now), isFalse);
-    expect(showReferralNudge(finishedPlays: 5, hiddenUntil: now.subtract(const Duration(days: 1)), now: now), isTrue);
+    expect(
+      showReferralNudge(finishedPlays: 5, hiddenUntil: now.add(const Duration(days: 3)), now: now),
+      isFalse,
+    );
+    expect(
+      showReferralNudge(finishedPlays: 5, hiddenUntil: now.subtract(const Duration(days: 1)), now: now),
+      isTrue,
+    );
   });
 }

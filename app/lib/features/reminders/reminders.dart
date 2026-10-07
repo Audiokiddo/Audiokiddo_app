@@ -178,9 +178,21 @@ class RemindersController extends AsyncNotifier<ReminderSettings> {
   Future<bool> enable({required int hour, required int minute, required ReminderTexts texts}) async {
     final granted = await ref.read(reminderSchedulerProvider).requestPermission();
     await _store(ReminderSettings(enabled: granted, hour: hour, minute: minute));
-    if (granted) await reschedule(texts: texts);
+    if (granted) {
+      await reschedule(texts: texts);
+      await _aboutUsOnce(hour: hour, minute: minute, now: DateTime.now());
+    }
     return granted;
   }
+
+  /// Once, a few days in: who makes AudioKiddo (instead of a thank-you screen at the start).
+  Future<void> _aboutUsOnce({required int hour, required int minute, required DateTime now}) async {
+    if (await _db.readValue(_aboutUsKey) != null) return;
+    await ref.read(reminderSchedulerProvider).schedule(aboutUsSlot(hour: hour, minute: minute, now: now));
+    await _db.writeValue(_aboutUsKey, now.toIso8601String());
+  }
+
+  static const _aboutUsKey = 'about_us_note';
 
   Future<void> disable() async {
     final s = state.value ?? const ReminderSettings();
@@ -196,6 +208,19 @@ class RemindersController extends AsyncNotifier<ReminderSettings> {
         .replaceAll(reminderSlots(s, texts, now: now ?? DateTime.now(), todayDone: todayDone));
   }
 }
+
+/// The note about Nela and Dawid, [aboutUsAfterDays] after reminders were turned on, at their hour.
+const aboutUsAfterDays = 4;
+const aboutUsId = 1003;
+
+ReminderSlot aboutUsSlot({required int hour, required int minute, required DateTime now}) => ReminderSlot(
+  id: aboutUsId,
+  at: DateTime(now.year, now.month, now.day + aboutUsAfterDays, hour, minute),
+  title: 'Ciekawostka od Szop’ena',
+  body:
+      'AudioKiddo robią Nela i Dawid, para z Polski. Sami piszą zabawy i podkładają głosy. '
+      'Więcej o nich: Więcej → O nas.',
+);
 
 /// The next [RemindersController.days] reminders; texts rotate by date so they vary.
 List<ReminderSlot> reminderSlots(
@@ -215,4 +240,6 @@ List<ReminderSlot> reminderSlots(
   return slots;
 }
 
-final remindersProvider = AsyncNotifierProvider<RemindersController, ReminderSettings>(RemindersController.new);
+final remindersProvider = AsyncNotifierProvider<RemindersController, ReminderSettings>(
+  RemindersController.new,
+);

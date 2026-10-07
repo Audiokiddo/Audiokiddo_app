@@ -140,7 +140,11 @@ void main() {
       final ids = productIdsFor(catalog.item('gadajacy-smietnik'), catalog);
       expect(
         ids,
-        containsAll(['pl.audiokiddo.pack.detektyw', ProductIds.bundleThree, 'pl.audiokiddo.item.gadajacy_smietnik']),
+        containsAll([
+          'pl.audiokiddo.pack.detektyw',
+          ProductIds.bundleThree,
+          'pl.audiokiddo.item.gadajacy_smietnik',
+        ]),
       );
       expect(ids, isNot(contains(ProductIds.bundleTwo)));
     });

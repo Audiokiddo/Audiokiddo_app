@@ -42,8 +42,9 @@ class SilentStore implements StoreGateway {
 }
 
 void main() {
-  final catalog = parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>)
-      .catalog;
+  final catalog = parseCatalog(
+    jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
+  ).catalog;
 
   test('a year of the subscription against packs bought one by one', () {
     final s = subscriptionSavings(

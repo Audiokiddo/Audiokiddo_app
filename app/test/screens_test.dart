@@ -11,7 +11,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'helpers.dart';
 
 /// Pumps the app with the bundled mock catalog (the same file the app ships in Etap 1).
-Future<void> pumpApp(WidgetTester tester, {List<Entitlement> entitlements = const [], double textScale = 1}) async {
+Future<void> pumpApp(
+  WidgetTester tester, {
+  List<Entitlement> entitlements = const [],
+  double textScale = 1,
+}) async {
   tester.view.physicalSize = const Size(1170, 2532);
   tester.view.devicePixelRatio = 3;
   tester.platformDispatcher.textScaleFactorTestValue = textScale;
@@ -33,7 +37,8 @@ Future<void> pumpApp(WidgetTester tester, {List<Entitlement> entitlements = cons
 }
 
 /// The vertical page scroll (shelves inside it scroll horizontally).
-Finder get mainScroll => find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first;
+Finder get mainScroll =>
+    find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first;
 
 Future<void> openLibrary(WidgetTester tester) async {
   await tester.tap(find.byIcon(Icons.auto_stories_outlined));
@@ -159,7 +164,11 @@ void main() {
     await openItem(tester, 'Złodziej naszyjnika');
     await tester.scrollUntilVisible(find.text('Ta sprawa: drukuj lub wyślij'), 200, scrollable: mainScroll);
     expect(find.text('Wydrukuj wszystkie naraz'), findsOneWidget);
-    expect(find.text('Rozwiązuj w telefonie'), findsNothing, reason: 'the case is solved away from the phone');
+    expect(
+      find.text('Rozwiązuj w telefonie'),
+      findsNothing,
+      reason: 'the case is solved away from the phone',
+    );
   });
 
   testWidgets('screens have no overflow with large text', (tester) async {
@@ -216,7 +225,11 @@ void main() {
       await tester.tap(find.text('Na zawsze, bez subskrypcji'));
       await tester.pumpAndSettle();
       expect(find.textContaining('49,99 zł'), findsWidgets);
-      await tester.scrollUntilVisible(find.textContaining('odnawia się automatycznie'), 200, scrollable: mainScroll);
+      await tester.scrollUntilVisible(
+        find.textContaining('odnawia się automatycznie'),
+        200,
+        scrollable: mainScroll,
+      );
       expect(find.text('Przywróć zakupy'), findsOneWidget);
     });
 
@@ -232,7 +245,11 @@ void main() {
 
       expect(find.text('Moje zabawy'), findsOneWidget);
       expect(find.text('Magiczny sklep'), findsOneWidget);
-      expect(find.text('Zaginiony skarb'), findsNothing, reason: 'locked content is hidden, not shown with a lock');
+      expect(
+        find.text('Zaginiony skarb'),
+        findsNothing,
+        reason: 'locked content is hidden, not shown with a lock',
+      );
       expect(find.byType(NavigationBar), findsNothing);
 
       // A deep link or programmatic navigation cannot leave kids mode.

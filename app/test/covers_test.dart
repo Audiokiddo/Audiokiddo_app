@@ -10,8 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final catalog = parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>)
-      .catalog;
+  final catalog = parseCatalog(
+    jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
+  ).catalog;
   final files = Directory('assets/covers').listSync().whereType<File>().where((f) => f.path.endsWith('.jpg'));
 
   test('every pack has a guide and every Detektyw play has its case file', () {
@@ -59,7 +60,11 @@ void main() {
     expect(find.byType(Image), findsOneWidget);
     expect(find.byType(ArtScene), findsOneWidget);
     final image = tester.widget<Image>(find.byType(Image));
-    expect((image.image as ResizeImage).width, lessThanOrEqualTo(900), reason: 'decoded no bigger than needed');
+    expect(
+      (image.image as ResizeImage).width,
+      lessThanOrEqualTo(900),
+      reason: 'decoded no bigger than needed',
+    );
   });
 
   test('cover art for the lock screen never breaks playback: no cover means no art, no error', () async {
@@ -72,7 +77,10 @@ void main() {
 
   testWidgets('a pack with several covers shows them as a mosaic', (tester) async {
     final detective = catalog.itemsInPack('detektyw');
-    expect(detective.where((i) => File('assets/covers/${i.id}.jpg').existsSync()).length, greaterThanOrEqualTo(4));
+    expect(
+      detective.where((i) => File('assets/covers/${i.id}.jpg').existsSync()).length,
+      greaterThanOrEqualTo(4),
+    );
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(

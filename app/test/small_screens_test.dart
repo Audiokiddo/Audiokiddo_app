@@ -110,18 +110,6 @@ void main() {
 
     testWidgets('$name: family welcome and Szop’en’s tour fit', (tester) async {
       await pumpDevice(tester, device, welcomeDone: false);
-      // First the thank-you from Nela and Dawid.
-      expect(find.text('Dziękujemy, że jesteście z nami!'), findsOneWidget);
-      expect(tester.takeException(), isNull, reason: 'thanks on $name');
-      await tester.scrollUntilVisible(
-        find.byKey(const ValueKey('thanks-next')),
-        200,
-        scrollable: find.byType(Scrollable).last,
-      );
-      await tester.ensureVisible(find.byKey(const ValueKey('thanks-next')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('thanks-next')));
-      await tester.pumpAndSettle();
       expect(find.text('Ta-da! Witajcie w AudioKiddo'), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'fanfare on $name');
       await tester.scrollUntilVisible(find.text('Odbieram!'), 200, scrollable: find.byType(Scrollable).first);

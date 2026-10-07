@@ -45,7 +45,8 @@ class FakeSessionAudio implements SessionAudio {
 }
 
 Catalog loadCatalog() =>
-    parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>).catalog;
+    parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>)
+        .catalog;
 
 Future<void> settle() => Future<void>.delayed(const Duration(milliseconds: 20));
 
@@ -116,7 +117,11 @@ void main() {
     expect(items.where((i) => i.kind == ContentKind.song), hasLength(lessThanOrEqualTo(1)));
     expect(items.where((i) => i.kind == ContentKind.interactiveGame), isEmpty);
     for (final s in steps.whereType<ItemStep>()) {
-      expect(s.fadeOut, s.item.kind == ContentKind.song ? bedtimeFade : Duration.zero, reason: 'the lullaby fades');
+      expect(
+        s.fadeOut,
+        s.item.kind == ContentKind.song ? bedtimeFade : Duration.zero,
+        reason: 'the lullaby fades',
+      );
     }
     final last = steps.last as ParentStep;
     expect(last.clip, ParentClip.goodnight);
@@ -168,7 +173,9 @@ void main() {
 
     test('skip moves on, stop ends everything', () async {
       final session = container.read(sessionProvider.notifier);
-      unawaited(session.start(SessionKind.trip, [ItemStep(item), ItemStep(item), const LineStep('trip_end')]));
+      unawaited(
+        session.start(SessionKind.trip, [ItemStep(item), ItemStep(item), const LineStep('trip_end')]),
+      );
       await settle();
       await session.skip();
       await settle();
@@ -197,7 +204,11 @@ void main() {
     test('the next recording counts down first; the first one starts at once', () async {
       final slow = slowContainer();
       final session = slow.read(sessionProvider.notifier);
-      final done = session.start(SessionKind.trip, [const LineStep('trip_start'), ItemStep(item), ItemStep(item)]);
+      final done = session.start(SessionKind.trip, [
+        const LineStep('trip_start'),
+        ItemStep(item),
+        ItemStep(item),
+      ]);
       await settle();
       expect(slow.read(sessionProvider).countdown, isNull);
       expect(audio.log, ['line:trip_start', 'item:${item.id}']);

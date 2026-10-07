@@ -189,7 +189,11 @@ class FakePreviewAudio implements PreviewAudio {
   void Function()? _done;
 
   @override
-  Future<void> play(Uri url, {required void Function(double) onProgress, required void Function() onDone}) async {
+  Future<void> play(
+    Uri url, {
+    required void Function(double) onProgress,
+    required void Function() onDone,
+  }) async {
     played.add(url);
     _done = onDone;
     onProgress(.5);

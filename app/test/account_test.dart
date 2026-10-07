@@ -148,7 +148,8 @@ class FakeAccountService implements AccountService {
   }
 
   @override
-  Future<ReferralInfo> referralInfo() async => const ReferralInfo(code: 'POLEC-ABCDEF', friends: 2, rewards: 1);
+  Future<ReferralInfo> referralInfo() async =>
+      const ReferralInfo(code: 'POLEC-ABCDEF', friends: 2, rewards: 1);
 
   @override
   Future<List<Entitlement>> entitlements() async {
@@ -211,7 +212,10 @@ Future<void> pumpAccount(WidgetTester tester, FakeAccountService account) async 
 
 void main() {
   group('server purchase verifier', () {
-    Future<(VerificationResult, FakeAccountService)> run(TargetPlatform platform, ServerVerdict verdict) async {
+    Future<(VerificationResult, FakeAccountService)> run(
+      TargetPlatform platform,
+      ServerVerdict verdict,
+    ) async {
       final account = FakeAccountService()..verdict = verdict;
       final container = ProviderContainer(overrides: [accountServiceProvider.overrideWithValue(account)]);
       addTearDown(container.dispose);
@@ -269,7 +273,10 @@ void main() {
       final db = memoryDatabase();
       account = FakeAccountService(shopScopes: [Scopes.pack('detektyw')]);
       container = ProviderContainer(
-        overrides: [databaseProvider.overrideWithValue(db), accountServiceProvider.overrideWithValue(account)],
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          accountServiceProvider.overrideWithValue(account),
+        ],
       );
       addTearDown(() async {
         container.dispose();
@@ -337,7 +344,11 @@ void main() {
     await tester.tap(find.text('Wyloguj się').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Zaloguj się lub załóż konto'), findsOneWidget, reason: 'the sign-in screen asks the e-mail');
+    expect(
+      find.text('Zaloguj się lub załóż konto'),
+      findsOneWidget,
+      reason: 'the sign-in screen asks the e-mail',
+    );
     expect(find.textContaining('Kontynuuj bez konta'), findsNothing);
     // A back gesture or a deep link cannot leave it.
     await tester.binding.handlePopRoute();
@@ -354,7 +365,11 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
     await tester.pumpAndSettle();
     // Checked in the order of the fields: the password above, the consent below it.
-    expect(find.text('Hasło musi mieć co najmniej 8 znaków.'), findsOneWidget, reason: 'a password is required');
+    expect(
+      find.text('Hasło musi mieć co najmniej 8 znaków.'),
+      findsOneWidget,
+      reason: 'a password is required',
+    );
     await tester.enterText(find.byType(TextField).at(1), 'nowehaslo1');
     await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
     await tester.pumpAndSettle();

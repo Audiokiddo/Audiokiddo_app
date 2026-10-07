@@ -61,14 +61,18 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Audiozabawy'),
       200,
-      scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first,
+      scrollable: find
+          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+          .first,
     );
     await tester.tap(find.text('Audiozabawy'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Magiczny sklep'),
       150,
-      scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first,
+      scrollable: find
+          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+          .first,
     );
     await tester.tap(find.text('Magiczny sklep'));
     await tester.pumpAndSettle();
@@ -104,14 +108,18 @@ void main() {
       await tester.scrollUntilVisible(
         find.text('Audiozabawy'),
         200,
-        scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first,
+        scrollable: find
+            .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+            .first,
       );
       await tester.tap(find.text('Audiozabawy'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
         find.text('Magiczny sklep'),
         150,
-        scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first,
+        scrollable: find
+            .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
+            .first,
       );
       await tester.tap(find.text('Magiczny sklep'));
       await tester.pumpAndSettle();

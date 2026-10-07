@@ -52,7 +52,9 @@ class _MicrophoneOfferState extends ConsumerState<MicrophoneOffer> {
     if (!granted) {
       messenger.showSnackBar(
         const SnackBar(
-          content: Text('Bez mikrofonu też zagracie. Włączysz go później w Ustawieniach telefonu → AudioKiddo.'),
+          content: Text(
+            'Bez mikrofonu też zagracie. Włączysz go później w Ustawieniach telefonu → AudioKiddo.',
+          ),
         ),
       );
     }
@@ -124,7 +126,10 @@ class _MicrophoneOfferState extends ConsumerState<MicrophoneOffer> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(title, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+                                    Text(
+                                      title,
+                                      style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                                    ),
                                     Text(body, style: text.bodyMedium),
                                   ],
                                 ),
@@ -150,7 +155,10 @@ class _MicrophoneOfferState extends ConsumerState<MicrophoneOffer> {
                           style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(54)),
                           onPressed: _busy ? null : _allow,
                           icon: _busy
-                              ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                              ? const SizedBox.square(
+                                  dimension: 18,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
                               : const Icon(Icons.mic_rounded),
                           label: const Text('Zezwól na mikrofon'),
                         ),

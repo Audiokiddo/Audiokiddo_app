@@ -45,11 +45,13 @@ Future<void> tapCentered(WidgetTester tester, Finder finder) async {
   await tester.pumpAndSettle();
 }
 
-Finder get scroll => find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).last;
+Finder get scroll =>
+    find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).last;
 
 void main() {
-  final catalog = parseCatalog(jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>)
-      .catalog;
+  final catalog = parseCatalog(
+    jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
+  ).catalog;
 
   test('a pack is finished when every play in it was completed', () {
     final detective = catalog.itemsInPack('detektyw');

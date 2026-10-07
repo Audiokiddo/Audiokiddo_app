@@ -15,7 +15,10 @@ void main() {
   test('the invitation back is for families whose subscription ended', () {
     expect(subscriptionEndedAt(const [], now), isNull, reason: 'never subscribed');
     expect(subscriptionEndedAt([_sub(DateTime(2026, 11, 1))], now), isNull, reason: 'still subscribed');
-    expect(subscriptionEndedAt([_sub(DateTime(2026, 8, 1)), _sub(DateTime(2026, 9, 1))], now), DateTime(2026, 9, 1));
+    expect(
+      subscriptionEndedAt([_sub(DateTime(2026, 8, 1)), _sub(DateTime(2026, 9, 1))], now),
+      DateTime(2026, 9, 1),
+    );
     expect(
       subscriptionEndedAt([_sub(DateTime(2026, 9, 1)), _sub(DateTime(2026, 12, 1))], now),
       isNull,

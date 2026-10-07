@@ -24,7 +24,11 @@ ContentItem itemWith({int? bytes, String? sha}) => ContentItem(
   durationSec: 360,
   access: ContentAccess.free,
   audio: [
-    AssetRef(path: 'audio/wyobraznia/magiczny-sklep.m4a', bytes: bytes ?? content.length, sha256: sha ?? contentSha),
+    AssetRef(
+      path: 'audio/wyobraznia/magiczny-sklep.m4a',
+      bytes: bytes ?? content.length,
+      sha256: sha ?? contentSha,
+    ),
   ],
 );
 

@@ -7,7 +7,8 @@ class _Recorder implements EventSink {
   final sent = <(AppEvent, Map<String, Object?>)>[];
 
   @override
-  void track(AppEvent event, {String? itemId, Map<String, Object?> props = const {}}) => sent.add((event, props));
+  void track(AppEvent event, {String? itemId, Map<String, Object?> props = const {}}) =>
+      sent.add((event, props));
 }
 
 void main() {

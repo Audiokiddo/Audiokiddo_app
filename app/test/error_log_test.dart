@@ -7,7 +7,11 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('errors are grouped by type and place, scrubbed, sent once, capped', () async {
     final sent = <Map<String, Object?>>[];
-    final log = ErrorLog(send: (row) async => sent.add(row), installId: () async => 'install', appVersion: '0.2.0');
+    final log = ErrorLog(
+      send: (row) async => sent.add(row),
+      installId: () async => 'install',
+      appVersion: '0.2.0',
+    );
     final stack = StackTrace.fromString(
       '#0      Player.start (package:audiokiddo/features/player/player.dart:42:7)\n#1      main (dart:core)',
     );
@@ -18,7 +22,10 @@ void main() {
     expect(sent.single['message'], 'Bad state: <e-mail> zamówienie <liczba>');
     expect(sent.single['fingerprint'], matches(RegExp(r'^[0-9a-f]{8}$')));
     expect(
-      ErrorLog.fingerprint('StateError', '#0 Player.start (package:audiokiddo/features/player/player.dart:50:1)'),
+      ErrorLog.fingerprint(
+        'StateError',
+        '#0 Player.start (package:audiokiddo/features/player/player.dart:50:1)',
+      ),
       sent.single['fingerprint'],
       reason: 'a new line number in a new version is the same error',
     );

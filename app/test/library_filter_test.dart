@@ -2,22 +2,28 @@ import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/features/catalog/library_filter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-ContentItem item(String id, {String? pack, int age = 3, List<Situation> situations = const []}) => ContentItem(
-  id: id,
-  kind: ContentKind.audioGame,
-  packId: pack,
-  title: id,
-  parentDescription: '',
-  ageMin: age,
-  durationSec: 60,
-  access: ContentAccess.paid,
-  audio: const [],
-  situations: situations,
-);
+ContentItem item(String id, {String? pack, int age = 3, List<Situation> situations = const []}) =>
+    ContentItem(
+      id: id,
+      kind: ContentKind.audioGame,
+      packId: pack,
+      title: id,
+      parentDescription: '',
+      ageMin: age,
+      durationSec: 60,
+      access: ContentAccess.paid,
+      audio: const [],
+      situations: situations,
+    );
 
 void main() {
   test('query round trip', () {
-    const filter = LibraryFilter(kind: ContentKind.song, packId: 'detektyw', age: 6, situation: Situation.przedSnem);
+    const filter = LibraryFilter(
+      kind: ContentKind.song,
+      packId: 'detektyw',
+      age: 6,
+      situation: Situation.przedSnem,
+    );
     final parsed = LibraryFilter.fromQuery(Uri.parse(filter.toLocation()).queryParameters);
     expect(parsed.toQuery(), filter.toQuery());
     expect(filter.toQuery()['sytuacja'], 'przed_snem');
