@@ -427,3 +427,24 @@ begin
   end;
 end $$;
 select 'analytics annex tests passed';
+
+-- Gifts from the shop: one code per gift line, retry-safe, ended by a refund.
+do $$
+declare
+  h constant text := repeat('ab', 32);
+  u constant uuid := '00000000-0000-0000-0000-0000000000d1';
+begin
+  insert into auth.users (id, email) values (u, 'obdarowany@example.com');
+  insert into public.gift_products (product_ref, scopes, label) values ('woo:900', '{all_content}', 'Rok AudioKiddo');
+  assert public.issue_gift_code(77, 'woo:1', h) = 'not_gift';
+  assert public.issue_gift_code(77, 'woo:900', h) = 'send';
+  assert public.issue_gift_code(77, 'woo:900', h) = 'send', 'a retry before the note went out sends it again';
+  perform public.mark_gift_note_sent(77, 'woo:900');
+  assert public.issue_gift_code(77, 'woo:900', h) = 'sent';
+  assert (select max_uses from public.access_codes where code_hash = h) = 1;
+  assert public.redeem_access_code(u, h) ->> 'status' = 'ok';
+  assert exists (select 1 from public.entitlements where user_id = u and scope = 'all_content' and status = 'active');
+  assert public.revoke_gift_codes(77) = 1;
+  assert not exists (select 1 from public.entitlements where user_id = u and status = 'active'), 'refund ends the gift';
+end $$;
+select 'gift tests passed';

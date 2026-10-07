@@ -92,3 +92,28 @@ export async function wooGet(
   withKey.searchParams.set("consumer_secret", secret);
   return await fetch(withKey);
 }
+
+/**
+ * Adds a note to an order. A customer note is e-mailed to the buyer by WooCommerce.
+ * Needs a key with write access (WOO_WRITE_KEY / WOO_WRITE_SECRET).
+ */
+export async function wooAddCustomerNote(
+  base: string,
+  key: string,
+  secret: string,
+  orderId: number,
+  note: string,
+): Promise<boolean> {
+  const url = new URL(`/wp-json/wc/v3/orders/${orderId}/notes`, base);
+  const body = JSON.stringify({ note, customer_note: true });
+  const headers = { "Content-Type": "application/json" };
+  let response = await fetch(url, { method: "POST", body, headers: { ...headers, Authorization: `Basic ${btoa(`${key}:${secret}`)}` } });
+  if (response.status === 401) {
+    const withKey = new URL(url);
+    withKey.searchParams.set("consumer_key", key);
+    withKey.searchParams.set("consumer_secret", secret);
+    response = await fetch(withKey, { method: "POST", body, headers });
+  }
+  await response.body?.cancel();
+  return response.ok;
+}
