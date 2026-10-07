@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase/supabase.dart' show AuthException;
 
 import '../server/studio_server.dart';
 import 'ads_screen.dart';
@@ -126,75 +130,217 @@ class _AdminSignInState extends ConsumerState<AdminSignIn> {
   final _code = TextEditingController();
   bool _sent = false;
   bool _busy = false;
+  String? _note;
+  DateTime? _sentAt;
+  Timer? _tick;
+
+  // An iPhone home-screen shortcut often reloads while you read the mail, so the sent code is
+  // remembered for a while and the code field comes back.
+  static const _pendingKey = 'studio_code_sent';
+  static const _resendAfter = Duration(seconds: 60);
+  static const _codeLives = Duration(minutes: 55);
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      final saved = prefs.getString(_pendingKey)?.split('|');
+      if (saved == null || saved.length != 2 || !mounted) return;
+      final at = DateTime.tryParse(saved[1]);
+      if (at == null || DateTime.now().difference(at) > _codeLives) return;
+      setState(() {
+        _email.text = saved[0];
+        _sent = true;
+        _sentAt = at;
+        _note = 'Kod już wysłaliśmy na ${saved[0]}. Wpisz go poniżej.';
+      });
+      _startTick();
+    });
+  }
 
   @override
   void dispose() {
+    _tick?.cancel();
     _email.dispose();
     _code.dispose();
     super.dispose();
   }
 
-  Future<void> _go() async {
+  void _startTick() {
+    _tick?.cancel();
+    _tick = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted || _wait == 0) t.cancel();
+      if (mounted) setState(() {});
+    });
+  }
+
+  int get _wait {
+    final at = _sentAt;
+    if (at == null) return 0;
+    final left = _resendAfter - DateTime.now().difference(at);
+    return left.isNegative ? 0 : left.inSeconds + 1;
+  }
+
+  Future<void> _remember(String email, DateTime at) async =>
+      (await SharedPreferences.getInstance()).setString(_pendingKey, '$email|${at.toIso8601String()}');
+
+  Future<void> _forget() async => (await SharedPreferences.getInstance()).remove(_pendingKey);
+
+  void _snack(String text) => ScaffoldMessenger.of(
+    context,
+  ).showSnackBar(SnackBar(content: Text(text), duration: const Duration(seconds: 8), showCloseIcon: true));
+
+  Future<void> _send() async {
+    final email = _email.text.trim().toLowerCase();
+    if (!email.contains('@')) {
+      _snack('Wpisz swój e-mail.');
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await ref.read(studioServerProvider).sendCode(email);
+      final now = DateTime.now();
+      await _remember(email, now);
+      setState(() {
+        _sent = true;
+        _sentAt = now;
+        _note = 'Wysłaliśmy kod na $email. Sprawdź pocztę (także Spam) i wpisz go poniżej.';
+      });
+      _startTick();
+    } on AuthException catch (e) {
+      if (e.statusCode == '429' || e.code == 'over_email_send_rate_limit') {
+        // A code went out a moment ago and is still good: let them type it.
+        final seconds = int.tryParse(RegExp(r'(\d+) second').firstMatch(e.message)?.group(1) ?? '');
+        final at = DateTime.now().subtract(_resendAfter - Duration(seconds: seconds ?? 60));
+        await _remember(email, at);
+        setState(() {
+          _sent = true;
+          _sentAt = at;
+          _note = 'Kod wysłaliśmy już przed chwilą na $email. Wpisz ten z ostatniego maila.';
+        });
+        _startTick();
+      } else if (e.code == 'otp_disabled' || e.message.contains('Signups not allowed')) {
+        _snack('Tego e-maila nie ma w Studio. Wejdą tylko konta Neli i Dawida.');
+      } else {
+        _snack('Nie udało się wysłać kodu: ${e.message}');
+      }
+    } on Object catch (e) {
+      _snack('Brak połączenia z serwerem. Sprawdź internet i spróbuj jeszcze raz. ($e)');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _verify() async {
+    final code = _code.text.replaceAll(RegExp(r'\s'), '');
+    if (code.length < 6) {
+      _snack('Wpisz cały kod z maila (6 cyfr).');
+      return;
+    }
     final server = ref.read(studioServerProvider);
     setState(() => _busy = true);
-    final ok = await crmRun(context, () async {
-      if (!_sent) {
-        await server.sendCode(_email.text);
-      } else {
-        await server.verify(_email.text, _code.text);
-      }
-    });
-    if (!mounted) return;
+    try {
+      await server.verify(_email.text.trim().toLowerCase(), code);
+      await _forget();
+    } on AuthException catch (e) {
+      _snack(
+        e.code == 'otp_expired' || e.message.contains('expired') || e.message.contains('invalid')
+            ? 'Ten kod nie pasuje albo już wygasł. Wpisz kod z najnowszego maila albo wyślij nowy.'
+            : 'Nie udało się zalogować: ${e.message}',
+      );
+    } on Object catch (e) {
+      _snack('Brak połączenia z serwerem. Spróbuj jeszcze raz. ($e)');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+    if (mounted && server.signedIn) widget.onSignedIn();
+  }
+
+  Future<void> _otherEmail() async {
+    await _forget();
+    _tick?.cancel();
     setState(() {
-      _busy = false;
-      if (ok && !_sent) _sent = true;
+      _sent = false;
+      _sentAt = null;
+      _note = null;
+      _code.clear();
     });
-    if (ok && server.signedIn) widget.onSignedIn();
   }
 
   @override
-  Widget build(BuildContext context) => Center(
-    child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 420),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Image.asset('assets/brand/szop-zadowolony.png', height: 120),
-            const SizedBox(height: 8),
-            Text(
-              'Zaloguj się',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+  Widget build(BuildContext context) {
+    final wait = _wait;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: AutofillGroup(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Image.asset('assets/brand/szop-zadowolony.png', height: 120),
+                const SizedBox(height: 8),
+                Text(
+                  'Zaloguj się',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _note ?? 'Wyślemy kod na Twój e-mail. Wejdą tylko konta właścicieli: Neli i Dawida.',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _email,
+                  enabled: !_sent,
+                  decoration: const InputDecoration(labelText: 'E-mail', border: OutlineInputBorder()),
+                  keyboardType: TextInputType.emailAddress,
+                  autofillHints: const [AutofillHints.email],
+                  autocorrect: false,
+                  onSubmitted: (_) => _send(),
+                ),
+                if (_sent) ...[
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _code,
+                    autofocus: true,
+                    decoration: const InputDecoration(labelText: 'Kod z maila', border: OutlineInputBorder()),
+                    keyboardType: TextInputType.number,
+                    autofillHints: const [AutofillHints.oneTimeCode],
+                    style: const TextStyle(fontSize: 22, letterSpacing: 6, fontWeight: FontWeight.w700),
+                    textAlign: TextAlign.center,
+                    onSubmitted: (_) => _verify(),
+                  ),
+                ],
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: _busy ? null : (_sent ? _verify : _send),
+                  child: Text(_sent ? 'Zaloguj' : 'Wyślij kod'),
+                ),
+                if (_sent) ...[
+                  const SizedBox(height: 8),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 4,
+                    children: [
+                      TextButton(
+                        onPressed: _busy || wait > 0 ? null : _send,
+                        child: Text(wait > 0 ? 'Nowy kod za $wait s' : 'Wyślij nowy kod'),
+                      ),
+                      TextButton(onPressed: _busy ? null : _otherEmail, child: const Text('Inny e-mail')),
+                    ],
+                  ),
+                ],
+              ],
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Wyślemy kod na Twój e-mail. Wejdą tylko konta właścicieli: Neli i Dawida.',
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _email,
-              decoration: const InputDecoration(labelText: 'E-mail', border: OutlineInputBorder()),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            if (_sent) ...[
-              const SizedBox(height: 12),
-              TextField(
-                controller: _code,
-                decoration: const InputDecoration(labelText: 'Kod z maila', border: OutlineInputBorder()),
-                onSubmitted: (_) => _go(),
-              ),
-            ],
-            const SizedBox(height: 16),
-            FilledButton(onPressed: _busy ? null : _go, child: Text(_sent ? 'Zaloguj' : 'Wyślij kod')),
-          ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 // Pulpit ---------------------------------------------------------------------------------------
