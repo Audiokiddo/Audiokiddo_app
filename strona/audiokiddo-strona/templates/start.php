@@ -75,6 +75,58 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
     </div>
 </section>
 
+<?php
+$icons = [
+    'start' => '<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    'mic' => '<rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    'play' => '<path d="M8 5.5v13l10-6.5z" fill="currentColor"/>',
+    'car' => '<path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    'moon' => '<path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    'gift' => '<path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-1.5-3-5-3-5-1s3 1 5 1zm0 0c1.5-3 5-3 5-1s-3 1-5 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+];
+?>
+<section class="ak-slide ak-app" id="aplikacja" data-slide="Aplikacja" aria-labelledby="ak-app-h">
+    <div class="ak-wrap ak-app-in">
+        <div>
+            <p class="ak-pill" data-reveal><span class="ak-flag" aria-hidden="true"></span>Aplikacja AudioKiddo · iPhone i Android</p>
+            <h2 id="ak-app-h" data-reveal>Wszystkie zabawy w jednej <span class="ak-hl-word">aplikacji</span></h2>
+            <p class="ak-sub" data-reveal>Kliknij funkcję, a telefon pokaże, jak to wygląda w aplikacji.</p>
+            <div class="ak-feats" role="tablist" aria-label="Co potrafi aplikacja" data-reveal>
+                <?php foreach (ak_app_features() as $i => [$icon, $color, $shot, $title, $text]) : ?>
+                <button type="button" role="tab" class="ak-feat ak-c-<?php echo esc_attr($color); ?>" id="ak-feat-<?php echo esc_attr($shot); ?>" aria-controls="ak-phone" aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>" data-shot="<?php echo esc_attr($shot); ?>">
+                    <span class="ak-feat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><?php echo $icons[$icon]; // static ?></svg></span>
+                    <strong><?php echo esc_html($title); ?></strong>
+                    <span class="ak-feat-text"><?php echo esc_html($text); ?></span>
+                    <span class="ak-feat-progress" aria-hidden="true"><i></i></span>
+                </button>
+                <?php endforeach; ?>
+            </div>
+            <ul class="ak-app-badges" data-reveal>
+                <li>Bez reklam</li><li>Działa offline</li><li>Bramka rodzica</li><li>Polskie głosy</li>
+            </ul>
+            <?php if (ak_app_live()) : ?>
+            <ul class="ak-plans" data-reveal>
+                <?php foreach (ak_plans() as $plan) : ?>
+                <li<?php echo !empty($plan['best']) ? ' class="ak-plan-best"' : ''; ?>><strong><?php echo esc_html($plan['name']); ?></strong><span><?php echo esc_html($plan['month']); ?> zł / mies.</span><small>albo <?php echo esc_html($plan['year']); ?> zł rocznie</small></li>
+                <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+            <?php ak_store_buttons(); ?>
+        </div>
+        <div class="ak-phone-wrap" data-reveal="scale">
+            <div class="ak-phone" id="ak-phone" role="tabpanel" aria-live="polite">
+                <div class="ak-phone-screen">
+                    <span class="ak-phone-island" aria-hidden="true"></span>
+                    <?php foreach (ak_app_features() as $i => [, , $shot, $title]) : ?>
+                    <img class="ak-phone-shot<?php echo $i === 0 ? ' is-on' : ''; ?>" data-shot="<?php echo esc_attr($shot); ?>" src="<?php echo esc_url(ak_asset('img/app/' . $shot . '.webp')); ?>" alt="Ekran aplikacji AudioKiddo: <?php echo esc_attr($title); ?>" width="600" height="1304" loading="lazy">
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <img class="ak-phone-szop" src="<?php echo esc_url(ak_asset('img/szop/zadowolony.webp')); ?>" alt="" width="420" height="392" loading="lazy">
+        </div>
+    </div>
+</section>
+
 <section class="ak-slide ak-listen-sec" id="probki" data-slide="Posłuchaj" aria-labelledby="ak-probki-h">
     <div class="ak-wrap">
         <h2 id="ak-probki-h" class="ak-center" data-reveal>Posłuchaj <span class="ak-hl-word">fragmentu</span> naszych zabaw</h2>
@@ -248,23 +300,6 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 
 <?php ak_leadmagnet(true); ?>
 
-<?php if (ak_app_live()) : ?>
-<section class="ak-slide ak-app" id="aplikacja" data-slide="Aplikacja" aria-labelledby="ak-app-h">
-    <div class="ak-wrap ak-app-in">
-        <img class="ak-app-szop" src="<?php echo esc_url(ak_asset('img/szop/nasluchuje.webp')); ?>" alt="Szop’en, maskotka aplikacji AudioKiddo" width="420" height="364" loading="lazy" data-reveal="scale">
-        <div>
-            <h2 id="ak-app-h" data-reveal>Wszystkie zabawy w <span class="ak-hl-word">aplikacji</span></h2>
-            <p class="ak-sub" data-reveal>Pakiety i nowości w jednym miejscu, także offline. Bez reklam, ustawienia za bramką rodzica. 7 dni za darmo.</p>
-            <ul class="ak-plans" data-reveal>
-                <?php foreach (ak_plans() as $plan) : ?>
-                <li<?php echo !empty($plan['best']) ? ' class="ak-plan-best"' : ''; ?>><strong><?php echo esc_html($plan['name']); ?></strong><span><?php echo esc_html($plan['month']); ?> zł / mies.</span><small>albo <?php echo esc_html($plan['year']); ?> zł rocznie</small></li>
-                <?php endforeach; ?>
-            </ul>
-            <?php ak_store_buttons(); ?>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
 
 <section class="ak-slide ak-about" id="o-nas" data-slide="O nas" aria-labelledby="ak-about-h">
     <div class="ak-wrap">

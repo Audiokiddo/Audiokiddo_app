@@ -7,6 +7,7 @@ $home = ak_view() === 'start' ? '' : home_url('/');
 $count = ak_cart_count();
 $links = [
     '#zobaczjak' => 'Jak to działa',
+    '#aplikacja' => 'Aplikacja',
     '#probki' => 'Posłuchaj',
     '#produkty' => 'Pakiety',
     '#opinie' => 'Opinie',

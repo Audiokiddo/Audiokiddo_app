@@ -155,6 +155,45 @@
     });
   });
 
+  // The app section: a feature picked beside the phone shows its screen; while the section is in
+  // view and nobody has clicked, the features take turns by themselves.
+  var appSec = $('.ak-app');
+  if (appSec) {
+    var feats = $$('.ak-feat', appSec);
+    var shots = $$('.ak-phone-shot', appSec);
+    var featAt = 0;
+    var featTimer = null;
+    var featTime = 5500;
+    var touched = false;
+    appSec.style.setProperty('--feat-time', featTime + 'ms');
+    function pick(i) {
+      featAt = (i + feats.length) % feats.length;
+      var shot = feats[featAt].getAttribute('data-shot');
+      feats.forEach(function (f, k) { f.setAttribute('aria-selected', k === featAt ? 'true' : 'false'); });
+      shots.forEach(function (img) { img.classList.toggle('is-on', img.getAttribute('data-shot') === shot); });
+      // Restart the little progress bar under the picked feature.
+      var bar = $('.ak-feat-progress i', feats[featAt]);
+      if (bar) { bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = ''; }
+    }
+    function playFeats(on) {
+      clearInterval(featTimer);
+      appSec.classList.toggle('is-playing', on && !touched && !still);
+      if (on && !touched && !still) featTimer = setInterval(function () { pick(featAt + 1); }, featTime);
+    }
+    feats.forEach(function (f, i) {
+      f.addEventListener('click', function () { touched = true; playFeats(false); pick(i); });
+      f.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); touched = true; playFeats(false); pick(i + 1); feats[featAt].focus(); }
+        if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); touched = true; playFeats(false); pick(i - 1); feats[featAt].focus(); }
+      });
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { playFeats(entry.isIntersecting); });
+      }, { threshold: 0.35 }).observe(appSec);
+    }
+  }
+
   // Parents' row: arrows, and dragging with the mouse
   var row = $('.ak-reviews');
   if (row) {
@@ -397,7 +436,7 @@
       lineTimer = setTimeout(function () { showLine(i + 1, point); }, wait);
     } else {
       seen[shown.id] = true;
-      lineTimer = setTimeout(spotOff, wait);
+      lineTimer = setTimeout(function () { spotOff(); guide.classList.add('is-idle'); }, wait + 1500);
     }
   }
   function present(slide, fromStart) {
@@ -411,19 +450,34 @@
         if (el) lines.push({ el: el, say: l.say });
       });
     }
-    if (!lines.length) { spotOff(); return; }
+    // Only a few slides are his stops; on the others (and on a stop already shown) he sits
+    // quietly in the corner, the bubble folded away.
+    var stop = lines.length && (fromStart || !seen[slide.id]);
+    guide.classList.toggle('is-idle', !stop);
+    if (!stop) {
+      clearTimeout(typeTimer);
+      guide.classList.remove('is-talking');
+      spotOff();
+      setPose('zadowolony');
+      return;
+    }
     setPose(data.pose);
     if (quiet) return;
-    // A slide already presented: one line, no spotlight, unless asked to tell it again.
-    if (seen[slide.id] && !fromStart) { at = 0; talk(lines[0].say); drawSteps(); spotOff(); return; }
     showLine(0, true);
+  }
+  /** The next slide where Szop'en has something to show. */
+  function nextStop(from) {
+    for (var i = slides.indexOf(from) + 1; i < slides.length; i++) {
+      if (tour[slides[i].id]) return slides[i];
+    }
+    return null;
   }
   function next() {
     if (!shown) return;
     if (at < lines.length - 1) { showLine(at + 1, true); return; }
-    var i = slides.indexOf(shown);
-    var following = slides[i + 1];
+    var following = nextStop(shown);
     spotOff();
+    guide.classList.add('is-idle');
     if (following) following.scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
   }
   function hush(on) {
@@ -438,7 +492,10 @@
   $('.ak-guide-hush', guide).addEventListener('click', function () { hush(true); });
   $('.ak-guide-me', guide).addEventListener('click', function () {
     if (quiet) hush(false);
-    if (current) present(current, true);
+    if (!current) return;
+    if (tour[current.id]) { present(current, true); return; }
+    var following = nextStop(current);
+    if (following) following.scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
   });
   // A tap anywhere else puts the spotlight away, so it never stands in the way.
   document.addEventListener('pointerdown', function (e) {

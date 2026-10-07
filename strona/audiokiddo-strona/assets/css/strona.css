@@ -315,14 +315,46 @@ html { scroll-behavior: smooth; }
 .ak-form-fallback[hidden] { display: none; }
 .ak-free:not(.ak-slide) { padding: 56px 0; }
 
-/* The app (once it is in the stores) */
-.ak-app-in { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: center; }
-.ak-app-szop { animation: ak-float 6s ease-in-out infinite; }
-.ak-plans { list-style: none; padding: 0; margin: 10px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.ak-plans li { background: var(--paper); border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 2px; box-shadow: inset 0 0 0 1.5px var(--line); }
-.ak-plans span { font-size: 22px; font-weight: 700; }
+/* The app: a phone that shows the screen of the feature picked beside it */
+.ak-app { background: linear-gradient(180deg, var(--cream), #FFF6E3); overflow: hidden; }
+.ak-app-in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
+.ak-app .ak-pill { margin-bottom: 18px; }
+.ak-feats { list-style: none; padding: 0; margin: 22px 0 18px; display: grid; gap: 4px; }
+.ak-feat { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 42px 1fr; gap: 2px 14px; align-items: center; width: 100%; padding: 9px 14px; border-radius: 20px; transition: background-color .35s var(--ease), box-shadow .35s var(--ease), transform .35s var(--spring); }
+.ak-feat:hover { background: rgba(255, 255, 255, .7); transform: translateX(4px); }
+.ak-feat:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+.ak-feat-icon { grid-row: span 2; width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: var(--tone, var(--sand)); color: var(--deep, var(--ink)); transition: transform .4s var(--spring); }
+.ak-feat-icon svg { width: 24px; height: 24px; }
+.ak-feat strong { font-size: 17px; line-height: 1.3; }
+.ak-feat span.ak-feat-text { font-size: 15px; color: var(--muted); line-height: 1.45; max-height: 0; overflow: hidden; opacity: 0; transition: opacity .4s var(--ease); }
+.ak-feat[aria-selected="true"] { background: var(--paper); box-shadow: var(--shadow); }
+.ak-feat[aria-selected="true"] .ak-feat-icon { transform: scale(1.06); }
+.ak-feat[aria-selected="true"] span.ak-feat-text { max-height: none; opacity: 1; }
+.ak-feat-progress { grid-column: 2; height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 8px; display: none; }
+.ak-feat[aria-selected="true"] .ak-feat-progress { display: block; }
+.ak-feat-progress i { display: block; height: 100%; width: 100%; background: var(--deep, var(--teal-deep)); transform-origin: left; transform: scaleX(0); }
+.ak-app.is-playing .ak-feat[aria-selected="true"] .ak-feat-progress i { animation: ak-progress var(--feat-time, 5s) linear forwards; }
+@keyframes ak-progress { to { transform: scaleX(1); } }
+.ak-app-badges { list-style: none; padding: 0; margin: 0 0 6px; display: flex; flex-wrap: wrap; gap: 8px; }
+.ak-app-badges li { font-size: 14px; font-weight: 600; padding: 7px 14px 7px 32px; border-radius: 999px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); position: relative; }
+.ak-app-badges li::before { content: ""; position: absolute; left: 12px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--teal-deep) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M4.5 9.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / 9px; }
+.ak-phone-wrap { position: relative; justify-self: center; width: min(320px, 78vw, calc((100svh - 150px) * 9 / 19.5)); min-width: 240px; }
+.ak-phone-wrap::before { content: ""; position: absolute; inset: 8% -18% 4%; border-radius: 50%; background: radial-gradient(closest-side, rgba(58, 175, 176, .28), transparent 70%), radial-gradient(closest-side at 70% 80%, rgba(250, 193, 25, .25), transparent 70%); filter: blur(10px); z-index: 0; }
+.ak-phone { position: relative; z-index: 1; aspect-ratio: 9 / 19.5; border-radius: 52px; padding: 11px; background: linear-gradient(145deg, #2B2838, #14121C); box-shadow: 0 40px 80px -24px rgba(36, 27, 58, .45), inset 0 0 0 2px rgba(255, 255, 255, .08); }
+.ak-phone-screen { position: relative; width: 100%; height: 100%; border-radius: 42px; overflow: hidden; background: var(--cream); }
+.ak-phone-shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transform: scale(1.03); transition: opacity .6s var(--ease), transform .8s var(--ease); }
+.ak-phone-shot.is-on { opacity: 1; transform: none; }
+.ak-phone-island { position: absolute; top: 20px; left: 50%; width: 30%; height: 26px; margin-left: -15%; border-radius: 999px; background: #0B0A10; z-index: 2; }
+.ak-phone-szop { position: absolute; z-index: 2; right: -22%; bottom: 6%; width: 44%; filter: drop-shadow(0 12px 16px rgba(36, 27, 58, .25)); animation: ak-float 6s ease-in-out infinite; }
+.ak-plans { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.ak-plans li { background: var(--paper); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 2px; box-shadow: inset 0 0 0 1.5px var(--line); }
+.ak-plans span { font-size: 20px; font-weight: 700; }
 .ak-plans small { color: var(--muted); }
 .ak-plan-best { box-shadow: inset 0 0 0 2px var(--sun) !important; }
+
+/* Szop'en between his stops: the bubble folds away, he sits smaller in the corner */
+.ak-guide.is-idle .ak-guide-bubble { opacity: 0; transform: scale(.6) translateY(20px); pointer-events: none; }
+.ak-guide.is-idle .ak-guide-me { width: 92px; height: 92px; }
 
 /* About us */
 .ak-team { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 980px; margin: 36px auto 28px; }
@@ -535,6 +567,16 @@ html { scroll-behavior: smooth; }
 }
 @media (max-width: 960px) {
   .ak-hero-in, .ak-free-in, .ak-app-in { grid-template-columns: 1fr; }
+  /* Phones and tablets: title, then the phone, then the features under it. */
+  .ak-app-in { gap: 22px; }
+  .ak-app-in > div:first-child { display: contents; }
+  .ak-app .ak-pill, .ak-app h2, .ak-app .ak-sub { order: 0; }
+  .ak-phone-wrap { order: 1; width: min(250px, 64vw); }
+  .ak-feats { order: 2; margin: 0; }
+  .ak-app-badges { order: 3; }
+  .ak-app .ak-plans { order: 4; }
+  .ak-app .ak-stores { order: 5; margin-top: 0; }
+  .ak-phone-szop { right: -30%; width: 40%; }
   .ak-hero-txt { text-align: center; }
   .ak-hero-sub { margin-inline: auto; }
   .ak-hero-btns { justify-content: center; }

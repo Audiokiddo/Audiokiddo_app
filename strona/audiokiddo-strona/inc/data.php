@@ -146,6 +146,22 @@ function ak_app_live(): bool
     return ak_opt('app_store_url') !== '' || ak_opt('google_play_url') !== '';
 }
 
+/**
+ * What the app does, each with a real screen from it (assets/img/app, made from the simulator):
+ * icon, colour, the screen, a title and one sentence. The phone on the page shows them in turn.
+ */
+function ak_app_features(): array
+{
+    return [
+        ['start', 'teal', 'start', 'Gotowy plan na dziś', 'Start podpowiada jedną zabawę na teraz, dobraną do wieku i tego, co chcecie ćwiczyć. Bez przewijania i szukania.'],
+        ['mic', 'lav', 'mikrofon', 'Dziecko odpowiada na głos', 'Mówi „lew!” albo klaszcze, a historia idzie dalej po jego myśli. Słowa rozpoznaje sam telefon, nic nie jest nagrywane.'],
+        ['play', 'sun', 'odtwarzacz', 'Telefon leży ekranem w dół', 'Włączasz zabawę i odkładasz telefon. Dziecko słucha, rusza się i wymyśla, a Ty masz chwilę dla siebie.'],
+        ['car', 'teal', 'podroz', 'Tryb „W drogę”', 'Powiedz, ile jedziecie, a Szop’en ułoży zabawy na całą trasę, z przerwami na wyglądanie przez okno.'],
+        ['moon', 'lav', 'dobranoc', 'Wieczorny rytuał', 'Trzy oddechy, cicha zabawa i „dobranoc” od Szop’ena. Możesz nagrać swoje, własnym głosem.'],
+        ['gift', 'sun', 'prezent', '3 zabawy na start, za darmo', 'Po jednej z każdego pakietu, Wasze na zawsze. Sprawdzisz, czy dziecku się spodoba, zanim cokolwiek kupisz.'],
+    ];
+}
+
 /** Subscription in the app (App Store / Google Play), the same for both. */
 function ak_plans(): array
 {
@@ -275,59 +291,28 @@ function ak_people(): array
 }
 
 /**
- * Szop'en presents the home page slide by slide while the parent scrolls: for each slide his pose
- * and what he says, each line pointing at one thing on the slide (a CSS selector inside it; a line
- * whose element is missing is skipped). Short lines: on a phone they sit in a small bubble.
+ * Szop'en points at the few things that matter, not at every slide: where to start, how the app
+ * works, a sample to hear, the cheapest set and the free pack. Elsewhere he sits quietly in his
+ * corner. For each stop: his pose and one short line about one element (a CSS selector inside the
+ * slide; a stop whose element is missing is skipped).
  */
 function ak_tour(): array
 {
     return [
         'start' => ['chytry', [
-            ['h1', 'Psst, tu Szop’en! Pokażę Ci w minutę, o co tu chodzi. Po prostu przewijaj, ja gadam.'],
-            ['.ak-hero-sub', 'W skrócie: audiozabawy. Dziecko słucha, odpowiada i kombinuje. A ekran? Odpoczywa w szufladzie.'],
+            ['.ak-hero-btns', 'Psst, tu Szop’en! Pokażę Ci tylko cztery najważniejsze rzeczy. Przewijaj spokojnie, odezwę się sam.'],
         ]],
-        'zobaczjak' => ['klaszcze', [
-            ['.ak-statement', 'To nie audiobook do biernego słuchania. Narrator pyta, robi pauzę, a dziecko odpowiada na głos.'],
-            ['.ak-does', 'Słucha, odpowiada, rozwiązuje, uczy się. Wszystko naraz, a Ty w tym czasie pijesz kawę. Ciepłą. ☕'],
+        'aplikacja' => ['zadowolony', [
+            ['.ak-phone', 'Tak wygląda aplikacja. Kliknij funkcję obok, a telefon pokaże, jak to działa.'],
         ]],
         'probki' => ['nasluchuje', [
-            ['.ak-sample:first-child .ak-play', 'Kliknij play. Ten czarodziej to Profesor Fantazjusz, czyli głos Dawida. Facet ma 100 głosów, serio.'],
-            ['.ak-samples', 'Trzy pakiety, trzy klimaty. Posłuchaj wszystkich, nie gryzą.'],
-        ]],
-        'w-akcji' => ['zdziwiony', [
-            ['.ak-videos', 'A tak to wygląda na żywo. Dzieci zgadują i krzyczą „Drzewo!”. Kliknij film, włączy się z dźwiękiem.'],
+            ['.ak-sample:first-child .ak-play', 'Najlepiej posłuchać. Kliknij play: to Profesor Fantazjusz, czyli głos Dawida.'],
         ]],
         'produkty' => ['chytry', [
-            ['.ak-group-young', 'Dla młodszych, od 4 lat: Wyobraźnia oraz Słowa i Wiedza. Po 10 zabaw w każdym.'],
-            ['.ak-group-old', 'Dla starszych, od 7 lat: Detektyw. Prawdziwe sprawy i akta do wydrukowania. Moje ulubione. 🕵️'],
-            ['.ak-bundle-best', 'Cwana rada: zestaw trzech wychodzi najtaniej. Ja bym brał.'],
-            ['.ak-perks', 'Bez ekranów, w sam raz na podróż, a pliki masz od razu po zakupie.'],
-        ]],
-        'dlaczego' => ['zadowolony', [
-            ['.ak-reasons', 'Bez reklam, bez dziwnych treści, działa wszędzie. Rodzic może spać spokojnie. No, prawie.'],
-        ]],
-        'specjalisci' => ['zadowolony', [
-            ['.ak-expert:nth-child(1)', 'Fizjoterapeutka dziecięca: zdrowa alternatywa dla ekranu. To nie ja wymyśliłem, ona tak mówi.'],
-            ['.ak-expert:nth-child(2)', 'A logopeda: rozwijają mowę, myślenie i koncentrację. Zapamiętaj na kłótnię o tablet.'],
-        ]],
-        'opinie' => ['klaszcze', [
-            ['.ak-reviews', 'Mamy już sprawdziły. Tosia sama prosi o kolejne zagadki. Przesuń, jest tego więcej.'],
+            ['.ak-bundle-best', 'Cwana rada: zestaw trzech pakietów wychodzi najtaniej.'],
         ]],
         'darmowy' => ['prosi', [
-            ['.ak-free-form', 'A teraz najlepsze: 3 audiozabawy za darmo. Wpisujesz e-mail, ja zacieram łapki.'],
-            ['.ak-free-img', 'Po jednej zabawie z każdego pakietu i akta sprawy. Sprawdzisz bez wydawania złotówki.'],
-        ]],
-        'aplikacja' => ['nasluchuje', [
-            ['.ak-app-in', 'Pracujemy nad aplikacją. Wszystkie zabawy w jednym miejscu, także offline.'],
-        ]],
-        'o-nas' => ['zadowolony', [
-            ['.ak-team', 'To Nela i Dawid. Sami piszą, nagrywają i odpisują na maile. Mnie też wymyślili.'],
-        ]],
-        'pytania' => ['zdziwiony', [
-            ['.ak-faq', 'Masz pytanie? Pewnie ktoś już je zadał. Kliknij, a odpowiedź się rozwinie.'],
-        ]],
-        'koniec' => ['zadowolony', [
-            ['.ak-end-btns', 'To tyle ode mnie! Gdyby coś, siedzę w rogu. Kliknij mnie, a opowiem wszystko od nowa.'],
+            ['.ak-free-form', 'Na koniec najlepsze: trzy zabawy za darmo. Wystarczy e-mail.'],
         ]],
     ];
 }
