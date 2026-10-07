@@ -131,7 +131,7 @@ void main() {
       await tester.pumpAndSettle();
       // Where the family heard of us: optional.
       expect(tester.takeException(), isNull, reason: 'source question on $name');
-      await tester.ensureVisible(find.text('Pomiń'));
+      await tester.scrollUntilVisible(find.text('Pomiń'), 200, scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text('Pomiń'));
       await tester.pumpAndSettle();
       for (var stop = 0; stop < tourStops.length; stop++) {
