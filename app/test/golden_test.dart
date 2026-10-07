@@ -1,17 +1,26 @@
 import 'package:audiokiddo/core/widgets/ambient_motion.dart';
 import 'package:audiokiddo/core/widgets/golden_hello.dart';
-import 'package:audiokiddo/core/widgets/raccoon_painter.dart';
 import 'package:audiokiddo/core/widgets/kiddo.dart';
 import 'package:audiokiddo/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-RaccoonPainter painter(WidgetTester t) => t
-    .widgetList<CustomPaint>(find.byType(CustomPaint))
-    .map((w) => w.painter)
-    .whereType<RaccoonPainter>()
-    .single;
+/// Szop’en's gentle bob: the vertical offset of his sticker now (0 when he stands still).
+double bob(WidgetTester t) => t
+    .widget<Transform>(find.descendant(of: find.byType(Kiddo), matching: find.byType(Transform)).first)
+    .transform
+    .getTranslation()
+    .y;
+
+/// Whether he moves: the bob changes between two frames.
+Future<bool> moving(WidgetTester t) async {
+  final before = bob(t);
+  await t.pump(const Duration(milliseconds: 137));
+  return bob(t) != before;
+}
+
+KiddoMood mood(WidgetTester t) => t.widget<Kiddo>(find.byType(Kiddo).last).mood;
 
 void main() {
   test('outfit respects local day boundaries', () {
@@ -45,17 +54,17 @@ void main() {
 
     await mount();
     await t.pump(const Duration(milliseconds: 400));
-    expect(painter(t).animated, isTrue);
+    expect(await moving(t), isTrue);
     await mount(reduce: true);
     await t.pump(const Duration(seconds: 1));
-    expect(painter(t).animated, isFalse);
-    expect(painter(t).phase, 0);
+    expect(await moving(t), isFalse);
+    expect(bob(t), 0);
     await mount(visible: false);
     await t.pump(const Duration(seconds: 1));
-    expect(painter(t).animated, isFalse);
+    expect(await moving(t), isFalse);
     await mount();
     await t.pump(const Duration(milliseconds: 100));
-    expect(painter(t).animated, isTrue);
+    expect(await moving(t), isTrue);
     await t.pumpWidget(const SizedBox());
   });
   testWidgets('background suspends motion and foreground restores it', (t) async {
@@ -63,10 +72,10 @@ void main() {
     await t.pump(const Duration(milliseconds: 100));
     t.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
     await t.pump();
-    expect(painter(t).animated, isFalse);
+    expect(await moving(t), isFalse);
     t.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await t.pump();
-    expect(painter(t).animated, isTrue);
+    expect(await moving(t), isTrue);
     await t.pumpWidget(const SizedBox());
   });
   testWidgets('parent encounter remains usable on small screen with large text', (t) async {
@@ -94,9 +103,9 @@ void main() {
     await t.ensureVisible(find.text('Masz coś jeszcze?'));
     await t.tap(find.text('Masz coś jeszcze?'));
     await t.pump();
-    expect(painter(t).mood, KiddoMood.happy);
+    expect(mood(t), KiddoMood.happy);
     await t.pump(const Duration(milliseconds: 1200));
-    expect(painter(t).mood, KiddoMood.idle);
+    expect(mood(t), KiddoMood.idle);
     await t.pumpAndSettle();
     expect(t.takeException(), isNull);
     await t.ensureVisible(find.text('Wybieram zabawę'));

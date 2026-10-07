@@ -304,12 +304,13 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   }
 
   Future<void> _sendCode() async {
-    if (widget.consent != null && !_consented) {
-      setState(() => _error = 'Zaznacz zgodę na regulamin i politykę prywatności.');
-      return;
-    }
+    // In the order of the fields on screen: the password above, the consent below it.
     if (widget.offerPassword && _password.text.length < minPasswordLength) {
       setState(() => _error = AppLocalizations.of(context).accountErrorWeakPassword);
+      return;
+    }
+    if (widget.consent != null && !_consented) {
+      setState(() => _error = 'Zaznacz zgodę na regulamin i politykę prywatności.');
       return;
     }
     final email = _email.text.trim();
