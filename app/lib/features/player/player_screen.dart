@@ -23,6 +23,7 @@ import 'audio_handler.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
 import 'szop_after_play.dart';
+import '../referral/referral_nudge.dart';
 
 class PlayerScreen extends StatelessWidget {
   const PlayerScreen({super.key});
@@ -97,6 +98,7 @@ class _Player extends ConsumerWidget {
                 if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
                 if (item != null && state?.processingState == AudioProcessingState.completed) ...[
                   _UpNext(after: item),
+                  const ReferralNudge(),
                 ],
                 item == null
                     ? Center(
