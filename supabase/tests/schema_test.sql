@@ -448,3 +448,23 @@ begin
   assert not exists (select 1 from public.entitlements where user_id = u and status = 'active'), 'refund ends the gift';
 end $$;
 select 'gift tests passed';
+
+-- Ad spend and CAC.
+do $$
+declare
+  m jsonb;
+begin
+  insert into public.ad_spend (month, channel, amount) values (date_trunc('month', now())::date, 'meta', 300);
+  insert into public.web_purchases_pending (woo_order_id, product_ref, email_normalized, order_status)
+    values (5001, 'woo:1', 'nowa@example.com', 'completed'), (5002, 'woo:1', 'druga@example.com', 'completed');
+  m := public.admin_economics(30);
+  assert (m ->> 'spend_total')::numeric = 300, m::text;
+  assert (m ->> 'new_paying_web')::int >= 2, m::text;
+  assert (m ->> 'cac_total')::numeric > 0, m::text;
+  begin
+    insert into public.ad_spend (month, channel, amount) values ('2026-10-15', 'meta', 1);
+    assert false, 'months are whole months';
+  exception when check_violation then null;
+  end;
+end $$;
+select 'ad spend tests passed';

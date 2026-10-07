@@ -74,7 +74,12 @@ class _KpiScreenState extends ConsumerState<KpiScreen> {
                 children: [
                   _Ceo(k: _map(k['ceo'])),
                   _Product(p: _map(k['product'])),
-                  _Growth(rows: _list(k['growth']), money: _map(k['monetization'])),
+                  _Growth(
+                    rows: _list(k['growth']),
+                    money: _map(k['monetization']),
+                    economics: _map(k['economics']),
+                    onSpendSaved: () => _set(),
+                  ),
                   _Tech(h: _map(k['data_health']), money: _map(k['monetization'])),
                 ],
               );
@@ -303,16 +308,46 @@ class _ProductState extends ConsumerState<_Product> {
 
 /// Where good families come from: by the parent's answer "Skąd o nas wiecie?".
 class _Growth extends StatelessWidget {
-  const _Growth({required this.rows, required this.money});
+  const _Growth({required this.rows, required this.money, required this.economics, required this.onSpendSaved});
 
   final List<Map<String, dynamic>> rows;
   final Map<String, dynamic> money;
+  final Map<String, dynamic> economics;
+  final VoidCallback onSpendSaved;
 
   @override
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.all(24),
     children: [
       const _Lead('Skąd przychodzą dobrzy klienci?'),
+      Text('Wydatki na reklamę i CAC', style: Theme.of(context).textTheme.titleMedium),
+      const SizedBox(height: 8),
+      _Tiles([
+        KpiTile('Wydatki w okresie', '${_num(economics['spend_total'])} zł'),
+        KpiTile(
+          'Nowi płacący',
+          _num(economics['new_paying_total']),
+          hint: 'Sklep ${_num(economics['new_paying_web'])} · prezenty ${_num(economics['new_paying_gifts'])} · '
+              'aplikacja ${_num(economics['new_paying_app'])}',
+        ),
+        KpiTile('CAC', economics['cac_total'] == null ? '–' : '${economics['cac_total']} zł',
+            hint: 'Wydatki / nowi płacący. Nie skalujemy, gdy CAC > zysk z klienta'),
+      ]),
+      for (final c in _list(economics['channels']))
+        ListTile(
+          dense: true,
+          title: Text(_channelName('${c['channel']}')),
+          subtitle: Text('Nowi płacący w aplikacji: ${c['new_paying_app']}'),
+          trailing: Text('${c['spend']} zł · CAC ${c['cac_app'] == null ? '–' : '${c['cac_app']} zł'}'),
+        ),
+      _SpendForm(onSaved: onSpendSaved),
+      for (final m in _list(economics['months']))
+        ListTile(
+          dense: true,
+          title: Text('${'${m['month']}'.substring(0, 7)} · ${_channelName('${m['channel']}')}'),
+          trailing: Text('${m['amount']} zł'),
+        ),
+      const Divider(height: 32),
       const Text(
         'Źródło to odpowiedź rodzica na pytanie „Skąd o nas wiecie?” po powitaniu. Liczą się aktywacje i '
         'płacące rodziny, nie same instalacje. CAC według kanału pojawi się po dopisaniu wydatków na reklamę.',
@@ -400,6 +435,97 @@ class _Tech extends StatelessWidget {
       ],
     );
   }
+}
+
+String _channelName(String s) => switch (s) {
+  'meta' => 'Meta (Facebook, Instagram)',
+  'tiktok' => 'TikTok',
+  'google' => 'Google',
+  'influencer' => 'Influencerzy',
+  _ => 'Inne',
+};
+
+/// One line to type a month's spend for a channel; saving reloads the numbers.
+class _SpendForm extends ConsumerStatefulWidget {
+  const _SpendForm({required this.onSaved});
+
+  final VoidCallback onSaved;
+
+  @override
+  ConsumerState<_SpendForm> createState() => _SpendFormState();
+}
+
+class _SpendFormState extends ConsumerState<_SpendForm> {
+  late final _month = TextEditingController(
+    text: '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}',
+  );
+  final _amount = TextEditingController();
+  String _channel = 'meta';
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _month.dispose();
+    _amount.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final parts = _month.text.trim().split('-');
+    final amount = double.tryParse(_amount.text.trim().replaceAll(',', '.'));
+    final year = parts.length == 2 ? int.tryParse(parts[0]) : null;
+    final month = parts.length == 2 ? int.tryParse(parts[1]) : null;
+    if (year == null || month == null || month < 1 || month > 12 || amount == null || amount < 0) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Podaj miesiąc RRRR-MM i kwotę.')));
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await ref.read(studioServerProvider).saveAdSpend(DateTime(year, month), _channel, amount);
+      _amount.clear();
+      widget.onSaved();
+    } on Object catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 12),
+    child: Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        SizedBox(
+          width: 120,
+          child: TextField(
+            controller: _month,
+            decoration: const InputDecoration(labelText: 'Miesiąc', border: OutlineInputBorder(), isDense: true),
+          ),
+        ),
+        DropdownButton<String>(
+          value: _channel,
+          items: [
+            for (final c in ['meta', 'tiktok', 'google', 'influencer', 'other'])
+              DropdownMenuItem(value: c, child: Text(_channelName(c))),
+          ],
+          onChanged: (v) => setState(() => _channel = v ?? _channel),
+        ),
+        SizedBox(
+          width: 140,
+          child: TextField(
+            controller: _amount,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(labelText: 'Kwota zł', border: OutlineInputBorder(), isDense: true),
+          ),
+        ),
+        FilledButton(onPressed: _busy ? null : _save, child: const Text('Zapisz wydatek')),
+      ],
+    ),
+  );
 }
 
 String _sourceName(String s) => switch (s) {

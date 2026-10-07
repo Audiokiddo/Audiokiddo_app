@@ -37,6 +37,14 @@ final _sample = <String, dynamic>{
   'growth': [
     {'source': 'tiktok', 'new_families': 50, 'activated': 20, 'paid': 4, 'activation': 40.0, 'paid_rate': 8.0},
   ],
+  'economics': {
+    'spend_total': 300,
+    'new_paying_total': 12,
+    'cac_total': 25.0,
+    'channels': [
+      {'channel': 'meta', 'spend': 300, 'new_paying_app': 4, 'cac_app': 75.0},
+    ],
+  },
   'monetization': {'free_to_paywall': 30.0, 'checkout': {'started': 5, 'done': 3, 'failed': {'canceled': 2}}},
   'data_health': {'events': 1200, 'with_age_group': 97.5, 'versions': {'0.2.0 ios': 30}},
 };
@@ -79,7 +87,9 @@ void main() {
 
     await tester.tap(find.text('Growth'));
     await tester.pumpAndSettle();
-    expect(find.text('TikTok'), findsOneWidget);
+    expect(find.text('TikTok'), findsWidgets);
+    expect(find.text('25.0 zł'), findsOneWidget, reason: 'CAC from the ad spend');
+    expect(find.text('Zapisz wydatek'), findsOneWidget);
 
     await tester.tap(find.text('Tech i dane'));
     await tester.pumpAndSettle();

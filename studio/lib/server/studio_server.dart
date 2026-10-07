@@ -146,6 +146,14 @@ class StudioServer {
     'updated_at': DateTime.now().toIso8601String(),
   });
 
+  /// Ad spend of one month and channel (ad_spend); month is the first day of the month.
+  Future<void> saveAdSpend(DateTime month, String channel, double amount) => client.from('ad_spend').upsert({
+    'month': '${month.year}-${month.month.toString().padLeft(2, '0')}-01',
+    'channel': channel,
+    'amount': amount,
+    'updated_at': DateTime.now().toIso8601String(),
+  });
+
   Future<Map<String, dynamic>> stats(int days) async =>
       Map<String, dynamic>.from(await _admin({'action': 'stats', 'days': days}) as Map);
 
