@@ -9,7 +9,10 @@ import 'package:go_router/go_router.dart';
 
 import 'package:audiokiddo/features/welcome/szop_tour.dart';
 
+import 'package:audiokiddo/features/player/player_providers.dart';
+
 import 'helpers.dart';
+import 'queue_runner_test.dart' show QueueAudio;
 
 /// Every main screen on the smallest iPhone (SE, 320×568 pt) and a large-text dark phone,
 /// plus an iPad: no overflow, nothing thrown. Catches cut-off text the simulators miss.
@@ -68,7 +71,11 @@ Future<void> pumpDevice(
   await db.writeValue('family_children', jsonEncode([child.toJson()]));
   await tester.pumpWidget(
     ProviderScope(
-      overrides: testOverrides(db, onboardingDone: onboardingDone, welcomeDone: welcomeDone),
+      overrides: [
+        ...testOverrides(db, onboardingDone: onboardingDone, welcomeDone: welcomeDone),
+        // The car-style session screen shows the player's state and buttons.
+        audioHandlerProvider.overrideWithValue(QueueAudio()),
+      ],
       child: const AudioKiddoApp(),
     ),
   );
@@ -121,6 +128,11 @@ void main() {
       await tester.ensureVisible(find.text('Nie teraz'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Nie teraz'));
+      await tester.pumpAndSettle();
+      // Where the family heard of us: optional.
+      expect(tester.takeException(), isNull, reason: 'source question on $name');
+      await tester.ensureVisible(find.text('Pomiń'));
+      await tester.tap(find.text('Pomiń'));
       await tester.pumpAndSettle();
       for (var stop = 0; stop < tourStops.length; stop++) {
         expect(tester.takeException(), isNull, reason: 'tour stop ${stop + 1} on $name');

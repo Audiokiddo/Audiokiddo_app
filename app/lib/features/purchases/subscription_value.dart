@@ -46,17 +46,17 @@ class SubscriptionOffer extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(color: ink, borderRadius: BorderRadius.circular(8)),
-                child: Text(
-                  'NAJLEPIEJ SIĘ OPŁACA',
-                  style: text.labelSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
-                ),
+          // A badge as wide as its words; on a narrow phone with large text it wraps.
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(color: ink, borderRadius: BorderRadius.circular(8)),
+              child: Text(
+                'NAJLEPIEJ SIĘ OPŁACA',
+                style: text.labelSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
               ),
-            ],
+            ),
           ),
           const SizedBox(height: 8),
           Text(
