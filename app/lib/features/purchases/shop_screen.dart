@@ -25,6 +25,8 @@ import '../pdf/guide_links.dart';
 import '../promotions/promotions.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
+import '../insights/events.dart';
+import 'manage_subscription.dart';
 import 'shop.dart';
 import 'store_gateway.dart';
 import 'subscription_value.dart';
@@ -42,6 +44,14 @@ class ShopScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     listenPurchaseMessages(context, ref);
+    return TrackOnce(
+      event: AppEvent.paywallView,
+      props: const {'from': 'subscription_screen'},
+      child: _shop(context, ref),
+    );
+  }
+
+  Widget _shop(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: standalone ? AppBar(title: const Text('Abonament i pakiety')) : null,
       body: SafeArea(
@@ -299,11 +309,11 @@ class _PriceList extends StatelessWidget {
   }
 }
 
-class _FullAccessCard extends StatelessWidget {
+class _FullAccessCard extends ConsumerWidget {
   const _FullAccessCard();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final text = Theme.of(context).textTheme;
     const ink = Colors.white;
     return Container(
@@ -340,7 +350,7 @@ class _FullAccessCard extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: TextButton(
               style: TextButton.styleFrom(foregroundColor: AkBrand.sun),
-              onPressed: () => openWithGate(context, manageSubscriptionsUrl),
+              onPressed: () => manageSubscription(context, ref),
               child: const Text('Zarządzaj subskrypcją'),
             ),
           ),
@@ -758,6 +768,14 @@ class PackScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     listenPurchaseMessages(context, ref);
+    return TrackOnce(
+      event: AppEvent.paywallView,
+      props: {'from': 'package_open', 'pack': packId},
+      child: _page(context, ref),
+    );
+  }
+
+  Widget _page(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         // Opened from a link there is nothing to go back to: lead to the Shop tab instead.

@@ -17,6 +17,7 @@ import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../discovery/queue_controller.dart';
 import '../home/quick_pick.dart';
+import '../insights/events.dart';
 import '../pdf/case_files_card.dart';
 import 'audio_handler.dart';
 import 'audio_route.dart';
@@ -24,6 +25,8 @@ import 'bottom_dock.dart' show hiddenResumeProvider;
 import 'playback_controller.dart';
 import 'player_providers.dart';
 import 'szop_after_play.dart';
+import '../referral/referral_nudge.dart';
+import '../stickers/stickers.dart';
 
 class PlayerScreen extends StatelessWidget {
   const PlayerScreen({super.key});
@@ -75,7 +78,7 @@ class _Player extends ConsumerWidget {
             tooltip: favorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych',
             onPressed: item == null
                 ? null
-                : () => ref.read(personalRepositoryProvider).setFavorite(item.id, favorite: !favorite),
+                : () => setFavoriteTracked(ref, item.id, favorite: !favorite),
             icon: Icon(favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded),
           ),
         ],
@@ -96,7 +99,11 @@ class _Player extends ConsumerWidget {
                 FilledButton(onPressed: () => context.go('/biblioteka'), child: const Text('Otwórz bibliotekę')),
               ] else ...[
                 if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
-                if (item != null && state?.processingState == AudioProcessingState.completed) ...[_UpNext(after: item)],
+                if (item != null && state?.processingState == AudioProcessingState.completed) ...[
+                  const NewStickerCard(),
+                  _UpNext(after: item),
+                  const ReferralNudge(),
+                ],
                 item == null
                     ? Center(
                         child: ConstrainedBox(

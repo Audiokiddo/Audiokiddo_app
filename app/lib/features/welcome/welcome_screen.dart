@@ -11,6 +11,7 @@ import '../catalog/widgets/content_cover.dart';
 import '../family/child_quiz.dart';
 import '../family/family.dart';
 import '../insights/events.dart';
+import '../insights/source_question.dart';
 import '../kids_mode/kids_mode_controller.dart';
 import '../reminders/reminder_offer.dart';
 import '../about/about_screen.dart';
@@ -32,7 +33,7 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-enum _Stage { thanks, fanfare, quiz, microphone, reminders }
+enum _Stage { thanks, fanfare, quiz, microphone, reminders, source }
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   _Stage _stage = _Stage.thanks;
@@ -57,7 +58,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         onDone: () => setState(() => _stage = _Stage.microphone),
       ),
       _Stage.microphone => MicrophoneOffer(onDone: () => setState(() => _stage = _Stage.reminders)),
-      _Stage.reminders => ReminderOffer(onDone: _complete),
+      _Stage.reminders => ReminderOffer(onDone: () => setState(() => _stage = _Stage.source)),
+      _Stage.source => SourceQuestion(onDone: _complete),
     },
   );
 }

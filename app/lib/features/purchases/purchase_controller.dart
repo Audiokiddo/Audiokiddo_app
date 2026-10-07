@@ -182,16 +182,23 @@ class PurchaseController extends Notifier<PurchaseUiState> {
 
   Future<void> buy(StoreProduct product) async {
     state = PurchaseUiState(busyProductId: product.id);
-    ref.read(eventSinkProvider).track(AppEvent.purchaseStart, props: {'product': product.id});
+    ref
+        .read(eventSinkProvider)
+        .track(
+          AppEvent.purchaseStart,
+          props: {'product': product.id, 'price': ?product.rawPrice, 'currency': ?product.currencyCode},
+        );
     try {
       // Ties the purchase to our server user (appAccountToken / obfuscatedAccountId), so
       // store notifications find the right account.
       final account = await ref.read(accountServiceProvider).purchaseAccountId();
       await ref.read(storeGatewayProvider).buy(product, accountToken: account);
     } on StoreNotReady {
+      _failed(product.id, 'store_not_ready');
       state = const PurchaseUiState(message: PurchaseMessage.storeNotReady);
       return;
     } on Object {
+      _failed(product.id, 'store_error');
       state = const PurchaseUiState(message: PurchaseMessage.storeError);
       return;
     }
@@ -205,6 +212,9 @@ class PurchaseController extends Notifier<PurchaseUiState> {
   }
 
   Timer? _watchdog;
+
+  void _failed(String product, String error) =>
+      ref.read(eventSinkProvider).track(AppEvent.checkoutFailed, props: {'product': product, 'error_type': error});
 
   Future<void> restore() async {
     _restoring = true;
@@ -231,8 +241,10 @@ class PurchaseController extends Notifier<PurchaseUiState> {
         case PurchaseStatus.pending:
           state = const PurchaseUiState(message: PurchaseMessage.pendingApproval);
         case PurchaseStatus.canceled:
+          _failed(p.productId, 'canceled');
           state = const PurchaseUiState(message: PurchaseMessage.canceled);
         case PurchaseStatus.error:
+          _failed(p.productId, 'store_error');
           state = const PurchaseUiState(message: PurchaseMessage.storeError);
         case PurchaseStatus.purchased || PurchaseStatus.restored:
           _restoring = false;
@@ -248,6 +260,7 @@ class PurchaseController extends Notifier<PurchaseUiState> {
             }
             if (ref.mounted) state = const PurchaseUiState(message: PurchaseMessage.success);
           } else {
+            _failed(p.productId, 'verify_failed');
             state = const PurchaseUiState(message: PurchaseMessage.verifyLater);
           }
       }

@@ -30,13 +30,27 @@ import 'widgets/labels.dart';
 import '../../core/router.dart';
 import '../insights/events.dart';
 
-class DetailsScreen extends StatelessWidget {
+class DetailsScreen extends ConsumerStatefulWidget {
   const DetailsScreen({super.key, required this.itemId, this.autoplay = false});
 
   final String itemId;
 
   /// Opened from the home-screen widget (`?graj=1`): starts at once when the family can play it.
   final bool autoplay;
+
+  @override
+  ConsumerState<DetailsScreen> createState() => _DetailsScreenState();
+}
+
+class _DetailsScreenState extends ConsumerState<DetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // "Nobody opens it" and "opened but not started" are different problems.
+    ref.read(eventSinkProvider).track(AppEvent.gameViewed, itemId: widget.itemId);
+  }
+
+  String get itemId => widget.itemId;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +61,7 @@ class DetailsScreen extends StatelessWidget {
           final item = catalog.item(itemId);
           if (item == null) return Center(child: Text(AppLocalizations.of(context).notFound));
           final content = _DetailsContent(item: item, pack: item.packId == null ? null : catalog.pack(item.packId!));
-          return autoplay ? _AutoPlay(item: item, child: content) : content;
+          return widget.autoplay ? _AutoPlay(item: item, child: content) : content;
         },
       ),
     );
@@ -106,7 +120,7 @@ class _DetailsContent extends ConsumerWidget {
 
   // The offer itself asks for an adult before any purchase (buyWithGate).
   Future<void> _unlock(BuildContext context, WidgetRef ref) async {
-    ref.read(eventSinkProvider).track(AppEvent.paywallView, itemId: item.id);
+    ref.read(eventSinkProvider).track(AppEvent.paywallView, itemId: item.id, props: {'from': 'locked_game'});
     await context.push('/oferta?zabawa=${item.id}');
   }
 
@@ -384,7 +398,7 @@ class _FavoriteButton extends ConsumerWidget {
       isSelected: favorite,
       icon: const Icon(Icons.favorite_border_rounded),
       selectedIcon: Icon(Icons.favorite_rounded, color: Theme.of(context).colorScheme.error),
-      onPressed: () => ref.read(personalRepositoryProvider).setFavorite(itemId, favorite: !favorite),
+      onPressed: () => setFavoriteTracked(ref, itemId, favorite: !favorite),
     );
   }
 }

@@ -615,3 +615,101 @@ do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000
 do $$ begin assert (select count(*) from public.ads_creatives) = 0, 'a parent reads no creatives'; end $$;
 reset role;
 select 'ads growth tests passed';
+
+-- Analytics annex: North Star, activation, per-play table, drop-off and growth by source.
+do $$
+declare
+  k jsonb;
+  g jsonb;
+  f constant uuid := '66666666-6666-6666-6666-666666666666';
+  h constant uuid := '77777777-7777-7777-7777-777777777777';
+begin
+  insert into public.app_events (install_id, event, item_id, props, created_at, age_group, source, session_id) values
+    -- Family F: new, finishes a play, starts another (activated), back the next day (returning).
+    (f, 'first_open', null, '{}', now() - interval '3 days', '3-5', 'tiktok', gen_random_uuid()),
+    (f, 'game_viewed', 'zgubiona-gwiazdka', '{}', now() - interval '3 days' + interval '1 minute', '3-5', 'tiktok', null),
+    (f, 'play_start', 'zgubiona-gwiazdka', '{"free":true,"play_number":1}', now() - interval '3 days' + interval '2 minutes', '3-5', 'tiktok', null),
+    (f, 'play_complete', 'zgubiona-gwiazdka', '{}', now() - interval '3 days' + interval '12 minutes', '3-5', 'tiktok', null),
+    (f, 'play_start', 'magiczny-sklep', '{"play_number":1}', now() - interval '3 days' + interval '13 minutes', '3-5', 'tiktok', null),
+    (f, 'play_exit', 'magiczny-sklep', '{"exit_second":395,"pct":40}', now() - interval '3 days' + interval '20 minutes', '3-5', 'tiktok', null),
+    (f, 'play_start', 'zgubiona-gwiazdka', '{"play_number":2}', now() - interval '2 days', '3-5', 'tiktok', null),
+    (f, 'play_complete', 'zgubiona-gwiazdka', '{}', now() - interval '2 days' + interval '10 minutes', '3-5', 'tiktok', null),
+    (f, 'search_performed', null, '{"query":"dinozaury","results":0}', now() - interval '2 days', '3-5', 'tiktok', null),
+    -- Family H: new, starts once and leaves early, never finishes.
+    (h, 'first_open', null, '{}', now() - interval '2 days', '7-9', null, null),
+    (h, 'play_start', 'magiczny-sklep', '{"free":true,"play_number":1}', now() - interval '2 days' + interval '30 minutes', '7-9', null, null),
+    (h, 'play_exit', 'magiczny-sklep', '{"exit_second":410,"pct":42}', now() - interval '2 days' + interval '37 minutes', '7-9', null, null);
+  k := public.admin_kpi(30);
+  assert (k -> 'ceo' ->> 'weekly_returning_families')::int >= 1, k -> 'ceo';
+  assert (k -> 'ceo' ->> 'new_activated')::int >= 1, k -> 'ceo';
+  assert (k -> 'ceo' -> 'funnel' ->> 'first_play')::int >= 2, k -> 'ceo' -> 'funnel';
+  assert k -> 'product' -> 'dropoff' -> 'magiczny-sklep' @> '[[390, 2]]', k -> 'product' -> 'dropoff';
+  assert k -> 'product' -> 'searches' -> 0 ->> 'query' = 'dinozaury', k -> 'product' -> 'searches';
+  select x into g from jsonb_array_elements(k -> 'growth') x where x ->> 'source' = 'tiktok';
+  assert (g ->> 'activated')::int = 1, k -> 'growth';
+  assert (k -> 'data_health' ->> 'events')::int > 0;
+  -- Per age band: only the 7-9 family.
+  k := public.admin_kpi(30, '7-9');
+  assert (k -> 'ceo' ->> 'new_activated')::int = 0, k -> 'ceo';
+  begin
+    insert into public.app_events (install_id, event, age_group) values (h, 'app_open', '4');
+    assert false, 'age groups are bands only';
+  exception when check_violation then null;
+  end;
+end $$;
+select 'analytics annex tests passed';
+
+-- Gifts from the shop: one code per gift line, retry-safe, ended by a refund.
+do $$
+declare
+  h constant text := repeat('ab', 32);
+  u constant uuid := '00000000-0000-0000-0000-0000000000d1';
+begin
+  insert into auth.users (id, email) values (u, 'obdarowany@example.com');
+  insert into public.gift_products (product_ref, scopes, label) values ('woo:900', '{all_content}', 'Rok AudioKiddo');
+  assert public.issue_gift_code(77, 'woo:1', h) = 'not_gift';
+  assert public.issue_gift_code(77, 'woo:900', h) = 'send';
+  assert public.issue_gift_code(77, 'woo:900', h) = 'send', 'a retry before the note went out sends it again';
+  perform public.mark_gift_note_sent(77, 'woo:900');
+  assert public.issue_gift_code(77, 'woo:900', h) = 'sent';
+  assert (select max_uses from public.access_codes where code_hash = h) = 1;
+  assert public.redeem_access_code(u, h) ->> 'status' = 'ok';
+  assert exists (select 1 from public.entitlements where user_id = u and scope = 'all_content' and status = 'active');
+  assert public.revoke_gift_codes(77) = 1;
+  assert not exists (select 1 from public.entitlements where user_id = u and status = 'active'), 'refund ends the gift';
+end $$;
+select 'gift tests passed';
+
+-- Ad spend and CAC.
+do $$
+declare
+  m jsonb;
+begin
+  insert into public.ad_spend (month, channel, amount) values (date_trunc('month', now())::date, 'meta', 300);
+  insert into public.web_purchases_pending (woo_order_id, product_ref, email_normalized, order_status)
+    values (5001, 'woo:1', 'nowa@example.com', 'completed'), (5002, 'woo:1', 'druga@example.com', 'completed');
+  m := public.admin_economics(30);
+  assert (m ->> 'spend_total')::numeric = 300, m::text;
+  assert (m ->> 'new_paying_web')::int >= 2, m::text;
+  assert (m ->> 'cac_total')::numeric > 0, m::text;
+  begin
+    insert into public.ad_spend (month, channel, amount) values ('2026-10-15', 'meta', 1);
+    assert false, 'months are whole months';
+  exception when check_violation then null;
+  end;
+end $$;
+select 'ad spend tests passed';
+
+-- Cancel reasons and referral channels.
+do $$
+declare
+  s jsonb;
+begin
+  insert into public.app_events (install_id, event, props) values
+    ('88888888-8888-8888-8888-888888888888', 'cancel_reason', '{"reason":"price"}'),
+    ('88888888-8888-8888-8888-888888888888', 'referral_share', '{"channel":"whatsapp"}');
+  s := public.admin_signals(30);
+  assert (s -> 'cancel_reasons' ->> 'price')::int = 1, s::text;
+  assert (s -> 'referral_channels' ->> 'whatsapp')::int = 1, s::text;
+end $$;
+select 'signals tests passed';

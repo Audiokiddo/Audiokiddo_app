@@ -353,12 +353,13 @@ void main() {
     expect(find.text('Załóż konto rodzica'), findsOneWidget);
     await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
     await tester.pumpAndSettle();
-    expect(find.text('Zaznacz zgodę na regulamin i politykę prywatności.'), findsOneWidget);
-    await tester.tap(find.byType(Checkbox));
-    await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
-    await tester.pumpAndSettle();
+    // Checked in the order of the fields: the password above, the consent below it.
     expect(find.text('Hasło musi mieć co najmniej 8 znaków.'), findsOneWidget, reason: 'a password is required');
     await tester.enterText(find.byType(TextField).at(1), 'nowehaslo1');
+    await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
+    await tester.pumpAndSettle();
+    expect(find.text('Zaznacz zgodę na regulamin i politykę prywatności.'), findsOneWidget);
+    await tester.tap(find.byType(Checkbox));
     await tester.tap(find.widgetWithText(FilledButton, 'Załóż konto'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, '123456');

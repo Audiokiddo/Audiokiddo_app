@@ -147,8 +147,11 @@ Future<void> buyWithGate(BuildContext context, WidgetRef ref, StoreProduct produ
 /// Links out of the app are for parents only, too.
 Future<void> openWithGate(BuildContext context, Uri url) async {
   if (!await showParentalGate(context) || !context.mounted) return;
-  await launchUrl(url, mode: LaunchMode.externalApplication);
+  await openExternal(url);
 }
+
+/// Opens a page outside the app; callers ask for an adult first (Kids Category).
+Future<void> openExternal(Uri url) => launchUrl(url, mode: LaunchMode.externalApplication);
 
 final termsUrl = Uri.parse('https://audiokiddo.pl/regulamin/');
 final privacyUrl = Uri.parse('https://audiokiddo.pl/polityka-prywatnosci-aplikacji/');

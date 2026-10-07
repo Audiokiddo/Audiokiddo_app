@@ -42,6 +42,7 @@ import '../features/reminders/reminder_offer.dart';
 import '../features/games/speech_check_screen.dart';
 import '../features/personal/app_icon_screen.dart';
 import '../features/pdf/case_file_screen.dart';
+import '../features/stickers/stickers.dart';
 import '../features/pdf/guide_links.dart';
 import '../features/session/session_screens.dart';
 
@@ -174,6 +175,7 @@ GoRouter buildRouter(
       path: '/dyplom/:id',
       pageBuilder: (context, state) => swipePage(state, DiplomaScreen(packId: state.pathParameters['id']!)),
     ),
+    GoRoute(path: '/naklejki', pageBuilder: (context, state) => swipePage(state, const StickerAlbumScreen())),
     GoRoute(
       path: '/akta/:id',
       pageBuilder: (context, state) => swipePage(state, CaseFileScreen(itemId: state.pathParameters['id']!)),

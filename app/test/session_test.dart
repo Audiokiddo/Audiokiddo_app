@@ -12,7 +12,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:audiokiddo/features/player/player_providers.dart';
+
 import 'helpers.dart';
+import 'queue_runner_test.dart' show QueueAudio;
 
 /// Records what the session plays; catalog items last until [stop] or [finishItem].
 class FakeSessionAudio implements SessionAudio {
@@ -256,6 +259,8 @@ void main() {
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 28, 20)),
           sessionAudioProvider.overrideWithValue(audio),
           sessionTimeScaleProvider.overrideWithValue(0.001),
+          // The car-style session screen shows the player's state and buttons.
+          audioHandlerProvider.overrideWithValue(QueueAudio()),
         ],
         child: const AudioKiddoApp(),
       ),

@@ -53,8 +53,9 @@ class FamilyException implements Exception {
     if (e is PostgrestException && (e.code == 'PGRST202' || e.code == 'PGRST205' || e.code == '42883')) {
       return const FamilyException('Ta funkcja ruszy po aktualizacji serwera. Zajrzyj tu za jakiś czas.');
     }
-    if (e is TimeoutException)
+    if (e is TimeoutException) {
       return const FamilyException('Serwer nie odpowiada. Sprawdź internet i spróbuj ponownie.');
+    }
     final text = e is PostgrestException ? e.message : '$e';
     return FamilyException(switch (text) {
       'plan' => 'Drugi rodzic jest w planach dla 2 dzieci i dla 3–5 dzieci.',
