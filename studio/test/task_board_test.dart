@@ -62,6 +62,18 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('the width slider makes tasks narrower, so more sit side by side', (tester) async {
+    await pump(tester, const Size(1800, 900));
+    double cardWidth() => tester.getSize(find.text('Zadanie 0')).width;
+    final before = tester.getSize(find.byType(Card).first).width;
+    await tester.drag(find.byType(Slider).first, const Offset(-300, 0));
+    await tester.pumpAndSettle();
+    final after = tester.getSize(find.byType(Card).first).width;
+    expect(after, lessThan(before), reason: 'narrower tasks');
+    expect(cardWidth(), greaterThan(0));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('a phone shows the board without overflow', (tester) async {
     await pump(tester, const Size(390, 800));
     expect(tester.takeException(), isNull);

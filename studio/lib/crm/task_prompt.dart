@@ -111,27 +111,35 @@ class TaskAiActions extends StatelessWidget {
           message: why ?? 'Podpowiedź na podstawie treści zadania',
           child: Chip(
             visualDensity: VisualDensity.compact,
-            avatar: Icon(Icons.auto_awesome_rounded, size: 16, color: tool.color),
-            label: Text('Najlepiej: ${tool.name}', style: const TextStyle(fontSize: 12)),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: EdgeInsets.zero,
+            labelPadding: const EdgeInsets.only(right: 6),
+            avatar: Icon(Icons.auto_awesome_rounded, size: 14, color: tool.color),
+            label: Text(tool.name, style: const TextStyle(fontSize: 11)),
             backgroundColor: tool.color.withValues(alpha: .10),
             side: BorderSide(color: tool.color.withValues(alpha: .35)),
           ),
         ),
-        FilledButton.icon(
-          style: FilledButton.styleFrom(
-            backgroundColor: Brand.ink,
+        TextButton.icon(
+          style: TextButton.styleFrom(
+            foregroundColor: Brand.ink,
             visualDensity: VisualDensity.compact,
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
           ),
           onPressed: () => _copy(context, tool),
-          icon: const Icon(Icons.copy_rounded, size: 16),
+          icon: const Icon(Icons.copy_rounded, size: 14),
           label: const Text('Kopiuj prompt'),
         ),
-        IconButton(
-          tooltip: 'Otwórz ${tool.name}',
-          visualDensity: VisualDensity.compact,
-          onPressed: () => openInBrowser(tool.url),
-          icon: Icon(Icons.open_in_new_rounded, size: 18, color: tool.color),
+        SizedBox.square(
+          dimension: 28,
+          child: IconButton(
+            tooltip: 'Otwórz ${tool.name}',
+            padding: EdgeInsets.zero,
+            onPressed: () => openInBrowser(tool.url),
+            icon: Icon(Icons.open_in_new_rounded, size: 15, color: tool.color),
+          ),
         ),
       ],
     );

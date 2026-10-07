@@ -125,49 +125,73 @@ class _CrmCardState extends State<CrmCard> {
     final text = Theme.of(context).textTheme;
     final body = (item['body'] as String?) ?? '';
     final priority = item['priority'] as int? ?? 2;
+    // With an owner picker among the actions the owner is not repeated in the text line.
     final meta = [
-      if (item['owner'] != null) '${item['owner']}',
+      if (item['owner'] != null && widget.actions.isEmpty) '${item['owner']}',
       if (item['due'] != null) 'termin ${item['due']}',
       if (item['source'] == 'ai') 'od agenta',
     ].join(' · ');
+    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: .6);
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: widget.onTap ?? (body.isEmpty ? null : () => setState(() => _open = !_open)),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // The small stuff on top: the type, the marker for urgent ones, delete.
               Row(
                 children: [
                   if (priority == 1)
                     const Padding(
-                      padding: EdgeInsets.only(right: 6),
-                      child: Icon(Icons.priority_high_rounded, size: 18, color: Colors.redAccent),
+                      padding: EdgeInsets.only(right: 4),
+                      child: Icon(Icons.priority_high_rounded, size: 14, color: Colors.redAccent),
                     ),
-                  Chip(
-                    visualDensity: VisualDensity.compact,
-                    label: Text(areaLabel(item['area']), style: text.labelSmall),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      '${item['title']}',
-                      style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        areaLabel(item['area']),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.labelSmall?.copyWith(fontSize: 10, color: muted),
+                      ),
                     ),
                   ),
+                  const Spacer(),
                   if (widget.onDelete != null)
-                    IconButton(
-                      tooltip: 'Usuń',
-                      visualDensity: VisualDensity.compact,
-                      icon: Icon(Icons.delete_outline, color: Colors.red.shade400, size: 20),
-                      onPressed: widget.onDelete,
+                    SizedBox.square(
+                      dimension: 26,
+                      child: IconButton(
+                        tooltip: 'Usuń',
+                        padding: EdgeInsets.zero,
+                        icon: Icon(Icons.delete_outline, color: Colors.red.shade300, size: 17),
+                        onPressed: widget.onDelete,
+                      ),
                     ),
                 ],
               ),
-              if (meta.isNotEmpty) Text(meta, style: text.labelSmall),
+              const SizedBox(height: 4),
+              // The title: the biggest thing on the card, across its whole width.
+              Padding(
+                padding: const EdgeInsets.only(right: 4),
+                child: Text(
+                  '${item['title']}',
+                  style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800, height: 1.25),
+                ),
+              ),
+              if (meta.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Text(meta, style: text.labelSmall?.copyWith(fontSize: 10.5, color: muted)),
+                ),
               if (body.isNotEmpty && !widget.dense) ...[
                 const SizedBox(height: 6),
                 SelectableText(
@@ -177,7 +201,12 @@ class _CrmCardState extends State<CrmCard> {
               ],
               if (widget.actions.isNotEmpty) ...[
                 const SizedBox(height: 6),
-                Wrap(spacing: 8, runSpacing: 4, children: widget.actions),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: widget.actions,
+                ),
               ],
             ],
           ),

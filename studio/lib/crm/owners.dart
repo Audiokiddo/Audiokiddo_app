@@ -124,12 +124,15 @@ class OwnerPicker extends StatelessWidget {
           ],
           child: Chip(
             visualDensity: VisualDensity.compact,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: EdgeInsets.zero,
+            labelPadding: const EdgeInsets.only(right: 6),
             avatar: Icon(
               current?.icon ?? Icons.person_add_alt_1_rounded,
-              size: 16,
+              size: 14,
               color: current?.color ?? Brand.coral,
             ),
-            label: Text(current == null ? 'Kto bierze?' : current.name, style: const TextStyle(fontSize: 12)),
+            label: Text(current == null ? 'Kto bierze?' : current.name, style: const TextStyle(fontSize: 11)),
             backgroundColor: current?.soft ?? Brand.coralSoft,
           ),
         ),
@@ -141,7 +144,7 @@ class OwnerPicker extends StatelessWidget {
             ),
             onPressed: () => onChange(suggested.name),
             icon: Icon(Icons.swap_horiz_rounded, size: 16, color: suggested.color),
-            label: Text('Sugeruję: przekaż ${_dative(suggested)}', style: const TextStyle(fontSize: 12)),
+            label: Text('Sugeruję: przekaż ${_dative(suggested)}', style: const TextStyle(fontSize: 11)),
           ),
       ],
     );

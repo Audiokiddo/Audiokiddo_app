@@ -6,10 +6,10 @@ import 'crm_widgets.dart';
 /// One column of the board: its status, title and colours.
 typedef BoardColumn = ({String status, String label, Color deep, Color soft});
 
-/// The task board: columns that each scroll down on their own, as wide as the screen allows.
-/// "Szerokość kolumn" makes columns wider (cards then sit several in a row) or narrower (the
-/// board scrolls sideways); "Skala" shrinks everything so more tasks fit, also on a phone.
-/// Both are remembered in this browser.
+/// The task board: columns that each scroll down on their own and share the screen.
+/// "Szerokość zadań" sets how wide one task is: narrower tasks sit several in a row, so more
+/// fit on the screen; wider ones read more easily. "Skala" shrinks or enlarges everything
+/// (a phone shows more tasks at once). Both are remembered in this browser.
 class TaskBoard extends StatefulWidget {
   const TaskBoard({
     super.key,
@@ -35,12 +35,13 @@ class TaskBoard extends StatefulWidget {
 }
 
 class _TaskBoardState extends State<TaskBoard> {
-  static const _widthKey = 'tasks_column_width';
+  static const _widthKey = 'tasks_card_width';
   static const _scaleKey = 'tasks_scale';
-  static const minWidth = 240.0;
-  static const maxWidth = 900.0;
+  static const minWidth = 170.0;
+  static const maxWidth = 640.0;
+  static const defaultWidth = 300.0;
 
-  /// Wanted column width (before the scale); null: fit the screen.
+  /// Wanted width of one task (before the scale); null: [defaultWidth].
   double? _width;
   double _scale = 1;
   bool _showControls = true;
@@ -79,8 +80,8 @@ class _TaskBoardState extends State<TaskBoard> {
           children: [
             _SliderField(
               icon: Icons.view_column_rounded,
-              label: _width == null ? 'Szerokość: dopasowana' : 'Szerokość kolumn: ${_width!.round()}',
-              value: (_width ?? (phone ? box.maxWidth * .85 : 360.0)).clamp(minWidth, maxWidth).toDouble(),
+              label: 'Szerokość zadań: ${(_width ?? defaultWidth).round()}',
+              value: (_width ?? defaultWidth).clamp(minWidth, maxWidth).toDouble(),
               min: minWidth,
               max: maxWidth,
               onChanged: (v) => setState(() => _width = v),
@@ -148,11 +149,11 @@ class _TaskBoardState extends State<TaskBoard> {
     final pad = phone ? 8.0 : 16.0;
     final n = widget.columns.length;
     final room = area.maxWidth - 2 * pad - gap * (n - 1);
-    final wanted = _width ?? (phone ? area.maxWidth * .85 : 0);
-    // Columns fill the screen when they fit; otherwise they keep their width and the board
-    // scrolls sideways.
-    final fits = wanted * n <= room;
-    final width = fits ? room / n : wanted;
+    // Columns share the screen; when that leaves them too narrow to read (a phone) each is
+    // nearly as wide as the screen and the board scrolls sideways.
+    const minColumn = 300.0;
+    final fits = room / n >= minColumn;
+    final width = fits ? room / n : (phone ? area.maxWidth * .9 : minColumn);
     final columns = [
       for (final (i, c) in widget.columns.indexed)
         Padding(
@@ -190,9 +191,9 @@ class _TaskBoardState extends State<TaskBoard> {
       for (final t in widget.tasks)
         if (t['status'] == c.status) t,
     ];
-    // Wide columns show cards side by side.
-    const cardWidth = 300.0;
-    final perRow = ((width - 20) / cardWidth).floor().clamp(1, 4);
+    // Narrow tasks sit side by side: as many as fit in the column, stretched to fill the row.
+    final target = _width ?? defaultWidth;
+    final perRow = ((width - 20 + 10) / (target + 10)).floor().clamp(1, 12);
     final cardW = (width - 20 - 10 * (perRow - 1)) / perRow;
     return DragTarget<Map<String, dynamic>>(
       onWillAcceptWithDetails: (d) => d.data['status'] != c.status,
