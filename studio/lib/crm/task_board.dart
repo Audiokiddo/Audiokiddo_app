@@ -44,7 +44,9 @@ class _TaskBoardState extends State<TaskBoard> {
   /// Wanted width of one task (before the scale); null: [defaultWidth].
   double? _width;
   double _scale = 1;
-  bool _showControls = true;
+
+  /// null: shown on a big screen, hidden on a phone (the button beside the filter toggles).
+  bool? _showControls;
   bool _phone = false;
 
   @override
@@ -73,6 +75,7 @@ class _TaskBoardState extends State<TaskBoard> {
       builder: (context, box) {
         final phone = box.maxWidth < 700;
         _phone = phone;
+        final shown = _showControls ?? !phone;
         final controls = Wrap(
           spacing: 20,
           runSpacing: 4,
@@ -122,13 +125,14 @@ class _TaskBoardState extends State<TaskBoard> {
                     children: [
                       if (widget.header != null) Expanded(child: widget.header!) else const Spacer(),
                       IconButton(
-                        tooltip: _showControls ? 'Ukryj suwaki' : 'Pokaż suwaki',
-                        onPressed: () => setState(() => _showControls = !_showControls),
-                        icon: Icon(_showControls ? Icons.tune_rounded : Icons.tune_outlined),
+                        tooltip: shown ? 'Ukryj suwaki' : 'Pokaż suwaki szerokości i skali',
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () => setState(() => _showControls = !shown),
+                        icon: Icon(shown ? Icons.tune_rounded : Icons.tune_outlined),
                       ),
                     ],
                   ),
-                  if (_showControls) controls,
+                  if (shown) controls,
                 ],
               ),
             ),
@@ -335,10 +339,10 @@ class _SliderField extends StatelessWidget {
       children: [
         Icon(icon, size: 20),
         const SizedBox(width: 6),
-        SizedBox(width: 150, child: Text(label, style: Theme.of(context).textTheme.labelLarge)),
+        SizedBox(width: 130, child: Text(label, style: Theme.of(context).textTheme.labelMedium)),
         Flexible(
           child: SizedBox(
-            width: 170,
+            width: 150,
             child: Slider(
               value: value.clamp(min, max),
               min: min,

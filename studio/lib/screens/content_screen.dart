@@ -51,115 +51,133 @@ class _ContentScreenState extends ConsumerState<ContentScreen> {
           i,
     ];
 
-    return Row(
-      children: [
-        Material(
-          color: Colors.white,
-          child: SizedBox(
-            width: 380,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Zabawy (${state.items.length})',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                      ),
-                      FilledButton.icon(
-                        onPressed: _add,
-                        icon: const Icon(Icons.add),
-                        label: const Text('Dodaj zabawę'),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      hintText: 'Szukaj',
-                      border: OutlineInputBorder(),
+    final wide = MediaQuery.sizeOf(context).width >= 700;
+    final list = Material(
+      color: Colors.white,
+      child: SizedBox(
+        width: wide ? 380 : double.infinity,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Zabawy (${state.items.length})',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
                     ),
-                    onChanged: (v) => setState(() => _query = v),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                  child: LabeledDropdown<String>(
-                    label: 'Pakiet',
-                    value: _pack,
-                    options: {
-                      '': 'Wszystkie',
-                      for (final p in state.packs) p['id'] as String: p['title'] as String? ?? '',
-                    },
-                    onChanged: (v) => setState(() => _pack = v),
+                  FilledButton.icon(
+                    onPressed: _add,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Dodaj zabawę'),
                   ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  hintText: 'Szukaj',
+                  border: OutlineInputBorder(),
                 ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, i) {
-                      final item = items[i];
-                      final id = item['id'] as String? ?? '';
-                      final error = validation.itemErrors[id];
-                      final pack = state.packs.where((p) => p['id'] == item['pack_id']).firstOrNull;
-                      final tint = Tint.ofPack(pack?['color'] as String?);
-                      return ListTile(
-                        selected: id == _selected,
-                        selectedTileColor: tint.soft,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        leading: CircleAvatar(
-                          backgroundColor: error != null ? Brand.coralSoft : tint.soft,
-                          child: Icon(
-                            error != null
-                                ? Icons.priority_high_rounded
-                                : item['kind'] == 'song'
-                                ? Icons.music_note_rounded
-                                : Icons.headphones_rounded,
-                            color: error != null ? Brand.coral : tint.deep,
-                          ),
-                        ),
-                        title: Text(item['title'] as String? ?? id),
-                        subtitle: Text(
-                          '${pack?['title'] ?? 'bez pakietu'} · ${item['access'] == 'free' ? 'za darmo' : 'płatna'}',
-                        ),
-                        onTap: () => setState(() => _selected = id),
-                      );
-                    },
-                  ),
-                ),
+                onChanged: (v) => setState(() => _query = v),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: LabeledDropdown<String>(
+                label: 'Pakiet',
+                value: _pack,
+                options: {
+                  '': 'Wszystkie',
+                  for (final p in state.packs) p['id'] as String: p['title'] as String? ?? '',
+                },
+                onChanged: (v) => setState(() => _pack = v),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, i) {
+                  final item = items[i];
+                  final id = item['id'] as String? ?? '';
+                  final error = validation.itemErrors[id];
+                  final pack = state.packs.where((p) => p['id'] == item['pack_id']).firstOrNull;
+                  final tint = Tint.ofPack(pack?['color'] as String?);
+                  return ListTile(
+                    selected: id == _selected,
+                    selectedTileColor: tint.soft,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    leading: CircleAvatar(
+                      backgroundColor: error != null ? Brand.coralSoft : tint.soft,
+                      child: Icon(
+                        error != null
+                            ? Icons.priority_high_rounded
+                            : item['kind'] == 'song'
+                            ? Icons.music_note_rounded
+                            : Icons.headphones_rounded,
+                        color: error != null ? Brand.coral : tint.deep,
+                      ),
+                    ),
+                    title: Text(item['title'] as String? ?? id),
+                    subtitle: Text(
+                      '${pack?['title'] ?? 'bez pakietu'} · ${item['access'] == 'free' ? 'za darmo' : 'płatna'}',
+                    ),
+                    onTap: () => setState(() => _selected = id),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    final detail = _selected == null
+        ? Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset('assets/brand/szop-nasluchuje.png', height: 120),
+                const SizedBox(height: 12),
+                Text('Wybierz zabawę z listy', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 4),
+                const Text('albo dodaj nową przyciskiem „Dodaj zabawę”.'),
               ],
             ),
+          )
+        : ItemEditor(
+            key: ValueKey(_selected),
+            itemId: _selected!,
+            onRenamed: (to) => setState(() => _selected = to),
+            onDeleted: () => setState(() => _selected = null),
+          );
+
+    // A phone shows the list, or the play opened from it with a way back (no room for both).
+    if (!wide) {
+      if (_selected == null) return list;
+      return Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => setState(() => _selected = null),
+              icon: const Icon(Icons.arrow_back_rounded),
+              label: const Text('Lista zabaw'),
+            ),
           ),
-        ),
+          Expanded(child: detail),
+        ],
+      );
+    }
+    return Row(
+      children: [
+        list,
         const VerticalDivider(width: 1),
-        Expanded(
-          child: _selected == null
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset('assets/brand/szop-nasluchuje.png', width: 140),
-                      const SizedBox(height: 12),
-                      Text('Wybierz zabawę z listy', style: Theme.of(context).textTheme.titleLarge),
-                      const SizedBox(height: 4),
-                      const Text('albo dodaj nową przyciskiem „Dodaj zabawę”.'),
-                    ],
-                  ),
-                )
-              : ItemEditor(
-                  key: ValueKey(_selected),
-                  itemId: _selected!,
-                  onRenamed: (to) => setState(() => _selected = to),
-                  onDeleted: () => setState(() => _selected = null),
-                ),
-        ),
+        Expanded(child: detail),
       ],
     );
   }

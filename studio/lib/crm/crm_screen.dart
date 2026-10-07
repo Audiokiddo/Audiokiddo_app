@@ -24,14 +24,26 @@ class CrmScreen extends ConsumerStatefulWidget {
 }
 
 class _CrmScreenState extends ConsumerState<CrmScreen> {
-  static Tab _tab(IconData icon, String label, Color color, {int badge = 0}) => Tab(
-    icon: Badge(
+  /// A tab: icon over the word on a big screen, icon beside a small word on a phone.
+  static Tab _tab(IconData icon, String label, Color color, {int badge = 0, bool compact = false}) {
+    final glyph = Badge(
       isLabelVisible: badge > 0,
       label: Text('$badge'),
-      child: Icon(icon, color: color),
-    ),
-    text: label,
-  );
+      child: Icon(icon, color: color, size: compact ? 16 : 24),
+    );
+    if (!compact) return Tab(icon: glyph, text: label);
+    return Tab(
+      height: 34,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          glyph,
+          const SizedBox(width: 5),
+          Text(label, style: const TextStyle(fontSize: 12)),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +51,7 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
     if (!server.signedIn) return AdminSignIn(onSignedIn: () => setState(() {}));
     final pending = ref.watch(crmPendingProvider).value?.length ?? 0;
     final adsPending = ref.watch(adsPendingProvider);
+    final compact = MediaQuery.sizeOf(context).shortestSide < 600;
     return DefaultTabController(
       length: 16,
       child: Column(
@@ -48,23 +61,24 @@ class _CrmScreenState extends ConsumerState<CrmScreen> {
             child: TabBar(
               isScrollable: true,
               tabAlignment: TabAlignment.start,
+              labelPadding: EdgeInsets.symmetric(horizontal: compact ? 9 : 16),
               tabs: [
-                _tab(Icons.dashboard_rounded, 'Pulpit', Brand.tealDeep),
-                _tab(Icons.how_to_vote_rounded, 'Decyzje', Brand.lavDeep, badge: pending),
-                _tab(Icons.view_kanban_rounded, 'Zadania', Brand.sunDeep),
-                _tab(Icons.lightbulb_rounded, 'Pomysły', Brand.sunDeep),
-                _tab(Icons.calendar_month_rounded, 'Kalendarz', Brand.tealDeep),
-                _tab(Icons.campaign_rounded, 'Reklamy', Brand.coral),
-                _tab(Icons.insights_rounded, 'Kampanie', Brand.coral, badge: adsPending),
-                _tab(Icons.mail_rounded, 'Mailing', Brand.lavDeep),
-                _tab(Icons.precision_manufacturing_rounded, 'Fabryka', Brand.tealDeep),
-                _tab(Icons.query_stats_rounded, 'Analiza', Brand.tealDeep),
-                _tab(Icons.reviews_rounded, 'Opinie', Brand.sunDeep),
-                _tab(Icons.receipt_long_rounded, 'Zamówienia', Brand.lavDeep),
-                _tab(Icons.bug_report_rounded, 'Błędy z telefonów', Brand.coral),
-                _tab(Icons.people_rounded, 'Użytkownicy', Brand.tealDeep),
-                _tab(Icons.update_rounded, 'Aktualizacje', Brand.lavDeep),
-                _tab(Icons.tune_rounded, 'Ustawienia', Brand.ink),
+                _tab(Icons.dashboard_rounded, 'Pulpit', Brand.tealDeep, compact: compact),
+                _tab(Icons.how_to_vote_rounded, 'Decyzje', Brand.lavDeep, badge: pending, compact: compact),
+                _tab(Icons.view_kanban_rounded, 'Zadania', Brand.sunDeep, compact: compact),
+                _tab(Icons.lightbulb_rounded, 'Pomysły', Brand.sunDeep, compact: compact),
+                _tab(Icons.calendar_month_rounded, 'Kalendarz', Brand.tealDeep, compact: compact),
+                _tab(Icons.campaign_rounded, 'Reklamy', Brand.coral, compact: compact),
+                _tab(Icons.insights_rounded, 'Kampanie', Brand.coral, badge: adsPending, compact: compact),
+                _tab(Icons.mail_rounded, 'Mailing', Brand.lavDeep, compact: compact),
+                _tab(Icons.precision_manufacturing_rounded, 'Fabryka', Brand.tealDeep, compact: compact),
+                _tab(Icons.query_stats_rounded, 'Analiza', Brand.tealDeep, compact: compact),
+                _tab(Icons.reviews_rounded, 'Opinie', Brand.sunDeep, compact: compact),
+                _tab(Icons.receipt_long_rounded, 'Zamówienia', Brand.lavDeep, compact: compact),
+                _tab(Icons.bug_report_rounded, 'Błędy z telefonów', Brand.coral, compact: compact),
+                _tab(Icons.people_rounded, 'Użytkownicy', Brand.tealDeep, compact: compact),
+                _tab(Icons.update_rounded, 'Aktualizacje', Brand.lavDeep, compact: compact),
+                _tab(Icons.tune_rounded, 'Ustawienia', Brand.ink, compact: compact),
               ],
             ),
           ),
@@ -542,12 +556,19 @@ class _TasksState extends ConsumerState<_Tasks> {
       if (await crmRun(context, () => server.deleteCrmItem('${task['id']}'))) refresh();
     }
 
+    final phone = MediaQuery.sizeOf(context).shortestSide < 600;
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: edit,
-        icon: const Icon(Icons.add),
-        label: const Text('Dodaj zadanie'),
-      ),
+      floatingActionButton: phone
+          ? FloatingActionButton.small(
+              tooltip: 'Dodaj zadanie',
+              onPressed: edit,
+              child: const Icon(Icons.add),
+            )
+          : FloatingActionButton.extended(
+              onPressed: edit,
+              icon: const Icon(Icons.add),
+              label: const Text('Dodaj zadanie'),
+            ),
       body: crmAsync(ref.watch(crmItemsProvider('task')), (all) {
         final list = [
           for (final t in decided(all))

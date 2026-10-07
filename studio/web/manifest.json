@@ -1,12 +1,12 @@
 {
-    "name": "audiokiddo_studio",
-    "short_name": "audiokiddo_studio",
-    "start_url": ".",
+    "name": "AudioKiddo Studio",
+    "short_name": "Studio",
+    "start_url": "./",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#FFF8E7",
+    "theme_color": "#FFF8E7",
+    "description": "Panel treści i CRM AudioKiddo",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

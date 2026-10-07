@@ -46,6 +46,7 @@ class PacksScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(studioProvider);
     final controller = ref.read(studioProvider.notifier);
+    final narrow = MediaQuery.sizeOf(context).width < 600;
     void set(int index, String key, Object? value) => controller.update((c) {
       final pack = (c['packs'] as List)[index] as Json;
       value == null || value == '' ? pack.remove(key) : pack[key] = value;
@@ -121,13 +122,21 @@ class PacksScreen extends ConsumerWidget {
                             ),
                           ),
                           Chip(label: Text('$count zabaw'), backgroundColor: Colors.white),
-                          const SizedBox(width: 8),
-                          TextButton.icon(
-                            style: TextButton.styleFrom(foregroundColor: Colors.red.shade700),
-                            onPressed: () => remove(pack),
-                            icon: const Icon(Icons.delete_outline),
-                            label: const Text('Usuń'),
-                          ),
+                          const SizedBox(width: 4),
+                          if (narrow)
+                            IconButton(
+                              tooltip: 'Usuń pakiet',
+                              color: Colors.red.shade700,
+                              onPressed: () => remove(pack),
+                              icon: const Icon(Icons.delete_outline),
+                            )
+                          else
+                            TextButton.icon(
+                              style: TextButton.styleFrom(foregroundColor: Colors.red.shade700),
+                              onPressed: () => remove(pack),
+                              icon: const Icon(Icons.delete_outline),
+                              label: const Text('Usuń'),
+                            ),
                         ],
                       ),
                     ),
@@ -147,36 +156,59 @@ class PacksScreen extends ConsumerWidget {
                             value: pack['description'] as String? ?? '',
                             onChanged: (v) => set(i, 'description', v),
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SyncedTextField(
-                                  label: 'Wiek od',
-                                  digitsOnly: true,
-                                  value: '${pack['age_min'] ?? ''}',
-                                  onChanged: (v) => set(i, 'age_min', int.tryParse(v)),
+                          if (narrow) ...[
+                            SyncedTextField(
+                              label: 'Wiek od',
+                              digitsOnly: true,
+                              value: '${pack['age_min'] ?? ''}',
+                              onChanged: (v) => set(i, 'age_min', int.tryParse(v)),
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: [
+                                for (final MapEntry(:key, :value) in colorLabels.entries)
+                                  ChoiceChip(
+                                    avatar: CircleAvatar(backgroundColor: Tint.ofPack(key).deep, radius: 8),
+                                    label: Text(value),
+                                    selected: (pack['color'] ?? 'lavender') == key,
+                                    onSelected: (_) => set(i, 'color', key),
+                                  ),
+                              ],
+                            ),
+                          ] else
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SyncedTextField(
+                                    label: 'Wiek od',
+                                    digitsOnly: true,
+                                    value: '${pack['age_min'] ?? ''}',
+                                    onChanged: (v) => set(i, 'age_min', int.tryParse(v)),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Wrap(
-                                  spacing: 8,
-                                  children: [
-                                    for (final MapEntry(:key, :value) in colorLabels.entries)
-                                      ChoiceChip(
-                                        avatar: CircleAvatar(
-                                          backgroundColor: Tint.ofPack(key).deep,
-                                          radius: 8,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Wrap(
+                                    spacing: 8,
+                                    runSpacing: 4,
+                                    children: [
+                                      for (final MapEntry(:key, :value) in colorLabels.entries)
+                                        ChoiceChip(
+                                          avatar: CircleAvatar(
+                                            backgroundColor: Tint.ofPack(key).deep,
+                                            radius: 8,
+                                          ),
+                                          label: Text(value),
+                                          selected: (pack['color'] ?? 'lavender') == key,
+                                          onSelected: (_) => set(i, 'color', key),
                                         ),
-                                        label: Text(value),
-                                        selected: (pack['color'] ?? 'lavender') == key,
-                                        onSelected: (_) => set(i, 'color', key),
-                                      ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
                           SyncedTextField(
                             label: 'ID produktu w sklepach',
                             helper: 'Taki sam w App Store Connect i Google Play Console. Ustawia się sam przy nowym pakiecie.',
@@ -203,6 +235,7 @@ class ShelvesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(studioProvider);
     final controller = ref.read(studioProvider.notifier);
+    final narrow = MediaQuery.sizeOf(context).width < 600;
     final titles = {for (final i in state.items) i['id'] as String: i['title'] as String? ?? ''};
 
     List<String> ids(Json shelf) => (shelf['item_ids'] as List? ?? const []).cast<String>();
@@ -267,12 +300,20 @@ class ShelvesScreen extends ConsumerWidget {
                         onPressed: i == state.shelves.length - 1 ? null : () => move(i, i + 1),
                         icon: const Icon(Icons.arrow_downward_rounded),
                       ),
-                      TextButton.icon(
-                        style: TextButton.styleFrom(foregroundColor: Colors.red.shade700),
-                        onPressed: () => remove(i, shelf),
-                        icon: const Icon(Icons.delete_outline),
-                        label: const Text('Usuń półkę'),
-                      ),
+                      if (narrow)
+                        IconButton(
+                          tooltip: 'Usuń półkę',
+                          color: Colors.red.shade700,
+                          onPressed: () => remove(i, shelf),
+                          icon: const Icon(Icons.delete_outline),
+                        )
+                      else
+                        TextButton.icon(
+                          style: TextButton.styleFrom(foregroundColor: Colors.red.shade700),
+                          onPressed: () => remove(i, shelf),
+                          icon: const Icon(Icons.delete_outline),
+                          label: const Text('Usuń półkę'),
+                        ),
                     ],
                   ),
                   if (ids(shelf).isEmpty)

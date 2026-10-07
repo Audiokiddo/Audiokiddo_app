@@ -195,4 +195,100 @@ void main() {
     expect(find.text('Treści'), findsNothing);
     expect(find.text('Magiczny sklep'), findsNothing);
   });
+
+  testWidgets('on a phone the side panel is a menu and the top bar is slim', (tester) async {
+    tester.view.physicalSize = const Size(390, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final io = FakeIo()..draft = appCatalog;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          studioIoProvider.overrideWithValue(io),
+          studioAccessProvider.overrideWith(() => StudioAccess(true)),
+        ],
+        child: const StudioApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(NavigationRail), findsNothing, reason: 'no panel taking room');
+    expect(find.byType(NavigationBar), findsOneWidget, reason: 'places at the thumb, like an app');
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.descendant(of: find.byType(NavigationBar), matching: find.text('Pakiety')));
+    await tester.pumpAndSettle();
+    expect(find.text('Dodaj pakiet'), findsOneWidget);
+    // The rest of the places are under "Więcej".
+    await tester.tap(find.text('Więcej'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Półki'));
+    await tester.pumpAndSettle();
+    expect(find.text('Dodaj półkę'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pump(const Duration(seconds: 1));
+  });
+
+  testWidgets('a sideways phone uses a thinner top bar and shows no overflow', (tester) async {
+    tester.view.physicalSize = const Size(844, 390);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final io = FakeIo()..draft = appCatalog;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          studioIoProvider.overrideWithValue(io),
+          studioAccessProvider.overrideWith(() => StudioAccess(true)),
+        ],
+        child: const StudioApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(AppBar)).height, lessThanOrEqualTo(40));
+    expect(tester.takeException(), isNull);
+    await tester.pump(const Duration(milliseconds: 500));
+  });
+
+  testWidgets('every place fits an iPhone', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          studioIoProvider.overrideWithValue(FakeIo()..draft = appCatalog),
+          studioAccessProvider.overrideWith(() => StudioAccess(true)),
+          studioServerProvider.overrideWithValue(
+            StudioServer(
+              SupabaseClient(
+                'http://localhost',
+                'test',
+                authOptions: const AuthClientOptions(autoRefreshToken: false),
+              ),
+            ),
+          ),
+        ],
+        child: const StudioApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final bar = find.byType(NavigationBar);
+    for (final place in ['Treści', 'Pakiety', 'CRM', 'Serwer']) {
+      await tester.tap(find.descendant(of: bar, matching: find.text(place)));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: place);
+    }
+    for (final place in ['Półki', 'Publikacja']) {
+      await tester.tap(find.text('Więcej'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(place).last);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: place);
+    }
+    // A play opens in full screen with a way back.
+    await tester.tap(find.descendant(of: bar, matching: find.text('Treści')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Magiczny sklep').first);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull, reason: 'editor');
+    await tester.pump(const Duration(seconds: 1));
+  });
 }

@@ -142,34 +142,50 @@ class SectionHeader extends StatelessWidget {
   final List<Widget> actions;
 
   @override
-  Widget build(BuildContext context) => Container(
-    margin: const EdgeInsets.only(bottom: 16),
-    padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-    decoration: BoxDecoration(color: tint.soft, borderRadius: BorderRadius.circular(24)),
-    child: Row(
-      children: [
-        Image.asset('assets/brand/szop-$pose.png', width: 72, height: 72),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge
-                    ?.copyWith(fontWeight: FontWeight.w700, color: tint.deep),
-              ),
-              const SizedBox(height: 2),
-              Text(text),
-            ],
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) {
+      // On a phone: a smaller Szop'en and the buttons under the words, so nothing is cut off.
+      final narrow = box.maxWidth < 560;
+      final words = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleLarge
+                ?.copyWith(fontWeight: FontWeight.w700, color: tint.deep),
           ),
-        ),
-        if (actions.isNotEmpty) ...[
-          const SizedBox(width: 12),
-          Wrap(spacing: 8, runSpacing: 8, children: actions),
+          const SizedBox(height: 2),
+          Text(text),
         ],
-      ],
-    ),
+      );
+      final head = Row(
+        crossAxisAlignment: narrow ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        children: [
+          Image.asset('assets/brand/szop-$pose.png', width: narrow ? 48 : 72, height: narrow ? 48 : 72),
+          SizedBox(width: narrow ? 12 : 16),
+          Expanded(child: words),
+          if (actions.isNotEmpty && !narrow) ...[
+            const SizedBox(width: 12),
+            Wrap(spacing: 8, runSpacing: 8, children: actions),
+          ],
+        ],
+      );
+      return Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.fromLTRB(narrow ? 14 : 20, 16, narrow ? 14 : 20, 16),
+        decoration: BoxDecoration(color: tint.soft, borderRadius: BorderRadius.circular(24)),
+        child: !narrow || actions.isEmpty
+            ? head
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  head,
+                  const SizedBox(height: 12),
+                  Wrap(spacing: 8, runSpacing: 8, children: actions),
+                ],
+              ),
+      );
+    },
   );
 }
 
