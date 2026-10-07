@@ -24,8 +24,7 @@ class _KpiScreenState extends ConsumerState<KpiScreen> {
   String? _age;
   late Future<Map<String, dynamic>> _kpi = _load();
 
-  Future<Map<String, dynamic>> _load() =>
-      (widget.loader ?? ref.read(studioServerProvider).kpi)(_days, _age);
+  Future<Map<String, dynamic>> _load() => (widget.loader ?? ref.read(studioServerProvider).kpi)(_days, _age);
 
   void _set({int? days, String? age, bool clearAge = false}) => setState(() {
     _days = days ?? _days;
@@ -46,11 +45,23 @@ class _KpiScreenState extends ConsumerState<KpiScreen> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               for (final d in [7, 30, 90, 365])
-                ChoiceChip(label: Text('$d dni'), selected: _days == d, onSelected: (_) => _set(days: d)),
+                ChoiceChip(
+                  label: Text('$d dni'),
+                  selected: _days == d,
+                  onSelected: (_) => _set(days: d),
+                ),
               const SizedBox(width: 16),
-              ChoiceChip(label: const Text('Każdy wiek'), selected: _age == null, onSelected: (_) => _set(clearAge: true)),
+              ChoiceChip(
+                label: const Text('Każdy wiek'),
+                selected: _age == null,
+                onSelected: (_) => _set(clearAge: true),
+              ),
               for (final a in ['3-5', '5-7', '7-9'])
-                ChoiceChip(label: Text(a.replaceAll('-', '–')), selected: _age == a, onSelected: (_) => _set(age: a)),
+                ChoiceChip(
+                  label: Text(a.replaceAll('-', '–')),
+                  selected: _age == a,
+                  onSelected: (_) => _set(age: a),
+                ),
             ],
           ),
         ),
@@ -120,17 +131,30 @@ class _Ceo extends StatelessWidget {
       children: [
         const _Lead('Czy AudioKiddo działa jako biznes?'),
         _Tiles([
-          KpiTile('Weekly Returning Families', _num(k['weekly_returning_families']),
-              hint: 'North Star: zabawa ukończona w 2+ dni w ostatnich 7 dniach. Tygodnie: $trendText'),
-          KpiTile('Nowe aktywowane rodziny', _num(k['new_activated']),
-              hint: 'Ukończyły pierwszą zabawę i włączyły kolejną albo powtórkę'),
+          KpiTile(
+            'Weekly Returning Families',
+            _num(k['weekly_returning_families']),
+            hint: 'North Star: zabawa ukończona w 2+ dni w ostatnich 7 dniach. Tygodnie: $trendText',
+          ),
+          KpiTile(
+            'Nowe aktywowane rodziny',
+            _num(k['new_activated']),
+            hint: 'Ukończyły pierwszą zabawę i włączyły kolejną albo powtórkę',
+          ),
           KpiTile('True Activation', _pct(k['true_activation']), hint: 'Aktywowane / nowe rodziny'),
           KpiTile('D7', _pct(k['d7']), hint: 'Ukończona zabawa w dniach 7–13 od aktywacji'),
           KpiTile('D30', _pct(k['d30']), hint: 'Ukończona zabawa w dniach 28–34 od aktywacji'),
-          KpiTile('Aktywni abonenci', '$subs',
-              hint: 'Miesięczni ${_num(k['subs_monthly'])} · roczni ${_num(k['subs_annual'])}'),
+          KpiTile(
+            'Aktywni abonenci',
+            '$subs',
+            hint: 'Miesięczni ${_num(k['subs_monthly'])} · roczni ${_num(k['subs_annual'])}',
+          ),
           KpiTile('MRR', '$mrr zł', hint: 'Roczne liczone jako 1/12 miesięcznie, brutto'),
-          KpiTile('Churn w tym miesiącu', _pct(k['churn_month']), hint: 'Dostęp faktycznie wygasł, nie kliknięcie „anuluj”'),
+          KpiTile(
+            'Churn w tym miesiącu',
+            _pct(k['churn_month']),
+            hint: 'Dostęp faktycznie wygasł, nie kliknięcie „anuluj”',
+          ),
         ]),
         const SizedBox(height: 16),
         Text('Zdrowie biznesu', style: text.titleMedium),
@@ -138,11 +162,23 @@ class _Ceo extends StatelessWidget {
           KpiTile('ARPU', subs == 0 ? '–' : '${(mrr / subs).toStringAsFixed(2)} zł', hint: 'MRR / abonenci'),
           const KpiTile('CAC', '–', hint: 'Potrzebne wydatki na reklamę według kanału (do dodania w CRM)'),
           const KpiTile('LTV i payback', '–', hint: 'Po kilku miesiącach danych: ARPU × miesiące × marża'),
-          KpiTile('Technical Activation', _pct(k['technical_activation']), hint: 'Pierwsza zabawa / nowe rodziny'),
+          KpiTile(
+            'Technical Activation',
+            _pct(k['technical_activation']),
+            hint: 'Pierwsza zabawa / nowe rodziny',
+          ),
           KpiTile('Pierwsza zabawa ukończona', _pct(k['first_game_completion'])),
           KpiTile('Do pierwszej zabawy', '${_num(k['minutes_to_first_play_median'])} min', hint: 'Mediana'),
-          KpiTile('Aktywne dni w tygodniu', _num(k['active_days_per_family_week']), hint: 'Na aktywną rodzinę'),
-          KpiTile('Zabawy na aktywną rodzinę', _num(k['games_per_active_family_week']), hint: 'Ostatnie 7 dni'),
+          KpiTile(
+            'Aktywne dni w tygodniu',
+            _num(k['active_days_per_family_week']),
+            hint: 'Na aktywną rodzinę',
+          ),
+          KpiTile(
+            'Zabawy na aktywną rodzinę',
+            _num(k['games_per_active_family_week']),
+            hint: 'Ostatnie 7 dni',
+          ),
           KpiTile('M2 / M3', '${_pct(k['m2'])} / ${_pct(k['m3'])}'),
         ]),
         const SizedBox(height: 16),
@@ -234,12 +270,18 @@ class _ProductState extends ConsumerState<_Product> {
             spacing: 16,
             runSpacing: 16,
             children: [
-              _TopList('Największy replay', [for (final g in top('replay7')) (title(g['item']), _pct(g['replay7']))]),
+              _TopList('Największy replay', [
+                for (final g in top('replay7')) (title(g['item']), _pct(g['replay7'])),
+              ]),
               _TopList('Najwyższy completion', [
                 for (final g in top('completion')) (title(g['item']), _pct(g['completion'])),
               ]),
-              _TopList('Najlepszy Next Game', [for (final g in top('next_game')) (title(g['item']), _pct(g['next_game']))]),
-              _TopList('Problemy: najwięcej wyjść', [for (final g in top('exits')) (title(g['item']), '${g['exits']} wyjść')]),
+              _TopList('Najlepszy Next Game', [
+                for (final g in top('next_game')) (title(g['item']), _pct(g['next_game'])),
+              ]),
+              _TopList('Problemy: najwięcej wyjść', [
+                for (final g in top('exits')) (title(g['item']), '${g['exits']} wyjść'),
+              ]),
             ],
           ),
         const SizedBox(height: 16),
@@ -342,11 +384,15 @@ class _Growth extends StatelessWidget {
         KpiTile(
           'Nowi płacący',
           _num(economics['new_paying_total']),
-          hint: 'Sklep ${_num(economics['new_paying_web'])} · prezenty ${_num(economics['new_paying_gifts'])} · '
+          hint:
+              'Sklep ${_num(economics['new_paying_web'])} · prezenty ${_num(economics['new_paying_gifts'])} · '
               'aplikacja ${_num(economics['new_paying_app'])}',
         ),
-        KpiTile('CAC', economics['cac_total'] == null ? '–' : '${economics['cac_total']} zł',
-            hint: 'Wydatki / nowi płacący. Nie skalujemy, gdy CAC > zysk z klienta'),
+        KpiTile(
+          'CAC',
+          economics['cac_total'] == null ? '–' : '${economics['cac_total']} zł',
+          hint: 'Wydatki / nowi płacący. Nie skalujemy, gdy CAC > zysk z klienta',
+        ),
       ]),
       for (final c in _list(economics['channels']))
         ListTile(
@@ -418,7 +464,11 @@ class _Growth extends StatelessWidget {
         trailing: Text(_num(signals['win_back_views'])),
       ),
       for (final e in _map(money['paywall_from']).entries)
-        ListTile(dense: true, title: Text('Oferta otwarta z: ${_entryName(e.key)}'), trailing: Text('${e.value} rodzin')),
+        ListTile(
+          dense: true,
+          title: Text('Oferta otwarta z: ${_entryName(e.key)}'),
+          trailing: Text('${e.value} rodzin'),
+        ),
     ],
   );
 }
@@ -446,10 +496,16 @@ class _Tech extends StatelessWidget {
           KpiTile('Z kontem', _pct(h['with_user'])),
           KpiTile('Nowe rodziny ze źródłem', _pct(h['families_with_source'])),
           KpiTile('Podejrzane duplikaty', _num(h['suspect_duplicates']), hint: 'To samo zdarzenie w 2 s'),
-          KpiTile('Starty bez końca i wyjścia', _pct(h['starts_without_end']),
-              hint: 'Aplikacja zamknięta w trakcie albo zgubione zdarzenie'),
-          KpiTile('Zakupy: aplikacja / sklep', '${_num(purchases['app_events'])} / ${_num(purchases['store_entitlements'])}',
-              hint: 'Powinny być zbliżone'),
+          KpiTile(
+            'Starty bez końca i wyjścia',
+            _pct(h['starts_without_end']),
+            hint: 'Aplikacja zamknięta w trakcie albo zgubione zdarzenie',
+          ),
+          KpiTile(
+            'Zakupy: aplikacja / sklep',
+            '${_num(purchases['app_events'])} / ${_num(purchases['store_entitlements'])}',
+            hint: 'Powinny być zbliżone',
+          ),
         ]),
         const SizedBox(height: 16),
         Text('Płatności', style: text.titleMedium),
@@ -505,7 +561,8 @@ class _SpendFormState extends ConsumerState<_SpendForm> {
     final year = parts.length == 2 ? int.tryParse(parts[0]) : null;
     final month = parts.length == 2 ? int.tryParse(parts[1]) : null;
     if (year == null || month == null || month < 1 || month > 12 || amount == null || amount < 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Podaj miesiąc RRRR-MM i kwotę.')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Podaj miesiąc RRRR-MM i kwotę.')));
       return;
     }
     setState(() => _busy = true);
@@ -532,7 +589,11 @@ class _SpendFormState extends ConsumerState<_SpendForm> {
           width: 120,
           child: TextField(
             controller: _month,
-            decoration: const InputDecoration(labelText: 'Miesiąc', border: OutlineInputBorder(), isDense: true),
+            decoration: const InputDecoration(
+              labelText: 'Miesiąc',
+              border: OutlineInputBorder(),
+              isDense: true,
+            ),
           ),
         ),
         DropdownButton<String>(
@@ -548,7 +609,11 @@ class _SpendFormState extends ConsumerState<_SpendForm> {
           child: TextField(
             controller: _amount,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(labelText: 'Kwota zł', border: OutlineInputBorder(), isDense: true),
+            decoration: const InputDecoration(
+              labelText: 'Kwota zł',
+              border: OutlineInputBorder(),
+              isDense: true,
+            ),
           ),
         ),
         FilledButton(onPressed: _busy ? null : _save, child: const Text('Zapisz wydatek')),

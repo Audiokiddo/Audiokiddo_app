@@ -68,7 +68,9 @@ class _ServerScreenState extends ConsumerState<ServerScreen> {
               Tab(text: 'Promocje'),
             ],
           ),
-          const Expanded(child: TabBarView(children: [_StatsTab(), KpiScreen(), _CatalogTab(), _PromotionsTab()])),
+          const Expanded(
+            child: TabBarView(children: [_StatsTab(), KpiScreen(), _CatalogTab(), _PromotionsTab()]),
+          ),
         ],
       ),
     );

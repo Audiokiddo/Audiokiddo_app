@@ -15,14 +15,28 @@ final _sample = <String, dynamic>{
     'd7': 31.0,
     'active_subscribers': 10,
     'mrr': 200,
-    'funnel': {'new_families': 100, 'first_play': 76, 'first_done': 61, 'activated': 42, 'paywall': 21, 'paid': 6},
+    'funnel': {
+      'new_families': 100,
+      'first_play': 76,
+      'first_done': 61,
+      'activated': 42,
+      'paywall': 21,
+      'paid': 6,
+    },
     'cohorts': [
       {'week': '2026-09-21', 'activated': 20, 'd7': 35.0},
     ],
   },
   'product': {
     'games': [
-      {'item': 'zgubiona-gwiazdka', 'starts': 40, 'families': 20, 'completion': 80.0, 'replay7': 45.0, 'exits': 3},
+      {
+        'item': 'zgubiona-gwiazdka',
+        'starts': 40,
+        'families': 20,
+        'completion': 80.0,
+        'replay7': 45.0,
+        'exits': 3,
+      },
     ],
     'dropoff': {
       'zgubiona-gwiazdka': [
@@ -35,7 +49,14 @@ final _sample = <String, dynamic>{
     ],
   },
   'growth': [
-    {'source': 'tiktok', 'new_families': 50, 'activated': 20, 'paid': 4, 'activation': 40.0, 'paid_rate': 8.0},
+    {
+      'source': 'tiktok',
+      'new_families': 50,
+      'activated': 20,
+      'paid': 4,
+      'activation': 40.0,
+      'paid_rate': 8.0,
+    },
   ],
   'economics': {
     'spend_total': 300,
@@ -50,8 +71,19 @@ final _sample = <String, dynamic>{
     'referral_channels': {'whatsapp': 5},
     'referral_families': 4,
   },
-  'monetization': {'free_to_paywall': 30.0, 'checkout': {'started': 5, 'done': 3, 'failed': {'canceled': 2}}},
-  'data_health': {'events': 1200, 'with_age_group': 97.5, 'versions': {'0.2.0 ios': 30}},
+  'monetization': {
+    'free_to_paywall': 30.0,
+    'checkout': {
+      'started': 5,
+      'done': 3,
+      'failed': {'canceled': 2},
+    },
+  },
+  'data_health': {
+    'events': 1200,
+    'with_age_group': 97.5,
+    'versions': {'0.2.0 ios': 30},
+  },
 };
 
 Finder get _vertical =>

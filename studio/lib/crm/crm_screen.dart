@@ -11,6 +11,7 @@ import '../theme.dart';
 import 'crm_widgets.dart';
 import 'factory_tab.dart';
 import 'owners.dart';
+import 'task_board.dart';
 import 'task_prompt.dart';
 
 /// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
@@ -552,121 +553,49 @@ class _TasksState extends ConsumerState<_Tasks> {
           for (final t in decided(all))
             if (mine(t)) t,
         ]..sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        return TaskBoard(
+          columns: [
+            for (final (status, label, deep, soft) in columns)
+              (status: status, label: label, deep: deep, soft: soft),
+          ],
+          tasks: list,
+          onMove: moveTo,
+          header: Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 4, bottom: 12),
-                child: Wrap(
-                  spacing: 16,
-                  runSpacing: 8,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    SegmentedButton<Owner?>(
-                      segments: [
-                        const ButtonSegment(
-                          value: null,
-                          icon: Icon(Icons.groups_rounded),
-                          label: Text('Wszystkie'),
-                        ),
-                        for (final o in const [Owner.dawid, Owner.nela])
-                          ButtonSegment(
-                            value: o,
-                            icon: Icon(o.icon, color: o.color),
-                            label: Text('Zadania: ${o.name}'),
-                          ),
-                      ],
-                      selected: {_who},
-                      onSelectionChanged: (v) => setState(() => _who = v.single),
-                    ),
-                    const Text('Przeciągnij kartę do innej kolumny. Kliknij kartę, żeby ją zmienić.'),
-                  ],
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final (status, label, deep, soft) in columns)
-                    DragTarget<Map<String, dynamic>>(
-                      onWillAcceptWithDetails: (d) => d.data['status'] != status,
-                      onAcceptWithDetails: (d) => moveTo(d.data, status),
-                      builder: (context, hovering, _) {
-                        final tasks = list.where((t) => t['status'] == status).toList();
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
-                          width: 340,
-                          constraints: const BoxConstraints(minHeight: 420),
-                          margin: const EdgeInsets.only(right: 16),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: soft,
-                            borderRadius: BorderRadius.circular(22),
-                            border: Border.all(
-                              color: hovering.isNotEmpty ? deep : Colors.transparent,
-                              width: 2.5,
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(radius: 6, backgroundColor: deep),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '$label (${tasks.length})',
-                                    style: Theme.of(context).textTheme.titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.w700, color: deep),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              if (tasks.isEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 24),
-                                  child: Center(child: Text(hovering.isNotEmpty ? 'Upuść tutaj' : 'Pusto')),
-                                ),
-                              for (final t in tasks)
-                                Draggable<Map<String, dynamic>>(
-                                  data: t,
-                                  feedback: Material(
-                                    color: Colors.transparent,
-                                    child: SizedBox(
-                                      width: 316,
-                                      child: Transform.rotate(
-                                        angle: -.03,
-                                        child: CrmCard(item: t, dense: true),
-                                      ),
-                                    ),
-                                  ),
-                                  childWhenDragging: Opacity(
-                                    opacity: .35,
-                                    child: CrmCard(item: t, dense: true),
-                                  ),
-                                  child: MouseRegion(
-                                    cursor: SystemMouseCursors.grab,
-                                    child: CrmCard(
-                                      item: t,
-                                      dense: true,
-                                      onTap: () => edit(t),
-                                      onDelete: () => remove(t),
-                                      actions: [
-                                        OwnerPicker(item: t, onChange: (o) => assign(t, o)),
-                                        if (status != 'done') TaskAiActions(t),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        );
-                      },
+              SegmentedButton<Owner?>(
+                segments: [
+                  const ButtonSegment(
+                    value: null,
+                    icon: Icon(Icons.groups_rounded),
+                    label: Text('Wszystkie'),
+                  ),
+                  for (final o in const [Owner.dawid, Owner.nela])
+                    ButtonSegment(
+                      value: o,
+                      icon: Icon(o.icon, color: o.color),
+                      label: Text(o.name),
                     ),
                 ],
+                selected: {_who},
+                onSelectionChanged: (v) => setState(() => _who = v.single),
               ),
+              Text(
+                'Przeciągnij kartę do innej kolumny (na telefonie: przytrzymaj). Kliknij, żeby zmienić.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+          cardFor: (t) => CrmCard(
+            item: t,
+            dense: true,
+            onTap: () => edit(t),
+            onDelete: () => remove(t),
+            actions: [
+              OwnerPicker(item: t, onChange: (o) => assign(t, o)),
+              if (t['status'] != 'done') TaskAiActions(t),
             ],
           ),
         );
