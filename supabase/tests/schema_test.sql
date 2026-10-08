@@ -744,3 +744,21 @@ begin
   assert (select count(*) from public.crm_items where body like '%Czas: ok.%Czas: ok.%') = 0, 'the note is added once';
 end $$;
 select 'launch plan hours tests passed';
+
+-- The faster plan: premiere on 2 November, a task moved on the board stays where it was put.
+do $$
+begin
+  assert (select due from public.crm_items where data->>'key' = 'c-premiere') = '2026-11-02', 'premiere moved';
+  assert (select due from public.crm_items where data->>'key' = 'f1-submit') = '2026-10-12', 'iOS review earlier';
+  assert (select title from public.crm_items where data->>'key' = 'f1-measure') like 'Maile:%', 'Pixel and Analytics done';
+  assert (select body from public.crm_items where data->>'key' = 'f1-measure') like '%Czas: ok. 1,5 h.%', 'hours kept in the note';
+  assert (select body from public.crm_items where data->>'key' = 'f1-closed') like '%26.10.%Czas: ok.%', 'new words, same note';
+end $$;
+update public.crm_items set due = '2026-10-20' where data->>'key' = 'f1-video';
+\ir ../migrations/20261019000003_launch_plan_faster.sql
+do $$
+begin
+  assert (select due from public.crm_items where data->>'key' = 'f1-video') = '2026-10-20', 'moved on the board, stays';
+  assert (select count(*) from public.crm_items where body like '%Czas: ok.%Czas: ok.%') = 0, 'no doubled notes';
+end $$;
+select 'faster plan tests passed';
