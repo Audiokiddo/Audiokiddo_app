@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AudioKiddo – strona
  * Description: Strona główna, blog i wpisy AudioKiddo: własny wygląd, ceny i koszyk z WooCommerce, SEO i dane dla wyszukiwarek AI (llms.txt). Ustawienia: Ustawienia → AudioKiddo strona.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: AudioKiddo (Nela i Dawid)
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('AK_VERSION', '2.0.0');
+define('AK_VERSION', '2.1.0');
 define('AK_DIR', plugin_dir_path(__FILE__));
 define('AK_URL', plugin_dir_url(__FILE__));
 

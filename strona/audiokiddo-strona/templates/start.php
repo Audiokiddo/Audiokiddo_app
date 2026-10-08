@@ -234,6 +234,8 @@ $icons = [
             </div>
             <?php endif; ?>
         </div>
+        <p class="ak-swipe-hint" aria-hidden="true">Przesuń w bok →</p>
+
     </div>
 </section>
 
@@ -265,6 +267,8 @@ $icons = [
             </figure>
             <?php endforeach; ?>
         </div>
+        <p class="ak-swipe-hint" aria-hidden="true">Przesuń w bok →</p>
+
     </div>
 </section>
 

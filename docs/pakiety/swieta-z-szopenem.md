@@ -1,15 +1,37 @@
-# Pakiet „Święta z Szop’enem”: propozycja na start
+# Pakiet „Święta z Szop’enem”: 3 odcinki u bohaterów innych pakietów
 
-Stan: 8 października 2026. Propozycja do zadania „temat i lista 5 zabaw” (premiera pakietu 30.11). Każda zabawa korzysta z mechaniki, która już działa w aplikacji, więc Dawid nie musi nic programować. Nela wybiera, zmienia albo odrzuca. Szkice scenariuszy pisze agent w CRM (Pomysły → Napisz scenariusz zabawy) albo Claude.
+Stan: 8 października 2026, wersja 2 (pomysł Neli i Dawida). Szop’en w grudniu odwiedza bohaterów trzech pakietów i robi z nimi to, co dzieje się w ich zabawach. Dziecko poznaje wszystkie pakiety, a rodzic widzi, co jest w środku.
 
-| # | Zabawa | Wiek | Czas | Co robi dziecko | Na wzór zabawy |
+## Odcinki
+
+| # | Odcinek | U kogo | Co robi dziecko | Wiek | Czas |
 |---|---|---|---|---|---|
-| 1 | **Zaginione prezenty Mikołaja** (Max i Mila) | 6–9 | 15 min | Szuka w domu przedmiotów z listy, rozwiązuje zagadki, na końcu wskazuje, kto zabrał worek. Akta sprawy w telefonie | Złodziej naszyjnika |
-| 2 | **Co szeleści pod choinką?** | 3–7 | 10 min | Zgaduje po dźwięku: dzwoneczki, papier, sanie, kominek. Odpowiada na głos | Co to za dźwięk? |
-| 3 | **Szop’en piecze pierniczki** | 3–7 | 12 min | Przynosi „składniki” z kuchni, odmierza na niby, wymyśla kształty pierniczków | Mistrz kuchni |
-| 4 | **Zimowe skojarzenia** | 5–9 | 10 min | Śnieg, sanki, kolęda: szybko mówi pierwsze słowo, potem wymienia trzy rzeczy z zimy | Szybkie skojarzenia, Wymień trzy |
-| 5 | **List do Mikołaja na głos** | 3–9 | 8 min | Opowiada, za co jest wdzięczne i czego by chciało; Szop’en zadaje pytania i chwali. Spokojne zakończenie przed snem | Dokończ historię |
+| 1 | **Szop’en i zaginione prezenty** | Max i Mila (Detektyw) | Szuka śladów w domu, rozwiązuje zagadki, na końcu wskazuje, kto zabrał worek z prezentami. Krótkie akta sprawy w telefonie | 5–9 | 12 min |
+| 2 | **Szop’en w magicznym sklepie** | bohaterowie Wyobraźni (Magiczny sklep, Mistrz kuchni) | Przynosi „składniki” z kuchni, wymyśla świąteczne zamówienia i kształty pierniczków | 3–7 | 10 min |
+| 3 | **Szop’en i zimowe zagadki** | bohaterowie Słów i Wiedzy | Zgaduje, kojarzy i wymienia: śnieg, sanki, kolęda. Spokojne zakończenie przed snem | 3–9 | 10 min |
 
-**Dlaczego tak:** jedna zabawa detektywistyczna (najlepiej sprzedaje się pakiet Detektyw), dwie dla najmłodszych (3–5 lat to pierwszy segment w strategii), jedna słowna i jedna wyciszająca na wieczór. Pierwszą zabawę z pakietu warto dać za darmo w grudniu jako zachętę.
+Trzy odcinki zamiast pięciu zabaw to mniej nagrań: ok. 15 h pracy Neli zamiast 24.
 
-**Na okładkę i wydarzenie:** obrazek wydarzenia „Święta” jest gotowy (`docs/sklepy/grafiki/wydarzenie-swieta-*`). Okładki zabaw w stylu obecnych (OKLADKI.md).
+## Za darmo czy płatnie? Rekomendacja: za darmo przez Święta, potem w abonamencie
+
+| Za | Przeciw |
+|---|---|
+| Grudzień to szczyt pobrań: prezenty, nowe telefony i tablety pod choinką | Abonenci czekają na nowy pakiet co miesiąc |
+| Odcinki pokazują wszystkie trzy płatne pakiety, więc działają jak zwiastun | Produkcja kosztuje tyle samo czasu co płatny pakiet |
+| Darmowy prezent to mocny powód do wydarzenia w sklepach i zgłoszenia do redakcji | Część osób weźmie tylko to, co darmowe |
+| Dobra okazja do pierwszej oceny w sklepie i zapisu na newsletter | |
+
+**Propozycja:**
+1. **30.11:** odcinki dostają najpierw abonenci jako grudniowa nowość (wcześniejszy dostęp jako nagroda za abonament).
+2. **6.12 (Mikołajki) do 6.01 (Trzech Króli):** za darmo dla wszystkich, w aplikacji i jako prezent za zapis na stronie. Wydarzenie w sklepach: „Świąteczne zagadki Szop’ena”.
+3. **Od 7.01:** odcinki zostają w abonamencie i wracają za darmo co grudzień.
+
+Dzięki temu abonenci nie czują się pominięci, a darmowy okres ma wyraźny koniec, co zachęca do pobrania teraz. Darmowe odcinki nie potrzebują produktu w App Store i Google Play, więc Dawid oszczędza ok. 2 h.
+
+## Ważne w kategorii dla dzieci
+
+Szop’en może odwiedzać bohaterów i mówić o nich w opowieści, ale **nie może namawiać dziecka do zakupu** (Apple i Google odrzucają takie aplikacje). Zachęta do pakietu jest dla rodzica: po odcinku karta „Dalej z Maxem i Milą: pakiet Detektyw” za bramką rodzica, tak jak inne zakupy.
+
+## Do zrobienia (już w CRM)
+
+Temat i odcinki: 19.10 · zgłoszenie do Apple (New Content): 19.10 · scenariusze: 26.10 · nagrania: 2.11 · montaż i okładki: 9.11 · odcinki w Studio: 16.11 · wydarzenie w sklepach: 23.11 · premiera dla abonentów: 30.11 · za darmo dla wszystkich: 6.12.

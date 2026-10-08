@@ -4,7 +4,7 @@
 
 ## 1. Postanowienia ogólne
 
-1. Aplikację AudioKiddo udostępnia Nela Mariak, prowadząca działalność gospodarczą pod nazwą Biznesowelove Nela Mariak, `[TODO: adres i NIP z CEIDG]`.
+1. Aplikację AudioKiddo udostępnia Nela Mariak, prowadząca działalność gospodarczą pod nazwą Biznesowelove Nela Mariak, ul. 8 Marca 5 lok. a, 76-100 Sławno, NIP 4990713792, REGON 545413303.
 2. Aplikacja zawiera interaktywne audiozabawy, piosenki i gry dźwiękowe dla dzieci. Korzysta z niej rodzic lub opiekun; dziecko korzysta pod jego opieką.
 3. Do korzystania potrzebny jest telefon lub tablet z aktualnym systemem iOS lub Android. Internet jest potrzebny do pobrania treści i potwierdzenia dostępu.
 

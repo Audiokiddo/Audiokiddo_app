@@ -75,7 +75,11 @@ html { scroll-behavior: smooth; }
 .ak-btn-small { min-height: 42px; padding: 8px 18px; font-size: 15px; }
 .ak-btn-main.loading { opacity: .6; pointer-events: none; }
 .ak-btn-main.added::after { content: "✓"; margin-left: 4px; }
-.ak-site .added_to_cart { display: none; } /* WooCommerce's own link: our toast says it instead. */
+.ak-site .added_to_cart { display: inline-flex; align-items: center; gap: 6px; margin: 10px 0 0 14px; font-weight: 600; font-size: 15px; color: var(--teal-deep); text-decoration: none; }
+.ak-site .added_to_cart::after { content: "→"; transition: transform .2s var(--spring); }
+.ak-site .added_to_cart:hover::after { transform: translateX(3px); }
+.ak-dark .added_to_cart { color: var(--sun); }
+.ak-btn.is-added { background: var(--teal-deep) !important; color: #fff !important; }
 
 .ak-stores { display: flex; flex-wrap: wrap; gap: 12px; margin: 26px 0 0; }
 .ak-stores-center { justify-content: center; }
@@ -101,7 +105,7 @@ html { scroll-behavior: smooth; }
 .ak-short { display: none; }
 .ak-cart { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); color: var(--ink) !important; box-shadow: inset 0 0 0 1.5px var(--line); transition: transform .3s var(--spring); }
 .ak-cart:hover { transform: scale(1.08); }
-.ak-cart.is-bump { animation: ak-bump .5s var(--ease); }
+.ak-cart.is-bump, .ak-dock-cart.is-bump { animation: ak-bump .5s var(--ease); }
 .ak-cart-count { position: absolute; top: -4px; right: -4px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--teal-deep); color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
 .ak-cart-count[data-count="0"] { display: none; }
 .ak-menu-btn { display: none; width: 44px; height: 44px; border-radius: 50%; border: 0; box-shadow: inset 0 0 0 1.5px var(--line); background: transparent; cursor: pointer; }
@@ -505,8 +509,6 @@ html { scroll-behavior: smooth; }
 .ak-card-big h3 { font-size: clamp(26px, 3vw, 36px); }
 
 /* Toast after adding to the cart */
-.ak-toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 99; background: var(--ink); color: #fff; padding: 12px 14px 12px 20px; border-radius: 999px; box-shadow: var(--shadow); display: flex; gap: 14px; align-items: center; font-weight: 500; max-width: calc(100% - 32px); }
-.ak-toast a { color: var(--ink); background: var(--sun); padding: 8px 14px; border-radius: 999px; text-decoration: none; font-weight: 600; white-space: nowrap; }
 
 /* Blog list */
 .ak-blog-hero { padding: clamp(40px, 6vw, 72px) 0 24px; }
@@ -663,8 +665,7 @@ html { scroll-behavior: smooth; }
   .ak-guide-me { width: 84px; height: 84px; }
   .ak-guide.is-quiet { left: auto; }
   .ak-guide.is-quiet .ak-guide-me { width: 64px; height: 64px; }
-  .ak-toast { bottom: 110px; }
-}
+  }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -673,4 +674,68 @@ html { scroll-behavior: smooth; }
   .ak-js .ak-statement span { opacity: 1; }
   .ak-marquee-in { flex-wrap: wrap; width: auto; justify-content: center; }
 }
-.ak-toast[hidden] { display: none; }
+
+/* Phones: a deck, not a long page. Every slide fills the screen, a story bar on top says where
+   you are (3 / 12 · Pakiety), a glass dock at the bottom keeps listening, the packs, the free
+   plays and the cart under the thumb, and a big outlined number marks each slide. */
+.ak-story, .ak-dock, .ak-swipe-hint { display: none; }
+@media (max-width: 760px) {
+  .ak-top { background: rgba(255, 251, 242, .82); }
+  .ak-top.is-hidden { transform: none; }
+  .ak-top-in { min-height: 52px; }
+  .ak-top-cta, .ak-top .ak-cart, .ak-menu-btn, .ak-progress, .ak-dots { display: none !important; }
+  .ak-story { display: flex; flex-direction: column; gap: 6px; position: absolute; left: 16px; right: 16px; bottom: 6px; }
+  .ak-top-in { padding-bottom: 14px; }
+  .ak-story-bars { display: flex; gap: 3px; height: 3px; }
+  .ak-story-bars i { flex: 1; border-radius: 3px; background: rgba(29, 26, 43, .12); overflow: hidden; position: relative; }
+  .ak-story-bars i.done { background: var(--ink); }
+  .ak-story-bars i.on { background: linear-gradient(90deg, var(--teal), var(--sun)); }
+  .ak-story-label { position: absolute; right: 0; top: -40px; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .02em; white-space: nowrap; }
+  .ak-on-dark .ak-top { background: rgba(14, 14, 16, .78); }
+  .ak-on-dark .ak-top .ak-logo img { filter: brightness(0) invert(1); }
+  .ak-on-dark .ak-story-label { color: #CFC9DA; }
+  .ak-on-dark .ak-story-bars i { background: rgba(255, 255, 255, .18); }
+  .ak-on-dark .ak-story-bars i.done { background: #fff; }
+
+  .ak-dock { display: flex; position: fixed; z-index: 80; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); height: 66px; padding: 0 6px; align-items: center; justify-content: space-around; border-radius: 24px; background: rgba(29, 26, 43, .82); backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5); box-shadow: 0 18px 40px rgba(14, 14, 16, .28), inset 0 1px 0 rgba(255, 255, 255, .12); }
+  .ak-dock a, .ak-dock button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 58px; padding: 6px 4px; color: #EDEAF3 !important; font: 500 11px/1.1 inherit; font-family: inherit; text-decoration: none; background: none; border: 0; cursor: pointer; }
+  .ak-dock svg { width: 22px; height: 22px; }
+  .ak-dock .ak-dock-main { color: var(--ink) !important; background: var(--sun); border-radius: 18px; padding: 9px 12px; transform: translateY(-14px); box-shadow: 0 10px 24px rgba(250, 193, 25, .45); font-weight: 700; }
+  .ak-dock .ak-cart-count { top: 0; right: 8px; min-width: 18px; height: 18px; font-size: 11px; }
+
+  .ak-slide { min-height: 100svh; padding: 88px 0 116px; justify-content: center; }
+  .ak-slide[data-n]::after { content: attr(data-n); position: absolute; right: 14px; top: 76px; z-index: 0; font: 700 112px/1 "AK Poppins", sans-serif; letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1.5px currentColor; opacity: .09; pointer-events: none; }
+  .ak-slide > .ak-wrap { position: relative; z-index: 1; }
+  .ak-site h2 { font-size: clamp(30px, 8.6vw, 38px); }
+  .ak-marquee { display: none; }
+  .ak-js [data-reveal="left"], .ak-js [data-reveal="right"] { transform: translateY(26px); }
+  .ak-js [data-reveal="left"].is-in, .ak-js [data-reveal="right"].is-in { transform: none; }
+  .ak-hero-in, .ak-free-in, .ak-app-in { grid-template-columns: minmax(0, 1fr); }
+  .ak-hero { background:
+      radial-gradient(120% 60% at 100% 0%, rgba(58, 175, 176, .22), transparent 60%),
+      radial-gradient(90% 50% at 0% 100%, rgba(250, 193, 25, .26), transparent 60%),
+      radial-gradient(80% 40% at 0% 20%, rgba(169, 142, 193, .22), transparent 60%), var(--cream); }
+
+  /* Long rows become swipes: the packs, the videos, the specialists, the team. */
+  .ak-shop, .ak-experts, .ak-team { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: -16px; padding: 4px 16px 14px; scrollbar-width: none; }
+  .ak-shop::-webkit-scrollbar, .ak-experts::-webkit-scrollbar, .ak-team::-webkit-scrollbar { display: none; }
+  .ak-group, .ak-products { display: contents; }
+  .ak-group-h { display: none; }
+  .ak-product, .ak-expert, .ak-person { flex: 0 0 86%; scroll-snap-align: center; }
+  .ak-person { flex-basis: 64%; }
+  .ak-product-cover { max-height: 220px; overflow: hidden; }
+  .ak-reasons { grid-template-columns: 1fr; gap: 10px; }
+  .ak-reason { display: grid; grid-template-columns: 48px 1fr; column-gap: 14px; align-items: start; padding: 14px 16px; font-size: 14px; background: rgba(255, 255, 255, .72); backdrop-filter: blur(8px); }
+  .ak-reason img { width: 44px; height: 44px; grid-row: span 2; }
+  .ak-reason h3 { margin: 0 0 2px; font-size: 16px; }
+  .ak-reason p { margin: 0; }
+  .ak-swipe-hint { display: block; text-align: center; font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .ak-dark .ak-swipe-hint { color: #A9A4B4; }
+
+  /* Szop'en sits above the dock and talks by himself only on the first slide. */
+  .ak-guide { bottom: calc(86px + env(safe-area-inset-bottom)); }
+  .ak-guide-me { width: 72px; height: 72px; }
+  .ak-guide.is-quiet .ak-guide-me, .ak-guide.is-idle .ak-guide-me { width: 58px; height: 58px; }
+  .ak-guide-bubble { margin-bottom: 22px; }
+  .ak-foot { padding-bottom: 110px; }
+}

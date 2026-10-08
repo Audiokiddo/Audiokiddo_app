@@ -762,3 +762,18 @@ begin
   assert (select count(*) from public.crm_items where body like '%Czas: ok.%Czas: ok.%') = 0, 'no doubled notes';
 end $$;
 select 'faster plan tests passed';
+
+-- The Christmas pack as three free-in-December episodes.
+do $$
+begin
+  assert (select title from public.crm_items where data->>'key' = 'p-grudzien-0') like '%3 odcinki%', 'episodes';
+  assert (select body from public.crm_items where data->>'key' = 'p-grudzien-3') like '%Czas: ok. 5 h.%', 'less recording';
+  assert (select body from public.crm_items where data->>'key' = 'p-grudzien-5') like 'Studio → Treści. Bez produktu%Czas: ok. 1,5 h.%', 'no store product';
+  assert (select count(*) from public.crm_items where data->>'key' in ('c-swieta-free', 'c-swieta-end')) = 2, 'free window in the calendar';
+end $$;
+\ir ../migrations/20261019000004_christmas_episodes.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' = 'c-swieta-free') = 1, 'added once';
+end $$;
+select 'christmas episodes tests passed';

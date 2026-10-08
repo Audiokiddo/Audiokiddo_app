@@ -38,7 +38,6 @@ $links = array_filter([
     </div>
     <p class="ak-wrap ak-copy">© <?php echo esc_html(gmdate('Y')); ?> AudioKiddo. Audiozabawy pełne przygód.</p>
 </footer>
-<div class="ak-toast" role="status" aria-live="polite" hidden></div>
 <?php wp_footer(); ?>
 </body>
 </html>
