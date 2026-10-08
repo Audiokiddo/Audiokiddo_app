@@ -93,6 +93,8 @@ class HomeScreen extends ConsumerWidget {
 
               // Plays first, the way parents think: what now, then for which age and kind;
               // packs, offers and helpers after them.
+              // What the family already has, right under today's picks.
+              _OwnedPacks(catalog: catalog),
               const RefSection('Co robicie?'),
               const _QuickNeeds(),
               if (items.isNotEmpty) ...[
@@ -104,7 +106,6 @@ class HomeScreen extends ConsumerWidget {
               const _AgeRow(),
               const RefSection('Rodzaje zabaw'),
               const _CategoryGrid(),
-              _OwnedPacks(catalog: catalog),
               _NextPackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
               const UpcomingShelf(),

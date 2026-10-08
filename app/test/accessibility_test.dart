@@ -58,14 +58,7 @@ void main() {
     await pump(tester);
     await tester.tap(find.byIcon(Icons.auto_stories_outlined));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.text('Audiozabawy'),
-      200,
-      scrollable: find
-          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
-          .first,
-    );
-    await tester.tap(find.text('Audiozabawy'));
+    await tester.tap(find.text('3–5 lat'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Magiczny sklep'),
@@ -105,14 +98,8 @@ void main() {
       await expectAccessible(tester);
       await tester.tap(find.byIcon(Icons.auto_stories_outlined));
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.text('Audiozabawy'),
-        200,
-        scrollable: find
-            .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
-            .first,
-      );
-      await tester.tap(find.text('Audiozabawy'));
+      // The quick filters on top of the library: an age band opens the list of plays.
+      await tester.tap(find.text('3–5 lat'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
         find.text('Magiczny sklep'),

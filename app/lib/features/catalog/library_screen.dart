@@ -193,8 +193,7 @@ class _Browse extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scopes = ref.watch(activeScopesProvider);
-    final summaries = [for (final p in catalog.packs) PackSummary(p, catalog)]
-      ..sort((a, b) => (ownsPack(scopes, a.pack.id) ? 0 : 1).compareTo(ownsPack(scopes, b.pack.id) ? 0 : 1));
+    final summaries = [for (final p in catalog.packs) PackSummary(p, catalog)];
     final loose = [
       for (final i in catalog.items)
         if (i.packId == null && i.releasedOn?.isAfter(ref.watch(clockProvider)()) != true) i,
@@ -207,12 +206,14 @@ class _Browse extends ConsumerWidget {
         _SearchField(onTap: onSearch),
         const SizedBox(height: 10),
         _QuickChips(onFilter: onFilter),
+        if (summaries.any((s) => ownsPack(scopes, s.pack.id))) const RefSection('Wasze pakiety'),
         for (final s in summaries)
-          _PackShelf(
-            summary: s,
-            owned: ownsPack(scopes, s.pack.id),
-            product: byId[s.pack.storeProductId],
-          ),
+          if (ownsPack(scopes, s.pack.id)) _PackShelf(summary: s, owned: true),
+        if (summaries.any((s) => !ownsPack(scopes, s.pack.id)))
+          RefSection(summaries.any((s) => ownsPack(scopes, s.pack.id)) ? 'Do odkrycia' : 'Pakiety'),
+        for (final s in summaries)
+          if (!ownsPack(scopes, s.pack.id))
+            _PackShelf(summary: s, owned: false, product: byId[s.pack.storeProductId]),
         if (loose.isNotEmpty) _Shelf(title: 'Piosenki i inne', items: loose),
         const Padding(padding: EdgeInsets.only(top: 8), child: Center(child: RedeemAccessLink())),
         const RefSection('Rodzaje zabaw'),
@@ -286,7 +287,7 @@ class _PackShelf extends ConsumerWidget {
           }.length;
     final total = summary.items.length;
     return Padding(
-      padding: const EdgeInsets.only(top: 22),
+      padding: const EdgeInsets.only(top: 6, bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

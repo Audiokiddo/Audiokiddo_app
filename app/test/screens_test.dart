@@ -75,11 +75,11 @@ void main() {
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
     expect(find.text('Co dziś robimy?'), findsOneWidget);
-    for (final label in ['Mam 20 minut', 'W podróży']) {
+    for (final label in ['Mam 20 minut', 'W podróży', 'Na dobranoc', 'Bez przygotowań']) {
       await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
       expect(find.text(label), findsOneWidget);
     }
-    await tester.scrollUntilVisible(find.text('Kontynuuj słuchanie'), 200, scrollable: mainScroll);
+    expect(find.text('Kontynuuj słuchanie'), findsNothing, reason: 'nothing to continue yet, so no empty block');
     // Categories deliberately live below the recommendations, not above practical situations.
     await tester.scrollUntilVisible(find.text('Kreatywne'), 200, scrollable: mainScroll);
     await tester.scrollUntilVisible(find.text('Fabularne'), 200, scrollable: mainScroll);
