@@ -91,42 +91,27 @@ class HomeScreen extends ConsumerWidget {
               TourTarget(id: 'hero', child: const HeroShelf()),
               const SizedBox(height: 18),
 
-              const _QuickNeeds(),
-              RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
-              if (items.isEmpty)
-                InkWell(
-                  onTap: () => context.go('/biblioteka'),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.headphones_rounded, color: AkBrand.tealDeep),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Pierwsza przygoda czeka w bibliotece.',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                        const Icon(Icons.chevron_right_rounded),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
+              // Plays first, the way parents think: what now, then for which age and kind;
+              // packs, offers and helpers after them.
+              // What the family already has, right under today's picks.
               _OwnedPacks(catalog: catalog),
+              const RefSection('Co robicie?'),
+              const _QuickNeeds(),
+              if (items.isNotEmpty) ...[
+                RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
+                for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
+              ],
               const PendingDiplomaCard(),
-              const RatingCard(),
-              const ReferralCard(),
-              _NextPackCard(catalog: catalog),
-              _DiscoverPacks(catalog: catalog),
-              const UpcomingShelf(),
-              const _OfflineCard(),
               const RefSection('Dla wieku'),
               const _AgeRow(),
               const RefSection('Rodzaje zabaw'),
               const _CategoryGrid(),
+              _NextPackCard(catalog: catalog),
+              _DiscoverPacks(catalog: catalog),
+              const UpcomingShelf(),
+              const RatingCard(),
+              const ReferralCard(),
+              const _OfflineCard(),
             ],
           );
         },
@@ -763,11 +748,12 @@ class _QuickNeeds extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The parent's situation, not a menu: offline and routines live in Więcej and below.
     final needs = [
-      (Icons.schedule_rounded, 'Mam 20 minut', '/ratunku'),
-      (Icons.directions_car_rounded, 'W podróży', '/podroz'),
-      (Icons.offline_pin_rounded, 'Pobierz offline', '/pobrane'),
-      (Icons.auto_awesome_rounded, 'Tryby i rutyny', '/rutyny'),
+      (Icons.schedule_rounded, 'Mam 20 minut', 'Dobierzemy zabawy', '/ratunku'),
+      (Icons.directions_car_rounded, 'W podróży', 'Cała droga bez ekranu', '/podroz'),
+      (Icons.bedtime_rounded, 'Na dobranoc', 'Wyciszenie przed snem', '/dobranoc'),
+      (Icons.bolt_rounded, 'Bez przygotowań', 'Nic nie trzeba szykować', const LibraryFilter(noPrep: true).toLocation()),
     ];
     const colors = [AkBrand.sun, Color(0xFFB8E3DF), Color(0xFFDED0EF), Color(0xFFE5DCEF)];
     return Column(
@@ -787,7 +773,7 @@ class _QuickNeeds extends StatelessWidget {
                         borderRadius: BorderRadius.circular(22),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(22),
-                          onTap: () => context.push(needs[row * 2 + col].$3),
+                          onTap: () => context.push(needs[row * 2 + col].$4),
                           child: Padding(
                             padding: const EdgeInsets.all(16),
                             child: Column(
@@ -799,6 +785,11 @@ class _QuickNeeds extends StatelessWidget {
                                   needs[row * 2 + col].$2,
                                   style: Theme.of(context).textTheme.titleSmall
                                       ?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
+                                ),
+                                Text(
+                                  needs[row * 2 + col].$3,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(color: const Color(0xFF211C35)),
                                 ),
                               ],
                             ),

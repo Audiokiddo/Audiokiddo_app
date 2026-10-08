@@ -106,6 +106,8 @@ Uwaga: pole „Mam kod” (kody prezentowe i polecenia) może być przez Apple u
 
 ## Zrzuty ekranu
 
+**Gotowe zrzuty we wszystkich rozmiarach (8.10.2026):** `docs/sklepy/zrzuty/`, opis i kolejność w `docs/sklepy/WYROZNIENIE.md`. Lista poniżej to pierwotny plan.
+
 Rozmiary: iPhone 6,9″ (1320 × 2868) i 6,5″ (1284 × 2778), iPad 13″ tylko jeśli wspieramy iPada, Android telefon (min. 1080 × 1920). 4–8 zrzutów, każdy z krótkim napisem nad ekranem.
 
 1. Start z logo, Szop’enem i „Zacznij tutaj”. Napis: „Włącz, połóż telefon, odpocznij”.
