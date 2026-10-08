@@ -10,6 +10,8 @@ Adresy stron (gotowe fragmenty HTML w `docs/strona/sklepy/`, do wklejenia w Word
 | Wsparcie / kontakt | `https://audiokiddo.pl/kontakt/` | `kontakt-aplikacja.html` |
 | Usuwanie konta i danych (Google) | `https://audiokiddo.pl/usuwanie-konta/` | `usuwanie-konta.html` |
 
+**Wersja do wklejenia (8.10.2026):** `docs/sklepy/KARTA-DO-WKLEJENIA.md` (nazwa i słowa kluczowe pod wyszukiwanie, grafiki, wydarzenia). Tabele poniżej zostają jako uzasadnienia.
+
 ## Opis w sklepach (PL)
 
 | Pole | Limit | Tekst |
