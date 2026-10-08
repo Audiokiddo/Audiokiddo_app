@@ -6,6 +6,24 @@ import 'crm_widgets.dart';
 /// One column of the board: its status, title and colours.
 typedef BoardColumn = ({String status, String label, Color deep, Color soft});
 
+/// Whether a task belongs to the next [days] days: overdue, due by then, or without a date.
+/// The launch plan puts tasks on the board until mid-2027; these keep the board to what is near.
+bool dueSoon(Map<String, dynamic> task, DateTime today, {int days = 14}) {
+  final due = DateTime.tryParse('${task['due'] ?? ''}');
+  if (due == null) return true;
+  final day = DateTime(today.year, today.month, today.day);
+  return !due.isAfter(day.add(Duration(days: days)));
+}
+
+/// Board order: the more urgent priority first, then the nearer date (undated last).
+int byUrgency(Map<String, dynamic> a, Map<String, dynamic> b) {
+  final p = ((a['priority'] as int?) ?? 2).compareTo((b['priority'] as int?) ?? 2);
+  if (p != 0) return p;
+  final da = '${a['due'] ?? ''}', db = '${b['due'] ?? ''}';
+  if (da.isEmpty || db.isEmpty) return da.isEmpty == db.isEmpty ? 0 : (da.isEmpty ? 1 : -1);
+  return da.compareTo(db);
+}
+
 /// The task board: columns that each scroll down on their own and share the screen.
 /// "Szerokość zadań" sets how wide one task is: narrower tasks sit several in a row, so more
 /// fit on the screen; wider ones read more easily. "Skala" shrinks or enlarges everything

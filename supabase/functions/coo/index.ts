@@ -101,13 +101,16 @@ async function gather(admin: SupabaseClient, focusId: string | null) {
 
   // The state of the business, trimmed to what helps decide.
   const since = new Date(Date.now() - 45 * 864e5).toISOString();
+  // Open tasks due in the next three weeks (or overdue, or undated): the launch plan reaches into 2027.
+  const soon = new Date(Date.now() + 21 * 864e5).toISOString().slice(0, 10);
   await admin.rpc("crm_watch");
   const [numbers, stats, catalog, open, ideas, calendar, decided, alerts] = await Promise.all([
     admin.rpc("crm_numbers"),
     admin.rpc("admin_stats", { p_days: 30 }),
     admin.rpc("published_catalog"),
     admin.from("crm_items").select("title, status, owner, due, priority").eq("kind", "task")
-      .not("status", "in", "(done,archived)").order("priority").limit(40),
+      .not("status", "in", "(done,archived)").or(`due.is.null,due.lte.${soon}`)
+      .order("priority").order("due", { nullsFirst: false }).limit(40),
     admin.from("crm_items").select("title, area, status").eq("kind", "idea").neq("decision", "rejected")
       .order("created_at", { ascending: false }).limit(30),
     admin.from("crm_items").select("title, area, due, status").eq("kind", "calendar")

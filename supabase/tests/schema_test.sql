@@ -417,7 +417,7 @@ begin
   assert c ->> 'email' = 'rodzic@example.com', c::text;
   assert jsonb_array_length(c -> 'entitlements') = 1, c::text;
   assert c -> 'entitlements' -> 0 ->> 'status' = 'active';
-  assert (select count(*) from public.crm_items where area = 'support') = 1, 'noted in the history';
+  assert (select count(*) from public.crm_items where area = 'support' and data->>'plan' is null) = 1, 'noted in the history';
   perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'pack:detektyw', 60, null);
   c := public.crm_customer('rodzic@example.com');
   assert jsonb_array_length(c -> 'entitlements') = 1, 'extended, not doubled';
@@ -713,3 +713,20 @@ begin
   assert (s -> 'referral_channels' ->> 'whatsapp')::int = 1, s::text;
 end $$;
 select 'signals tests passed';
+
+-- The launch plan on the CRM board: tasks for each of us, calendar entries, nothing twice.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'task') >= 100, 'plan tasks';
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'calendar') >= 10, 'plan calendar';
+  assert (select count(distinct owner) from public.crm_items where data->>'plan' = 'premiera-2026') = 3, 'Dawid, Nela, Razem';
+  assert not exists (select 1 from public.crm_items where source = 'system' and title = 'Założyć konto Apple Developer' and status = 'todo'),
+    'the old account task gave way to the plan';
+end $$;
+create temp table plan_before as select count(*) n from public.crm_items where data->>'plan' = 'premiera-2026';
+\ir ../migrations/20261019000001_launch_plan.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026') = (select n from plan_before), 'running it again adds nothing';
+end $$;
+select 'launch plan tests passed';

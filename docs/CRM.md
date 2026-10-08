@@ -8,7 +8,7 @@ Stan: 5 października 2026. CRM jest częścią AudioKiddo Studio (zakładka **C
 |---|---|
 | **Pulpit** | „Do uwagi”: alarmy strażnika (płatności, błędy, zakupy, aktywność, sklep www, reklamy) sprawdzane co godzinę. Trend 12 tygodni (aktywne rodziny, nowe konta, zabawy, oferta, zakupy, przychód; zmiana do zeszłego tygodnia). Zysk w tym miesiącu (szacunek: MRR netto po VAT i prowizjach minus koszty), MRR, płacące rodziny, abonamenty, użytkownicy, przychód z 30 dni. Ostatni raport COO, zadania na dziś i zaległe, kalendarz na 14 dni |
 | **Decyzje** | Wszystko, co zaproponował agent: zatwierdzasz, odrzucasz albo poprawiasz. Bez Twojej decyzji nic nie trafia na tablice |
-| **Zadania** | Tablica: Do zrobienia, W toku, Zrobione. Właściciel (Dawid, Nela, Claude), termin, priorytet |
+| **Zadania** | Tablica: Do zrobienia, W toku, Zrobione. Właściciel (Dawid, Nela, Claude), termin, priorytet. Domyślnie najbliższe 2 tygodnie (plus zaległe i bez terminu), przełącznik „Cały plan” pokazuje wszystko |
 | **Pomysły** | Pakiety, scenariusze, funkcje, posty i rolki ze statusem (nowy, wybrany, w produkcji, opublikowany). Przy pakiecie przycisk „Agent: napisz scenariusz zabawy” oraz „Do kalendarza” |
 | **Kalendarz** | Siatka miesiąca: premiery, rolki, posty, newslettery i promocje; przeciągasz kartę na inny dzień |
 | **Reklamy** | Podgląd reklam i rolek jak na telefonie: haczyk, tekst, grupa docelowa, budżet testu |
@@ -23,6 +23,12 @@ Stan: 5 października 2026. CRM jest częścią AudioKiddo Studio (zakładka **C
 | **Ustawienia** | Rytm agenta (co przygotowuje sam rano) i koszty miesięczne liczone w zysku |
 
 Statystyki zachowania w aplikacji (ukończenia, powtórki, powroty, konwersja) są w zakładce **Serwer → Statystyki**, agent też je widzi.
+
+## Plan premiery w CRM
+
+Migracja `supabase/migrations/20261019000001_launch_plan.sql` wpisuje harmonogram premiery (dokument „Harmonogram premiery AudioKiddo”): 115 zadań dla Dawida, Neli lub obojga, od kont w sklepach (8.10.2026) przez premierę 16.11.2026 do Dnia Dziecka 2027, w tym każdy krok sześciu pakietów miesięcznych. Do kalendarza trafiają premiery pakietów, Black Friday, Mikołajki, ostatni dzień prezentów, ferie i Dzień Dziecka. Premiera pakietu w kalendarzu (obszar „Premiera”) uruchamia szkic newslettera agenta dwa dni wcześniej.
+
+Każdy wpis ma klucz planu, więc ponowne `supabase db push` nic nie dubluje, a przesunięte, zrobione albo usunięte zadania zostają jak są. Agent COO widzi zadania na najbliższe 3 tygodnie (plus zaległe i bez terminu).
 
 ## Agent COO: jak z nim pracować
 

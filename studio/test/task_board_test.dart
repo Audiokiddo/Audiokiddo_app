@@ -83,4 +83,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.getTopLeft(find.text('Zadanie 29')).dy, lessThan(800));
   });
+
+  test('the board keeps to the next two weeks, urgent and near first', () {
+    final today = DateTime(2026, 10, 8);
+    expect(dueSoon({'due': '2026-10-01'}, today), isTrue, reason: 'overdue');
+    expect(dueSoon({'due': '2026-10-22'}, today), isTrue);
+    expect(dueSoon({'due': '2026-10-23'}, today), isFalse);
+    expect(dueSoon({'due': null}, today), isTrue, reason: 'undated');
+    final sorted = [
+      {'title': 'c', 'priority': 2, 'due': '2026-10-09'},
+      {'title': 'd', 'priority': 1, 'due': null},
+      {'title': 'b', 'priority': 1, 'due': '2026-10-20'},
+      {'title': 'a', 'priority': 1, 'due': '2026-10-10'},
+    ]..sort(byUrgency);
+    expect([for (final t in sorted) t['title']], ['a', 'b', 'd', 'c']);
+  });
 }
