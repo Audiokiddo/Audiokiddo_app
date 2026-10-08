@@ -513,6 +513,9 @@ class _TasksState extends ConsumerState<_Tasks> {
   /// Whose tasks are shown: null for everyone's.
   Owner? _who;
 
+  /// Only tasks due in the next two weeks (and overdue or undated ones).
+  bool _soon = true;
+
   static const columns = [
     ('todo', 'Do zrobienia', Brand.lavDeep, Brand.lavSoft),
     ('doing', 'W toku', Brand.sunDeep, Brand.sunSoft),
@@ -570,10 +573,11 @@ class _TasksState extends ConsumerState<_Tasks> {
               label: const Text('Dodaj zadanie'),
             ),
       body: crmAsync(ref.watch(crmItemsProvider('task')), (all) {
+        final today = DateTime.now();
         final list = [
           for (final t in decided(all))
-            if (mine(t)) t,
-        ]..sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
+            if (mine(t) && (!_soon || dueSoon(t, today))) t,
+        ]..sort(byUrgency);
         return TaskBoard(
           columns: [
             for (final (status, label, deep, soft) in columns)
@@ -602,6 +606,14 @@ class _TasksState extends ConsumerState<_Tasks> {
                 ],
                 selected: {_who},
                 onSelectionChanged: (v) => setState(() => _who = v.single),
+              ),
+              SegmentedButton<bool>(
+                segments: const [
+                  ButtonSegment(value: true, icon: Icon(Icons.today_rounded), label: Text('2 tygodnie')),
+                  ButtonSegment(value: false, icon: Icon(Icons.date_range_rounded), label: Text('Cały plan')),
+                ],
+                selected: {_soon},
+                onSelectionChanged: (v) => setState(() => _soon = v.single),
               ),
               Text(
                 'Przeciągnij kartę do innej kolumny (na telefonie: przytrzymaj). Kliknij, żeby zmienić.',
