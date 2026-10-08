@@ -56,7 +56,7 @@ Pytania i pomysły: kontakt@audiokiddo.pl
 | Kategoria Kids | | 6–8 lat (decyzja do potwierdzenia, potem trudno zmienić) |
 | Klasyfikacja wiekowa | | wszędzie „Brak”; nieograniczony dostęp do sieci: Nie; treści użytkowników: Nie |
 | Wydanie wersji | | **Ręczne** (publikujemy sami: cicha publikacja 2.11) |
-| Szyfrowanie (eksport) | | tylko standardowe (HTTPS), bez własnej kryptografii |
+| Szyfrowanie (eksport) | | ustawione w aplikacji: tylko HTTPS, App Store Connect nie pyta |
 | Zrzuty iPhone 6,9″ i 6,5″, iPad 13″ | | `zrzuty/app-store-iphone-6.9`, `-6.5`, `app-store-ipad-13` (8 sztuk, w kolejności plików) |
 
 **Informacje dla recenzenta**
@@ -90,3 +90,23 @@ Obrazki bez napisów (Apple nakłada nazwę wydarzenia sam): `grafiki/wydarzenie
 | Ferie i podróż | `wydarzenie-ferie-podroz-*` |
 | Święta | `wydarzenie-swieta-*` |
 | Dzień Dziecka | `wydarzenie-dzien-dziecka-*` |
+
+## Wersje testowe
+
+**TestFlight → Informacje o testach**
+
+| Pole | Wartość |
+|---|---|
+| Opis wersji beta | Audiozabawy dla dzieci 3–9 lat. Dziecko słucha i odpowiada na głos, rodzic kładzie telefon. |
+| E-mail do opinii | kontakt@audiokiddo.pl |
+| Co testować | Załóż konto (e-mail i kod), przejdź powitanie, włącz darmową zabawę i zablokuj ekran: dźwięk ma grać dalej. Kup abonament próbny (konto sandbox, nic nie płacisz), potem „Przywróć zakupy”. Włącz tryb dziecka i wyjdź z niego. Pobierz zabawę i włącz ją bez internetu. |
+
+**Google Play → test wewnętrzny i zamknięty → informacje o wersji**
+
+```
+<pl-PL>
+Pierwsza wersja testowa AudioKiddo. Sprawdź: założenie konta, darmową zabawę przy zablokowanym ekranie, zakup testowy abonamentu (bez opłat), tryb dziecka i zabawę bez internetu. Uwagi: kontakt@audiokiddo.pl
+</pl-PL>
+```
+
+Szyfrowanie (Apple): aplikacja ma w Info.plist `ITSAppUsesNonExemptEncryption = NO` (tylko HTTPS), więc App Store Connect nie pyta o to przy każdej wersji.
