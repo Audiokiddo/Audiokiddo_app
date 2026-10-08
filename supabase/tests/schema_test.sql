@@ -730,3 +730,17 @@ begin
   assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026') = (select n from plan_before), 'running it again adds nothing';
 end $$;
 select 'launch plan tests passed';
+
+-- Time estimates on the plan, added once.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'task' and data ? 'hours')
+    = (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'task'), 'every task has hours';
+  assert (select body from public.crm_items where data->>'key' = 'f1-social') like '%Claude przygotował%', 'the prepared texts';
+end $$;
+\ir ../migrations/20261019000002_launch_plan_hours.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where body like '%Czas: ok.%Czas: ok.%') = 0, 'the note is added once';
+end $$;
+select 'launch plan hours tests passed';
