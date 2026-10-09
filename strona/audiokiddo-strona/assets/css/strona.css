@@ -857,9 +857,10 @@ html.ak-snap { scroll-snap-type: none; }
 .ak-when-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
 .ak-when-szop { width: 150px; }
 .ak-when-list { list-style: none; padding: 0; margin: 26px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.ak-when-card { background: var(--paper); border-radius: 22px; padding: 20px 22px; box-shadow: var(--shadow); border-left: 6px solid var(--deep, var(--teal)); transition: transform .3s var(--spring); }
+.ak-when-card { background: var(--paper); border-radius: 22px; padding: 20px 22px; box-shadow: var(--shadow); transition: transform .3s var(--spring); }
 .ak-when-card:hover { transform: translateY(-4px) rotate(-.4deg); }
 .ak-when-card h3 { font-size: 18px; margin-bottom: 6px; }
+.ak-when-card h3::before, .ak-lib h3::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 9px; vertical-align: .12em; background: var(--deep, var(--teal)); }
 .ak-when-card p { margin: 0; color: var(--muted); font-size: 16px; }
 
 /* How it works: steps on the left, the phone and its features on the right */
@@ -894,7 +895,7 @@ html.ak-snap { scroll-snap-type: none; }
 .ak-age p { margin: 0; }
 .ak-site .ak-lib-h { margin-top: 72px; }
 .ak-library { list-style: none; padding: 0; margin: 26px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
-.ak-lib { background: var(--cream); border-radius: 22px; padding: 20px; box-shadow: inset 0 0 0 1.5px var(--line); border-top: 6px solid var(--deep); }
+.ak-lib { background: var(--cream); border-radius: 22px; padding: 20px; box-shadow: inset 0 0 0 1.5px var(--line); }
 .ak-lib h3 { font-size: 19px; margin-bottom: 6px; }
 .ak-lib p { margin: 0 0 8px; font-size: 15px; color: var(--muted); }
 .ak-lib p.ak-lib-titles { font-size: 13px; font-weight: 600; color: var(--ink); margin: 0; }
