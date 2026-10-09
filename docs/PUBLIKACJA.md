@@ -156,12 +156,12 @@ Identyfikatory muszą być **dokładnie** takie jak niżej (aplikacja i serwer j
 
 Do tego jednorazowe: 3 pakiety (49,99 / 49,99 / 69,99 zł) i 2 zestawy (89,99 / 159,99 zł), ceny jak na audiokiddo.pl. Pojedyncze zabawy na razie nie są w sklepie.
 
-**Stan na 9.10.2026 (App Store Connect, konto Neli, Polska):** subskrypcje założone według tej tabeli; brakuje zrzutu ekranu do recenzji (dodaje się przy wysyłce pierwszej wersji). Pakiety i zestawy: patrz punkt 6.4.
+**Stan na 9.10.2026 (App Store Connect, konto Neli, Polska):** subskrypcje założone według tej tabeli; brakuje zrzutu ekranu do recenzji (dodaje się przy wysyłce pierwszej wersji). Pakiety (3) i zestawy (2) założone jako Non-Consumable, Polska, ceny jak na audiokiddo.pl.
 
 **Apple (App Store Connect → Twoja aplikacja → Monetyzacja):**
 - [x] 6.1 Subskrypcje → **Grupa subskrypcji** `AudioKiddo`.
 - [x] 6.2 W grupie 2 subskrypcje z tabeli: identyfikator i czas, cena dla Polski, dostępność tylko Polska, lokalizacja (polski). Zrzut ekranu do recenzji: ekran Sklep z aplikacji. Bez oferty wprowadzającej.
-- [ ] 6.4 Zakupy w aplikacji → **+** → *Bez odnawiania* (Non-Consumable): 3 pakiety i 2 zestawy z `WYDANIE.md` §5 (ceny jak na audiokiddo.pl, dostępność: Polska, kraj bazowy Polska/PLN).
+- [x] 6.4 (zrobione 9.10.2026) Zakupy w aplikacji → **+** → *Bez odnawiania* (Non-Consumable): 3 pakiety i 2 zestawy z `WYDANIE.md` §5 (ceny jak na audiokiddo.pl, dostępność: Polska, kraj bazowy Polska/PLN).
 
 **Google (Play Console → Zarabianie → Produkty):**
 
