@@ -190,7 +190,7 @@ Przepływ:
 
 | Produkt | Typ w sklepie | Zakres | Cena |
 |---|---|---|---|
-| Subskrypcja miesięczna | auto-odnawialna | `all_content` | 24,99 zł, 7 dni za darmo |
+| Subskrypcja miesięczna | auto-odnawialna | `all_content` | 29,99 zł (od 9.10.2026; roczna 269,99 zł), bez planów wg liczby dzieci |
 | Subskrypcja roczna | auto-odnawialna | `all_content` | 149,99 zł, 7 dni za darmo |
 | Pakiet Wyobraźnia | jednorazowy (non-consumable) | `pack:wyobraznia` | 49,99 zł (jak na stronie) |
 | Pakiet Słowa i Wiedza | jednorazowy | `pack:slowa-i-wiedza` | 49,99 zł |

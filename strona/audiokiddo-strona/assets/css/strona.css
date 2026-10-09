@@ -346,7 +346,7 @@ html { scroll-behavior: smooth; }
 .ak-phone-shot.is-on { opacity: 1; transform: none; }
 .ak-phone-island { position: absolute; top: 20px; left: 50%; width: 30%; height: 26px; margin-left: -15%; border-radius: 999px; background: #0B0A10; z-index: 2; }
 .ak-phone-szop { position: absolute; z-index: 2; right: -22%; bottom: 6%; width: 44%; filter: drop-shadow(0 12px 16px rgba(36, 27, 58, .25)); animation: ak-float 6s ease-in-out infinite; }
-.ak-plans { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.ak-plans { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .ak-plans li { background: var(--paper); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 2px; box-shadow: inset 0 0 0 1.5px var(--line); }
 .ak-plans span { font-size: 20px; font-weight: 700; }
 .ak-plans small { color: var(--muted); }

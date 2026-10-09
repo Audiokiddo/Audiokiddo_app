@@ -107,7 +107,7 @@ $icons = [
             <?php if (ak_app_live()) : ?>
             <ul class="ak-plans" data-reveal>
                 <?php foreach (ak_plans() as $plan) : ?>
-                <li<?php echo !empty($plan['best']) ? ' class="ak-plan-best"' : ''; ?>><strong><?php echo esc_html($plan['name']); ?></strong><span><?php echo esc_html($plan['month']); ?> zł / mies.</span><small>albo <?php echo esc_html($plan['year']); ?> zł rocznie</small></li>
+                <li<?php echo !empty($plan['best']) ? ' class="ak-plan-best"' : ''; ?>><strong><?php echo esc_html($plan['name']); ?></strong><span><?php echo esc_html($plan['price']); ?> <?php echo esc_html($plan['per']); ?></span><small><?php echo esc_html($plan['note']); ?></small></li>
                 <?php endforeach; ?>
             </ul>
             <?php endif; ?>

@@ -168,7 +168,7 @@ function ak_schema(): array
             'audience' => ['@type' => 'PeopleAudience', 'suggestedMinAge' => 3, 'suggestedMaxAge' => 9],
             'description' => ak_opt('home_description'),
             'author' => ['@id' => ak_org_id()],
-            'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'PLN', 'description' => 'Pobranie za darmo, abonament od ' . ak_plans()[0]['month'] . ' zł miesięcznie z 7 dniami za darmo'],
+            'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'PLN', 'description' => 'Pobranie za darmo, abonament od ' . ak_plans()[0]['price'] . ' zł miesięcznie'],
         ];
     }
     if (ak_view() === 'start') {
@@ -309,9 +309,9 @@ function ak_llms_txt(): string
     $lines[] = '- **Darmowy pakiet 3 audiozabaw**: po zapisie do newslettera (' . home_url('/#darmowy') . ').';
     $lines[] = '';
     if (ak_app_live()) {
-        $lines[] = '## Abonament w aplikacji (App Store, Google Play), 7 dni za darmo';
+        $lines[] = '## Abonament w aplikacji (App Store, Google Play): wszystkie zabawy, jedna cena dla całej rodziny';
         foreach (ak_plans() as $plan) {
-            $lines[] = '- ' . $plan['name'] . ': ' . $plan['month'] . ' zł miesięcznie albo ' . $plan['year'] . ' zł rocznie';
+            $lines[] = '- ' . $plan['name'] . ': ' . $plan['price'] . ' ' . $plan['per'];
         }
         $lines[] = '';
     }

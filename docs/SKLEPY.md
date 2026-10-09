@@ -1,6 +1,6 @@
 # AudioKiddo: materiały do formularzy App Store i Google Play
 
-Stan: 5 października 2026 (ceny: 24,99 zł miesięcznie, 239,88 zł rocznie), wersja aplikacji 0.2.0 (build 2). Teksty i odpowiedzi do wklejenia przy zakładaniu aplikacji w App Store Connect i Play Console. Przed wysłaniem do recenzji trzeba porównać je z aktualnym formularzem, bo sklepy zmieniają pytania.
+Stan: 5 października 2026 (ceny od 9 października 2026: 29,99 zł miesięcznie, 269,99 zł rocznie, jeden abonament), wersja aplikacji 0.2.0 (build 2). Teksty i odpowiedzi do wklejenia przy zakładaniu aplikacji w App Store Connect i Play Console. Przed wysłaniem do recenzji trzeba porównać je z aktualnym formularzem, bo sklepy zmieniają pytania.
 
 Adresy stron (gotowe fragmenty HTML w `docs/strona/sklepy/`, do wklejenia w WordPressie):
 

@@ -19,7 +19,7 @@ Stan: 6 października 2026, wersja 0.2.0 (build 2). Ten plik zbiera wszystko w j
   ```
   cd ~/Desktop/"claude folder"/audiokiddo-app
   ```
-- [ ] 1.2 Wgraj bazę danych. Doda: sprawdzanie maila przy logowaniu, kampanie w Studio, plany dla 1, 2 i 3–5 dzieci.
+- [ ] 1.2 Wgraj bazę danych. Doda: sprawdzanie maila przy logowaniu, kampanie w Studio, jeden abonament bez limitu dzieci (migracja `20261020000001_single_plan.sql`).
   ```
   supabase db push
   ```
@@ -71,7 +71,7 @@ Konta zakłada **Nela**, bo działalność to jej JDG. Przychód ze sklepów tra
 
 Sklepy wymagają tych adresów przed wysłaniem do recenzji. Gotowy kod jest w `docs/strona/sklepy/`.
 
-- [ ] 3.1 Wyślij prawnikowi `docs/prawne/polityka-prywatnosci-aplikacji.md` i `docs/prawne/regulamin-aplikacji.md` (dzieci, RODO, subskrypcje). Dopisz plany dla 2 i 3–5 dzieci (ceny z etapu 6).
+- [ ] 3.1 Wyślij prawnikowi `docs/prawne/polityka-prywatnosci-aplikacji.md` i `docs/prawne/regulamin-aplikacji.md` (dzieci, RODO, subskrypcje). Opisz jeden abonament: 29,99 zł miesięcznie albo 269,99 zł rocznie (etap 6).
 - [ ] 3.2 Załóż w WordPressie stronę **Polityka prywatności aplikacji**:
   1. Strony → Dodaj nową.
   2. Tytuł „Polityka prywatności aplikacji”, adres (slug) `polityka-prywatnosci-aplikacji`.
@@ -138,48 +138,39 @@ Sklepy wymagają tych adresów przed wysłaniem do recenzji. Gotowy kod jest w `
 
 ## Etap 6. Produkty i ceny w obu sklepach (ok. 2 h)
 
-**Ceny planów do potwierdzenia:**
+**Ceny (strategia z 8.10.2026, jeden abonament, bez poziomów i bez limitu dzieci):**
 
-| Plan | Miesięcznie | Rocznie |
-|---|---|---|
-| 1 dziecko | 24,99 zł | 239,88 zł |
-| 2 dzieci | 29,99 zł | 287,88 zł |
-| 3–5 dzieci | 34,99 zł | 335,88 zł |
+| Plan | Cena |
+|---|---|
+| Miesięcznie | 29,99 zł |
+| Rocznie (z góry) | 269,99 zł (około 22,50 zł miesięcznie) |
 
 Identyfikatory muszą być **dokładnie** takie jak niżej (aplikacja i serwer już je znają).
 
-**Subskrypcje (6 produktów):**
+**Subskrypcje (2 produkty):**
 
 | ID | Nazwa | Okres | Cena |
 |---|---|---|---|
-| `pl.audiokiddo.sub.monthly` | AudioKiddo · 1 dziecko | 1 miesiąc | 24,99 zł |
-| `pl.audiokiddo.sub.yearly` | AudioKiddo · 1 dziecko, rocznie | 1 rok | 239,88 zł |
-| `pl.audiokiddo.sub.duo.monthly` | AudioKiddo · 2 dzieci | 1 miesiąc | 29,99 zł |
-| `pl.audiokiddo.sub.duo.yearly` | AudioKiddo · 2 dzieci, rocznie | 1 rok | 287,88 zł |
-| `pl.audiokiddo.sub.family.monthly` | AudioKiddo · 3–5 dzieci | 1 miesiąc | 34,99 zł |
-| `pl.audiokiddo.sub.family.yearly` | AudioKiddo · 3–5 dzieci, rocznie | 1 rok | 335,88 zł |
+| `pl.audiokiddo.sub.monthly` | AudioKiddo miesięcznie | 1 miesiąc | 29,99 zł |
+| `pl.audiokiddo.sub.yearly` | AudioKiddo rocznie | 1 rok | 269,99 zł |
 
-Do tego jednorazowe: 3 pakiety, 2 zestawy i 25 pojedynczych zabaw. Pełna tabela jest w `docs/WYDANIE.md` §5.
+Do tego jednorazowe: 3 pakiety (49,99 / 49,99 / 69,99 zł) i 2 zestawy (89,99 / 159,99 zł), ceny jak na audiokiddo.pl. Pojedyncze zabawy na razie nie są w sklepie.
+
+**Stan na 9.10.2026 (App Store Connect, konto Neli, Polska):** subskrypcje założone według tej tabeli; brakuje zrzutu ekranu do recenzji (dodaje się przy wysyłce pierwszej wersji). Pakiety i zestawy: patrz punkt 6.4.
 
 **Apple (App Store Connect → Twoja aplikacja → Monetyzacja):**
-- [ ] 6.1 Subskrypcje → **Grupa subskrypcji** → utwórz grupę `AudioKiddo`.
-- [ ] 6.2 W grupie dodaj 6 subskrypcji z tabeli. Przy każdej:
-  1. Identyfikator produktu z tabeli i czas trwania.
-  2. Cena: wybierz Polskę, kwota z tabeli. Inne kraje wyłącz, chyba że mają tłumaczenie.
-  3. Lokalizacja (polski): nazwa wyświetlana i opis, np. „Wszystkie zabawy i nowy pakiet co miesiąc, dla 2 dzieci”.
-  4. Zrzut ekranu do recenzji: ekran Sklep z aplikacji.
-  5. **Oferta wprowadzająca**: Bezpłatnie, 1 tydzień, Polska.
-- [ ] 6.3 W grupie ustaw **poziomy**: 3–5 dzieci (oba okresy) najwyżej, potem 2 dzieci, na dole 1 dziecko. Dzięki temu przejście na większy plan działa od razu, a sklep sam przelicza zapłaconą kwotę.
-- [ ] 6.4 Zakupy w aplikacji → **+** → *Bez odnawiania* (Non-Consumable): pakiety, zestawy i zabawy z `WYDANIE.md` §5.
+- [x] 6.1 Subskrypcje → **Grupa subskrypcji** `AudioKiddo`.
+- [x] 6.2 W grupie 2 subskrypcje z tabeli: identyfikator i czas, cena dla Polski, dostępność tylko Polska, lokalizacja (polski). Zrzut ekranu do recenzji: ekran Sklep z aplikacji. Bez oferty wprowadzającej.
+- [ ] 6.4 Zakupy w aplikacji → **+** → *Bez odnawiania* (Non-Consumable): 3 pakiety i 2 zestawy z `WYDANIE.md` §5 (ceny jak na audiokiddo.pl, dostępność: Polska, kraj bazowy Polska/PLN).
 
 **Google (Play Console → Zarabianie → Produkty):**
 
 Google pokaże produkty dopiero po wgraniu pierwszego builda, więc najpierw krok 7.4, potem wróć tutaj.
-- [ ] 6.5 **Subskrypcje** → Utwórz subskrypcję, **6 razy**, po jednej dla każdego ID z tabeli. W każdej:
+- [ ] 6.5 **Subskrypcje** → Utwórz subskrypcję, **2 razy**, po jednej dla każdego ID z tabeli. W każdej:
   1. Dodaj jeden **abonament podstawowy**: automatyczne odnawianie, okres jak w tabeli, cena dla Polski.
   2. Aktywuj go.
-  3. Dodaj **ofertę**: bezpłatny okres próbny 7 dni, kwalifikacja „Nowi klienci”, i aktywuj.
-- [ ] 6.6 **Produkty w aplikacji**: pakiety, zestawy i zabawy z `WYDANIE.md` §5, każdy aktywny.
+  3. Bez oferty z okresem próbnym (decyzja ze strategii 8.10.2026: darmowe demonstracje zamiast próby z kartą).
+- [ ] 6.6 **Produkty w aplikacji**: 3 pakiety i 2 zestawy z `WYDANIE.md` §5, każdy aktywny.
 - [ ] 6.7 Konto usługi Google i Pub/Sub do sprawdzania zakupów: `KROKI-DLA-DAWIDA.md`, krok 7, punkty 1–8 (zakończone komendą `tool/set_store_secrets.sh`).
 
 ## Etap 7. Wersje testowe (po etapach 4–6)
@@ -216,7 +207,7 @@ Google pokaże produkty dopiero po wgraniu pierwszego builda, więc najpierw kro
   - przypomnienia.
 - [ ] 7.8 Zakupy:
   - abonament roczny z próbą 7 dni;
-  - przejście na plan „2 dzieci” (Więcej → Zarządzaj subskrypcją → Zmień plan);
+  - zmiana okresu (Więcej → Zarządzaj subskrypcją → Zmień okres);
   - „Przywróć zakupy” po ponownej instalacji;
   - zakup jednego pakietu.
 - [ ] 7.9 Odtwarzanie:

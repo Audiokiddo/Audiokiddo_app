@@ -23,7 +23,7 @@ enum CancelReason {
 /// What we answer before the store's settings open, so a parent leaving over something we can
 /// fix hears about it once (no pressure, the button to the store stays right there).
 String? cancelReasonReply(CancelReason reason) => switch (reason) {
-  CancelReason.price => 'Plan roczny wychodzi 19,99 zł miesięcznie. Zmienisz go w tych samych ustawieniach.',
+  CancelReason.price => 'Plan roczny wychodzi 22,50 zł miesięcznie. Zmienisz go w tych samych ustawieniach.',
   CancelReason.tooFewNew =>
     'Nowe zabawy dochodzą regularnie, a zapowiedzi widać na Starcie w „Wkrótce w AudioKiddo”.',
   CancelReason.technical => 'Przykro nam. Napisz na kontakt@audiokiddo.pl, naprawimy to jak najszybciej.',

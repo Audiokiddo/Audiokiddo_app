@@ -150,10 +150,8 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
                 ] else ...[
                   const _Card(
                     icon: Icons.workspace_premium_rounded,
-                    title: 'Drugi rodzic jest w planach dla 2 i 3–5 dzieci',
-                    body:
-                        'Plan dla 2 dzieci to +5 zł miesięcznie i obejmuje też konto drugiego rodzica. '
-                        'Sklep przeliczy to, co już zapłaciłeś.',
+                    title: 'Drugi rodzic jest w abonamencie',
+                    body: 'Abonament obejmuje też konto drugiego rodzica, bez dopłat.',
                   ),
                   _PlansButton(),
                 ],

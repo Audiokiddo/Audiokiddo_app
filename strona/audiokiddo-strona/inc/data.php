@@ -162,13 +162,12 @@ function ak_app_features(): array
     ];
 }
 
-/** Subscription in the app (App Store / Google Play), the same for both. */
+/** The one subscription in the app (App Store / Google Play): the whole library for the whole family. */
 function ak_plans(): array
 {
     return [
-        ['name' => '1 dziecko', 'month' => '24,99', 'year' => '239,88', 'year_month' => '19,99', 'note' => 'Jeden profil dziecka'],
-        ['name' => '2 dzieci', 'month' => '29,99', 'year' => '287,88', 'year_month' => '23,99', 'note' => 'Rodzeństwo, każde ze swoim planem', 'best' => true],
-        ['name' => '3–5 dzieci', 'month' => '34,99', 'year' => '335,88', 'year_month' => '27,99', 'note' => 'Duża rodzina albo dziadkowie'],
+        ['name' => 'Miesięcznie', 'price' => '29,99', 'per' => 'zł / mies.', 'note' => 'Płacisz co miesiąc, rezygnujesz kiedy chcesz'],
+        ['name' => 'Rocznie', 'price' => '269,99', 'per' => 'zł rocznie', 'note' => 'To około 22,50 zł miesięcznie, taniej o 25%', 'best' => true],
     ];
 }
 

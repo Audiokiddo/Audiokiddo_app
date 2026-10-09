@@ -75,7 +75,7 @@ void main() {
     final products = await store.products({ProductIds.yearly, 'pl.audiokiddo.pack.wyobraznia'});
     expect(
       {for (final p in products) p.id: p.price},
-      {ProductIds.yearly: '239,88 zł', 'pl.audiokiddo.pack.wyobraznia': '49,99 zł'},
+      {ProductIds.yearly: '269,99 zł', 'pl.audiokiddo.pack.wyobraznia': '49,99 zł'},
     );
     await expectLater(store.buy(products.first), throwsA(isA<StoreNotReady>()));
   });

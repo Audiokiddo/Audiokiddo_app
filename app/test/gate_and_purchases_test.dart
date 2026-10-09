@@ -15,7 +15,6 @@ import 'package:audiokiddo/features/purchases/offer_catalog.dart';
 import 'package:audiokiddo/features/purchases/purchase_controller.dart';
 import 'package:audiokiddo/features/purchases/store_gateway.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:audiokiddo/features/purchases/shop.dart' show childSeats;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'helpers.dart';
@@ -116,16 +115,10 @@ void main() {
     });
 
     test('products map to scopes', () {
-      expect(scopesForProduct(ProductIds.yearly, catalog), [Scopes.allContent, 'children:1']);
-      expect(scopesForProduct(ProductIds.duoMonthly, catalog), [Scopes.allContent, 'children:2']);
-      expect(scopesForProduct(ProductIds.familyYearly, catalog), [Scopes.allContent, 'children:5']);
-      expect(SubscriptionPlan.forChildren(2), SubscriptionPlan.duo);
-      expect(SubscriptionPlan.forChildren(4), SubscriptionPlan.family);
-      // How many child profiles the subscription covers.
-      expect(childSeats({'pack:wyobraznia'}), isNull, reason: 'no subscription, no limit');
-      expect(childSeats({Scopes.allContent}), 99, reason: 'web shop: the whole family');
-      expect(childSeats({Scopes.allContent, 'children:1'}), 1);
-      expect(childSeats({Scopes.allContent, 'children:1', 'children:5'}), 5);
+      // One subscription, two periods: the whole library, no limit on child profiles.
+      expect(scopesForProduct(ProductIds.yearly, catalog), [Scopes.allContent]);
+      expect(scopesForProduct(ProductIds.monthly, catalog), [Scopes.allContent]);
+      expect(ProductIds.subscriptions, {ProductIds.monthly, ProductIds.yearly});
       expect(scopesForProduct('pl.audiokiddo.pack.detektyw', catalog), [Scopes.pack('detektyw')]);
       expect(scopesForProduct(ProductIds.bundleThree, catalog), hasLength(3));
       expect(scopesForProduct(ProductIds.bundleTwo, catalog), [

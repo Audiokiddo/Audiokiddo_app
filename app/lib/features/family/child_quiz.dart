@@ -6,7 +6,6 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/doodles.dart';
 import '../../core/widgets/szop.dart';
 import '../../l10n/app_localizations.dart';
-import '../purchases/plan_limit.dart';
 import 'family.dart';
 
 /// The short parent quiz (about a minute per child): name, age, goals, when you listen,
@@ -98,7 +97,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
   }
 
   Future<void> _anotherChild() async {
-    if (!await mayAddChild(context, ref) || !mounted) return;
     setState(() {
       _name.clear();
       _age = null;

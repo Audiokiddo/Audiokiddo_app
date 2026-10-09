@@ -134,17 +134,16 @@ select 'shop product tests passed';
 -- 11. Store products: both stores, subscriptions give everything, a store purchase upserts.
 insert into auth.users (id, email) values ('00000000-0000-0000-0000-000000000009', null);
 do $$ begin
-  -- A subscription opens everything and says how many children it covers.
-  assert (select scopes from public.store_products where product_ref = 'ios:pl.audiokiddo.sub.yearly') = '{all_content,children:1}', 'yearly';
-  assert (select scopes from public.store_products where product_ref = 'android:pl.audiokiddo.sub.monthly') = '{all_content,children:1}', 'monthly';
-  assert (select scopes from public.store_products where product_ref = 'ios:pl.audiokiddo.sub.duo.yearly') = '{all_content,children:2}', 'duo';
-  assert (select scopes from public.store_products where product_ref = 'android:pl.audiokiddo.sub.family.monthly') = '{all_content,children:5}', 'family';
+  -- A subscription opens everything: one plan for the whole family, no plans by children.
+  assert (select scopes from public.store_products where product_ref = 'ios:pl.audiokiddo.sub.yearly') = '{all_content}', 'yearly';
+  assert (select scopes from public.store_products where product_ref = 'android:pl.audiokiddo.sub.monthly') = '{all_content}', 'monthly';
+  assert not exists (select 1 from public.store_products where product_ref ilike '%sub.duo.%' or product_ref ilike '%sub.family.%'), 'no plans by children';
   assert (select cardinality(scopes) from public.store_products where product_ref = 'ios:pl.audiokiddo.bundle.three') = 3, 'bundle of three';
   assert exists (select 1 from public.store_products where product_ref = 'android:pl.audiokiddo.item.magiczny_sklep'), 'single item';
   perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-1', 'active', now() + interval '1 year');
   perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-1', 'refunded', null);
   assert (select status from public.entitlements where store_original_tx_id = 'orig-1' and scope = 'all_content') = 'refunded', 'same purchase is updated, not duplicated';
-  assert (select count(*) from public.entitlements where store_original_tx_id = 'orig-1') = 2, 'all_content and children:1';
+  assert (select count(*) from public.entitlements where store_original_tx_id = 'orig-1') = 1, 'all_content only';
   assert (select bool_and(status = 'refunded') from public.entitlements where store_original_tx_id = 'orig-1'), 'both rows follow the store';
 end $$;
 select 'store product tests passed';
@@ -508,22 +507,10 @@ insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000f2', 'tata@example.com'),
   ('00000000-0000-0000-0000-0000000000f3', 'ktos@example.com');
 insert into public.entitlements (user_id, source, scope, status, valid_until, product_ref, store_original_tx_id) values
-  ('00000000-0000-0000-0000-0000000000f1', 'app_store', 'all_content', 'active', now() + interval '1 month', 'ios:pl.audiokiddo.sub.monthly', 'fam-1'),
-  ('00000000-0000-0000-0000-0000000000f1', 'app_store', 'children:1', 'active', now() + interval '1 month', 'ios:pl.audiokiddo.sub.monthly', 'fam-1');
+  ('00000000-0000-0000-0000-0000000000f1', 'app_store', 'all_content', 'active', now() + interval '1 month', 'ios:pl.audiokiddo.sub.monthly', 'fam-1');
 set role authenticated;
 do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f1', false); end $$;
-do $$
-begin
-  begin
-    perform public.family_invite();
-    assert false, 'the plan for one child is for one account';
-  exception when invalid_parameter_value then null;
-  end;
-  assert (public.family_status() ->> 'can_invite')::boolean = false;
-end $$;
-reset role;
-update public.entitlements set scope = 'children:2' where store_original_tx_id = 'fam-1' and scope = 'children:1';
-set role authenticated;
+do $$ begin assert (public.family_status() ->> 'can_invite')::boolean, 'every subscriber may invite a second parent'; end $$;
 do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f1', false); end $$;
 create temporary table invite as select public.family_invite() ->> 'code' code;
 do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f2', false); end $$;

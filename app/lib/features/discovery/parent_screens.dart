@@ -325,9 +325,7 @@ class ProfileScreen extends ConsumerWidget {
         actions: [
           IconButton(
             tooltip: 'Dodaj dziecko',
-            onPressed: () async {
-              if (await mayAddChild(context, ref) && context.mounted) await context.push('/plan/dziecko');
-            },
+            onPressed: () => context.push('/plan/dziecko'),
             icon: const Icon(Icons.add_rounded),
           ),
         ],

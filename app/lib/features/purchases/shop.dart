@@ -38,19 +38,6 @@ final activeScopesProvider = Provider<Set<String>>(
   (ref) => ref.watch(accessPolicyProvider).activeScopes(ref.watch(clockProvider)()),
 );
 
-/// Child profiles the subscription covers: null without a subscription, the plan's
-/// `children:N`, or 99 for a subscription without a limit (web shop, codes, manual).
-int? childSeats(Set<String> scopes) {
-  if (!scopes.contains(Scopes.allContent)) return null;
-  final seats = [
-    for (final s in scopes)
-      if (s.startsWith('children:')) ?int.tryParse(s.substring('children:'.length)),
-  ];
-  return seats.isEmpty ? 99 : seats.reduce((a, b) => a > b ? a : b);
-}
-
-final childSeatsProvider = Provider<int?>((ref) => childSeats(ref.watch(activeScopesProvider)));
-
 /// When the family's subscription ended (and none is active now): a "come back" moment.
 final lapsedSubscriptionProvider = Provider<DateTime?>((ref) {
   final now = ref.watch(clockProvider)();

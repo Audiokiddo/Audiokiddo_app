@@ -2,7 +2,7 @@
 
 Stan: 7 października 2026. Pełna lista kroków: `docs/WYDANIE.md`. Teksty do sklepów: `docs/SKLEPY.md`. Tutaj tylko kolejność, która najszybciej uruchamia sprzedaż w aplikacji.
 
-Bez kont deweloperskich aplikacja nie zarobi ani złotówki: abonament (239,88 zł/rok, 24,99 zł/mies.) i pakiety w aplikacji działają tylko przez App Store i Google Play. Najdłużej trwa test zamknięty w Google Play (14 dni), więc zaczynamy od niego.
+Bez kont deweloperskich aplikacja nie zarobi ani złotówki: abonament (269,99 zł/rok, 29,99 zł/mies.) i pakiety w aplikacji działają tylko przez App Store i Google Play. Najdłużej trwa test zamknięty w Google Play (14 dni), więc zaczynamy od niego.
 
 ## Dzień 1 (Dawid, ok. 1 godzina)
 

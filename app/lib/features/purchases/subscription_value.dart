@@ -4,16 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/tokens.dart';
 import '../about/about_screen.dart';
-import '../family/family.dart';
 import '../family_sharing/parent_cloud.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
 import 'store_gateway.dart';
 
-/// The subscription, said simply: monthly or yearly (with how much the year saves), a plan
-/// for the number of children (the second +5 zł, the family +10 zł), crossed-out prices next
-/// to the real ones and one big button. The main offer everywhere: Shop, the subscription
+/// The subscription, said simply: one library for the whole family, monthly or yearly (with how
+/// much the year saves), crossed-out prices next to the real ones and one big button. The main offer everywhere: Shop, the subscription
 /// page, pack pages, the window after a free play.
 class SubscriptionOffer extends ConsumerStatefulWidget {
   const SubscriptionOffer({super.key, required this.catalog, required this.byId, this.compact = false});
@@ -33,7 +31,6 @@ const _ink = Color(0xFF211C35);
 class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
   // A/B test "paywall_period": which period is picked at first (yearly unless the test says).
   late bool _yearly = ref.read(experimentsProvider)['paywall_period'] != 'miesiecznie';
-  SubscriptionPlan? _plan;
 
   StoreProduct? _product(SubscriptionPlan plan, {required bool yearly}) => widget.byId[plan.productId(yearly: yearly)];
 
@@ -70,11 +67,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
         ],
       );
     }
-    // The plan for the children the family already has, unless the parent picked one.
-    final children = ref.watch(familyProvider).value?.children.length ?? 1;
-    final seats = ref.watch(childSeatsProvider);
-    final suggested = SubscriptionPlan.forChildren(children < 1 ? 1 : children);
-    final plan = _plan ?? (plans.contains(suggested) ? suggested : plans.first);
+    final plan = plans.first;
     final hasYearly = _product(plan, yearly: true) != null;
     final yearly = _yearly && hasYearly;
     final product = _product(plan, yearly: yearly) ?? _product(plan, yearly: !yearly)!;
@@ -82,7 +75,6 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
     String money(double v) => formatMoney(v, currency);
     final trial = product.freeTrialDays;
     final saving = _saving(plan);
-    final current = seats == null ? null : SubscriptionPlan.values.where((p) => p.children == seats).firstOrNull;
     final lapsed = ref.watch(lapsedSubscriptionProvider);
 
     // A year of packs bought one by one: today's packs plus a new one every month.
@@ -90,11 +82,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
     final packsYear = packPrices.isEmpty ? null : packPrices.fold(0.0, (a, b) => a + b) * (1 + 12 / packPrices.length);
 
     final String buttonLabel;
-    if (current == plan) {
-      buttonLabel = 'To Twój plan';
-    } else if (seats != null) {
-      buttonLabel = 'Przechodzę na „${plan.label}” · ${product.price}';
-    } else if (lapsed != null && product.comebackPrice != null) {
+    if (lapsed != null && product.comebackPrice != null) {
       buttonLabel = 'Wracam: najpierw ${product.comebackPrice}';
     } else if (trial != null &&
         ref.watch(experimentsProvider)['paywall_cta'] == 'oszczednosc' &&
@@ -157,28 +145,15 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
           ),
         ],
         const SizedBox(height: 12),
-        for (final p in plans)
-          _PlanTile(
-            plan: p,
-            selected: p == plan,
-            current: p == current,
-            yearly: yearly,
-            monthly: _product(p, yearly: false),
-            yearlyProduct: _product(p, yearly: true),
-            extra: _extra(p, plans, money),
-            percent: _percent(p),
-            money: money,
-            onTap: () => setState(() => _plan = p),
-          ),
-        if (plans.length > 1)
-          Padding(
-            padding: const EdgeInsets.only(top: 2, bottom: 4),
-            child: Text(
-              _rule(plans, money),
-              style: text.bodySmall?.copyWith(color: _ink, fontWeight: FontWeight.w700),
-            ),
-          ),
-        if (!widget.compact && yearly && packsYear != null && plan == SubscriptionPlan.solo) ...[
+        _PlanTile(
+          plan: plan,
+          yearly: yearly,
+          monthly: _product(plan, yearly: false),
+          yearlyProduct: _product(plan, yearly: true),
+          percent: _percent(plan),
+          money: money,
+        ),
+        if (!widget.compact && yearly && packsYear != null && true) ...[
           const SizedBox(height: 6),
           Container(
             padding: const EdgeInsets.all(10),
@@ -209,7 +184,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
             foregroundColor: Colors.white,
             minimumSize: const Size.fromHeight(54),
           ),
-          onPressed: busy != null || current == plan ? null : () => buyWithGate(context, ref, product),
+          onPressed: busy != null ? null : () => buyWithGate(context, ref, product),
           child: busy == product.id
               ? const SizedBox.square(
                   dimension: 20,
@@ -221,8 +196,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
           padding: const EdgeInsets.only(top: 4),
           child: Text(
             [
-              if (trial != null && seats == null) 'Potem ${product.price} za ${yearly ? 'rok' : 'miesiąc'}.',
-              if (seats != null && current != plan) 'Sklep przeliczy to, co już zapłaciłeś.',
+              if (trial != null) 'Potem ${product.price} za ${yearly ? 'rok' : 'miesiąc'}.',
               'Zrezygnujesz w dowolnej chwili.',
             ].join(' '),
             textAlign: TextAlign.center,
@@ -234,31 +208,6 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
         const PolishBrandLine(color: _ink, center: true),
       ],
     );
-  }
-
-  /// "+5 zł miesięcznie" against the one-child plan.
-  String? _extra(SubscriptionPlan p, List<SubscriptionPlan> plans, String Function(double) money) {
-    final base = _product(SubscriptionPlan.solo, yearly: false)?.rawPrice;
-    final own = _product(p, yearly: false)?.rawPrice;
-    if (p == SubscriptionPlan.solo || base == null || own == null || own <= base) return null;
-    return '+${_round(own - base, money)} miesięcznie';
-  }
-
-  /// The rule a parent remembers: the second child +5 zł, the whole family +10 zł.
-  String _rule(List<SubscriptionPlan> plans, String Function(double) money) {
-    final base = _product(SubscriptionPlan.solo, yearly: false)?.rawPrice;
-    String? diff(SubscriptionPlan p) {
-      final own = _product(p, yearly: false)?.rawPrice;
-      return base == null || own == null ? null : _round(own - base, money);
-    }
-
-    final duo = plans.contains(SubscriptionPlan.duo) ? diff(SubscriptionPlan.duo) : null;
-    final family = plans.contains(SubscriptionPlan.family) ? diff(SubscriptionPlan.family) : null;
-    final rule = [
-      if (duo != null) 'Drugie dziecko +$duo',
-      if (family != null) 'cała rodzina (do 5 dzieci) +$family',
-    ].join(', ').replaceFirstMapped(RegExp('^.'), (m) => m[0]!.toUpperCase());
-    return '$rule miesięcznie. W planach dla 2+ dzieci także konto drugiego rodzica.';
   }
 
   /// 5.00 → "5 zł", 4.5 → "4,50 zł".
@@ -396,28 +345,22 @@ class _TailPainter extends CustomPainter {
   bool shouldRepaint(_TailPainter old) => old.color != color;
 }
 
-/// One plan: who it covers, what it adds, the price (the year crossed out against 12 months).
+/// The plan and its price (the year crossed out against 12 months).
 class _PlanTile extends StatelessWidget {
   const _PlanTile({
     required this.plan,
-    required this.selected,
-    required this.current,
     required this.yearly,
     required this.monthly,
     required this.yearlyProduct,
-    required this.extra,
     required this.percent,
     required this.money,
-    required this.onTap,
   });
 
   final SubscriptionPlan plan;
-  final bool selected, current, yearly;
+  final bool yearly;
   final StoreProduct? monthly, yearlyProduct;
-  final String? extra;
   final int? percent;
   final String Function(double) money;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -427,24 +370,15 @@ class _PlanTile extends StatelessWidget {
     final showYear = yearly && yearlyProduct != null;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Semantics(
-        selected: selected,
-        button: true,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
+      child: Container(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
             decoration: BoxDecoration(
-              color: selected ? Colors.white : Colors.white.withValues(alpha: .45),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: selected ? _ink : Colors.transparent, width: 2),
+              border: Border.all(color: _ink, width: 2),
             ),
             child: Row(
               children: [
-                Icon(selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded, color: _ink),
-                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,13 +391,6 @@ class _PlanTile extends StatelessWidget {
                             plan.label,
                             style: text.titleMedium?.copyWith(color: _ink, fontWeight: FontWeight.w900),
                           ),
-                          if (current)
-                            Text(
-                              'Twój plan',
-                              style: text.labelSmall?.copyWith(color: _ink, fontWeight: FontWeight.w800),
-                            ),
-                          if (!current && extra != null)
-                            Text(extra!, style: text.labelMedium?.copyWith(color: _ink.withValues(alpha: .7))),
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -510,8 +437,6 @@ class _PlanTile extends StatelessWidget {
                   ),
               ],
             ),
-          ),
-        ),
       ),
     );
   }
