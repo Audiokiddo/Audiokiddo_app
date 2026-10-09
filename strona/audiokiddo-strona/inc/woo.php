@@ -43,30 +43,6 @@ function ak_offer(int $id): ?array
     ];
 }
 
-/** Only a real, published recurring product may appear as a website subscription. */
-function ak_subscription_offer(string $plan, string $period): ?array
-{
-    if (!ak_opt('web_subscriptions_ready')) {
-        return null;
-    }
-    if (!in_array($plan, ['1', '2', '3'], true) || !in_array($period, ['month', 'year'], true)) {
-        return null;
-    }
-    $id = (int) ak_opt('woo_sub_' . $plan . '_' . $period);
-    if (!$id || !ak_has_woo()) {
-        return null;
-    }
-    $product = wc_get_product($id);
-    if (!$product || $product->get_status() !== 'publish' || !$product->is_type('subscription')) {
-        return null;
-    }
-    if (class_exists('WC_Subscriptions_Product') && method_exists('WC_Subscriptions_Product', 'get_period') &&
-        WC_Subscriptions_Product::get_period($product) !== $period) {
-        return null;
-    }
-    return ak_offer($id);
-}
-
 function ak_money(float $amount): string
 {
     return number_format($amount, 2, ',', ' ') . ' zł';
@@ -109,3 +85,26 @@ add_filter('woocommerce_add_to_cart_fragments', function ($fragments) {
     $fragments['span.ak-cart-count'] = '<span class="ak-cart-count" data-count="' . $count . '">' . $count . '</span>';
     return $fragments;
 });
+
+/*
+ * The shop speaks like the brand: the same dry voice on the thank-you page, after a cancelled
+ * payment and in an empty cart. Only words change; WooCommerce keeps its own flow.
+ */
+add_filter('woocommerce_thankyou_order_received_text', function ($text, $order = null) {
+    if ($order instanceof WC_Order && $order->has_status('failed')) {
+        return $text;
+    }
+    return 'No i zajebiście. Witam na pokładzie statku „Będę mieć chwilę czasu”. '
+        . 'Linki do pobrania zabaw są poniżej i w mailu (zajrzyj też do Spamu i Ofert). '
+        . 'Te same pakiety odblokujesz w aplikacji Audiokiddo, logując się tym samym adresem e-mail.';
+}, 20, 2);
+
+add_filter('woocommerce_order_cancelled_notice', function () {
+    return 'Bez dramatu. Zamówienie anulowane, drzwi zostawiamy otwarte.';
+});
+
+add_action('woocommerce_cart_is_empty', function () {
+    echo '<p class="ak-empty-cart">Pusto. Szop sprawdził nawet pod kanapą. '
+        . '<a href="' . esc_url(home_url('/#pakiety')) . '">Zobacz pakiety audiozabaw</a></p>';
+}, 5);
+

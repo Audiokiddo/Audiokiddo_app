@@ -114,12 +114,12 @@ function ak_inline_app_card(): string
 {
     ob_start();
     ?>
-    <aside class="ak-inline-app" aria-label="Aplikacja AudioKiddo">
+    <aside class="ak-inline-app" aria-label="Aplikacja Audiokiddo">
         <img src="<?php echo esc_url(ak_asset('img/szop/klaszcze.webp')); ?>" alt="" width="96" height="96" loading="lazy">
         <div>
-            <p class="ak-inline-app-h">Takie zabawy są w AudioKiddo, gotowe do słuchania</p>
-            <p>Włączasz, odkładasz telefon, dziecko odpowiada i się rusza. Część zabaw jest za darmo.</p>
-            <a href="<?php echo esc_url(home_url('/#aplikacja')); ?>">Zobacz, jak to działa →</a>
+            <p class="ak-inline-app-h">Nie chce Ci się tego wymyślać? Audiokiddo ma to gotowe.</p>
+            <p>Odpalasz, odkładasz telefon, dziecko dostaje misję, odpowiada i się rusza. W aplikacji są darmowe zabawy.</p>
+            <a href="<?php echo esc_url(home_url('/#jak-to-dziala')); ?>">Zobacz, jak to działa →</a>
         </div>
     </aside>
     <?php

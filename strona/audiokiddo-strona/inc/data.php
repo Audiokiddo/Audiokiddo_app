@@ -20,13 +20,8 @@ function ak_defaults(): array
         'woo_detektyw' => 7339,
         'woo_bundle2' => 371,
         'woo_bundle3' => 6235,
-        'woo_sub_1_month' => 0,
-        'woo_sub_1_year' => 0,
-        'woo_sub_2_month' => 0,
-        'woo_sub_2_year' => 0,
-        'woo_sub_3_month' => 0,
-        'woo_sub_3_year' => 0,
-        'web_subscriptions_ready' => 0,
+        'price_month' => '29,99',
+        'price_year' => '269,99',
         // The form that sends the free pack (MailerLite's script comes with the site's tags).
         'mailerlite_form' => '<div class="ml-embedded" data-form="XQ2HmS"></div>',
         'testimonials_url' => '',
@@ -40,7 +35,7 @@ function ak_defaults(): array
         'facebook' => '',
         'tiktok' => '',
         'youtube' => '',
-        'home_description' => 'AudioKiddo: interaktywne audiozabawy dla dzieci bez ekranu. Odkryj aplikację z subskrypcją albo wybierz pakiety na własność. Posłuchaj próbek.',
+        'home_description' => 'Audiokiddo to interaktywne audiozabawy dla dzieci 3–9 lat. Odpalasz, dziecko dostaje misję, odpowiada, szuka i rusza się bez patrzenia w ekran. Darmowe zabawy w aplikacji.',
         'tour' => 1,
         'seo_head' => 1,
         'style_posts' => 1,
@@ -165,17 +160,90 @@ function ak_app_features(): array
         ['play', 'sun', 'odtwarzacz', 'Telefon leży ekranem w dół', 'Włączasz zabawę i odkładasz telefon. Dziecko słucha, rusza się i wymyśla, a Ty masz chwilę dla siebie.'],
         ['car', 'teal', 'podroz', 'Tryb „W drogę”', 'Powiedz, ile jedziecie, a Szop’en ułoży zabawy na całą trasę, z przerwami na wyglądanie przez okno.'],
         ['moon', 'lav', 'dobranoc', 'Wieczorny rytuał', 'Trzy oddechy, cicha zabawa i „dobranoc” od Szop’ena. Możesz nagrać swoje, własnym głosem.'],
-        ['gift', 'sun', 'prezent', '3 zabawy na start, za darmo', 'Po jednej z każdego pakietu, Wasze na zawsze. Sprawdzisz, czy dziecku się spodoba, zanim cokolwiek kupisz.'],
+        ['gift', 'sun', 'prezent', 'Darmowe zabawy na start', 'Pełne audiozabawy za 0 zł. Sprawdzisz, czy dziecko się wkręci, zanim pomyślisz o abonamencie.'],
     ];
 }
 
-/** Subscription in the app (App Store / Google Play), the same for both. */
-function ak_plans(): array
+/** A price written the Polish way ("269,99") as a number. */
+function ak_price_num(string $price): float
+{
+    return (float) str_replace([' ', ','], ['', '.'], $price);
+}
+
+/**
+ * The one subscription (App Store / Google Play): the whole library for the whole family, monthly
+ * or yearly. Prices come from the settings, so they match the stores.
+ *
+ * @return array{month:string,year:string,year_month:string,save:string,percent:int}
+ */
+function ak_pricing(): array
+{
+    $month = (string) ak_opt('price_month');
+    $year = (string) ak_opt('price_year');
+    $m = ak_price_num($month);
+    $y = ak_price_num($year);
+    $save = $m > 0 && $y > 0 ? $m * 12 - $y : 0;
+    return [
+        'month' => $month,
+        'year' => $year,
+        'year_month' => $y > 0 ? number_format($y / 12, 2, ',', '') : '',
+        'save' => $save > 0 ? number_format($save, 2, ',', '') : '',
+        'percent' => $m > 0 && $save > 0 ? (int) round($save / ($m * 12) * 100) : 0,
+    ];
+}
+
+/** "Kiedy odpalić Audiokiddo?" Szop's types: the moment and his line. */
+function ak_situations(): array
 {
     return [
-        ['name' => '1 dziecko', 'month' => '24,99', 'year' => '239,88', 'year_month' => '19,99', 'note' => 'Jeden profil dziecka', 'key' => '1'],
-        ['name' => '2 dzieci', 'month' => '29,99', 'year' => '287,88', 'year_month' => '23,99', 'note' => 'Rodzeństwo, każde ze swoim planem', 'best' => true, 'key' => '2'],
-        ['name' => '3–5 dzieci', 'month' => '34,99', 'year' => '335,88', 'year_month' => '27,99', 'note' => 'Duża rodzina albo dziadkowie', 'key' => '3'],
+        ['Kiedy robisz obiad', 'Po raz piąty słyszysz: „co mam robić?”. Ty masz nóż w ręce i cebulę na patelni. To nie jest moment na wymyślanie zabawy. Odpal Audiokiddo.'],
+        ['Kiedy musisz zrobić jedną rzecz do końca', 'Mail. Telefon. Prysznic. Cokolwiek. Młody wyczuje ten moment z dokładnością urządzenia wojskowego. Audiokiddo. Zanim podejdzie.'],
+        ['Kiedy wracacie z przedszkola', 'Ty po całym dniu. Ono po całym dniu. Tylko jedno z Was nadal ma energię, żeby biegać po mieszkaniu z plastikowym dinozaurem. Odpal Audiokiddo.'],
+        ['Kiedy jedziecie samochodem', 'Pierwsze „daleko jeszcze?” padło, zanim zdążyliście wyjechać z miasta. Nie będę oceniał. Mamy zabawy na drogę.'],
+        ['Kiedy pada', 'Plac zabaw odpada. 48 zabawek w pokoju też najwyraźniej. Klasyka. Odpal Audiokiddo.'],
+        ['Kiedy słyszysz „nudzi mi się”', 'Dzieciak się nudzi? W końcu problem, na który mamy gotową odpowiedź.'],
+        ['Kiedy potrzebujesz 15 minut spokoju', 'Nie musisz w tym czasie rozwijać firmy, ćwiczyć ani gotować obiadu na trzy dni. Możesz po prostu usiąść. Audiokiddo zajmie się resztą.'],
+        ['Kiedy skończyły Ci się pomysły', 'Kredki były. Klocki były. „Pobaw się zabawkami” też było. Dobra. Odpal Audiokiddo.'],
+        ['Kiedy dziś naprawdę nie masz mocy na wspólną zabawę', 'Kochasz go. To nie znaczy, że o 18:37 masz ochotę po raz czwarty być smokiem. Odpal Audiokiddo.'],
+        ['Kiedy robi się podejrzanie cicho', 'Krąży bez celu. Zajrzał za kanapę. Mamy może trzy minuty, zanim zacznie kombinować.'],
+    ];
+}
+
+/** "Jak to działa?" in three steps: title and what happens. */
+function ak_steps(): array
+{
+    return [
+        ['Pobierasz Audiokiddo', 'Ściągasz aplikację z App Store albo Google Play. W środku od razu znajdziesz darmowe zabawy, więc nie musisz kupować abonamentu, żeby sprawdzić, czy to w ogóle zadziała u Was.'],
+        ['Wybierasz zabawę', 'Podajesz wiek i wybierasz coś, na co akurat jest ochota: zagadki, ruch, wyobraźnia, śledztwo, fabuła albo misja na konkretną sytuację. Przy każdej zabawie od razu widzisz, dla jakiego wieku jest, ile trwa i czy potrzebujesz czegoś dodatkowego.'],
+        ['Naciskasz play', 'I od tego momentu audio prowadzi zabawę. Mówi dziecku, co się dzieje, zadaje pytania i daje kolejne zadania. A telefon? Może leżeć na stole. Cała zabawa dzieje się poza ekranem.'],
+    ];
+}
+
+/** What the child does during a play (the list under step 3). */
+function ak_kid_can(): array
+{
+    return ['odpowiadać', 'szukać rzeczy', 'ruszać się', 'podejmować decyzje', 'rozwiązywać zagadki', 'wymyślać własne rozwiązania'];
+}
+
+/** Age groups: range, colour and the line. */
+function ak_ages(): array
+{
+    return [
+        ['3–5 lat', 'sun', 'Dużo ruchu. Krótkie instrukcje.'],
+        ['5–7 lat', 'teal', 'Więcej zagadek, decyzji i pytań, na które dziecko zna odpowiedź szybciej od Ciebie.'],
+        ['7–9 lat', 'lav', 'Śledztwa, dłuższe fabuły i misje dla ludzi, którzy już potrafią powiedzieć „to nie ma sensu” i oczekują wyjaśnień.'],
+    ];
+}
+
+/** The library by kind of play: name, colour, one line and a few real titles. */
+function ak_library(): array
+{
+    return [
+        ['Ruchowe', 'sun', 'Maszerowanie, skradanie, szukanie po mieszkaniu. Kanapa przestaje być bezpieczna.', ['Magiczny teatr', 'Mistrz kuchni']],
+        ['Logiczne', 'teal', 'Co tu nie pasuje, co z czym się łączy, kto ma rację. Dziecko myśli na głos.', ['Co tu nie pasuje?', 'Szybkie skojarzenia', 'Znajdź przeciwieństwo']],
+        ['Kreatywne', 'lav', 'Wymyśl miksturę, superbohatera albo nowe znaczenie słowa. Tu nie ma złych odpowiedzi.', ['Mikstura', 'Mój superbohater', 'Wymyśl znaczenie']],
+        ['Fabularne', 'sun', 'Przygody, w których bohaterem jest dziecko. To ono decyduje, co dalej.', ['Zaginiony skarb', 'Podróż na inną planetę', 'Dokończ historię']],
+        ['Zagadki i śledztwa', 'teal', 'Kto wydaje taki dźwięk? Kto ukradł naszyjnik? Odpowiedź pada szybciej, niż myślisz.', ['Co to za dźwięk?', 'Co to za przedmiot?', 'Złodziej naszyjnika']],
     ];
 }
 
@@ -255,36 +323,37 @@ function ak_bold(string $text): string
 function ak_facts(): array
 {
     $packs = ak_packs();
+    $p = ak_pricing();
     return [
-        'Czym jest' => 'AudioKiddo to polskie interaktywne audiozabawy dla dzieci w wieku przedszkolnym i wczesnoszkolnym. Dziecko słucha historii, odpowiada na pytania na głos i rozwiązuje zadania, bez patrzenia w ekran.',
-        'Kto to robi' => 'AudioKiddo tworzą Nela Mariak i Dawid Kubiak, para z Polski. Sami piszą zabawy i podkładają głosy; Dawid jest lektorem i mówi głosem Profesora Fantazjusza.',
-        'Pakiety' => 'Pakiety Wyobraźnia oraz Słowa i Wiedza (po 10 zabaw, ' . ak_age($packs['wyobraznia']) . ') i Detektyw (5 spraw z kartami do wydruku, ' . ak_age($packs['detektyw']) . '). Zabawy trwają od kilku do kilkunastu minut.',
-        'Jak kupić' => 'Pakiety kupuje się raz na audiokiddo.pl i dostaje pliki po zakupie. Subskrypcja daje dostęp do zabaw w aplikacji, a szczegóły rozliczenia są na stronie wybranego planu. Po zapisie do newslettera można za darmo dostać pakiet 3 audiozabaw.',
-        'Bez ekranu' => 'Zabawy są tylko do słuchania, bez reklam. Po pobraniu działają bez internetu: w domu, w aucie, na spacerze.',
-        'Co ćwiczy' => 'Uważne słuchanie, mowę i słownictwo, wyobraźnię, logiczne myślenie i koncentrację. Polecają je pedagodzy i logopedzi.',
+        'Czym jest' => 'Audiokiddo to polska aplikacja z interaktywnymi audiozabawami dla dzieci w wieku 3–9 lat. Rodzic włącza zabawę, a głos prowadzi dziecko: zadaje pytania, daje misje, każe szukać, ruszać się i rozwiązywać zagadki. Dziecko nie patrzy w ekran.',
+        'Dla kogo' => 'Dla rodziców dzieci w wieku przedszkolnym i wczesnoszkolnym (3–5, 5–7 i 7–9 lat), którzy potrzebują zająć dziecko na kilkanaście minut bez tabletu i bajki: przy gotowaniu, w samochodzie, po przedszkolu, w deszczowy dzień.',
+        'Jak działa' => 'Pobierasz aplikację Audiokiddo z App Store albo Google Play, wybierasz wiek i zabawę, naciskasz play. Większość zabaw dziecko robi samodzielnie; telefon może leżeć na stole.',
+        'Ile kosztuje' => 'W aplikacji są darmowe zabawy. Pełna biblioteka w abonamencie kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Pakiety Wyobraźnia oraz Słowa i Wiedza (po 10 zabaw) i Detektyw (5 spraw) można też kupić jednorazowo na audiokiddo.pl.',
+        'Kto to robi' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy i świat marki, Dawid buduje technologię; oboje podkładają głosy. Maskotka marki to szop Szop’en.',
+        'Bez ekranu i bezpiecznie' => 'Zabawy są tylko do słuchania, bez reklam. Po pobraniu działają bez internetu, także w samochodzie i samolocie. Marka nie publikuje twarzy dzieci.',
+        'Co ćwiczy' => 'Uważne słuchanie, mowę i słownictwo, wyobraźnię, logiczne myślenie, koncentrację i ruch. Audiozabawy polecają pedagodzy, logopedzi i fizjoterapeuci dziecięcy.',
     ];
 }
 
-/** Questions parents ask (from the first site, plus the app), for the page and the FAQ structured data. */
+/** Questions parents ask, for the page and the FAQ structured data (short, with a little humour). */
 function ak_faq(): array
 {
     $packs = ak_packs();
+    $p = ak_pricing();
     return [
-        ['Czym są audiozabawy AudioKiddo?', 'To interaktywne przygody dźwiękowe, które angażują dziecięcą wyobraźnię bez potrzeby ekranu. Dziecko słucha, wykonuje proste polecenia, przeżywa historie, rozwiązuje zagadki i ćwiczy słuchanie ze zrozumieniem, logiczne myślenie i kreatywność.'],
-        ['Czym różni się pakiet od subskrypcji?', 'Pakiet kupujesz jednorazowo i otrzymujesz pliki audio do pobrania. Subskrypcja daje dostęp do zabaw w aplikacji i odnawia się zgodnie z warunkami wybranego planu. Przed zakupem sprawdź cenę, okres rozliczenia i sposób aktywacji na stronie produktu.'],
-        ['Dla dzieci w jakim wieku są audiozabawy?', 'Pakiety Wyobraźnia oraz Słowa i Wiedza polecamy ' . ak_age($packs['wyobraznia']) . ', Detektyw ' . ak_age($packs['detektyw']) . '. Każde dziecko rozwija się we własnym tempie, dlatego na stronie każdego pakietu opisujemy, jakie umiejętności przydadzą się w zabawie. Łatwiej wtedy dopasować zabawę do Twojego dziecka.'],
-        ['Jakie korzyści edukacyjne dają audiozabawy?', 'Wspierają rozwój mowy bogatym słownictwem i narracją, uczą logicznego myślenia przez zagadki, rozwijają koncentrację i słuchanie ze zrozumieniem. Pobudzają też wyobraźnię i kreatywność.'],
-        ['Czy potrzebny jest internet albo specjalne urządzenie?', 'Internet jest potrzebny tylko do pobrania pakietu. Potem audiozabawy działają offline, więc sprawdzą się w podróży. Wystarczy smartfon, tablet, komputer albo głośnik.'],
-        ['Czy mogę wypróbować audiozabawy przed zakupem?', 'Tak. Posłuchaj fragmentów na tej stronie i zapisz się do newslettera: dostaniesz za darmo pakiet 3 audiozabaw, po jednej z każdego pakietu.'],
-        ['Czy audiozabawy są bezpieczne dla dzieci?', 'Tak. Nie ma w nich reklam ani treści nieodpowiednich dla dzieci. Tworzymy je starannie, z myślą o rozwoju i dobrym samopoczuciu dziecka.'],
-        ['Jak długo trwa jedna audiozabawa?', 'Zwykle od kilku do kilkunastu minut, tyle, ile dziecko potrafi uważnie słuchać. Czas każdej zabawy podajemy w jej opisie.'],
-        ['Czy audiozabawy pomogą dziecku z trudnościami w nauce albo z uwagą?', 'Mogą być szczególnie pomocne: forma audio angażuje słuch, co może ułatwić koncentrację w porównaniu z bodźcami wzrokowymi, a proste polecenia prowadzą krok po kroku. Przy szczególnych potrzebach rozwojowych zawsze warto porozmawiać z terapeutą lub pedagogiem.'],
-        ['Czy mogę korzystać z audiozabaw w przedszkolu lub szkole?', 'Tak. To dobre uzupełnienie zajęć w przedszkolu i w klasach 1–3: wspierają rozwój językowy, logiczne myślenie i pracę w grupie, gdy słucha cała klasa.'],
-        ['Jak często pojawiają się nowe audiozabawy?', 'Stale pracujemy nad nowymi zabawami i regularnie poszerzamy ofertę. O premierach piszemy w newsletterze i w mediach społecznościowych.'],
-        ['Czy będą audiozabawy w językach obcych?', 'Planujemy je. Na razie skupiamy się na języku polskim.'],
-        ['Czy mogę mieć wpływ na tematy nowych zabaw?', 'Bardzo prosimy! Pytamy o pomysły w mediach społecznościowych, a każdy mail z propozycją czytamy sami.'],
-        ['Nie widzę zakupionych audiozabaw. Co zrobić?', 'Sprawdź folder Spam, Oferty albo Inne w poczcie i upewnij się, że adres e-mail w zamówieniu jest poprawny. Wiadomość może przyjść do 15 minut po zakupie. Jeśli nadal jej nie ma, napisz do nas na ' . ak_opt('contact_email') . ', pomożemy.'],
-        ['Kto nagrywa audiozabawy?', 'Nela i Dawid, para, która stworzyła AudioKiddo. Dawid jest lektorem i to jego głosem mówi Profesor Fantazjusz. Piszemy i nagrywamy wszystko sami, po polsku.'],
+        ['Czym jest Audiokiddo?', 'Aplikacją z interaktywnymi audiozabawami dla dzieci 3–9 lat. Odpalasz zabawę, a głos prowadzi dziecko: zadaje pytania, daje misje, każe szukać, ruszać się i rozwiązywać zagadki. To nie jest audiobook: tu dziecko ma dużo do roboty.'],
+        ['Czy muszę uczestniczyć?', 'Zwykle nie. Nikt nie sprawdza obecności. Większość zabaw dziecko robi samodzielnie. Chcesz dołączyć? Jasne. Nie chcesz? Też jasne.'],
+        ['Czy dziecko patrzy w ekran?', 'Tylko tyle, ile potrzeba do obsługi. Główna akcja dzieje się poza nim: telefon może leżeć na stole albo w kieszeni.'],
+        ['Dla dzieci w jakim wieku?', 'Dla dzieci od 3 do 9 lat. Zabawy są podzielone na grupy 3–5, 5–7 i 7–9 lat; przy każdej widzisz wiek, czas trwania i to, czy potrzebujesz czegoś dodatkowego.'],
+        ['Ile kosztuje Audiokiddo?', 'Pobranie aplikacji jest darmowe i w środku czekają darmowe zabawy. Pełna biblioteka kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Abonament wybierasz w aplikacji.'],
+        ['Czy mogę najpierw sprawdzić za darmo?', 'Tak. Pobierz aplikację, wybierz wiek dziecka i odpal darmowe zabawy. To normalne, pełne audiozabawy, a nie zwiastuny. Abonamentu nie kupujesz w ciemno.'],
+        ['Czy działa w samochodzie?', 'Tak. Mamy specjalny tryb samochodowy „W drogę”. Pobrane wcześniej zabawy działają też w trudnych warunkach pt. brak zasięgu albo podróż samolotem.'],
+        ['Czy mogę anulować?', 'Tak, w każdej chwili w ustawieniach subskrypcji App Store albo Google Play. Nie wyślemy Ci szopa pod chatę.'],
+        ['Nie lubię subskrypcji. Da się bez niej?', 'Da się. Pakiety Wyobraźnia, Słowa i Wiedza (' . ak_age($packs['wyobraznia']) . ') oraz Detektyw (' . ak_age($packs['detektyw']) . ') kupisz jednorazowo na audiokiddo.pl i masz do nich stały dostęp.'],
+        ['Czy Audiokiddo jest bezpieczne dla dzieci?', 'Tak. Bez reklam i bez treści nieodpowiednich dla dzieci. Zakupy i linki są za bramką dla rodzica, a mikrofon działa tylko po Twojej zgodzie i nic nie jest nagrywane.'],
+        ['Czy mogę używać Audiokiddo w przedszkolu lub szkole?', 'Tak. Audiozabawy dobrze sprawdzają się w przedszkolu i w klasach 1–3, gdy słucha cała grupa. Dla placówek przygotowujemy osobną ofertę: napisz do nas.'],
+        ['Kupiłem pakiet na stronie. Gdzie go znajdę?', 'Linki do pobrania przychodzą mailem od razu po zakupie (sprawdź też Spam i Oferty). Te same pakiety odblokujesz w aplikacji, logując się tym samym adresem e-mail. Problem? Napisz na ' . ak_opt('contact_email') . '.'],
+        ['Kto nagrywa audiozabawy?', 'Nela i Dawid, para, która stworzyła Audiokiddo. Piszemy i nagrywamy wszystko sami, po polsku.'],
     ];
 }
 
@@ -299,28 +368,26 @@ function ak_people(): array
 }
 
 /**
- * Szop'en points at the few things that matter, not at every slide: where to start, how the app
- * works, a sample to hear, the cheapest set and the free pack. Elsewhere he sits quietly in his
- * corner. For each stop: his pose and one short line about one element (a CSS selector inside the
- * slide; a stop whose element is missing is skipped).
+ * Szop'en points at the few things that matter, not at every slide. For each stop: his pose and
+ * one short line about one element (a CSS selector inside the slide; a missing element is skipped).
  */
 function ak_tour(): array
 {
     return [
         'start' => ['chytry', [
-            ['.ak-hero-btns', 'Psst, tu Szop’en! Pokażę Ci tylko cztery najważniejsze rzeczy. Przewijaj spokojnie, odezwę się sam.'],
+            ['.ak-hero-btns', 'Psst. Pokażę Ci tylko to, co naprawdę ważne. Przewijaj spokojnie, odezwę się sam.'],
         ]],
-        'aplikacja' => ['zadowolony', [
+        'jak-to-dziala' => ['zadowolony', [
             ['.ak-phone', 'Tak wygląda aplikacja. Kliknij funkcję obok, a telefon pokaże, jak to działa.'],
         ]],
-        'probki' => ['nasluchuje', [
-            ['.ak-sample:first-child .ak-play', 'Najlepiej posłuchać. Kliknij play: to Profesor Fantazjusz, czyli głos Dawida.'],
+        'w-akcji' => ['nasluchuje', [
+            ['.ak-video:first-child', 'Teraz serio. Włącz film i zobacz, co robi dziecko. Telefon leży sobie z boku.'],
         ]],
-        'produkty' => ['chytry', [
-            ['.ak-bundle-best', 'Cwana rada: zestaw trzech pakietów wychodzi najtaniej.'],
+        'cennik' => ['chytry', [
+            ['.ak-price-card-best', 'Roczny wychodzi najtaniej. Dzieciak raczej nie przestanie się nudzić po miesiącu.'],
         ]],
-        'darmowy' => ['prosi', [
-            ['.ak-free-form', 'Na koniec najlepsze: trzy zabawy za darmo. Wystarczy e-mail.'],
+        'pobierz' => ['prosi', [
+            ['.ak-stores', 'Odpal darmowe zabawy. Jak nie zadziała, udajemy, że się nie znamy.'],
         ]],
     ];
 }

@@ -6,11 +6,12 @@ if (!defined('ABSPATH')) {
 $home = ak_view() === 'start' ? '' : home_url('/');
 $count = ak_cart_count();
 $links = [
-    '#wybierz' => 'Jak kupić',
-    '#aplikacja' => 'Aplikacja',
-    '#subskrypcje' => 'Subskrypcje',
-    '#probki' => 'Posłuchaj',
-    '#produkty' => 'Pakiety',
+    '#jak-to-dziala' => 'Jak to działa',
+    '#kiedy' => 'Kiedy odpalić',
+    '#cennik' => 'Cennik',
+    '#pakiety' => 'Pakiety',
+    '#opinie' => 'Opinie',
+    '#o-nas' => 'O nas',
 ];
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
@@ -32,11 +33,16 @@ $links = [
             <?php foreach ($links as $hash => $label) : ?>
             <a href="<?php echo esc_url($home . $hash); ?>"><?php echo esc_html($label); ?></a>
             <?php endforeach; ?>
-            <a class="ak-nav-extra" href="<?php echo esc_url($home . '#darmowy'); ?>">3 zabawy gratis</a>
+            <a class="ak-nav-extra" href="<?php echo esc_url($home . '#pobierz'); ?>">Darmowe zabawy</a>
             <a class="ak-nav-extra" href="<?php echo esc_url($home . '#pytania'); ?>">Pytania</a>
-            <a href="<?php echo esc_url(ak_blog_url()); ?>"<?php echo ak_view() !== 'start' ? ' aria-current="page"' : ''; ?>>Blog</a>
+            <a href="<?php echo esc_url(ak_landing_url()); ?>"<?php echo ak_view() === 'guide' ? ' aria-current="page"' : ''; ?>>Pomysły</a>
+            <a href="<?php echo esc_url(ak_blog_url()); ?>"<?php echo in_array(ak_view(), ['blog', 'post'], true) ? ' aria-current="page"' : ''; ?>>Blog</a>
         </nav>
-        <a class="ak-btn ak-btn-sun ak-top-cta" href="<?php echo esc_url($home . '#wybierz'); ?>">Wybierz zabawy</a>
+        <?php if (ak_app_live()) : ?>
+        <a class="ak-btn ak-btn-sun ak-top-cta ak-app-cta" href="<?php echo esc_url($home . '#pobierz'); ?>" data-ios="<?php echo esc_attr(ak_opt('app_store_url')); ?>" data-android="<?php echo esc_attr(ak_opt('google_play_url')); ?>">Pobierz aplikację</a>
+        <?php else : ?>
+        <a class="ak-btn ak-btn-sun ak-top-cta" href="<?php echo esc_url($home . '#cennik'); ?>">Abonament</a>
+        <?php endif; ?>
         <?php if (ak_has_woo()) : ?>
         <a class="ak-cart" href="<?php echo esc_url(ak_cart_url()); ?>" aria-label="Koszyk">
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
@@ -51,9 +57,9 @@ $links = [
     <div class="ak-story" aria-hidden="true"><span class="ak-story-bars"></span><span class="ak-story-label"></span></div>
 </header>
 <nav class="ak-dock" aria-label="Na skróty">
-    <a href="<?php echo esc_url($home . '#probki'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zm16 0h-3v6h2a1 1 0 0 0 1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>Posłuchaj</span></a>
-    <a href="<?php echo esc_url($home . '#produkty'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Pakiety</span></a>
-    <a class="ak-dock-main" href="<?php echo esc_url($home . '#subskrypcje'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5M20 12a8 8 0 0 1-14 5M18 3v4h-4M6 21v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Abonament</span></a>
+    <a href="<?php echo esc_url($home . '#jak-to-dziala'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zm16 0h-3v6h2a1 1 0 0 0 1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>Jak działa</span></a>
+    <a href="<?php echo esc_url($home . '#pakiety'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Pakiety</span></a>
+    <a class="ak-dock-main" href="<?php echo esc_url($home . '#pobierz'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><?php echo ak_app_live() ? 'Pobierz' : 'Za darmo'; ?></span></a>
     <?php if (ak_has_woo()) : ?>
     <a class="ak-dock-cart" href="<?php echo esc_url(ak_cart_url()); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg><span>Koszyk</span><span class="ak-cart-count" data-count="<?php echo (int) $count; ?>"><?php echo (int) $count; ?></span></a>
     <?php endif; ?>

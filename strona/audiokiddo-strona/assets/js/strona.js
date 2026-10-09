@@ -259,6 +259,14 @@
   // to the cart sits under it; the cart in the bar and the dock bounces. Nothing floats over
   // the page.
   if (window.jQuery) {
+    // While WooCommerce works on it, the button says so in Szop's words.
+    window.jQuery(document.body).on('adding_to_cart', function (e, button) {
+      var el = button && button.get ? button.get(0) : null;
+      if (el && el.classList.contains('ak-btn')) {
+        el.setAttribute('data-label', el.textContent);
+        el.textContent = 'Szop coś grzebie…';
+      }
+    });
     window.jQuery(document.body).on('added_to_cart', function (e, fragments, hash, button) {
       var el = button && button.get ? button.get(0) : null;
       if (el && el.classList.contains('ak-btn')) {
@@ -270,6 +278,21 @@
         void c.offsetWidth;
         c.classList.add('is-bump');
       });
+    });
+  }
+
+  // "Pobierz Audiokiddo" goes straight to the store of the phone in hand; on a computer it
+  // stays on the section with both store buttons.
+  var ua = navigator.userAgent || '';
+  var os = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document) ? 'ios' : (/Android/.test(ua) ? 'android' : '');
+  if (os) {
+    $$('.ak-app-cta').forEach(function (a) {
+      var url = a.getAttribute('data-' + os);
+      if (url) { a.href = url; a.rel = 'noopener'; }
+    });
+    $$('.ak-stores').forEach(function (box) {
+      var mine = box.querySelector('.ak-store[data-os="' + os + '"]');
+      if (mine) box.insertBefore(mine, box.firstChild);
     });
   }
 

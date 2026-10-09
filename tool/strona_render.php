@@ -32,6 +32,8 @@ class WP_Query
 {
     public array $posts;
     public int $max_num_pages = 2;
+    public bool $is_404 = false;
+    public bool $is_home = false;
     public function __construct($args = [])
     {
         $this->posts = ak_stub_posts();
@@ -103,7 +105,13 @@ function is_category() { return false; }
 function is_tag() { return false; }
 function is_search() { return false; }
 function get_page_template_slug() { return $GLOBALS['ak_stub']['view'] === 'start' ? 'ak-start.php' : ''; }
-function get_query_var($key) { return 0; }
+function get_query_var($key) { return $key === 'ak_landing' ? ($GLOBALS['ak_stub']['landing'] ?? '') : 0; }
+function add_rewrite_rule(...$a) {}
+function flush_rewrite_rules($hard = true) {}
+function update_option($k, $v) { $GLOBALS['ak_stub']['options'][$k] = $v; }
+function status_header($code) {}
+function wp_date($format, $ts = null) { return date('j.m.Y', $ts ?? time()); }
+function is_404() { return $GLOBALS['ak_stub']['view'] === 'notfound'; }
 function language_attributes() { echo 'lang="pl-PL"'; }
 function bloginfo($k) { echo 'UTF-8'; }
 function current_theme_supports($f) { return false; }
@@ -168,9 +176,9 @@ foreach ($argv as $arg) {
     }
 }
 if ($only === null) {
-    foreach (['start', 'blog', 'post'] as $view) {
+    foreach (['start', 'blog', 'post', 'notfound', 'guide:pomysly-na-zabawy', 'guide:zabawy-bez-ekranu', 'guide:zagadki-dla-dzieci', 'guide:zabawy-dla-przedszkolakow'] as $view) {
         $html = shell_exec(sprintf('%s %s --view=%s 2>&1', escapeshellarg(PHP_BINARY), escapeshellarg(__FILE__), $view));
-        $name = $view === 'post' ? 'wpis' : $view;
+        $name = $view === 'post' ? 'wpis' : str_replace('guide:', '', $view);
         file_put_contents("$out/$name.html", $html);
         if (!preg_match('#</html>\s*$#', $html)) {
             fwrite(STDERR, "✗ $view: niepełna strona\n" . substr($html, -1500) . "\n");
@@ -188,13 +196,20 @@ if ($only === null) {
     }
     $GLOBALS['ak_stub']['view'] = 'start';
     file_put_contents("$out/llms.txt", ak_llms_txt());
-    echo "✓ llms.txt\n";
+    $full = ak_llms_txt();
+    foreach (array_keys(ak_landings()) as $slug) { $full .= "\n" . ak_landing_markdown($slug); }
+    file_put_contents("$out/llms-full.txt", $full);
+    echo "✓ llms.txt, llms-full.txt\n";
     exit($failed ? 1 : 0);
 }
 
+if (str_starts_with($only, 'guide:')) {
+    $GLOBALS['ak_stub']['landing'] = substr($only, 6);
+    $only = 'guide';
+}
 $GLOBALS["ak_stub"]["view"] = $only;
 $GLOBALS["wp_query"] = new WP_Query();
 do_action('init');
 do_action('template_redirect');
-$template = AK_DIR . 'templates/' . ['start' => 'start.php', 'blog' => 'blog.php', 'post' => 'single.php'][$only];
+$template = AK_DIR . 'templates/' . ['start' => 'start.php', 'blog' => 'blog.php', 'post' => 'single.php', 'notfound' => 'notfound.php', 'guide' => 'guide.php'][$only];
 require $template;

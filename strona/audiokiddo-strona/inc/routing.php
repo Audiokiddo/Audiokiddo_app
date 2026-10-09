@@ -25,7 +25,9 @@ function ak_view(): string
         return $view;
     }
     $view = '';
-    if (is_page()) {
+    if (ak_landing_slug() !== '') {
+        $view = 'guide';
+    } elseif (is_page()) {
         $slug = get_page_template_slug();
         if ($slug === 'ak-start.php') {
             $view = 'start';
@@ -36,12 +38,16 @@ function ak_view(): string
         $view = 'post';
     } elseif ((is_home() || is_category() || is_tag()) && !is_front_page() && ak_opt('style_blog')) {
         $view = 'blog';
+    } elseif (is_search() && ak_opt('style_blog')) {
+        $view = 'search';
+    } elseif (is_404()) {
+        $view = '404';
     }
     return $view;
 }
 
 add_filter('template_include', function ($template) {
-    $files = ['start' => 'start.php', 'blog' => 'blog.php', 'post' => 'single.php'];
+    $files = ['start' => 'start.php', 'blog' => 'blog.php', 'search' => 'blog.php', 'post' => 'single.php', '404' => 'notfound.php', 'guide' => 'guide.php'];
     $view = ak_view();
     return $view ? AK_DIR . 'templates/' . $files[$view] : $template;
 }, 99);
@@ -91,3 +97,21 @@ add_filter('body_class', function ($classes) {
     }
     return $classes;
 });
+
+// The site search looks through the articles (the shop's own search asks for products itself).
+add_action('pre_get_posts', function ($query) {
+    if (!is_admin() && $query->is_main_query() && $query->is_search() && empty($_GET['post_type'])) {
+        $query->set('post_type', 'post');
+    }
+});
+
+// A guide's address is a real page: WordPress must not answer it with 404.
+add_action('template_redirect', function () {
+    if (ak_landing_slug() !== '') {
+        global $wp_query;
+        $wp_query->is_404 = false;
+        $wp_query->is_home = false;
+        status_header(200);
+    }
+}, 1);
+

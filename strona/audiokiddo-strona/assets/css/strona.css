@@ -825,3 +825,199 @@ html.ak-snap { scroll-snap-type: none; }
   .ak-choice-item { padding: 22px; }
   .ak-subscriptions-heading img { display: none; }
 }
+
+/* ===== 3.0: the final home page (Nela's copy, 2026-10). Szop'en speaks in short bubbles. ===== */
+.ak-small { font-size: 14px; color: var(--muted); }
+.ak-hero-lead { font-size: clamp(21px, 2.6vw, 30px); font-weight: 600; letter-spacing: -.02em; margin: 6px 0 10px; }
+.ak-hero h1 { font-size: clamp(36px, 4.6vw, 62px); }
+.ak-hero-in { grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); }
+
+/* Szop'en with a speech bubble */
+.ak-szop { display: flex; align-items: flex-end; gap: 10px; margin: 0; }
+.ak-szop img { width: 96px; flex: none; filter: drop-shadow(0 10px 14px rgba(36, 27, 58, .18)); }
+.ak-szop figcaption { position: relative; background: var(--paper); border-radius: 20px 20px 20px 6px; padding: 12px 16px; font-weight: 600; font-size: 15px; line-height: 1.4; box-shadow: var(--shadow); max-width: 300px; margin-bottom: 40px; }
+.ak-szop.is-in img { animation: ak-hop 3.4s var(--ease) 1.2s infinite; }
+.ak-szop-hero { position: absolute; left: -4%; bottom: -6%; z-index: 2; }
+.ak-szop-center { justify-content: center; margin: 34px auto 0; }
+.ak-szop-small img { width: 78px; }
+
+/* Not an audiobook */
+.ak-notbook { background: var(--paper); }
+.ak-versus { display: grid; grid-template-columns: 1fr 1.2fr; gap: 18px; max-width: 920px; margin: 34px auto 0; }
+.ak-versus-item { border-radius: var(--r); padding: 26px 28px; }
+.ak-versus-old { background: var(--sand); color: var(--muted); }
+.ak-versus-new { background: var(--sun); color: var(--ink); box-shadow: var(--shadow-big); transform: rotate(-1deg); }
+.ak-versus-label { font-weight: 700; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px; }
+.ak-versus-text { font-size: clamp(20px, 2.4vw, 27px); font-weight: 600; line-height: 1.3; margin: 0; }
+.ak-quotes { list-style: none; padding: 0; margin: 30px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.ak-quotes li { background: var(--cream); border-radius: 999px; padding: 12px 22px; font-weight: 600; box-shadow: inset 0 0 0 1.5px var(--line); }
+
+/* When to switch it on */
+.ak-when { background: linear-gradient(180deg, var(--cream), var(--sun-soft)); }
+.ak-when-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.ak-when-szop { width: 150px; }
+.ak-when-list { list-style: none; padding: 0; margin: 26px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.ak-when-card { background: var(--paper); border-radius: 22px; padding: 20px 22px; box-shadow: var(--shadow); border-left: 6px solid var(--deep, var(--teal)); transition: transform .3s var(--spring); }
+.ak-when-card:hover { transform: translateY(-4px) rotate(-.4deg); }
+.ak-when-card h3 { font-size: 18px; margin-bottom: 6px; }
+.ak-when-card p { margin: 0; color: var(--muted); font-size: 16px; }
+
+/* How it works: steps on the left, the phone and its features on the right */
+.ak-app-in { align-items: start; }
+.ak-steps { list-style: none; counter-reset: step; padding: 0; margin: 22px 0 0; display: grid; gap: 14px; }
+.ak-step { counter-increment: step; position: relative; padding: 18px 20px 18px 74px; background: var(--paper); border-radius: 22px; box-shadow: var(--shadow); }
+.ak-step::before { content: counter(step); position: absolute; left: 18px; top: 18px; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--sun); font-weight: 700; font-size: 18px; }
+.ak-step h3 { margin-bottom: 4px; }
+.ak-step p { margin: 0 0 6px; color: var(--muted); font-size: 16px; }
+.ak-step-can { font-weight: 600; color: var(--ink) !important; margin-top: 8px !important; }
+.ak-chips-row { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.ak-chips-row li { font-size: 14px; font-weight: 600; padding: 5px 12px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-deep); }
+.ak-phone-col { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: center; }
+.ak-phone-col .ak-phone-wrap { width: min(250px, 60vw, calc((100svh - 150px) * 9 / 19.5)); min-width: 200px; }
+.ak-phone-col .ak-feats { margin: 0; }
+.ak-most { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 36px; padding: 26px 30px; border-radius: var(--r); background: var(--ink); color: #EDEAF3; }
+.ak-most p { margin: 0; }
+.ak-most-h { font-weight: 700; color: var(--sun); text-transform: uppercase; letter-spacing: .12em; font-size: 13px; margin-bottom: 6px !important; }
+.ak-most strong { color: #fff; }
+.ak-most-cta { display: grid; gap: 8px; justify-items: center; flex: none; text-align: center; }
+.ak-most-cta small { color: #B9B3C6; font-size: 13px; max-width: 260px; }
+
+/* Proof */
+.ak-site .ak-listen-h { margin-top: 56px; }
+.ak-action .ak-after { font-size: clamp(18px, 2vw, 22px); }
+
+/* Ages and library */
+.ak-ages-sec { background: var(--paper); }
+.ak-ages { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.ak-age { background: var(--tone); border-radius: var(--r); padding: 26px; }
+.ak-age-range { font-size: clamp(32px, 4vw, 46px); font-weight: 700; letter-spacing: -.03em; margin-bottom: 6px !important; color: var(--ink); }
+.ak-age p { margin: 0; }
+.ak-site .ak-lib-h { margin-top: 72px; }
+.ak-library { list-style: none; padding: 0; margin: 26px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.ak-lib { background: var(--cream); border-radius: 22px; padding: 20px; box-shadow: inset 0 0 0 1.5px var(--line); border-top: 6px solid var(--deep); }
+.ak-lib h3 { font-size: 19px; margin-bottom: 6px; }
+.ak-lib p { margin: 0 0 8px; font-size: 15px; color: var(--muted); }
+.ak-lib p.ak-lib-titles { font-size: 13px; font-weight: 600; color: var(--ink); margin: 0; }
+
+/* Free plays in the app */
+.ak-getfree { background: linear-gradient(135deg, var(--teal-soft), var(--cream)); }
+.ak-getfree-in { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+.ak-getfree-szops { display: grid; gap: 18px; justify-items: start; }
+.ak-getfree .ak-small { margin-top: 12px; }
+
+/* Experts under the parents */
+.ak-site .ak-experts-h { margin: 46px 0 18px; font-size: 22px; }
+
+/* Pricing */
+.ak-pricing { background: var(--cream); }
+.ak-price-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 920px; margin: 34px auto 0; align-items: stretch; }
+.ak-price-card { position: relative; display: flex; flex-direction: column; background: var(--paper); border-radius: var(--r); padding: 28px; box-shadow: var(--shadow); }
+.ak-price-card h3 { font-size: 22px; }
+.ak-price-card > p { margin-bottom: 10px; }
+.ak-price-card .ak-ticks { margin-bottom: 20px; }
+.ak-price-card .ak-btn { margin-top: auto; align-self: flex-start; }
+.ak-price-card > small { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; }
+.ak-price-card-best { box-shadow: 0 0 0 3px var(--sun), var(--shadow-big); }
+.ak-price-card-best .ak-flag-best { left: 24px; right: auto; }
+.ak-price-big { font-size: clamp(36px, 4.6vw, 52px); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; margin: 4px 0 6px !important; }
+.ak-price-big small { font-size: 18px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.ak-price-per { font-weight: 600; color: var(--teal-deep); }
+.ak-price-in { font-weight: 600; margin: 6px 0 8px !important; }
+.ak-nosub { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 920px; margin: 34px auto 0; padding: 24px 28px; border-radius: var(--r); background: var(--lav-soft); }
+.ak-nosub h3 { margin-bottom: 6px; }
+.ak-nosub p { margin: 0 0 4px; }
+.ak-nosub small { color: var(--lav-deep); font-weight: 600; }
+.ak-nosub .ak-btn { flex: none; }
+.ak-price-foot { text-align: center; max-width: 720px; margin: 40px auto 0; }
+.ak-price-foot p { font-size: 18px; font-weight: 600; margin: 0; }
+
+/* The tablet, privacy, 404 */
+.ak-screens { background: var(--lav-soft); }
+.ak-screens-in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 32px; align-items: center; }
+.ak-privacy { padding: clamp(64px, 9vw, 110px) 0; background: var(--teal-soft); }
+.ak-site .ak-about h2 { max-width: 980px; margin-inline: auto; font-size: clamp(28px, 3.6vw, 46px); }
+.ak-notfound { padding: 140px 0 90px; }
+.ak-notfound img { width: 200px; margin: 0 auto 10px; }
+.ak-notfound .ak-search { margin: 26px auto 0; }
+.ak-empty { display: grid; justify-items: center; gap: 8px; text-align: center; padding: 30px 0; }
+.ak-empty img { width: 150px; }
+
+@media (max-width: 1080px) {
+  .ak-library { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 960px) {
+  .ak-app-in > div:first-child { display: block; }
+  .ak-phone-col { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .ak-getfree-in, .ak-screens-in { grid-template-columns: minmax(0, 1fr); }
+  .ak-szop-hero { left: 0; right: 0; bottom: -10%; }
+  .ak-szop-hero figcaption { max-width: 220px; font-size: 14px; }
+}
+@media (max-width: 760px) {
+  .ak-versus, .ak-ages, .ak-price-cards { grid-template-columns: minmax(0, 1fr); }
+  .ak-versus-new { transform: none; }
+  .ak-when-head { align-items: center; }
+  .ak-when-szop { width: 96px; }
+  .ak-when-list { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 4px 4px 14px; margin-inline: -4px; }
+  .ak-when-card { flex: 0 0 82%; scroll-snap-align: start; }
+  .ak-library { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
+  .ak-lib { flex: 0 0 74%; scroll-snap-align: start; }
+  .ak-most, .ak-nosub { flex-direction: column; align-items: stretch; text-align: left; padding: 22px; }
+  .ak-most-cta { justify-items: stretch; }
+  .ak-szop img { width: 76px; }
+  .ak-szop figcaption { font-size: 14px; margin-bottom: 30px; }
+  .ak-step { padding: 16px 16px 16px 64px; }
+  .ak-step::before { left: 14px; top: 16px; width: 36px; height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ak-szop.is-in img { animation: none; }
+  .ak-versus-new, .ak-when-card:hover { transform: none; }
+}
+
+/* ===== 3.0: guides (/pomysly-na-zabawy/ and each guide) and the hub on the home page ===== */
+.ak-foot-in { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+.ak-hub { padding: clamp(56px, 8vw, 96px) 0; background: var(--paper); }
+.ak-hub-list { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.ak-hub-list a { display: inline-block; padding: 11px 18px; border-radius: 999px; background: var(--cream); box-shadow: inset 0 0 0 1.5px var(--line); color: var(--ink); font-weight: 600; text-decoration: none; transition: background-color .2s ease, transform .25s var(--spring); }
+.ak-hub-list a:hover { background: var(--sun-soft); transform: translateY(-2px); }
+.ak-guide-hero { padding-top: 120px; }
+.ak-guide-hero h1 { font-size: clamp(32px, 4.6vw, 54px); }
+.ak-guide-lead { color: var(--ink); }
+.ak-guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.ak-guide-card { display: grid; gap: 8px; padding: 22px; border-radius: 22px; background: var(--paper); box-shadow: var(--shadow); color: var(--ink) !important; text-decoration: none !important; transition: transform .3s var(--spring); }
+.ak-guide-card:hover { transform: translateY(-4px); }
+.ak-guide-card strong { font-size: 18px; line-height: 1.3; }
+.ak-guide-card span { font-size: 15px; color: var(--muted); }
+.ak-ideas { padding-left: 0; list-style: none; counter-reset: idea; display: grid; gap: 12px; margin: 0 0 30px; }
+.ak-ideas li { counter-increment: idea; position: relative; padding: 16px 18px 16px 62px; border-radius: 18px; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); }
+.ak-ideas li::before { content: counter(idea); position: absolute; left: 16px; top: 16px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--sun-soft); font-weight: 700; }
+.ak-ideas-plain li::before { content: "★"; color: var(--sun-deep); }
+.ak-site .ak-ideas h3 { font-size: 18px; margin: 0 0 4px; }
+.ak-ideas h3 small { font-size: 13px; font-weight: 600; color: var(--teal-deep); margin-left: 6px; }
+.ak-ideas p { margin: 0; }
+.ak-riddles { padding-left: 22px; display: grid; gap: 10px; margin: 0 0 30px; }
+.ak-riddles p { margin: 0; font-weight: 500; }
+.ak-riddles details summary { cursor: pointer; color: var(--teal-deep); font-size: 14px; font-weight: 600; }
+.ak-riddles details p { color: var(--ink); font-weight: 700; }
+.ak-guide-cta { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 20px; align-items: start; margin: 34px 0; padding: 24px; border-radius: var(--r); background: var(--ink); color: #EDEAF3; }
+.ak-guide-cta img { width: 110px; }
+.ak-guide-cta p { color: #D7D2E2; }
+.ak-guide-cta-h { font-size: 21px; font-weight: 700; color: #fff !important; margin-bottom: 8px !important; }
+.ak-guide-cta-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.ak-guide-cta .ak-btn-ghost { color: #fff !important; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .4); }
+.ak-guide-quote { margin: 30px 0; padding: 22px 24px; border-radius: 22px; background: var(--lav-soft); }
+.ak-guide-quote blockquote { margin: 0 0 12px; font-size: 17px; }
+.ak-guide-quote figcaption { display: flex; gap: 12px; align-items: center; }
+.ak-guide-quote figcaption img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+.ak-guide-quote figcaption span { display: grid; font-size: 14px; color: var(--muted); }
+.ak-guide-quote figcaption strong { color: var(--ink); }
+.ak-faq-guide { margin-bottom: 30px; }
+.ak-related ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ak-related a { display: inline-block; padding: 8px 14px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-deep); font-weight: 600; text-decoration: none; }
+.ak-guide-end { padding: clamp(56px, 8vw, 96px) 0; background: linear-gradient(135deg, var(--sun-soft), var(--peach)); }
+@media (max-width: 960px) { .ak-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ak-foot-in { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) {
+  .ak-guide-grid { grid-template-columns: minmax(0, 1fr); }
+  .ak-guide-cta { grid-template-columns: minmax(0, 1fr); }
+  .ak-guide-cta img { width: 84px; }
+  .ak-foot-in { grid-template-columns: 1fr; }
+}
