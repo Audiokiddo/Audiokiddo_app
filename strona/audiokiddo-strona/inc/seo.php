@@ -22,6 +22,9 @@ add_action('template_redirect', function () {
     add_filter('wpseo_json_ld_output', '__return_false');
     remove_all_actions('rank_math/head');
     remove_action('wp_head', 'rel_canonical');
+    // Yoast prints the title itself, so without its presenters there would be none:
+    // parts/header.php writes ours.
+    remove_action('wp_head', '_wp_render_title_tag', 1);
 });
 
 function ak_seo_title(): string

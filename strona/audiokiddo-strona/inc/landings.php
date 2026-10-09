@@ -503,13 +503,23 @@ function ak_landing_slug(): string
     return $slug === 'pomysly-na-zabawy' || isset(ak_landings()[$slug]) ? $slug : '';
 }
 
-// Addresses: /pomysly-na-zabawy/ and /<guide>/. The rules are refreshed once after an update.
-add_action('init', function () {
+// Addresses: /pomysly-na-zabawy/ and /<guide>/.
+function ak_landing_rule(): string
+{
     $slugs = array_merge(['pomysly-na-zabawy'], array_keys(ak_landings()));
-    add_rewrite_rule('^(' . implode('|', array_map('preg_quote', $slugs)) . ')/?$', 'index.php?ak_landing=$matches[1]', 'top');
-    if (get_option('ak_rewrite_version') !== AK_VERSION) {
+    return '^(' . implode('|', array_map('preg_quote', $slugs)) . ')/?$';
+}
+
+add_action('init', function () {
+    add_rewrite_rule(ak_landing_rule(), 'index.php?ak_landing=$matches[1]', 'top');
+});
+
+// The saved rules are refreshed when ours is missing from them (after an update or a new
+// guide), once every plugin has added its own rules.
+add_action('wp_loaded', function () {
+    $rules = get_option('rewrite_rules');
+    if (is_array($rules) && !isset($rules[ak_landing_rule()])) {
         flush_rewrite_rules(false);
-        update_option('ak_rewrite_version', AK_VERSION);
     }
 });
 

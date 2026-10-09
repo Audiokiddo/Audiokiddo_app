@@ -103,8 +103,8 @@ add_filter('woocommerce_order_cancelled_notice', function () {
     return 'Bez dramatu. Zamówienie anulowane, drzwi zostawiamy otwarte.';
 });
 
-add_action('woocommerce_cart_is_empty', function () {
-    echo '<p class="ak-empty-cart">Pusto. Szop sprawdził nawet pod kanapą. '
-        . '<a href="' . esc_url(home_url('/#pakiety')) . '">Zobacz pakiety audiozabaw</a></p>';
-}, 5);
+add_filter('wc_empty_cart_message', function () {
+    return 'Pusto. Szop sprawdził nawet pod kanapą. '
+        . '<a href="' . esc_url(home_url('/#pakiety')) . '">Zobacz pakiety audiozabaw</a>';
+});
 

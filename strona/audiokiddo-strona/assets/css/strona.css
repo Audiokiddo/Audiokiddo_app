@@ -483,7 +483,7 @@ html { scroll-behavior: smooth; }
 .ak-foot a { display: block; color: #fff; text-decoration: none; padding: 3px 0; transition: transform .3s var(--ease), color .2s; }
 .ak-foot a:hover { color: var(--sun); transform: translateX(4px); }
 .ak-foot-h { font-weight: 700; color: #fff; margin-bottom: 8px !important; }
-.ak-copy { margin-top: 32px !important; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, .15); font-size: 13px; color: #9FB7AF; }
+.ak-copy { margin: 32px auto 0 !important; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, .15); font-size: 13px; color: #9FB7AF; }
 
 /* Cards (blog) */
 .ak-latest { padding: 72px 0; }
