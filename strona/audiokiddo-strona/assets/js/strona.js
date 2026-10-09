@@ -1,5 +1,5 @@
 /* AudioKiddo – strona: menu, the header, things appearing, the typing headline, samples, videos,
-   the parents' row, the cart toast, the contents highlight, and Szop'en guiding through the slides. */
+   the parents' row, the cart confirmation on the button, the contents highlight, and Szop'en guiding through the slides. */
 (function () {
   'use strict';
 
@@ -16,19 +16,33 @@
   function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
-  // Menu on phones
-  var menuBtn = $('.ak-menu-btn');
+  // Phones: the page is a deck of full-screen slides with a dock at the bottom.
+  var phone = window.matchMedia('(max-width: 760px)');
+
+  // Menu on phones: the button in the bar and the one in the dock open the same list
+  var menuBtns = $$('.ak-menu-btn, .ak-dock-menu');
   var nav = document.getElementById('ak-nav');
-  if (menuBtn && nav) {
-    menuBtn.addEventListener('click', function () {
-      var open = nav.classList.toggle('is-open');
-      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  function setMenu(open) {
+    if (!nav) return;
+    nav.classList.toggle('is-open', open);
+    menuBtns.forEach(function (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    menuBtns.forEach(function (b) { b.setAttribute('aria-label', open ? 'Zamknij menu' : 'Otwórz menu'); });
+  }
+  if (menuBtns.length && nav) {
+    menuBtns.forEach(function (b) {
+      b.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
     });
     nav.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A') {
-        nav.classList.remove('is-open');
-        menuBtn.setAttribute('aria-expanded', 'false');
+      if (e.target.tagName === 'A') setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+        setMenu(false);
+        menuBtns[0].focus();
       }
+    });
+    document.addEventListener('click', function (e) {
+      if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtns.some(function (b) { return b.contains(e.target); })) setMenu(false);
     });
   }
 
@@ -241,33 +255,21 @@
     });
   }
 
-  // After WooCommerce adds to the cart (its event comes through jQuery)
-  var toast = $('.ak-toast');
-  var cartLink = $('.ak-cart');
-  var hideTimer = null;
-  function showToast(name) {
-    if (!toast) return;
-    toast.textContent = '';
-    var text = document.createElement('span');
-    text.textContent = name ? 'Dodano: ' + name : 'Dodano do koszyka';
-    toast.appendChild(text);
-    if (cartLink) {
-      var go = document.createElement('a');
-      go.href = cartLink.getAttribute('href');
-      go.textContent = 'Przejdź do koszyka';
-      toast.appendChild(go);
-      cartLink.classList.remove('is-bump');
-      void cartLink.offsetWidth;
-      cartLink.classList.add('is-bump');
-    }
-    toast.hidden = false;
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(function () { toast.hidden = true; }, 6000);
-  }
+  // After WooCommerce adds to the cart: the button itself says so and WooCommerce's own link
+  // to the cart sits under it; the cart in the bar and the dock bounces. Nothing floats over
+  // the page.
   if (window.jQuery) {
     window.jQuery(document.body).on('added_to_cart', function (e, fragments, hash, button) {
-      var label = button && button.attr ? (button.attr('aria-label') || '') : '';
-      showToast(label.replace('Dodaj do koszyka: ', ''));
+      var el = button && button.get ? button.get(0) : null;
+      if (el && el.classList.contains('ak-btn')) {
+        el.classList.add('is-added');
+        el.textContent = '✓ W koszyku';
+      }
+      $$('.ak-cart, .ak-dock-cart').forEach(function (c) {
+        c.classList.remove('is-bump');
+        void c.offsetWidth;
+        c.classList.add('is-bump');
+      });
     });
   }
 
@@ -323,6 +325,16 @@
       dots.push(dot);
     });
   }
+  var storyBars = $('.ak-story-bars');
+  var storyLabel = $('.ak-story-label');
+  var bars = [];
+  slides.forEach(function (slide, i) {
+    slide.setAttribute('data-n', (i < 9 ? '0' : '') + (i + 1));
+    if (!storyBars) return;
+    var bar = document.createElement('i');
+    storyBars.appendChild(bar);
+    bars.push(bar);
+  });
   var current = null;
   var settle = null;
   var listeners = [];
@@ -340,6 +352,8 @@
     current = slide;
     var i = slides.indexOf(slide);
     dots.forEach(function (d, k) { d.classList.toggle('is-here', k === i); });
+    bars.forEach(function (b, k) { b.className = k < i ? 'done' : k === i ? 'on' : ''; });
+    if (storyLabel) storyLabel.textContent = (i + 1) + ' / ' + slides.length + ' · ' + slide.getAttribute('data-slide');
     document.body.classList.toggle('ak-on-dark', slide.classList.contains('ak-dark') || slide.classList.contains('ak-end'));
     navLinks.forEach(function (a) { a.classList.toggle('is-here', a.hash === '#' + slide.id); });
     // Wait until the scrolling settles before Szop'en starts talking about it.
@@ -358,7 +372,7 @@
   var stepsEl = $('.ak-guide-steps', guide);
   var poses = {};
   $$('.ak-guide-me img', guide).forEach(function (img) { img.loading = 'eager'; poses[img.getAttribute('data-pose')] = img; });
-  var quiet = store.get('ak_szop_cicho') === '1';
+  var quiet = store.get('ak_szop_cicho') === '1' || phone.matches;
   var shown = null;
   var lines = [];
   var at = -1;
@@ -452,7 +466,7 @@
     }
     // Only a few slides are his stops; on the others (and on a stop already shown) he sits
     // quietly in the corner, the bubble folded away.
-    var stop = lines.length && (fromStart || !seen[slide.id]);
+    var stop = lines.length && (fromStart || (!seen[slide.id] && (!phone.matches || slide === slides[0])));
     guide.classList.toggle('is-idle', !stop);
     if (!stop) {
       clearTimeout(typeTimer);

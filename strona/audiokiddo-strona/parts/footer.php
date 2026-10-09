@@ -21,6 +21,7 @@ $links = array_filter([
         <nav aria-label="Na skróty">
             <p class="ak-foot-h">Na skróty</p>
             <a href="<?php echo esc_url(home_url('/#produkty')); ?>">Pakiety audiozabaw</a>
+            <a href="<?php echo esc_url(home_url('/#subskrypcje')); ?>">Subskrypcje w aplikacji</a>
             <a href="<?php echo esc_url(home_url('/#probki')); ?>">Posłuchaj próbek</a>
             <a href="<?php echo esc_url(home_url('/#darmowy')); ?>">Darmowy pakiet 3 zabaw</a>
             <a href="<?php echo esc_url(ak_blog_url()); ?>">Blog</a>
@@ -38,7 +39,6 @@ $links = array_filter([
     </div>
     <p class="ak-wrap ak-copy">© <?php echo esc_html(gmdate('Y')); ?> AudioKiddo. Audiozabawy pełne przygód.</p>
 </footer>
-<div class="ak-toast" role="status" aria-live="polite" hidden></div>
 <?php wp_footer(); ?>
 </body>
 </html>

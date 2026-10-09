@@ -20,6 +20,13 @@ function ak_defaults(): array
         'woo_detektyw' => 7339,
         'woo_bundle2' => 371,
         'woo_bundle3' => 6235,
+        'woo_sub_1_month' => 0,
+        'woo_sub_1_year' => 0,
+        'woo_sub_2_month' => 0,
+        'woo_sub_2_year' => 0,
+        'woo_sub_3_month' => 0,
+        'woo_sub_3_year' => 0,
+        'web_subscriptions_ready' => 0,
         // The form that sends the free pack (MailerLite's script comes with the site's tags).
         'mailerlite_form' => '<div class="ml-embedded" data-form="XQ2HmS"></div>',
         'testimonials_url' => '',
@@ -33,7 +40,7 @@ function ak_defaults(): array
         'facebook' => '',
         'tiktok' => '',
         'youtube' => '',
-        'home_description' => 'Interaktywne audiozabawy dla dzieci bez ekranu: dziecko słucha, odpowiada na pytania i rozwiązuje zadania. Pakiety Wyobraźnia, Słowa i Wiedza oraz Detektyw. Darmowy pakiet 3 zabaw na start.',
+        'home_description' => 'AudioKiddo: interaktywne audiozabawy dla dzieci bez ekranu. Odkryj aplikację z subskrypcją albo wybierz pakiety na własność. Posłuchaj próbek.',
         'tour' => 1,
         'seo_head' => 1,
         'style_posts' => 1,
@@ -162,12 +169,13 @@ function ak_app_features(): array
     ];
 }
 
-/** The one subscription in the app (App Store / Google Play): the whole library for the whole family. */
+/** Subscription in the app (App Store / Google Play), the same for both. */
 function ak_plans(): array
 {
     return [
-        ['name' => 'Miesięcznie', 'price' => '29,99', 'per' => 'zł / mies.', 'note' => 'Płacisz co miesiąc, rezygnujesz kiedy chcesz'],
-        ['name' => 'Rocznie', 'price' => '269,99', 'per' => 'zł rocznie', 'note' => 'To około 22,50 zł miesięcznie, taniej o 25%', 'best' => true],
+        ['name' => '1 dziecko', 'month' => '24,99', 'year' => '239,88', 'year_month' => '19,99', 'note' => 'Jeden profil dziecka', 'key' => '1'],
+        ['name' => '2 dzieci', 'month' => '29,99', 'year' => '287,88', 'year_month' => '23,99', 'note' => 'Rodzeństwo, każde ze swoim planem', 'best' => true, 'key' => '2'],
+        ['name' => '3–5 dzieci', 'month' => '34,99', 'year' => '335,88', 'year_month' => '27,99', 'note' => 'Duża rodzina albo dziadkowie', 'key' => '3'],
     ];
 }
 
@@ -251,7 +259,7 @@ function ak_facts(): array
         'Czym jest' => 'AudioKiddo to polskie interaktywne audiozabawy dla dzieci w wieku przedszkolnym i wczesnoszkolnym. Dziecko słucha historii, odpowiada na pytania na głos i rozwiązuje zadania, bez patrzenia w ekran.',
         'Kto to robi' => 'AudioKiddo tworzą Nela Mariak i Dawid Kubiak, para z Polski. Sami piszą zabawy i podkładają głosy; Dawid jest lektorem i mówi głosem Profesora Fantazjusza.',
         'Pakiety' => 'Pakiety Wyobraźnia oraz Słowa i Wiedza (po 10 zabaw, ' . ak_age($packs['wyobraznia']) . ') i Detektyw (5 spraw z kartami do wydruku, ' . ak_age($packs['detektyw']) . '). Zabawy trwają od kilku do kilkunastu minut.',
-        'Jak kupić' => 'Pakiety kupuje się raz na audiokiddo.pl i dostaje pliki od razu po zakupie. Po zapisie do newslettera można za darmo dostać pakiet 3 audiozabaw.',
+        'Jak kupić' => 'Pakiety kupuje się raz na audiokiddo.pl i dostaje pliki po zakupie. Subskrypcja daje dostęp do zabaw w aplikacji, a szczegóły rozliczenia są na stronie wybranego planu. Po zapisie do newslettera można za darmo dostać pakiet 3 audiozabaw.',
         'Bez ekranu' => 'Zabawy są tylko do słuchania, bez reklam. Po pobraniu działają bez internetu: w domu, w aucie, na spacerze.',
         'Co ćwiczy' => 'Uważne słuchanie, mowę i słownictwo, wyobraźnię, logiczne myślenie i koncentrację. Polecają je pedagodzy i logopedzi.',
     ];
@@ -263,6 +271,7 @@ function ak_faq(): array
     $packs = ak_packs();
     return [
         ['Czym są audiozabawy AudioKiddo?', 'To interaktywne przygody dźwiękowe, które angażują dziecięcą wyobraźnię bez potrzeby ekranu. Dziecko słucha, wykonuje proste polecenia, przeżywa historie, rozwiązuje zagadki i ćwiczy słuchanie ze zrozumieniem, logiczne myślenie i kreatywność.'],
+        ['Czym różni się pakiet od subskrypcji?', 'Pakiet kupujesz jednorazowo i otrzymujesz pliki audio do pobrania. Subskrypcja daje dostęp do zabaw w aplikacji i odnawia się zgodnie z warunkami wybranego planu. Przed zakupem sprawdź cenę, okres rozliczenia i sposób aktywacji na stronie produktu.'],
         ['Dla dzieci w jakim wieku są audiozabawy?', 'Pakiety Wyobraźnia oraz Słowa i Wiedza polecamy ' . ak_age($packs['wyobraznia']) . ', Detektyw ' . ak_age($packs['detektyw']) . '. Każde dziecko rozwija się we własnym tempie, dlatego na stronie każdego pakietu opisujemy, jakie umiejętności przydadzą się w zabawie. Łatwiej wtedy dopasować zabawę do Twojego dziecka.'],
         ['Jakie korzyści edukacyjne dają audiozabawy?', 'Wspierają rozwój mowy bogatym słownictwem i narracją, uczą logicznego myślenia przez zagadki, rozwijają koncentrację i słuchanie ze zrozumieniem. Pobudzają też wyobraźnię i kreatywność.'],
         ['Czy potrzebny jest internet albo specjalne urządzenie?', 'Internet jest potrzebny tylko do pobrania pakietu. Potem audiozabawy działają offline, więc sprawdzą się w podróży. Wystarczy smartfon, tablet, komputer albo głośnik.'],

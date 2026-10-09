@@ -34,6 +34,15 @@ function ak_settings_fields(): array
             'woo_bundle2' => ['Zestaw 2 pakietów', 'int', '0 ukrywa zestaw.'],
             'woo_bundle3' => ['Zestaw 3 pakietów', 'int', ''],
         ],
+        'Subskrypcje w sklepie' => [
+            'web_subscriptions_ready' => ['Włącz sprzedaż subskrypcji na stronie', 'bool', 'Zaznacz dopiero po przetestowaniu: opłacenie, aktywacja dostępu w aplikacji, odnowienie, anulowanie i zwrot. Samo wpisanie ID produktów nie łączy WooCommerce z aplikacją.'],
+            'woo_sub_1_month' => ['1 dziecko — miesięcznie', 'int', 'ID opublikowanego prostego produktu subskrypcyjnego WooCommerce. Zakup prowadzi do strony produktu i kasy. Dostęp w aplikacji wymaga osobnego połączenia konta z zamówieniem.'],
+            'woo_sub_1_year' => ['1 dziecko — rocznie', 'int', ''],
+            'woo_sub_2_month' => ['2 dzieci — miesięcznie', 'int', ''],
+            'woo_sub_2_year' => ['2 dzieci — rocznie', 'int', ''],
+            'woo_sub_3_month' => ['3–5 dzieci — miesięcznie', 'int', ''],
+            'woo_sub_3_year' => ['3–5 dzieci — rocznie', 'int', ''],
+        ],
         'Darmowy pakiet za zapis' => [
             'mailerlite_form' => ['Kod formularza MailerLite (HTML)', 'html', 'Domyślnie formularz XQ2HmS ze starej strony. MailerLite → Forms → Embedded → HTML code.'],
         ],

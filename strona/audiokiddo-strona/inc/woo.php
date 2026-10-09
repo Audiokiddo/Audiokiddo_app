@@ -43,6 +43,30 @@ function ak_offer(int $id): ?array
     ];
 }
 
+/** Only a real, published recurring product may appear as a website subscription. */
+function ak_subscription_offer(string $plan, string $period): ?array
+{
+    if (!ak_opt('web_subscriptions_ready')) {
+        return null;
+    }
+    if (!in_array($plan, ['1', '2', '3'], true) || !in_array($period, ['month', 'year'], true)) {
+        return null;
+    }
+    $id = (int) ak_opt('woo_sub_' . $plan . '_' . $period);
+    if (!$id || !ak_has_woo()) {
+        return null;
+    }
+    $product = wc_get_product($id);
+    if (!$product || $product->get_status() !== 'publish' || !$product->is_type('subscription')) {
+        return null;
+    }
+    if (class_exists('WC_Subscriptions_Product') && method_exists('WC_Subscriptions_Product', 'get_period') &&
+        WC_Subscriptions_Product::get_period($product) !== $period) {
+        return null;
+    }
+    return ak_offer($id);
+}
+
 function ak_money(float $amount): string
 {
     return number_format($amount, 2, ',', ' ') . ' zł';

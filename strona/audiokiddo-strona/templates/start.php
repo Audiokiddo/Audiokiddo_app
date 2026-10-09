@@ -34,9 +34,9 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
         <div class="ak-hero-txt">
             <p class="ak-pill" data-reveal><span class="ak-flag" aria-hidden="true"></span>Interaktywne audiozabawy dla dzieci</p>
             <h1 id="ak-h1" data-reveal style="--d:.08s">Nie wiesz, jak zająć dziecko <span class="ak-type" data-words="<?php echo esc_attr(wp_json_encode($typing)); ?>"><?php echo esc_html($typing[0]); ?></span></h1>
-            <p class="ak-hero-sub" data-reveal style="--d:.16s">Dołącz do tysięcy <strong>świadomych rodziców</strong>, którzy już wiedzą: dziecko słucha, odpowiada i rozwiązuje zadania. Bez ekranu.</p>
+            <p class="ak-hero-sub" data-reveal style="--d:.16s">Dziecko słucha, odpowiada i rozwiązuje zadania. Ty wybierasz: pojedynczy pakiet audiozabaw albo dostęp w aplikacji.</p>
             <div class="ak-hero-btns" data-reveal style="--d:.24s">
-                <a class="ak-btn ak-btn-sun" href="#zobaczjak">Zobacz, jak to działa <?php echo $arrow; // static ?></a>
+                <a class="ak-btn ak-btn-sun" href="#wybierz">Wybierz dla dziecka <?php echo $arrow; // static ?></a>
                 <a class="ak-btn ak-btn-teal" href="#probki">Posłuchaj próbki</a>
             </div>
         </div>
@@ -46,6 +46,23 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
         </div>
     </div>
     <a class="ak-scroll-cue" href="#zobaczjak" aria-label="Przewiń dalej"><span></span></a>
+</section>
+
+<section class="ak-choice" id="wybierz" aria-labelledby="ak-choice-h">
+    <div class="ak-wrap">
+        <h2 id="ak-choice-h">Jak chcecie korzystać z AudioKiddo?</h2>
+        <p class="ak-choice-intro">Obie drogi zaczynają się od słuchania, odpowiadania i zabawy bez ekranu. Wybierz sposób dostępu, który pasuje do Was.</p>
+        <div class="ak-choice-grid">
+            <article class="ak-choice-item ak-choice-app">
+                <div><h3>Subskrypcja w aplikacji</h3><p>Dostęp do zabaw w aplikacji i plan dopasowany do liczby dzieci. Wybierasz rozliczenie miesięczne albo roczne.</p></div>
+                <a class="ak-btn ak-btn-teal" href="#subskrypcje">Zobacz subskrypcje <?php echo $arrow; // static ?></a>
+            </article>
+            <article class="ak-choice-item ak-choice-packs">
+                <div><h3>Pakiety na własność</h3><p>Jednorazowy zakup wybranych audiozabaw. Pliki otrzymujesz po zakupie i odtwarzasz bez abonamentu.</p></div>
+                <a class="ak-btn ak-btn-ghost" href="#produkty">Zobacz pakiety <?php echo $arrow; // static ?></a>
+            </article>
+        </div>
+    </div>
 </section>
 
 <div class="ak-marquee" aria-hidden="true">
@@ -104,13 +121,7 @@ $icons = [
             <ul class="ak-app-badges" data-reveal>
                 <li>Bez reklam</li><li>Działa offline</li><li>Bramka rodzica</li><li>Polskie głosy</li>
             </ul>
-            <?php if (ak_app_live()) : ?>
-            <ul class="ak-plans" data-reveal>
-                <?php foreach (ak_plans() as $plan) : ?>
-                <li<?php echo !empty($plan['best']) ? ' class="ak-plan-best"' : ''; ?>><strong><?php echo esc_html($plan['name']); ?></strong><span><?php echo esc_html($plan['price']); ?> <?php echo esc_html($plan['per']); ?></span><small><?php echo esc_html($plan['note']); ?></small></li>
-                <?php endforeach; ?>
-            </ul>
-            <?php endif; ?>
+            <a class="ak-btn ak-btn-sun ak-app-pricing" href="#subskrypcje">Zobacz dostęp i ceny</a>
             <?php ak_store_buttons(); ?>
         </div>
         <div class="ak-phone-wrap" data-reveal="scale">
@@ -123,6 +134,43 @@ $icons = [
                 </div>
             </div>
             <img class="ak-phone-szop" src="<?php echo esc_url(ak_asset('img/szop/zadowolony.webp')); ?>" alt="" width="420" height="392" loading="lazy">
+        </div>
+    </div>
+</section>
+
+<section class="ak-subscriptions" id="subskrypcje" aria-labelledby="ak-subscriptions-h">
+    <div class="ak-wrap">
+        <div class="ak-subscriptions-heading">
+            <div><h2 id="ak-subscriptions-h">Dostęp do zabaw w aplikacji</h2><p>Wybierz liczbę profili dzieci, a potem sposób rozliczenia. Szczegóły okresu i odnowienia zobaczysz przed zapłatą.</p></div>
+            <img src="<?php echo esc_url(ak_asset('img/szop/zadowolony.webp')); ?>" alt="" width="420" height="392" loading="lazy">
+        </div>
+        <div class="ak-subscription-grid">
+            <?php foreach (ak_plans() as $plan) :
+                $monthly = ak_subscription_offer($plan['key'], 'month');
+                $yearly = ak_subscription_offer($plan['key'], 'year'); ?>
+            <article class="ak-subscription<?php echo !empty($plan['best']) ? ' ak-subscription-featured' : ''; ?>">
+                <div class="ak-subscription-top"><h3><?php echo esc_html($plan['name']); ?></h3><?php if (!empty($plan['best'])) : ?><span>Dla rodzeństwa</span><?php endif; ?></div>
+                <p><?php echo esc_html($plan['note']); ?></p>
+                <?php if ($monthly || $yearly) : ?>
+                <div class="ak-subscription-options">
+                    <?php foreach (['month' => ['Miesięcznie', $monthly], 'year' => ['Rocznie', $yearly]] as $period => [$label, $offer]) : if (!$offer) { continue; } ?>
+                    <a href="<?php echo esc_url($offer['url']); ?>" class="ak-subscription-option" aria-label="<?php echo esc_attr($label . ': ' . $plan['name'] . ', ' . wp_strip_all_tags($offer['price_html']) . ', sprawdź warunki i kup'); ?>"><span><?php echo esc_html($label); ?></span><strong><?php echo wp_kses_post($offer['price_html']); ?></strong><small>Sprawdź warunki i kup <span aria-hidden="true">→</span></small></a>
+                    <?php endforeach; ?>
+                </div>
+                <?php else : ?>
+                <p class="ak-subscription-unavailable">Zakup tego planu na stronie nie jest jeszcze dostępny.</p>
+                <?php if (ak_app_live()) : ?>
+                <a class="ak-subscription-fallback" href="#aplikacja">Sprawdź plan w aplikacji →</a>
+                <?php else : ?>
+                <a class="ak-subscription-fallback" href="mailto:<?php echo esc_attr(ak_opt('contact_email')); ?>?subject=Subskrypcja%20AudioKiddo">Zapytaj o dostęp →</a>
+                <?php endif; ?>
+                <?php endif; ?>
+            </article>
+            <?php endforeach; ?>
+        </div>
+        <div class="ak-subscription-help">
+            <p>Wolisz wybrać pojedyncze historie i zapłacić tylko raz? <a href="#produkty">Zobacz pakiety audiozabaw</a>.</p>
+            <p>Masz pytanie o dostęp po zakupie? <a href="mailto:<?php echo esc_attr(ak_opt('contact_email')); ?>"><?php echo esc_html(ak_opt('contact_email')); ?></a></p>
         </div>
     </div>
 </section>
@@ -172,8 +220,8 @@ $icons = [
 
 <section class="ak-slide ak-dark" id="produkty" data-slide="Pakiety" aria-labelledby="ak-produkty-h">
     <div class="ak-wrap">
-        <h2 id="ak-produkty-h" class="ak-center" data-reveal>Poznaj nasze <span class="ak-hl-word">produkty</span></h2>
-        <p class="ak-sub ak-center" data-reveal>Kupujesz raz, pliki dostajesz od razu po zakupie.</p>
+        <h2 id="ak-produkty-h" class="ak-center" data-reveal>Pakiety audiozabaw <span class="ak-hl-word">na własność</span></h2>
+        <p class="ak-sub ak-center" data-reveal>Płacisz raz i otrzymujesz pliki po zakupie. Bez abonamentu.</p>
         <ul class="ak-perks" data-reveal>
             <li><img src="<?php echo esc_url(ak_img('d-bez-ekranow')); ?>" alt="" width="48" height="48" loading="lazy">Zabawa bez ekranów</li>
             <li><img src="<?php echo esc_url(ak_img('d-podroz')); ?>" alt="" width="48" height="41" loading="lazy">Idealne w podróży</li>
@@ -234,6 +282,8 @@ $icons = [
             </div>
             <?php endif; ?>
         </div>
+        <p class="ak-swipe-hint" aria-hidden="true">Przesuń w bok →</p>
+
     </div>
 </section>
 
@@ -265,6 +315,8 @@ $icons = [
             </figure>
             <?php endforeach; ?>
         </div>
+        <p class="ak-swipe-hint" aria-hidden="true">Przesuń w bok →</p>
+
     </div>
 </section>
 
