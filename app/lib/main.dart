@@ -31,7 +31,7 @@ import 'features/player/playback_controller.dart';
 import 'features/player/player_providers.dart';
 
 /// Sent with events, so statistics can tell versions apart.
-const appVersion = '0.2.0';
+const appVersion = '1.0.0';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

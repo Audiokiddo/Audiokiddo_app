@@ -1,7 +1,7 @@
 name: audiokiddo
 description: AudioKiddo — interaktywne audiozabawy i piosenki dla dzieci.
 publish_to: 'none'
-version: 0.2.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ^3.13.4

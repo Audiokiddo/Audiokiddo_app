@@ -717,3 +717,63 @@ begin
   assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026') = (select n from plan_before), 'running it again adds nothing';
 end $$;
 select 'launch plan tests passed';
+
+-- Time estimates on the plan, added once.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'task' and data ? 'hours')
+    = (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'task'), 'every task has hours';
+  assert (select body from public.crm_items where data->>'key' = 'f1-social') like '%Claude przygotował%', 'the prepared texts';
+end $$;
+\ir ../migrations/20261019000002_launch_plan_hours.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where body like '%Czas: ok.%Czas: ok.%') = 0, 'the note is added once';
+end $$;
+select 'launch plan hours tests passed';
+
+-- The faster plan: premiere on 2 November, a task moved on the board stays where it was put.
+do $$
+begin
+  assert (select due from public.crm_items where data->>'key' = 'c-premiere') = '2026-11-02', 'premiere moved';
+  assert (select due from public.crm_items where data->>'key' = 'f1-submit') = '2026-10-12', 'iOS review earlier';
+  assert (select title from public.crm_items where data->>'key' = 'f1-measure') like 'Maile:%', 'Pixel and Analytics done';
+  assert (select body from public.crm_items where data->>'key' = 'f1-measure') like '%Czas: ok. 1,5 h.%', 'hours kept in the note';
+  assert (select body from public.crm_items where data->>'key' = 'f1-closed') like '%26.10.%Czas: ok.%', 'new words, same note';
+end $$;
+update public.crm_items set due = '2026-10-20' where data->>'key' = 'f1-video';
+\ir ../migrations/20261019000003_launch_plan_faster.sql
+do $$
+begin
+  assert (select due from public.crm_items where data->>'key' = 'f1-video') = '2026-10-20', 'moved on the board, stays';
+  assert (select count(*) from public.crm_items where body like '%Czas: ok.%Czas: ok.%') = 0, 'no doubled notes';
+end $$;
+select 'faster plan tests passed';
+
+-- The Christmas pack as three free-in-December episodes.
+do $$
+begin
+  assert (select title from public.crm_items where data->>'key' = 'p-grudzien-0') like '%3 odcinki%', 'episodes';
+  assert (select body from public.crm_items where data->>'key' = 'p-grudzien-3') like '%Czas: ok. 5 h.%', 'less recording';
+  assert (select body from public.crm_items where data->>'key' = 'p-grudzien-5') like 'Studio → Treści. Bez produktu%Czas: ok. 1,5 h.%', 'no store product';
+  assert (select count(*) from public.crm_items where data->>'key' in ('c-swieta-free', 'c-swieta-end')) = 2, 'free window in the calendar';
+end $$;
+\ir ../migrations/20261019000004_christmas_episodes.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' = 'c-swieta-free') = 1, 'added once';
+end $$;
+select 'christmas episodes tests passed';
+
+-- Social content from the content base.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' like 's-post-%' and kind = 'calendar') = 10, 'ten reels';
+  assert (select (data->>'hours')::numeric from public.crm_items where data->>'key' = 's-film1') = 4, 'filming hours';
+end $$;
+\ir ../migrations/20261019000005_social_content.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' like 's-%') = 19, 'added once';
+end $$;
+select 'social content tests passed';
