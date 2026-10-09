@@ -103,6 +103,7 @@ function is_home() { return $GLOBALS['ak_stub']['view'] === 'blog'; }
 function is_front_page() { return $GLOBALS['ak_stub']['view'] === 'start'; }
 function is_category() { return false; }
 function is_tag() { return false; }
+function is_author() { return false; }
 function is_search() { return false; }
 function get_page_template_slug() { return $GLOBALS['ak_stub']['view'] === 'start' ? 'ak-start.php' : ''; }
 function get_query_var($key) { return $key === 'ak_landing' ? ($GLOBALS['ak_stub']['landing'] ?? '') : 0; }

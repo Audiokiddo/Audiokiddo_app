@@ -108,7 +108,7 @@ add_action('wp_head', function () {
     $url = ak_canonical();
     $own_image = ak_view() === 'post' && has_post_thumbnail(get_queried_object_id());
     $image = $own_image ? (string) get_the_post_thumbnail_url(get_queried_object_id(), 'large') : ak_img('hero');
-    $robots = in_array(ak_view(), ['search', '404'], true)
+    $robots = in_array(ak_view(), ['search', '404'], true) || ak_thin_archive()
         ? 'noindex, follow'
         : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
     $tags = [
@@ -503,3 +503,51 @@ function ak_llms_txt(): string
     }
     return implode("\n", $lines) . "\n";
 }
+
+/*
+ * What search should not show: steps of a purchase, thank-you pages after the newsletter,
+ * ad landings that repeat the start page, old copies and leftovers. They stay reachable by
+ * link, only Google and the sitemap leave them out.
+ */
+const AK_HIDDEN_PAGES = [
+    'koszyk', 'zamowienie', 'moje-konto', 'moje-konto-2', 'proces_zamowienia',
+    'otrzymaj-trzy-audiozabawy-za-darmo', 'pakiet-darmowy', 'zapis-pakiet-darmowy', 'pakiet-darmowy-zapis',
+    'do-pobrania-wyobraznia', 'do-pobrania-slowaiwiedza', 'do-pobrania-detektyw',
+    'do-pobrania-zestawdwoch', 'do-pobrania-zestawtrzech',
+    'czym-sa-audiozabawy-2', 'sklep-produkty', '404-3',
+];
+
+/** Tags (with their typo variants), authors and categories with almost nothing in them. */
+function ak_thin_archive(): bool
+{
+    if (is_tag() || is_author()) {
+        return true;
+    }
+    return is_category() && (int) (get_queried_object()->count ?? 0) < 3;
+}
+
+function ak_hidden_page_ids(): array
+{
+    static $ids = null;
+    if ($ids === null) {
+        $ids = get_posts(['post_type' => 'page', 'post_name__in' => AK_HIDDEN_PAGES, 'fields' => 'ids', 'numberposts' => -1, 'post_status' => 'any']);
+    }
+    return $ids;
+}
+
+add_filter('wpseo_robots', function ($robots) {
+    if ((is_page() && in_array(get_queried_object_id(), ak_hidden_page_ids(), true)) || ak_thin_archive()) {
+        return 'noindex, follow';
+    }
+    return $robots;
+});
+
+add_filter('wpseo_exclude_from_sitemap_by_post_ids', function ($ids) {
+    return array_merge((array) $ids, ak_hidden_page_ids());
+});
+
+add_filter('wpseo_sitemap_exclude_taxonomy', function ($exclude, $taxonomy) {
+    return in_array($taxonomy, ['post_tag', 'category'], true) ? true : $exclude;
+}, 10, 2);
+
+add_filter('wpseo_sitemap_exclude_author', '__return_empty_array');
