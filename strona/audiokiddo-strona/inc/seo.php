@@ -39,6 +39,10 @@ function ak_seo_title(): string
         case 'guide':
             $slug = ak_landing_slug();
             return $slug === 'pomysly-na-zabawy' ? 'Pomysły na zabawy dla dzieci 3–9 lat bez ekranu | Audiokiddo' : ak_landings()[$slug]['title'] . ' | Audiokiddo';
+        case 'info':
+            return ak_info_pages()[ak_info_slug()]['title'] . ' | Audiokiddo';
+        case 'product':
+            return ak_product_meta()['title'];
         case 'post':
             return single_post_title('', false) . ' | AudioKiddo';
         case 'blog':
@@ -59,6 +63,12 @@ function ak_seo_description(): string
             ? 'Pomysły na zabawy dla dzieci: w domu, w samochodzie, przed snem, na mowę i koncentrację. Konkretne zabawy bez ekranu od twórców Audiokiddo.'
             : ak_landings()[$slug]['desc'];
     }
+    if (ak_view() === 'info') {
+        return ak_info_pages()[ak_info_slug()]['desc'];
+    }
+    if (ak_view() === 'product') {
+        return ak_product_meta()['desc'];
+    }
     if (ak_view() === 'post') {
         return wp_trim_words(wp_strip_all_tags(get_the_excerpt(get_queried_object_id())), 30, '…');
     }
@@ -76,7 +86,10 @@ function ak_canonical(): string
     if (ak_view() === 'guide') {
         return ak_landing_url(ak_landing_slug() === 'pomysly-na-zabawy' ? '' : ak_landing_slug());
     }
-    if (ak_view() === 'post' || ak_view() === 'start') {
+    if (ak_view() === 'info') {
+        return ak_info_url(ak_info_slug());
+    }
+    if (ak_view() === 'post' || ak_view() === 'start' || ak_view() === 'product') {
         return (string) get_permalink(get_queried_object_id());
     }
     if (is_page()) {
@@ -108,12 +121,15 @@ add_action('wp_head', function () {
     $url = ak_canonical();
     $own_image = ak_view() === 'post' && has_post_thumbnail(get_queried_object_id());
     $image = $own_image ? (string) get_the_post_thumbnail_url(get_queried_object_id(), 'large') : ak_img('hero');
+    if (ak_view() === 'product') {
+        $image = ak_img(ak_product_kind()['data']['cover']);
+    }
     $robots = in_array(ak_view(), ['search', '404'], true) || ak_thin_archive()
         ? 'noindex, follow'
         : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
     $tags = [
         ['name', 'description', $description],
-        ['property', 'og:type', ak_view() === 'post' ? 'article' : 'website'],
+        ['property', 'og:type', ak_view() === 'post' ? 'article' : (ak_view() === 'product' ? 'product' : 'website')],
         ['property', 'og:locale', 'pl_PL'],
         ['property', 'og:site_name', 'AudioKiddo'],
         ['property', 'og:title', $title],
@@ -130,8 +146,9 @@ add_action('wp_head', function () {
         ['name', 'geo.placename', 'Polska'],
     ];
     if (!$own_image) {
-        $tags[] = ['property', 'og:image:width', '1200'];
-        $tags[] = ['property', 'og:image:height', '776'];
+        $square = ak_view() === 'product';
+        $tags[] = ['property', 'og:image:width', $square ? '720' : '1200'];
+        $tags[] = ['property', 'og:image:height', $square ? '720' : '776'];
     }
     if (ak_view() === 'post') {
         $tags[] = ['property', 'article:published_time', get_the_date('c', get_queried_object_id())];
@@ -340,6 +357,18 @@ function ak_schema(): array
         }
     }
 
+    if (ak_view() === 'info') {
+        foreach (ak_info_schema(ak_info_slug()) as $node) {
+            $graph[] = $node;
+        }
+    }
+
+    if (ak_view() === 'product') {
+        foreach (ak_product_page_schema() as $node) {
+            $graph[] = $node;
+        }
+    }
+
     if (ak_view() === 'blog') {
         $graph[] = [
             '@type' => 'Blog',
@@ -413,6 +442,10 @@ add_action('init', function () {
     header('Cache-Control: public, max-age=3600');
     echo ak_llms_txt();
     if ($path === $home . '/llms-full.txt') {
+        echo "\n# O Audiokiddo (pełna treść stron)\n\n";
+        foreach (array_keys(ak_info_pages()) as $slug) {
+            echo ak_info_markdown($slug) . "\n";
+        }
         echo "\n# Poradniki Audiokiddo (pełna treść)\n\n";
         foreach (array_keys(ak_landings()) as $slug) {
             echo ak_landing_markdown($slug) . "\n";
@@ -482,6 +515,11 @@ function ak_llms_txt(): string
     $lines[] = '## Pytania rodziców';
     foreach (ak_faq() as [$q, $a]) {
         $lines[] = '- **' . $q . '** ' . $a;
+    }
+    $lines[] = '';
+    $lines[] = '## Strony o Audiokiddo';
+    foreach (ak_info_pages() as $slug => $page) {
+        $lines[] = '- [' . $page['h1'] . '](' . ak_info_url($slug) . '): ' . $page['desc'];
     }
     $lines[] = '';
     $lines[] = '## Poradniki dla rodziców (pełna treść: ' . home_url('/llms-full.txt') . ')';

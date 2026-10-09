@@ -20,13 +20,14 @@ $links = array_filter([
         </div>
         <nav aria-label="Na skróty">
             <p class="ak-foot-h">Na skróty</p>
-            <a href="<?php echo esc_url(home_url('/#jak-to-dziala')); ?>">Jak działa Audiokiddo</a>
+            <a href="<?php echo esc_url(ak_info_url('jak-to-dziala')); ?>">Jak działa Audiokiddo</a>
             <a href="<?php echo esc_url(home_url('/#kiedy')); ?>">Kiedy odpalić audiozabawę</a>
-            <a href="<?php echo esc_url(home_url('/#cennik')); ?>">Cennik aplikacji</a>
-            <a href="<?php echo esc_url(home_url('/#pakiety')); ?>">Pakiety audiozabaw</a>
+            <a href="<?php echo esc_url(ak_info_url('abonament')); ?>">Abonament i cennik</a>
+            <a href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Pakiety audiozabaw</a>
             <a href="<?php echo esc_url(home_url('/#pobierz')); ?>">Darmowe zabawy</a>
             <a href="<?php echo esc_url(ak_blog_url()); ?>">Blog</a>
-            <a href="<?php echo esc_url(home_url('/#pytania')); ?>">Pytania i odpowiedzi</a>
+            <a href="<?php echo esc_url(ak_info_url('pytania')); ?>">Pytania i odpowiedzi</a>
+            <a href="<?php echo esc_url(ak_info_url('logopedzi-i-pedagodzy')); ?>">Dla logopedów i pedagogów</a>
             <?php if (ak_has_woo()) : ?><a href="<?php echo esc_url(ak_cart_url()); ?>">Koszyk</a><?php endif; ?>
         </nav>
         <nav aria-label="Pomysły na zabawy">

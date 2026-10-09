@@ -27,6 +27,10 @@ function ak_view(): string
     $view = '';
     if (ak_landing_slug() !== '') {
         $view = 'guide';
+    } elseif (ak_info_slug() !== '') {
+        $view = 'info';
+    } elseif (ak_product_kind() !== null) {
+        $view = 'product';
     } elseif (is_page()) {
         $slug = get_page_template_slug();
         if ($slug === 'ak-start.php') {
@@ -47,7 +51,7 @@ function ak_view(): string
 }
 
 add_filter('template_include', function ($template) {
-    $files = ['start' => 'start.php', 'blog' => 'blog.php', 'search' => 'blog.php', 'post' => 'single.php', '404' => 'notfound.php', 'guide' => 'guide.php'];
+    $files = ['start' => 'start.php', 'blog' => 'blog.php', 'search' => 'blog.php', 'post' => 'single.php', '404' => 'notfound.php', 'guide' => 'guide.php', 'info' => 'info.php', 'product' => 'product.php'];
     $view = ak_view();
     return $view ? AK_DIR . 'templates/' . $files[$view] : $template;
 }, 99);
@@ -107,7 +111,7 @@ add_action('pre_get_posts', function ($query) {
 
 // A guide's address is a real page: WordPress must not answer it with 404.
 add_action('template_redirect', function () {
-    if (ak_landing_slug() !== '') {
+    if (ak_landing_slug() !== '' || ak_info_slug() !== '') {
         global $wp_query;
         $wp_query->is_404 = false;
         $wp_query->is_home = false;

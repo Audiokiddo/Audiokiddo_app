@@ -136,3 +136,136 @@ function ak_mark(string $word): string
 {
     return '<span class="ak-hl-word">' . esc_html($word) . '</span>';
 }
+
+/** The round play button for a sample (the ring fills as it plays; assets/js/strona.js). */
+function ak_sample_button(string $src, string $label, string $class = ''): string
+{
+    return '<button class="ak-play ' . esc_attr($class) . '" type="button" data-src="' . esc_url($src) . '" aria-label="' . esc_attr($label) . '">'
+        . '<svg class="ak-play-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22"/></svg>'
+        . '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>'
+        . '<svg class="ak-i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>'
+        . '</button>';
+}
+
+/** Where a pack's details live: its shop page, or the packs page when the shop is off. */
+function ak_pack_url(string $key): string
+{
+    $offer = ak_offer(ak_packs()[$key]['woo']);
+    return $offer ? $offer['url'] : ak_info_url('pakiety') . '#pakiet-' . $key;
+}
+
+/**
+ * The packs as part of the subscription: cover with a sample, name, age, one line and the way
+ * to the details. No prices here: they wait on the pack's own page.
+ */
+function ak_pack_cards(string $class = ''): void
+{
+    echo '<div class="ak-packs ' . esc_attr($class) . '">';
+    $i = 0;
+    foreach (ak_packs() as $id => $pack) {
+        printf(
+            '<article class="ak-pack ak-c-%1$s" data-reveal style="--d:%2$ss"><div class="ak-pack-cover" data-tilt><img src="%3$s" alt="Okładka pakietu %4$s" width="720" height="720" loading="lazy">%5$s</div>'
+            . '<p class="ak-chip">%6$s</p><h3>Pakiet %4$s</h3><p>%7$s</p><a class="ak-more" href="%8$s">Szczegóły pakietu</a></article>',
+            esc_attr($pack['color']),
+            esc_attr((string) (0.08 * $i++)),
+            esc_url(ak_img($pack['cover'])),
+            esc_html($pack['title']),
+            ak_sample_button(ak_upload($pack['sample']), 'Posłuchaj fragmentu: ' . $pack['title'], 'ak-play-on-cover'),
+            esc_html(ak_age($pack) . ' · ' . count($pack['plays']) . ' zabaw'),
+            esc_html($pack['desc']),
+            esc_url(ak_pack_url($id))
+        );
+    }
+    echo '<article class="ak-pack ak-pack-next" data-reveal style="--d:.24s"><div class="ak-pack-cover"><span class="ak-pack-q" aria-hidden="true">?</span></div>'
+        . '<p class="ak-chip">co miesiąc</p><h3>Nowy pakiet</h3><p>Co miesiąc do abonamentu dochodzi kolejny pakiet zabaw. Nowa sprawa? Podobno gruba.</p></article>';
+    echo '</div>';
+}
+
+/** The two subscription cards (Nela's copy), used on the home page and on /abonament/. */
+function ak_price_cards(): void
+{
+    $price = ak_pricing();
+    ?>
+    <div class="ak-price-cards">
+        <article class="ak-price-card" data-reveal>
+            <h3>Miesięcznie</h3>
+            <p class="ak-price-big"><?php echo esc_html($price['month']); ?> zł <small>/ miesiąc</small></p>
+            <p>Dla tych, którzy chcą zacząć bez deklaracji na cały rok.</p>
+            <p class="ak-price-in">W cenie:</p>
+            <ul class="ak-ticks">
+                <li>pełna biblioteka audiozabaw,</li>
+                <li>wszystkie grupy wiekowe,</li>
+                <li>nowe zabawy i pakiety dodawane do abonamentu,</li>
+                <li>dostęp tak długo, jak trwa subskrypcja.</li>
+            </ul>
+            <?php echo ak_app_cta('ak-btn ak-btn-ghost', false); // escaped inside ?>
+            <small>Subskrypcję wybierzesz w aplikacji.</small>
+        </article>
+        <article class="ak-price-card ak-price-card-best" data-reveal style="--d:.1s">
+            <p class="ak-flag-best">Najbardziej opłacalny</p>
+            <h3>Rocznie</h3>
+            <p class="ak-price-big"><?php echo esc_html($price['year']); ?> zł <small>/ rok</small></p>
+            <p class="ak-price-per">czyli około <?php echo esc_html($price['year_month']); ?> zł miesięcznie</p>
+            <?php if ($price['save']) : ?><p><strong>Około <?php echo esc_html((string) round(ak_price_num($price['save']))); ?> zł taniej</strong> niż płacenie co miesiąc przez cały rok.</p><?php endif; ?>
+            <p>Dostajesz dokładnie ten sam pełny dostęp, tylko płacisz raz na rok i masz temat z głowy.</p>
+            <?php echo ak_app_cta(); // escaped inside ?>
+            <small>Subskrypcję roczną wybierzesz w aplikacji.</small>
+        </article>
+    </div>
+    <?php
+}
+
+/** A dark band that ends a subpage: download the app (or sign up before the launch). */
+function ak_cta_band(string $heading, string $text, string $second_url = '', string $second_label = ''): void
+{
+    ?>
+    <aside class="ak-cta-band" aria-label="Audiokiddo">
+        <img src="<?php echo esc_url(ak_asset('img/szop/klaszcze.webp')); ?>" alt="" width="420" height="392" loading="lazy">
+        <div>
+            <p class="ak-cta-band-h"><?php echo esc_html($heading); ?></p>
+            <p><?php echo esc_html($text); ?></p>
+            <div class="ak-cta-band-btns">
+                <?php echo ak_app_cta(); // escaped inside ?>
+                <?php if ($second_url) : ?><a class="ak-btn ak-btn-ghost-light" href="<?php echo esc_url($second_url); ?>"><?php echo esc_html($second_label); ?></a><?php endif; ?>
+            </div>
+        </div>
+    </aside>
+    <?php
+}
+
+/** The phone with the app's screens and the features beside it (home page, /jak-to-dziala/). */
+function ak_phone_with_features(bool $compact = false): void
+{
+    $icons = [
+        'start' => '<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+        'mic' => '<rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+        'play' => '<path d="M8 5.5v13l10-6.5z" fill="currentColor"/>',
+        'car' => '<path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+        'moon' => '<path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+        'gift' => '<path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-1.5-3-5-3-5-1s3 1 5 1zm0 0c1.5-3 5-3 5-1s-3 1-5 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    ];
+    ?>
+        <div class="ak-phone-col">
+            <div class="ak-phone-wrap" data-reveal="scale">
+                <div class="ak-phone" id="ak-phone" role="tabpanel" aria-live="polite" aria-label="Ekran aplikacji Audiokiddo">
+                    <div class="ak-phone-screen">
+                        <span class="ak-phone-island" aria-hidden="true"></span>
+                        <?php foreach (ak_app_features() as $i => [, , $shot, $title]) : ?>
+                        <img class="ak-phone-shot<?php echo $i === 0 ? ' is-on' : ''; ?>" data-shot="<?php echo esc_attr($shot); ?>" src="<?php echo esc_url(ak_asset('img/app/' . $shot . '.webp')); ?>" alt="Ekran aplikacji Audiokiddo: <?php echo esc_attr($title); ?>" width="600" height="1304" loading="lazy">
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="ak-feats" role="tablist" aria-label="Co potrafi aplikacja" data-reveal>
+                <?php foreach (ak_app_features() as $i => [$icon, $color, $shot, $title, $text]) : ?>
+                <button type="button" role="tab" class="ak-feat ak-c-<?php echo esc_attr($color); ?>" id="ak-feat-<?php echo esc_attr($shot); ?>" aria-controls="ak-phone" aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>" data-shot="<?php echo esc_attr($shot); ?>">
+                    <span class="ak-feat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><?php echo $icons[$icon]; // static ?></svg></span>
+                    <strong><?php echo esc_html($title); ?></strong>
+                    <span class="ak-feat-text"><?php echo esc_html($text); ?></span>
+                    <span class="ak-feat-progress" aria-hidden="true"><i></i></span>
+                </button>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php
+}

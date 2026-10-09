@@ -331,7 +331,7 @@ function ak_landings(): array
                 ['Czy są darmowe bajki i zabawy do słuchania?', 'W aplikacji Audiokiddo są darmowe audiozabawy. Pełna biblioteka kosztuje 29,99 zł miesięcznie albo 269,99 zł rocznie.'],
                 ['Czy słuchanie jest lepsze niż oglądanie?', 'Słuchanie bardziej angażuje wyobraźnię i mowę, a dziecko nie siedzi wpatrzone w ekran. Najlepiej, gdy dziecko w trakcie coś robi.'],
             ],
-            'related' => ['zabawy-wyciszajace-przed-snem', 'jak-zajac-dziecko-w-samochodzie', 'zabawy-bez-ekranu', 'aplikacje-edukacyjne-dla-dzieci'],
+            'related' => ['interaktywne-bajki-dla-dzieci', 'zabawy-wyciszajace-przed-snem', 'jak-zajac-dziecko-w-samochodzie', 'aplikacje-edukacyjne-dla-dzieci'],
         ],
 
         'aplikacje-edukacyjne-dla-dzieci' => [
@@ -418,7 +418,7 @@ function ak_landings(): array
                 ['Jakie zabawy dla 5 latka w domu?', 'Historie do dokończenia, kategorie („wymień trzy”), sklep i zabawy kreatywne.'],
                 ['Jakie zabawy dla 6 latka?', 'Wyzwania z regułami: śledztwa, łańcuch słów, polecenia z kilkoma krokami.'],
             ],
-            'related' => ['zabawy-dla-dzieci-w-domu', 'zabawy-logopedyczne', 'zagadki-dla-dzieci', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+            'related' => ['zabawy-dla-3-latka', 'zabawy-dla-4-latka', 'zabawy-dla-5-latka', 'zabawy-dla-6-latka'],
         ],
 
         'zabawy-dla-dzieci-7-9-lat' => [
@@ -451,7 +451,7 @@ function ak_landings(): array
                 ['Jakie zabawy dla 8–9 latka bez ekranu?', 'Kod szpiega, kalambury słowne, zagadki podchwytliwe i detektywistyczne audiozabawy.'],
                 ['Czy dzieci 9 lat nie są za duże na audiozabawy?', 'Nie, jeśli zabawy są dla nich: śledztwa i misje dla ludzi, którzy już potrafią powiedzieć „to nie ma sensu” i oczekują wyjaśnień.'],
             ],
-            'related' => ['zagadki-dla-dzieci', 'zabawy-na-koncentracje', 'zabawy-bez-ekranu', 'aplikacje-edukacyjne-dla-dzieci'],
+            'related' => ['zabawy-dla-7-latka', 'zabawy-dla-8-latka', 'zagadki-dla-dzieci', 'zabawy-na-koncentracje'],
         ],
 
         'zabawy-ruchowe-dla-dzieci-w-domu' => [
@@ -486,6 +486,302 @@ function ak_landings(): array
             ],
             'related' => ['zabawy-dla-dzieci-w-domu', 'zabawy-dla-przedszkolakow', 'zabawy-bez-ekranu', 'zabawy-na-koncentracje'],
         ],
+
+        'zabawy-dla-3-latka' => [
+            'anchor' => 'Zabawy dla 3-latka',
+            'title' => 'Zabawy dla 3 latka w domu: 14 pomysłów bez ekranu',
+            'desc' => 'Zabawy dla 3-latka w domu i w samochodzie: ruchowe, słuchowe i na rozwój mowy. Krótkie, bez przygotowań i bez tabletu. Sprawdzone przez rodziców.',
+            'h1' => 'Zabawy dla 3-latka: krótko, w ruchu i z jednym poleceniem naraz',
+            'lead' => 'Trzylatek najlepiej bawi się w krótkich seriach po kilka minut, z jednym prostym poleceniem naraz i z dużą ilością ruchu. Działają zabawy naśladowcze, dźwięki, chowanie i szukanie oraz powtarzalne rymowanki. Poniżej 14 pomysłów do domu i na drogę, a na końcu gotowa wersja: audiozabawy, w których głos prowadzi dziecko za Ciebie.',
+            'tldr' => [
+                'Jedno polecenie naraz: „przynieś coś czerwonego”, a nie trzy kroki w jednym zdaniu.',
+                'Krótko: 3–8 minut na jedną zabawę, potem zmiana.',
+                'Ruch i dźwięk wygrywają z siedzeniem: naśladowanie zwierząt, klaskanie, tupanie.',
+                'Audiokiddo ma zabawy w grupie 3–5 lat: krótkie instrukcje, dużo ruchu, bez patrzenia w ekran.',
+            ],
+            'ideas_h' => '14 zabaw dla 3-latka',
+            'ideas' => [
+                ['Zwierzęcy marsz', 'Mówisz „idziemy jak słoń”, „skaczemy jak żaba”, „skradamy się jak kot”. Dziecko naśladuje ruch i dźwięk.', '3 lata'],
+                ['Co to za dźwięk?', 'Za plecami dziecka stukasz łyżką w garnek, szeleścisz folią, dzwonisz kluczami. Dziecko zgaduje, co to.', '3 lata'],
+                ['Przynieś coś…', 'Jedno polecenie: „przynieś coś miękkiego”. Potem „coś żółtego”, „coś małego”. Ćwiczy rozumienie słów.', '3 lata'],
+                ['Klaśnij, gdy usłyszysz', 'Czytasz listę słów, dziecko klaszcze, gdy pada zwierzę. Uczy uważnego słuchania.', '3 lata'],
+                ['Gdzie jest miś?', 'Chowasz misia w pokoju, dziecko szuka. Podpowiadasz „ciepło, zimno”. Potem ono chowa.', '3 lata'],
+                ['Stop-klatka', 'Muzyka gra, dziecko tańczy. Cisza, dziecko zastyga jak posąg.', '3 lata'],
+                ['Lustro', 'Dziecko powtarza Twoje ruchy: ręce do góry, przysiad, mina zdziwiona. Potem zamiana ról.', '3 lata'],
+                ['Kolorowe pudełka', 'Dwa pudełka i garść klocków. „Czerwone tu, niebieskie tam”. Sortowanie to też zabawa.', '3 lata'],
+                ['Domowa orkiestra', 'Garnek, łyżka, pudełko z ryżem. Grasz rytm, dziecko powtarza: szybko, wolno, głośno, cicho.', '3 lata'],
+                ['Kto tak robi?', '„Kto robi muu?”, „Kto robi kwa kwa?”. Dziecko odpowiada i pokazuje zwierzę.', '3 lata'],
+                ['Tunel z koca', 'Koc na dwóch krzesłach. Dziecko przechodzi tunelem, a po drugiej stronie czeka „nagroda”: przybicie piątki.', '3 lata'],
+                ['Dmuchanie piórka', 'Dziecko dmucha piórko albo kulkę z papieru po stole. Świetne ćwiczenie oddechowe dla mowy.', '3 lata'],
+                ['Bajka z pauzą', 'Opowiadasz bajkę i zatrzymujesz się: „A wtedy wilk powiedział…”. Dziecko dopowiada słowo.', '3 lata'],
+                ['Audiozabawa 3–5 lat', 'Włączasz Audiokiddo i odkładasz telefon. Głos daje krótkie polecenia: maszeruj, szukaj, odpowiedz. Zabawa ma początek i koniec.', '3 lata'],
+            ],
+            'more' => [
+                ['Co zwykle potrafi 3-latek i jak to wykorzystać', 'Większość trzylatków rozumie proste polecenia, chętnie naśladuje dorosłych i uwielbia powtarzalność. Uwaga trzyma się zwykle kilka minut przy jednej rzeczy, dlatego zabawy dla 3-latka powinny być krótkie i mieć jasny cel. Każde dziecko rozwija się we własnym tempie: jeśli coś Cię niepokoi, porozmawiaj z pediatrą albo logopedą.'],
+                ['Zabawy dla 3-latka w samochodzie', 'W aucie działają dźwięki i głos: „kto tak robi?”, liczenie czerwonych aut, rymowanki z pauzą. Krótkie bloki po 10 minut i przerwa na wyglądanie przez okno sprawdzają się lepiej niż jedna długa bajka.'],
+            ],
+            'quote' => 'lewandowska',
+            'faq' => [
+                ['Jak długo 3-latek bawi się jedną zabawą?', 'Zwykle kilka minut, czasem dłużej, jeśli zabawa ma ruch i cel. Lepiej zaplanować kilka krótkich zabaw niż jedną długą.'],
+                ['Jakie zabawy rozwijają mowę 3-latka?', 'Naśladowanie dźwięków zwierząt, dmuchanie (piórko, bańki), dopowiadanie słów w bajce, „kto tak robi?” i proste pytania o przedmioty wokół.'],
+                ['Czy 3-latek może bawić się sam?', 'Przez krótką chwilę tak, szczególnie przy zabawie z jasnym zadaniem. Audiozabawa prowadzi dziecko głosem, więc może bawić się samodzielnie, a Ty jesteś obok.'],
+                ['Od jakiego wieku jest Audiokiddo?', 'Od 3 lat. Zabawy dla grupy 3–5 lat mają krótkie instrukcje i dużo ruchu.'],
+            ],
+            'related' => ['zabawy-dla-4-latka', 'zabawy-dla-przedszkolakow', 'zabawy-logopedyczne', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+        ],
+
+        'zabawy-dla-4-latka' => [
+            'anchor' => 'Zabawy dla 4-latka',
+            'title' => 'Zabawy dla 4 latka w domu: 14 pomysłów bez ekranu',
+            'desc' => 'Zabawy dla 4-latka w domu: ruchowe, słowne, na wyobraźnię i koncentrację. Proste pomysły bez tabletu i bez przygotowań, także na deszczowy dzień.',
+            'h1' => 'Zabawy dla 4-latka: dużo „dlaczego”, ruchu i wymyślania',
+            'lead' => 'Czterolatek zadaje mnóstwo pytań, uwielbia udawanie i zaczyna rozumieć proste zasady gry. Najlepiej działają zabawy z rolą („jesteś detektywem”), proste zagadki, zabawy słowne i ruch z poleceniami. Poniżej 14 pomysłów do domu, a na końcu wersja gotowa, gdy nie masz dziś siły wymyślać.',
+            'tldr' => [
+                'Daj rolę: strażak, detektyw, kucharz. Udawanie trzyma uwagę 4-latka najdłużej.',
+                'Dwa polecenia naraz już działają: „podskocz i przynieś łyżkę”.',
+                'Proste zagadki i „co tu nie pasuje?” ćwiczą myślenie i mowę.',
+                'Audiokiddo prowadzi 4-latka głosem przez misje, zagadki i ruch, bez ekranu.',
+            ],
+            'ideas_h' => '14 zabaw dla 4-latka',
+            'ideas' => [
+                ['Mały detektyw', 'Ukryj trzy przedmioty i daj podpowiedzi: „jest okrągłe i leży tam, gdzie śpisz”. Dziecko szuka i tłumaczy, jak na to wpadło.', '4 lata'],
+                ['Co tu nie pasuje?', '„Jabłko, banan, but, gruszka”. Dziecko wskazuje intruza i mówi dlaczego.', '4 lata'],
+                ['Restauracja', 'Dziecko jest kelnerem: przyjmuje zamówienie, „gotuje” i podaje. Ty zamawiasz coraz dziwniejsze dania.', '4 lata'],
+                ['Prawda czy nie?', '„Ryby chodzą po drzewach”. Dziecko klaszcze przy prawdzie, tupie przy bzdurze.', '4 lata'],
+                ['Podwójne polecenie', '„Dotknij nosa i usiądź na podłodze”. Potem trzy polecenia. Świetne na koncentrację.', '4 lata'],
+                ['Wymień trzy', '„Wymień trzy rzeczy, które są zimne”. Proste, a rozwija słownictwo.', '4 lata'],
+                ['Zgadnij, kim jestem', 'Pokazujesz zwierzę ruchem bez dźwięku, dziecko zgaduje. Potem ono pokazuje.', '4 lata'],
+                ['Tor przeszkód', 'Poduszki, krzesło, koc. Za każdym razem inny sposób przejścia: na czworakach, tyłem, na palcach.', '4 lata'],
+                ['Dokończ zdanie', '„Gdybym był smokiem, to…”. Dziecko kończy, Ty dopowiadasz dalej.', '4 lata'],
+                ['Głośno, cicho', 'Mówisz słowo szeptem, dziecko powtarza głośno. I odwrotnie. Dużo śmiechu i ćwiczenie głosu.', '4 lata'],
+                ['Skarb pod poduszką', 'Mapa narysowana na kartce prowadzi do „skarbu” (naklejka, orzech). Dziecko czyta strzałki.', '4 lata'],
+                ['Kuchenne zgadywanki', 'Z zamkniętymi oczami dziecko wącha cynamon, cytrynę, kawę i zgaduje.', '4 lata'],
+                ['Liczenie kroków', '„Ile kroków do drzwi? A skoków?”. Liczenie i ruch w jednym.', '4 lata'],
+                ['Audiozabawa', 'Odpalasz Audiokiddo: Profesor Fantazjusz albo Max i Mila dają dziecku misję. Dziecko odpowiada na głos i działa, Ty masz chwilę.', '4 lata'],
+            ],
+            'more' => [
+                ['Co zwykle potrafi 4-latek', 'Wiele czterolatków mówi pełnymi zdaniami, opowiada krótkie historie, zadaje pytania „dlaczego?” i potrafi chwilę poczekać na swoją kolej. Lubi zasady, ale jeszcze chętnie je nagina. To dobry moment na pierwsze zagadki, gry słowne i zabawy w role. Rozwój bywa nierówny: jeśli coś Cię niepokoi, skonsultuj to ze specjalistą.'],
+                ['Zabawy dla 4-latka, gdy nie masz siły', 'Wybieraj zabawy, które dziecko prowadzi samo: poszukiwanie skarbu z mapą, sortowanie, układanie toru. Albo audiozabawę, w której głos daje zadania, a Ty możesz usiąść obok z kawą.'],
+            ],
+            'quote' => 'lewandowska',
+            'faq' => [
+                ['Jakie zabawy dla 4-latka w domu?', 'Zabawy w role (restauracja, detektyw), proste zagadki, „co tu nie pasuje?”, tor przeszkód z poduszek i poszukiwanie skarbu z mapą.'],
+                ['Jak zająć 4-latka na 15 minut?', 'Daj zabawę z jasnym celem i końcem: mapa skarbu, misja „przynieś pięć rzeczy na literę M” albo audiozabawa Audiokiddo, która prowadzi dziecko głosem.'],
+                ['Jakie zabawy rozwijają koncentrację 4-latka?', 'Podwójne polecenia, „prawda czy nie?”, klaskanie na umówione słowo i słuchanie z odpowiadaniem.'],
+                ['Czy 4-latek zrozumie audiozabawę?', 'Tak. Zabawy w Audiokiddo dla 4-latków mają krótkie polecenia i pytania, na które dziecko odpowiada na głos.'],
+            ],
+            'related' => ['zabawy-dla-3-latka', 'zabawy-dla-5-latka', 'zagadki-dla-dzieci', 'zabawy-dla-dzieci-w-domu'],
+        ],
+
+        'zabawy-dla-5-latka' => [
+            'anchor' => 'Zabawy dla 5-latka',
+            'title' => 'Zabawy dla 5 latka w domu: 14 kreatywnych pomysłów',
+            'desc' => 'Kreatywne zabawy dla 5-latka w domu: zagadki, zabawy słowne, ruch i wyobraźnia. Bez tabletu i bez przygotowań. Także na urodziny i do auta.',
+            'h1' => 'Zabawy dla 5-latka: zagadki, wyobraźnia i pierwsze zasady gry',
+            'lead' => 'Pięciolatek lubi wyzwania: zagadki, gry z zasadami, wymyślanie historii i zadania „na czas”. Potrafi skupić się dłużej, jeśli zabawa ma fabułę i cel. Poniżej 14 kreatywnych zabaw do domu, które ćwiczą mowę, myślenie i wyobraźnię, a na końcu gotowa wersja do słuchania.',
+            'tldr' => [
+                'Zagadki i zabawy słowne to złoto: pięciolatek uwielbia być tym, który wie.',
+                'Fabuła trzyma uwagę: „jesteśmy na statku, szukamy wyspy”.',
+                'Proste zasady i wygrywanie są już ważne: graj fair, ale daj czasem wygrać.',
+                'W Audiokiddo grupa 5–7 lat ma więcej zagadek, decyzji i pytań.',
+            ],
+            'ideas_h' => '14 zabaw dla 5-latka',
+            'ideas' => [
+                ['Zagadki o zwierzętach', '„Ma długą szyję i je liście z drzew”. Dziecko zgaduje, potem wymyśla swoją zagadkę dla Ciebie.', '5 lat'],
+                ['Szybkie skojarzenia', 'Mówisz słowo, dziecko pierwsze skojarzenie. Morze? Fala. Fala? Surfer. Kto się zatnie, robi przysiad.', '5 lat'],
+                ['Bajka z trzech słów', 'Losujecie trzy słowa: „rakieta, babcia, banan”. Dziecko układa z nich historię.', '5 lat'],
+                ['Znajdź przeciwieństwo', '„Duży?” „Mały!”, „Gorący?” „Zimny!”. Szybko i coraz trudniej.', '5 lat'],
+                ['Śledztwo w kuchni', 'Ktoś zjadł ciastko. Trzy poszlaki: okruszki, kubek, skarpetka. Dziecko ustala sprawcę i tłumaczy.', '5 lat'],
+                ['Mikstura czarodzieja', 'Dziecko wymyśla miksturę z niewidzialnych składników i opowiada, co się stanie po jej wypiciu.', '5 lat'],
+                ['Sklepik', 'Ceny na karteczkach, pieniądze z guzików. Liczenie do 10 i rozmowa sprzedawcy z klientem.', '5 lat'],
+                ['Kalambury', 'Dziecko pokazuje bez słów: zawód, zwierzę, czynność. Ty zgadujesz.', '5 lat'],
+                ['Głoska na start', '„Wymień rzeczy w pokoju na literę K”. Ćwiczy słuch fonemowy przed nauką czytania.', '5 lat'],
+                ['Tańczące polecenia', 'Muzyka, a w przerwie polecenie: „dotknij czegoś drewnianego”. Ruch plus słuchanie.', '5 lat'],
+                ['Superbohater', 'Dziecko wymyśla swojego bohatera: imię, moc, słabość. Potem opowiada jego przygodę.', '5 lat'],
+                ['Pamięć z tacy', 'Pięć przedmiotów na tacy, zakrywasz, zabierasz jeden. Co zniknęło?', '5 lat'],
+                ['Kto to powiedział?', 'Cytujesz bohaterów bajek albo domowników. Dziecko zgaduje, kto to mógł powiedzieć.', '5 lat'],
+                ['Audiozabawa z zagadkami', 'W Audiokiddo Profesor Fantazjusz zadaje zagadki i czeka na odpowiedź. Dziecko mówi na głos, historia idzie dalej.', '5 lat'],
+            ],
+            'more' => [
+                ['Co zwykle potrafi 5-latek', 'Pięciolatki zwykle opowiadają spójne historie, rozumieją proste zasady gier, potrafią poczekać na swoją kolej i coraz dłużej skupiają się na jednym zadaniu. Zaczyna się też zainteresowanie literami i głoskami. Zabawy słowne przed szkołą to świetne przygotowanie do czytania.'],
+                ['Zabawy dla 5-latka na urodziny', 'Na przyjęciu sprawdzają się: poszukiwanie skarbu w drużynach, kalambury, stop-klatka i „gorące krzesło” z zagadkami. Krótkie rundy, dużo ruchu i nagroda dla wszystkich.'],
+            ],
+            'quote' => 'lewandowska',
+            'faq' => [
+                ['Jakie kreatywne zabawy dla 5-latka w domu?', 'Bajka z trzech słów, wymyślanie superbohatera, mikstura czarodzieja, kalambury i śledztwo w kuchni.'],
+                ['Jakie zabawy przygotowują 5-latka do szkoły?', 'Zabawy z głoskami („rzeczy na literę K”), zagadki, przeciwieństwa, pamięć z tacy i słuchanie poleceń z kilku kroków.'],
+                ['Ile czasu 5-latek skupia się na zabawie?', 'Zależy od dziecka i dnia, ale przy zabawie z fabułą i celem często kilkanaście minut. Tyle trwa większość audiozabaw w Audiokiddo.'],
+                ['Czy Audiokiddo ma zabawy dla 5-latka?', 'Tak, grupy 3–5 i 5–7 lat. Pięciolatkom szczególnie podchodzą pakiety Słowa i Wiedza oraz Wyobraźnia.'],
+            ],
+            'related' => ['zabawy-dla-4-latka', 'zabawy-dla-6-latka', 'zagadki-dla-dzieci', 'zabawy-na-koncentracje'],
+        ],
+
+        'zabawy-dla-6-latka' => [
+            'anchor' => 'Zabawy dla 6-latka',
+            'title' => 'Zabawy dla 6 latka w domu: 14 pomysłów bez tabletu',
+            'desc' => 'Zabawy dla 6-latka w domu: zagadki, gry słowne, śledztwa i ruch. Pomysły bez tabletu na nudę, deszcz i podróż, które ćwiczą myślenie przed szkołą.',
+            'h1' => 'Zabawy dla 6-latka: śledztwa, gry słowne i trochę rywalizacji',
+            'lead' => 'Sześciolatek chce wyzwań, które są „naprawdę”: śledztw, gier z punktami, zagadek z haczykiem i zadań na czas. Rozumie zasady i lubi je egzekwować. Poniżej 14 zabaw do domu i na drogę, które ćwiczą logiczne myślenie, słuchanie i mowę, a na końcu gotowa wersja do słuchania.',
+            'tldr' => [
+                'Wyzwanie i punkty: sześciolatek lubi się mierzyć, z Tobą albo z czasem.',
+                'Śledztwa i zagadki logiczne ćwiczą wnioskowanie.',
+                'Gry słowne (rymy, głoski, skojarzenia) wspierają naukę czytania.',
+                'W Audiokiddo grupa 5–7 lat: zagadki, decyzje i pierwsze śledztwa.',
+            ],
+            'ideas_h' => '14 zabaw dla 6-latka',
+            'ideas' => [
+                ['Śledztwo z poszlakami', 'Zagadka: kto zabrał pilota? Trzy poszlaki rozłożone po domu i trzech podejrzanych (pluszaki). Dziecko wskazuje sprawcę i uzasadnia.', '6 lat'],
+                ['Rymowanki na czas', '„Kot – płot, miś – …?”. Kto szybciej znajdzie rym, dostaje punkt.', '6 lat'],
+                ['Państwa-miasta dla początkujących', 'Zamiast państw: zwierzę, jedzenie, rzecz w domu. Na wylosowaną literę.', '6 lat'],
+                ['Szyfr', 'Prosty szyfr: każda litera to obrazek albo cyfra. Dziecko odszyfrowuje krótką wiadomość.', '6 lat'],
+                ['Dokończ zgodnie z prawdą', '„Woda zamarza, gdy…”. Dziecko kończy zdanie, a Ty sprawdzasz razem z nim.', '6 lat'],
+                ['Głuchy telefon na dwie osoby', 'Szepczesz zdanie, dziecko powtarza je od tyłu albo zmienia jedno słowo. Trening pamięci słuchowej.', '6 lat'],
+                ['Budowa mostu', 'Z kartek i książek most, który utrzyma jabłko. Inżynieria dla sześciolatka.', '6 lat'],
+                ['Liczenie w ruchu', '„Zrób tyle podskoków, ile jest nóg u pająka”. Matematyka plus ruch.', '6 lat'],
+                ['20 pytań', 'Myślisz o zwierzęciu, dziecko zadaje pytania tak/nie. Uczy zadawania dobrych pytań.', '6 lat'],
+                ['Teatrzyk cieni', 'Latarka i ręce. Dziecko wymyśla historię i odgrywa ją cieniami.', '6 lat'],
+                ['Kim jestem?', 'Karteczka na czole z postacią z bajki. Pytania i odpowiedzi tak/nie.', '6 lat'],
+                ['Zagadki o przedmiotach', '„Ma zęby, ale nie gryzie” (grzebień). Dziecko zgaduje i wymyśla swoje.', '6 lat'],
+                ['Bieg z misją', 'Każdy punkt w mieszkaniu to stacja z zadaniem: zagadka, ćwiczenie, rym.', '6 lat'],
+                ['Audiozabawa detektywistyczna', 'W Audiokiddo dziecko słucha sprawy, zbiera poszlaki ze słuchu i odpowiada na pytania. Telefon leży z boku.', '6 lat'],
+            ],
+            'more' => [
+                ['Co zwykle potrafi 6-latek', 'Sześciolatki zwykle rozumieją zasady i ich pilnują, potrafią zaplanować kilka kroków, lubią rywalizację i pierwsze „poważne” zadania. Wiele z nich zaczyna czytać, więc zabawy z głoskami, rymami i szyframi są bardzo na czasie.'],
+                ['Zabawy dla 6-latka w podróży', 'W aucie świetnie działają: 20 pytań, rymowanki na czas, „kim jestem?” i audiozabawy pobrane przed wyjazdem. W Audiokiddo jest tryb „W drogę”, który układa zabawy na całą trasę.'],
+            ],
+            'quote' => 'lewandowska',
+            'faq' => [
+                ['Jakie zabawy dla 6-latka w domu?', 'Śledztwo z poszlakami, szyfry, 20 pytań, rymowanki na czas, budowa mostu z kartek i bieg z misją po mieszkaniu.'],
+                ['Jakie zabawy rozwijają logiczne myślenie 6-latka?', 'Śledztwa, 20 pytań, „co tu nie pasuje?”, szyfry i zagadki z haczykiem. W Audiokiddo zagadki i śledztwa prowadzi głos.'],
+                ['Co robić z 6-latkiem, gdy się nudzi?', 'Daj mu wyzwanie z punktami albo misję z kilkoma stacjami. Albo włącz audiozabawę, w której dziecko rozwiązuje sprawę samo.'],
+                ['Czy Audiokiddo jest dobre dla 6-latka?', 'Tak. Grupa 5–7 lat ma więcej zagadek, decyzji i pytań, a od 7 lat dochodzą dłuższe śledztwa z pakietu Detektyw.'],
+            ],
+            'related' => ['zabawy-dla-5-latka', 'zabawy-dla-7-latka', 'zagadki-dla-dzieci', 'jak-zajac-dziecko-w-samochodzie'],
+        ],
+
+        'zabawy-dla-7-latka' => [
+            'anchor' => 'Zabawy dla 7-latka',
+            'title' => 'Zabawy dla 7 latka w domu: 14 pomysłów bez ekranu',
+            'desc' => 'Kreatywne zabawy dla 7-latka w domu: śledztwa, zagadki logiczne, gry słowne i ruch. Bez tabletu, na nudę po szkole i na długą podróż.',
+            'h1' => 'Zabawy dla 7-latka: dłuższe fabuły, logika i „to nie ma sensu”',
+            'lead' => 'Siedmiolatek oczekuje, że zabawa ma sens: zasady, logikę i fabułę, którą da się rozgryźć. Najlepiej działają śledztwa, zagadki logiczne, gry słowne z punktami i projekty na dłużej. Poniżej 14 zabaw na czas po szkole i na weekend, a na końcu gotowe śledztwa do słuchania.',
+            'tldr' => [
+                'Logika i fabuła: śledztwa, szyfry, zagadki z uzasadnieniem.',
+                'Dłuższe projekty: komiks, gazetka, własna gra planszowa.',
+                'Po szkole najpierw ruch, potem zadania „głowowe”.',
+                'Pakiet Detektyw w Audiokiddo jest od 7 lat: Max i Mila, poszlaki ze słuchu i akta do wydrukowania.',
+            ],
+            'ideas_h' => '14 zabaw dla 7-latka',
+            'ideas' => [
+                ['Akta sprawy', 'Wydrukuj albo narysuj kartę podejrzanych i poszlak. Dziecko prowadzi śledztwo i wpisuje wnioski.', '7 lat'],
+                ['Szyfr Cezara dla początkujących', 'Każdą literę przesuwacie o jedną w alfabecie. Dziecko szyfruje wiadomość dla Ciebie.', '7 lat'],
+                ['Gazetka domowa', 'Dziecko jest redaktorem: wywiad z babcią, prognoza pogody, horoskop dla kota.', '7 lat'],
+                ['Własna gra planszowa', 'Kartka, kostka, pionki z nakrętek. Dziecko wymyśla zasady i pola specjalne.', '7 lat'],
+                ['Zagadki logiczne', '„Co jest cięższe: kilogram piór czy kilogram żelaza?”. Dziecko odpowiada i tłumaczy.', '7 lat'],
+                ['Słowo w słowie', 'Z wyrazu „lokomotywa” dziecko układa jak najwięcej krótszych słów.', '7 lat'],
+                ['Kalambury z czasownikami', 'Trudniejsza wersja: pokazywanie czynności i emocji.', '7 lat'],
+                ['Eksperyment kuchenny', 'Co tonie, co pływa? Dziecko stawia hipotezę i sprawdza.', '7 lat'],
+                ['Komiks w 6 kadrach', 'Dziecko rysuje historię z początkiem, zwrotem akcji i zakończeniem.', '7 lat'],
+                ['Tor ninja', 'Przeszkody z poduszek i krzeseł na czas. Bicie własnego rekordu.', '7 lat'],
+                ['Kto kłamie?', 'Trzy zdania o sobie, jedno nieprawdziwe. Dziecko zgaduje i odwrotnie.', '7 lat'],
+                ['Mapa skarbów z kierunkami', '„Trzy kroki na północ, dwa w lewo”. Orientacja w przestrzeni.', '7 lat'],
+                ['Słuchowisko domowe', 'Dziecko nagrywa na telefonie własne słuchowisko z efektami dźwiękowymi.', '7 lat'],
+                ['Śledztwo z Audiokiddo', 'Pakiet Detektyw: Max i Mila prowadzą sprawę, dziecko zbiera poszlaki ze słuchu i rozwiązuje zagadkę. Do każdej sprawy akta do wydrukowania.', '7 lat'],
+            ],
+            'more' => [
+                ['Co zwykle lubi 7-latek', 'Siedmiolatki zwykle czytają pierwsze teksty, myślą coraz bardziej logicznie i chcą rozumieć, dlaczego coś działa. Lubią projekty, które można skończyć i pokazać, i zabawy, w których liczy się spryt.'],
+                ['Zabawy dla 7-latka po szkole', 'Po lekcjach dziecko często potrzebuje najpierw ruchu i odpoczynku od poleceń. Tor ninja, spacer z misją, a dopiero potem zagadki i projekty. Audiozabawa to dobry most: ruch i myślenie bez ekranu.'],
+            ],
+            'quote' => 'kasielska',
+            'faq' => [
+                ['Jakie zabawy dla 7-latka w domu?', 'Śledztwa z aktami sprawy, szyfry, własna gra planszowa, gazetka domowa, eksperymenty kuchenne i tor ninja.'],
+                ['Co robić z 7-latkiem, który się nudzi?', 'Daj mu projekt z końcem (komiks, gra, gazetka) albo zagadkę do rozgryzienia. Śledztwa z pakietu Detektyw zajmują dziecko na kilkanaście minut każde.'],
+                ['Jakie zabawy logiczne dla 7-latka?', 'Zagadki z uzasadnieniem, „kto kłamie?”, szyfry, słowo w słowie i śledztwa z poszlakami.'],
+                ['Czy Audiokiddo jest dla 7-latka?', 'Tak. Grupa 7–9 lat to śledztwa, dłuższe fabuły i misje. Pakiet Detektyw jest właśnie od 7 lat.'],
+            ],
+            'related' => ['zabawy-dla-6-latka', 'zabawy-dla-8-latka', 'zabawy-dla-dzieci-7-9-lat', 'zagadki-dla-dzieci'],
+        ],
+
+        'zabawy-dla-8-latka' => [
+            'anchor' => 'Zabawy dla 8-latka',
+            'title' => 'Zabawy dla 8 latka w domu: 14 pomysłów bez tabletu',
+            'desc' => 'Zabawy dla 8-latka w domu: zagadki logiczne, śledztwa, gry słowne, projekty i ruch. Pomysły bez tabletu i telefonu na nudę i weekend.',
+            'h1' => 'Zabawy dla 8-latka: wyzwania, projekty i zagadki z haczykiem',
+            'lead' => 'Ośmiolatek chce mieć wpływ: wymyślać zasady, prowadzić projekt, rozwiązywać trudniejsze zagadki i wygrywać uczciwie. Najlepsze zabawy dla 8-latka łączą logikę, kreatywność i trochę ryzyka. Poniżej 14 pomysłów bez ekranu, a na końcu śledztwa do słuchania, przy których dziecko myśli jak detektyw.',
+            'tldr' => [
+                'Daj kontrolę: dziecko wymyśla zasady, Ty grasz według nich.',
+                'Trudniejsze zagadki, łamigłówki i szyfry trzymają uwagę dłużej.',
+                'Projekty z efektem (gra, słuchowisko, eksperyment) dają satysfakcję.',
+                'Audiokiddo 7–9 lat: śledztwa i dłuższe fabuły bez patrzenia w ekran.',
+            ],
+            'ideas_h' => '14 zabaw dla 8-latka',
+            'ideas' => [
+                ['Escape room w pokoju', 'Trzy zagadki prowadzą do kodu na kłódce (albo na kartce w kopercie). Dziecko ma 15 minut.', '8 lat'],
+                ['Detektyw z notesem', 'Dziecko obserwuje dom przez 10 minut i zapisuje „podejrzane” zmiany. Potem raport.', '8 lat'],
+                ['Słowne łańcuchy', 'Ostatnia litera słowa to pierwsza kolejnego: kot, tygrys, sowa… Bez powtórzeń.', '8 lat'],
+                ['Wymyśl wynalazek', 'Dziecko projektuje urządzenie, które rozwiąże domowy problem. Rysunek, nazwa, reklama.', '8 lat'],
+                ['Quiz rodzinny', 'Dziecko przygotowuje 10 pytań o rodzinę i prowadzi teleturniej.', '8 lat'],
+                ['Szyfry i atrament sympatyczny', 'Sok z cytryny, kartka i suszarka. Tajna wiadomość pojawia się po podgrzaniu.', '8 lat'],
+                ['Debata na wesoło', '„Czy koty powinny chodzić do szkoły?”. Dziecko szuka argumentów za i przeciw.', '8 lat'],
+                ['Ruchowe zadania na czas', 'Stacje: 10 przysiadów, przejście po linii, rzut skarpetą do kosza. Rekord do pobicia.', '8 lat'],
+                ['Zagadki z haczykiem', '„Co rośnie, gdy się z niego zabiera?” (dziura). Dziecko wymyśla podobne.', '8 lat'],
+                ['Opowieść w trzech zdaniach', 'Cała historia w trzech zdaniach: początek, problem, rozwiązanie. Trening pisania.', '8 lat'],
+                ['Planszówka z własnymi zasadami', 'Stara gra, nowe zasady wymyślone przez dziecko. Ty musisz się dostosować.', '8 lat'],
+                ['Słuchanie z notatkami', 'Dziecko słucha historii i notuje kluczowe fakty, potem odpowiada na pytania.', '8 lat'],
+                ['Gotowanie z przepisem', 'Dziecko czyta przepis i prowadzi prostą potrawę. Ty jesteś pomocnikiem.', '8 lat'],
+                ['Śledztwa Audiokiddo', 'Sprawy Maxa i Mili: dziecko słucha, łapie poszlaki, wyklucza podejrzanych i rozwiązuje zagadkę. Akta do wydrukowania w zestawie.', '8 lat'],
+            ],
+            'more' => [
+                ['Co zwykle lubi 8-latek', 'Ośmiolatki często czytają samodzielnie, lubią fakty i ciekawostki, chcą rozumieć zasady i lubią mieć nad czymś kontrolę. To dobry wiek na łamigłówki, projekty i zabawy, w których liczy się uzasadnienie, a nie tylko wynik.'],
+                ['Zamiast tabletu po szkole', 'Ośmiolatek chętnie sięga po ekran, bo jest szybki i nagradzający. Zabawa bez ekranu musi dać podobne poczucie postępu: rekordy, poziomy, rozwiązane sprawy. Dlatego tak dobrze działają escape roomy i śledztwa.'],
+            ],
+            'quote' => 'kasielska',
+            'faq' => [
+                ['Jakie zabawy dla 8-latka w domu?', 'Escape room w pokoju, szyfry z atramentem sympatycznym, quiz rodzinny, wymyślanie wynalazków, debata na wesoło i ruchowe stacje na czas.'],
+                ['Jak odciągnąć 8-latka od tabletu?', 'Zamiast zakazu: alternatywa z wyzwaniem i postępem (rekordy, rozwiązane sprawy) i jasne zasady czasu ekranowego. Audiozabawy dają fabułę bez patrzenia w ekran.'],
+                ['Jakie zagadki dla 8-latka?', 'Zagadki z haczykiem, logiczne łamigłówki i śledztwa z poszlakami. Więcej znajdziesz w naszym poradniku z zagadkami dla dzieci.'],
+                ['Do jakiego wieku jest Audiokiddo?', 'Do około 9 lat. Grupa 7–9 lat ma dłuższe śledztwa i fabuły.'],
+            ],
+            'related' => ['zabawy-dla-7-latka', 'zabawy-dla-dzieci-7-9-lat', 'zagadki-dla-dzieci', 'zabawy-na-koncentracje'],
+        ],
+
+        'interaktywne-bajki-dla-dzieci' => [
+            'anchor' => 'Interaktywne bajki dla dzieci',
+            'title' => 'Interaktywne bajki dla dzieci: bez ekranu, do słuchania',
+            'desc' => 'Czym są interaktywne bajki dla dzieci i jak wybrać dobre? Bajki, w których dziecko odpowiada i decyduje, w wersji do słuchania, bez patrzenia w ekran.',
+            'h1' => 'Interaktywne bajki dla dzieci: takie, w których dziecko gra główną rolę',
+            'lead' => 'Interaktywna bajka to historia, w której dziecko nie tylko słucha, ale odpowiada, podejmuje decyzje i wykonuje zadania, a fabuła idzie dalej po jego myśli. Mogą być na ekranie (w serwisach z filmami) albo tylko do słuchania. Wersja audio ma jedną dużą zaletę: dziecko działa w prawdziwym świecie, a nie patrzy w ekran.',
+            'tldr' => [
+                'Interaktywna bajka = dziecko odpowiada, decyduje i działa, a nie tylko odbiera.',
+                'Wersja do słuchania rozwija wyobraźnię i mowę, bo obraz powstaje w głowie.',
+                'Dobra bajka interaktywna daje czas na odpowiedź i ma jasne zadania.',
+                'Audiokiddo to interaktywne audiobajki i zabawy dla dzieci 3–9 lat, bez ekranu.',
+            ],
+            'ideas_h' => 'Jak zrobić interaktywną bajkę samemu',
+            'ideas' => [
+                ['Bajka z wyborem', 'Opowiadasz i zatrzymujesz się: „Smok może iść do lasu albo do zamku. Gdzie idzie?”. Dziecko decyduje.', '4–9 lat'],
+                ['Bajka z zadaniem', 'Bohater potrzebuje czegoś czerwonego, żeby otworzyć drzwi. Dziecko musi to przynieść.', '3–7 lat'],
+                ['Bajka z dźwiękami', 'Dziecko robi efekty dźwiękowe: kroki, wiatr, skrzypienie drzwi.', '3–8 lat'],
+                ['Bajka z zagadką', 'Strażnik bramy wpuści tylko tego, kto zgadnie zagadkę. Dziecko zgaduje.', '4–9 lat'],
+                ['Bajka z ruchem', 'Bohater skrada się, skacze przez rzekę, czołga pod gałęziami. Dziecko robi to samo.', '3–7 lat'],
+                ['Dziecko jako bohater', 'Główny bohater ma imię dziecka i jego ulubioną zabawkę jako pomocnika.', '3–9 lat'],
+                ['Dokończ bajkę', 'Ty zaczynasz, dziecko kończy. Potem odwrotnie.', '5–9 lat'],
+                ['Audiobajka interaktywna', 'W Audiokiddo głos prowadzi historię, zadaje pytania i czeka na odpowiedź. Dziecko mówi na głos, klaszcze albo szuka rzeczy, a historia idzie dalej.', '3–9 lat'],
+            ],
+            'more' => [
+                ['Interaktywne bajki na ekranie czy do słuchania?', 'Bajki interaktywne na ekranie dają wybór przyciskiem, ale dziecko nadal siedzi i patrzy. W wersji do słuchania dziecko odpowiada głosem, rusza się i wyobraża sobie świat sam. To inny rodzaj zaangażowania: mniej bodźców, więcej mowy i ruchu.'],
+                ['Jak wybrać dobrą interaktywną bajkę', 'Sprawdź, czy daje dziecku czas na odpowiedź, czy zadania pasują do wieku, czy nie ma reklam i czy dziecko może bawić się samodzielnie. Najlepsze bajki interaktywne kończą się wyraźnie, żeby dziecko wiedziało, kiedy wrócić do Ciebie.'],
+                ['Interaktywne bajki na dobranoc', 'Wieczorem wybieraj spokojne wersje: mniej ruchu, więcej szeptu i wyobrażania. W aplikacji Audiokiddo jest wieczorny rytuał z cichą zabawą i „dobranoc” od Szop’ena.'],
+            ],
+            'quote' => 'lewandowska',
+            'faq' => [
+                ['Co to jest interaktywna bajka?', 'Historia, w której dziecko bierze udział: odpowiada na pytania, wybiera, co dalej, i wykonuje zadania. Może być na ekranie albo do słuchania.'],
+                ['Czy są interaktywne bajki bez ekranu?', 'Tak. Audiokiddo to interaktywne audiozabawy i audiobajki: dziecko słucha, odpowiada na głos i działa, a telefon leży na stole.'],
+                ['Od jakiego wieku interaktywne bajki?', 'Proste wersje (z ruchem i dźwiękami) już od 3 lat. Z wyborem i zagadkami od 4–5 lat. Dłuższe fabuły i śledztwa od 7 lat.'],
+                ['Czym różni się interaktywna bajka od audiobooka?', 'Audiobook opowiada, co zrobił bohater. Interaktywna bajka mówi dziecku: bohaterem jesteś ty. Dziecko ma tu dużo do roboty.'],
+            ],
+            'related' => ['audiobooki-i-sluchowiska-dla-dzieci', 'zabawy-wyciszajace-przed-snem', 'zabawy-bez-ekranu', 'aplikacje-edukacyjne-dla-dzieci'],
+        ],
     ];
     return $all;
 }
@@ -506,7 +802,7 @@ function ak_landing_slug(): string
 // Addresses: /pomysly-na-zabawy/ and /<guide>/.
 function ak_landing_rule(): string
 {
-    $slugs = array_merge(['pomysly-na-zabawy'], array_keys(ak_landings()));
+    $slugs = array_merge(['pomysly-na-zabawy'], array_keys(ak_landings()), array_keys(ak_info_pages()));
     return '^(' . implode('|', array_map('preg_quote', $slugs)) . ')/?$';
 }
 
@@ -536,7 +832,7 @@ add_action('init', function () {
         return;
     }
     header('Content-Type: application/xml; charset=utf-8');
-    $urls = array_merge([ak_landing_url()], array_map('ak_landing_url', array_keys(ak_landings())));
+    $urls = array_merge(array_map('ak_info_url', array_keys(ak_info_pages())), [ak_landing_url()], array_map('ak_landing_url', array_keys(ak_landings())));
     echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
     foreach ($urls as $url) {
         echo '<url><loc>' . esc_url($url) . '</loc><lastmod>' . esc_html(gmdate('Y-m-d', (int) filemtime(__FILE__))) . '</lastmod></url>' . "\n";

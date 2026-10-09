@@ -13,6 +13,13 @@ $links = [
     '#opinie' => 'Opinie',
     '#o-nas' => 'O nas',
 ];
+// Away from the home page the bar leads to the full pages instead of the home page's sections.
+$pages = $home === '' ? [] : [
+    '#jak-to-dziala' => ak_info_url('jak-to-dziala'),
+    '#cennik' => ak_info_url('abonament'),
+    '#pakiety' => ak_info_url('pakiety'),
+    '#pytania' => ak_info_url('pytania'),
+];
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -31,10 +38,10 @@ $links = [
         </a>
         <nav id="ak-nav" class="ak-nav" aria-label="Główne">
             <?php foreach ($links as $hash => $label) : ?>
-            <a href="<?php echo esc_url($home . $hash); ?>"><?php echo esc_html($label); ?></a>
+            <a href="<?php echo esc_url($pages[$hash] ?? $home . $hash); ?>"<?php echo isset($pages[$hash]) && ak_view() === 'info' && $pages[$hash] === ak_info_url(ak_info_slug()) ? ' aria-current="page"' : ''; ?>><?php echo esc_html($label); ?></a>
             <?php endforeach; ?>
             <a class="ak-nav-extra" href="<?php echo esc_url($home . '#pobierz'); ?>">Darmowe zabawy</a>
-            <a class="ak-nav-extra" href="<?php echo esc_url($home . '#pytania'); ?>">Pytania</a>
+            <a class="ak-nav-extra" href="<?php echo esc_url($pages['#pytania'] ?? $home . '#pytania'); ?>">Pytania</a>
             <a href="<?php echo esc_url(ak_landing_url()); ?>"<?php echo ak_view() === 'guide' ? ' aria-current="page"' : ''; ?>>Pomysły</a>
             <a href="<?php echo esc_url(ak_blog_url()); ?>"<?php echo in_array(ak_view(), ['blog', 'post'], true) ? ' aria-current="page"' : ''; ?>>Blog</a>
         </nav>
@@ -57,8 +64,8 @@ $links = [
     <div class="ak-story" aria-hidden="true"><span class="ak-story-bars"></span><span class="ak-story-label"></span></div>
 </header>
 <nav class="ak-dock" aria-label="Na skróty">
-    <a href="<?php echo esc_url($home . '#jak-to-dziala'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zm16 0h-3v6h2a1 1 0 0 0 1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>Jak działa</span></a>
-    <a href="<?php echo esc_url($home . '#pakiety'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Pakiety</span></a>
+    <a href="<?php echo esc_url($pages['#jak-to-dziala'] ?? $home . '#jak-to-dziala'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zm16 0h-3v6h2a1 1 0 0 0 1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>Jak działa</span></a>
+    <a href="<?php echo esc_url($pages['#pakiety'] ?? $home . '#pakiety'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Pakiety</span></a>
     <a class="ak-dock-main" href="<?php echo esc_url($home . '#pobierz'); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><?php echo ak_app_live() ? 'Pobierz' : 'Za darmo'; ?></span></a>
     <?php if (ak_has_woo()) : ?>
     <a class="ak-dock-cart" href="<?php echo esc_url(ak_cart_url()); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg><span>Koszyk</span><span class="ak-cart-count" data-count="<?php echo (int) $count; ?>"><?php echo (int) $count; ?></span></a>

@@ -1022,3 +1022,148 @@ html.ak-snap { scroll-snap-type: none; }
   .ak-guide-cta img { width: 84px; }
   .ak-foot-in { grid-template-columns: 1fr; }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   Pages behind the home page (templates/info.php) and the shop's pack pages (templates/product.php)
+   --------------------------------------------------------------------------------------------- */
+.ak-info { padding-bottom: clamp(48px, 7vw, 88px); }
+.ak-info .ak-slide { min-height: 0; padding: clamp(40px, 6vw, 72px) 0; scroll-snap-align: none; }
+.ak-info-hero { padding-top: clamp(96px, 12vw, 132px); }
+.ak-info-hero-in { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(20px, 4vw, 48px); align-items: end; }
+.ak-info-hero h1 { font-size: clamp(38px, 5.6vw, 68px); }
+.ak-szop-info { margin-bottom: 8px; }
+.ak-szop-info img { width: 120px; }
+.ak-info-sec { padding: clamp(36px, 5.5vw, 72px) 0; }
+.ak-info-sec + .ak-info-sec { border-top: 1px solid var(--line); }
+.ak-info-sec h2 { font-size: clamp(28px, 3.8vw, 46px); }
+.ak-info-safe { background: var(--paper); }
+.ak-ticks-big li { font-size: 18px; margin-bottom: 12px; }
+.ak-age-links { display: flex; flex-wrap: wrap; gap: 6px 12px; margin: 10px 0 0 !important; font-size: 14px; font-weight: 600; }
+.ak-age-links a { color: var(--deep, var(--teal-deep)); }
+.ak-lib-h { margin-top: clamp(40px, 6vw, 64px); }
+
+/* "Zobacz też" at the end of guides and pages: a row of quiet chips. */
+.ak-related { margin: 36px 0 0; }
+.ak-related ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ak-related a { display: inline-block; padding: 8px 16px; border-radius: 999px; background: var(--paper); border: 1.5px solid var(--line); color: var(--ink); text-decoration: none; font-weight: 500; font-size: 15px; transition: border-color .2s, transform .25s var(--spring); }
+.ak-related a:hover { border-color: var(--teal-deep); transform: translateY(-2px); }
+
+/* The dark band that ends a page: Szop'en and the way to the app. */
+.ak-cta-band { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 26px; align-items: center; margin: clamp(32px, 5vw, 56px) 0 0; padding: 28px 32px; border-radius: var(--r); background: var(--night); color: #fff; box-shadow: var(--shadow-big); }
+.ak-cta-band img { width: 150px; filter: drop-shadow(0 12px 16px rgba(0, 0, 0, .35)); }
+.ak-cta-band-h { font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 8px !important; color: #fff; }
+.ak-cta-band p { color: #D6D0E2; }
+.ak-cta-band-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+
+/* Subscription vs a pack for good. */
+.ak-table-wrap { overflow-x: auto; margin: 22px 0 28px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.ak-compare { width: 100%; border-collapse: collapse; font-size: 16px; min-width: 520px; }
+.ak-compare th, .ak-compare td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.ak-compare thead th { font-size: 15px; font-weight: 700; background: var(--sand); }
+.ak-compare thead th:nth-child(2) { background: var(--sun-soft); }
+.ak-compare tbody th { font-weight: 600; color: var(--muted); width: 32%; }
+.ak-compare tbody td:nth-child(2) { font-weight: 600; }
+.ak-compare tr:last-child th, .ak-compare tr:last-child td { border-bottom: 0; }
+
+/* The packs as part of the subscription (cards) and one by one (rows on /pakiety/). */
+.ak-packs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
+.ak-pack { position: relative; padding: 14px 14px 20px; border-radius: var(--r); background: var(--paper); box-shadow: 0 0 0 1px var(--line); transition: transform .45s var(--spring), box-shadow .45s; }
+.ak-pack:hover { transform: translateY(-6px); box-shadow: 0 0 0 1.5px var(--deep, var(--teal-deep)), var(--shadow); }
+.ak-pack h3 { margin: 0 0 6px; }
+.ak-pack p { font-size: 15px; color: var(--muted); }
+.ak-pack .ak-chip { background: var(--tone, var(--sand)); margin: 14px 0 8px; }
+.ak-pack-cover { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 1; background: var(--tone, var(--sand)); perspective: 900px; }
+.ak-pack-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+.ak-play.ak-play-on-cover { position: absolute; right: 12px; bottom: 12px; width: 56px; height: 56px; box-shadow: 0 10px 24px rgba(0, 0, 0, .3); }
+.ak-play.ak-play-on-cover svg.ak-i-play, .ak-play.ak-play-on-cover .ak-i-pause { width: 22px; height: 22px; }
+.ak-pack .ak-more, .ak-pack-row .ak-more, .ak-prod .ak-buy .ak-more { color: var(--teal-deep) !important; }
+.ak-pack-next .ak-pack-cover, .ak-pack-row-next .ak-pack-cover { display: grid; place-items: center; background: repeating-linear-gradient(135deg, var(--sun-soft) 0 14px, var(--paper) 14px 28px); box-shadow: inset 0 0 0 2px var(--sun); }
+.ak-pack-q { font-size: clamp(64px, 8vw, 110px); font-weight: 700; color: var(--sun-deep); animation: ak-bob 3.4s ease-in-out infinite; }
+.ak-pack-row { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: clamp(22px, 4vw, 48px); align-items: center; padding: clamp(28px, 4vw, 44px) 0; border-bottom: 1px solid var(--line); }
+.ak-pack-row .ak-chip { background: var(--tone, var(--sand)); }
+.ak-pack-row h2 { font-size: clamp(28px, 3.6vw, 42px); }
+.ak-pack-row .ak-tracks { border-top-color: var(--line); }
+.ak-pack-row .ak-tracks summary { color: var(--ink); }
+.ak-pack-row .ak-tracks li { border-bottom-color: var(--line); }
+.ak-pack-row .ak-tracks li span::before, .ak-pack-row .ak-tracks time { color: var(--muted); }
+.ak-pack-row-next { border-bottom: 0; }
+.ak-pack-ways { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px 18px; }
+.ak-in-sub { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 22px; padding: 18px 22px; border-radius: 22px; background: var(--sun-soft); box-shadow: inset 0 0 0 2px var(--sun); margin-bottom: 12px; }
+.ak-in-sub p { margin: 0; }
+.ak-in-sub-tag { display: inline-flex; align-items: center; padding: 6px 14px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-deep); font-weight: 700; font-size: 14px; }
+.ak-own { border-radius: 18px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.ak-own summary { list-style: none; cursor: pointer; padding: 10px 16px; font-weight: 600; font-size: 15px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+.ak-own summary::-webkit-details-marker { display: none; }
+.ak-own summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform .3s var(--ease); }
+.ak-own[open] summary::after { transform: rotate(-135deg); }
+.ak-own .ak-buy { padding: 4px 16px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.ak-own .ak-price { margin: 0; font-size: 22px; font-weight: 700; }
+.ak-own-sets { margin-top: 28px; }
+.ak-own-sets > summary { padding: 16px 20px; font-size: 17px; color: var(--ink); }
+.ak-own-sets .ak-bundles { padding: 0 16px 16px; }
+
+/* What the plays train (page for speech therapists and teachers). */
+.ak-skills { list-style: none; padding: 0; margin: 26px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.ak-skill { padding: 22px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.ak-skill p { font-size: 15px; color: var(--muted); }
+.ak-skill a { font-weight: 600; font-size: 15px; text-decoration: none; }
+
+/* Audiokiddo in short (questions page). */
+.ak-facts-list { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: 0; margin: 18px 0 28px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
+.ak-facts-list dt, .ak-facts-list dd { padding: 14px 18px; margin: 0; border-bottom: 1px solid var(--line); }
+.ak-facts-list dt { font-weight: 700; background: var(--sand); }
+.ak-facts-list dt:last-of-type, .ak-facts-list dd:last-of-type { border-bottom: 0; }
+
+/* A pack or set from the shop. */
+.ak-prod-notices:empty { display: none; }
+.ak-prod-notices { padding-top: 96px; }
+.ak-prod-hero { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); align-items: start; }
+.ak-prod-cover { box-shadow: var(--shadow-big); position: sticky; top: 96px; }
+.ak-prod-hero h1 { font-size: clamp(36px, 5vw, 60px); }
+.ak-prod-ways { display: grid; gap: 14px; margin-top: 24px; }
+.ak-prod-sub { padding: 20px 22px; border-radius: 22px; background: var(--sun-soft); box-shadow: inset 0 0 0 2px var(--sun); }
+.ak-prod-sub p { margin-bottom: 12px; }
+.ak-prod-way-h { font-weight: 700; margin: 0 0 8px !important; }
+.ak-prod-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.ak-prod-own { padding: 18px 22px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); display: grid; gap: 8px; justify-items: start; }
+.ak-prod-own .ak-price { font-size: 30px; font-weight: 700; margin: 0; }
+.ak-prod-own small { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.ak-prod-list { margin: 18px 0 0; }
+.ak-prod-list h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ak-prod-list h3 .ak-chip { margin: 0; background: var(--tone, var(--sand)); font-size: 12px; }
+.ak-prod-tracks { counter-reset: t; list-style: none; padding: 0; margin: 0; border-radius: 20px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
+.ak-prod-tracks li { counter-increment: t; display: flex; gap: 14px; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.ak-prod-tracks li:last-child { border-bottom: 0; }
+.ak-prod-tracks li span::before { content: counter(t, decimal-leading-zero); font-weight: 700; margin-right: 14px; color: var(--deep, var(--muted)); font-variant-numeric: tabular-nums; }
+.ak-prod-tracks time { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 15px; }
+.ak-free-tag { font-style: normal; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-deep); margin-left: 6px; white-space: nowrap; }
+.ak-prod-note { margin-top: 22px; padding: 16px 20px; border-radius: 18px; background: var(--sun-soft); }
+
+@media (max-width: 960px) {
+  .ak-packs { grid-template-columns: 1fr 1fr; }
+  .ak-skills { grid-template-columns: 1fr 1fr; }
+  .ak-prod-hero { grid-template-columns: 1fr; }
+  .ak-prod-cover { position: relative; top: 0; max-width: 420px; }
+}
+@media (max-width: 640px) {
+  .ak-info-hero-in { grid-template-columns: 1fr; }
+  .ak-szop-info img { width: 84px; }
+  .ak-packs, .ak-skills { grid-template-columns: 1fr; }
+  .ak-pack { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 4px 14px; align-items: start; }
+  .ak-pack-cover { grid-row: span 4; }
+  .ak-pack .ak-chip { margin-top: 0; }
+  .ak-play.ak-play-on-cover { width: 44px; height: 44px; right: 8px; bottom: 8px; }
+  .ak-pack-row { grid-template-columns: 1fr; }
+  .ak-pack-row .ak-pack-cover { max-width: 320px; }
+  .ak-cta-band { grid-template-columns: 1fr; text-align: center; padding: 24px 20px; }
+  .ak-cta-band img { width: 110px; margin: 0 auto; }
+  .ak-cta-band-btns { justify-content: center; }
+  .ak-cta-band-btns .ak-btn { flex: 1 1 100%; }
+  .ak-facts-list { grid-template-columns: 1fr; }
+  .ak-facts-list dt { border-bottom: 0; padding-bottom: 4px; }
+  .ak-facts-list dd { padding-top: 0; }
+  .ak-prod-btns .ak-btn { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ak-pack-q { animation: none; }
+}

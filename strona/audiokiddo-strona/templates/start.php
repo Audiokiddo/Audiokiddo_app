@@ -28,14 +28,6 @@ $posts = get_posts(['numberposts' => 3]);
 $live = ak_app_live();
 $arrow = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>';
-$icons = [
-    'start' => '<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
-    'mic' => '<rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
-    'play' => '<path d="M8 5.5v13l10-6.5z" fill="currentColor"/>',
-    'car' => '<path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
-    'moon' => '<path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
-    'gift' => '<path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-1.5-3-5-3-5-1s3 1 5 1zm0 0c1.5-3 5-3 5-1s-3 1-5 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
-];
 ?>
 
 <section class="ak-slide ak-hero" id="start" data-slide="Start" aria-labelledby="ak-h1">
@@ -128,28 +120,7 @@ $icons = [
                 <?php endforeach; ?>
             </ol>
         </div>
-        <div class="ak-phone-col">
-            <div class="ak-phone-wrap" data-reveal="scale">
-                <div class="ak-phone" id="ak-phone" role="tabpanel" aria-live="polite" aria-label="Ekran aplikacji Audiokiddo">
-                    <div class="ak-phone-screen">
-                        <span class="ak-phone-island" aria-hidden="true"></span>
-                        <?php foreach (ak_app_features() as $i => [, , $shot, $title]) : ?>
-                        <img class="ak-phone-shot<?php echo $i === 0 ? ' is-on' : ''; ?>" data-shot="<?php echo esc_attr($shot); ?>" src="<?php echo esc_url(ak_asset('img/app/' . $shot . '.webp')); ?>" alt="Ekran aplikacji Audiokiddo: <?php echo esc_attr($title); ?>" width="600" height="1304" loading="lazy">
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-            <div class="ak-feats" role="tablist" aria-label="Co potrafi aplikacja" data-reveal>
-                <?php foreach (ak_app_features() as $i => [$icon, $color, $shot, $title, $text]) : ?>
-                <button type="button" role="tab" class="ak-feat ak-c-<?php echo esc_attr($color); ?>" id="ak-feat-<?php echo esc_attr($shot); ?>" aria-controls="ak-phone" aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>" data-shot="<?php echo esc_attr($shot); ?>">
-                    <span class="ak-feat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><?php echo $icons[$icon]; // static ?></svg></span>
-                    <strong><?php echo esc_html($title); ?></strong>
-                    <span class="ak-feat-text"><?php echo esc_html($text); ?></span>
-                    <span class="ak-feat-progress" aria-hidden="true"><i></i></span>
-                </button>
-                <?php endforeach; ?>
-            </div>
-        </div>
+        <?php ak_phone_with_features(); ?>
     </div>
     <div class="ak-wrap">
         <div class="ak-most" data-reveal>

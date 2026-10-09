@@ -94,8 +94,9 @@ function plugin_dir_path($file) { return dirname($file) . '/'; }
 function plugin_dir_url($file) { return '/audiokiddo-strona/'; }
 function get_option($key, $default = false) { return $key === 'page_for_posts' ? 50 : ($GLOBALS['ak_stub']['options'][$key] ?? $default); }
 function home_url($path = '') { return 'https://audiokiddo.pl' . ($path ?: '/'); }
-function get_permalink($post = 0) { $id = is_object($post) ? $post->ID : (int) $post; return $id === 50 ? 'https://audiokiddo.pl/blog/' : ($id === 1 ? 'https://audiokiddo.pl/' : 'https://audiokiddo.pl/blog/wpis-' . $id . '/'); }
-function get_queried_object_id() { return $GLOBALS['ak_stub']['view'] === 'post' ? 11 : 1; }
+function get_permalink($post = 0) { $id = is_object($post) ? $post->ID : (int) $post; if (in_array($id, [371, 372, 373, 6235, 7339], true)) { return 'https://audiokiddo.pl/produkt/' . $id . '/'; } return $id === 50 ? 'https://audiokiddo.pl/blog/' : ($id === 1 ? 'https://audiokiddo.pl/' : 'https://audiokiddo.pl/blog/wpis-' . $id . '/'); }
+function get_queried_object_id() { return $GLOBALS['ak_stub']['view'] === 'post' ? 11 : ($GLOBALS['ak_stub']['view'] === 'product' ? (int) $GLOBALS['ak_stub']['product'] : 1); }
+function is_product() { return $GLOBALS['ak_stub']['view'] === 'product'; }
 function get_queried_object() { return $GLOBALS['ak_stub']['view'] === 'post' ? ak_stub_posts()[0] : null; }
 function is_page() { return in_array($GLOBALS['ak_stub']['view'], ['start'], true); }
 function is_singular($type = '') { return $GLOBALS['ak_stub']['view'] === 'post'; }
@@ -177,9 +178,10 @@ foreach ($argv as $arg) {
     }
 }
 if ($only === null) {
-    foreach (['start', 'blog', 'post', 'notfound', 'guide:pomysly-na-zabawy', 'guide:zabawy-bez-ekranu', 'guide:zagadki-dla-dzieci', 'guide:zabawy-dla-przedszkolakow'] as $view) {
+    foreach (['start', 'blog', 'post', 'notfound', 'guide:pomysly-na-zabawy', 'guide:zabawy-bez-ekranu', 'guide:zagadki-dla-dzieci', 'guide:zabawy-dla-przedszkolakow', 'guide:zabawy-dla-5-latka',
+        'info:jak-to-dziala', 'info:abonament', 'info:pakiety', 'info:pytania', 'info:logopedzi-i-pedagodzy', 'product:7339', 'product:6235'] as $view) {
         $html = shell_exec(sprintf('%s %s --view=%s 2>&1', escapeshellarg(PHP_BINARY), escapeshellarg(__FILE__), $view));
-        $name = $view === 'post' ? 'wpis' : str_replace('guide:', '', $view);
+        $name = $view === 'post' ? 'wpis' : str_replace(['guide:', 'info:', 'product:'], ['', '', 'produkt-'], $view);
         file_put_contents("$out/$name.html", $html);
         if (!preg_match('#</html>\s*$#', $html)) {
             fwrite(STDERR, "✗ $view: niepełna strona\n" . substr($html, -1500) . "\n");
@@ -198,19 +200,23 @@ if ($only === null) {
     $GLOBALS['ak_stub']['view'] = 'start';
     file_put_contents("$out/llms.txt", ak_llms_txt());
     $full = ak_llms_txt();
+    foreach (array_keys(ak_info_pages()) as $slug) { $full .= "\n" . ak_info_markdown($slug); }
     foreach (array_keys(ak_landings()) as $slug) { $full .= "\n" . ak_landing_markdown($slug); }
     file_put_contents("$out/llms-full.txt", $full);
     echo "✓ llms.txt, llms-full.txt\n";
     exit($failed ? 1 : 0);
 }
 
-if (str_starts_with($only, 'guide:')) {
-    $GLOBALS['ak_stub']['landing'] = substr($only, 6);
-    $only = 'guide';
+if (str_starts_with($only, 'guide:') || str_starts_with($only, 'info:')) {
+    [$only, $GLOBALS['ak_stub']['landing']] = explode(':', $only, 2);
+}
+if (str_starts_with($only, 'product:')) {
+    $GLOBALS['ak_stub']['product'] = substr($only, 8);
+    $only = 'product';
 }
 $GLOBALS["ak_stub"]["view"] = $only;
 $GLOBALS["wp_query"] = new WP_Query();
 do_action('init');
 do_action('template_redirect');
-$template = AK_DIR . 'templates/' . ['start' => 'start.php', 'blog' => 'blog.php', 'post' => 'single.php', 'notfound' => 'notfound.php', 'guide' => 'guide.php'][$only];
+$template = AK_DIR . 'templates/' . ['start' => 'start.php', 'blog' => 'blog.php', 'post' => 'single.php', 'notfound' => 'notfound.php', 'guide' => 'guide.php', 'info' => 'info.php', 'product' => 'product.php'][$only];
 require $template;
