@@ -777,3 +777,16 @@ begin
   assert (select count(*) from public.crm_items where data->>'key' = 'c-swieta-free') = 1, 'added once';
 end $$;
 select 'christmas episodes tests passed';
+
+-- Social content from the content base.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' like 's-post-%' and kind = 'calendar') = 10, 'ten reels';
+  assert (select (data->>'hours')::numeric from public.crm_items where data->>'key' = 's-film1') = 4, 'filming hours';
+end $$;
+\ir ../migrations/20261019000005_social_content.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' like 's-%') = 19, 'added once';
+end $$;
+select 'social content tests passed';
