@@ -100,3 +100,43 @@ function ak_product_page_schema(): array
         ],
     ];
 }
+
+/** Parents' words about the pack (or about any pack in the set). */
+function ak_product_reviews(array $kind): array
+{
+    $titles = $kind['type'] === 'pack'
+        ? [$kind['data']['title']]
+        : array_map(fn($k) => ak_packs()[$k]['title'], $kind['data']['packs']);
+    return array_values(array_filter(ak_reviews(), function ($r) use ($titles) {
+        foreach ($titles as $t) {
+            if (str_contains($r['about'], $t)) {
+                return true;
+            }
+        }
+        return false;
+    }));
+}
+
+/**
+ * The sets on sale: each with its offer, the price of its packs bought one by one and the saving.
+ * With a pack key, only the sets that contain that pack.
+ *
+ * @return array<int,array{title:string,cover:string,desc:string,packs:array,offer:array,sum:float,save:float}>
+ */
+function ak_bundle_offers(string $with = ''): array
+{
+    $out = [];
+    foreach (ak_bundles() as $b) {
+        $offer = ak_offer($b['woo']);
+        if (!$offer || ($with !== '' && !in_array($with, $b['packs'], true))) {
+            continue;
+        }
+        $sum = 0.0;
+        foreach ($b['packs'] as $key) {
+            $o = ak_offer(ak_packs()[$key]['woo']);
+            $sum += $o ? $o['price'] : 0;
+        }
+        $out[] = $b + ['offer' => $offer, 'sum' => $sum, 'save' => max(0, $sum - $offer['price'])];
+    }
+    return $out;
+}

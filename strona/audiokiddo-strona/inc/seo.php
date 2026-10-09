@@ -299,20 +299,8 @@ function ak_schema(): array
             ];
         }
 
-        foreach (ak_packs() as $id => $pack) {
-            $offer = ak_offer($pack['woo']);
-            if (!$offer) {
-                continue;
-            }
-            $graph[] = ak_product_schema('Audiokiddo – pakiet ' . $pack['title'], $pack['lead'], ak_img($pack['cover']), $offer, $pack['age_from']);
-        }
-        foreach (ak_bundles() as $bundle) {
-            $offer = ak_offer($bundle['woo']);
-            if ($offer) {
-                $graph[] = ak_product_schema('Audiokiddo – ' . mb_strtolower($bundle['title']), $bundle['desc'], ak_img($bundle['cover']), $offer, 4);
-            }
-        }
-        $graph[] = ak_faq_schema(array_map(fn($f) => ['q' => $f[0], 'a' => $f[1]], ak_faq()));
+        // Prices of the packs live on their own pages (templates/product.php), not here.
+        $graph[] = ak_faq_schema(array_map(fn($f) => ['q' => $f[0], 'a' => $f[1]], ak_home_faq()));
     }
 
     if (ak_view() === 'post') {

@@ -28,11 +28,12 @@ $links = array_filter([
             <a href="<?php echo esc_url(ak_blog_url()); ?>">Blog</a>
             <a href="<?php echo esc_url(ak_info_url('pytania')); ?>">Pytania i odpowiedzi</a>
             <a href="<?php echo esc_url(ak_info_url('logopedzi-i-pedagodzy')); ?>">Dla logopedów i pedagogów</a>
+            <a href="<?php echo esc_url(ak_info_url('o-nas')); ?>">O nas</a>
             <?php if (ak_has_woo()) : ?><a href="<?php echo esc_url(ak_cart_url()); ?>">Koszyk</a><?php endif; ?>
         </nav>
         <nav aria-label="Pomysły na zabawy">
             <p class="ak-foot-h">Pomysły na zabawy</p>
-            <?php foreach (array_slice(ak_landings(), 0, 8, true) as $slug => $guide) : ?><a href="<?php echo esc_url(ak_landing_url($slug)); ?>"><?php echo esc_html($guide['anchor']); ?></a><?php endforeach; ?>
+            <?php foreach (array_intersect_key(ak_landings(), array_flip(['zabawy-bez-ekranu', 'dziecko-sie-nudzi', 'samodzielna-zabawa-dziecka', 'jak-zajac-dziecko-gdy-pracujesz', 'jak-zajac-dziecko-w-samochodzie', 'zabawy-dla-dzieci-w-domu', 'zabawy-logopedyczne', 'zagadki-dla-dzieci'])) as $slug => $guide) : ?><a href="<?php echo esc_url(ak_landing_url($slug)); ?>"><?php echo esc_html($guide['anchor']); ?></a><?php endforeach; ?>
             <a href="<?php echo esc_url(ak_landing_url()); ?>">Wszystkie poradniki</a>
         </nav>
         <div>

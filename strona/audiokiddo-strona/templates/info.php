@@ -11,7 +11,6 @@ $page = ak_info_pages()[$slug];
 $packs = ak_packs();
 $price = ak_pricing();
 $arrow = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-$age_pages = ['3–5 lat' => ['zabawy-dla-3-latka', 'zabawy-dla-4-latka', 'zabawy-dla-5-latka'], '5–7 lat' => ['zabawy-dla-5-latka', 'zabawy-dla-6-latka', 'zabawy-dla-7-latka'], '7–9 lat' => ['zabawy-dla-7-latka', 'zabawy-dla-8-latka', 'zabawy-dla-dzieci-7-9-lat']];
 require AK_DIR . 'parts/header.php';
 ?>
 <article class="ak-info ak-info-<?php echo esc_attr($slug); ?>" aria-labelledby="ak-info-h">
@@ -29,6 +28,7 @@ require AK_DIR . 'parts/header.php';
                 'pakiety' => ['klaszcze', 'Kliknij okładkę. Posłuchaj, zanim cokolwiek postanowisz.'],
                 'pytania' => ['zdziwiony', 'Pytaj śmiało. Na anulowanie też mamy odpowiedź.'],
                 'logopedzi-i-pedagodzy' => ['nasluchuje', 'Ja tylko pilnuję porządku. Fachowcy mówią niżej.'],
+                'o-nas' => ['zadowolony', 'To moi ludzie. Ja tu tylko pilnuję jakości.'],
             ][$slug];
             ak_szop($hero_szop[0], $hero_szop[1], 'ak-szop-info');
             ?>
@@ -69,11 +69,11 @@ require AK_DIR . 'parts/header.php';
         <div class="ak-wrap">
             <h2 id="ak-age-h" data-reveal>Dla dzieci od <span class="ak-hl-word">3 do 9 lat</span></h2>
             <ul class="ak-ages">
-                <?php foreach (ak_ages() as $i => [$range, $color, $line]) : ?>
+                <?php foreach (ak_ages() as $i => [$range, $color, $line, , $age_guides]) : ?>
                 <li class="ak-age ak-c-<?php echo esc_attr($color); ?>" data-reveal style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
                     <p class="ak-age-range"><?php echo esc_html($range); ?></p>
                     <p><?php echo esc_html($line); ?></p>
-                    <p class="ak-age-links"><?php foreach (array_unique($age_pages[$range]) as $s) : ?><a href="<?php echo esc_url(ak_landing_url($s)); ?>"><?php echo esc_html(ak_landings()[$s]['anchor']); ?></a><?php endforeach; ?></p>
+                    <p class="ak-age-links"><?php foreach ($age_guides as $s) : ?><a href="<?php echo esc_url(ak_landing_url($s)); ?>"><?php echo esc_html(ak_landings()[$s]['anchor']); ?></a><?php endforeach; ?></p>
                 </li>
                 <?php endforeach; ?>
             </ul>
@@ -254,6 +254,58 @@ require AK_DIR . 'parts/header.php';
         </div>
     </section>
 
+<?php elseif ($slug === 'o-nas') : ?>
+    <section class="ak-info-sec" aria-label="Nela i Dawid">
+        <div class="ak-wrap">
+            <div class="ak-team">
+                <?php foreach (['nela', 'dawid'] as $i => $key) : $p = ak_people()[$key]; ?>
+                <figure class="ak-person ak-person-<?php echo esc_attr($key); ?>" data-reveal style="--d:<?php echo esc_attr(0.12 * $i); ?>s">
+                    <div class="ak-person-img"><img src="<?php echo esc_url($p['photo']); ?>" alt="<?php echo esc_attr($p['full']); ?>, Audiokiddo" width="469" height="397" loading="lazy"></div>
+                    <figcaption><strong><?php echo esc_html($p['full']); ?></strong><span><?php echo esc_html($p['role']); ?></span></figcaption>
+                </figure>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <section class="ak-info-sec" aria-labelledby="ak-story-h">
+        <div class="ak-wrap ak-narrow">
+            <h2 id="ak-story-h" class="ak-sr">Nasza historia</h2>
+            <?php foreach (ak_about_story() as [$h, $p]) : ?>
+            <h3 class="ak-story-h" data-reveal><?php echo esc_html($h); ?></h3>
+            <p class="ak-story-p" data-reveal><?php echo esc_html($p); ?></p>
+            <?php endforeach; ?>
+        </div>
+    </section>
+
+    <section class="ak-info-sec ak-rules-sec" aria-label="Nasze zasady">
+        <div class="ak-wrap ak-rules">
+            <div class="ak-rule ak-rule-tablet" data-reveal="left">
+                <h2>Tak, wiemy, że <span class="ak-hl-word">istnieje tablet.</span></h2>
+                <p class="ak-rule-lead">Nie przyjechaliśmy go skonfiskować.</p>
+                <p>Czasem ratuje sytuację. Czasem bajka jest dokładnie tym, czego potrzebujecie. Audiokiddo jest po prostu jeszcze jedną opcją. Taką, przy której dziecko zamiast patrzeć w ekran, <strong>robi coś w prawdziwym świecie.</strong></p>
+                <p class="ak-small">A kto zna serię z Don Tabletem, ten już ma bonus.</p>
+                <?php ak_szop('zdziwiony', 'Tablet i ja mamy skomplikowane relacje zawodowe.', 'ak-szop-rule'); ?>
+            </div>
+            <div class="ak-rule ak-rule-privacy" data-reveal="right">
+                <h2>Dziecko nie musi pracować na <span class="ak-hl-word">zasięgi rodziców.</span></h2>
+                <p>Dlatego nie budujemy Audiokiddo na publikowaniu twarzy dzieci. Pokazujemy ręce, plecy, chaos, przedmioty i historie. Dzieciństwo można opowiadać bez robienia z dziecka contentu.</p>
+                <ul class="ak-ticks">
+                    <li>Bez reklam i bez treści nieodpowiednich dla dzieci.</li>
+                    <li>Zakupy i linki są za bramką dla rodzica.</li>
+                    <li>Mikrofon tylko za Twoją zgodą. Nic nie jest nagrywane.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="ak-info-sec" aria-labelledby="ak-contact-h">
+        <div class="ak-wrap ak-narrow">
+            <h2 id="ak-contact-h" data-reveal>Napisz do nas. <span class="ak-hl-word">Odpisujemy sami.</span></h2>
+            <p data-reveal>Pomysł na zabawę, pytanie o zamówienie, propozycja współpracy z przedszkolem albo gabinetem: <a href="mailto:<?php echo esc_attr(ak_opt('contact_email')); ?>"><?php echo esc_html(ak_opt('contact_email')); ?></a>.</p>
+        </div>
+    </section>
+
 <?php elseif ($slug === 'logopedzi-i-pedagodzy') : ?>
     <section class="ak-info-sec" aria-label="Opinie specjalistów">
         <div class="ak-wrap">
@@ -317,6 +369,7 @@ require AK_DIR . 'parts/header.php';
             'abonament' => ['Nie musisz płacić, żeby sprawdzić Audiokiddo.', 'Najpierw pobierz aplikację i odpal darmowe zabawy. Abonament wybierzesz w aplikacji, kiedy dzieciak poprosi o więcej.', ak_info_url('pytania'), 'Pytania o płatności'],
             'pakiety' => ['Wszystkie pakiety w jednym abonamencie.', 'Plus nowy pakiet co miesiąc i darmowe zabawy na start w aplikacji.', ak_info_url('abonament'), 'Zobacz abonament'],
             'pytania' => ['Najszybciej sprawdzisz to w praktyce.', 'Pobierz Audiokiddo i odpal darmową zabawę. Pięć minut i wiesz, czy dziecko się wkręci.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
+            'o-nas' => ['Zobacz, co zrobiliśmy.', 'Pobierz Audiokiddo i odpal darmową zabawę. Szop’en już czeka.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
             'logopedzi-i-pedagodzy' => ['Sprawdź zabawy, które polecają specjaliści.', 'Darmowe zabawy na start w aplikacji, pełna biblioteka w abonamencie.', ak_landing_url('zabawy-logopedyczne'), 'Zabawy logopedyczne'],
         ][$slug];
         ak_cta_band(...$bands);

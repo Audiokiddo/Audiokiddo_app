@@ -41,6 +41,13 @@ function ak_info_pages(): array
             'h1' => 'Pytania, które i tak by padły',
             'lead' => 'Zebraliśmy wszystko, o co pytają rodzice: o aplikację, abonament, pakiety ze sklepu i bezpieczeństwo. Nie ma tu Twojego pytania? Napisz do nas, odpisujemy sami.',
         ],
+        'o-nas' => [
+            'anchor' => 'O nas',
+            'title' => 'O nas: Nela i Dawid, rodzice, którzy tworzą Audiokiddo',
+            'desc' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Sami piszemy i nagrywamy audiozabawy. Nasze zasady: bez reklam i bez twarzy dzieci.',
+            'h1' => 'Kto stoi za Audiokiddo',
+            'lead' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy, produkt i cały świat marki, Dawid buduje technologię. Oboje podkładamy głosy. Piszemy, nagrywamy i odpisujemy na maile sami.',
+        ],
         'logopedzi-i-pedagodzy' => [
             'anchor' => 'Dla logopedów i pedagogów',
             'title' => 'Audiozabawy polecane przez logopedów i pedagogów',
@@ -96,7 +103,7 @@ function ak_info_schema(string $slug): array
     $page = ak_info_pages()[$slug];
     $url = ak_info_url($slug);
     $graph = [[
-        '@type' => $slug === 'pytania' ? 'FAQPage' : 'WebPage',
+        '@type' => ['pytania' => 'FAQPage', 'o-nas' => 'AboutPage'][$slug] ?? 'WebPage',
         'name' => $page['h1'],
         'description' => $page['desc'],
         'url' => $url,
@@ -134,6 +141,14 @@ function ak_info_schema(string $slug): array
             'name' => 'Pakiety audiozabaw Audiokiddo',
             'itemListElement' => array_map(fn($it, $i) => ['@type' => 'ListItem', 'position' => $i + 1, 'item' => $it], $items, array_keys($items)),
         ];
+    }
+    if ($slug === 'o-nas') {
+        // The people behind the brand (the same @id the organisation names as its founders).
+        $graph[0]['mainEntity'] = ['@id' => ak_org_id()];
+        foreach (['nela', 'dawid'] as $key) {
+            $p = ak_people()[$key];
+            $graph[] = ['@type' => 'Person', '@id' => home_url('/#' . $key), 'name' => $p['full'], 'description' => $p['role'], 'image' => $p['photo'], 'url' => $url, 'worksFor' => ['@id' => ak_org_id()]];
+        }
     }
     if ($slug === 'logopedzi-i-pedagodzy') {
         foreach (ak_specialists() as $s) {
@@ -210,10 +225,27 @@ function ak_info_markdown(string $slug): string
             $out[] = '';
         }
     }
+    if ($slug === 'o-nas') {
+        foreach (ak_about_story() as [$h, $p]) {
+            $out[] = '### ' . $h;
+            $out[] = $p;
+            $out[] = '';
+        }
+    }
     if ($slug === 'pakiety') {
         foreach (ak_packs() as $pack) {
             $out[] = '- **Pakiet ' . $pack['title'] . '** (' . ak_age($pack) . ', ' . count($pack['plays']) . ' zabaw): ' . $pack['lead'] . ' Ćwiczy: ' . $pack['trains'] . '.';
         }
     }
     return implode("\n", $out) . "\n";
+}
+
+/** The story on /o-nas/ in the founders' words (Nela's copy): heading and paragraph. */
+function ak_about_story(): array
+{
+    return [
+        ['Dwie osoby, jedna aplikacja, potem dziecko', 'Dwie osoby uznały, że dobrym pomysłem będzie zrobienie aplikacji dla dzieci. Potem same zostały rodzicami. Audiokiddo zaczęliśmy tworzyć jeszcze zanim urodził się nasz syn. Dawid budował technologię i użyczał głosu. Nela też użyczała głosu, ale oprócz tego wymyślała zabawy, produkt i cały świat marki.'],
+        ['Problem, który nie jest niszowy', 'Potem sami weszliśmy w rodzicielstwo i odkryliśmy, że „potrzebuję czymś zająć dziecko na 15 minut” nie jest niszowym problemem badawczym. No więc budujemy dalej: każdą zabawę piszemy i nagrywamy sami, po polsku, i słuchamy, co mówią o niej rodzice i specjaliści.'],
+        ['Szop’en, pełnoetatowy pracownik', 'Maskotką Audiokiddo jest szop Szop’en. Nie ma osobnej zakładki „poznaj maskotkę”: pojawia się tam, gdzie jest potrzebny, i mówi jedno suche zdanie. W aplikacji prowadzi tryb „W drogę” i mówi dziecku „dobranoc”.'],
+    ];
 }

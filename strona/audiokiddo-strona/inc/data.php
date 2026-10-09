@@ -192,31 +192,47 @@ function ak_pricing(): array
     ];
 }
 
-/** "Kiedy odpalić Audiokiddo?" Szop's types: the moment and his line. */
+/**
+ * "Kiedy odpalić Audiokiddo?" Szop's types: the moment, his line, a short label for the picker on
+ * the home page and the guide with more ideas for that moment (inc/landings.php).
+ */
 function ak_situations(): array
 {
     return [
-        ['Kiedy robisz obiad', 'Po raz piąty słyszysz: „co mam robić?”. Ty masz nóż w ręce i cebulę na patelni. To nie jest moment na wymyślanie zabawy. Odpal Audiokiddo.'],
-        ['Kiedy musisz zrobić jedną rzecz do końca', 'Mail. Telefon. Prysznic. Cokolwiek. Młody wyczuje ten moment z dokładnością urządzenia wojskowego. Audiokiddo. Zanim podejdzie.'],
-        ['Kiedy wracacie z przedszkola', 'Ty po całym dniu. Ono po całym dniu. Tylko jedno z Was nadal ma energię, żeby biegać po mieszkaniu z plastikowym dinozaurem. Odpal Audiokiddo.'],
-        ['Kiedy jedziecie samochodem', 'Pierwsze „daleko jeszcze?” padło, zanim zdążyliście wyjechać z miasta. Nie będę oceniał. Mamy zabawy na drogę.'],
-        ['Kiedy pada', 'Plac zabaw odpada. 48 zabawek w pokoju też najwyraźniej. Klasyka. Odpal Audiokiddo.'],
-        ['Kiedy słyszysz „nudzi mi się”', 'Dzieciak się nudzi? W końcu problem, na który mamy gotową odpowiedź.'],
-        ['Kiedy potrzebujesz 15 minut spokoju', 'Nie musisz w tym czasie rozwijać firmy, ćwiczyć ani gotować obiadu na trzy dni. Możesz po prostu usiąść. Audiokiddo zajmie się resztą.'],
-        ['Kiedy skończyły Ci się pomysły', 'Kredki były. Klocki były. „Pobaw się zabawkami” też było. Dobra. Odpal Audiokiddo.'],
-        ['Kiedy dziś naprawdę nie masz mocy na wspólną zabawę', 'Kochasz go. To nie znaczy, że o 18:37 masz ochotę po raz czwarty być smokiem. Odpal Audiokiddo.'],
-        ['Kiedy robi się podejrzanie cicho', 'Krąży bez celu. Zajrzał za kanapę. Mamy może trzy minuty, zanim zacznie kombinować.'],
+        ['Kiedy robisz obiad', 'Po raz piąty słyszysz: „co mam robić?”. Ty masz nóż w ręce i cebulę na patelni. To nie jest moment na wymyślanie zabawy. Odpal Audiokiddo.', 'Robisz obiad', 'jak-zajac-dziecko-gdy-pracujesz'],
+        ['Kiedy musisz zrobić jedną rzecz do końca', 'Mail. Telefon. Prysznic. Cokolwiek. Młody wyczuje ten moment z dokładnością urządzenia wojskowego. Audiokiddo. Zanim podejdzie.', 'Musisz coś skończyć', 'jak-zajac-dziecko-gdy-pracujesz'],
+        ['Kiedy wracacie z przedszkola', 'Ty po całym dniu. Ono po całym dniu. Tylko jedno z Was nadal ma energię, żeby biegać po mieszkaniu z plastikowym dinozaurem. Odpal Audiokiddo.', 'Po przedszkolu', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+        ['Kiedy jedziecie samochodem', 'Pierwsze „daleko jeszcze?” padło, zanim zdążyliście wyjechać z miasta. Nie będę oceniał. Mamy zabawy na drogę.', 'W samochodzie', 'jak-zajac-dziecko-w-samochodzie'],
+        ['Kiedy pada', 'Plac zabaw odpada. 48 zabawek w pokoju też najwyraźniej. Klasyka. Odpal Audiokiddo.', 'Pada deszcz', 'zabawy-dla-dzieci-w-domu'],
+        ['Kiedy słyszysz „nudzi mi się”', 'Dzieciak się nudzi? W końcu problem, na który mamy gotową odpowiedź.', '„Nudzi mi się”', 'dziecko-sie-nudzi'],
+        ['Kiedy potrzebujesz 15 minut spokoju', 'Nie musisz w tym czasie rozwijać firmy, ćwiczyć ani gotować obiadu na trzy dni. Możesz po prostu usiąść. Audiokiddo zajmie się resztą.', '15 minut spokoju', 'samodzielna-zabawa-dziecka'],
+        ['Kiedy skończyły Ci się pomysły', 'Kredki były. Klocki były. „Pobaw się zabawkami” też było. Dobra. Odpal Audiokiddo.', 'Brak pomysłów', 'zabawy-bez-ekranu'],
+        ['Kiedy dziś naprawdę nie masz mocy na wspólną zabawę', 'Kochasz go. To nie znaczy, że o 18:37 masz ochotę po raz czwarty być smokiem. Odpal Audiokiddo.', 'Zero mocy na zabawę', 'samodzielna-zabawa-dziecka'],
+        ['Kiedy robi się podejrzanie cicho', 'Krąży bez celu. Zajrzał za kanapę. Mamy może trzy minuty, zanim zacznie kombinować.', 'Podejrzanie cicho', 'zagadki-dla-dzieci'],
     ];
 }
 
-/** "Jak to działa?" in three steps: title and what happens. */
+/**
+ * "Jak to działa?" in three steps: title, what happens, the short version for the home page and
+ * the app screen shown beside it (assets/img/app).
+ */
 function ak_steps(): array
 {
     return [
-        ['Pobierasz Audiokiddo', 'Ściągasz aplikację z App Store albo Google Play. W środku od razu znajdziesz darmowe zabawy, więc nie musisz kupować abonamentu, żeby sprawdzić, czy to w ogóle zadziała u Was.'],
-        ['Wybierasz zabawę', 'Podajesz wiek i wybierasz coś, na co akurat jest ochota: zagadki, ruch, wyobraźnia, śledztwo, fabuła albo misja na konkretną sytuację. Przy każdej zabawie od razu widzisz, dla jakiego wieku jest, ile trwa i czy potrzebujesz czegoś dodatkowego.'],
-        ['Naciskasz play', 'I od tego momentu audio prowadzi zabawę. Mówi dziecku, co się dzieje, zadaje pytania i daje kolejne zadania. A telefon? Może leżeć na stole. Cała zabawa dzieje się poza ekranem.'],
+        ['Pobierasz Audiokiddo', 'Ściągasz aplikację z App Store albo Google Play. W środku od razu znajdziesz darmowe zabawy, więc nie musisz kupować abonamentu, żeby sprawdzić, czy to w ogóle zadziała u Was.',
+            'Z App Store albo Google Play. Darmowe zabawy czekają w środku, więc sprawdzisz, czy to u Was zadziała, zanim cokolwiek kupisz.', 'prezent'],
+        ['Wybierasz zabawę', 'Podajesz wiek i wybierasz coś, na co akurat jest ochota: zagadki, ruch, wyobraźnia, śledztwo, fabuła albo misja na konkretną sytuację. Przy każdej zabawie od razu widzisz, dla jakiego wieku jest, ile trwa i czy potrzebujesz czegoś dodatkowego.',
+            'Podajesz wiek i wybierasz: zagadki, ruch, wyobraźnię albo śledztwo. Od razu widzisz, ile trwa i czy trzeba czegoś dodatkowego.', 'start'],
+        ['Naciskasz play', 'I od tego momentu audio prowadzi zabawę. Mówi dziecku, co się dzieje, zadaje pytania i daje kolejne zadania. A telefon? Może leżeć na stole. Cała zabawa dzieje się poza ekranem.',
+            'Głos prowadzi zabawę: mówi, co się dzieje, pyta i daje zadania. Dziecko odpowiada, szuka i się rusza. Telefon leży na stole.', 'odtwarzacz'],
     ];
+}
+
+/** The questions the home page shows (all of them are on /pytania/). */
+function ak_home_faq(): array
+{
+    $faq = ak_faq();
+    return [$faq[1], $faq[2], $faq[5], $faq[6], $faq[7]];
 }
 
 /** What the child does during a play (the list under step 3). */
@@ -225,13 +241,16 @@ function ak_kid_can(): array
     return ['odpowiadać', 'szukać rzeczy', 'ruszać się', 'podejmować decyzje', 'rozwiązywać zagadki', 'wymyślać własne rozwiązania'];
 }
 
-/** Age groups: range, colour and the line. */
+/**
+ * Age groups: range, colour, the line, the packs that fit and the age guides (the picker on the
+ * home page and the cards on /jak-to-dziala/).
+ */
 function ak_ages(): array
 {
     return [
-        ['3–5 lat', 'sun', 'Dużo ruchu. Krótkie instrukcje.'],
-        ['5–7 lat', 'teal', 'Więcej zagadek, decyzji i pytań, na które dziecko zna odpowiedź szybciej od Ciebie.'],
-        ['7–9 lat', 'lav', 'Śledztwa, dłuższe fabuły i misje dla ludzi, którzy już potrafią powiedzieć „to nie ma sensu” i oczekują wyjaśnień.'],
+        ['3–5 lat', 'sun', 'Dużo ruchu. Krótkie instrukcje.', ['wyobraznia', 'slowa-i-wiedza'], ['zabawy-dla-3-latka', 'zabawy-dla-4-latka', 'zabawy-dla-5-latka']],
+        ['5–7 lat', 'teal', 'Więcej zagadek, decyzji i pytań, na które dziecko zna odpowiedź szybciej od Ciebie.', ['slowa-i-wiedza', 'wyobraznia'], ['zabawy-dla-5-latka', 'zabawy-dla-6-latka', 'zabawy-dla-7-latka']],
+        ['7–9 lat', 'lav', 'Śledztwa, dłuższe fabuły i misje dla ludzi, którzy już potrafią powiedzieć „to nie ma sensu” i oczekują wyjaśnień.', ['detektyw', 'slowa-i-wiedza'], ['zabawy-dla-7-latka', 'zabawy-dla-8-latka', 'zabawy-dla-dzieci-7-9-lat']],
     ];
 }
 
@@ -307,8 +326,10 @@ function ak_specialists(): array
 {
     return [
         ['name' => 'Julia Kasielska', 'role' => 'Fizjoterapeutka dziecięca, WCF Rehabilitacja Dzieci i Dorosłych', 'photo' => 'kasielska', 'color' => 'teal',
+            'short' => 'Ich pakiety to świetna, zdrowa alternatywa: dzieci są zaangażowane, myślą, słuchają, rozwiązują zadania, ale nie są przebodźcowane.',
             'text' => 'Coraz więcej dzieci spędza długie godziny przed ekranem – i niestety coraz częściej widać tego skutki. **Pogarszająca się postawa, napięcia mięśniowe, trudności z koncentracją czy nadpobudliwość to tylko niektóre z nich.** Dlatego bardzo doceniam to, co robi Audiokiddo. Ich pakiety to świetna, zdrowa alternatywa – dzieci są zaangażowane, myślą, słuchają, rozwiązują zadania, ale nie są przebodźcowane. To forma zabawy, która naprawdę wspiera rozwój i pozwala odpocząć od ekranów.'],
         ['name' => 'Maria Lewandowska-Nawrocka', 'role' => 'Logopeda, pedagog, nauczyciel wychowania przedszkolnego i wczesnoszkolnego, specjalista ds. rozwoju dziecka', 'photo' => 'lewandowska', 'color' => 'lav',
+            'short' => 'Rozwijają mowę, myślenie, koncentrację i budują w dzieciach pewność siebie.',
             'text' => 'W świecie pełnym bodźców Audiokiddo tworzy przestrzeń do aktywnego, wartościowego rozwoju – bez ekranów, za to z ogromną dawką wyobraźni i kreatywności. Jako logopeda i pedagog widzę w ich audiozabawach wielki potencjał – **rozwijają mowę, myślenie, koncentrację i budują w dzieciach pewność siebie.** To świetne wsparcie dla rodziców i nauczycieli, bliskie rzeczywistym potrzebom rozwojowym dzieci.'],
     ];
 }
@@ -368,27 +389,28 @@ function ak_people(): array
 }
 
 /**
- * Szop'en points at the few things that matter, not at every slide. For each stop: his pose and
- * one short line about one element (a CSS selector inside the slide; a missing element is skipped).
+ * Szop'en drops one dry line in his bubble as each section of the home page comes into view.
+ * For each section: his pose, the element he talks about (a CSS selector inside the section; a
+ * missing one is skipped), the line, and whether to light that element up (only where there is
+ * something to click). His lines never repeat the section's own words.
  */
 function ak_tour(): array
 {
     return [
-        'start' => ['chytry', [
-            ['.ak-hero-btns', 'Psst. Pokażę Ci tylko to, co naprawdę ważne. Przewijaj spokojnie, odezwę się sam.'],
-        ]],
-        'jak-to-dziala' => ['zadowolony', [
-            ['.ak-phone', 'Tak wygląda aplikacja. Kliknij funkcję obok, a telefon pokaże, jak to działa.'],
-        ]],
-        'w-akcji' => ['nasluchuje', [
-            ['.ak-video:first-child', 'Teraz serio. Włącz film i zobacz, co robi dziecko. Telefon leży sobie z boku.'],
-        ]],
-        'cennik' => ['chytry', [
-            ['.ak-price-card-best', 'Roczny wychodzi najtaniej. Dzieciak raczej nie przestanie się nudzić po miesiącu.'],
-        ]],
-        'pobierz' => ['prosi', [
-            ['.ak-stores', 'Odpal darmowe zabawy. Jak nie zadziała, udajemy, że się nie znamy.'],
-        ]],
+        'start' => ['chytry', [['.ak-hero-btns', 'Psst. Przewijaj spokojnie. Odezwę się, jak będzie coś ważnego.', false]]],
+        'nie-audiobook' => ['nasluchuje', [['.ak-listen', 'Kliknij play przy okładce. Pół minuty i wszystko jasne.', true]]],
+        'kiedy' => ['chytry', [['.ak-moments-pick', 'Wybierz sytuację. Na każdą mam gotową odpowiedź.', true]]],
+        'jak-to-dziala' => ['zadowolony', [['.ak-howto-steps', 'Kliknij krok, a telefon pokaże, jak to wygląda.', false]]],
+        'w-akcji' => ['nasluchuje', [['.ak-video:first-child', 'Teraz serio. Włącz film. Telefon leży sobie z boku.', false]]],
+        'wiek' => ['zdziwiony', [['.ak-agepick-tabs', 'Ile lat ma Twój dzieciak? Kliknij, dobiorę zabawy.', true]]],
+        'pobierz' => ['prosi', [['.ak-stores', 'Odpal. Jak nie zadziała, udajemy, że się nie znamy.', false]]],
+        'opinie' => ['klaszcze', [['.ak-reviews', 'Nie wierz mi na słowo. Ja jestem stronniczy, oni nie.', false]]],
+        'cennik' => ['chytry', [['.ak-price-card-best', 'Roczny wychodzi najtaniej. Tak tylko mówię.', false]]],
+        'tablet' => ['zdziwiony', [['.ak-rules', 'Spokojnie, tabletu nie zabieramy. Najwyżej dajemy mu wolne.', false]]],
+        'o-nas' => ['zadowolony', [['.ak-about-mini', 'To moi ludzie. Piszą, nagrywają i odpisują na maile. Ja pilnuję jakości.', false]]],
+        'pytania' => ['klaszcze', [['.ak-faq', 'Na anulowanie też mamy odpowiedź. Bez szopa pod chatą.', false]]],
+        'start-aplikacji' => ['prosi', [['.ak-free-form', 'Wolisz maila? Wyślę trzy zabawy. No dobra, Nela wyśle.', false]]],
+        'koniec' => ['klaszcze', [['.ak-end-btns', 'Następne „nudzi mi się” jest nasze.', false]]],
     ];
 }
 

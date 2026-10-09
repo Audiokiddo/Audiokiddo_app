@@ -162,7 +162,7 @@ function wc_get_product($id)
 }
 function wc_get_price_to_display($product, $args = []) { return (float) ($args['price'] ?? $product->get_price()); }
 function wc_get_cart_url() { return 'https://audiokiddo.pl/koszyk/'; }
-function checked($a, $b, $echo) { return $a == $b ? ' checked' : ''; }
+function checked($a, $b = true, $echo = true) { $r = $a == $b ? " checked='checked'" : ''; if ($echo) { echo $r; } return $r; }
 
 // --- Render ---------------------------------------------------------------------------------
 require $root . '/strona/audiokiddo-strona/audiokiddo-strona.php';
@@ -178,8 +178,8 @@ foreach ($argv as $arg) {
     }
 }
 if ($only === null) {
-    foreach (['start', 'blog', 'post', 'notfound', 'guide:pomysly-na-zabawy', 'guide:zabawy-bez-ekranu', 'guide:zagadki-dla-dzieci', 'guide:zabawy-dla-przedszkolakow', 'guide:zabawy-dla-5-latka',
-        'info:jak-to-dziala', 'info:abonament', 'info:pakiety', 'info:pytania', 'info:logopedzi-i-pedagodzy', 'product:7339', 'product:6235'] as $view) {
+    foreach (['start', 'blog', 'post', 'notfound', 'guide:pomysly-na-zabawy', 'guide:zabawy-bez-ekranu', 'guide:zagadki-dla-dzieci', 'guide:zabawy-dla-przedszkolakow', 'guide:zabawy-dla-5-latka', 'guide:dziecko-sie-nudzi', 'guide:samodzielna-zabawa-dziecka', 'guide:jak-zajac-dziecko-gdy-pracujesz',
+        'info:jak-to-dziala', 'info:abonament', 'info:pakiety', 'info:pytania', 'info:logopedzi-i-pedagodzy', 'info:o-nas', 'product:7339', 'product:372', 'product:6235'] as $view) {
         $html = shell_exec(sprintf('%s %s --view=%s 2>&1', escapeshellarg(PHP_BINARY), escapeshellarg(__FILE__), $view));
         $name = $view === 'post' ? 'wpis' : str_replace(['guide:', 'info:', 'product:'], ['', '', 'produkt-'], $view);
         file_put_contents("$out/$name.html", $html);

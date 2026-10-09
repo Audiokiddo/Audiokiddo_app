@@ -12,7 +12,7 @@ if (!ak_opt('tour')) {
 $poses = ['zadowolony', 'chytry', 'klaszcze', 'nasluchuje', 'zdziwiony', 'prosi'];
 $tour = [];
 foreach (ak_tour() as $slide => [$pose, $lines]) {
-    $tour[$slide] = ['pose' => $pose, 'lines' => array_map(fn($l) => ['at' => $l[0], 'say' => $l[1]], $lines)];
+    $tour[$slide] = ['pose' => $pose, 'lines' => array_map(fn($l) => ['at' => $l[0], 'say' => $l[1], 'spot' => $l[2] ?? false], $lines)];
 }
 ?>
 <nav class="ak-dots" aria-label="Slajdy strony"></nav>

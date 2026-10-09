@@ -1167,3 +1167,287 @@ html.ak-snap { scroll-snap-type: none; }
 @media (prefers-reduced-motion: reduce) {
   .ak-pack-q { animation: none; }
 }
+
+/* =============================================================================================
+   3.2: the short home page. Sections are compact; the details sit behind clicks (pickers,
+   tabs) and on the pages behind the home page. Szop'en talks in bubbles as sections come in.
+   ============================================================================================= */
+.ak-view-start .ak-slide:not(.ak-hero) { padding: clamp(60px, 8vw, 104px) 0; }
+.ak-view-start .ak-slide h2 { font-size: clamp(30px, 4.2vw, 52px); }
+.ak-link-more { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--teal-deep) !important; text-decoration: none !important; margin-top: 14px; }
+.ak-link-more svg { transition: transform .3s var(--spring); }
+.ak-link-more:hover svg { transform: translateX(4px); }
+
+/* Hero: three short promises under the buttons */
+.ak-trust { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.ak-trust li { display: inline-flex; align-items: center; gap: 7px; }
+.ak-trust li::before { content: ""; width: 16px; height: 16px; border-radius: 50%; background: var(--teal-deep) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M4.5 9.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / 11px; }
+
+/* Szop'en's bubble types itself in when it comes into view (assets/js/strona.js) */
+.ak-szop figcaption { transform-origin: 0 100%; }
+.ak-js .ak-szop:not(.is-in) figcaption { opacity: 0; transform: scale(.7) translateY(10px); }
+.ak-szop figcaption { transition: opacity .4s ease .35s, transform .55s var(--bouncy) .35s; }
+.ak-szop-big img { width: clamp(120px, 14vw, 170px); }
+.ak-szop-big figcaption { font-size: 16px; max-width: 280px; }
+
+/* Not an audiobook: a small listening row instead of a section of its own */
+.ak-listen { max-width: 920px; margin: 36px auto 0; padding: 22px 24px; border-radius: var(--r); background: var(--cream); box-shadow: inset 0 0 0 1.5px var(--line); }
+.ak-listen-h { text-align: center; font-size: 18px; margin-bottom: 16px !important; }
+.ak-listen-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ak-listen-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 20px; background: var(--paper); box-shadow: var(--shadow); }
+.ak-listen-item img { width: 56px; height: 56px; border-radius: 14px; flex: none; }
+.ak-listen-item span { flex: 1; min-width: 0; line-height: 1.25; }
+.ak-listen-item strong { display: block; font-size: 16px; }
+.ak-listen-item small { color: var(--muted); font-size: 13px; }
+.ak-play.ak-play-small { width: 48px; height: 48px; }
+.ak-play.ak-play-small svg.ak-i-play, .ak-play.ak-play-small .ak-i-pause { width: 20px; height: 20px; }
+
+/* When to switch it on: pick a moment, Szop'en answers */
+.ak-moments { background: linear-gradient(180deg, var(--cream), var(--sun-soft)); }
+.ak-moments-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(20px, 4vw, 48px); align-items: center; margin-top: 30px; }
+.ak-moments-pick { display: flex; flex-wrap: wrap; gap: 10px; }
+.ak-moments-pick button { font: inherit; font-weight: 600; font-size: 15px; padding: 10px 16px; border-radius: 999px; border: 0; cursor: pointer; background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); transition: background-color .2s, transform .25s var(--spring), box-shadow .2s; }
+.ak-moments-pick button:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.ak-moments-pick button[aria-selected="true"] { background: var(--ink); color: #fff; box-shadow: none; }
+.ak-moments-stage { position: relative; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; align-items: end; min-height: 250px; }
+.ak-moments-szop { width: 120px; filter: drop-shadow(0 10px 14px rgba(36, 27, 58, .18)); }
+.ak-moment { grid-column: 2; grid-row: 1; align-self: center; }
+.ak-js .ak-moment:not(.is-on) { display: none; }
+.ak-moment.is-on { animation: ak-say .5s var(--bouncy); }
+.ak-moment h3 { font-size: 15px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sun-deep); margin-bottom: 8px; }
+.ak-moment-say { position: relative; margin: 0 0 12px !important; padding: 20px 22px; border-radius: 24px 24px 24px 6px; background: var(--paper); box-shadow: var(--shadow); font-size: clamp(17px, 1.8vw, 20px); font-weight: 600; line-height: 1.45; }
+.ak-moment-say::before { content: ""; position: absolute; left: -8px; bottom: 14px; width: 18px; height: 18px; background: var(--paper); transform: rotate(45deg); border-radius: 0 0 0 4px; }
+.ak-moment-more { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 15px; text-decoration: none !important; }
+.ak-js .ak-moments-szop.is-pop { animation: ak-pop .6s var(--bouncy); }
+@keyframes ak-say { from { opacity: 0; transform: translateY(10px) scale(.96); } }
+
+/* How it works: three steps that switch the phone's screen */
+.ak-howto { background: var(--cream); overflow: hidden; }
+.ak-howto-in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.ak-howto-steps { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 10px; }
+.ak-howto-step { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 2px 14px; align-items: center; width: 100%; padding: 14px 16px; border-radius: 22px; transition: background-color .3s, box-shadow .3s, transform .3s var(--spring); }
+.ak-howto-step:hover { background: rgba(255, 255, 255, .7); transform: translateX(4px); }
+.ak-howto-step:focus-visible { outline: 3px solid var(--teal-deep); outline-offset: 2px; }
+.ak-howto-n { grid-row: span 2; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--sand); font-weight: 700; font-size: 18px; transition: background-color .3s, transform .4s var(--spring); }
+.ak-howto-step strong { font-size: 19px; line-height: 1.3; }
+.ak-howto-text { color: var(--muted); font-size: 15px; line-height: 1.5; }
+.ak-howto-step[aria-selected="true"] { background: var(--paper); box-shadow: var(--shadow); }
+.ak-howto-step[aria-selected="true"] .ak-howto-n { background: var(--sun); transform: scale(1.08); }
+.ak-howto-most { margin: 18px 0 0 !important; padding: 16px 18px; border-radius: 18px; background: var(--ink); color: #EDEAF3; font-size: 15px; }
+.ak-howto-most strong { color: var(--sun); }
+.ak-howto .ak-phone-wrap { width: min(290px, 70vw, calc((100svh - 150px) * 9 / 19.5)); }
+
+/* Proof */
+.ak-action { background: var(--paper); }
+.ak-action .ak-after { margin-top: 26px; }
+
+/* Ages: pick the child's age, see what fits */
+.ak-agepick-sec { background: var(--cream); }
+.ak-agepick { max-width: 920px; margin: 28px auto 0; }
+.ak-agepick-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.ak-agepick-tabs button { font: inherit; font-weight: 700; font-size: clamp(22px, 3vw, 34px); letter-spacing: -.03em; padding: 16px 10px; border: 0; border-radius: 22px; cursor: pointer; background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); transition: background-color .25s, transform .3s var(--spring), box-shadow .25s; }
+.ak-agepick-tabs button:hover { transform: translateY(-3px); }
+.ak-agepick-tabs button[aria-selected="true"] { background: var(--tone); box-shadow: inset 0 0 0 2.5px var(--deep); }
+.ak-agepanel { margin-top: 12px; padding: 24px; border-radius: var(--r); background: var(--paper); box-shadow: var(--shadow); }
+.ak-js .ak-agepanel:not(.is-on) { display: none; }
+.ak-agepanel.is-on { animation: ak-say .45s var(--ease); }
+.ak-agepanel + .ak-agepanel { margin-top: 12px; }
+.ak-agepanel-line { font-size: clamp(18px, 2vw, 22px); font-weight: 600; line-height: 1.4; margin-bottom: 18px !important; }
+.ak-agepanel-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.ak-agepanel-h { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--deep); margin-bottom: 8px !important; }
+.ak-agepanel ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.ak-agepanel-packs a { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 16px; background: var(--cream); color: var(--ink); text-decoration: none; font-weight: 600; transition: transform .25s var(--spring); }
+.ak-agepanel-packs a:hover { transform: translateX(4px); }
+.ak-agepanel-packs img { width: 48px; height: 48px; border-radius: 12px; }
+.ak-agepanel-packs small { display: block; font-weight: 500; color: var(--muted); font-size: 13px; }
+.ak-agepanel-guides a { display: inline-block; padding: 8px 14px; border-radius: 999px; background: var(--tone); color: var(--ink); font-weight: 600; font-size: 15px; text-decoration: none; }
+.ak-kinds { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 14px; margin-top: 28px; }
+.ak-kinds-h { margin: 0 !important; font-weight: 700; }
+.ak-kinds ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ak-kinds li { padding: 7px 14px; border-radius: 999px; background: var(--tone); font-weight: 600; font-size: 15px; }
+
+/* Free plays */
+.ak-ticks-row { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.ak-getfree-in { grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); }
+
+/* Specialists in one quiet strip under the parents */
+.ak-pros { margin-top: 18px; padding: 20px 22px; border-radius: var(--r); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.ak-pros-h { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-deep); margin-bottom: 12px !important; }
+.ak-pros ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.ak-pros li { display: flex; gap: 14px; align-items: flex-start; }
+.ak-pros img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex: none; box-shadow: 0 0 0 3px var(--tone); }
+.ak-pros q { display: block; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+.ak-pros small { color: var(--muted); font-size: 13px; }
+
+/* Pricing with the packs inside it */
+.ak-view-start .ak-pricing { background: var(--paper); }
+.ak-insub { margin-top: clamp(40px, 6vw, 64px); }
+.ak-insub > h3 { font-size: clamp(22px, 2.6vw, 30px); max-width: 760px; margin-inline: auto; }
+.ak-insub .ak-packs { margin-top: 22px; }
+.ak-insub .ak-nosub { margin-top: 22px; }
+
+/* Our rules: the tablet and privacy side by side */
+.ak-rules-sec { background: var(--lav-soft); }
+.ak-rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.ak-rule { padding: clamp(22px, 3vw, 34px); border-radius: var(--r); background: var(--paper); box-shadow: var(--shadow); }
+.ak-site .ak-rule h2 { font-size: clamp(26px, 3vw, 36px); }
+.ak-rule-lead { font-size: 19px; font-weight: 600; }
+.ak-rule-privacy { background: var(--teal-soft); }
+.ak-szop-rule { margin-top: 10px; }
+.ak-szop-rule img { width: 84px; }
+
+/* About us in a few lines */
+.ak-view-start .ak-about { background: var(--cream); }
+.ak-about-mini { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(24px, 5vw, 64px); align-items: center; }
+.ak-about-faces { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ak-about-face { margin: 0; text-align: center; }
+.ak-about-face img { margin: 0 auto; max-height: 260px; width: auto; transition: transform .5s var(--spring); }
+.ak-about-face:hover img { transform: rotate(-2deg) scale(1.04); }
+.ak-about-face figcaption { margin-top: 8px; font-weight: 700; }
+.ak-site .ak-about-mini h2 { font-size: clamp(24px, 2.8vw, 36px); text-align: left; margin-inline: 0; }
+
+/* The story on /o-nas/ */
+.ak-site .ak-story-h { font-size: clamp(22px, 2.4vw, 28px); margin-top: 26px; }
+.ak-story-p { font-size: 18px; line-height: 1.7; }
+
+@media (max-width: 960px) {
+  .ak-moments-in, .ak-howto-in, .ak-about-mini { grid-template-columns: minmax(0, 1fr); }
+  .ak-howto .ak-phone-wrap { width: min(240px, 60vw); order: -1; }
+  .ak-howto-in > div:first-child { order: 1; }
+  .ak-rules { grid-template-columns: minmax(0, 1fr); }
+  .ak-getfree-in { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .ak-listen-row { grid-template-columns: minmax(0, 1fr); }
+  .ak-moments-pick { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding: 4px 16px 6px; }
+  .ak-moments-pick::-webkit-scrollbar { display: none; }
+  .ak-moments-pick button { flex: none; }
+  .ak-moments-stage { grid-template-columns: 76px minmax(0, 1fr); min-height: 0; }
+  .ak-moments-szop { width: 76px; }
+  .ak-agepanel-cols, .ak-pros ul { grid-template-columns: minmax(0, 1fr); }
+  .ak-agepanel { padding: 18px; }
+  .ak-about-face img { max-height: 180px; }
+  .ak-howto .ak-phone-wrap { width: min(210px, 56vw); }
+}
+
+/* =============================================================================================
+   3.2: the pack page. One clear choice (subscription first, or this pack for good), the price
+   and the cart beside it, then what is inside and what happens after paying.
+   ============================================================================================= */
+.ak-prod2 { padding-bottom: clamp(48px, 7vw, 88px); }
+.ak-prod2-hero { padding: clamp(92px, 11vw, 128px) 0 clamp(36px, 5vw, 64px); background: radial-gradient(50vw 40vw at 0% 0%, rgba(var(--hue, 250, 193, 25), .18), transparent 60%), var(--cream); }
+.ak-prod2-hero-in { display: grid; grid-template-columns: minmax(0, 470px) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); align-items: start; }
+.ak-prod2-media { position: sticky; top: 92px; display: grid; gap: 14px; }
+.ak-prod2-cover { box-shadow: var(--shadow-big); }
+.ak-prod2-listen { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 22px; background: var(--paper); box-shadow: var(--shadow); }
+.ak-prod2-listen p { margin: 0; line-height: 1.35; }
+.ak-prod2-listen strong { display: block; }
+.ak-prod2-listen span { font-size: 14px; color: var(--muted); }
+.ak-prod2-listen-set .ak-play { flex: none; }
+.ak-prod2-chips { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.ak-prod2-chips li { font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 999px; background: var(--tone, var(--sand)); }
+.ak-prod2-chips .ak-prod2-chip-save { background: var(--teal-deep); color: #fff; }
+.ak-prod2 h1 { font-size: clamp(34px, 4.6vw, 56px); margin-bottom: 12px; }
+.ak-prod2-lead { font-size: clamp(17px, 1.7vw, 19px); color: var(--muted); }
+.ak-prod2-points { margin-bottom: 18px; }
+.ak-prod2-points li { font-size: 16px; }
+.ak-prod2-quote { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px 12px; align-items: center; margin: 0 0 20px; padding: 14px 16px; border-radius: 18px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.ak-prod2-quote img { grid-row: span 2; width: 44px; height: 44px; border-radius: 50%; }
+.ak-prod2-quote blockquote { margin: 0; }
+.ak-prod2-quote blockquote p { margin: 0; font-size: 15px; font-style: italic; }
+.ak-prod2-quote figcaption { font-size: 13px; color: var(--muted); }
+
+/* The choice: two options like radio cards; the button under them follows the pick */
+.ak-choose { display: grid; gap: 10px; padding: 18px; border-radius: var(--r); background: var(--paper); box-shadow: var(--shadow-big); scroll-margin-top: 90px; }
+.ak-choose-h { font-weight: 700; margin: 0 0 2px !important; }
+.ak-opt { position: relative; display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 18px; cursor: pointer; box-shadow: inset 0 0 0 1.5px var(--line); transition: box-shadow .2s, background-color .2s; }
+.ak-opt:hover { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.ak-opt input { appearance: none; -webkit-appearance: none; flex: none; width: 22px; height: 22px; margin: 2px 0 0; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--line); background: #fff; transition: box-shadow .2s; }
+.ak-opt input:checked { box-shadow: inset 0 0 0 7px var(--teal-deep); }
+.ak-opt input:focus-visible { outline: 3px solid var(--teal-deep); outline-offset: 2px; }
+.ak-opt:has(input:checked) { background: var(--teal-soft); box-shadow: inset 0 0 0 2px var(--teal-deep); }
+.ak-opt-body { display: grid; gap: 4px; min-width: 0; flex: 1; }
+.ak-opt-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.ak-opt-top strong { font-size: 18px; }
+.ak-opt-top em { font-style: normal; font-weight: 700; font-size: 18px; }
+.ak-opt-price del { font-size: 14px; font-weight: 500; color: var(--muted); margin-right: 6px; }
+.ak-opt-price ins { text-decoration: none; }
+.ak-opt small { color: var(--muted); font-size: 14px; line-height: 1.45; }
+.ak-choose-cta { display: grid; gap: 8px; margin-top: 4px; }
+.ak-choose-cta small { color: var(--muted); font-size: 13px; text-align: center; }
+.ak-choose:has(input[value="sub"]:checked) .ak-choose-cta[data-for="own"],
+.ak-choose:has(input[value="own"]:checked) .ak-choose-cta[data-for="sub"] { display: none; }
+.ak-btn-wide { width: 100%; min-height: 56px; font-size: 17px; }
+.ak-prod2-trust { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 13px; font-weight: 600; color: var(--muted); }
+.ak-prod2-trust li::before { content: "✓ "; color: var(--teal-deep); }
+
+/* Inside, and what happens after paying */
+.ak-prod2-sec { padding: clamp(40px, 6vw, 80px) 0; }
+.ak-prod2-sec + .ak-prod2-sec { border-top: 1px solid var(--line); }
+.ak-prod2-sec h2 { font-size: clamp(28px, 3.6vw, 44px); }
+.ak-prod2-cols { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 56px); align-items: start; }
+.ak-prod2-side { position: sticky; top: 92px; display: grid; gap: 16px; }
+.ak-prod2-after { padding: 22px; border-radius: var(--r); background: var(--sun-soft); }
+.ak-prod2-steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.ak-prod2-steps li { counter-increment: s; position: relative; padding-left: 44px; font-size: 15px; line-height: 1.5; }
+.ak-prod2-steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--sun); font-weight: 700; font-size: 14px; }
+.ak-szop-side img { width: 84px; }
+.ak-prod2-voices { background: var(--paper); }
+.ak-prod2-revs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 22px; }
+.ak-prod2-revs .ak-review { flex: none; }
+.ak-prod2-sets { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin: 22px 0 14px; }
+.ak-prod2-set { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; align-items: center; padding: 16px; border-radius: var(--r); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.ak-prod2-set.is-best { box-shadow: 0 0 0 2px var(--sun), var(--shadow); }
+.ak-prod2-set img { border-radius: 16px; }
+.ak-prod2-set h3 { margin-bottom: 4px; }
+.ak-prod2-set h3 a { color: var(--ink); text-decoration: none; }
+.ak-prod2-set p { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
+.ak-prod2-set-price { font-weight: 700; font-size: 20px; color: var(--ink) !important; }
+.ak-prod2-set-price .ak-save-tag { display: inline-block; margin-left: 6px; font-size: 13px; padding: 2px 8px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-deep); }
+.ak-prod2-set-price del { font-size: 14px; color: var(--muted); font-weight: 500; }
+.ak-prod2-set-price ins { text-decoration: none; }
+
+/* The bar with the price once the buy box has scrolled away */
+.ak-buybar { position: fixed; z-index: 75; left: 50%; bottom: 16px; width: min(560px, calc(100% - 24px)); display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 12px; border-radius: 22px; background: rgba(29, 26, 43, .92); color: #fff; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 18px 40px rgba(14, 14, 16, .3); transform: translate(-50%, 140%); transition: transform .5s var(--spring); }
+.ak-buybar.is-on { transform: translate(-50%, 0); }
+.ak-buybar img { width: 48px; height: 48px; border-radius: 12px; flex: none; }
+.ak-buybar p { margin: 0; flex: 1; min-width: 0; line-height: 1.25; }
+.ak-buybar strong { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ak-buybar-price { font-size: 14px; color: var(--sun); font-weight: 700; }
+.ak-buybar-price del { color: #A9A4B4; font-weight: 500; margin-right: 4px; }
+.ak-buybar-price ins { text-decoration: none; }
+.ak-buybar .added_to_cart { display: none; }
+
+@media (max-width: 960px) {
+  .ak-prod2-hero-in, .ak-prod2-cols { grid-template-columns: minmax(0, 1fr); }
+  .ak-prod2-media, .ak-prod2-side { position: static; }
+  .ak-prod2-media { max-width: 460px; }
+}
+@media (max-width: 760px) {
+  .ak-prod2-hero { padding-top: 84px; }
+  .ak-prod2-media { grid-template-columns: 120px minmax(0, 1fr); align-items: center; max-width: none; }
+  .ak-prod2-listen { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
+  .ak-prod2-listen-set { flex-direction: row; flex-wrap: wrap; }
+  .ak-prod2-set { grid-template-columns: 88px minmax(0, 1fr); }
+  .ak-buybar { bottom: calc(84px + env(safe-area-inset-bottom)); }
+}
+.ak-szop-big figcaption { flex: 1 1 auto; min-width: 190px; }
+.ak-end .ak-store-soon { color: #fff !important; border-color: rgba(255, 255, 255, .45); }
+.ak-end-btns { align-items: center; }
+.ak-end-btns .ak-stores { margin-top: 0; }
+/* Phones and tablets: the hero is one column (the 3.0 two-column rule above came later and won). */
+@media (max-width: 960px) {
+  .ak-hero-in { grid-template-columns: minmax(0, 1fr); }
+  .ak-szop-hero { left: 4%; right: auto; bottom: -4%; }
+  .ak-szop-hero figcaption { max-width: min(220px, 52vw); }
+}
+@media (max-width: 760px) {
+  .ak-hero { min-height: 0; }
+  .ak-hero-txt { text-align: left; }
+  .ak-hero-sub { margin-inline: 0; }
+  .ak-hero-btns { justify-content: flex-start; }
+  .ak-szop-hero img { width: 64px; }
+  .ak-szop-hero figcaption { font-size: 13px; padding: 9px 12px; margin-bottom: 26px; }
+}
+.ak-howto .ak-phone-wrap { min-width: 0; }
+@media (max-width: 760px) { .ak-howto .ak-phone-wrap { width: min(170px, 46vw); } }

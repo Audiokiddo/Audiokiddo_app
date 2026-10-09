@@ -208,6 +208,105 @@
     }
   }
 
+  // Tabs (the moments, the ages): click or arrow keys pick one; its panel shows, the rest hide.
+  function tabs(list, onPick) {
+    var btns = $$('[role="tab"]', list);
+    function pick(i, focus) {
+      btns.forEach(function (b, k) {
+        var on = k === i;
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+        b.tabIndex = on ? 0 : -1;
+        var panel = document.getElementById(b.getAttribute('aria-controls'));
+        if (panel) panel.classList.toggle('is-on', on);
+      });
+      if (focus) btns[i].focus();
+      if (onPick) onPick(i);
+    }
+    btns.forEach(function (b, i) {
+      b.addEventListener('click', function () { pick(i, false); });
+      b.addEventListener('keydown', function (e) {
+        var step = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        pick((i + step + btns.length) % btns.length, true);
+      });
+    });
+  }
+  var momentsPick = $('.ak-moments-pick');
+  if (momentsPick) {
+    var momentSzop = $('.ak-moments-szop');
+    tabs(momentsPick, function () {
+      if (!momentSzop || still) return;
+      momentSzop.classList.remove('is-pop');
+      void momentSzop.offsetWidth;
+      momentSzop.classList.add('is-pop');
+    });
+  }
+  var agePick = $('.ak-agepick-tabs');
+  if (agePick) tabs(agePick);
+
+  // How it works: each step shows its screen on the phone; while the section is in view and
+  // nobody has clicked, the steps take turns by themselves.
+  var howto = $('.ak-howto');
+  if (howto) {
+    var steps = $$('.ak-howto-step', howto);
+    var stepShots = $$('.ak-phone-shot', howto);
+    var stepAt = 0;
+    var stepTimer = null;
+    var stepTouched = false;
+    function pickStep(i) {
+      stepAt = (i + steps.length) % steps.length;
+      var shot = steps[stepAt].getAttribute('data-shot');
+      steps.forEach(function (st, k) { st.setAttribute('aria-selected', k === stepAt ? 'true' : 'false'); });
+      stepShots.forEach(function (img) { img.classList.toggle('is-on', img.getAttribute('data-shot') === shot); });
+    }
+    function runSteps(on) {
+      clearInterval(stepTimer);
+      if (on && !stepTouched && !still) stepTimer = setInterval(function () { pickStep(stepAt + 1); }, 4200);
+    }
+    steps.forEach(function (st, i) {
+      st.addEventListener('click', function () { stepTouched = true; runSteps(false); pickStep(i); });
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { runSteps(entry.isIntersecting); });
+      }, { threshold: 0.4 }).observe(howto);
+    }
+  }
+
+  // Szop'en's bubbles next to the content type themselves in when they come into view.
+  if (!still && 'IntersectionObserver' in window) {
+    var typer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        typer.unobserve(entry.target);
+        var cap = $('figcaption', entry.target);
+        var node = cap ? cap.lastChild : null;
+        if (!node || node.nodeType !== 3) return;
+        var full = node.nodeValue;
+        var n = 0;
+        node.nodeValue = '';
+        setTimeout(function type() {
+          n += 2;
+          node.nodeValue = full.slice(0, n);
+          if (n < full.length) setTimeout(type, 26);
+        }, 450);
+      });
+    }, { threshold: 0.6 });
+    $$('.ak-szop').forEach(function (el) { typer.observe(el); });
+  }
+
+  // Pack page: once the buy box scrolls away, a slim bar with the price and the cart follows.
+  var buybar = $('.ak-buybar');
+  var buybox = document.getElementById('kup');
+  if (buybar && buybox && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        buybar.classList.toggle('is-on', !entry.isIntersecting && entry.boundingClientRect.top < 0);
+      });
+    }).observe(buybox);
+  }
+
   // Parents' row: arrows, and dragging with the mouse
   var row = $('.ak-reviews');
   if (row) {
@@ -395,7 +494,7 @@
   var stepsEl = $('.ak-guide-steps', guide);
   var poses = {};
   $$('.ak-guide-me img', guide).forEach(function (img) { img.loading = 'eager'; poses[img.getAttribute('data-pose')] = img; });
-  var quiet = store.get('ak_szop_cicho') === '1' || phone.matches;
+  var quiet = store.get('ak_szop_cicho') === '1';
   var shown = null;
   var lines = [];
   var at = -1;
@@ -467,8 +566,8 @@
     var line = lines[i];
     talk(line.say);
     drawSteps();
-    if (point) spotOn(line.el); else spotOff();
-    var wait = Math.max(3800, line.say.length * 60);
+    if (point && line.spot && !phone.matches) spotOn(line.el); else spotOff();
+    var wait = Math.max(phone.matches ? 2800 : 3400, line.say.length * (phone.matches ? 45 : 55));
     if (i < lines.length - 1) {
       lineTimer = setTimeout(function () { showLine(i + 1, point); }, wait);
     } else {
@@ -484,12 +583,14 @@
     if (data) {
       data.lines.forEach(function (l) {
         var el = $(l.at, slide);
-        if (el) lines.push({ el: el, say: l.say });
+        if (el) lines.push({ el: el, say: l.say, spot: !!l.spot });
       });
     }
-    // Only a few slides are his stops; on the others (and on a stop already shown) he sits
+    // Each section gets one line, once; after it (and on a section already shown) he sits
     // quietly in the corner, the bubble folded away.
-    var stop = lines.length && (fromStart || (!seen[slide.id] && (!phone.matches || slide === slides[0])));
+    // On phones the first screen has its own Szop'en next to the hero and the bubble would cover
+    // the buttons, so he starts talking from the second section.
+    var stop = lines.length && (fromStart || (!seen[slide.id] && !(phone.matches && slide === slides[0])));
     guide.classList.toggle('is-idle', !stop);
     if (!stop) {
       clearTimeout(typeTimer);

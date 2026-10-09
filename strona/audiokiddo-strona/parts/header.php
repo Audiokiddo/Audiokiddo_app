@@ -19,6 +19,7 @@ $pages = $home === '' ? [] : [
     '#cennik' => ak_info_url('abonament'),
     '#pakiety' => ak_info_url('pakiety'),
     '#pytania' => ak_info_url('pytania'),
+    '#o-nas' => ak_info_url('o-nas'),
 ];
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
