@@ -397,24 +397,57 @@ function ak_people(): array
 function ak_tour(): array
 {
     return [
-        'start' => ['chytry', [['.ak-hero-btns', 'Psst. Przewijaj spokojnie. Odezwę się, jak będzie coś ważnego.', false]]],
-        'nie-audiobook' => ['nasluchuje', [['.ak-listen', 'Kliknij play przy okładce. Pół minuty i wszystko jasne.', true]]],
-        'kiedy' => ['chytry', [['.ak-moments-pick', 'Wybierz sytuację. Na każdą mam gotową odpowiedź.', true]]],
-        'jak-to-dziala' => ['zadowolony', [['.ak-howto-steps', 'Kliknij krok, a telefon pokaże, jak to wygląda.', false]]],
-        'w-akcji' => ['nasluchuje', [['.ak-video:first-child', 'Teraz serio. Włącz film. Telefon leży sobie z boku.', false]]],
-        'wiek' => ['zdziwiony', [['.ak-agepick-tabs', 'Ile lat ma Twój dzieciak? Kliknij, dobiorę zabawy.', true]]],
-        'pobierz' => ['prosi', [['.ak-stores', 'Odpal. Jak nie zadziała, udajemy, że się nie znamy.', false]]],
-        'opinie' => ['klaszcze', [['.ak-reviews', 'Nie wierz mi na słowo. Ja jestem stronniczy, oni nie.', false]]],
-        'cennik' => ['chytry', [['.ak-price-card-best', 'Roczny wychodzi najtaniej. Tak tylko mówię.', false]]],
-        'tablet' => ['zdziwiony', [['.ak-rules', 'Spokojnie, tabletu nie zabieramy. Najwyżej dajemy mu wolne.', false]]],
-        'o-nas' => ['zadowolony', [['.ak-about-mini', 'To moi ludzie. Piszą, nagrywają i odpisują na maile. Ja pilnuję jakości.', false]]],
-        'pytania' => ['klaszcze', [['.ak-faq', 'Na anulowanie też mamy odpowiedź. Bez szopa pod chatą.', false]]],
-        'start-aplikacji' => ['prosi', [['.ak-free-form', 'Wolisz maila? Wyślę trzy zabawy. No dobra, Nela wyśle.', false]]],
-        'koniec' => ['klaszcze', [['.ak-end-btns', 'Następne „nudzi mi się” jest nasze.', false]]],
+        'start' => ['chytry', [['.ak-a-btns', 'Psst. Jestem Szop’en. Przewijaj, pokażę Ci, co tu się dzieje.', false]]],
+        'jak-to-dziala' => ['zadowolony', [['.ak-a-flow', 'Trzy kroki. Najtrudniejszy to odłożyć telefon. Wiem, też mam z tym problem.', false]]],
+        'kiedy' => ['chytry', [['.ak-a-times', 'Kliknij godzinę. Mam plan na cały dzień. Nawet na 18:37.', true]]],
+        'co-zyskujesz' => ['klaszcze', [['.ak-a-gains-in', 'Dziecko ćwiczy, Ty odpoczywasz. Ja tylko zbieram pochwały.', false]]],
+        'w-akcji' => ['nasluchuje', [['.ak-video:first-child', 'Tu nie żartuję. Włącz film i zobacz sam.', false]]],
+        'opinie' => ['zadowolony', [['.ak-a-quotes', 'Mnie nie wierz, ja tu pracuję. Wierz im.', false]]],
+        'cennik' => ['prosi', [['.ak-a-plan', 'Najpierw darmowe zabawy. O pieniądzach pogadamy, jak dziecko poprosi o więcej.', false]]],
+        'pytania' => ['zdziwiony', [['.ak-faq', 'Anulować można zawsze. Nie obrażę się. No, może troszkę.', false]]],
+        'start-aplikacji' => ['prosi', [['.ak-free-form', 'Wolisz maila? Wyślę trzy zabawy. Nela pilnuje, żebym niczego nie pomylił.', false]]],
+        'koniec' => ['klaszcze', [['.ak-end-btns', 'No to do usłyszenia. Dosłownie.', false]]],
     ];
 }
 
 function ak_minutes(int $seconds): string
 {
     return max(1, (int) round($seconds / 60)) . ' min';
+}
+
+/**
+ * The home page's day with Audiokiddo (like a timeline): time, icon, the moment in two words,
+ * Szop'en's line (short, warm, never at the child's expense) and the guide with more ideas.
+ */
+function ak_moments(): array
+{
+    return [
+        ['7:40', 'car', 'W samochodzie', '„Daleko jeszcze?” padło przed pierwszym rondem. Spokojnie, mam zabawy na całą trasę.', 'jak-zajac-dziecko-w-samochodzie'],
+        ['15:30', 'backpack', 'Po przedszkolu', 'Ty masz baterię na 3%, ono na 300%. Wyrównam.', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+        ['17:30', 'pot', 'Robisz obiad', 'Ty kroisz cebulę, ja zajmuję dziecko. Nikt nie płacze.', 'jak-zajac-dziecko-gdy-pracujesz'],
+        ['18:37', 'battery', 'Zero mocy', 'Czwarty raz być smokiem? Dziś smokiem jestem ja.', 'samodzielna-zabawa-dziecka'],
+        ['19:30', 'moon', 'Przed snem', 'Trzy oddechy, cicha zabawa, dobranoc. Działa nawet na szopy.', 'zabawy-wyciszajace-przed-snem'],
+        ['Kiedykolwiek', 'bored', '„Nudzi mi się”', 'W końcu pytanie, na które znam odpowiedź.', 'dziecko-sie-nudzi'],
+    ];
+}
+
+/** What the child and the parent get: icon and three or four words each. */
+function ak_gains(): array
+{
+    return [
+        'Dziecko' => [
+            ['ear', 'Uważnie słucha'],
+            ['speech', 'Mówi i odpowiada'],
+            ['bulb', 'Wymyśla i wyobraża'],
+            ['run', 'Rusza się'],
+            ['puzzle', 'Rozwiązuje zagadki'],
+        ],
+        'Ty' => [
+            ['coffee', '15 minut dla siebie'],
+            ['idea-off', 'Zero wymyślania'],
+            ['eye-off', 'Bez ekranu i wyrzutów'],
+            ['offline', 'Działa bez internetu'],
+            ['shield', 'Bez reklam. Nigdy.'],
+        ],
+    ];
 }

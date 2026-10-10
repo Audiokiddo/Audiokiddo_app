@@ -232,7 +232,7 @@
       });
     });
   }
-  var momentsPick = $('.ak-moments-pick');
+  var momentsPick = $('.ak-a-times, .ak-moments-pick');
   if (momentsPick) {
     var momentSzop = $('.ak-moments-szop');
     tabs(momentsPick, function () {
@@ -545,6 +545,7 @@
   var poses = {};
   $$('.ak-guide-me img', guide).forEach(function (img) { img.loading = 'eager'; poses[img.getAttribute('data-pose')] = img; });
   var quiet = store.get('ak_szop_cicho') === '1';
+  var phoneQuiet = ['start', 'cennik', 'pytania', 'start-aplikacji', 'koniec'];
   var shown = null;
   var lines = [];
   var at = -1;
@@ -638,9 +639,9 @@
     }
     // Each section gets one line, once; after it (and on a section already shown) he sits
     // quietly in the corner, the bubble folded away.
-    // On phones the first screen has its own Szop'en next to the hero and the bubble would cover
-    // the buttons, so he starts talking from the second section.
-    var stop = lines.length && (fromStart || (!seen[slide.id] && !(phone.matches && slide === slides[0])));
+    // On phones the bubble takes a good part of the screen, so he keeps quiet where it would
+    // cover the buttons that matter (the hero, the subscription, the forms, the end).
+    var stop = lines.length && (fromStart || (!seen[slide.id] && !(phone.matches && phoneQuiet.indexOf(slide.id) > -1)));
     guide.classList.toggle('is-idle', !stop);
     if (!stop) {
       clearTimeout(typeTimer);

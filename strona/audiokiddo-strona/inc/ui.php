@@ -269,3 +269,35 @@ function ak_phone_with_features(bool $compact = false): void
         </div>
     <?php
 }
+
+/** A simple line icon (24×24, drawn with the current colour) for the home page's schemes. */
+function ak_icon(string $name, int $size = 28): string
+{
+    $paths = [
+        'phone' => '<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 9.5v5l4-2.5z" fill="currentColor"/>',
+        'kid' => '<circle cx="12" cy="6" r="3"/><path d="M12 9v6m0 0l-3 6m3-6l3 6M7 11.5l5 1 5-1"/>',
+        'coffee' => '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/>',
+        'car' => '<path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01"/>',
+        'backpack' => '<path d="M6 9a6 6 0 0 1 12 0v11H6zM9 3.5h6M9 13h6v4H9z"/>',
+        'pot' => '<path d="M4 10h16v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM2 10h20M9 6c0-1 1-1 1-2M14 6c0-1 1-1 1-2"/>',
+        'battery' => '<rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10.5v3M6 10v4" stroke-width="2.6"/>',
+        'moon' => '<path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/>',
+        'rain' => '<path d="M7 15a4 4 0 0 1-.5-8A5.5 5.5 0 0 1 17 8a3.5 3.5 0 0 1 0 7zM8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5"/>',
+        'bored' => '<circle cx="12" cy="12" r="9"/><path d="M8.5 10h1M14.5 10h1M9 15.5h6"/>',
+        'ear' => '<path d="M7 9a5 5 0 0 1 10 0c0 3-3 4-3 7a3 3 0 0 1-5.5 1.5M10 9a2 2 0 0 1 4 0c0 1.5-2 2-2 3.5"/>',
+        'speech' => '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+        'bulb' => '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>',
+        'run' => '<circle cx="14" cy="4.5" r="2"/><path d="M8 21l3-6 3 2v5M6 11l4-3 3 1 2 3h3M11 15l-1-5"/>',
+        'puzzle' => '<path d="M5 8h3a2 2 0 1 1 4 0h3v3a2 2 0 1 1 0 4v4H5v-4a2 2 0 1 0 0-4z"/>',
+        'clock' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        'idea-off' => '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3zM4 4l16 16"/>',
+        'eye-off' => '<path d="M3 12s3.5-6 9-6c1.6 0 3 .5 4.2 1.2M21 12s-3.5 6-9 6c-1.6 0-3-.5-4.2-1.2M4 4l16 16M10 10.5a2.5 2.5 0 0 0 3.5 3.5"/>',
+        'offline' => '<path d="M5 12.5a10 10 0 0 1 3-2M2 9a15 15 0 0 1 4.5-3M19 12.5a10 10 0 0 0-5-2.4M22 9A15 15 0 0 0 11 4.6M8.5 16a5 5 0 0 1 7 0M12 20h.01M3 3l18 18"/>',
+        'shield' => '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
+        'heart' => '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+        'flag' => '<path d="M5 21V4M5 4h12l-2 4 2 4H5"/>',
+        'star' => '<path d="M12 3l2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8z"/>',
+        'play' => '<path d="M8 5.5v13l10-6.5z" fill="currentColor"/>',
+    ];
+    return '<svg class="ak-ico" viewBox="0 0 24 24" width="' . $size . '" height="' . $size . '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . ($paths[$name] ?? '') . '</svg>';
+}

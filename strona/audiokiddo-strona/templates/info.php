@@ -108,7 +108,7 @@ require AK_DIR . 'parts/header.php';
         <div class="ak-wrap">
             <h2 id="ak-plan-h" class="ak-center" data-reveal>Pełna biblioteka. <span class="ak-hl-word">Bez liczenia zabaw na sztuki.</span></h2>
             <?php ak_price_cards(); ?>
-            <?php ak_szop('zadowolony', 'Dzieciak raczej nie przestanie się nudzić po miesiącu. Obstawiam, że ma dobry gust.', 'ak-szop-center'); ?>
+            <?php ak_szop('chytry', 'Roczny wychodzi najtaniej. Sam bym wziął, ale szopom nie dają karty.', 'ak-szop-center'); ?>
         </div>
     </section>
 
