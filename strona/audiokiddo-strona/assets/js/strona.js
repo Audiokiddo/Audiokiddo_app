@@ -242,6 +242,26 @@
       momentSzop.classList.add('is-pop');
     });
   }
+  // The day with Audiokiddo moves on by itself while it is in view, so nobody has to find the
+  // buttons; a click takes over and stops the show.
+  var dayTabs = $('.ak-a-times');
+  if (dayTabs && !still && 'IntersectionObserver' in window) {
+    var dayBtns = $$('[role="tab"]', dayTabs);
+    var dayTimer = null;
+    var dayHand = false;
+    function dayStep() {
+      var at = dayBtns.findIndex(function (b) { return b.getAttribute('aria-selected') === 'true'; });
+      var nxt = dayBtns[(at + 1) % dayBtns.length];
+      nxt.click();
+    }
+    dayBtns.forEach(function (b) { b.addEventListener('pointerdown', function () { dayHand = true; clearInterval(dayTimer); }); });
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        clearInterval(dayTimer);
+        if (entry.isIntersecting && !dayHand) dayTimer = setInterval(dayStep, 4200);
+      });
+    }, { threshold: 0.5 }).observe(dayTabs);
+  }
   var agePick = $('.ak-agepick-tabs');
   if (agePick) tabs(agePick);
 

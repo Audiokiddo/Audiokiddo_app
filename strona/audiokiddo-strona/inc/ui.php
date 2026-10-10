@@ -164,7 +164,7 @@ function ak_pack_cards(string $class = ''): void
             esc_html($pack['title']),
             ak_sample_button(ak_upload($pack['sample']), 'Posłuchaj fragmentu: ' . $pack['title'], 'ak-play-on-cover'),
             esc_html(ak_age($pack) . ' · ' . count($pack['plays']) . ' zabaw'),
-            esc_html($pack['desc']),
+            esc_html($pack['short'] ?? $pack['desc']),
             esc_url(ak_pack_url($id))
         );
     }

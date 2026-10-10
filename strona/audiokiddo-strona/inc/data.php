@@ -79,6 +79,7 @@ function ak_packs(): array
     return [
         'wyobraznia' => [
             'title' => 'Wyobraźnia',
+            'short' => 'Dziecko wymyśla zakończenia, mikstury i superbohaterów. Tu nie ma złych odpowiedzi.',
             'woo' => (int) ak_opt('woo_wyobraznia'),
             'color' => 'lav',
             'age_from' => 4,
@@ -96,6 +97,7 @@ function ak_packs(): array
         ],
         'slowa-i-wiedza' => [
             'title' => 'Słowa i Wiedza',
+            'short' => 'Zagadki, skojarzenia i przeciwieństwa na głos. Słownictwo rośnie przy okazji.',
             'woo' => (int) ak_opt('woo_slowa'),
             'color' => 'teal',
             'age_from' => 4,
@@ -113,6 +115,7 @@ function ak_packs(): array
         ],
         'detektyw' => [
             'title' => 'Detektyw',
+            'short' => 'Poszlaki ze słuchu i sprawy do rozwiązania. Z aktami do wydrukowania.',
             'woo' => (int) ak_opt('woo_detektyw'),
             'color' => 'sun',
             'age_from' => 7,
@@ -400,7 +403,6 @@ function ak_people(): array
 function ak_tour(): array
 {
     return [
-        'start' => ['chytry', [['.ak-a-btns', 'Psst. Jestem Szop’en. Przewijaj, pokażę Ci, co tu się dzieje.', false]]],
         'jak-to-dziala' => ['zadowolony', [['.ak-a-flow', 'Trzy kroki. Najtrudniejszy to odłożyć telefon. Wiem, też mam z tym problem.', false]]],
         'kiedy' => ['chytry', [['.ak-a-times', 'Kliknij godzinę. Mam plan na cały dzień. Nawet na 18:37.', true]]],
         'co-zyskujesz' => ['klaszcze', [['.ak-a-gains-in', 'Dziecko ćwiczy, Ty odpoczywasz. Ja tylko zbieram pochwały.', false]]],

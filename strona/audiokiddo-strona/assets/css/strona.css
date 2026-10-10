@@ -1751,3 +1751,37 @@ html.ak-locked { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .ak-hero-bubble { animation: none; } }
 /* Woostify puts its own SVG cross inside the remove link: one cross is enough. */
 .ak-drawer .woocommerce-mini-cart-item a.remove .woostify-svg-icon, .ak-drawer .woocommerce-mini-cart-item a.remove svg { display: none !important; }
+
+/* 3.6.5: the first screen is only the headline, Szop'en with one line, and one button. */
+.ak-a-hero-min .ak-a-hero-in { display: grid; justify-items: center; gap: clamp(8px, 2vw, 20px); }
+.ak-a-hero-min h1 { margin-bottom: 0 !important; }
+.ak-a-hero-min .ak-a-hero-art { max-width: min(560px, 82vw); margin-top: 0; }
+.ak-a-hero-min .ak-a-btns { margin-top: 8px; }
+@media (max-width: 760px) {
+  .ak-a-hero-min .ak-hero-bubble { position: relative; right: auto; top: auto; margin: -8px auto 0; max-width: 270px; text-align: center; border-radius: 22px; animation: none; }
+}
+
+/* 3.6.5: the first screen is Szop'en alone; the message is his speech bubble (the h1). */
+.ak-a-hero-min .ak-a-hero-art { display: grid; justify-items: center; max-width: min(560px, 86vw); }
+.ak-hero-say { position: relative; order: -1; margin: 0 0 clamp(16px, 2.4vw, 26px) !important; padding: clamp(18px, 2.6vw, 30px) clamp(20px, 3vw, 38px); width: min(860px, 94vw); border-radius: 36px; background: var(--paper); box-shadow: var(--shadow-big); font-size: clamp(28px, 4.6vw, 54px) !important; line-height: 1.12; }
+.ak-hero-say::after { content: ""; position: absolute; left: 50%; bottom: -14px; width: 30px; height: 30px; margin-left: -15px; background: var(--paper); transform: rotate(45deg); border-radius: 0 0 8px 0; box-shadow: 8px 8px 14px -8px rgba(36, 27, 58, .18); }
+.ak-a-hero-min .ak-hero-img { width: min(440px, 70vw); }
+.ak-a-hero-min .ak-hero-bubble { display: none; }
+
+/* Child, Audiokiddo, parent: all visible, nothing to switch */
+.ak-a-gains-in { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important; align-items: center; max-width: 1100px !important; gap: clamp(8px, 2vw, 24px) !important; }
+.ak-a-hub { display: flex; align-items: center; gap: 6px; }
+.ak-a-hub-phone { display: grid; justify-items: center; gap: 6px; width: clamp(104px, 11vw, 140px); padding: 18px 8px 14px; border-radius: 30px; background: var(--ink); color: var(--sun); box-shadow: var(--shadow-big); animation: ak-bob 3.6s ease-in-out infinite; }
+.ak-a-hub-phone strong { color: #fff; font-size: 14px; letter-spacing: -.01em; }
+.ak-a-hub-arrow { width: 26px; height: 14px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 12'%3E%3Cpath d='M1 6h24M20 1l5 5-5 5' fill='none' stroke='%23625C70' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain; }
+.ak-a-hub-l { transform: scaleX(-1); }
+@media (max-width: 860px) {
+  .ak-a-gains-in { grid-template-columns: minmax(0, 1fr) !important; }
+  .ak-a-hub { justify-content: center; flex-direction: row; }
+  .ak-a-hub-arrow { transform: rotate(90deg); }
+  .ak-a-hub-l { transform: rotate(-90deg); }
+  .ak-a-hub-phone { grid-auto-flow: column; width: auto; padding: 12px 22px; gap: 10px; }
+  .ak-a-hub-phone .ak-ico { width: 30px; height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .ak-a-hub-phone { animation: none; } }
+.ak-a-hero-min .ak-hero-img { width: min(560px, 88vw); margin-top: -8px; }
