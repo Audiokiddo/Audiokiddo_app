@@ -120,7 +120,7 @@ add_action('wp_head', function () {
     $description = ak_seo_description();
     $url = ak_canonical();
     $own_image = ak_view() === 'post' && has_post_thumbnail(get_queried_object_id());
-    $image = $own_image ? (string) get_the_post_thumbnail_url(get_queried_object_id(), 'large') : ak_img('hero');
+    $image = $own_image ? (string) get_the_post_thumbnail_url(get_queried_object_id(), 'large') : ak_asset('img/site/og.jpg');
     if (ak_view() === 'product') {
         $image = ak_img(ak_product_kind()['data']['cover']);
     }
@@ -148,7 +148,7 @@ add_action('wp_head', function () {
     if (!$own_image) {
         $square = ak_view() === 'product';
         $tags[] = ['property', 'og:image:width', $square ? '720' : '1200'];
-        $tags[] = ['property', 'og:image:height', $square ? '720' : '776'];
+        $tags[] = ['property', 'og:image:height', $square ? '720' : '630'];
     }
     if (ak_view() === 'post') {
         $tags[] = ['property', 'article:published_time', get_the_date('c', get_queried_object_id())];
@@ -189,7 +189,7 @@ function ak_schema(): array
             'alternateName' => ['AudioKiddo', 'Audio Kiddo'],
             'url' => $home,
             'logo' => ['@type' => 'ImageObject', 'url' => ak_asset('img/logo.png'), 'width' => 150, 'height' => 31],
-            'image' => ak_img('hero'),
+            'image' => ak_asset('img/site/og.jpg'),
             'email' => ak_opt('contact_email'),
             'description' => ak_facts()['Czym jest'],
             'slogan' => 'Dziecko potrzebuje zajęcia. Ty nie musisz go wymyślać.',
@@ -274,7 +274,7 @@ function ak_schema(): array
             'inLanguage' => 'pl-PL',
             'isPartOf' => ['@id' => home_url('/#strona')],
             'about' => ['@id' => home_url('/#aplikacja')],
-            'primaryImageOfPage' => ak_img('hero'),
+            'primaryImageOfPage' => ak_asset('img/site/og.jpg'),
             'speakable' => ['@type' => 'SpeakableSpecification', 'cssSelector' => ['#ak-h1', '.ak-hero-sub', '.ak-facts dd']],
         ];
 
@@ -317,7 +317,7 @@ function ak_schema(): array
             'inLanguage' => 'pl-PL',
             'wordCount' => $article['words'],
             'mainEntityOfPage' => get_permalink($post),
-            'image' => has_post_thumbnail($post) ? get_the_post_thumbnail_url($post, 'large') : ak_img('hero'),
+            'image' => has_post_thumbnail($post) ? get_the_post_thumbnail_url($post, 'large') : ak_asset('img/site/og.jpg'),
             'author' => ak_author_key($post->ID) === 'razem'
                 ? [['@id' => home_url('/#nela')], ['@id' => home_url('/#dawid')]]
                 : ['@type' => 'Person', '@id' => home_url('/#' . ak_author_key($post->ID)), 'name' => $person['name'], 'jobTitle' => $person['role'], 'url' => home_url('/#o-nas')],
@@ -604,12 +604,27 @@ add_action('template_redirect', function () {
         $to = ak_info_url('pakiety');
     } elseif (is_page()) {
         $to = ak_old_pages()[(string) get_post_field('post_name', get_queried_object_id())] ?? '';
+    } elseif (is_404()) {
+        $path = trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
+        $to = ak_old_posts()[$path] ?? '';
     }
     if ($to !== '') {
         wp_safe_redirect($to, 301, 'Audiokiddo');
         exit;
     }
 }, 2);
+
+/** Posts taken down (we no longer argue that screens are bad): where their readers go now. */
+function ak_old_posts(): array
+{
+    return [
+        'ile-czasu-przed-ekranem-dziecko' => ak_blog_url(),
+        'dlaczego-ekrany-tak-mocno-przyciagaja-dzieci-i-doroslych' => home_url('/audiozabawy-co-to-jest-dlaczego-sa-wazne-i-jak-dzialaja-przewodnik-dla-rodzicow/'),
+        'dlaczego-warto-wybierac-interaktywne-audiobooki-zamiast-ekranow' => ak_landing_url('interaktywne-bajki-dla-dzieci'),
+        'studio-spring-summer-man-2017' => ak_landing_url('interaktywne-bajki-dla-dzieci'),
+        'prezent-dla-dziecka-bez-ekranu' => home_url('/prezent-dla-dziecka-3-9-lat/'),
+    ];
+}
 
 // WooCommerce's "back to the shop" leads to the packs page directly.
 add_filter('woocommerce_return_to_shop_redirect', fn() => ak_info_url('pakiety'));

@@ -33,8 +33,8 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
             </span>
         </div>
         <div class="ak-a-hero-art" data-reveal="scale" style="--d:.2s">
-            <img class="ak-hero-img" src="<?php echo esc_url(ak_img('hero')); ?>" alt="Max i Mila, detektywi z audiozabaw Audiokiddo" width="1200" height="776" fetchpriority="high">
-            <?php ak_szop('zadowolony', 'Dobra. Od tej chwili nuda to mój problem.', 'ak-szop-hero'); ?>
+            <img class="ak-hero-img" src="<?php echo esc_url(ak_img('hero')); ?>" alt="Szop’en, maskotka Audiokiddo, z kubkiem kawy" width="1200" height="776" fetchpriority="high">
+            <p class="ak-hero-bubble"><span class="ak-sr">Szop’en: </span>Dobra. Od tej chwili nuda to mój problem.</p>
         </div>
         <ul class="ak-a-proof" data-reveal>
             <li><?php echo ak_icon('eye-off', 22); // static ?>Bez ekranu</li>

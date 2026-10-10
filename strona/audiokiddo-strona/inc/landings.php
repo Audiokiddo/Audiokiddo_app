@@ -443,7 +443,7 @@ function ak_landings(): array
                 ['Historia z wyborami', 'Opowieść, w której dziecko decyduje, co dalej, i ponosi konsekwencje.', '7–9 lat'],
             ],
             'more' => [
-                ['Pakiet Detektyw', 'W pakiecie Detektyw dziecko razem z Maxem i Milą zbiera poszlaki ze słuchu i rozwiązuje pięć spraw, m.in. „Złodziej naszyjnika” i „Gadający śmietnik”. Do każdej sprawy są akta do wydrukowania. Pakiet jest w abonamencie Audiokiddo albo do kupienia osobno.'],
+                ['Pakiet Detektyw', 'W pakiecie Detektyw dziecko zbiera poszlaki ze słuchu i rozwiązuje pięć spraw, m.in. „Złodziej naszyjnika” i „Gadający śmietnik”. Do każdej sprawy są akta do wydrukowania. Pakiet jest w abonamencie Audiokiddo albo do kupienia osobno.'],
             ],
             'quote' => null,
             'faq' => [
@@ -557,7 +557,7 @@ function ak_landings(): array
                 ['Skarb pod poduszką', 'Mapa narysowana na kartce prowadzi do „skarbu” (naklejka, orzech). Dziecko czyta strzałki.', '4 lata'],
                 ['Kuchenne zgadywanki', 'Z zamkniętymi oczami dziecko wącha cynamon, cytrynę, kawę i zgaduje.', '4 lata'],
                 ['Liczenie kroków', '„Ile kroków do drzwi? A skoków?”. Liczenie i ruch w jednym.', '4 lata'],
-                ['Audiozabawa', 'Odpalasz Audiokiddo: Profesor Fantazjusz albo Max i Mila dają dziecku misję. Dziecko odpowiada na głos i działa, Ty masz chwilę.', '4 lata'],
+                ['Audiozabawa', 'Odpalasz Audiokiddo, a głos daje dziecku misję. Dziecko odpowiada na głos i działa, Ty masz chwilę.', '4 lata'],
             ],
             'more' => [
                 ['Co zwykle potrafi 4-latek', 'Wiele czterolatków mówi pełnymi zdaniami, opowiada krótkie historie, zadaje pytania „dlaczego?” i potrafi chwilę poczekać na swoją kolej. Lubi zasady, ale jeszcze chętnie je nagina. To dobry moment na pierwsze zagadki, gry słowne i zabawy w role. Rozwój bywa nierówny: jeśli coś Cię niepokoi, skonsultuj to ze specjalistą.'],
@@ -600,7 +600,7 @@ function ak_landings(): array
                 ['Superbohater', 'Dziecko wymyśla swojego bohatera: imię, moc, słabość. Potem opowiada jego przygodę.', '5 lat'],
                 ['Pamięć z tacy', 'Pięć przedmiotów na tacy, zakrywasz, zabierasz jeden. Co zniknęło?', '5 lat'],
                 ['Kto to powiedział?', 'Cytujesz bohaterów bajek albo domowników. Dziecko zgaduje, kto to mógł powiedzieć.', '5 lat'],
-                ['Audiozabawa z zagadkami', 'W Audiokiddo Profesor Fantazjusz zadaje zagadki i czeka na odpowiedź. Dziecko mówi na głos, historia idzie dalej.', '5 lat'],
+                ['Audiozabawa z zagadkami', 'W Audiokiddo głos zadaje zagadki i czeka na odpowiedź. Dziecko mówi na głos, historia idzie dalej.', '5 lat'],
             ],
             'more' => [
                 ['Co zwykle potrafi 5-latek', 'Pięciolatki zwykle opowiadają spójne historie, rozumieją proste zasady gier, potrafią poczekać na swoją kolej i coraz dłużej skupiają się na jednym zadaniu. Zaczyna się też zainteresowanie literami i głoskami. Zabawy słowne przed szkołą to świetne przygotowanie do czytania.'],
@@ -669,7 +669,7 @@ function ak_landings(): array
                 'Logika i fabuła: śledztwa, szyfry, zagadki z uzasadnieniem.',
                 'Dłuższe projekty: komiks, gazetka, własna gra planszowa.',
                 'Po szkole najpierw ruch, potem zadania „głowowe”.',
-                'Pakiet Detektyw w Audiokiddo jest od 7 lat: Max i Mila, poszlaki ze słuchu i akta do wydrukowania.',
+                'Pakiet Detektyw w Audiokiddo jest od 7 lat: sprawy do rozwiązania, poszlaki ze słuchu i akta do wydrukowania.',
             ],
             'ideas_h' => '14 zabaw dla 7-latka',
             'ideas' => [
@@ -686,7 +686,7 @@ function ak_landings(): array
                 ['Kto kłamie?', 'Trzy zdania o sobie, jedno nieprawdziwe. Dziecko zgaduje i odwrotnie.', '7 lat'],
                 ['Mapa skarbów z kierunkami', '„Trzy kroki na północ, dwa w lewo”. Orientacja w przestrzeni.', '7 lat'],
                 ['Słuchowisko domowe', 'Dziecko nagrywa na telefonie własne słuchowisko z efektami dźwiękowymi.', '7 lat'],
-                ['Śledztwo z Audiokiddo', 'Pakiet Detektyw: Max i Mila prowadzą sprawę, dziecko zbiera poszlaki ze słuchu i rozwiązuje zagadkę. Do każdej sprawy akta do wydrukowania.', '7 lat'],
+                ['Śledztwo z Audiokiddo', 'Pakiet Detektyw: dziecko prowadzi sprawę, zbiera poszlaki ze słuchu i rozwiązuje zagadkę. Do każdej sprawy akta do wydrukowania.', '7 lat'],
             ],
             'more' => [
                 ['Co zwykle lubi 7-latek', 'Siedmiolatki zwykle czytają pierwsze teksty, myślą coraz bardziej logicznie i chcą rozumieć, dlaczego coś działa. Lubią projekty, które można skończyć i pokazać, i zabawy, w których liczy się spryt.'],
@@ -729,7 +729,7 @@ function ak_landings(): array
                 ['Planszówka z własnymi zasadami', 'Stara gra, nowe zasady wymyślone przez dziecko. Ty musisz się dostosować.', '8 lat'],
                 ['Słuchanie z notatkami', 'Dziecko słucha historii i notuje kluczowe fakty, potem odpowiada na pytania.', '8 lat'],
                 ['Gotowanie z przepisem', 'Dziecko czyta przepis i prowadzi prostą potrawę. Ty jesteś pomocnikiem.', '8 lat'],
-                ['Śledztwa Audiokiddo', 'Sprawy Maxa i Mili: dziecko słucha, łapie poszlaki, wyklucza podejrzanych i rozwiązuje zagadkę. Akta do wydrukowania w zestawie.', '8 lat'],
+                ['Śledztwa Audiokiddo', 'Sprawy detektywistyczne: dziecko słucha, łapie poszlaki, wyklucza podejrzanych i rozwiązuje zagadkę. Akta do wydrukowania w zestawie.', '8 lat'],
             ],
             'more' => [
                 ['Co zwykle lubi 8-latek', 'Ośmiolatki często czytają samodzielnie, lubią fakty i ciekawostki, chcą rozumieć zasady i lubią mieć nad czymś kontrolę. To dobry wiek na łamigłówki, projekty i zabawy, w których liczy się uzasadnienie, a nie tylko wynik.'],
@@ -992,7 +992,7 @@ function ak_landing_schema(string $slug): array
         'url' => $url,
         'mainEntityOfPage' => $url,
         'inLanguage' => 'pl-PL',
-        'image' => ak_img('hero'),
+        'image' => ak_asset('img/site/og.jpg'),
         'datePublished' => '2026-10-10',
         'dateModified' => gmdate('Y-m-d', (int) filemtime(__FILE__)),
         'author' => [['@id' => home_url('/#nela')], ['@id' => home_url('/#dawid')]],

@@ -9,78 +9,13 @@ Conventions the site understands (inc/blog.php):
 
 POSTS = [
     {
-        "slug": "ile-czasu-przed-ekranem-dziecko",
-        "title": "Ile czasu przed ekranem dla dziecka? Zalecenia WHO i pediatrów",
-        "excerpt": "Ile bajek dziennie dla 2-, 4- i 7-latka? Co dokładnie zalecają WHO i Amerykańska Akademia Pediatrii, i jak wprowadzić limit bez codziennej awantury.",
-        "category": "czas-bez-ekranu",
-        "date": "now",
-        "content": """
-<p>Krótka odpowiedź: dzieci w wieku 2–4 lat najwyżej <strong>godzina ekranu dziennie</strong>, a mniej znaczy lepiej. Starszym dzieciom eksperci nie podają jednej liczby, tylko radzą ustalić stałe zasady, które chronią sen, ruch i rozmowę. Poniżej dokładnie, co mówią WHO i pediatrzy, i jak to zrobić w prawdziwym domu, w którym ktoś czasem musi ugotować obiad.</p>
-
-<h2>Najważniejsze w skrócie</h2>
-<ul>
-<li>Do 2. roku życia: ekran nie jest zalecany (wyjątek: rozmowa wideo z babcią).</li>
-<li>2–4 lata: najwyżej 1 godzina dziennie dobrych treści, najlepiej z dorosłym obok.</li>
-<li>5 lat i więcej: stałe, przewidywalne zasady zamiast jednej liczby. Ekran nie może zabierać snu, ruchu i rozmowy.</li>
-<li>Łatwiej ograniczyć ekran, gdy masz pod ręką coś równie prostego: zabawę z jasnym zadaniem albo audiozabawę.</li>
-</ul>
-
-<h2>Co dokładnie zaleca WHO</h2>
-<p>Światowa Organizacja Zdrowia w wytycznych z 2019 roku o aktywności, siedzeniu i śnie dzieci do 5. roku życia pisze wprost:</p>
-<ul>
-<li><strong>niemowlęta (do 1 roku)</strong>: czas przed ekranem nie jest zalecany;</li>
-<li><strong>1 rok</strong>: siedzący czas przed ekranem nie jest zalecany;</li>
-<li><strong>2 lata</strong>: nie więcej niż 1 godzina dziennie, mniej jest lepiej;</li>
-<li><strong>3–4 lata</strong>: nie więcej niż 1 godzina dziennie, mniej jest lepiej.</li>
-</ul>
-<p>W tych samych wytycznych WHO zaleca, żeby dzieci 3–4-letnie były aktywne fizycznie łącznie co najmniej 3 godziny dziennie i nie siedziały w miejscu dłużej niż godzinę bez przerwy. Ekran jest więc problemem głównie wtedy, gdy wypiera ruch i sen.</p>
-
-<h2>Co mówią pediatrzy</h2>
-<p>Amerykańska Akademia Pediatrii (AAP) ma podobne zalecenia, z kilkoma praktycznymi dopiskami:</p>
-<ul>
-<li>do 18. miesiąca unikać ekranów poza rozmowami wideo;</li>
-<li>18–24 miesiące: jeśli już, to dobre treści oglądane razem z rodzicem;</li>
-<li>2–5 lat: do 1 godziny dziennie wartościowych programów, najlepiej wspólnie, z rozmową o tym, co dziecko zobaczyło;</li>
-<li>6 lat i więcej: stałe limity i pilnowanie, żeby ekran nie zajmował miejsca snu, ruchu i innych zdrowych zajęć.</li>
-</ul>
-<p>AAP proponuje też coś, co działa lepiej niż każdy limit: <strong>strefy i pory bez ekranów</strong>, na przykład przy stole i w sypialni, oraz godzinę przed snem.</p>
-
-<h2>Jak wprowadzić limit bez awantury</h2>
-<p>Liczby to jedno, a 17:30 w zwykły wtorek to drugie. Kilka rzeczy, które naprawdę pomagają:</p>
-<ol>
-<li><strong>Zasada zamiast negocjacji.</strong> „Bajka jest po obiedzie, jeden odcinek” jest łatwiejsze niż codzienne ustalanie od nowa.</li>
-<li><strong>Uprzedzaj koniec.</strong> „Jeszcze pięć minut” i minutnik, który widzi dziecko. Koniec nie jest wtedy zaskoczeniem.</li>
-<li><strong>Miej gotowe „co zamiast”.</strong> Najtrudniejszy moment to chwila po wyłączeniu ekranu. Jedna konkretna propozycja („idziemy na misję: znajdź trzy czerwone rzeczy”) działa lepiej niż „pobaw się czymś”.</li>
-<li><strong>Nie zostawiaj telefonu w zasięgu wzroku.</strong> Leżący na stole ekran przyciąga, nawet wyłączony.</li>
-<li><strong>Bądź wzorem, w miarę możliwości.</strong> Dzieci kopiują nawyki dorosłych szybciej niż zasady.</li>
-</ol>
-
-<h2>Czym zastąpić ekran, gdy potrzebujesz chwili spokoju</h2>
-<p>Bajka na tablecie wygrywa, bo jest łatwa: włączasz i masz 20 minut. Żeby ją zastąpić, alternatywa też musi być łatwa. Sprawdzają się zabawy z jasnym zadaniem i końcem, które dziecko może robić samo: poszukiwania, zagadki, tor przeszkód. Mnóstwo gotowych pomysłów zebraliśmy w poradniku <a href="/zabawy-bez-ekranu/">zabawy bez ekranu</a>, a na chwile „nudzi mi się” mamy <a href="/zabawy-do-druku/">karty zabaw do druku</a>, które dziecko losuje ze słoika.</p>
-<p>Dla nas taką łatwą alternatywą jest audiozabawa. Włączasz ją jak bajkę, ale telefon odkładasz ekranem w dół, a głos daje dziecku misje: szukaj, odpowiadaj, ruszaj się. Tak działa <a href="/jak-to-dziala/">Audiokiddo</a>. Dziecko jest zajęte, a nie wpatrzone.</p>
-
-<h2>Czy audiobooki i audiozabawy liczą się do czasu ekranowego?</h2>
-<p>Wytyczne dotyczą ekranów, czyli patrzenia. Słuchanie to inna aktywność: dziecko nie siedzi wpatrzone w obraz, a w audiozabawach dodatkowo odpowiada na głos i się rusza. Rozsądnie jest jednak pilnować, żeby słuchanie też nie zabierało całego dnia, szczególnie ruchu na powietrzu.</p>
-
-<h2>Najczęstsze pytania</h2>
-<h3>Ile bajek dziennie może oglądać 3-latek?</h3>
-<p>Według WHO najwyżej godzinę dziennie łącznie, a mniej jest lepiej. W praktyce to jeden lub dwa krótkie odcinki, najlepiej obejrzane razem.</p>
-<h3>Ile czasu przed ekranem dla 7-latka?</h3>
-<p>Dla dzieci w wieku szkolnym nie ma jednej liczby. Pediatrzy zalecają stałe zasady, które chronią sen (co najmniej 9 godzin), ruch i czas z rodziną. Wiele rodzin przyjmuje 1–2 godziny w dni szkolne, bez ekranu przed snem.</p>
-<h3>Czy rozmowa wideo z dziadkami też się liczy?</h3>
-<p>Wytyczne traktują ją wyjątkowo: to rozmowa, a nie bierne oglądanie. Nawet przy najmłodszych dzieciach jest dopuszczalna.</p>
-<h3>Co zrobić, gdy dziecko płacze przy wyłączaniu bajki?</h3>
-<p>Uprzedź koniec, nazwij emocję („wiem, że chciałbyś dalej”) i od razu zaproponuj konkretne zajęcie. Złość po wyłączeniu ekranu jest normalna i zwykle słabnie, gdy zasada jest stała.</p>
-""",
-    },
-    {
         "slug": "sluch-fonemowy-cwiczenia",
         "title": "Słuch fonemowy u dziecka: co to jest i jak go ćwiczyć zabawą",
         "excerpt": "Słuch fonemowy to podstawa mowy, czytania i pisania. Wyjaśniamy prosto, co to jest, jak sprawdzić go w domu i jakie zabawy go ćwiczą (3–7 lat).",
         "category": "rozwoj-i-mowa",
         "date": "now",
         "content": """
-<p>Słuch fonemowy to umiejętność rozróżniania głosek w mowie: słyszenia, że „kosa” i „koza” to dwa różne słowa, a „kot” zaczyna się na „k”. Od niego zależy, jak dziecko mówi, a później jak uczy się czytać i pisać. Dobra wiadomość: ćwiczy się go zabawą, w kilka minut dziennie, bez kartek i ekranu.</p>
+<p>Słuch fonemowy to umiejętność rozróżniania głosek w mowie: słyszenia, że „kosa” i „koza” to dwa różne słowa, a „kot” zaczyna się na „k”. Od niego zależy, jak dziecko mówi, a później jak uczy się czytać i pisać. Dobra wiadomość: ćwiczy się go zabawą, w kilka minut dziennie, bez kartek i specjalnych pomocy.</p>
 
 <h2>Najważniejsze w skrócie</h2>
 <ul>
@@ -103,6 +38,7 @@ POSTS = [
 <li><strong>Sylaby.</strong> Wyklaskajcie razem „ba-na-ny”. Ile klaśnięć?</li>
 </ul>
 <p>Jeśli dziecko w wieku 5–6 lat ma z tym duży kłopot albo wyraźnie myli głoski w mowie, porozmawiaj z logopedą. Wczesna pomoc jest prosta i skuteczna.</p>
+<aside class="ak-szop-note" data-pose="nasluchuje"><p>Kosa i koza to dla mnie to samo: jedno i drugie da się podgryźć. Dlatego w zagadkach odpowiadają dzieci, a nie ja.</p></aside>
 
 <h2>10 zabaw, które ćwiczą słuch fonemowy</h2>
 <ol>
@@ -119,8 +55,9 @@ POSTS = [
 </ol>
 <p>Więcej podobnych pomysłów, uporządkowanych według wieku, znajdziesz w poradniku <a href="/zabawy-logopedyczne/">zabawy logopedyczne</a>.</p>
 
-<h2>Dlaczego słuchanie bez obrazu pomaga</h2>
-<p>Gdy dziecko widzi obrazek, często zgaduje słowo z kontekstu. Gdy tylko słyszy, musi naprawdę wsłuchać się w dźwięki. Dlatego zabawy słuchowe, zagadki na głos i słuchowiska są tak dobrym treningiem. Logopedzi zwracają uwagę właśnie na to: mowa rozwija się w słuchaniu i odpowiadaniu, a nie w oglądaniu.</p>
+<h2>Dlaczego zabawy słuchowe tak dobrze działają</h2>
+<p>Gdy dziecko widzi obrazek, często zgaduje słowo z kontekstu. Gdy tylko słyszy, musi naprawdę wsłuchać się w dźwięki. Dlatego zabawy słuchowe, zagadki na głos i słuchowiska są tak dobrym treningiem. Logopedzi zwracają uwagę właśnie na to: mowa rozwija się w słuchaniu i odpowiadaniu.</p>
+<aside class="ak-szop-note" data-pose="chytry"><p>Ciekawostka: niemowlęta odróżniają głoski z każdego języka świata, a z czasem „dostrajają się” do tego, który słyszą w domu. Ja dostroiłem się do szelestu folii po chipsach.</p></aside>
 
 <h2>Najczęstsze pytania</h2>
 <h3>Od jakiego wieku ćwiczyć słuch fonemowy?</h3>
@@ -147,7 +84,7 @@ POSTS = [
 <li>Mów do dziecka dużo i konkretnie: nazywaj, co robicie i co widzicie.</li>
 <li>Pytaj „co?”, „dlaczego?”, „jak myślisz?”, a nie tylko „tak czy nie?”.</li>
 <li>Czekaj na odpowiedź dłużej, niż wydaje się wygodne.</li>
-<li>Czytaj, śpiewaj i bawcie się słowami. Ekran nie zastąpi rozmowy.</li>
+<li>Czytaj, śpiewaj i bawcie się słowami. Najwięcej daje zwykła rozmowa.</li>
 </ul>
 
 <h2>12 nawyków, które wspierają mowę</h2>
@@ -162,12 +99,14 @@ POSTS = [
 <li><strong>Bawcie się w zagadki.</strong> „Jest żółte, kwaśne i rośnie na drzewie”. Więcej w poradniku <a href="/zagadki-dla-dzieci/">zagadki dla dzieci</a>.</li>
 <li><strong>Opowiadajcie na zmianę.</strong> Ty zaczynasz historię, dziecko dodaje zdanie.</li>
 <li><strong>Ćwiczcie buzię i język przy okazji.</strong> Dmuchanie baniek, piórka, picie przez słomkę, robienie min.</li>
-<li><strong>Wyłącz tło.</strong> Telewizor grający w tle zmniejsza liczbę słów, które padają w domu.</li>
+<li><strong>Ścisz tło.</strong> Gdy w tle gra radio albo telewizor, rozmów jest mniej. Cisza sprzyja gadaniu.</li>
 <li><strong>Dawaj dziecku zadania „na głos”.</strong> Zabawy, w których trzeba odpowiedzieć, nazwać, wymyślić. Tak działają audiozabawy w <a href="/jak-to-dziala/">Audiokiddo</a>: narrator pyta i czeka, aż dziecko odpowie.</li>
 </ol>
 
-<h2>Mowa a ekran</h2>
-<p>Bajka mówi do dziecka, ale nie czeka na odpowiedź. Logopedzi podkreślają, że mowa rozwija się w wymianie: ktoś mówi, ktoś odpowiada, ktoś dopytuje. Dlatego nawet najlepszy program nie zastąpi rozmowy. Jeśli potrzebujesz chwili dla siebie, wybieraj aktywności, w których dziecko mówi i działa, a nie tylko patrzy. Pomysły znajdziesz w poradniku <a href="/zabawy-logopedyczne/">zabawy logopedyczne</a>.</p>
+<h2>Mowa rozwija się w wymianie</h2>
+<p>Logopedzi podkreślają, że mowa rośnie w rozmowie: ktoś mówi, ktoś odpowiada, ktoś dopytuje. Dlatego najwięcej dają zajęcia, w których dziecko samo musi coś powiedzieć: zagadki, opowiadanie, zabawy w role. Pomysły znajdziesz w poradniku <a href="/zabawy-logopedyczne/">zabawy logopedyczne</a>.</p>
+
+<aside class="ak-szop-note" data-pose="zadowolony"><p>Na „co było w przedszkolu?” zwykle pada „nic”. Spróbuj „kto dziś najgłośniej się śmiał?”. Działa nawet na szopy.</p></aside>
 
 <h2>Kiedy warto iść do logopedy</h2>
 <p>Każde dziecko rozwija się we własnym tempie, ale te sygnały są dobrym powodem do konsultacji:</p>
@@ -192,7 +131,7 @@ POSTS = [
     {
         "slug": "zabawy-dla-chorego-dziecka",
         "title": "Zabawy dla chorego dziecka w łóżku: 15 pomysłów na kilka dni w domu",
-        "excerpt": "Gorączka minęła, energia wraca, a do przedszkola jeszcze daleko. 15 spokojnych zabaw dla chorego dziecka w łóżku i na kanapie, bez maratonu bajek.",
+        "excerpt": "Gorączka minęła, energia wraca, a do przedszkola jeszcze daleko. 15 spokojnych zabaw dla chorego dziecka w łóżku i na kanapie, na kilka dni w domu.",
         "category": "zabawy-i-codziennosc",
         "date": "2026-10-20T08:00:00",
         "content": """
@@ -202,7 +141,7 @@ POSTS = [
 <ul>
 <li>Przy gorączce i złym samopoczuciu: odpoczynek, przytulanie, słuchanie, zero ambicji.</li>
 <li>Gdy dziecko czuje się lepiej: krótkie, spokojne zabawy, które nie męczą.</li>
-<li>Słuchanie (bajki, audiozabawy, muzyka) to dobra alternatywa dla maratonu bajek na tablecie.</li>
+<li>Słuchanie (bajki, audiozabawy, muzyka) daje odpoczynek i zajęcie jednocześnie.</li>
 <li>Gdy coś Cię niepokoi w przebiegu choroby, dzwoń do lekarza, a nie szukaj zabaw.</li>
 </ul>
 
@@ -229,8 +168,9 @@ POSTS = [
 <li><strong>Plan na powrót do zdrowia.</strong> Narysujcie razem, co zrobicie, gdy dziecko wyzdrowieje: plac zabaw, lody, wizyta u babci. Daje coś na co czekać.</li>
 </ol>
 
-<h2>A co z bajkami na tablecie?</h2>
-<p>W chorobie zasady się luzują i to jest w porządku. Warto jednak pamiętać, że długie oglądanie nie jest dla chorego dziecka odpoczynkiem: obraz męczy, a po wyłączeniu często przychodzi rozdrażnienie. Dobrym kompromisem jest przeplatanie: odcinek bajki, potem słuchanie albo spokojna zabawa, potem drzemka. O tym, ile ekranu jest rozsądne na co dzień, piszemy we wpisie <a href="/ile-czasu-przed-ekranem-dziecko/">ile czasu przed ekranem dla dziecka</a>.</p>
+<h2>Plan dnia na chorobowe</h2>
+<p>W chorobie zasady się luzują i to jest w porządku. Dobrze działa przeplatanie: chwila bajki, potem słuchanie albo spokojna zabawa, potem drzemka i znowu coś krótkiego. Dziecko ma zmianę, a Ty nie musisz wymyślać nowej atrakcji co kwadrans.</p>
+<aside class="ak-szop-note" data-pose="prosi"><p>Ciekawostka: szopy zimą dużo śpią i mało się ruszają, choć prawdziwego snu zimowego nie mają. Chore dzieci mają podobny tryb. Szanujmy to.</p></aside>
 
 <h2>Najczęstsze pytania</h2>
 <h3>Jak zająć chore dziecko, które nie chce leżeć?</h3>
@@ -254,7 +194,7 @@ POSTS = [
 <ul>
 <li>Często podawana orientacyjna reguła: kilka minut skupienia na każdy rok życia, przy zabawie, która dziecko interesuje.</li>
 <li>Przy ciekawej zabawie dziecko skupia się dłużej, przy nudnym zadaniu znacznie krócej.</li>
-<li>Koncentrację skracają zmęczenie, głód, hałas w tle i szybkie bodźce z ekranu.</li>
+<li>Koncentrację skracają zmęczenie, głód, hałas w tle i zbyt wiele rzeczy naraz.</li>
 <li>Ćwiczy ją zabawa z jasnym zadaniem: słuchanie poleceń, zagadki, poszukiwania.</li>
 </ul>
 
@@ -267,7 +207,6 @@ POSTS = [
 <li><strong>Zmęczenie i głód.</strong> Najkrótsza uwaga jest przed obiadem i pod wieczór.</li>
 <li><strong>Hałas w tle.</strong> Telewizor, radio, rozmowy. Mózg dziecka słyszy wszystko.</li>
 <li><strong>Za trudne albo za łatwe zadanie.</strong> Jedno frustruje, drugie nudzi.</li>
-<li><strong>Szybkie bodźce.</strong> Po krótkich, dynamicznych filmikach spokojna zabawa wydaje się „za wolna”.</li>
 <li><strong>Za dużo zabawek naraz.</strong> Pięć rzeczy na dywanie to pięć powodów, żeby skakać między nimi.</li>
 </ul>
 
@@ -277,8 +216,9 @@ POSTS = [
 <li><strong>Fabuła.</strong> Gdy dziecko jest detektywem albo kosmonautą, wytrzymuje dłużej.</li>
 <li><strong>Ruch.</strong> Przedszkolak myśli ciałem. Zadania z ruchem pomagają, a nie przeszkadzają.</li>
 <li><strong>Jedna rzecz naraz.</strong> Mniej zabawek na widoku, mniej rozpraszaczy.</li>
-<li><strong>Słuchanie bez obrazu.</strong> Gdy nic nie miga, uwaga skupia się na głosie i poleceniu.</li>
+<li><strong>Słuchanie z zadaniem.</strong> Gdy dziecko wie, że za chwilę padnie pytanie, słucha uważniej.</li>
 </ul>
+<aside class="ak-szop-note" data-pose="zdziwiony"><p>Moja koncentracja trwa dokładnie tyle, ile szelest paczki z orzechami. Twoje dziecko ma lepszy wynik. Serio.</p></aside>
 
 <h2>10 zabaw na koncentrację uwagi</h2>
 <ol>
@@ -300,8 +240,8 @@ POSTS = [
 <p>Orientacyjnie kilka do kilkunastu minut przy zabawie, która go ciekawi. Rozrzut między dziećmi i między dniami jest duży.</p>
 <h3>Czy krótka koncentracja oznacza ADHD?</h3>
 <p>Sama krótka uwaga u przedszkolaka nie świadczy o ADHD. Diagnozę stawia specjalista na podstawie wielu objawów, w różnych sytuacjach i przez dłuższy czas. Jeśli masz wątpliwości, porozmawiaj z psychologiem dziecięcym.</p>
-<h3>Czy bajki pogarszają koncentrację?</h3>
-<p>Badania sugerują, że bardzo szybkie, migające treści mogą utrudniać skupienie zaraz po oglądaniu. Spokojniejsze treści i ograniczony czas przed ekranem są bezpieczniejszym wyborem.</p>
+<h3>O jakiej porze dziecko najlepiej się skupia?</h3>
+<p>Zwykle przed południem i po odpoczynku, a najsłabiej przed posiłkiem i pod wieczór. Zabawy na skupienie warto planować na „dobre” godziny dziecka.</p>
 """,
     },
     {
@@ -354,6 +294,8 @@ POSTS = [
 </ol>
 <p>Więcej pomysłów na podróże znajdziesz w poradniku <a href="/jak-zajac-dziecko-w-samochodzie/">jak zająć dziecko w samochodzie (i w samolocie)</a>, a na lot przydadzą się też nasze <a href="/zabawy-do-druku/">karty zabaw do druku</a> z części „samochód” i „5 minut”.</p>
 
+<aside class="ak-szop-note" data-pose="klaszcze"><p>Ciekawostka: w samolocie gorzej czujemy smak słony i słodki, bo powietrze jest suche, a ciśnienie niższe. Dlatego przekąski z domu smakują tam inaczej. Ja i tak zjem.</p></aside>
+
 <h2>Co, jeśli jest kryzys</h2>
 <p>Czasem nic nie działa i to też jest normalne. Spokojny głos, przytulenie, spacer do toalety jako zmiana scenerii, łyk wody. Inni pasażerowie widzieli już płaczące dziecko, a Ty nie musisz nikomu niczego udowadniać.</p>
 
@@ -367,13 +309,13 @@ POSTS = [
 """,
     },
     {
-        "slug": "prezent-dla-dziecka-bez-ekranu",
-        "title": "Prezent dla dziecka bez ekranu: 20 pomysłów na święta i urodziny",
-        "excerpt": "Prezenty dla dzieci 3–9 lat, które nie skończą w szafie i nie są kolejnym ekranem: do ruchu, do wyobraźni, do słuchania i do wspólnego czasu.",
-        "category": "czas-bez-ekranu",
+        "slug": "prezent-dla-dziecka-3-9-lat",
+        "title": "Prezent dla dziecka 3–9 lat: 20 pomysłów, które nie skończą w szafie",
+        "excerpt": "Prezenty dla dzieci 3–9 lat na święta i urodziny: do ruchu, do wyobraźni, do słuchania i do wspólnego czasu. Plus jak wybrać, żeby się nie kurzył.",
+        "category": "pomysly-i-inspiracje",
         "date": "2026-11-10T08:00:00",
         "content": """
-<p>Dobry prezent bez ekranu to taki, który daje dziecku coś do zrobienia: ruch, budowanie, wymyślanie albo wspólny czas z dorosłym. Poniżej 20 pomysłów dla dzieci 3–9 lat, pogrupowanych według tego, co rozwijają, plus kilka zasad, dzięki którym prezent nie wyląduje w szafie po tygodniu.</p>
+<p>Dobry prezent to taki, który daje dziecku coś do zrobienia: ruch, budowanie, wymyślanie albo wspólny czas z dorosłym. Poniżej 20 pomysłów dla dzieci 3–9 lat, pogrupowanych według tego, co rozwijają, plus kilka zasad, dzięki którym prezent nie wyląduje w szafie po tygodniu.</p>
 
 <h2>Najważniejsze w skrócie</h2>
 <ul>
@@ -419,6 +361,8 @@ POSTS = [
 <li>Słoik zabaw: wydrukowane i wycięte <a href="/zabawy-do-druku/">karty zabaw</a> w ładnym słoiku z kokardą. Tani, osobisty i używany przez cały rok.</li>
 </ol>
 
+<aside class="ak-szop-note" data-pose="chytry"><p>Najlepszy prezent mojego dzieciństwa? Karton po lodówce. Był statkiem, zamkiem i bazą. Nie mówcie tego rodzicom, którzy właśnie kupili hulajnogę.</p></aside>
+
 <h2>Jak wybrać prezent, który nie skończy w szafie</h2>
 <ul>
 <li><strong>Obserwuj, czym dziecko bawi się teraz.</strong> Prezent, który rozwija obecną pasję, wygrywa z modnym.</li>
@@ -428,8 +372,8 @@ POSTS = [
 </ul>
 
 <h2>Najczęstsze pytania</h2>
-<h3>Co kupić 5-latkowi zamiast tabletu?</h3>
-<p>Coś, co daje podobne „wciągnięcie”, ale w prawdziwym świecie: zestaw detektywa, klocki z instrukcją, grę planszową albo audiozabawy, w których dziecko jest bohaterem historii.</p>
+<h3>Co kupić 5-latkowi?</h3>
+<p>Coś, co wciąga na dłużej: zestaw detektywa, klocki z instrukcją, grę planszową, kostiumy albo audiozabawy, w których dziecko jest bohaterem historii.</p>
 <h3>Jaki prezent rozwija mowę dziecka?</h3>
 <p>Gry słowne, książki do wspólnego czytania, pacynki do odgrywania scenek i zabawy, w których dziecko odpowiada na głos. Pomysły na co dzień są we wpisie <a href="/jak-rozwijac-mowe-dziecka/">jak rozwijać mowę dziecka w domu</a>.</p>
 <h3>Czy przeżycie to dobry prezent dla przedszkolaka?</h3>
@@ -473,6 +417,8 @@ POSTS = [
 <h3>1:50–2:00 Zakończenie</h3>
 <p>Dyplomy „detektywa na medal”, wspólne zdjęcie (pamiętaj, żeby zapytać rodziców innych dzieci o zgodę na publikację) i drobne upominki. Wyraźny koniec ułatwia rodzicom odbiór dzieci.</p>
 
+<aside class="ak-szop-note" data-pose="zadowolony"><p>W śledztwie o zaginiony prezent zawsze podejrzewajcie szopa. Statystycznie mam to we krwi.</p></aside>
+
 <h2>Zabawy na urodziny według wieku</h2>
 <ul>
 <li><strong>4–5 lat:</strong> krótsze bloki (5–10 minut), więcej ruchu i muzyki, proste zagadki, mało rywalizacji.</li>
@@ -490,10 +436,202 @@ POSTS = [
 <p>Wybierz motyw, przygotuj plan w blokach po 10–15 minut i rekwizyty wcześniej. Jedna osoba prowadzi zabawy, druga pilnuje jedzenia i porządku.</p>
 """,
     },
+    {
+        "slug": "co-bylo-w-przedszkolu",
+        "title": "„Co było w przedszkolu?” „Nic”. 15 pytań, na które dziecko odpowie",
+        "excerpt": "Dziecko wraca z przedszkola i na każde pytanie odpowiada „nic” albo „nie wiem”? 15 pytań, które otwierają rozmowę, i kiedy je zadawać.",
+        "category": "rozwoj-i-mowa",
+        "date": "now",
+        "content": """
+<p>„Co było w przedszkolu?” to pytanie, na które dzieci prawie zawsze odpowiadają „nic”. Nie dlatego, że nic się nie działo, tylko dlatego, że pytanie jest za szerokie: dziecko musiałoby przejrzeć cały dzień i wybrać jedną rzecz. Konkretne, trochę zabawne pytania działają dużo lepiej. Poniżej 15 sprawdzonych i kilka zasad, kiedy je zadawać.</p>
+
+<h2>Najważniejsze w skrócie</h2>
+<ul>
+<li>Pytaj konkretnie: o osobę, chwilę, zapach, śmiech. „Co było?” jest za szerokie.</li>
+<li>Nie pytaj od progu. Dziecko po przedszkolu potrzebuje chwili, jedzenia i ruchu.</li>
+<li>Najlepsze rozmowy dzieją się przy okazji: w aucie, przy kąpieli, przed snem.</li>
+<li>Opowiedz najpierw o swoim dniu. Dzieci chętnie odpowiadają „po kolei”.</li>
+</ul>
+
+<h2>Dlaczego dziecko mówi „nic”</h2>
+<p>Przedszkolak po kilku godzinach w grupie jest zmęczony bodźcami. Pytanie o cały dzień wymaga od niego wysiłku: przypomnieć sobie, wybrać, ułożyć zdanie. Łatwiej powiedzieć „nic”. To nie znaczy, że dziecko nie chce rozmawiać. Potrzebuje haczyka, za który może złapać.</p>
+
+<h2>15 pytań, które działają</h2>
+<ol>
+<li>Kto dziś najgłośniej się śmiał? Z czego?</li>
+<li>Co dziś jadłeś najsmaczniejszego? A najdziwniejszego?</li>
+<li>Z kim siedziałeś przy obiedzie?</li>
+<li>Gdybyś dziś był nauczycielem, co byś zmienił?</li>
+<li>Czy ktoś dziś był smutny? Co się stało?</li>
+<li>W co się bawiliście na dworze?</li>
+<li>Czego nowego się dziś dowiedziałeś? Naucz mnie.</li>
+<li>Co było dziś najnudniejsze?</li>
+<li>Kto dziś zrobił coś miłego? Dla kogo?</li>
+<li>Jaka piosenka albo wierszyk był dziś w przedszkolu? Zaśpiewasz?</li>
+<li>Gdybyś mógł jutro zabrać do przedszkola jedną zabawkę, którą?</li>
+<li>Co dziś było trudne?</li>
+<li>Z kim chciałbyś się jutro pobawić?</li>
+<li>Jaki był najdziwniejszy dźwięk, który dziś usłyszałeś?</li>
+<li>Pokaż mi, jak pani dziś mówiła „cisza!”.</li>
+</ol>
+
+<aside class="ak-szop-note" data-pose="zadowolony"><p>Moje ulubione: „co było najnudniejsze?”. Dzieci uwielbiają narzekać, a przy okazji opowiadają resztę dnia.</p></aside>
+
+<h2>Kiedy pytać, żeby dziecko odpowiedziało</h2>
+<ul>
+<li><strong>Nie od razu.</strong> Najpierw przekąska, przytulenie, chwila ruchu. Rozmowa przyjdzie sama.</li>
+<li><strong>Przy okazji.</strong> W aucie, na spacerze, przy kąpieli. Rozmowa „obok siebie”, a nie „twarzą w twarz”, jest dla dzieci łatwiejsza.</li>
+<li><strong>Przed snem.</strong> Wieczorem dzieci często same zaczynają opowiadać. Warto zostawić na to kilka minut.</li>
+<li><strong>Po kolei.</strong> „Ja dziś zgubiłam klucze. A tobie co się przytrafiło?” Twoja historia ośmiela.</li>
+</ul>
+
+<h2>Jak to wspiera mowę</h2>
+<p>Opowiadanie o tym, co się wydarzyło, to dla przedszkolaka trudne zadanie językowe: musi ułożyć zdarzenia po kolei, użyć czasu przeszłego i dobrać słowa. Codzienne krótkie rozmowy to świetny trening, lepszy niż niejedno ćwiczenie. Więcej pomysłów znajdziesz we wpisie <a href="/jak-rozwijac-mowe-dziecka/">jak rozwijać mowę dziecka w domu</a> i w poradniku <a href="/zabawy-logopedyczne/">zabawy logopedyczne</a>.</p>
+
+<aside class="ak-szop-note" data-pose="nasluchuje"><p>Ciekawostka: dzieci często łatwiej mówią w ruchu niż przy stole. Dlatego najlepsze zwierzenia padają w samochodzie i na huśtawce. Moje padają przy koszu na śmieci.</p></aside>
+
+<h2>Najczęstsze pytania</h2>
+<h3>Dlaczego dziecko nie chce opowiadać o przedszkolu?</h3>
+<p>Najczęściej jest zmęczone albo pytanie jest za szerokie. Czasem dziecko po prostu potrzebuje oddzielić dom od przedszkola. Jeśli jednak długo unika tematu, jest smutne albo boi się iść do przedszkola, porozmawiaj z wychowawczynią.</p>
+<h3>Jak zachęcić 3-latka do opowiadania?</h3>
+<p>Pytaj bardzo konkretnie i dawaj wybór: „jadłeś zupę czy kanapkę?”, „bawiłeś się klockami czy na dworze?”. Trzylatek łatwiej wybiera, niż opowiada.</p>
+<h3>Czy to normalne, że dziecko opowiada o przedszkolu dopiero wieczorem?</h3>
+<p>Tak, bardzo częste. Wieczorem dziecko jest spokojniejsze i ma czas, żeby wrócić do dnia. Warto zostawić przed snem chwilę na rozmowę.</p>
+""",
+    },
+    {
+        "slug": "kalendarz-adwentowy-z-zabawami",
+        "title": "Kalendarz adwentowy z zabawami: 24 pomysły na grudzień (3–9 lat)",
+        "excerpt": "Kalendarz adwentowy bez słodyczy i bez kupowania: 24 zabawy na każdy dzień grudnia, które zajmują 10 minut i robią z czekania na święta przygodę.",
+        "category": "zabawy-i-codziennosc",
+        "date": "2026-11-24T08:00:00",
+        "content": """
+<p>Kalendarz adwentowy nie musi być pełen czekoladek. Wystarczą 24 karteczki z zabawami: każdego dnia dziecko odkrywa jedną i robicie ją razem, w 10 minut. Poniżej gotowa lista na cały grudzień, ułożona tak, żeby trudniejsze dni (dużo pracy, mało siły) miały łatwe zadania.</p>
+
+<h2>Najważniejsze w skrócie</h2>
+<ul>
+<li>24 zabawy na 10–15 minut, bez kupowania i bez przygotowań.</li>
+<li>Wpisz je na karteczki i schowaj w kopertach, pudełkach po zapałkach albo skarpetkach.</li>
+<li>Na dni robocze łatwe zadania, na weekendy dłuższe.</li>
+<li>Gotowe karty z zabawami możesz też wydrukować z naszych <a href="/zabawy-do-druku/">kart do druku</a>.</li>
+</ul>
+
+<h2>24 zabawy na grudzień</h2>
+<ol>
+<li>Narysujcie wspólnie listę marzeń do Mikołaja.</li>
+<li>Zróbcie konkurs na najdłuższe „hooo hooo hooo”.</li>
+<li>Upieczcie (albo udawajcie, że pieczecie) pierniki z ciastoliny.</li>
+<li>Wymyślcie imię dla każdego renifera Mikołaja.</li>
+<li>Zagadki zimowe: „biały, zimny, lepi się z niego bałwana”.</li>
+<li>Mikołajki: poszukiwanie skarbu z mapą do prezentu.</li>
+<li>Taniec do świątecznej piosenki, ze stop-klatką.</li>
+<li>Ozdoba z papieru: łańcuch na choinkę.</li>
+<li>List do kogoś z rodziny, narysowany albo podyktowany.</li>
+<li>Teatr cieni z latarką: Mikołaj w kominie.</li>
+<li>Zabawa w pocztę: dziecko roznosi „listy” po domu.</li>
+<li>Śledztwo: kto zjadł pierniczek? (poszlaki z okruszków).</li>
+<li>Śnieżki z papieru i rzucanie do kosza.</li>
+<li>Spacer z misją: znajdź 5 świątecznych okien.</li>
+<li>Wspólne czytanie zimowej książki z pauzami na pytania.</li>
+<li>Opowieść na zmianę: przygoda elfa, który zgubił czapkę.</li>
+<li>„Co zniknęło?” z ozdobami choinkowymi.</li>
+<li>Kartka świąteczna dla sąsiada.</li>
+<li>Zimowy tor przeszkód: „śnieżne zaspy” z poduszek.</li>
+<li>Kolędy z instrumentami z kuchni.</li>
+<li>Dzień dobrego uczynku: dziecko wybiera, komu pomoże.</li>
+<li>Pakowanie prezentów: dziecko jest głównym pakowaczem.</li>
+<li>Wigilijna zagadka: odgadnij potrawę po zapachu.</li>
+<li>Szeptana bajka na dobranoc przed najważniejszą nocą.</li>
+</ol>
+
+<aside class="ak-szop-note" data-pose="chytry"><p>Dzień 12 testowałem osobiście. Pierniczek zniknął, poszlaki zostały. Sprawa nadal otwarta.</p></aside>
+
+<h2>Jak zrobić kalendarz w 15 minut</h2>
+<ul>
+<li><strong>Koperty na sznurku:</strong> 24 koperty z numerami, przypięte klamerkami.</li>
+<li><strong>Pudełka po zapałkach:</strong> małe szufladki z karteczkami w środku.</li>
+<li><strong>Skarpetki:</strong> 24 skarpetki na sznurku. Wreszcie mają pary.</li>
+<li><strong>Słoik:</strong> zwinięte karteczki do losowania (wtedy bez numerów).</li>
+</ul>
+
+<h2>Kiedy brakuje czasu</h2>
+<p>Grudzień bywa szalony. Jeśli któregoś dnia nie masz siły, zamień zabawę na krótką: zagadkę, piosenkę albo audiozabawę w <a href="/jak-to-dziala/">Audiokiddo</a>, którą dziecko robi samo. Kalendarz ma cieszyć, a nie być kolejnym obowiązkiem.</p>
+
+<aside class="ak-szop-note" data-pose="zdziwiony"><p>Ciekawostka: tradycja kalendarza adwentowego pochodzi z Niemiec. Pierwsze rodziny zaznaczały dni kredą na drzwiach. Ja zaznaczam pazurem na lodówce.</p></aside>
+
+<h2>Najczęstsze pytania</h2>
+<h3>Co włożyć do kalendarza adwentowego zamiast słodyczy?</h3>
+<p>Karteczki z zabawami, małe zadania, drobiazgi do zabawy (naklejki, kredka), zagadki albo „bony” na wspólny czas, np. „wieczór z latarką”.</p>
+<h3>Od jakiego wieku kalendarz z zabawami?</h3>
+<p>Od około 3 lat, gdy dziecko rozumie, że każdego dnia odkrywa jedną rzecz. Dla starszych dzieci zadania mogą być trudniejsze: zagadki, szyfry, śledztwa.</p>
+<h3>Co zrobić, gdy dziecko chce otworzyć wszystkie okienka naraz?</h3>
+<p>Powieś kalendarz wyżej i zrób z otwierania rytuał o stałej porze, np. po śniadaniu. Rytuał pomaga czekać.</p>
+""",
+    },
+    {
+        "slug": "zabawy-slowne-dla-dzieci",
+        "title": "Zabawy słowne dla dzieci: 15 gier, do których nic nie trzeba",
+        "excerpt": "Zabawy słowne dla dzieci 3–9 lat do domu, auta i kolejki: rymy, skojarzenia, zagadki i łańcuchy słów. Rozwijają mowę i nie wymagają niczego.",
+        "category": "rozwoj-i-mowa",
+        "date": "2026-12-01T08:00:00",
+        "content": """
+<p>Zabawy słowne to najprostszy sposób na nudę: nie wymagają kartki, zabawek ani przygotowań, a przy okazji ćwiczą mowę, słownictwo i szybkie myślenie. Działają w aucie, w kolejce do lekarza i przy obiedzie. Poniżej 15 gier od najprostszych dla 3-latków po wyzwania dla 8-latków.</p>
+
+<h2>Najważniejsze w skrócie</h2>
+<ul>
+<li>Zabawy słowne rozwijają słownictwo, słuch fonemowy i myślenie.</li>
+<li>Zaczynaj od prostych (rymy, „kto tak robi?”), dokładaj trudniejsze z wiekiem.</li>
+<li>Krótko i często: 5 minut kilka razy dziennie działa lepiej niż godzina raz w tygodniu.</li>
+<li>Śmiech to część nauki. Absurdalne odpowiedzi są mile widziane.</li>
+</ul>
+
+<h2>Dla najmłodszych (3–4 lata)</h2>
+<ol>
+<li><strong>Kto tak robi?</strong> „Muu!” – krowa. Potem trudniej: „bzzz”, „kle kle”.</li>
+<li><strong>Dokończ rymowankę.</strong> „Siedzi kot na…” – płot!</li>
+<li><strong>Co jest czerwone?</strong> Wymieniacie na zmianę rzeczy w jednym kolorze.</li>
+<li><strong>Duże czy małe?</strong> Słoń? Mrówka? Autobus? Dziecko pokazuje rękami.</li>
+<li><strong>Prawda czy nie?</strong> „Ryby umieją latać”. Klaskanie albo tupanie.</li>
+</ol>
+
+<aside class="ak-szop-note" data-pose="klaszcze"><p>W „prawda czy nie?” moje ulubione zdanie to „szopy nie lubią orzechów”. Za każdym razem tupię najgłośniej.</p></aside>
+
+<h2>Dla przedszkolaków (5–6 lat)</h2>
+<ol start="6">
+<li><strong>Wymień trzy.</strong> „Trzy zwierzęta z ogonem”, „trzy rzeczy w łazience”.</li>
+<li><strong>Co tu nie pasuje?</strong> „Jabłko, gruszka, but, śliwka”.</li>
+<li><strong>Znajdź przeciwieństwo.</strong> Gorący? Zimny! Szybki? Wolny!</li>
+<li><strong>Szybkie skojarzenia.</strong> Morze? Fala! Fala? Surfer!</li>
+<li><strong>Na jaką głoskę?</strong> „Na co zaczyna się mama?” A „samolot”?</li>
+</ol>
+
+<h2>Dla starszaków (7–9 lat)</h2>
+<ol start="11">
+<li><strong>Łańcuch słów.</strong> Ostatnia litera to pierwsza następnego: kot – tygrys – sowa.</li>
+<li><strong>Słowo w słowie.</strong> Z „lokomotywa” ułóż jak najwięcej krótszych słów.</li>
+<li><strong>20 pytań.</strong> Ktoś myśli o zwierzęciu, reszta pyta „tak/nie”.</li>
+<li><strong>Zakazane słowo.</strong> Rozmowa, w której nie wolno powiedzieć „tak”.</li>
+<li><strong>Historia z trzech słów.</strong> Losujecie trzy słowa i układacie z nich opowieść.</li>
+</ol>
+
+<h2>Gdy nie masz siły prowadzić</h2>
+<p>Zabawy słowne są proste, ale ktoś musi je prowadzić. W <a href="/jak-to-dziala/">Audiokiddo</a> robi to głos: w pakiecie Słowa i Wiedza narrator zadaje zagadki, szuka z dzieckiem przeciwieństw i skojarzeń i czeka na odpowiedź. Więcej pomysłów na mowę znajdziesz w poradniku <a href="/zabawy-logopedyczne/">zabawy logopedyczne</a> i we wpisie o <a href="/sluch-fonemowy-cwiczenia/">słuchu fonemowym</a>.</p>
+
+<aside class="ak-szop-note" data-pose="chytry"><p>Ciekawostka: najdłuższe polskie słowa mają ponad 30 liter, na przykład „dziewięćsetdziewięćdziesięciodziewięcioletni”. Spróbujcie je wyklaskać. Ja się poddałem po „dziewięć”.</p></aside>
+
+<h2>Najczęstsze pytania</h2>
+<h3>Jakie zabawy słowne dla 4-latka?</h3>
+<p>Rymowanki z pauzą, „kto tak robi?”, „co jest czerwone?” i „prawda czy nie?”. Krótkie, z ruchem i dużą dawką śmiechu.</p>
+<h3>Czy zabawy słowne pomagają w nauce czytania?</h3>
+<p>Tak. Rymy, głoski i dzielenie słów na części ćwiczą słuch fonemowy, który jest jedną z podstaw czytania i pisania.</p>
+<h3>Jakie zabawy słowne do samochodu?</h3>
+<p>„Widzę coś na literę…”, łańcuch słów, wymień trzy, 20 pytań i opowieść na zmianę. Wszystkie działają bez niczego.</p>
+""",
+    },
 ]
 
 CATEGORIES = {
-    "czas-bez-ekranu": ("Czas bez ekranu", "Ile ekranu dla dziecka, czym go zastąpić i jak to zrobić bez codziennej walki. Konkretnie, ze źródłami."),
+    "pomysly-i-inspiracje": ("Pomysły i inspiracje", "Audiozabawy, prezenty, rytuały i pomysły na wspólny czas z dzieckiem 3–9 lat. Konkretnie i z przymrużeniem oka."),
     "rozwoj-i-mowa": ("Rozwój i mowa", "Mowa, słuch fonemowy, koncentracja i myślenie: jak wspierać rozwój dziecka w domu, zabawą."),
     "zabawy-i-codziennosc": ("Zabawy i codzienność", "Choroba, podróż, urodziny, deszczowy dzień: gotowe plany i zabawy na prawdziwe sytuacje z dziećmi."),
 }

@@ -67,9 +67,12 @@ require AK_DIR . 'parts/header.php';
                     <p class="ak-p3-price"><?php echo wp_kses_post($offer['price_html']); ?><?php if ($this_set && $this_set['save'] > 0) : ?> <span class="ak-save-tag">oszczędzasz <?php echo esc_html(ak_money($this_set['save'])); ?></span><?php endif; ?></p>
                     <?php echo ak_cart_button($offer, 'Dodaj do koszyka', 'ak-btn-wide'); // escaped inside ?>
                     <ul class="ak-p3-trust">
-                        <li>Pliki MP3 od razu na maila</li>
+                        <?php if (ak_app_live()) : ?>
+                        <li>Od razu w aplikacji: zaloguj się e-mailem z zamówienia</li>
+                        <?php else : ?>
+                        <li>Pliki MP3 od razu na maila, a po premierze także w aplikacji</li>
+                        <?php endif; ?>
                         <li>BLIK, karta, Twisto</li>
-                        <li>Odblokujesz w aplikacji</li>
                     </ul>
                 </div>
                 <?php endif; ?>

@@ -1723,3 +1723,29 @@ html.ak-locked { overflow: hidden; }
   .ak-signup-row { flex-direction: column; }
   .ak-signup .ak-btn { width: 100%; justify-content: center; }
 }
+
+/* Side cart: WooCommerce and the theme add their own cross icon and a dark button; ours win. */
+.ak-drawer .woocommerce-mini-cart-item a.remove { font-size: 0 !important; color: transparent !important; text-indent: 0 !important; overflow: hidden; border: 0 !important; }
+.ak-drawer .woocommerce-mini-cart-item a.remove::before, .ak-drawer .woocommerce-mini-cart-item a.remove::after { content: none !important; display: none !important; }
+.ak-drawer .woocommerce-mini-cart-item a.remove { background: var(--sand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7L7 17' stroke='%231D1A2B' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / 16px !important; }
+.ak-drawer .woocommerce-mini-cart__buttons a.button, .ak-drawer .woocommerce-mini-cart__buttons a { background: transparent !important; color: var(--ink) !important; border: 0 !important; }
+.ak-drawer .woocommerce-mini-cart__buttons a.checkout { background: var(--sun) !important; color: var(--ink) !important; }
+.ak-drawer .woocommerce-mini-cart__buttons a:hover { background: var(--paper) !important; }
+.ak-drawer .woocommerce-mini-cart__buttons a.checkout:hover { background: #F2B500 !important; }
+
+/* Szop'en in the posts: a small figure with a speech bubble, never louder than the text */
+.ak-szop-note { display: flex; align-items: flex-end; gap: 12px; margin: 30px 0; }
+.ak-szop-note > img { width: 76px; flex: none; filter: drop-shadow(0 8px 12px rgba(36, 27, 58, .16)); }
+.ak-szop-note > div { position: relative; background: var(--paper); border-radius: 20px 20px 20px 6px; padding: 12px 16px; box-shadow: var(--shadow); margin-bottom: 26px; font-size: 15.5px; line-height: 1.55; }
+.ak-szop-note p { margin: 0 !important; }
+.ak-szop-note .ak-szop-note-h { font-size: 12px !important; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal-deep); margin-bottom: 4px !important; }
+
+/* Hero with Szop'en (instead of Max i Mila): his own bubble, no parallax that slid the picture onto the proof line */
+.ak-a-hero .ak-hero-img { translate: none !important; }
+.ak-a-hero-art { max-width: 640px; }
+.ak-hero-bubble { position: absolute; right: 2%; top: 4%; z-index: 2; max-width: 250px; margin: 0; background: var(--paper); border-radius: 22px 22px 22px 6px; padding: 12px 16px; font-weight: 600; font-size: 15px; line-height: 1.4; text-align: left; box-shadow: var(--shadow); animation: ak-bob 4s ease-in-out infinite; }
+.ak-a-proof { position: relative; z-index: 1; margin-top: clamp(28px, 4vw, 44px) !important; }
+@media (max-width: 760px) {
+  .ak-hero-bubble { right: 0; top: -2%; max-width: 190px; font-size: 13.5px; padding: 10px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .ak-hero-bubble { animation: none; } }

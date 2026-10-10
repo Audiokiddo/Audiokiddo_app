@@ -85,7 +85,7 @@ function ak_packs(): array
             'cover' => 'okladka-wyobraznia',
             'sample' => '2025/02/Wyobraznia-AudioKiddo.mp3',
             'desc' => 'W każdej zabawie Twoje dziecko będzie musiało tworzyć swoje historie, odpowiadać na pytania i wykonywać zadania. Tu nie ma złych odpowiedzi.',
-            'lead' => 'Profesor Fantazjusz i Czarodziejka Nela zabierają dziecko do krainy wyobraźni. Dziecko wymyśla zakończenia, odpowiada na pytania i wykonuje zadania.',
+            'lead' => 'Zabawy, które zabierają dziecko do krainy wyobraźni. Dziecko wymyśla zakończenia, odpowiada na pytania i wykonuje zadania.',
             'trains' => 'wyobraźnię, opowiadanie, słuchanie ze zrozumieniem',
             'plays' => [
                 ['Magiczny sklep', 357, true], ['Zaginiony skarb', 456, false], ['Podróż na inną planetę', 292, false],
@@ -102,7 +102,7 @@ function ak_packs(): array
             'cover' => 'okladka-slowa',
             'sample' => '2025/02/Slowa-i-wiedza_AudioKiddo_dluzsza_wersja.mp3',
             'desc' => 'W każdej zabawie Twoje dziecko będzie musiało odpowiadać na pytania oraz rozwiązywać zagadki i łamigłówki.',
-            'lead' => 'Zagadki, łamigłówki i zabawy słowne z Profesorem Fantazjuszem. Synonimy, przeciwieństwa, skojarzenia i układanie zdań, wszystko na głos.',
+            'lead' => 'Zagadki, łamigłówki i zabawy słowne na głos. Synonimy, przeciwieństwa, skojarzenia i układanie zdań, wszystko na głos.',
             'trains' => 'słownictwo, skojarzenia, logiczne myślenie',
             'plays' => [
                 ['Co to za przedmiot?', 409, false], ['Co to za dźwięk?', 426, true], ['Szybkie skojarzenia', 244, false],
@@ -118,8 +118,8 @@ function ak_packs(): array
             'age_from' => 7,
             'cover' => 'okladka-detektyw',
             'sample' => '2025/05/Detektyw-probka.mp3',
-            'desc' => 'Detektywistyczna przygoda z Maxem i Milą. Zestaw angażujących zabaw językowych i logicznych, które wspierają rozwój mowy, rozumowania i koncentracji. Z kartami zadań do wydrukowania.',
-            'lead' => 'Detektywistyczne przygody z Maxem i Milą. Dziecko zbiera poszlaki ze słuchu i rozwiązuje sprawę. Do każdej sprawy akta do wydrukowania.',
+            'desc' => 'Detektywistyczne przygody do rozwiązania. Zestaw angażujących zabaw językowych i logicznych, które wspierają rozwój mowy, rozumowania i koncentracji. Z kartami zadań do wydrukowania.',
+            'lead' => 'Detektywistyczne sprawy do rozwiązania. Dziecko zbiera poszlaki ze słuchu i rozwiązuje sprawę. Do każdej sprawy akta do wydrukowania.',
             'trains' => 'uważne słuchanie, wnioskowanie, pamięć',
             'print' => true,
             'plays' => [
@@ -386,7 +386,7 @@ function ak_people(): array
 {
     return [
         'nela' => ['name' => 'Nela', 'full' => 'Nela Mariak', 'role' => 'Animatorka, miłośniczka kreatywnych rozwiązań, współzałożycielka AudioKiddo', 'photo' => ak_opt('photo_nela') ?: ak_img('nela')],
-        'dawid' => ['name' => 'Dawid', 'full' => 'Dawid Kubiak', 'role' => 'Lektor, 100 bajkowych głosów w jednym ciele, głos Profesora Fantazjusza', 'photo' => ak_opt('photo_dawid') ?: ak_img('dawid')],
+        'dawid' => ['name' => 'Dawid', 'full' => 'Dawid Kubiak', 'role' => 'Lektor, 100 bajkowych głosów w jednym ciele', 'photo' => ak_opt('photo_dawid') ?: ak_img('dawid')],
         'razem' => ['name' => 'Nela i Dawid', 'full' => 'Nela i Dawid', 'role' => 'para, która tworzy AudioKiddo', 'photo' => ''],
     ];
 }

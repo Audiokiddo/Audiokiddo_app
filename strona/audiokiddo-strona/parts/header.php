@@ -83,7 +83,7 @@ $pages = $home === '' ? [] : [
     <p class="ak-drawer-added" hidden>Dodane. Szop już pilnuje.</p>
     <?php // WooCommerce refreshes this box itself after every change (cart fragments). ?>
     <div class="widget_shopping_cart_content"><?php if (function_exists('woocommerce_mini_cart') && function_exists('WC') && WC()->cart) { woocommerce_mini_cart(); } ?></div>
-    <p class="ak-drawer-note">Pliki MP3 przychodzą mailem od razu po płatności. BLIK, karta (PayU), Twisto.</p>
+    <p class="ak-drawer-note"><?php echo ak_app_live() ? 'Pakiet od razu w aplikacji: logujesz się e-mailem z zamówienia.' : 'Pliki MP3 od razu na maila, po premierze także w aplikacji.'; ?> BLIK, karta (PayU), Twisto.</p>
 </aside>
 <?php endif; ?>
 <main id="tresc">

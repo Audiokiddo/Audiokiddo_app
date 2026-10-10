@@ -174,7 +174,7 @@ def build_html() -> str:
     </div>
     <p class="ask">Kto pasuje do <b>wszystkich czterech</b> poszlak? Zaznacz i wytłumacz dlaczego.</p>
     <div class="solution"><p>Rozwiązanie: Szop’en. Ma łapki (odcisk), pisze koślawo (MNIAM) i zbiera skarpetki (skarpetka w paski). Okruszki zostawił, bo się spieszył. Przyznał się. Ciastka nie oddał.</p></div>
-    <p class="more">Więcej takich spraw z Maxem i Milą jest w pakiecie Detektyw w aplikacji Audiokiddo.</p>
+    <p class="more">Więcej takich spraw jest w pakiecie Detektyw w aplikacji Audiokiddo.</p>
   </section>""")
     pages.append(f"""
   <section class="page outro">

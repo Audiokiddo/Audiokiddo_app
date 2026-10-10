@@ -405,7 +405,7 @@ require AK_DIR . 'parts/header.php';
     <section class="ak-info-sec" aria-labelledby="ak-group-h">
         <div class="ak-wrap ak-narrow">
             <h2 id="ak-group-h" data-reveal>W przedszkolu, w szkole <span class="ak-hl-word">i w gabinecie</span></h2>
-            <p data-reveal>Audiozabawy dobrze działają z grupą: całe przedszkole odpowiada na pytania Profesora Fantazjusza, a klasa 1–3 rozwiązuje razem sprawę Maxa i Mili. Kilka sprawdzonych sposobów:</p>
+            <p data-reveal>Audiozabawy dobrze działają z grupą: całe przedszkole odpowiada na pytania z nagrania, a klasa 1–3 rozwiązuje razem sprawę detektywistyczną. Kilka sprawdzonych sposobów:</p>
             <ul class="ak-ticks" data-reveal>
                 <li>Zatrzymaj nagranie po pytaniu i daj odpowiedzieć kilku dzieciom.</li>
                 <li>Przy zabawach ruchowych zrób miejsce na środku sali.</li>
