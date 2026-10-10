@@ -27,11 +27,10 @@ Zmiana z 10.10.2026: nie piszemy, że ekran jest zły. Wpisy „Ile czasu przed 
 
 | Data | Temat | Dlaczego teraz |
 |---|---|---|
-| 8.12 | Mikołajki: 10 pomysłów na niespodziankę (spóźnione, ale na przyszły rok) | sezon |
 | 8.12 | Jak zająć dziecko w święta, gdy przyjeżdża rodzina | sezon |
 | 15.12 | Zabawy na Wigilię i święta dla dzieci 3–9 lat | sezon |
 | 22.12 | Nuda w ferie? Plan na tydzień w domu | ferie zimowe |
-| 5.01 | Rytuał wieczorny bez bajki: jak wyciszyć dziecko | stały popyt |
+| 5.01 | Rytuał wieczorny: jak wyciszyć dziecko przed snem | stały popyt |
 | 12.01 | Zabawy logopedyczne na głoski sz, cz, rz | częste zapytanie |
 | 19.01 | Dziecko nie chce się bawić samo: co robić | stały popyt |
 
