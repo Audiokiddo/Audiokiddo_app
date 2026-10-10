@@ -53,40 +53,47 @@ add_filter('robots_txt', function ($output) {
     return rtrim((string) $output) . "\nDisallow: /wp-content/plugins/audiokiddo-strona/assets/druk/*.pdf\nDisallow: /do-druku/\n";
 }, 100);
 
-add_action('rest_api_init', function () {
-    register_rest_route('audiokiddo/v1', '/zapis', [
-        'methods' => 'POST',
-        'permission_callback' => '__return_true',
-        'callback' => 'ak_signup_handle',
+// admin-ajax (not the REST API: a security plugin closes REST to visitors on this site).
+add_action('wp_ajax_ak_zapis', 'ak_signup_ajax');
+add_action('wp_ajax_nopriv_ak_zapis', 'ak_signup_ajax');
+
+function ak_signup_ajax(): void
+{
+    $result = ak_signup_handle([
+        'email' => wp_unslash($_POST['email'] ?? ''),
+        'zgoda' => !empty($_POST['zgoda']),
+        'strona' => wp_unslash($_POST['strona'] ?? ''),
     ]);
-});
+    wp_send_json($result['body'], $result['status']);
+}
 
 /** Validates, sends the address to MailerLite and hands back the download link. */
-function ak_signup_handle(WP_REST_Request $request)
+/** @return array{status:int,body:array} */
+function ak_signup_handle(array $in): array
 {
-    $email = sanitize_email((string) $request->get_param('email'));
-    if ((string) $request->get_param('strona') !== '') {
+    $email = sanitize_email((string) $in['email']);
+    if ((string) $in['strona'] !== '') {
         // The hidden field is filled only by bots: pretend all went well.
-        return ['ok' => true, 'download' => home_url('/')];
+        return ['status' => 200, 'body' => ['ok' => true, 'download' => home_url('/')]];
     }
     if (!is_email($email)) {
-        return new WP_REST_Response(['ok' => false, 'message' => 'Ten adres e-mail wygląda podejrzanie. Sprawdź literówki.'], 400);
+        return ['status' => 400, 'body' => ['ok' => false, 'message' => 'Ten adres e-mail wygląda podejrzanie. Sprawdź literówki.']];
     }
-    if (!$request->get_param('zgoda')) {
-        return new WP_REST_Response(['ok' => false, 'message' => 'Zaznacz zgodę na newsletter, wtedy wyślemy Ci materiały.'], 400);
+    if (!$in['zgoda']) {
+        return ['status' => 400, 'body' => ['ok' => false, 'message' => 'Zaznacz zgodę na newsletter, wtedy wyślemy Ci materiały.']];
     }
     $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
     $key = 'ak_zapis_' . md5($ip);
     $tries = (int) get_transient($key);
     if ($tries >= 5) {
-        return new WP_REST_Response(['ok' => false, 'message' => 'Za dużo prób naraz. Spróbuj za kilka minut.'], 429);
+        return ['status' => 429, 'body' => ['ok' => false, 'message' => 'Za dużo prób naraz. Spróbuj za kilka minut.']];
     }
     set_transient($key, $tries + 1, 10 * MINUTE_IN_SECONDS);
 
     $account = preg_replace('/\D/', '', (string) ak_opt('ml_account'));
     $form = preg_replace('/\D/', '', (string) ak_opt('ml_form_id'));
     if ($account === '' || $form === '') {
-        return new WP_REST_Response(['ok' => false, 'message' => 'Zapis chwilowo nie działa. Napisz do nas: ' . ak_opt('contact_email')], 503);
+        return ['status' => 503, 'body' => ['ok' => false, 'message' => 'Zapis chwilowo nie działa. Napisz do nas: ' . ak_opt('contact_email')]];
     }
     $response = wp_remote_post("https://assets.mailerlite.com/jsonp/{$account}/forms/{$form}/subscribe", [
         'timeout' => 10,
@@ -101,9 +108,9 @@ function ak_signup_handle(WP_REST_Request $request)
     if (!is_array($body) || empty($body['success'])) {
         $code = is_wp_error($response) ? $response->get_error_message() : wp_remote_retrieve_response_code($response);
         error_log('Audiokiddo zapis: MailerLite ' . $code . ' ' . substr((string) wp_remote_retrieve_body($response), 0, 300));
-        return new WP_REST_Response(['ok' => false, 'message' => 'Coś się wysypało po drodze. Spróbuj jeszcze raz za chwilę albo napisz: ' . ak_opt('contact_email')], 502);
+        return ['status' => 502, 'body' => ['ok' => false, 'message' => 'Coś się wysypało po drodze. Spróbuj jeszcze raz za chwilę albo napisz: ' . ak_opt('contact_email')]];
     }
-    return ['ok' => true, 'download' => ak_printable_url()];
+    return ['status' => 200, 'body' => ['ok' => true, 'download' => ak_printable_url()]];
 }
 
 /**
@@ -114,7 +121,7 @@ function ak_signup_form(string $source = 'druk', string $button = 'Wyślij mi ka
 {
     $id = 'ak-zapis-' . $source;
     ?>
-    <form class="ak-signup" id="<?php echo esc_attr($id); ?>" data-endpoint="<?php echo esc_url(rest_url('audiokiddo/v1/zapis')); ?>" novalidate>
+    <form class="ak-signup" id="<?php echo esc_attr($id); ?>" data-endpoint="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" novalidate>
         <div class="ak-signup-row">
             <label class="ak-sr" for="<?php echo esc_attr($id); ?>-email">Twój e-mail</label>
             <input id="<?php echo esc_attr($id); ?>-email" type="email" name="email" autocomplete="email" placeholder="Twój e-mail" required>

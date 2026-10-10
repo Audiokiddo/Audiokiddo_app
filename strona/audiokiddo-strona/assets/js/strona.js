@@ -459,11 +459,8 @@
       var label = btn.textContent;
       btn.disabled = true;
       btn.textContent = 'Szop coś grzebie…';
-      fetch(form.getAttribute('data-endpoint'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, zgoda: true, strona: form.strona.value })
-      }).then(function (r) { return r.json(); }).then(function (data) {
+      var body = new URLSearchParams({ action: 'ak_zapis', email: email, zgoda: '1', strona: form.strona.value });
+      fetch(form.getAttribute('data-endpoint'), { method: 'POST', body: body, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (data) {
         if (!data || !data.ok) throw new Error(data && data.message ? data.message : '');
         $('.ak-signup-row', form).hidden = true;
         $('.ak-signup-ok', form).hidden = true;
