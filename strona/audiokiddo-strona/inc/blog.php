@@ -222,6 +222,6 @@ function ak_post_guides(WP_Post $post): array
         'zabawy-i-codziennosc' => ['zabawy-dla-dzieci-w-domu', 'jak-zajac-dziecko-w-samochodzie', 'zabawy-wyciszajace-przed-snem', 'zabawy-ruchowe-dla-dzieci-w-domu'],
     ];
     $cats = get_the_category($post->ID);
-    $slugs = $by_cat[$cats ? $cats[0]->slug : ''] ?? $by_cat['czas-bez-ekranu'];
+    $slugs = $by_cat[$cats ? (string) ($cats[0]->slug ?? '') : ''] ?? $by_cat['czas-bez-ekranu'];
     return array_values(array_filter($slugs, fn($s) => isset(ak_landings()[$s])));
 }
