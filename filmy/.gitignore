@@ -1,0 +1,11 @@
+# Generated and heavy media stay out of Git (final films go to Google Drive).
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.wav
+*.mp3
+*.m4a
+*.aac
+*/sceny/*/wersje/*
+!*/sceny/*/wersje/.gitkeep
