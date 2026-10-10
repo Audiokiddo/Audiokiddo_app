@@ -514,23 +514,22 @@ function ak_buy_where(): array
     ];
 }
 
-/** What the child and the parent get: icon and three or four words each. */
+/**
+ * What the parent and the child get, three things each and the parent first: icon, the benefit
+ * in a few words and one short line that makes it concrete.
+ */
 function ak_gains(): array
 {
     return [
-        'Dziecko' => [
-            ['ear', 'Uważnie słucha'],
-            ['speech', 'Mówi i odpowiada'],
-            ['bulb', 'Wymyśla i wyobraża'],
-            ['run', 'Rusza się'],
-            ['puzzle', 'Rozwiązuje zagadki'],
-        ],
         'Ty' => [
-            ['coffee', '15 minut dla siebie'],
-            ['idea-off', 'Zero wymyślania'],
-            ['eye-off', 'Bez ekranu i wyrzutów'],
-            ['offline', 'Działa bez internetu'],
-            ['shield', 'Bez reklam. Nigdy.'],
+            ['coffee', '15 minut dla siebie', 'Na obiad, maila albo ciepłą kawę.'],
+            ['idea-off', 'Zero wymyślania', 'Zabawa jest gotowa. Naciskasz play.'],
+            ['eye-off', 'Bez wyrzutów sumienia', 'Dziecko nie patrzy w ekran.'],
+        ],
+        'Dziecko' => [
+            ['speech', 'Mówi i słucha uważniej', 'Odpowiada na głos, poznaje nowe słowa.'],
+            ['run', 'Rusza się i myśli', 'Szuka, skacze, rozwiązuje zagadki.'],
+            ['kid', 'Bawi się samo', 'Głos prowadzi je krok po kroku.'],
         ],
     ];
 }

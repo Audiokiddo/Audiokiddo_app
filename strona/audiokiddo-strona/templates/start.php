@@ -105,40 +105,22 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 </section>
 
 <section class="ak-slide ak-a-sec ak-a-gains" id="co-zyskujesz" data-slide="Co zyskujesz" aria-labelledby="ak-gains-h">
-    <?php ak_peek('co-zyskujesz'); ?>
     <div class="ak-wrap">
         <h2 id="ak-gains-h" class="ak-center" data-reveal>Ono ćwiczy. <span class="ak-hl-word">Ty odpoczywasz.</span></h2>
-        <div class="ak-a-gains-in">
-            <?php $tones = ['Dziecko' => 'teal', 'Ty' => 'sun']; $g = ak_gains(); ?>
-            <div class="ak-a-gain ak-c-teal" data-reveal="left">
-                <h3>Dziecko</h3>
-                <ul><?php foreach ($g['Dziecko'] as [$icon, $text]) : ?><li><span><?php echo ak_icon($icon, 26); // static ?></span><?php echo esc_html($text); ?></li><?php endforeach; ?></ul>
+        <div class="ak-g2">
+            <?php $heads = ['Ty' => ['Co zyskujesz Ty', 'sun'], 'Dziecko' => ['Co zyskuje dziecko', 'teal']]; ?>
+            <?php foreach (ak_gains() as $who => $list) : ?>
+            <div class="ak-g2-card ak-c-<?php echo esc_attr($heads[$who][1]); ?>" data-reveal="<?php echo $who === 'Ty' ? 'left' : 'right'; ?>">
+                <h3><?php echo esc_html($heads[$who][0]); ?></h3>
+                <ul>
+                    <?php foreach ($list as [$icon, $title, $line]) : ?>
+                    <li><span class="ak-g2-ico"><?php echo ak_icon($icon, 28); // static ?></span><span><strong><?php echo esc_html($title); ?></strong><?php echo esc_html($line); ?></span></li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
-            <div class="ak-a-hub" data-reveal="scale" style="--d:.1s" aria-hidden="true">
-                <span class="ak-a-hub-arrow ak-a-hub-l"></span>
-                <span class="ak-a-hub-phone"><?php echo ak_icon('phone', 54); // static ?><strong>Audiokiddo</strong></span>
-                <span class="ak-a-hub-arrow ak-a-hub-r"></span>
-            </div>
-            <div class="ak-a-gain ak-c-sun" data-reveal="right">
-                <h3>Ty</h3>
-                <ul><?php foreach ($g['Ty'] as [$icon, $text]) : ?><li><span><?php echo ak_icon($icon, 26); // static ?></span><?php echo esc_html($text); ?></li><?php endforeach; ?></ul>
-            </div>
+            <?php endforeach; ?>
         </div>
-        <h3 class="ak-skills-h ak-center" data-reveal>Co ćwiczy, kiedy myśli, że się bawi</h3>
-        <ul class="ak-skills">
-            <?php foreach (ak_home_skills() as $i => [$cover, $skill, $game]) : ?>
-            <li data-reveal style="--d:<?php echo esc_attr((string) (0.07 * $i)); ?>s">
-                <img src="<?php echo esc_url(ak_asset('img/covers/mini/' . $cover . '.webp')); ?>" alt="" width="240" height="240" loading="lazy">
-                <strong><?php echo esc_html($skill); ?></strong>
-                <span><?php echo esc_html($game); ?></span>
-            </li>
-            <?php endforeach; ?>
-        </ul>
-        <ul class="ak-a-ages" data-reveal aria-label="Grupy wiekowe">
-            <?php foreach (ak_ages() as [$range, $color, , , $age_guides]) : ?>
-            <li class="ak-c-<?php echo esc_attr($color); ?>"><a href="<?php echo esc_url(ak_landing_url($age_guides[1])); ?>"><?php echo esc_html($range); ?></a></li>
-            <?php endforeach; ?>
-        </ul>
+        <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('logopedzi-i-pedagodzy')); ?>">Polecają logopedzi i pedagodzy <?php echo $arrow; // static ?></a></p>
     </div>
 </section>
 
