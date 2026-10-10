@@ -20,21 +20,41 @@ $arrow = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><pa
 $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>';
 ?>
 
-<section class="ak-slide ak-hero ak-a-hero" id="start" data-slide="Start" aria-labelledby="ak-h1">
-    <div class="ak-wrap ak-a-hero-in">
-        <p class="ak-a-eyebrow">Interaktywne audiozabawy dla dzieci 3–9 lat</p>
-        <h1 id="ak-h1">Dziecko potrzebuje zajęcia. <span class="ak-hl-word">Ty nie musisz go wymyślać.</span></h1>
-        <p class="ak-hero-sub ak-a-sub">Odpalasz Audiokiddo. Dziecko dostaje misję: odpowiada, szuka, rusza się. <strong>Bez ekranu.</strong></p>
-        <div class="ak-hero-btns ak-a-btns">
-            <?php echo ak_app_cta(); // escaped inside ?>
-            <span class="ak-a-listen ak-c-<?php echo esc_attr($first['color']); ?>">
-                <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj, jak to brzmi', 'ak-play-small'); // escaped inside ?>
-                <span>Posłuchaj, jak to brzmi</span>
-            </span>
+<section class="ak-slide ak-hero ak-a-hero ak-x-hero" id="start" data-slide="Start" aria-labelledby="ak-h1">
+    <div class="ak-wrap ak-x-hero-in">
+        <div class="ak-x-hero-txt">
+            <p class="ak-a-eyebrow">Audiozabawy dla dzieci 3–9 lat · bez ekranu</p>
+            <h1 id="ak-h1">Ty pijesz ciepłą kawę. <span class="ak-hl-word">Dziecko ratuje świat.</span></h1>
+            <p class="ak-hero-sub ak-a-sub">Włączasz Audiokiddo i odkładasz telefon. Głos daje dziecku misję, a ono odpowiada, szuka i biega po domu. <strong>15 minut, zero ekranu, zero wymyślania.</strong></p>
+            <div class="ak-hero-btns ak-a-btns">
+                <?php echo ak_app_cta(); // escaped inside ?>
+                <span class="ak-a-listen ak-c-<?php echo esc_attr($first['color']); ?>">
+                    <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj, jak to brzmi', 'ak-play-small'); // escaped inside ?>
+                    <span>Posłuchaj, jak to brzmi</span>
+                </span>
+            </div>
         </div>
-        <div class="ak-a-hero-art">
-            <img class="ak-hero-img" src="<?php echo esc_url(ak_img('hero')); ?>" srcset="<?php echo esc_url(ak_img('hero-720')); ?> 720w, <?php echo esc_url(ak_img('hero')); ?> 1200w" sizes="(max-width: 760px) 92vw, 720px" alt="Szop’en, maskotka Audiokiddo, z kubkiem kawy" width="1200" height="776" fetchpriority="high">
-            <p class="ak-hero-bubble"><span class="ak-sr">Szop’en: </span>Dobra. Od tej chwili nuda to mój problem.</p>
+        <?php // The scene shows the whole idea in one look: the game talks, the child answers, the parent's coffee stays hot. ?>
+        <div class="ak-x-scene" aria-label="Jak to wygląda: rozmowa gry z dzieckiem" role="group">
+            <div class="ak-x-player">
+                <img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/covers/mini/zlodziej-naszyjnika.webp')); ?>" alt="" width="240" height="240">
+                <span><small>Teraz gra</small><strong>Złodziej naszyjnika</strong></span>
+                <span class="ak-x-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+            </div>
+            <ol class="ak-x-chat">
+                <?php foreach (ak_hero_chat() as $i => [$who, $line]) : ?>
+                <li class="ak-x-say is-<?php echo esc_attr($who); ?>" style="--i:<?php echo (int) $i; ?>"><span class="ak-sr"><?php echo $who === 'kid' ? 'Dziecko' : 'Audiokiddo'; ?>: </span><?php echo esc_html($line); ?></li>
+                <?php endforeach; ?>
+            </ol>
+            <ul class="ak-x-meters">
+                <li><?php echo ak_icon('coffee', 20); // static ?><span>Kawa</span><strong>wciąż ciepła</strong></li>
+                <li><?php echo ak_icon('eye-off', 20); // static ?><span>Ekran</span><strong>0 min</strong></li>
+                <li><?php echo ak_icon('clock', 20); // static ?><span>Dla Ciebie</span><strong class="ak-x-clock">15:00</strong></li>
+            </ul>
+            <figure class="ak-x-szop">
+                <img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/szop/chytry.webp')); ?>" alt="Szop’en, maskotka Audiokiddo, z miną cwaniaka" width="420" height="378" fetchpriority="high">
+                <figcaption><span class="ak-sr">Szop’en: </span>Ja tylko pilnuję, żeby nikt nie włączył bajki.</figcaption>
+            </figure>
         </div>
         <ul class="ak-a-proof">
             <li><?php echo ak_icon('eye-off', 22); // static ?>Bez ekranu</li>
@@ -46,6 +66,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 </section>
 
 <section class="ak-slide ak-a-sec ak-a-how" id="jak-to-dziala" data-slide="Jak to działa" aria-labelledby="ak-how-h">
+    <?php ak_peek('jak-to-dziala'); ?>
     <div class="ak-wrap">
         <h2 id="ak-how-h" class="ak-center" data-reveal>Odpalasz. <span class="ak-hl-word">Dziecko działa.</span> Ty masz chwilę.</h2>
         <ol class="ak-a-flow">
@@ -101,20 +122,43 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 </section>
 
 <section class="ak-slide ak-a-sec ak-a-gains" id="co-zyskujesz" data-slide="Co zyskujesz" aria-labelledby="ak-gains-h">
+    <?php ak_peek('co-zyskujesz'); ?>
     <div class="ak-wrap">
         <h2 id="ak-gains-h" class="ak-center" data-reveal>Ono ćwiczy. <span class="ak-hl-word">Ty odpoczywasz.</span></h2>
-        <div class="ak-a-gains-in">
-            <?php $tones = ['Dziecko' => 'teal', 'Ty' => 'sun']; foreach (ak_gains() as $who => $list) : ?>
-            <div class="ak-a-gain ak-c-<?php echo esc_attr($tones[$who]); ?>" data-reveal="<?php echo $who === 'Ty' ? 'right' : 'left'; ?>">
-                <h3><?php echo esc_html($who); ?></h3>
-                <ul>
-                    <?php foreach ($list as [$icon, $text]) : ?>
-                    <li><span><?php echo ak_icon($icon, 26); // static ?></span><?php echo esc_html($text); ?></li>
-                    <?php endforeach; ?>
-                </ul>
+        <p class="ak-a-lead ak-center" data-reveal>Te same 15 minut popołudnia. Przełącz i porównaj.</p>
+        <?php // Before and after: the switch flips by itself once the section comes in, then it is the parent's. ?>
+        <div class="ak-vs" data-reveal data-vs="without">
+            <div class="ak-vs-switch" role="group" aria-label="Porównanie">
+                <button type="button" data-vs-pick="without" aria-pressed="true">Bez Audiokiddo</button>
+                <button type="button" data-vs-pick="with" aria-pressed="false">Z Audiokiddo</button>
+                <span class="ak-vs-knob" aria-hidden="true"></span>
             </div>
-            <?php endforeach; ?>
+            <div class="ak-vs-stage">
+                <div class="ak-vs-pics" aria-hidden="true">
+                    <img class="is-without" src="<?php echo esc_url(ak_asset('img/szop/znudzony.webp')); ?>" alt="" width="420" height="327" loading="lazy">
+                    <img class="is-with" src="<?php echo esc_url(ak_asset('img/szop/zadowolony.webp')); ?>" alt="" width="420" height="392" loading="lazy">
+                </div>
+                <dl class="ak-vs-rows">
+                    <?php foreach (ak_home_contrast() as [$icon, $label, $without, $with]) : ?>
+                    <div class="ak-vs-row">
+                        <dt><?php echo ak_icon($icon, 24); // static ?><?php echo esc_html($label); ?></dt>
+                        <dd class="is-without"><?php echo esc_html($without); ?></dd>
+                        <dd class="is-with"><?php echo esc_html($with); ?></dd>
+                    </div>
+                    <?php endforeach; ?>
+                </dl>
+            </div>
         </div>
+        <h3 class="ak-skills-h ak-center" data-reveal>Co ćwiczy, kiedy myśli, że się bawi</h3>
+        <ul class="ak-skills">
+            <?php foreach (ak_home_skills() as $i => [$cover, $skill, $game]) : ?>
+            <li data-reveal style="--d:<?php echo esc_attr((string) (0.07 * $i)); ?>s">
+                <img src="<?php echo esc_url(ak_asset('img/covers/mini/' . $cover . '.webp')); ?>" alt="" width="240" height="240" loading="lazy">
+                <strong><?php echo esc_html($skill); ?></strong>
+                <span><?php echo esc_html($game); ?></span>
+            </li>
+            <?php endforeach; ?>
+        </ul>
         <ul class="ak-a-ages" data-reveal aria-label="Grupy wiekowe">
             <?php foreach (ak_ages() as [$range, $color, , , $age_guides]) : ?>
             <li class="ak-c-<?php echo esc_attr($color); ?>"><a href="<?php echo esc_url(ak_landing_url($age_guides[1])); ?>"><?php echo esc_html($range); ?></a></li>
@@ -162,11 +206,41 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 </section>
 
 <section class="ak-slide ak-a-sec ak-a-packs" id="pakiety" data-slide="Pakiety" aria-labelledby="ak-packs-h">
+    <?php ak_peek('pakiety'); ?>
     <div class="ak-wrap">
         <h2 id="ak-packs-h" class="ak-center" data-reveal>Trzy pakiety. <span class="ak-hl-word">Wszystkie w abonamencie.</span></h2>
         <p class="ak-a-lead ak-center" data-reveal>Każdy pakiet to kilka zabaw po kilka minut. Kliknij okładkę i posłuchaj fragmentu.</p>
         <?php ak_pack_cards('', true); ?>
         <p class="ak-center ak-a-packs-more" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Wszystkie pakiety i co jest w środku <?php echo $arrow; // static ?></a></p>
+    </div>
+</section>
+
+<?php // After the purchase: one line with four stops, a parcel travels along it; under it, where it plays. ?>
+<section class="ak-slide ak-a-sec ak-buy" id="po-zakupie" data-slide="Po zakupie" aria-labelledby="ak-buy-h">
+    <div class="ak-wrap">
+        <h2 id="ak-buy-h" class="ak-center" data-reveal>Kupujesz raz. <span class="ak-hl-word">Masz wszędzie.</span></h2>
+        <p class="ak-a-lead ak-center" data-reveal>Nie tylko pliki w mailu. Ten sam pakiet czeka na Ciebie w aplikacji.</p>
+        <ol class="ak-buy-line" data-reveal>
+            <?php foreach (ak_buy_steps($live) as $i => [$icon, $title, $text]) : ?>
+            <li style="--i:<?php echo (int) $i; ?>">
+                <span class="ak-buy-dot"><?php echo ak_icon($icon, 30); // static ?></span>
+                <strong><?php echo esc_html($title); ?></strong>
+                <span><?php echo esc_html($text); ?></span>
+                <?php if ($i === 1) : ?>
+                <span class="ak-buy-mock ak-buy-mail" aria-hidden="true"><b>Twoje audiozabawy</b><i><?php echo ak_icon('download', 14); // static ?>wyobraznia.mp3</i><i><?php echo ak_icon('print', 14); // static ?>akta-sprawy.pdf</i></span>
+                <?php elseif ($i === 2) : ?>
+                <span class="ak-buy-mock ak-buy-app" aria-hidden="true"><img src="<?php echo esc_url(ak_asset('img/covers/mini/zlodziej-naszyjnika.webp')); ?>" alt="" width="240" height="240" loading="lazy"><b>Odblokowane</b></span>
+                <?php endif; ?>
+            </li>
+            <?php endforeach; ?>
+            <span class="ak-buy-parcel" aria-hidden="true"><?php echo ak_icon('gift', 22); // static ?></span>
+        </ol>
+        <h3 class="ak-skills-h ak-center" data-reveal>Gdzie odpalisz?</h3>
+        <ul class="ak-where" data-reveal>
+            <?php foreach (ak_buy_where() as $i => [$icon, $text]) : ?>
+            <li style="--d:<?php echo esc_attr((string) (0.06 * $i)); ?>s"><?php echo ak_icon($icon, 28); // static ?><span><?php echo esc_html($text); ?></span></li>
+            <?php endforeach; ?>
+        </ul>
     </div>
 </section>
 
@@ -199,20 +273,20 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 <section class="ak-slide ak-a-sec ak-a-guides" id="poradniki" data-slide="Poradniki" aria-labelledby="ak-guides-h">
     <div class="ak-wrap">
         <h2 id="ak-guides-h" class="ak-center" data-reveal>Pomysły na zabawy <span class="ak-hl-word">na każdą sytuację</span></h2>
-        <p class="ak-a-lead ak-center" data-reveal>Poradniki dla rodziców: konkretne zabawy bez ekranu i bez przygotowań.</p>
-        <div class="ak-guide-grid" data-reveal>
-            <?php foreach (ak_home_guides() as $s) : $g = $guides[$s]; ?>
-            <a class="ak-guide-card" href="<?php echo esc_url(ak_landing_url($s)); ?>">
-                <strong><?php echo esc_html($g['anchor']); ?></strong>
-                <span><?php echo esc_html($g['desc']); ?></span>
-            </a>
+        <ul class="ak-tiles" data-reveal>
+            <?php foreach (ak_home_guides() as $s) : $g = $guides[$s]; $art = ak_home_guide_art($s); ?>
+            <li><a href="<?php echo esc_url(ak_landing_url($s)); ?>" title="<?php echo esc_attr($g['desc']); ?>">
+                <img src="<?php echo esc_url(ak_asset($art)); ?>" alt="" width="240" height="240" loading="lazy">
+                <span><?php echo esc_html($g['anchor']); ?></span>
+            </a></li>
             <?php endforeach; ?>
-        </div>
+        </ul>
         <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_landing_url()); ?>">Wszystkie pomysły na zabawy <?php echo $arrow; // static ?></a></p>
     </div>
 </section>
 
 <section class="ak-slide ak-a-sec ak-faq-sec" id="pytania" data-slide="Pytania" aria-labelledby="ak-faq-h">
+    <?php ak_peek('pytania'); ?>
     <div class="ak-wrap ak-faq-in">
         <h2 id="ak-faq-h" class="ak-center" data-reveal>Pytania, które <span class="ak-hl-word">i tak by padły</span></h2>
         <div class="ak-faq">

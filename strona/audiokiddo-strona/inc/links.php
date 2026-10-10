@@ -193,3 +193,19 @@ function ak_home_guides(): array
     ];
     return array_values(array_filter($picks, fn($s) => isset(ak_landings()[$s])));
 }
+
+/** The picture on a home page guide tile: a game cover on the same theme, or Szop'en in the mood. */
+function ak_home_guide_art(string $slug): string
+{
+    $art = [
+        'zagadki-dla-dzieci' => 'img/covers/mini/co-to-za-przedmiot.webp',
+        'jak-zajac-dziecko-w-samochodzie' => 'img/covers/mini/podroz-na-inna-planete.webp',
+        'dziecko-sie-nudzi' => 'img/szop/znudzony.webp',
+        'zabawy-logopedyczne' => 'img/covers/mini/uloz-zdanie.webp',
+        'gra-detektywistyczna-dla-dzieci' => 'img/covers/mini/zlodziej-naszyjnika.webp',
+        'zabawy-wyciszajace-przed-snem' => 'img/szop/zmeczony.webp',
+        'samodzielna-zabawa-dziecka' => 'img/covers/mini/magiczny-sklep.webp',
+        'zabawy-dla-przedszkolakow' => 'img/covers/mini/moj-superbohater.webp',
+    ];
+    return $art[$slug] ?? 'img/covers/mini/magiczny-teatr.webp';
+}

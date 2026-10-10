@@ -555,6 +555,66 @@
   });
   onScroll();
 
+  // Home: without / with Audiokiddo. It flips to "with" by itself once it is seen; a click wins.
+  $$('.ak-vs').forEach(function (vs) {
+    var picks = $$('[data-vs-pick]', vs);
+    var touched = false;
+    function set(state) {
+      vs.setAttribute('data-vs', state);
+      picks.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-vs-pick') === state ? 'true' : 'false'); });
+    }
+    picks.forEach(function (b) {
+      b.addEventListener('click', function () { touched = true; set(b.getAttribute('data-vs-pick')); });
+    });
+    if (!('IntersectionObserver' in window)) { set('with'); return; }
+    var seen = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      seen.disconnect();
+      setTimeout(function () { if (!touched) set('with'); }, 1600);
+    }, { threshold: 0.6 });
+    seen.observe(vs);
+  });
+
+  // Home: the 15 minutes in the hero count down while the hero is in view.
+  var clock = $('.ak-x-clock');
+  if (clock && !still && 'IntersectionObserver' in window) {
+    var left = 15 * 60;
+    var clockTimer = null;
+    new IntersectionObserver(function (entries) {
+      clearInterval(clockTimer);
+      if (!entries[0].isIntersecting) return;
+      clockTimer = setInterval(function () {
+        left = left > 0 ? left - 1 : 15 * 60;
+        clock.textContent = Math.floor(left / 60) + ':' + ('0' + (left % 60)).slice(-2);
+      }, 1000);
+    }).observe(clock);
+  }
+
+  // Home: Szop'en peeks out of a few sections while they are in view and hides when they leave.
+  // While he peeks, the guide in the corner steps aside: one Szop'en at a time.
+  var peeks = $$('.ak-peek');
+  if (peeks.length && 'IntersectionObserver' in window) {
+    var out = 0;
+    var peeker = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var peek = $('.ak-peek', entry.target);
+        var show = entry.isIntersecting;
+        if (show === peek.classList.contains('is-out')) return;
+        peek.classList.toggle('is-out', show);
+        out += show ? 1 : -1;
+      });
+      document.body.classList.toggle('ak-peeking', out > 0);
+    }, { rootMargin: '-40% 0px -40% 0px' }); // "in view" = across the middle of the screen, however tall
+    peeks.forEach(function (p) { peeker.observe(p.parentElement); });
+    // The hero has its own Szop'en in the scene: the corner one waits until the hero is gone.
+    var scene = $('.ak-x-scene');
+    if (scene) {
+      new IntersectionObserver(function (entries) {
+        document.body.classList.toggle('ak-hero-szop', entries[0].isIntersecting);
+      }).observe(scene);
+    }
+  }
+
   // Szop'en presents each slide and points at what matters
   var guide = $('.ak-guide');
   var tourData = document.getElementById('ak-tour');
