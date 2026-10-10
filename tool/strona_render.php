@@ -105,6 +105,8 @@ function is_front_page() { return $GLOBALS['ak_stub']['view'] === 'start'; }
 function is_category() { return false; }
 function is_tag() { return false; }
 function is_admin() { return false; }
+function rest_url($p = '') { return 'https://audiokiddo.pl/wp-json/' . ltrim($p, '/'); }
+function wp_salt($s = 'auth') { return 'podglad'; }
 function wp_doing_ajax() { return false; }
 function get_post_field($f, $id = 0) { return ''; }
 function is_author() { return false; }
@@ -182,7 +184,7 @@ foreach ($argv as $arg) {
 }
 if ($only === null) {
     foreach (['start', 'blog', 'post', 'notfound', 'guide:pomysly-na-zabawy', 'guide:zabawy-bez-ekranu', 'guide:zagadki-dla-dzieci', 'guide:zabawy-dla-przedszkolakow', 'guide:zabawy-dla-5-latka', 'guide:dziecko-sie-nudzi', 'guide:samodzielna-zabawa-dziecka', 'guide:jak-zajac-dziecko-gdy-pracujesz',
-        'info:jak-to-dziala', 'info:abonament', 'info:pakiety', 'info:pytania', 'info:logopedzi-i-pedagodzy', 'info:o-nas', 'product:7339', 'product:372', 'product:6235'] as $view) {
+        'info:jak-to-dziala', 'info:abonament', 'info:pakiety', 'info:pytania', 'info:logopedzi-i-pedagodzy', 'info:o-nas', 'info:zabawy-do-druku', 'product:7339', 'product:372', 'product:6235'] as $view) {
         $html = shell_exec(sprintf('%s %s --view=%s 2>&1', escapeshellarg(PHP_BINARY), escapeshellarg(__FILE__), $view));
         $name = $view === 'post' ? 'wpis' : str_replace(['guide:', 'info:', 'product:'], ['', '', 'produkt-'], $view);
         file_put_contents("$out/$name.html", $html);

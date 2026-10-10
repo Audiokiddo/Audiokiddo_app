@@ -48,6 +48,13 @@ function ak_info_pages(): array
             'h1' => 'Kto stoi za Audiokiddo',
             'lead' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy, produkt i cały świat marki, Dawid buduje technologię. Oboje podkładamy głosy. Piszemy, nagrywamy i odpisujemy na maile sami.',
         ],
+        'zabawy-do-druku' => [
+            'anchor' => 'Zabawy do druku',
+            'title' => 'Zabawy dla dzieci do druku: 36 kart bez ekranu (PDF)',
+            'desc' => 'Karty ratunkowe Szop’ena: 36 zabaw bez ekranu do wydrukowania, na kuchnię, auto, deszcz i wieczór, plus mini śledztwo. Darmowy PDF dla dzieci 3–9 lat.',
+            'h1' => 'Zabawy dla dzieci do druku: Karty ratunkowe Szop’ena',
+            'lead' => '36 zabaw bez ekranu na chwile, kiedy słyszysz „nudzi mi się”. Drukujesz, wycinasz, wrzucasz do słoika, a dziecko losuje kartę. Do tego bonus: mini śledztwo „Kto zjadł ostatnie ciastko?”. Za darmo, w zamian za zapis do newslettera.',
+        ],
         'logopedzi-i-pedagodzy' => [
             'anchor' => 'Dla logopedów i pedagogów',
             'title' => 'Audiozabawy polecane przez logopedów i pedagogów',
@@ -149,6 +156,20 @@ function ak_info_schema(string $slug): array
             $p = ak_people()[$key];
             $graph[] = ['@type' => 'Person', '@id' => home_url('/#' . $key), 'name' => $p['full'], 'description' => $p['role'], 'image' => $p['photo'], 'url' => $url, 'worksFor' => ['@id' => ak_org_id()]];
         }
+    }
+    if ($slug === 'zabawy-do-druku') {
+        $graph[] = [
+            '@type' => 'DigitalDocument',
+            'name' => 'Karty ratunkowe Szop’ena: 36 zabaw bez ekranu do druku',
+            'description' => 'PDF A4 do wydrukowania: 36 kart zabaw dla dzieci 3–9 lat na sześć sytuacji i mini śledztwo „Kto zjadł ostatnie ciastko?”.',
+            'encodingFormat' => 'application/pdf',
+            'inLanguage' => 'pl',
+            'isAccessibleForFree' => true,
+            'audience' => ['@type' => 'PeopleAudience', 'suggestedMinAge' => 3, 'suggestedMaxAge' => 9],
+            'image' => ak_asset('druk/podglad-okladka.webp'),
+            'publisher' => ['@id' => ak_org_id()],
+        ];
+        $graph[] = ak_faq_schema(array_map(fn($f) => ['q' => $f[0], 'a' => $f[1]], ak_printable_faq()));
     }
     if ($slug === 'logopedzi-i-pedagodzy') {
         foreach (ak_specialists() as $s) {

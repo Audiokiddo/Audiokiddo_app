@@ -445,18 +445,40 @@
     });
   }
 
-  // The MailerLite form comes with the site's tags; if it never shows up, a mail link does
-  var ml = $('.ak-form .ml-embedded');
-  if (ml) {
-    setTimeout(function () {
-      if (!ml.children.length) {
-        var form = ml.closest('.ak-form');
-        if (form) form.hidden = true;
-        var fallback = $('.ak-form-fallback');
-        if (fallback) fallback.hidden = false;
-      }
-    }, 7000);
-  }
+  // Our newsletter sign-up: sent through the site to MailerLite; the cards download right away.
+  $$('.ak-signup').forEach(function (form) {
+    var msg = $('.ak-signup-msg', form);
+    var btn = $('button[type="submit"]', form);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim();
+      msg.textContent = '';
+      form.classList.remove('is-error');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = 'Ten adres e-mail wygląda podejrzanie. Sprawdź literówki.'; form.classList.add('is-error'); form.email.focus(); return; }
+      if (!form.zgoda.checked) { msg.textContent = 'Zaznacz zgodę na newsletter, wtedy wyślemy Ci materiały.'; form.classList.add('is-error'); return; }
+      var label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Szop coś grzebie…';
+      fetch(form.getAttribute('data-endpoint'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, zgoda: true, strona: form.strona.value })
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        if (!data || !data.ok) throw new Error(data && data.message ? data.message : '');
+        $('.ak-signup-row', form).hidden = true;
+        $('.ak-signup-ok', form).hidden = true;
+        var done = $('.ak-signup-done', form);
+        $('.ak-signup-dl', done).href = data.download;
+        done.hidden = false;
+        if (window.dataLayer) window.dataLayer.push({ event: 'generate_lead', lead_source: form.id });
+      }).catch(function (err) {
+        msg.textContent = (err && err.message) || 'Coś się wysypało po drodze. Spróbuj jeszcze raz za chwilę.';
+        form.classList.add('is-error');
+        btn.disabled = false;
+        btn.textContent = label;
+      });
+    });
+  });
 
   // Article contents: mark the section being read
   var tocLinks = $$('.ak-toc a');

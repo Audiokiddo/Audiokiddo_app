@@ -23,13 +23,13 @@ fi
 cd app
 flutter pub get >/dev/null
 if [[ $platform == ios ]]; then
-  flutter build ipa --release "${defines[@]}" \
+  flutter build ipa --release ${defines[@]+"${defines[@]}"} \
     --dart-define=PARENT_GATE_EVERYWHERE=true --dart-define=REDEEM_CODES=false
   echo
   echo "Gotowe: $(ls build/ios/ipa/*.ipa). Wyślij go aplikacją Transporter."
 else
   [[ -f android/key.properties ]] || { echo "Brak app/android/key.properties (klucz przesyłania, docs/PUBLIKACJA.md krok 5.2)."; exit 1; }
-  flutter build appbundle --release "${defines[@]}"
+  flutter build appbundle --release ${defines[@]+"${defines[@]}"}
   echo
   echo "Gotowe: build/app/outputs/bundle/release/app-release.aab. Wgraj go w Play Console."
 fi

@@ -49,6 +49,16 @@ require AK_DIR . 'parts/header.php';
         <div class="ak-prose">
             <?php echo $article['html']; // The post content, already filtered by WordPress. ?>
 
+            <nav class="ak-related ak-post-guides" aria-label="Pomysły na zabawy">
+                <p class="ak-tldr-h">Pomysły na zabawy na ten temat</p>
+                <ul>
+                    <?php foreach (ak_post_guides($article_post) as $g) : ?>
+                    <li><a href="<?php echo esc_url(ak_landing_url($g)); ?>"><?php echo esc_html(ak_landings()[$g]['anchor']); ?></a></li>
+                    <?php endforeach; ?>
+                    <li><a href="<?php echo esc_url(ak_info_url('zabawy-do-druku')); ?>">Karty zabaw do druku (PDF za darmo)</a></li>
+                </ul>
+            </nav>
+
             <aside class="ak-authorbox">
                 <span class="ak-avatar ak-avatar-big" aria-hidden="true"><?php echo esc_html(mb_substr($person['name'], 0, 1)); ?></span>
                 <div>

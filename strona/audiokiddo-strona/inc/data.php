@@ -24,6 +24,9 @@ function ak_defaults(): array
         'price_year' => '269,99',
         // The form that sends the free pack (MailerLite's script comes with the site's tags).
         'mailerlite_form' => '<div class="ml-embedded" data-form="XQ2HmS"></div>',
+        // The newsletter form our own sign-up posts to (MailerLite → Forms → AudioKiddo - strona główna).
+        'ml_account' => '1362786',
+        'ml_form_id' => '147984162419115646',
         'testimonials_url' => '',
         'photo_nela' => '',
         'photo_dawid' => '',

@@ -53,6 +53,7 @@ function ak_article(WP_Post $post): array
         return $cache[$post->ID];
     }
     $html = apply_filters('the_content', $post->post_content);
+    $html = ak_drop_repeats($html, $post);
     $words = str_word_count(wp_strip_all_tags($html), 0, 'ąćęłńóśźżĄĆĘŁŃÓŚŹŻ');
 
     // The summary at the top becomes a box.
@@ -184,4 +185,43 @@ function ak_related(WP_Post $post, int $count = 3): array
         $posts = array_merge($posts, $more);
     }
     return $posts;
+}
+
+/**
+ * Old posts (built in Elementor) start by repeating the title as a heading and the featured
+ * picture as an image. The page already shows both above the text: the copies go.
+ */
+function ak_drop_repeats(string $html, WP_Post $post): string
+{
+    $title = mb_strtolower(trim(wp_strip_all_tags(get_the_title($post))));
+    $html = preg_replace_callback('#<h([1-3])[^>]*>(.*?)</h\1>#isu', function ($m) use ($title) {
+        static $done = false;
+        if ($done) {
+            return $m[0];
+        }
+        $done = true;
+        $text = mb_strtolower(trim(html_entity_decode(wp_strip_all_tags($m[2]), ENT_QUOTES)));
+        return similar_text($text, $title) >= 0.9 * max(mb_strlen($title), 1) ? '' : $m[0];
+    }, $html, 1);
+    $thumb = (int) get_post_thumbnail_id($post);
+    if ($thumb) {
+        $file = pathinfo((string) get_attached_file($thumb), PATHINFO_FILENAME);
+        if ($file !== '') {
+            $html = preg_replace('#<img[^>]+' . preg_quote($file, '#') . '[^>]*>#iu', '', $html, 1);
+        }
+    }
+    return $html;
+}
+
+/** Guides that continue a post's topic, by its category (and always the printable cards). */
+function ak_post_guides(WP_Post $post): array
+{
+    $by_cat = [
+        'czas-bez-ekranu' => ['zabawy-bez-ekranu', 'dziecko-sie-nudzi', 'samodzielna-zabawa-dziecka', 'interaktywne-bajki-dla-dzieci'],
+        'rozwoj-i-mowa' => ['zabawy-logopedyczne', 'zabawy-na-koncentracje', 'zagadki-dla-dzieci', 'zabawy-dla-4-latka'],
+        'zabawy-i-codziennosc' => ['zabawy-dla-dzieci-w-domu', 'jak-zajac-dziecko-w-samochodzie', 'zabawy-wyciszajace-przed-snem', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+    ];
+    $cats = get_the_category($post->ID);
+    $slugs = $by_cat[$cats ? $cats[0]->slug : ''] ?? $by_cat['czas-bez-ekranu'];
+    return array_values(array_filter($slugs, fn($s) => isset(ak_landings()[$s])));
 }

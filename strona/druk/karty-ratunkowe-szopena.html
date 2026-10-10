@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><title>Karty ratunkowe Szop’ena · Audiokiddo</title><style>
+@font-face { font-family: P; src: url('file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/fonts/Poppins-Regular.ttf'); font-weight: 400; }
+@font-face { font-family: P; src: url('file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/fonts/Poppins-Medium.ttf'); font-weight: 500; }
+@font-face { font-family: P; src: url('file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/fonts/Poppins-SemiBold.ttf'); font-weight: 600; }
+@font-face { font-family: P; src: url('file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/fonts/Poppins-Bold.ttf'); font-weight: 700; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; font-family: P, sans-serif; color: #1D1A2B; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; padding: 14mm; position: relative; overflow: hidden; page-break-after: always; background: #fff; }
+h1, h2, h3 { margin: 0; letter-spacing: -.02em; }
+h1 span, .case h1 span, .outro h1 span { background: linear-gradient(transparent 58%, #FAC119 58%, #FAC119 92%, transparent 92%); }
+.kicker { font-size: 9pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #1D7478; margin: 0 0 4mm; }
+.lead { font-size: 12.5pt; line-height: 1.5; color: #625C70; max-width: 150mm; }
+.foot { position: absolute; left: 14mm; right: 14mm; bottom: 9mm; font-size: 8pt; color: #625C70; margin: 0; }
+svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.c-sun { --c: #FAC119; --s: #FFF1C2; --d: #8A6200; }
+.c-teal { --c: #3AAFB0; --s: #D2ECED; --d: #1D7478; }
+.c-lav { --c: #A98EC1; --s: #F1E2FD; --d: #6B4C8A; }
+
+.cover { background: #FFFBF2; }
+.cover h1 { font-size: 38pt; line-height: 1.05; margin-top: 6mm; max-width: 150mm; }
+.cover-szop { display: flex; align-items: flex-end; gap: 4mm; margin: 6mm 0 4mm; }
+.cover-szop img { width: 58mm; }
+.bubble { background: #fff; border-radius: 6mm 6mm 6mm 1.5mm; padding: 4mm 5mm; font-weight: 600; font-size: 11pt; box-shadow: 0 1mm 4mm rgba(29,26,43,.12); margin: 0 0 14mm; max-width: 80mm; }
+.how { background: #fff; border-radius: 6mm; padding: 6mm 7mm; box-shadow: 0 1mm 4mm rgba(29,26,43,.08); }
+.how h2 { font-size: 15pt; margin-bottom: 3mm; }
+.how ol { margin: 0; padding-left: 6mm; font-size: 11pt; line-height: 1.6; }
+.tip { font-size: 9.5pt; color: #625C70; margin: 3mm 0 0; }
+.legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 10mm; }
+.legend span { padding: 4mm !important; font-size: 9.5pt !important; }
+.legend span { display: flex; align-items: center; gap: 2mm; background: var(--s); color: var(--d); border-radius: 3mm; padding: 2.5mm 3mm; font-size: 8.5pt; font-weight: 600; }
+.legend svg { font-size: 12pt; flex: none; }
+
+.sheet { padding: 10mm 12mm; }
+.sheet-h { display: flex; align-items: center; gap: 3mm; margin-bottom: 5mm; }
+.sheet-h > svg { font-size: 18pt; color: var(--d); }
+.sheet-h h2 { font-size: 17pt; }
+.say { margin: 0 0 0 auto; display: flex; align-items: center; gap: 2mm; font-size: 9.5pt; font-weight: 600; background: var(--s); border-radius: 4mm; padding: 2mm 4mm 2mm 2mm; max-width: 80mm; }
+.say img { width: 11mm; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); height: 252mm; }
+.card { border: .3mm dashed #9C97A8; padding: 6mm 6.5mm; display: flex; flex-direction: column; margin: -0.15mm; }
+.card-top { display: flex; align-items: center; gap: 2mm; font-size: 8pt; font-weight: 600; color: var(--d); background: var(--s); border-radius: 2.5mm; padding: 1.8mm 3mm; margin-bottom: 4mm; }
+.card-top svg { font-size: 11pt; }
+.card-top b { margin-left: auto; font-size: 8pt; }
+.card h3 { font-size: 17pt; line-height: 1.15; margin-bottom: 2.5mm; }
+.card p { font-size: 11.5pt; line-height: 1.5; margin: 0; }
+.meta { display: flex; gap: 2mm; margin-top: auto; padding-top: 3mm; }
+.meta span { font-size: 8.5pt; font-weight: 600; border-radius: 99px; padding: 1mm 3mm; background: #F7EADB; }
+.need { font-size: 8.5pt !important; color: #625C70; margin-top: 2mm !important; }
+
+.case h1 { font-size: 22pt; line-height: 1.15; margin-bottom: 6mm; }
+.case-cols { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5mm; }
+.box { border: .4mm solid #E5DFD3; border-radius: 4mm; padding: 5mm; font-size: 10pt; line-height: 1.5; }
+.box h2 { font-size: 11.5pt; margin-bottom: 2mm; }
+.box ol { padding-left: 5mm; margin: 2mm 0; }
+.box p { margin: 0 0 2mm; }
+.clues { width: 100%; border-collapse: collapse; margin-top: 2mm; }
+.clues td { border-bottom: .3mm solid #E5DFD3; padding: 3mm 0; font-size: 11pt; font-weight: 600; }
+.tick { width: 7mm; height: 7mm; border: .5mm solid #1D1A2B; border-radius: 1.5mm; display: inline-block; }
+td.tc { width: 9mm; text-align: right; }
+.sus-h { font-size: 14pt; margin: 7mm 0 3mm; }
+.suspects { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.sus { border: .4mm solid #E5DFD3; border-radius: 4mm; padding: 4mm; font-size: 9.5pt; line-height: 1.45; display: flex; flex-direction: column; min-height: 50mm; }
+.sus b { font-size: 11pt; }
+.sus p { margin: 2mm 0 auto; }
+.sus .tick { margin-top: 3mm; }
+.ask { font-size: 12pt; margin: 6mm 0; }
+.solution { position: absolute; left: 14mm; right: 14mm; bottom: 22mm; transform: rotate(180deg); border-top: .3mm dashed #9C97A8; padding-top: 3mm; font-size: 9pt; color: #625C70; }
+.solution p { margin: 0; }
+.more { position: absolute; left: 14mm; bottom: 10mm; font-size: 9pt; color: #1D7478; font-weight: 600; margin: 0; }
+
+.outro { background: #FFFBF2; display: flex; flex-direction: column; justify-content: center; }
+.outro-szop { width: 60mm; margin-bottom: 6mm; }
+.outro h1 { font-size: 28pt; line-height: 1.1; max-width: 160mm; margin-bottom: 5mm; }
+.ticks { list-style: none; padding: 0; margin: 6mm 0; font-size: 12pt; line-height: 2; }
+.ticks li::before { content: "✓"; display: inline-grid; place-items: center; width: 6mm; height: 6mm; margin-right: 3mm; border-radius: 50%; background: #1D7478; color: #fff; font-size: 9pt; font-weight: 700; }
+.url { align-self: flex-start; display: inline-block; font-size: 20pt; font-weight: 700; background: #FAC119; border-radius: 5mm; padding: 3mm 8mm; margin: 4mm 0 0; }
+</style></head>
+<body>
+  <section class="page cover">
+    <p class="kicker">Audiokiddo · do wydrukowania</p>
+    <h1>Karty ratunkowe <span>Szop’ena</span></h1>
+    <p class="lead">36 zabaw bez ekranu na chwile, kiedy słyszysz „nudzi mi się”. Bez przygotowań, dla dzieci 3–9 lat.</p>
+    <div class="cover-szop"><img src="file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/img/szop/zadowolony.webp" alt=""><p class="bubble">Dobra. Od tej chwili ten dzieciak to mój problem.</p></div>
+    <div class="how">
+      <h2>Jak tego używać</h2>
+      <ol>
+        <li><b>Wydrukuj</b> strony z kartami (najlepiej na grubszym papierze).</li>
+        <li><b>Wytnij</b> karty po przerywanych liniach.</li>
+        <li><b>Wrzuć</b> je do słoika, pudełka po butach albo koperty w aucie.</li>
+        <li>Gdy pada „nudzi mi się”, <b>dziecko losuje kartę</b>. Czyta ją dorosły, robi dziecko.</li>
+      </ol>
+      <p class="tip">Kolor karty mówi, na jaką sytuację jest zabawa: żółte na kuchnię i szybkie chwile, morskie do auta i na energię, fioletowe na deszcz i wyciszenie.</p>
+    </div>
+    <div class="legend"><span class="c-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2" /></svg>Kiedy gotujesz obiad</span><span class="c-teal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" /></svg>Kiedy jedziecie samochodem</span><span class="c-lav"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2" /></svg>Kiedy pada deszcz</span><span class="c-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg>Kiedy masz tylko 5 minut</span><span class="c-lav"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" /></svg>Kiedy trzeba się wyciszyć</span><span class="c-teal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg>Kiedy rozpiera energia</span></div>
+    <p class="foot">audiokiddo.pl · Nela i Dawid, twórcy Audiokiddo</p>
+  </section>
+  <section class="page sheet c-sun">
+    <header class="sheet-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2" /></svg><h2>Kiedy gotujesz obiad</h2><p class="say"><img src="file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/img/szop/chytry.webp" alt="">Ty masz cebulę. Ja mam plan.</p></header>
+    <div class="grid">
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2" /></svg><span>Kiedy gotujesz obiad</span><b>01</b></div>
+      <h3>Kuchenny DJ</h3>
+      <p>Daj dziecku garnek i drewnianą łyżkę. Mów, co ma zagrać: deszcz, galop konia, kroki olbrzyma, mrówkę na palcach.</p>
+      <div class="meta"><span>3–6 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: garnek, łyżka</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2" /></svg><span>Kiedy gotujesz obiad</span><b>02</b></div>
+      <h3>Zgadnij zapach</h3>
+      <p>Dziecko zamyka oczy, a Ty podsuwasz cynamon, cytrynę, kawę, ogórek. Kto zgadnie cztery z rzędu, zostaje szefem kuchni.</p>
+      <div class="meta"><span>3–8 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: to, co masz w kuchni</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2" /></svg><span>Kiedy gotujesz obiad</span><b>03</b></div>
+      <h3>Detektyw szuflad</h3>
+      <p>Misja: znajdź w kuchni 3 rzeczy okrągłe. Potem 3 rzeczy, które robią hałas. Potem 3 rzeczy, które są zimne.</p>
+      <div class="meta"><span>4–8 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2" /></svg><span>Kiedy gotujesz obiad</span><b>04</b></div>
+      <h3>Pomocnik liczy</h3>
+      <p>Czytasz przepis na głos, a dziecko odlicza ziemniaki, łyżki mąki albo ząbki czosnku i sprawdza, czy się zgadza.</p>
+      <div class="meta"><span>4–7 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: składniki</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2" /></svg><span>Kiedy gotujesz obiad</span><b>05</b></div>
+      <h3>Restauracja pod stołem</h3>
+      <p>Dziecko otwiera restaurację dla pluszaków: rysuje menu, przyjmuje zamówienia i „gotuje” z klocków.</p>
+      <div class="meta"><span>4–8 lat</span><span>15 min</span></div>
+      <p class="need">Potrzebne: kartka, kredki</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2" /></svg><span>Kiedy gotujesz obiad</span><b>06</b></div>
+      <h3>Jaki to dźwięk?</h3>
+      <p>Dziecko stoi tyłem, a Ty puszczasz kran, otwierasz słoik, kroisz chleb. Zgaduje, co robisz, bez podglądania.</p>
+      <div class="meta"><span>3–7 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div></div>
+  </section>
+  <section class="page sheet c-teal">
+    <header class="sheet-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" /></svg><h2>Kiedy jedziecie samochodem</h2><p class="say"><img src="file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/img/szop/chytry.webp" alt="">„Daleko jeszcze?” Jeszcze pięć kart.</p></header>
+    <div class="grid">
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" /></svg><span>Kiedy jedziecie samochodem</span><b>07</b></div>
+      <h3>Kolorowe auta</h3>
+      <p>Każdy wybiera kolor i liczy mijane samochody w swoim kolorze. Kto pierwszy do dziesięciu, wybiera następną zabawę.</p>
+      <div class="meta"><span>3–7 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" /></svg><span>Kiedy jedziecie samochodem</span><b>08</b></div>
+      <h3>Widzę coś na literę…</h3>
+      <p>„Widzę coś na literę D”. Dziecko zgaduje, co widzisz za oknem albo w aucie. Potem ono wybiera.</p>
+      <div class="meta"><span>4–9 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" /></svg><span>Kiedy jedziecie samochodem</span><b>09</b></div>
+      <h3>Opowieść na zmianę</h3>
+      <p>Ty zaczynasz: „Pewnego dnia smok zgubił…”. Każdy dodaje jedno zdanie. Wychodzi historia na całą trasę.</p>
+      <div class="meta"><span>4–9 lat</span><span>15 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" /></svg><span>Kiedy jedziecie samochodem</span><b>10</b></div>
+      <h3>Wymień trzy</h3>
+      <p>„Wymień trzy zwierzęta z ogonem”, „trzy rzeczy, które są zimne”. Potem dziecko zadaje pytanie Tobie.</p>
+      <div class="meta"><span>4–9 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" /></svg><span>Kiedy jedziecie samochodem</span><b>11</b></div>
+      <h3>Prawda czy bzdura?</h3>
+      <p>„Krowy latają do szkoły”. Dziecko klaszcze, gdy to prawda, i tupie, gdy bzdura. Im głupiej, tym lepiej.</p>
+      <div class="meta"><span>3–7 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7.5 13h.01M16.5 13h.01" /></svg><span>Kiedy jedziecie samochodem</span><b>12</b></div>
+      <h3>Kim jestem?</h3>
+      <p>Myślisz o zwierzęciu, a dziecko zadaje pytania, na które odpowiadasz tylko „tak” albo „nie”. Ma 20 pytań.</p>
+      <div class="meta"><span>5–9 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div></div>
+  </section>
+  <section class="page sheet c-lav">
+    <header class="sheet-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2" /></svg><h2>Kiedy pada deszcz</h2><p class="say"><img src="file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/img/szop/chytry.webp" alt="">Plac zabaw odpada. Kanapa przestaje być bezpieczna.</p></header>
+    <div class="grid">
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2" /></svg><span>Kiedy pada deszcz</span><b>13</b></div>
+      <h3>Podłoga to lawa</h3>
+      <p>Poduszki to kamienie na rzece lawy. Dziecko przechodzi z jednego końca pokoju na drugi i nie może dotknąć podłogi.</p>
+      <div class="meta"><span>3–7 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: poduszki</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2" /></svg><span>Kiedy pada deszcz</span><b>14</b></div>
+      <h3>Tor przeszkód</h3>
+      <p>Krzesło, koc, poduszki. Za każdym razem inny sposób przejścia: na czworakach, tyłem, na palcach, jak żaba.</p>
+      <div class="meta"><span>3–8 lat</span><span>15 min</span></div>
+      <p class="need">Potrzebne: meble, koc</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2" /></svg><span>Kiedy pada deszcz</span><b>15</b></div>
+      <h3>Baza z koca</h3>
+      <p>Koc na dwóch krzesłach i gotowe. W środku biuro detektywa albo statek kosmiczny. Dalej dziecko działa samo.</p>
+      <div class="meta"><span>3–8 lat</span><span>20 min</span></div>
+      <p class="need">Potrzebne: koc, 2 krzesła</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2" /></svg><span>Kiedy pada deszcz</span><b>16</b></div>
+      <h3>Mapa skarbów</h3>
+      <p>Narysuj plan pokoju i zaznacz X. Pod X schowaj „skarb” (naklejkę, orzech). Dziecko czyta mapę i szuka.</p>
+      <div class="meta"><span>4–8 lat</span><span>15 min</span></div>
+      <p class="need">Potrzebne: kartka, drobny skarb</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2" /></svg><span>Kiedy pada deszcz</span><b>17</b></div>
+      <h3>Teatr cieni</h3>
+      <p>Latarka, ściana i ręce. Dziecko wymyśla historię i odgrywa ją cieniami: pies, ptak, krokodyl.</p>
+      <div class="meta"><span>4–9 lat</span><span>15 min</span></div>
+      <p class="need">Potrzebne: latarka</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2" /></svg><span>Kiedy pada deszcz</span><b>18</b></div>
+      <h3>Domowe kręgle</h3>
+      <p>Sześć pustych plastikowych butelek i zwinięte skarpetki zamiast kuli. Liczycie zbite kręgle.</p>
+      <div class="meta"><span>3–8 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: butelki, skarpetki</p>
+    </div></div>
+  </section>
+  <section class="page sheet c-sun">
+    <header class="sheet-h"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg><h2>Kiedy masz tylko 5 minut</h2><p class="say"><img src="file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/img/szop/chytry.webp" alt="">Pięć minut to dla mnie wieczność.</p></header>
+    <div class="grid">
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg><span>Kiedy masz tylko 5 minut</span><b>19</b></div>
+      <h3>Ciepło, zimno</h3>
+      <p>Chowasz przedmiot, dziecko szuka, a Ty podpowiadasz tylko „ciepło, zimno, parzy”. Potem zamiana.</p>
+      <div class="meta"><span>3–8 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: jeden przedmiot</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg><span>Kiedy masz tylko 5 minut</span><b>20</b></div>
+      <h3>Lustro</h3>
+      <p>Dziecko powtarza Twoje ruchy jak lustro: ręce do góry, przysiad, mina zdziwiona. Potem ono prowadzi.</p>
+      <div class="meta"><span>3–6 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg><span>Kiedy masz tylko 5 minut</span><b>21</b></div>
+      <h3>Co zniknęło?</h3>
+      <p>Pięć przedmiotów na stole. Dziecko patrzy, zamyka oczy, Ty zabierasz jeden. Co zniknęło?</p>
+      <div class="meta"><span>4–9 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: 5 drobiazgów</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg><span>Kiedy masz tylko 5 minut</span><b>22</b></div>
+      <h3>Skojarzenia na czas</h3>
+      <p>Mówisz słowo, dziecko pierwsze skojarzenie: morze? fala! fala? surfer! Kto się zatnie, robi przysiad.</p>
+      <div class="meta"><span>5–9 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg><span>Kiedy masz tylko 5 minut</span><b>23</b></div>
+      <h3>Kto tak robi?</h3>
+      <p>„Kto robi muu?”, „Kto robi kwa?”. Potem trudniej: „Kto robi pssst?”. Dziecko zgaduje i pokazuje.</p>
+      <div class="meta"><span>3–5 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-sun">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg><span>Kiedy masz tylko 5 minut</span><b>24</b></div>
+      <h3>Pięć rzeczy na M</h3>
+      <p>Znajdź w pokoju pięć rzeczy na literę M. Potem na K. Trening głosek i kilka minut spokoju.</p>
+      <div class="meta"><span>4–8 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div></div>
+  </section>
+  <section class="page sheet c-lav">
+    <header class="sheet-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" /></svg><h2>Kiedy trzeba się wyciszyć</h2><p class="say"><img src="file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/img/szop/chytry.webp" alt="">Ciii. Nawet szopy chodzą spać. Czasem.</p></header>
+    <div class="grid">
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" /></svg><span>Kiedy trzeba się wyciszyć</span><b>25</b></div>
+      <h3>Oddech balonika</h3>
+      <p>Wdech nosem: brzuch rośnie jak balon. Długi wydech ustami: balon powoli się zmniejsza. Pięć razy.</p>
+      <div class="meta"><span>3–9 lat</span><span>3 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" /></svg><span>Kiedy trzeba się wyciszyć</span><b>26</b></div>
+      <h3>Ciche kroki</h3>
+      <p>Dziecko skrada się do łóżka tak, żeby nikt go nie usłyszał. Jeśli coś skrzypnie, wraca na start.</p>
+      <div class="meta"><span>3–7 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" /></svg><span>Kiedy trzeba się wyciszyć</span><b>27</b></div>
+      <h3>Trzy dobre rzeczy</h3>
+      <p>Każdy mówi trzy dobre rzeczy z dzisiaj. Mogą być malutkie: ciepła zupa, czerwony liść, przytulas.</p>
+      <div class="meta"><span>4–9 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" /></svg><span>Kiedy trzeba się wyciszyć</span><b>28</b></div>
+      <h3>Skąd ten dźwięk?</h3>
+      <p>Dziecko leży z zamkniętymi oczami, a Ty cicho szeleścisz w różnych miejscach pokoju. Pokazuje ręką, skąd dźwięk.</p>
+      <div class="meta"><span>3–8 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: papier</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" /></svg><span>Kiedy trzeba się wyciszyć</span><b>29</b></div>
+      <h3>Masaż pizzy</h3>
+      <p>Na plecach dziecka „robisz pizzę”: wałkujesz ciasto, smarujesz sosem, sypiesz ser. Potem do pieca: ciepła dłoń.</p>
+      <div class="meta"><span>3–8 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-lav">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z" /></svg><span>Kiedy trzeba się wyciszyć</span><b>30</b></div>
+      <h3>Szeptana bajka</h3>
+      <p>Opowiadasz bajkę szeptem i zatrzymujesz się w ważnym momencie. Dziecko szeptem wymyśla, co było dalej.</p>
+      <div class="meta"><span>4–9 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div></div>
+  </section>
+  <section class="page sheet c-teal">
+    <header class="sheet-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg><h2>Kiedy rozpiera energia</h2><p class="say"><img src="file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/img/szop/chytry.webp" alt="">Za dużo energii? Mam na to kilka sposobów.</p></header>
+    <div class="grid">
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg><span>Kiedy rozpiera energia</span><b>31</b></div>
+      <h3>Zwierzęcy marsz</h3>
+      <p>„Idziemy jak słoń, skaczemy jak żaba, skradamy się jak kot, pełzamy jak wąż”. Dziecko robi ruch i dźwięk.</p>
+      <div class="meta"><span>3–6 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg><span>Kiedy rozpiera energia</span><b>32</b></div>
+      <h3>Stop-klatka</h3>
+      <p>Gra muzyka, dziecko tańczy. Cisza: zastyga jak posąg. Kto się poruszy, robi trzy podskoki.</p>
+      <div class="meta"><span>3–7 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: muzyka</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg><span>Kiedy rozpiera energia</span><b>33</b></div>
+      <h3>Kostka ruchu</h3>
+      <p>Rzut kostką: 1 podskok, 2 przysiad, 3 obrót, 4 pajacyk, 5 deska, 6 dowolny taniec. Tyle razy, ile oczek.</p>
+      <div class="meta"><span>4–9 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: kostka</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg><span>Kiedy rozpiera energia</span><b>34</b></div>
+      <h3>Skradanie detektywa</h3>
+      <p>Siedzisz tyłem jako „podejrzany”. Dziecko skrada się, żeby dotknąć Twoich pleców. Jak usłyszysz, wraca.</p>
+      <div class="meta"><span>4–9 lat</span><span>10 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg><span>Kiedy rozpiera energia</span><b>35</b></div>
+      <h3>Skarpetkowy wyścig</h3>
+      <p>Dziesięć zwiniętych skarpetek trzeba przenieść z jednego kosza do drugiego, skacząc na jednej nodze.</p>
+      <div class="meta"><span>4–8 lat</span><span>5 min</span></div>
+      <p class="need">Potrzebne: skarpetki, 2 kosze</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg><span>Kiedy rozpiera energia</span><b>36</b></div>
+      <h3>Start rakiety</h3>
+      <p>Odliczanie od 10 do 1 w przysiadzie, coraz niżej, a na „start!” wyskok w górę. I jeszcze raz, i jeszcze.</p>
+      <div class="meta"><span>3–7 lat</span><span>3 min</span></div>
+      <p class="need">Potrzebne: nic</p>
+    </div></div>
+  </section>
+  <section class="page case">
+    <p class="kicker">Bonus · mini śledztwo</p>
+    <h1>Akta sprawy nr 1: <span>Kto zjadł ostatnie ciastko?</span></h1>
+    <div class="case-cols">
+      <div class="box">
+        <h2>Dla dorosłego: przygotowanie (3 min)</h2>
+        <p>Zanim zawołasz detektywa, rozłóż w domu cztery poszlaki:</p>
+        <ol>
+          <li><b>Okruszki</b> na talerzyku przy kanapie.</li>
+          <li><b>Skarpetkę w paski</b> pod stołem.</li>
+          <li><b>Karteczkę</b> z koślawym napisem „MNIAM”.</li>
+          <li><b>Odcisk łapki</b>: narysuj go na kartce i połóż przy szafce z ciastkami.</li>
+        </ol>
+        <p>Powiedz: „Ktoś zjadł ostatnie ciastko. Potrzebujemy detektywa”. Daj dziecku tę kartkę i ołówek.</p>
+      </div>
+      <div class="box">
+        <h2>Dla detektywa: znajdź poszlaki</h2>
+        <table class="clues">
+          <tr><td>Okruszki</td><td class="tc"><span class="tick"></span></td></tr>
+          <tr><td>Skarpetka w paski</td><td class="tc"><span class="tick"></span></td></tr>
+          <tr><td>Karteczka „MNIAM”</td><td class="tc"><span class="tick"></span></td></tr>
+          <tr><td>Odcisk łapki</td><td class="tc"><span class="tick"></span></td></tr>
+        </table>
+      </div>
+    </div>
+    <h2 class="sus-h">Podejrzani</h2>
+    <div class="suspects">
+      <div class="sus"><b>Kot Mruczek</b><p>Ma łapki. Nie nosi skarpetek. Nie umie pisać.</p><span class="tick"></span></div>
+      <div class="sus"><b>Tata</b><p>Nosi skarpetki w paski. Umie pisać. Nie ma łapek.</p><span class="tick"></span></div>
+      <div class="sus"><b>Miś Bruno</b><p>Ma łapki. Nie umie pisać. Siedzi na półce od rana.</p><span class="tick"></span></div>
+      <div class="sus"><b>Szop’en</b><p>Ma łapki. Pisze koślawo. Kradnie skarpetki do kolekcji.</p><span class="tick"></span></div>
+    </div>
+    <p class="ask">Kto pasuje do <b>wszystkich czterech</b> poszlak? Zaznacz i wytłumacz dlaczego.</p>
+    <div class="solution"><p>Rozwiązanie: Szop’en. Ma łapki (odcisk), pisze koślawo (MNIAM) i zbiera skarpetki (skarpetka w paski). Okruszki zostawił, bo się spieszył. Przyznał się. Ciastka nie oddał.</p></div>
+    <p class="more">Więcej takich spraw z Maxem i Milą jest w pakiecie Detektyw w aplikacji Audiokiddo.</p>
+  </section>
+  <section class="page outro">
+    <img class="outro-szop" src="file:///Users/dawidkubiak/Desktop/claude%20folder/audiokiddo-app/strona/audiokiddo-strona/assets/img/szop/klaszcze.webp" alt="">
+    <h1>Nie masz dziś siły czytać kart? <span>Audiokiddo przeczyta za Ciebie.</span></h1>
+    <p class="lead">Audiokiddo to interaktywne audiozabawy dla dzieci 3–9 lat. Odpalasz, odkładasz telefon, a głos daje dziecku misję: szukaj, odpowiadaj, ruszaj się, rozwiązuj zagadki. Dziecko nie patrzy w ekran.</p>
+    <ul class="ticks">
+      <li>Darmowe zabawy na start w aplikacji</li>
+      <li>Polecane przez logopedów i pedagogów</li>
+      <li>Polskie głosy, bez reklam</li>
+    </ul>
+    <p class="url">audiokiddo.pl</p>
+    <p class="foot">© Audiokiddo. Do użytku domowego i w przedszkolu. Drukuj, ile chcesz, tylko nie sprzedawaj.</p>
+  </section></body></html>

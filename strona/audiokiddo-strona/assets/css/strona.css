@@ -1679,3 +1679,47 @@ html.ak-locked { overflow: hidden; }
   .ak-a-proof { gap: 10px 18px; font-size: 14px; }
   .ak-a-hero-art .ak-szop-hero { left: 2%; bottom: -6%; }
 }
+
+/* Newsletter sign-up (inc/signup.php) and the printables page */
+.ak-signup { max-width: 540px; margin-top: 18px; }
+.ak-signup-row { display: flex; gap: 10px; }
+.ak-signup-row[hidden], .ak-signup-ok[hidden] { display: none; }
+.ak-signup input[type="email"] { flex: 1; min-width: 0; font: inherit; font-size: 17px; padding: 14px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); }
+.ak-signup input[type="email"]:focus { outline: 3px solid var(--sun); outline-offset: 1px; border-color: transparent; }
+.ak-signup .ak-btn { flex: none; }
+.ak-signup .ak-btn[disabled] { opacity: .7; cursor: progress; }
+.ak-signup-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.ak-signup-ok { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--muted); cursor: pointer; }
+.ak-signup-ok input { flex: none; width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--teal-deep); }
+.ak-signup-msg { margin: 8px 0 0 !important; font-size: 14px; font-weight: 600; min-height: 1em; }
+.ak-signup.is-error .ak-signup-msg { color: #B3261E; }
+.ak-signup-done { background: var(--paper); border-radius: 22px; padding: 20px 22px; box-shadow: var(--shadow); }
+.ak-signup-done p { margin: 0 0 12px; }
+.ak-signup-done-h { font-weight: 700; font-size: 20px; }
+.ak-druk-in { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+.ak-druk-fan { position: relative; aspect-ratio: 1 / 1; }
+.ak-druk-fan img { position: absolute; width: 58%; left: 21%; top: 4%; border-radius: 10px; box-shadow: 0 18px 40px rgba(29, 26, 43, .18); transition: transform .6s var(--spring); }
+.ak-druk-fan img:nth-child(1) { transform: rotate(9deg) translate(26%, 4%); }
+.ak-druk-fan img:nth-child(2) { transform: rotate(-8deg) translate(-26%, 3%); }
+.ak-druk-fan:hover img:nth-child(1) { transform: rotate(12deg) translate(34%, 2%); }
+.ak-druk-fan:hover img:nth-child(2) { transform: rotate(-11deg) translate(-34%, 1%); }
+.ak-druk-fan .ak-badge { z-index: 2; }
+.ak-druk-fan-sm img { box-shadow: 0 12px 28px rgba(29, 26, 43, .16); }
+.ak-free-img.ak-druk-fan img { transform: none; }
+.ak-free-img.ak-druk-fan img:nth-child(1) { transform: rotate(9deg) translate(26%, 4%); }
+.ak-free-img.ak-druk-fan img:nth-child(2) { transform: rotate(-8deg) translate(-26%, 3%); }
+.ak-druk-sits { list-style: none; padding: 0; margin: 26px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.ak-druk-sit { background: var(--paper); border-radius: 22px; padding: 20px 22px; box-shadow: var(--shadow); }
+.ak-druk-sit h3 { font-size: 18px; margin-bottom: 6px; }
+.ak-druk-sit h3::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 9px; vertical-align: .12em; background: var(--deep, var(--teal)); }
+.ak-druk-sit p { margin: 0 0 8px; color: var(--muted); font-size: 15px; }
+.ak-druk-sit a { font-weight: 600; font-size: 14px; }
+@media (max-width: 860px) {
+  .ak-druk-in { grid-template-columns: 1fr; }
+  .ak-druk-fan { max-width: 360px; margin: 0 auto; width: 100%; }
+  .ak-druk-sits { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .ak-signup-row { flex-direction: column; }
+  .ak-signup .ak-btn { width: 100%; justify-content: center; }
+}

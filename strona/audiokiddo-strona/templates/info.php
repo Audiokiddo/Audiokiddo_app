@@ -29,6 +29,7 @@ require AK_DIR . 'parts/header.php';
                 'pytania' => ['zdziwiony', 'Pytaj śmiało. Na anulowanie też mamy odpowiedź.'],
                 'logopedzi-i-pedagodzy' => ['nasluchuje', 'Ja tylko pilnuję porządku. Fachowcy mówią niżej.'],
                 'o-nas' => ['zadowolony', 'To moi ludzie. Ja tu tylko pilnuję jakości.'],
+                'zabawy-do-druku' => ['chytry', 'Wydrukuj. Wytnij. Losuj. Ja już wylosowałem drzemkę.'],
             ][$slug];
             ak_szop($hero_szop[0], $hero_szop[1], 'ak-szop-info');
             ?>
@@ -306,6 +307,60 @@ require AK_DIR . 'parts/header.php';
         </div>
     </section>
 
+<?php elseif ($slug === 'zabawy-do-druku') : ?>
+    <section class="ak-info-sec ak-druk" id="zapis" aria-labelledby="ak-druk-h">
+        <div class="ak-wrap ak-druk-in">
+            <div class="ak-druk-fan" data-reveal="left" aria-hidden="true">
+                <img src="<?php echo esc_url(ak_asset('druk/podglad-akta.webp')); ?>" alt="" width="909" height="1287" loading="lazy">
+                <img src="<?php echo esc_url(ak_asset('druk/podglad-karty.webp')); ?>" alt="" width="909" height="1287" loading="lazy">
+                <img src="<?php echo esc_url(ak_asset('druk/podglad-okladka.webp')); ?>" alt="" width="909" height="1287">
+            </div>
+            <div data-reveal="right">
+                <h2 id="ak-druk-h">Wpisz e-mail, a karty <span class="ak-hl-word">pobierzesz od razu</span></h2>
+                <ul class="ak-ticks">
+                    <li>36 zabaw na 6 sytuacji: obiad, auto, deszcz, 5 minut, wieczór i nadmiar energii</li>
+                    <li>Mini śledztwo z poszlakami i podejrzanymi (rozwiązanie do góry nogami)</li>
+                    <li>9 stron A4, gotowe do druku w domu albo w przedszkolu</li>
+                </ul>
+                <?php ak_signup_form('druk'); ?>
+            </div>
+        </div>
+    </section>
+
+    <section class="ak-info-sec" aria-labelledby="ak-druk-sit-h">
+        <div class="ak-wrap">
+            <h2 id="ak-druk-sit-h" data-reveal>Co jest <span class="ak-hl-word">w środku?</span></h2>
+            <ul class="ak-druk-sits">
+                <?php
+                $sits = [
+                    ['Kiedy gotujesz obiad', 'sun', 'Kuchenny DJ, zgadywanie zapachów, detektyw szuflad. Zabawy obok Ciebie, bez Twoich rąk.', 'zabawy-dla-dzieci-w-domu'],
+                    ['Kiedy jedziecie samochodem', 'teal', 'Kolorowe auta, opowieść na zmianę, „kim jestem?”. Tylko głos, nic do zgubienia pod fotelem.', 'jak-zajac-dziecko-w-samochodzie'],
+                    ['Kiedy pada deszcz', 'lav', 'Podłoga to lawa, mapa skarbów, teatr cieni, domowe kręgle z butelek.', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+                    ['Kiedy masz tylko 5 minut', 'sun', 'Ciepło-zimno, lustro, „co zniknęło?”. Na czas, gdy kończysz maila.', 'zabawy-bez-ekranu'],
+                    ['Kiedy trzeba się wyciszyć', 'lav', 'Oddech balonika, masaż pizzy, trzy dobre rzeczy z dnia.', 'zabawy-wyciszajace-przed-snem'],
+                    ['Kiedy rozpiera energia', 'teal', 'Zwierzęcy marsz, kostka ruchu, start rakiety. Wybiegane w małym mieszkaniu.', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+                ];
+                foreach ($sits as $i => [$name, $color, $text, $guide]) : ?>
+                <li class="ak-druk-sit ak-c-<?php echo esc_attr($color); ?>" data-reveal style="--d:<?php echo esc_attr(0.06 * $i); ?>s">
+                    <h3><?php echo esc_html($name); ?></h3>
+                    <p><?php echo esc_html($text); ?></p>
+                    <a href="<?php echo esc_url(ak_landing_url($guide)); ?>">Więcej pomysłów →</a>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </section>
+
+    <section class="ak-info-sec" aria-labelledby="ak-druk-faq-h">
+        <div class="ak-wrap ak-narrow">
+            <h2 id="ak-druk-faq-h" data-reveal>Pytania</h2>
+            <div class="ak-faq ak-faq-guide">
+                <?php foreach (ak_printable_faq() as [$q, $a]) : ?>
+                <details data-reveal><summary><?php echo esc_html($q); ?><span class="ak-plus" aria-hidden="true"></span></summary><div><p><?php echo esc_html($a); ?></p></div></details>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
 <?php elseif ($slug === 'logopedzi-i-pedagodzy') : ?>
     <section class="ak-info-sec" aria-label="Opinie specjalistów">
         <div class="ak-wrap">
@@ -370,6 +425,7 @@ require AK_DIR . 'parts/header.php';
             'pakiety' => ['Wszystkie pakiety w jednym abonamencie.', 'Plus nowy pakiet co miesiąc i darmowe zabawy na start w aplikacji.', ak_info_url('abonament'), 'Zobacz abonament'],
             'pytania' => ['Najszybciej sprawdzisz to w praktyce.', 'Pobierz Audiokiddo i odpal darmową zabawę. Pięć minut i wiesz, czy dziecko się wkręci.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
             'o-nas' => ['Zobacz, co zrobiliśmy.', 'Pobierz Audiokiddo i odpal darmową zabawę. Szop’en już czeka.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
+            'zabawy-do-druku' => ['Karty czyta dorosły. Audiokiddo czyta samo.', 'Gdy nie masz siły czytać kart, odpal audiozabawę: głos poprowadzi dziecko przez misję, a Ty odpoczniesz.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
             'logopedzi-i-pedagodzy' => ['Sprawdź zabawy, które polecają specjaliści.', 'Darmowe zabawy na start w aplikacji, pełna biblioteka w abonamencie.', ak_landing_url('zabawy-logopedyczne'), 'Zabawy logopedyczne'],
         ][$slug];
         ak_cta_band(...$bands);

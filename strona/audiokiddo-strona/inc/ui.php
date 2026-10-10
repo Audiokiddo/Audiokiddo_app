@@ -63,33 +63,25 @@ function ak_szop(string $pose, string $text, string $class = ''): void
 /** The free pack for the newsletter (MailerLite form from the settings). A slide on the home page. */
 function ak_leadmagnet(bool $slide = false): void
 {
-    $form = (string) ak_opt('mailerlite_form');
-    $mail = (string) ak_opt('contact_email');
     ?>
     <section class="ak-free<?php echo $slide ? ' ak-slide' : ''; ?>" id="start-aplikacji"<?php echo $slide ? ' data-slide="Na maila"' : ''; ?> aria-labelledby="ak-free-h">
         <div class="ak-wrap ak-free-in">
-            <div class="ak-free-img" data-reveal="left">
-                <img src="<?php echo esc_url(ak_img('darmowy-pakiet')); ?>" alt="Darmowy pakiet 3 audiozabaw i akta sprawy detektywistycznej" width="1100" height="619" loading="lazy">
-                <span class="ak-badge" aria-hidden="true">0 zł</span>
+            <div class="ak-free-img ak-druk-fan ak-druk-fan-sm" data-reveal="left" aria-hidden="true">
+                <img src="<?php echo esc_url(ak_asset('druk/podglad-akta.webp')); ?>" alt="" width="909" height="1287" loading="lazy">
+                <img src="<?php echo esc_url(ak_asset('druk/podglad-karty.webp')); ?>" alt="" width="909" height="1287" loading="lazy">
+                <img src="<?php echo esc_url(ak_asset('druk/podglad-okladka.webp')); ?>" alt="" width="909" height="1287" loading="lazy">
+                <span class="ak-badge">0 zł</span>
             </div>
             <div data-reveal="right">
                 <?php if (ak_app_live()) : ?>
-                <h2 id="ak-free-h">Wolisz najpierw <span class="ak-hl-word">na maila?</span></h2>
-                <p class="ak-sub">Zapisz się, a wyślemy Ci 3 audiozabawy w plikach (po jednej z każdego pakietu) i akta sprawy do wydrukowania. Raz na jakiś czas napiszemy, co nowego.</p>
+                <h2 id="ak-free-h">Karty ratunkowe Szop’ena <span class="ak-hl-word">za darmo</span></h2>
+                <p class="ak-sub">36 zabaw bez ekranu do wydrukowania: na obiad, auto, deszcz i wieczór. Wpisz e-mail, pobierz od razu, a raz na jakiś czas napiszemy, co nowego.</p>
                 <?php else : ?>
-                <h2 id="ak-free-h">Aplikacja rusza <span class="ak-hl-word">lada dzień</span></h2>
-                <p class="ak-sub">Zostaw e-mail: damy znać, gdy Audiokiddo pojawi się w App Store i Google Play. A żeby nie czekać z pustymi rękami, od razu wyślemy Ci 3 audiozabawy w plikach i akta sprawy do wydrukowania.</p>
+                <h2 id="ak-free-h">Aplikacja rusza lada dzień. <span class="ak-hl-word">Karty już są.</span></h2>
+                <p class="ak-sub">Zostaw e-mail: damy znać, gdy Audiokiddo pojawi się w App Store i Google Play. A żeby nie czekać z pustymi rękami, od razu pobierzesz 36 zabaw do druku i mini śledztwo.</p>
                 <?php endif; ?>
-                <ul class="ak-ticks">
-                    <li>3 pełne zabawy za 0 zł, po jednej z każdego pakietu</li>
-                    <li>Wypiszesz się jednym kliknięciem</li>
-                </ul>
-                <div class="ak-free-form">
-                    <?php if ($form !== '') : ?>
-                        <div class="ak-form"><?php echo $form; // Saved by an admin with unfiltered_html (settings). ?></div>
-                    <?php endif; ?>
-                    <p class="ak-form-fallback"<?php echo $form !== '' ? ' hidden' : ''; ?>><a class="ak-btn ak-btn-sun" href="mailto:<?php echo esc_attr($mail); ?>?subject=Darmowy%20pakiet%20audiozabaw">Poproś o pakiet mailem</a></p>
-                </div>
+                <?php ak_signup_form('newsletter', 'Chcę karty'); ?>
+                <p class="ak-small"><a href="<?php echo esc_url(ak_info_url('zabawy-do-druku')); ?>">Zobacz, co jest w środku →</a></p>
             </div>
         </div>
     </section>

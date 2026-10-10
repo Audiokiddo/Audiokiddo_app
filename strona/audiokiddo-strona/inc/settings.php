@@ -39,7 +39,9 @@ function ak_settings_fields(): array
             'price_year' => ['Cena roczna (zł)', 'text', 'Np. 269,99. Strona sama policzy cenę za miesiąc i oszczędność.'],
         ],
         'Darmowy pakiet za zapis' => [
-            'mailerlite_form' => ['Kod formularza MailerLite (HTML)', 'html', 'Domyślnie formularz XQ2HmS ze starej strony. MailerLite → Forms → Embedded → HTML code.'],
+            'mailerlite_form' => ['Kod formularza MailerLite (HTML, zapas)', 'html', 'Używany tylko, gdy niżej nie ma numerów konta i formularza.'],
+            'ml_account' => ['MailerLite: numer konta', 'text', 'Z kodu formularza: ml(\'account\', \'…\'). Zapis na stronie idzie przez serwer, bez skryptu MailerLite.'],
+            'ml_form_id' => ['MailerLite: numer formularza', 'text', 'Z adresu formularza w MailerLite: /forms/<numer>/overview. Zapisani trafiają do jego grup i automatyzacji.'],
         ],
         'Opinie rodziców' => [
             'testimonials_url' => ['Adres opinii (JSON)', 'url', 'Opinie zatwierdzone w Studio. Puste: sekcja się nie pokazuje.'],
