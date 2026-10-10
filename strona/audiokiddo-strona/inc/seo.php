@@ -577,3 +577,51 @@ add_filter('wpseo_sitemap_exclude_taxonomy', function ($exclude, $taxonomy) {
 }, 10, 2);
 
 add_filter('wpseo_sitemap_exclude_author', '__return_empty_array');
+
+/*
+ * Old pages that now have a better home: one address per topic, so Google shows the new pages
+ * (and not "Sklep - old") and passes their history on. Permanent (301) redirects.
+ */
+function ak_old_pages(): array
+{
+    return [
+        'sklep' => ak_info_url('pakiety'),
+        'sklep-produkty' => ak_info_url('pakiety'),
+        'czym-sa-audiozabawy' => ak_info_url('jak-to-dziala'),
+        'czym-sa-audiozabawy-2' => ak_info_url('jak-to-dziala'),
+        '404-3' => home_url('/'),
+    ];
+}
+
+add_action('template_redirect', function () {
+    if (is_admin() || wp_doing_ajax()) {
+        return;
+    }
+    $to = '';
+    if (function_exists('is_shop') && is_shop()) {
+        $to = ak_info_url('pakiety');
+    } elseif (function_exists('is_product_category') && is_product_category()) {
+        $to = ak_info_url('pakiety');
+    } elseif (is_page()) {
+        $to = ak_old_pages()[(string) get_post_field('post_name', get_queried_object_id())] ?? '';
+    }
+    if ($to !== '') {
+        wp_safe_redirect($to, 301, 'Audiokiddo');
+        exit;
+    }
+}, 2);
+
+// WooCommerce's "back to the shop" leads to the packs page directly.
+add_filter('woocommerce_return_to_shop_redirect', fn() => ak_info_url('pakiety'));
+
+// The product categories only repeat the packs page: out of the sitemap.
+add_filter('wpseo_sitemap_exclude_taxonomy', function ($exclude, $taxonomy) {
+    return $taxonomy === 'product_cat' ? true : $exclude;
+}, 11, 2);
+
+// The redirected pages leave the sitemap too.
+add_filter('wpseo_exclude_from_sitemap_by_post_ids', function ($ids) {
+    $more = get_posts(['post_type' => 'page', 'post_name__in' => array_keys(ak_old_pages()), 'fields' => 'ids', 'numberposts' => -1]);
+    $shop = function_exists('wc_get_page_id') ? (int) wc_get_page_id('shop') : 0;
+    return array_values(array_unique(array_merge((array) $ids, $more, $shop > 0 ? [$shop] : [])));
+});
