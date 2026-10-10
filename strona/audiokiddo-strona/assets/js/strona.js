@@ -262,6 +262,58 @@
       });
     }, { threshold: 0.5 }).observe(dayTabs);
   }
+  // The quarter of an hour: the clock runs while the section is in view, each third shows what
+  // the child and the parent are doing; the buttons under it jump to a third.
+  var q = $('.ak-q');
+  if (q) {
+    var qTabs = $$('.ak-q-tabs button', q);
+    var qNow = $$('.ak-q-now', q);
+    var qRing = $('.ak-q-ring', q);
+    var qTime = $('.ak-q-time', q);
+    var Q_LEN = 326.73;
+    var Q_PART = 4400;
+    var qAt = 0;
+    var qStart = null;
+    var qFrame = null;
+    function qShow(i) {
+      qAt = i;
+      q.setAttribute('data-at', i);
+      qNow.forEach(function (el) { el.classList.toggle('is-on', Number(el.getAttribute('data-i')) === i); });
+      qTabs.forEach(function (b, k) { b.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
+    }
+    function qDraw(part) {
+      var secs = Math.round(part * 900);
+      qRing.style.strokeDashoffset = (Q_LEN * (1 - part)).toFixed(2);
+      qTime.textContent = ('0' + Math.floor(secs / 60)).slice(-2) + ':' + ('0' + (secs % 60)).slice(-2);
+    }
+    function qTick(now) {
+      if (qStart === null) qStart = now - qAt * Q_PART;
+      var gone = (now - qStart) % (Q_PART * 3 + 1600);
+      var part = Math.min(gone / (Q_PART * 3), 1);
+      var i = Math.min(2, Math.floor(part * 3));
+      qDraw(part);
+      if (i !== qAt) qShow(i);
+      qFrame = window.requestAnimationFrame(qTick);
+    }
+    qTabs.forEach(function (b, i) {
+      b.addEventListener('click', function () {
+        qShow(i);
+        if (still) { qDraw((i + 1) / 3); return; }
+        qStart = window.performance.now() - i * Q_PART;
+      });
+    });
+    if (still) {
+      qDraw(1 / 3);
+    } else if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          window.cancelAnimationFrame(qFrame);
+          qStart = null;
+          if (entry.isIntersecting) qFrame = window.requestAnimationFrame(qTick);
+        });
+      }, { threshold: 0.35 }).observe(q);
+    }
+  }
   var agePick = $('.ak-agepick-tabs');
   if (agePick) tabs(agePick);
 

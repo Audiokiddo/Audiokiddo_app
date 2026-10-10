@@ -479,8 +479,6 @@ function ak_home_skills(): array
 function ak_peeks(): array
 {
     return [
-        'jak-to-dziala' => ['nasluchuje', 'right', 'Psst. Tu rodzice zwykle mówią: „czemu nikt tego wcześniej nie wymyślił?”'],
-        'co-zyskujesz' => ['zdziwiony', 'left', 'Ciepła kawa. Sam bym nie uwierzył.'],
         'pakiety' => ['chytry', 'right', 'Detektyw jest najlepszy. Tylko nie mówcie pozostałym pakietom.'],
         'pytania' => ['prosi', 'left', 'Nie ma głupich pytań. Jest tylko „daleko jeszcze?”.'],
     ];
@@ -512,6 +510,19 @@ function ak_buy_where(): array
         ['offline', 'Bez internetu, gdy pliki są pobrane'],
         ['print', 'Przy stole, z kartami do druku'],
         ['gift', 'U babci: pliki zabierasz ze sobą'],
+    ];
+}
+
+/**
+ * One quarter of an hour in three parts for the clock on the home page: the minutes, what the
+ * child is doing, what that trains, what the parent is doing meanwhile and what they get from it.
+ */
+function ak_quarter(): array
+{
+    return [
+        ['0–5 min', 'Szuka po domu trzech czerwonych rzeczy', 'uważne słuchanie i ruch', 'Nastawiasz wodę na kawę', 'Nikt nie pyta, co ma robić.'],
+        ['5–10 min', 'Odpowiada na głos i zgaduje zagadki', 'mowę i myślenie', 'Pijesz ją. Ciepłą.', 'Bez ekranu, więc bez wyrzutów.'],
+        ['10–15 min', 'Kończy misję i chce następną', 'wyobraźnię i samodzielność', 'Nadal siedzisz', 'Zero wymyślania: zabawa była gotowa.'],
     ];
 }
 

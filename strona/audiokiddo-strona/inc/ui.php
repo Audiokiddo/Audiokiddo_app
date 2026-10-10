@@ -69,10 +69,11 @@ function ak_peek(string $section): void
     }
     [$pose, $edge, $text] = $peek;
     printf(
-        '<aside class="ak-peek is-%s" aria-label="Szop’en"><p class="ak-peek-say">%s</p><span class="ak-peek-clip"><img src="%s" alt="" width="420" height="400" loading="lazy"></span></aside>',
+        '<aside class="ak-peek is-%s" aria-label="Szop’en"><p class="ak-peek-say">%s</p><span class="ak-peek-clip"><img src="%s" alt="" width="500" height="760" loading="lazy"></span></aside>',
         esc_attr($edge),
         esc_html($text),
-        esc_url(ak_asset('img/szop/' . $pose . '.webp'))
+        // Drawn leaning out of an edge, so nothing of him is cut off.
+        esc_url(ak_asset('img/szop/' . ($edge === 'left' ? 'zza-lewej' : 'zza-prawej') . '.webp'))
     );
 }
 
