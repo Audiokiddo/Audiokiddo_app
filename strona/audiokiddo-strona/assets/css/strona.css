@@ -2041,3 +2041,16 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
 .ak-g2-card strong { display: block; color: var(--ink); font-size: clamp(17px, 1.8vw, 20px); line-height: 1.25; }
 .ak-g2-ico { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 18px; background: rgba(255, 255, 255, .8); color: var(--deep); flex: none; }
 @media (max-width: 760px) { .ak-g2 { grid-template-columns: minmax(0, 1fr); } }
+
+/* 3.9.4: each moment of the day has Szop'en in its own pose beside the bubble. */
+.ak-a-say { display: block; max-width: 680px; min-height: 190px; }
+.ak-a-say .ak-moment { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; align-items: center; }
+.ak-js .ak-a-say .ak-moment:not(.is-on) { display: none; }
+.ak-moment-szop { width: 150px; height: 150px; object-fit: contain; filter: drop-shadow(0 10px 14px rgba(36, 27, 58, .18)); }
+.ak-js .ak-moment.is-on .ak-moment-szop { animation: ak-pop .6s var(--bouncy); }
+@media (max-width: 760px) {
+  .ak-a-say { min-height: 210px; }
+  .ak-a-say .ak-moment { grid-template-columns: 92px minmax(0, 1fr); gap: 12px; }
+  .ak-moment-szop { width: 92px; height: 92px; }
+}
+@media (prefers-reduced-motion: reduce) { .ak-js .ak-moment.is-on .ak-moment-szop { animation: none; } }

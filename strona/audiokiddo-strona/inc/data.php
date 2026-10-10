@@ -423,17 +423,18 @@ function ak_minutes(int $seconds): string
 
 /**
  * The home page's day with Audiokiddo (like a timeline): time, icon, the moment in two words,
- * Szop'en's line (short, warm, never at the child's expense) and the guide with more ideas.
+ * Szop'en's line (short, warm, never at the child's expense), the guide with more ideas and
+ * his pose for that moment (assets/img/szop/dzien-<pose>.webp, cut by tool/szop_sheet.py).
  */
 function ak_moments(): array
 {
     return [
-        ['7:40', 'car', 'W samochodzie', '„Daleko jeszcze?” padło przed pierwszym rondem. Spokojnie, mam zabawy na całą trasę.', 'jak-zajac-dziecko-w-samochodzie'],
-        ['15:30', 'backpack', 'Po przedszkolu', 'Ty masz baterię na 3%, ono na 300%. Wyrównam.', 'zabawy-ruchowe-dla-dzieci-w-domu'],
-        ['17:30', 'pot', 'Robisz obiad', 'Ty kroisz cebulę, ja zajmuję dziecko. Nikt nie płacze.', 'jak-zajac-dziecko-gdy-pracujesz'],
-        ['18:37', 'battery', 'Zero mocy', 'Czwarty raz być smokiem? Dziś smokiem jestem ja.', 'samodzielna-zabawa-dziecka'],
-        ['19:30', 'moon', 'Przed snem', 'Trzy oddechy, cicha zabawa, dobranoc. Działa nawet na szopy.', 'zabawy-wyciszajace-przed-snem'],
-        ['Kiedykolwiek', 'bored', '„Nudzi mi się”', 'W końcu pytanie, na które znam odpowiedź.', 'dziecko-sie-nudzi'],
+        ['7:40', 'car', 'W samochodzie', '„Daleko jeszcze?” padło przed pierwszym rondem. Spokojnie, mam zabawy na całą trasę.', 'jak-zajac-dziecko-w-samochodzie', 'auto'],
+        ['15:30', 'backpack', 'Po przedszkolu', 'Ty masz baterię na 3%, ono na 300%. Wyrównam.', 'zabawy-ruchowe-dla-dzieci-w-domu', 'przedszkole'],
+        ['17:30', 'pot', 'Robisz obiad', 'Ty kroisz cebulę, ja zajmuję dziecko. Nikt nie płacze.', 'jak-zajac-dziecko-gdy-pracujesz', 'obiad'],
+        ['18:37', 'battery', 'Zero mocy', 'Czwarty raz być smokiem? Dziś smokiem jestem ja.', 'samodzielna-zabawa-dziecka', 'zero-mocy'],
+        ['19:30', 'moon', 'Przed snem', 'Trzy oddechy, cicha zabawa, dobranoc. Działa nawet na szopy.', 'zabawy-wyciszajace-przed-snem', 'sen'],
+        ['Kiedykolwiek', 'bored', '„Nudzi mi się”', 'W końcu pytanie, na które znam odpowiedź.', 'dziecko-sie-nudzi', 'nuda'],
     ];
 }
 

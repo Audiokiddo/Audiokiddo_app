@@ -92,11 +92,13 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
                 <?php endforeach; ?>
             </div>
             <div class="ak-a-say">
-                <img class="ak-moments-szop" src="<?php echo esc_url(ak_asset('img/szop/chytry.webp')); ?>" alt="" width="420" height="392" loading="lazy">
-                <?php foreach (ak_moments() as $i => [, , $label, $line, $guide]) : ?>
+                <?php foreach (ak_moments() as $i => [, , $label, $line, $guide, $pose]) : ?>
                 <div class="ak-moment<?php echo $i === 0 ? ' is-on' : ''; ?>" role="tabpanel" id="ak-moment-<?php echo (int) $i; ?>" aria-labelledby="ak-mtab-<?php echo (int) $i; ?>">
-                    <p class="ak-moment-say"><span class="ak-sr"><?php echo esc_html($label); ?>. Szop’en: </span><?php echo esc_html($line); ?></p>
-                    <?php if (isset($guides[$guide])) : ?><a class="ak-moment-more" href="<?php echo esc_url(ak_landing_url($guide)); ?>"><?php echo esc_html($guides[$guide]['anchor']); ?> <?php echo $arrow; // static ?></a><?php endif; ?>
+                    <img class="ak-moment-szop" src="<?php echo esc_url(ak_asset('img/szop/dzien-' . $pose . '.webp')); ?>" alt="" width="260" height="270" loading="lazy">
+                    <div>
+                        <p class="ak-moment-say"><span class="ak-sr"><?php echo esc_html($label); ?>. Szop’en: </span><?php echo esc_html($line); ?></p>
+                        <?php if (isset($guides[$guide])) : ?><a class="ak-moment-more" href="<?php echo esc_url(ak_landing_url($guide)); ?>"><?php echo esc_html($guides[$guide]['anchor']); ?> <?php echo $arrow; // static ?></a><?php endif; ?>
+                    </div>
                 </div>
                 <?php endforeach; ?>
             </div>
