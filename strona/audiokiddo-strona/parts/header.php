@@ -73,4 +73,17 @@ $pages = $home === '' ? [] : [
     <?php endif; ?>
     <button type="button" class="ak-dock-menu" aria-controls="ak-nav" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Menu</span></button>
 </nav>
+<?php if (ak_has_woo()) : ?>
+<div class="ak-drawer-veil" hidden></div>
+<aside class="ak-drawer" id="ak-cart-drawer" role="dialog" aria-modal="true" aria-labelledby="ak-drawer-h" hidden>
+    <div class="ak-drawer-head">
+        <p class="ak-drawer-h" id="ak-drawer-h">Koszyk</p>
+        <button type="button" class="ak-drawer-close" aria-label="Zamknij koszyk"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+    </div>
+    <p class="ak-drawer-added" hidden>Dodane. Szop już pilnuje.</p>
+    <?php // WooCommerce refreshes this box itself after every change (cart fragments). ?>
+    <div class="widget_shopping_cart_content"><?php if (function_exists('woocommerce_mini_cart') && function_exists('WC') && WC()->cart) { woocommerce_mini_cart(); } ?></div>
+    <p class="ak-drawer-note">Pliki MP3 przychodzą mailem od razu po płatności. BLIK, karta (PayU), Twisto.</p>
+</aside>
+<?php endif; ?>
 <main id="tresc">

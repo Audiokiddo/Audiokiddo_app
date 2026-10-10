@@ -1451,3 +1451,97 @@ html.ak-snap { scroll-snap-type: none; }
 }
 .ak-howto .ak-phone-wrap { min-width: 0; }
 @media (max-width: 760px) { .ak-howto .ak-phone-wrap { width: min(170px, 46vw); } }
+
+/* =============================================================================================
+   3.3: the pack page, minimal. Everything needed to buy on the first screen, little below.
+   ============================================================================================= */
+.ak-p3 { padding-bottom: clamp(40px, 6vw, 72px); }
+.ak-p3-top { padding: clamp(88px, 10vw, 120px) 0 clamp(32px, 5vw, 56px); background: var(--cream); }
+.ak-p3-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); align-items: start; max-width: 1060px; }
+.ak-p3-media { position: sticky; top: 88px; }
+.ak-p3-cover { box-shadow: var(--shadow-big); }
+.ak-play.ak-p3-play { width: 72px; height: 72px; right: 16px; bottom: 16px; }
+.ak-play.ak-p3-play svg.ak-i-play, .ak-play.ak-p3-play .ak-i-pause { width: 28px; height: 28px; }
+.ak-p3-hint { text-align: center; font-size: 14px; color: var(--muted); margin: 12px 0 0 !important; }
+.ak-p3-samples { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+.ak-p3-samples span { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 999px; background: var(--paper); box-shadow: var(--shadow); font-weight: 600; font-size: 14px; }
+.ak-p3-samples .ak-play.ak-play-small { width: 40px; height: 40px; }
+.ak-p3 h1 { font-size: clamp(34px, 4.4vw, 52px); margin-bottom: 8px; }
+.ak-p3-facts { font-weight: 600; color: var(--deep, var(--teal-deep)); margin-bottom: 12px !important; }
+.ak-p3-lead { color: var(--muted); font-size: 17px; }
+.ak-p3-box { display: grid; gap: 12px; margin-top: 18px; padding: 20px; border-radius: var(--r); background: var(--paper); box-shadow: var(--shadow-big); scroll-margin-top: 90px; }
+.ak-p3-price { margin: 0 !important; font-size: 34px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+.ak-p3-price del { font-size: 18px; font-weight: 500; color: var(--muted); margin-right: 8px; }
+.ak-p3-price ins { text-decoration: none; }
+.ak-save-tag { display: inline-block; vertical-align: middle; margin-left: 6px; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-deep); letter-spacing: 0; }
+.ak-p3-trust { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.ak-p3-trust li::before { content: "✓ "; color: var(--teal-deep); }
+.ak-p3-upsell { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; margin-top: 12px; padding: 12px 14px; border-radius: 20px; background: var(--sun-soft); }
+.ak-p3-upsell img { width: 56px; height: 56px; border-radius: 12px; }
+.ak-p3-upsell p { margin: 0; font-size: 14px; line-height: 1.4; }
+.ak-p3-upsell span { display: block; color: var(--teal-deep); font-weight: 700; }
+.ak-p3-quote { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 2px 12px; align-items: center; margin: 18px 0 0; }
+.ak-p3-quote img { grid-row: span 2; width: 40px; height: 40px; border-radius: 50%; }
+.ak-p3-quote blockquote { margin: 0; }
+.ak-p3-quote p { margin: 0; font-size: 15px; font-style: italic; }
+.ak-p3-quote figcaption { font-size: 13px; color: var(--muted); }
+.ak-p3-sub { margin: 16px 0 0 !important; font-size: 14px; color: var(--muted); }
+.ak-p3-sub a { font-weight: 600; }
+.ak-p3-sec { padding: clamp(36px, 5vw, 64px) 0; border-top: 1px solid var(--line); }
+.ak-p3-sec h2 { font-size: clamp(24px, 3vw, 34px); }
+.ak-p3-cols { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 56px); align-items: start; max-width: 1060px; }
+.ak-site .ak-p3-pack-h { font-size: 18px; margin: 18px 0 8px; }
+.ak-p3-pack-h a { color: var(--ink); }
+.ak-p3-pack-h small { font-size: 13px; color: var(--muted); font-weight: 600; }
+.ak-p3-about p { color: var(--ink); }
+.ak-site .ak-p3-about h3 { font-size: 18px; margin-top: 20px; }
+.ak-p3-steps { padding-left: 20px; margin: 0; display: grid; gap: 6px; }
+.ak-p3-more ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.ak-p3-more a { display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 20px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); color: var(--ink); text-decoration: none; font-size: 14px; color: var(--muted); transition: transform .25s var(--spring); }
+.ak-p3-more a:hover { transform: translateY(-2px); }
+.ak-p3-more img { width: 56px; height: 56px; border-radius: 12px; }
+.ak-p3-more strong { display: block; color: var(--ink); font-size: 16px; }
+@media (max-width: 860px) {
+  .ak-p3-grid, .ak-p3-cols { grid-template-columns: minmax(0, 1fr); }
+  .ak-p3-media { position: static; max-width: 380px; margin-inline: auto; width: 100%; }
+}
+@media (max-width: 640px) {
+  .ak-p3-top { padding-top: 76px; }
+  .ak-p3-media { max-width: 260px; }
+  .ak-p3-upsell { grid-template-columns: 48px minmax(0, 1fr); }
+  .ak-p3-upsell .ak-btn { grid-column: 1 / -1; }
+}
+
+/* =============================================================================================
+   3.3: the cart at the side. WooCommerce's mini cart inside, in our look.
+   ============================================================================================= */
+.ak-site .added_to_cart { display: none !important; }
+html.ak-locked { overflow: hidden; }
+.ak-drawer-veil { position: fixed; inset: 0; z-index: 95; background: rgba(20, 15, 34, .45); opacity: 0; transition: opacity .35s ease; }
+.ak-drawer-veil.is-open { opacity: 1; }
+.ak-drawer { position: fixed; z-index: 96; top: 0; right: 0; bottom: 0; width: min(420px, 100%); display: flex; flex-direction: column; background: var(--cream); box-shadow: -20px 0 60px rgba(20, 15, 34, .25); transform: translateX(100%); transition: transform .35s var(--ease); padding: 18px 20px calc(18px + env(safe-area-inset-bottom)); }
+.ak-drawer.is-open { transform: none; }
+.ak-drawer[hidden], .ak-drawer-veil[hidden] { display: none; }
+.ak-drawer-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.ak-drawer-h { font-size: 22px; font-weight: 700; margin: 0 !important; }
+.ak-drawer-close { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); cursor: pointer; display: grid; place-items: center; color: var(--ink); }
+.ak-drawer-added { margin: 12px 0 0 !important; padding: 10px 14px; border-radius: 14px; background: var(--teal-soft); color: var(--teal-deep); font-weight: 600; font-size: 15px; }
+.ak-drawer .widget_shopping_cart_content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.ak-drawer .woocommerce-mini-cart { list-style: none; padding: 0; margin: 8px 0 0; flex: 1; overflow-y: auto; }
+.ak-drawer .woocommerce-mini-cart-item { position: relative; display: grid; grid-template-columns: 64px minmax(0, 1fr); column-gap: 12px; align-items: center; padding: 14px 36px 14px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.ak-drawer .woocommerce-mini-cart-item > a:not(.remove) { display: contents; color: var(--ink); font-weight: 600; text-decoration: none; }
+.ak-drawer .woocommerce-mini-cart-item img { grid-row: span 2; width: 64px !important; height: 64px !important; border-radius: 12px; object-fit: cover; margin: 0 !important; }
+.ak-drawer .woocommerce-mini-cart-item .quantity { grid-column: 2; color: var(--muted); font-size: 14px; }
+.ak-drawer .woocommerce-mini-cart-item .remove { position: absolute; right: 0; top: 50%; translate: 0 -50%; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--sand); color: var(--ink) !important; text-decoration: none; font-size: 18px; line-height: 1; }
+.ak-drawer .woocommerce-mini-cart-item .remove:hover { background: var(--peach); }
+.ak-drawer .woocommerce-mini-cart-item dl.variation { display: none; }
+.ak-drawer .woocommerce-mini-cart__total { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 0 12px !important; font-size: 18px; }
+.ak-drawer .woocommerce-mini-cart__total strong { font-weight: 600; }
+.ak-drawer .woocommerce-mini-cart__total .amount { font-weight: 700; font-size: 22px; }
+.ak-drawer .woocommerce-mini-cart__buttons { display: flex; flex-direction: column-reverse; gap: 10px; margin: 0 !important; }
+.ak-drawer .woocommerce-mini-cart__buttons a { display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 999px; font-weight: 600; text-decoration: none; color: var(--ink) !important; box-shadow: inset 0 0 0 1.5px var(--line); }
+.ak-drawer .woocommerce-mini-cart__buttons a.checkout { min-height: 56px; background: var(--sun); box-shadow: none; font-size: 17px; }
+.ak-drawer .woocommerce-mini-cart__empty-message { margin: 32px 0 0 !important; text-align: center; color: var(--muted); }
+.ak-drawer .woocommerce-mini-cart__empty-message::before { content: ""; display: block; width: 110px; height: 102px; margin: 0 auto 12px; background: url("../img/szop/zdziwiony.webp") no-repeat center / contain; }
+.ak-drawer-note { margin: 12px 0 0 !important; font-size: 13px; color: var(--muted); text-align: center; }
+@media (prefers-reduced-motion: reduce) { .ak-drawer, .ak-drawer-veil { transition: none; } }

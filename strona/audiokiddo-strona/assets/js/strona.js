@@ -354,6 +354,55 @@
     });
   }
 
+  // The cart opens at the side instead of loading the cart page: the items, the total and the
+  // way to checkout. WooCommerce keeps its contents fresh (cart fragments); the cart icons still
+  // lead to the cart page when the script is off or with a modifier key.
+  var drawer = document.getElementById('ak-cart-drawer');
+  var veil = $('.ak-drawer-veil');
+  var drawerBack = null;
+  function openCart(added) {
+    if (!drawer) return;
+    drawerBack = document.activeElement;
+    drawer.hidden = false;
+    if (veil) veil.hidden = false;
+    var note = $('.ak-drawer-added', drawer);
+    if (note) note.hidden = !added;
+    void drawer.offsetWidth;
+    drawer.classList.add('is-open');
+    if (veil) veil.classList.add('is-open');
+    root.classList.add('ak-locked');
+    $('.ak-drawer-close', drawer).focus({ preventScroll: true });
+  }
+  function closeCart() {
+    if (!drawer || drawer.hidden) return;
+    drawer.classList.remove('is-open');
+    if (veil) veil.classList.remove('is-open');
+    root.classList.remove('ak-locked');
+    setTimeout(function () { drawer.hidden = true; if (veil) veil.hidden = true; }, still ? 0 : 350);
+    if (drawerBack && drawerBack.focus) drawerBack.focus({ preventScroll: true });
+  }
+  if (drawer) {
+    $$('.ak-cart, .ak-dock-cart').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        openCart(false);
+      });
+    });
+    $('.ak-drawer-close', drawer).addEventListener('click', closeCart);
+    if (veil) veil.addEventListener('click', closeCart);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeCart();
+      // Keep Tab inside the open cart.
+      if (e.key === 'Tab' && drawer.classList.contains('is-open')) {
+        var f = $$('a[href], button:not([disabled]), input', drawer).filter(function (el) { return el.offsetParent !== null; });
+        if (!f.length) return;
+        if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    });
+  }
+
   // After WooCommerce adds to the cart: the button itself says so and WooCommerce's own link
   // to the cart sits under it; the cart in the bar and the dock bounces. Nothing floats over
   // the page.
@@ -372,6 +421,7 @@
         el.classList.add('is-added');
         el.textContent = '✓ W koszyku';
       }
+      openCart(true);
       $$('.ak-cart, .ak-dock-cart').forEach(function (c) {
         c.classList.remove('is-bump');
         void c.offsetWidth;
