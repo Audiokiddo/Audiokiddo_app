@@ -258,9 +258,19 @@ function ak_szop_notes(string $html, WP_Post $post): string
     ];
     $fact = $facts[$post->ID % count($facts)];
     $pose = $poses[($post->ID + 2) % count($poses)];
+    $note = $figure($pose, '<p>' . esc_html($fact) . '</p>');
     $seen = 0;
-    return (string) preg_replace_callback('#<h2#i', function ($m) use (&$seen, $figure, $fact, $pose) {
+    $out = (string) preg_replace_callback('#<h2#i', function ($m) use (&$seen, $note) {
         $seen++;
-        return $seen === 2 ? $figure($pose, '<p>' . esc_html($fact) . '</p>') . $m[0] : $m[0];
+        return $seen === 2 ? $note . $m[0] : $m[0];
+    }, $html);
+    if ($seen >= 2) {
+        return $out;
+    }
+    // No second heading (some old posts): after the third paragraph.
+    $paras = 0;
+    return (string) preg_replace_callback('#</p>#i', function ($m) use (&$paras, $note) {
+        $paras++;
+        return $paras === 3 ? $m[0] . $note : $m[0];
     }, $html);
 }
