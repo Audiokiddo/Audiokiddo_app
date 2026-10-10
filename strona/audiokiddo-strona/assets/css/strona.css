@@ -2021,3 +2021,13 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
   .ak-buy2-rows li { text-align: left; }
   .ak-buy2-phone { width: min(200px, 54vw); }
 }
+
+/* 3.9.1: the first screen keeps the newer headline; beside it only Szop'en with one line. */
+.ak-x-solo { position: relative; margin: 0; justify-self: center; width: min(520px, 100%); }
+.ak-x-solo img { width: 100%; height: auto; animation: ak-float 6s ease-in-out infinite; }
+.ak-x-solo figcaption { position: absolute; right: 0; top: 2%; max-width: 230px; padding: 12px 16px; border-radius: 22px 22px 22px 6px; background: var(--paper); box-shadow: var(--shadow-big); font-weight: 600; font-size: 15px; line-height: 1.4; text-align: left; animation: ak-bob 4s ease-in-out infinite; }
+@media (max-width: 960px) {
+  .ak-x-solo { width: min(360px, 84vw); margin-top: 18px; }
+  .ak-x-solo figcaption { position: relative; right: auto; top: auto; max-width: 280px; margin: -6px auto 0; text-align: center; border-radius: 22px; animation: none; }
+}
+@media (prefers-reduced-motion: reduce) { .ak-x-solo img, .ak-x-solo figcaption { animation: none; } }

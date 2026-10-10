@@ -20,15 +20,31 @@ $arrow = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><pa
 $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>';
 ?>
 
-<section class="ak-slide ak-hero ak-a-hero ak-a-hero-min" id="start" data-slide="Start" aria-labelledby="ak-h1">
-    <div class="ak-wrap ak-a-hero-in">
-        <div class="ak-a-hero-art" data-reveal="scale">
-            <h1 id="ak-h1" class="ak-hero-say">Dziecko potrzebuje zajęcia. <span class="ak-hl-word">Ty nie musisz go wymyślać.</span></h1>
-            <img class="ak-hero-img" src="<?php echo esc_url(ak_img('hero')); ?>" alt="Szop’en, maskotka Audiokiddo, z kubkiem kawy" width="1200" height="776" fetchpriority="high">
+<section class="ak-slide ak-hero ak-a-hero ak-x-hero" id="start" data-slide="Start" aria-labelledby="ak-h1">
+    <div class="ak-wrap ak-x-hero-in">
+        <div class="ak-x-hero-txt">
+            <p class="ak-a-eyebrow">Audiozabawy dla dzieci 3–9 lat · bez ekranu</p>
+            <h1 id="ak-h1">Ty pijesz ciepłą kawę. <span class="ak-hl-word">Dziecko ratuje świat.</span></h1>
+            <p class="ak-hero-sub ak-a-sub">Włączasz Audiokiddo i odkładasz telefon. Głos daje dziecku misję, a ono odpowiada, szuka i biega po domu. <strong>15 minut, zero ekranu, zero wymyślania.</strong></p>
+            <div class="ak-hero-btns ak-a-btns">
+                <?php echo ak_app_cta(); // escaped inside ?>
+                <span class="ak-a-listen ak-c-<?php echo esc_attr($first['color']); ?>">
+                    <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj, jak to brzmi', 'ak-play-small'); // escaped inside ?>
+                    <span>Posłuchaj, jak to brzmi</span>
+                </span>
+            </div>
         </div>
-        <div class="ak-hero-btns ak-a-btns" data-reveal style="--d:.2s">
-            <?php echo ak_app_cta(); // escaped inside ?>
-        </div>
+        <?php // Szop'en alone says it all; the long scene with the chat is gone. ?>
+        <figure class="ak-x-solo">
+            <img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_img('hero')); ?>" alt="Szop’en, maskotka Audiokiddo, z kubkiem kawy" width="1200" height="776" fetchpriority="high">
+            <figcaption><span class="ak-sr">Szop’en: </span>Ja tylko pilnuję, żeby nikt nie włączył bajki.</figcaption>
+        </figure>
+        <ul class="ak-a-proof">
+            <li><?php echo ak_icon('eye-off', 22); // static ?>Bez ekranu</li>
+            <li><?php echo ak_icon('shield', 22); // static ?>Bez reklam. Nigdy.</li>
+            <li><?php echo ak_icon('heart', 22); // static ?>Polecają logopedzi</li>
+            <li><?php echo ak_icon('flag', 22); // static ?>Po polsku, polskie głosy</li>
+        </ul>
     </div>
 </section>
 
@@ -108,6 +124,16 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
                 <ul><?php foreach ($g['Ty'] as [$icon, $text]) : ?><li><span><?php echo ak_icon($icon, 26); // static ?></span><?php echo esc_html($text); ?></li><?php endforeach; ?></ul>
             </div>
         </div>
+        <h3 class="ak-skills-h ak-center" data-reveal>Co ćwiczy, kiedy myśli, że się bawi</h3>
+        <ul class="ak-skills">
+            <?php foreach (ak_home_skills() as $i => [$cover, $skill, $game]) : ?>
+            <li data-reveal style="--d:<?php echo esc_attr((string) (0.07 * $i)); ?>s">
+                <img src="<?php echo esc_url(ak_asset('img/covers/mini/' . $cover . '.webp')); ?>" alt="" width="240" height="240" loading="lazy">
+                <strong><?php echo esc_html($skill); ?></strong>
+                <span><?php echo esc_html($game); ?></span>
+            </li>
+            <?php endforeach; ?>
+        </ul>
         <ul class="ak-a-ages" data-reveal aria-label="Grupy wiekowe">
             <?php foreach (ak_ages() as [$range, $color, , , $age_guides]) : ?>
             <li class="ak-c-<?php echo esc_attr($color); ?>"><a href="<?php echo esc_url(ak_landing_url($age_guides[1])); ?>"><?php echo esc_html($range); ?></a></li>
