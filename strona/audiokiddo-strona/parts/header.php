@@ -75,7 +75,7 @@ $pages = $home === '' ? [] : [
 </nav>
 <?php if (ak_has_woo()) : ?>
 <div class="ak-drawer-veil" hidden></div>
-<aside class="ak-drawer" id="ak-cart-drawer" role="dialog" aria-modal="true" aria-labelledby="ak-drawer-h" hidden>
+<div class="ak-drawer" id="ak-cart-drawer" role="dialog" aria-modal="true" aria-labelledby="ak-drawer-h" hidden>
     <div class="ak-drawer-head">
         <p class="ak-drawer-h" id="ak-drawer-h">Koszyk</p>
         <button type="button" class="ak-drawer-close" aria-label="Zamknij koszyk"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
@@ -84,6 +84,6 @@ $pages = $home === '' ? [] : [
     <?php // WooCommerce refreshes this box itself after every change (cart fragments). ?>
     <div class="widget_shopping_cart_content"><?php if (function_exists('woocommerce_mini_cart') && function_exists('WC') && WC()->cart) { woocommerce_mini_cart(); } ?></div>
     <p class="ak-drawer-note"><?php echo ak_app_live() ? 'Pakiet od razu w aplikacji: logujesz się e-mailem z zamówienia.' : 'Pliki MP3 od razu na maila, po premierze także w aplikacji.'; ?> BLIK, karta (PayU), Twisto.</p>
-</aside>
+</div>
 <?php endif; ?>
 <main id="tresc">

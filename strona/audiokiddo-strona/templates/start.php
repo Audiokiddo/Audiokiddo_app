@@ -33,6 +33,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 </section>
 
 <section class="ak-slide ak-a-sec ak-a-how" id="jak-to-dziala" data-slide="Jak to działa" aria-labelledby="ak-how-h">
+    <?php ak_peek('jak-to-dziala'); ?>
     <div class="ak-wrap">
         <h2 id="ak-how-h" class="ak-center" data-reveal>Odpalasz. <span class="ak-hl-word">Dziecko działa.</span> Ty masz chwilę.</h2>
         <ol class="ak-a-flow">
@@ -88,6 +89,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 </section>
 
 <section class="ak-slide ak-a-sec ak-a-gains" id="co-zyskujesz" data-slide="Co zyskujesz" aria-labelledby="ak-gains-h">
+    <?php ak_peek('co-zyskujesz'); ?>
     <div class="ak-wrap">
         <h2 id="ak-gains-h" class="ak-center" data-reveal>Ono ćwiczy. <span class="ak-hl-word">Ty odpoczywasz.</span></h2>
         <div class="ak-a-gains-in">
@@ -153,10 +155,33 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 </section>
 
 <section class="ak-slide ak-a-sec ak-a-packs" id="pakiety" data-slide="Pakiety" aria-labelledby="ak-packs-h">
+    <?php ak_peek('pakiety'); ?>
     <div class="ak-wrap">
-        <h2 id="ak-packs-h" class="ak-center" data-reveal>Pakiety zabaw. <span class="ak-hl-word">Wszystkie w abonamencie.</span></h2>
-        <p class="ak-a-lead ak-center" data-reveal>Każdy pakiet to kilka zabaw wokół jednego tematu. W abonamencie masz wszystkie, a co miesiąc dochodzi nowy.</p>
-        <?php ak_pack_cards('ak-packs-home'); ?>
+        <h2 id="ak-packs-h" class="ak-center" data-reveal>Trzy pakiety. <span class="ak-hl-word">Wszystkie w abonamencie.</span></h2>
+        <p class="ak-a-lead ak-center" data-reveal>Każdy pakiet to kilka zabaw po kilka minut. Kliknij okładkę i posłuchaj fragmentu.</p>
+        <?php ak_pack_cards('', true); ?>
+        <p class="ak-center ak-a-packs-more" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Wszystkie pakiety i co jest w środku <?php echo $arrow; // static ?></a></p>
+    </div>
+</section>
+
+<?php // After the purchase, as simple as it gets: three short rows and the app on a phone. ?>
+<section class="ak-slide ak-a-sec ak-buy ak-buy2" id="po-zakupie" data-slide="Po zakupie" aria-labelledby="ak-buy-h">
+    <div class="ak-wrap ak-buy2-in">
+        <div class="ak-buy2-txt">
+            <h2 id="ak-buy-h" data-reveal>Kupujesz raz. <span class="ak-hl-word">Masz wszędzie.</span></h2>
+            <ol class="ak-buy2-rows">
+                <li data-reveal><span><?php echo ak_icon('cart', 28); // static ?></span><strong>Płacisz w sklepie</strong></li>
+                <li data-reveal style="--d:.08s"><span><?php echo ak_icon('mail', 28); // static ?></span><strong>Pliki przychodzą mailem</strong></li>
+                <li data-reveal style="--d:.16s"><span><?php echo ak_icon('phone', 28); // static ?></span><strong>Ten sam pakiet jest w aplikacji</strong></li>
+            </ol>
+            <p class="ak-small" data-reveal>Logujesz się tym samym e-mailem. Bez haseł, kod przychodzi mailem.</p>
+        </div>
+        <div class="ak-phone-wrap ak-buy2-phone" data-reveal="scale" aria-hidden="true">
+            <div class="ak-phone"><div class="ak-phone-screen">
+                <span class="ak-phone-island"></span>
+                <img class="ak-phone-shot is-on" src="<?php echo esc_url(ak_asset('img/app/start.webp')); ?>" alt="" width="600" height="1304" loading="lazy">
+            </div></div>
+        </div>
     </div>
 </section>
 
@@ -186,7 +211,23 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
     </div>
 </section>
 
+<section class="ak-slide ak-a-sec ak-a-guides" id="poradniki" data-slide="Poradniki" aria-labelledby="ak-guides-h">
+    <div class="ak-wrap">
+        <h2 id="ak-guides-h" class="ak-center" data-reveal>Pomysły na zabawy <span class="ak-hl-word">na każdą sytuację</span></h2>
+        <ul class="ak-tiles" data-reveal>
+            <?php foreach (ak_home_guides() as $s) : $g = $guides[$s]; $art = ak_home_guide_art($s); ?>
+            <li><a href="<?php echo esc_url(ak_landing_url($s)); ?>" title="<?php echo esc_attr($g['desc']); ?>">
+                <img src="<?php echo esc_url(ak_asset($art)); ?>" alt="" width="240" height="240" loading="lazy">
+                <span><?php echo esc_html($g['anchor']); ?></span>
+            </a></li>
+            <?php endforeach; ?>
+        </ul>
+        <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_landing_url()); ?>">Wszystkie pomysły na zabawy <?php echo $arrow; // static ?></a></p>
+    </div>
+</section>
+
 <section class="ak-slide ak-a-sec ak-faq-sec" id="pytania" data-slide="Pytania" aria-labelledby="ak-faq-h">
+    <?php ak_peek('pytania'); ?>
     <div class="ak-wrap ak-faq-in">
         <h2 id="ak-faq-h" class="ak-center" data-reveal>Pytania, które <span class="ak-hl-word">i tak by padły</span></h2>
         <div class="ak-faq">

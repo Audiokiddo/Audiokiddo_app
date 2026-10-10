@@ -1,10 +1,10 @@
 /* AudioKiddo – strona. Simple and calm like a product page, warm like a nursery: cream, teal, sun,
    lavender, a dark room for the packs. Slides on the home page, Szop'en guides through them. */
 
-@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
-@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
-@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
 body.ak-site {
   --cream: #FFFBF2; --paper: #FFFFFF; --sand: #F7EADB; --peach: #FFE3CC;
@@ -1785,3 +1785,239 @@ html.ak-locked { overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .ak-a-hub-phone { animation: none; } }
 .ak-a-hero-min .ak-hero-img { width: min(560px, 88vw); margin-top: -8px; }
+
+/* Home: the packs, short (3.7) */
+.ak-a-packs-more { margin-top: 22px !important; }
+
+/* Links between guides, packs and home (3.7) */
+.ak-a-guides .ak-guide-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 26px; }
+.ak-a-guides .ak-guide-card strong { font-size: 17px; }
+.ak-guide-topic { margin-top: 34px; }
+.ak-guide-topic h2 { font-size: clamp(22px, 3vw, 28px); margin: 0 0 14px; }
+.ak-prose a:not(.ak-btn) { color: var(--teal-deep); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.ak-guide-pack { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; align-items: center; margin: 34px 0; padding: 20px; border-radius: 22px; background: var(--tone, var(--paper)); }
+.ak-guide-pack img { width: 120px; height: 120px; border-radius: 16px; object-fit: cover; }
+.ak-guide-pack p { margin: 0 0 6px; }
+.ak-guide-pack-h { font-size: 20px; font-weight: 700; }
+.ak-guide-pack-h small { font-size: 14px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+.ak-guide-pack-links { font-weight: 600; }
+.ak-related-sec .ak-related { margin: 12px 0 0; }
+@media (max-width: 960px) { .ak-a-guides .ak-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .ak-a-guides .ak-guide-grid { grid-template-columns: minmax(0, 1fr); } .ak-guide-pack { grid-template-columns: 1fr; } .ak-guide-pack img { width: 96px; height: 96px; } }
+
+/* ===== 3.8: home page redone =====
+   Headlines in Baloo 2 (rounded, cheeky, with Polish letters); the theme asked for a "Poppins"
+   that never loaded, so headings fell back to a serif. */
+@font-face { font-family: "AK Baloo"; src: url("../fonts/Baloo2-latin-ext.woff2") format("woff2"); font-weight: 400 800; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "AK Baloo"; src: url("../fonts/Baloo2-latin.woff2") format("woff2"); font-weight: 400 800; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+.ak-site h1, .ak-site h2, .ak-site h3 { font-family: "AK Baloo", "AK Poppins", system-ui, sans-serif; font-weight: 800; letter-spacing: -.012em; line-height: 1.04; }
+.ak-site h3 { font-weight: 700; letter-spacing: 0; line-height: 1.15; }
+.ak-site .ak-hl-word { padding: 0 .08em; }
+
+/* Hero: words on the left, the scene on the right (stacked on phones). */
+.ak-view-start .ak-x-hero { padding: clamp(96px, 11vw, 132px) 0 clamp(36px, 5vw, 64px); }
+.ak-x-hero-in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
+.ak-x-hero-txt { text-align: left; }
+.ak-view-start .ak-x-hero h1 { font-size: clamp(40px, 5.6vw, 74px); margin: 0 0 .3em; max-width: 640px; }
+.ak-x-hero .ak-a-sub { margin: 0 !important; max-width: 560px; }
+.ak-x-hero .ak-a-btns { justify-content: flex-start; }
+.ak-x-hero .ak-a-proof { grid-column: 1 / -1; }
+
+.ak-x-scene { position: relative; display: grid; gap: 12px; padding: 22px 22px 22px clamp(96px, 12vw, 150px); border-radius: 36px; background: linear-gradient(160deg, #2E2350, var(--night)); color: #fff; box-shadow: var(--shadow-big); isolation: isolate; }
+.ak-x-scene::before { content: ""; position: absolute; inset: -12% -8% auto auto; width: 60%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(250, 193, 25, .28), transparent 65%); z-index: -1; }
+.ak-x-player { display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 20px; background: rgba(255, 255, 255, .08); }
+.ak-x-player img { width: 52px; height: 52px; border-radius: 14px; }
+.ak-x-player span { display: grid; line-height: 1.25; }
+.ak-x-player small { font-size: 12px; color: #C9C1E0; }
+.ak-x-player strong { font-size: 16px; }
+.ak-x-eq { display: flex !important; align-items: flex-end; gap: 3px; height: 22px; margin-left: auto; }
+.ak-x-eq i { width: 4px; height: 100%; border-radius: 2px; background: var(--sun); transform-origin: 50% 100%; animation: ak-eq 1s ease-in-out infinite; }
+.ak-x-eq i:nth-child(2) { animation-delay: -.3s; } .ak-x-eq i:nth-child(3) { animation-delay: -.6s; } .ak-x-eq i:nth-child(4) { animation-delay: -.15s; }
+@keyframes ak-eq { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+.ak-x-chat { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ak-x-say { max-width: 88%; padding: 11px 15px; border-radius: 20px 20px 20px 6px; background: #fff; color: var(--ink); font-size: 15px; line-height: 1.4; font-weight: 500; }
+.ak-x-say.is-kid { justify-self: end; border-radius: 20px 20px 6px 20px; background: var(--sun); font-weight: 600; }
+.ak-x-meters { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ak-x-meters li { display: grid; justify-items: start; gap: 2px; padding: 10px 12px; border-radius: 16px; background: rgba(255, 255, 255, .08); font-size: 12px; color: #C9C1E0; }
+.ak-x-meters .ak-ico { color: var(--sun); }
+.ak-x-meters strong { color: #fff; font-size: 14px; font-variant-numeric: tabular-nums; }
+.ak-x-szop { position: absolute; left: clamp(-56px, -4vw, -24px); bottom: -18px; width: clamp(130px, 17vw, 200px); margin: 0; z-index: 2; }
+.ak-x-szop img { width: 100%; filter: drop-shadow(0 14px 18px rgba(14, 10, 30, .35)); transform-origin: 60% 100%; animation: ak-sly 5s ease-in-out infinite; }
+.ak-x-szop figcaption { position: absolute; left: 30%; bottom: 100%; width: 190px; padding: 9px 12px; border-radius: 16px 16px 16px 4px; background: var(--sun); color: var(--ink); font-size: 13px; font-weight: 600; line-height: 1.35; box-shadow: var(--shadow); animation: ak-bob 4s ease-in-out infinite; }
+@keyframes ak-sly { 0%, 70%, 100% { transform: rotate(0); } 76% { transform: rotate(-6deg) translateY(-4px); } 82% { transform: rotate(3deg); } 88% { transform: rotate(-2deg); } }
+/* The talk plays itself: the game, the child, the game; a breath; again. */
+.ak-x-say { animation: 10s ease-in-out infinite both; }
+.ak-x-say[style*="--i:0"] { animation-name: ak-say0; } .ak-x-say[style*="--i:1"] { animation-name: ak-say1; } .ak-x-say[style*="--i:2"] { animation-name: ak-say2; }
+@keyframes ak-say0 { 0% { opacity: 0; transform: translateY(10px) scale(.96); } 4%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: translateY(-6px); } }
+@keyframes ak-say1 { 0%, 20% { opacity: 0; transform: translateY(10px) scale(.96); } 25%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: translateY(-6px); } }
+@keyframes ak-say2 { 0%, 42% { opacity: 0; transform: translateY(10px) scale(.96); } 47%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: translateY(-6px); } }
+@media (max-width: 860px) {
+  .ak-x-hero-in { grid-template-columns: minmax(0, 1fr); }
+  .ak-x-hero-txt { text-align: center; }
+  .ak-x-hero .ak-a-sub { margin-inline: auto !important; }
+  .ak-x-hero .ak-a-btns { justify-content: center; }
+  .ak-view-start .ak-x-hero h1 { font-size: clamp(36px, 10vw, 54px); margin-inline: auto; }
+  .ak-x-scene { padding: 16px 16px 92px; margin-top: 24px; }
+  .ak-x-szop { left: 4px; bottom: -14px; width: 118px; }
+  .ak-x-szop figcaption { left: 100%; bottom: 22px; width: min(180px, 52vw); border-radius: 16px 16px 16px 4px; }
+  .ak-x-say { font-size: 14px; }
+}
+
+/* Without / with: one switch, the card changes its mood. */
+.ak-vs { max-width: 940px; margin: clamp(24px, 3vw, 40px) auto 0; text-align: center; }
+.ak-vs-switch { position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; padding: 5px; border-radius: 999px; background: var(--sand); margin-bottom: 18px; }
+.ak-vs-switch button { position: relative; z-index: 1; font: 700 15px/1 "AK Poppins", sans-serif; padding: 13px 22px; border: 0; background: none; color: var(--muted); cursor: pointer; border-radius: 999px; transition: color .3s; }
+.ak-vs-switch button[aria-pressed="true"] { color: var(--ink); }
+.ak-vs-knob { position: absolute; top: 5px; bottom: 5px; left: 5px; width: calc(50% - 5px); border-radius: 999px; background: #fff; box-shadow: 0 6px 14px rgba(36, 27, 58, .14); transition: transform .5s var(--bouncy), background-color .4s; }
+.ak-vs[data-vs="with"] .ak-vs-knob { transform: translateX(100%); background: var(--sun); }
+.ak-vs-stage { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); gap: clamp(16px, 3vw, 36px); align-items: center; padding: clamp(20px, 3vw, 36px); border-radius: 36px; background: #ECE8EF; text-align: left; transition: background-color .6s var(--ease); }
+.ak-vs[data-vs="with"] .ak-vs-stage { background: var(--sun-soft); }
+.ak-vs-pics { display: grid; }
+.ak-vs-pics img { grid-area: 1 / 1; width: 100%; align-self: end; transition: opacity .5s, transform .6s var(--bouncy), filter .5s; }
+.ak-vs-pics .is-without { filter: grayscale(.6); }
+.ak-vs-pics .is-with { opacity: 0; transform: scale(.7) rotate(-8deg); }
+.ak-vs[data-vs="with"] .ak-vs-pics .is-without { opacity: 0; transform: scale(.8) translateY(20px); }
+.ak-vs[data-vs="with"] .ak-vs-pics .is-with { opacity: 1; transform: none; }
+.ak-vs-rows { display: grid; gap: 8px; margin: 0; }
+.ak-vs-row { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr); gap: 4px 14px; align-items: center; padding: 12px 16px; border-radius: 18px; background: rgba(255, 255, 255, .7); }
+.ak-vs-row dt { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
+.ak-vs-row dt .ak-ico { color: var(--muted); transition: color .4s; }
+.ak-vs[data-vs="with"] .ak-vs-row dt .ak-ico { color: var(--teal-deep); }
+.ak-vs-row dd { grid-area: 1 / 2; margin: 0; font-size: 15.5px; transition: opacity .35s, transform .45s var(--ease); }
+.ak-vs-row .is-without { color: var(--muted); }
+.ak-vs-row .is-with { opacity: 0; transform: translateY(8px); font-weight: 600; }
+.ak-vs[data-vs="with"] .ak-vs-row .is-without { opacity: 0; transform: translateY(-8px); }
+.ak-vs[data-vs="with"] .ak-vs-row .is-with { opacity: 1; transform: none; }
+.ak-vs-row:nth-child(2) dd { transition-delay: .06s; } .ak-vs-row:nth-child(3) dd { transition-delay: .12s; } .ak-vs-row:nth-child(4) dd { transition-delay: .18s; } .ak-vs-row:nth-child(5) dd { transition-delay: .24s; }
+@media (max-width: 700px) {
+  .ak-vs-switch button { padding: 12px 14px; font-size: 14px; }
+  .ak-vs-stage { grid-template-columns: minmax(0, 1fr); padding: 16px; border-radius: 28px; }
+  .ak-vs-pics { width: 132px; margin: -6px auto 0; }
+  .ak-vs-row { grid-template-columns: minmax(0, 1fr); padding: 10px 14px; }
+  .ak-vs-row dd { grid-area: 2 / 1; }
+}
+
+/* What the child trains: the covers of the games do the talking. */
+.ak-site .ak-skills-h { font-size: clamp(22px, 2.6vw, 30px); margin: clamp(40px, 5vw, 64px) auto 18px; }
+.ak-skills { list-style: none; padding: 0; margin: 0 auto; max-width: 1000px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; text-align: center; }
+.ak-skills li { display: grid; gap: 2px; }
+.ak-skills img { width: 100%; aspect-ratio: 1; border-radius: 22px; margin-bottom: 8px; box-shadow: var(--shadow); transition: transform .4s var(--bouncy); }
+.ak-skills li:hover img { transform: translateY(-6px) rotate(-3deg); }
+.ak-skills strong { font-size: 15px; line-height: 1.25; }
+.ak-skills span { font-size: 13px; color: var(--muted); }
+@media (max-width: 700px) {
+  .ak-skills { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 38%; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 4px 12px; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
+  .ak-skills li { scroll-snap-align: start; }
+}
+
+/* Guides on the home page: small tiles, a picture and a title. */
+.ak-view-start .ak-a-guides { padding: clamp(56px, 7vw, 88px) 0; }
+.ak-view-start .ak-a-guides h2 { font-size: clamp(28px, 3.6vw, 44px); }
+.ak-tiles { list-style: none; padding: 0; margin: 22px auto 16px; max-width: 1160px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px; }
+.ak-tiles a { display: grid; gap: 8px; padding: 8px 8px 12px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); color: var(--ink) !important; text-decoration: none !important; text-align: center; transition: transform .35s var(--bouncy), box-shadow .3s; }
+.ak-tiles a:hover { transform: translateY(-5px) rotate(-1deg); box-shadow: var(--shadow); }
+.ak-tiles img { width: 100%; aspect-ratio: 1; object-fit: contain; border-radius: 16px; background: var(--sand); }
+.ak-tiles span { font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+@media (max-width: 1100px) { .ak-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 700px) {
+  .ak-tiles { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 31%; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: -16px; padding: 4px 16px 12px; scrollbar-width: none; }
+  .ak-tiles li { scroll-snap-align: start; }
+}
+
+/* Szop'en peeking from the edge of a few sections. */
+.ak-peek { position: absolute; top: clamp(18px, 4vw, 48px); z-index: 3; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.ak-peek.is-right { right: 0; flex-direction: row; }
+.ak-peek.is-left { left: 0; flex-direction: row-reverse; }
+.ak-peek-clip { display: block; width: clamp(96px, 11vw, 150px); overflow: hidden; }
+.ak-peek-clip img { width: 100%; transition: transform .7s var(--bouncy); }
+.ak-peek.is-right img { transform: translateX(105%) rotate(12deg); }
+.ak-peek.is-left img { transform: translateX(-105%) rotate(-12deg); }
+.ak-peek.is-right.is-out img { transform: translateX(30%) rotate(-6deg); }
+.ak-peek.is-left.is-out img { transform: translateX(-30%) rotate(6deg); }
+.ak-peek-say { max-width: 220px; margin: 0 !important; padding: 10px 13px; border-radius: 18px; background: var(--paper); box-shadow: var(--shadow); font-size: 14px; font-weight: 600; line-height: 1.35; opacity: 0; transform: scale(.85); transition: opacity .3s, transform .4s var(--bouncy); }
+.ak-peek.is-right .ak-peek-say { transform-origin: 100% 50%; border-radius: 18px 18px 4px 18px; }
+.ak-peek.is-left .ak-peek-say { transform-origin: 0 50%; border-radius: 18px 18px 18px 4px; }
+.ak-peek.is-out .ak-peek-say { opacity: 1; transform: none; transition-delay: .35s; }
+@media (max-width: 760px) {
+  .ak-peek { top: 6px; }
+  .ak-peek-clip { width: 84px; }
+  .ak-peek-say { max-width: 200px; font-size: 13px; padding: 8px 11px; }
+}
+body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: translateY(24px); pointer-events: none !important; }
+.ak-guide { transition: opacity .35s, transform .45s var(--ease); }
+
+/* After the purchase: the parcel runs along the four stops. */
+.ak-buy-line { position: relative; list-style: none; padding: 0; margin: clamp(32px, 4vw, 52px) auto 0; max-width: 1060px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; text-align: center; }
+.ak-buy-line::before { content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 34px; border-top: 3px dashed #D8CFE0; }
+.ak-buy-line li { position: relative; display: grid; justify-items: center; align-content: start; gap: 6px; }
+.ak-buy-dot { position: relative; z-index: 1; display: grid; place-items: center; width: 70px; height: 70px; border-radius: 24px; background: var(--paper); color: var(--teal-deep); box-shadow: 0 0 0 1px var(--line), var(--shadow); margin-bottom: 8px; animation: ak-stop 8s ease-in-out infinite; animation-delay: calc(var(--i) * 2s); }
+@keyframes ak-stop { 0%, 14%, 100% { transform: none; background-color: var(--paper); } 4%, 9% { transform: scale(1.14) rotate(-4deg); background-color: var(--sun); } }
+.ak-buy-line strong { font-size: 18px; }
+.ak-buy-line li > span:not(.ak-buy-dot):not(.ak-buy-mock) { font-size: 15px; color: var(--muted); max-width: 240px; }
+.ak-buy-parcel { position: absolute; z-index: 2; top: 13px; left: 12.5%; width: 75%; height: 0; pointer-events: none; animation: ak-run 8s cubic-bezier(.6, 0, .3, 1) infinite; }
+.ak-buy-parcel .ak-ico { position: absolute; left: -15px; top: -15px; width: 30px; height: 30px; padding: 4px; border-radius: 10px; background: var(--lav-deep); color: #fff; box-shadow: var(--shadow); }
+@keyframes ak-run { 0% { transform: translateX(0); opacity: 0; } 3% { opacity: 1; } 25% { transform: translateX(33.3%); } 50% { transform: translateX(66.6%); } 75%, 90% { transform: translateX(100%); opacity: 1; } 96%, 100% { transform: translateX(100%); opacity: 0; } }
+.ak-buy-mock { display: grid; gap: 4px; margin-top: 10px; padding: 10px 12px; border-radius: 16px; background: var(--paper); box-shadow: var(--shadow); font-size: 12.5px; text-align: left; min-width: 170px; }
+.ak-buy-mock b { font-size: 13px; }
+.ak-buy-mock i { display: flex; align-items: center; gap: 6px; font-style: normal; color: var(--teal-deep); font-weight: 600; }
+.ak-buy-app { grid-template-columns: 48px 1fr; align-items: center; }
+.ak-buy-app img { width: 48px; height: 48px; border-radius: 12px; }
+.ak-buy-app b { color: var(--teal-deep); }
+.ak-buy-app b::before { content: "✓ "; }
+.ak-where { list-style: none; padding: 0; margin: 0 auto; max-width: 980px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ak-where li { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 20px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); font-weight: 600; font-size: 15px; text-align: left; }
+.ak-view-start .ak-a-sec:nth-of-type(odd) .ak-where li { background: var(--paper); }
+.ak-where .ak-ico { flex: none; width: 46px; height: 46px; padding: 10px; border-radius: 15px; background: var(--teal-soft); color: var(--teal-deep); }
+.ak-where li:nth-child(3n+2) .ak-ico { background: var(--sun-soft); color: var(--sun-deep); }
+.ak-where li:nth-child(3n) .ak-ico { background: var(--lav-soft); color: var(--lav-deep); }
+@media (max-width: 760px) {
+  .ak-buy-line { grid-template-columns: minmax(0, 1fr); gap: 22px; text-align: left; padding-left: 86px; }
+  .ak-buy-line::before { left: 34px; right: auto; top: 20px; bottom: 20px; border-top: 0; border-left: 3px dashed #D8CFE0; }
+  .ak-buy-line li { justify-items: start; }
+  .ak-buy-dot { position: absolute; left: -86px; top: 0; width: 64px; height: 64px; margin: 0; }
+  .ak-buy-parcel { left: 20px; top: 20px; bottom: 20px; width: 0; height: auto; animation-name: ak-run-down; }
+  .ak-buy-parcel .ak-ico { left: 0; }
+  .ak-where { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ak-where li { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 14px; }
+}
+/* On phones the run goes down; the parcel's box is as tall as the line, so 100% is the last stop. */
+@keyframes ak-run-down { 0% { transform: translateY(0); opacity: 0; } 3% { opacity: 1; } 25% { transform: translateY(33.3%); } 50% { transform: translateY(66.6%); } 75%, 90% { transform: translateY(100%); opacity: 1; } 96%, 100% { transform: translateY(100%); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-x-eq i, .ak-x-szop img, .ak-x-szop figcaption, .ak-x-say, .ak-buy-dot, .ak-buy-parcel { animation: none !important; }
+  .ak-buy-parcel { display: none; }
+  .ak-peek-clip img, .ak-vs-pics img, .ak-vs-row dd, .ak-vs-knob { transition: none !important; }
+}
+
+/* 3.8 fixes after the first look: Szop'en's line sits beside the talk, not on it; on phones the
+   scene comes right after the headline, so the first screen already shows how it works. */
+.ak-x-szop figcaption { left: 16%; bottom: 96%; width: clamp(120px, 11vw, 150px); }
+@media (max-width: 860px) {
+  .ak-view-start .ak-x-hero { padding-top: 84px; }
+  .ak-x-hero-in { display: flex; flex-direction: column; gap: 0; }
+  .ak-x-hero-txt { display: contents; }
+  .ak-x-hero .ak-a-eyebrow { order: 1; text-align: center; font-size: 14px; margin-bottom: 8px !important; }
+  .ak-x-hero h1 { order: 2; text-align: center; }
+  .ak-x-scene { order: 3; margin: 6px 0 22px; }
+  .ak-x-hero .ak-a-sub { order: 4; text-align: center; font-size: 17px; }
+  .ak-x-hero .ak-a-btns { order: 5; }
+  .ak-x-hero .ak-a-proof { order: 6; }
+  .ak-x-szop figcaption { left: 96%; bottom: 26px; width: min(170px, 46vw); }
+}
+@media (max-width: 860px) { .ak-view-start .ak-x-hero { padding-top: 70px; min-height: 0; justify-content: flex-start; } }
+/* The scene keeps its place while the headline's font comes in (no jump). */
+.ak-x-hero-in { align-items: start; }
+.ak-x-scene { margin-top: clamp(8px, 2vw, 28px); }
+
+/* 3.9: "Kupujesz raz. Masz wszędzie." is three short rows and the app on a phone. */
+.ak-buy2 { background: var(--cream); overflow: hidden; }
+.ak-buy2-in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.ak-buy2-rows { list-style: none; padding: 0; margin: 26px 0 14px; display: grid; gap: 14px; counter-reset: b; }
+.ak-buy2-rows li { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 24px; background: var(--paper); box-shadow: var(--shadow); font-size: clamp(17px, 1.8vw, 21px); }
+.ak-buy2-rows li span { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 18px; background: var(--sun-soft); color: var(--sun-deep); flex: none; }
+.ak-buy2-phone { width: min(270px, 64vw); justify-self: center; }
+@media (max-width: 860px) {
+  .ak-buy2-in { grid-template-columns: minmax(0, 1fr); text-align: center; }
+  .ak-buy2-rows li { text-align: left; }
+  .ak-buy2-phone { width: min(200px, 54vw); }
+}

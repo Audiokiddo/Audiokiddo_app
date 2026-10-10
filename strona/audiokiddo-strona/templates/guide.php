@@ -21,18 +21,38 @@ if ($slug === 'pomysly-na-zabawy') : ?>
     </div>
 </section>
 <section class="ak-blog-list">
-    <div class="ak-wrap ak-guide-grid">
-        <?php foreach ($guides as $s => $g) : ?>
-        <a class="ak-guide-card" href="<?php echo esc_url(ak_landing_url($s)); ?>">
-            <strong><?php echo esc_html($g['h1']); ?></strong>
-            <span><?php echo esc_html($g['desc']); ?></span>
-        </a>
-        <?php endforeach; ?>
+    <?php $shown = []; foreach (ak_guide_topics() as $topic => [$topic_h, $topic_slugs]) : $topic_slugs = array_filter($topic_slugs, fn($t) => isset($guides[$t])); if (!$topic_slugs) { continue; } ?>
+    <div class="ak-wrap ak-guide-topic" id="<?php echo esc_attr($topic); ?>">
+        <h2><?php echo esc_html($topic_h); ?></h2>
+        <div class="ak-guide-grid">
+            <?php foreach ($topic_slugs as $s) : $g = $guides[$s]; $shown[] = $s; ?>
+            <a class="ak-guide-card" href="<?php echo esc_url(ak_landing_url($s)); ?>">
+                <strong><?php echo esc_html($g['h1']); ?></strong>
+                <span><?php echo esc_html($g['desc']); ?></span>
+            </a>
+            <?php endforeach; ?>
+        </div>
     </div>
+    <?php endforeach; ?>
+    <?php $rest = array_diff(array_keys($guides), $shown); if ($rest) : ?>
+    <div class="ak-wrap ak-guide-topic">
+        <h2>Inne pomysły</h2>
+        <div class="ak-guide-grid">
+            <?php foreach ($rest as $s) : $g = $guides[$s]; ?>
+            <a class="ak-guide-card" href="<?php echo esc_url(ak_landing_url($s)); ?>">
+                <strong><?php echo esc_html($g['h1']); ?></strong>
+                <span><?php echo esc_html($g['desc']); ?></span>
+            </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+    <div class="ak-wrap ak-center"><p><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Pakiety audiozabaw</a> · <a class="ak-link-more" href="<?php echo esc_url(ak_blog_url()); ?>">Blog</a> · <a class="ak-link-more" href="<?php echo esc_url(ak_info_url('zabawy-do-druku')); ?>">Zabawy do druku</a></p></div>
 </section>
 <?php else :
 $g = $guides[$slug];
 $quote = $g['quote'] ? current(array_filter(ak_specialists(), fn($s) => $s['photo'] === $g['quote'])) : null;
+$linked = [];
 ?>
 <article class="ak-guide-page" aria-labelledby="ak-guide-h">
     <header class="ak-blog-hero ak-guide-hero">
@@ -51,7 +71,7 @@ $quote = $g['quote'] ? current(array_filter(ak_specialists(), fn($s) => $s['phot
         <h2><?php echo esc_html($g['ideas_h']); ?></h2>
         <ol class="ak-ideas">
             <?php foreach ($g['ideas'] as [$name, $how, $age]) : ?>
-            <li><h3><?php echo esc_html($name); ?><?php if ($age) : ?> <small><?php echo esc_html($age); ?></small><?php endif; ?></h3><p><?php echo esc_html($how); ?></p></li>
+            <li><h3><?php echo esc_html($name); ?><?php if ($age) : ?> <small><?php echo esc_html($age); ?></small><?php endif; ?></h3><p><?php echo ak_autolink($how, $slug, $linked); // escaped inside ?></p></li>
             <?php endforeach; ?>
         </ol>
         <?php endif; ?>
@@ -69,7 +89,7 @@ $quote = $g['quote'] ? current(array_filter(ak_specialists(), fn($s) => $s['phot
         <h2><?php echo esc_html($group); ?></h2>
         <ul class="ak-ideas ak-ideas-plain">
             <?php foreach ($list as [$name, $how]) : ?>
-            <li><h3><?php echo esc_html($name); ?></h3><p><?php echo esc_html($how); ?></p></li>
+            <li><h3><?php echo esc_html($name); ?></h3><p><?php echo ak_autolink($how, $slug, $linked); // escaped inside ?></p></li>
             <?php endforeach; ?>
         </ul>
         <?php endforeach; ?>
@@ -88,8 +108,10 @@ $quote = $g['quote'] ? current(array_filter(ak_specialists(), fn($s) => $s['phot
 
         <?php foreach ($g['more'] as [$h, $p]) : ?>
         <h2><?php echo esc_html($h); ?></h2>
-        <p><?php echo esc_html($p); ?></p>
+        <p><?php echo ak_autolink($p, $slug, $linked); // escaped inside ?></p>
         <?php endforeach; ?>
+
+        <?php ak_guide_pack_box($slug); ?>
 
         <?php if ($quote) : ?>
         <figure class="ak-guide-quote">
@@ -108,7 +130,7 @@ $quote = $g['quote'] ? current(array_filter(ak_specialists(), fn($s) => $s['phot
         <nav class="ak-related" aria-label="Zobacz też">
             <p class="ak-tldr-h">Zobacz też</p>
             <ul>
-                <?php foreach ($g['related'] as $r) : if (!isset($guides[$r])) { continue; } ?>
+                <?php foreach (ak_guide_related($slug) as $r) : ?>
                 <li><a href="<?php echo esc_url(ak_landing_url($r)); ?>"><?php echo esc_html($guides[$r]['anchor']); ?></a></li>
                 <?php endforeach; ?>
                 <li><a href="<?php echo esc_url(ak_landing_url()); ?>">Wszystkie pomysły na zabawy</a></li>
