@@ -13,3 +13,9 @@ strona/podglad/
 strona/audiokiddo-strona.zip
 strona/studio/
 docs/sklepy/zrzuty/surowe/
+
+# Films: scripts and prompts are tracked, the media stay on disk
+filmy/**/grafiki/
+filmy/**/audio/
+filmy/**/wideo/
+filmy/**/eksport/
