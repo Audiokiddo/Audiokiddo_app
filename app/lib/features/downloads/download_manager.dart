@@ -163,14 +163,11 @@ class DownloadManager {
   }
 
   /// Local file of a plain-audio item when it is downloaded and verified, otherwise null.
-  Future<String?> localAudioPath(ContentItem item) async =>
-      item.audio.isEmpty ? null : localFilePath(item.audio.first);
+  Future<String?> localAudioPath(ContentItem item) async => item.audio.isEmpty ? null : localFilePath(item.audio.first);
 
   /// Local copy of any verified asset (audio, PDF, game segment), otherwise null.
   Future<String?> localFilePath(AssetRef asset) async {
-    final row = await (_db.select(
-      _db.downloads,
-    )..where((t) => t.assetPath.equals(asset.path))).getSingleOrNull();
+    final row = await (_db.select(_db.downloads)..where((t) => t.assetPath.equals(asset.path))).getSingleOrNull();
     if (row == null || row.state != DownloadState.ready) return null;
     final path = p.join(await _transfer.directory(), row.fileName);
     return await File(path).exists() ? path : null;
@@ -205,10 +202,7 @@ class DownloadManager {
       ..where((t) => t.state.equalsValue(DownloadState.ready))
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
     return query.watch().map(
-      (rows) => (
-        bytes: rows.fold(0, (sum, r) => sum + r.bytes),
-        itemIds: {for (final r in rows) r.itemId}.toList(),
-      ),
+      (rows) => (bytes: rows.fold(0, (sum, r) => sum + r.bytes), itemIds: {for (final r in rows) r.itemId}.toList()),
     );
   }
 
@@ -292,11 +286,7 @@ class DownloadManager {
   }
 
   /// Everything needed offline: recordings, game segments and printable case files.
-  static List<AssetRef> _assetsOf(ContentItem item) => [
-    ...item.audio,
-    ...item.pdf,
-    ...?item.script?.assets.values,
-  ];
+  static List<AssetRef> _assetsOf(ContentItem item) => [...item.audio, ...item.pdf, ...?item.script?.assets.values];
 
   static String _fileName(AssetRef asset) => '${asset.sha256}${p.extension(asset.path)}';
   static String _taskId(AssetRef asset) => _taskIdFor(asset.sha256);

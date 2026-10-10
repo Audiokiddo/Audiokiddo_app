@@ -80,17 +80,13 @@ class QueueScreen extends ConsumerWidget {
                           if (!run.running) ...[
                             IconButton(
                               tooltip: 'Usuń ${item.title}',
-                              onPressed: () => controller.setQueue(
-                                items.where((i) => i.id != item.id).map((i) => i.id).toList(),
-                              ),
+                              onPressed: () =>
+                                  controller.setQueue(items.where((i) => i.id != item.id).map((i) => i.id).toList()),
                               icon: const Icon(Icons.close_rounded, size: 20),
                             ),
                             ReorderableDragStartListener(
                               index: index,
-                              child: const Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Icon(Icons.drag_handle_rounded),
-                              ),
+                              child: const Padding(padding: EdgeInsets.all(8), child: Icon(Icons.drag_handle_rounded)),
                             ),
                           ],
                         ],
@@ -151,8 +147,7 @@ Future<void> saveRoutineDialog(BuildContext context, WidgetRef ref) async {
   if (name != null && name.isNotEmpty) {
     await ref.read(discoveryProvider.notifier).saveRoutine(name);
     if (context.mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Rutyna zapisana w „Moich rutynach”.')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Rutyna zapisana w „Moich rutynach”.')));
     }
   }
 }
@@ -172,12 +167,7 @@ class _QueuePicker extends ConsumerWidget {
     final ids = ref.watch(discoveryProvider).value?.queue ?? [];
     final items =
         catalog.value?.items
-            .where(
-              (i) =>
-                  i.kind != ContentKind.interactiveGame &&
-                  i.audio.isNotEmpty &&
-                  ref.watch(canPlayProvider(i)),
-            )
+            .where((i) => i.kind != ContentKind.interactiveGame && i.audio.isNotEmpty && ref.watch(canPlayProvider(i)))
             .toList() ??
         [];
     return SafeArea(
@@ -186,17 +176,13 @@ class _QueuePicker extends ConsumerWidget {
         child: Column(
           children: [
             Text('Dodaj do kolejki', style: Theme.of(context).textTheme.titleLarge),
-            const Padding(
-              padding: EdgeInsets.all(12),
-              child: Text('Nagrania, które mogą odtwarzać się kolejno.'),
-            ),
+            const Padding(padding: EdgeInsets.all(12), child: Text('Nagrania, które mogą odtwarzać się kolejno.')),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: [
                   if (catalog.isLoading) const LinearProgressIndicator(),
-                  if (items.isEmpty && !catalog.isLoading)
-                    const Text('Brak dostępnych nagrań. Sprawdź bibliotekę.'),
+                  if (items.isEmpty && !catalog.isLoading) const Text('Brak dostępnych nagrań. Sprawdź bibliotekę.'),
                   for (final item in items)
                     AudioRow(
                       item: item,
@@ -206,9 +192,7 @@ class _QueuePicker extends ConsumerWidget {
                             ? null
                             : () => ref.read(discoveryProvider.notifier).add(item.id),
                         icon: Icon(
-                          ids.contains(item.id)
-                              ? Icons.check_circle_rounded
-                              : Icons.add_circle_outline_rounded,
+                          ids.contains(item.id) ? Icons.check_circle_rounded : Icons.add_circle_outline_rounded,
                         ),
                       ),
                     ),

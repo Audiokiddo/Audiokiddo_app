@@ -19,3 +19,24 @@ Deno.test("wooGet sends the key as Basic auth and retries with query keys when t
     globalThis.fetch = original;
   }
 });
+
+Deno.test("a buyer who ticked the consent goes to the buyers' group with what they bought", async () => {
+  const { parseWooOrder, buyerSubscriber } = await import("./woo.ts");
+  const order = parseWooOrder({
+    id: 77,
+    status: "completed",
+    billing: { email: " Mama@Example.com ", first_name: "Ola" },
+    line_items: [{ product_id: 12, name: "Pakiet Detektyw" }],
+    meta_data: [{ key: "audiokiddo_newsletter", value: "yes" }],
+  })!;
+  if (!order.newsletter) throw new Error("consent");
+  const s = buyerSubscriber(order, "g1");
+  if (JSON.stringify(s) !== JSON.stringify({
+    email: "mama@example.com",
+    fields: { name: "Ola", last_purchase: "Pakiet Detektyw" },
+    groups: ["g1"],
+    status: "active",
+  })) throw new Error(JSON.stringify(s));
+  const without = parseWooOrder({ id: 78, status: "completed", billing: { email: "a@b.pl" }, line_items: [] })!;
+  if (without.newsletter) throw new Error("no consent, no letters");
+});

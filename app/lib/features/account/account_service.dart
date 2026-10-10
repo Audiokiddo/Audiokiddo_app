@@ -22,7 +22,26 @@ class AccountUser {
 /// Why an account action failed, mapped to a message for the parent.
 /// [canceled]: the parent closed the Apple/Google sheet; nothing to show.
 /// [notConfigured]: the sign-in method is not set up for this build yet.
-enum AccountError { invalidEmail, tooManyRequests, wrongCode, offline, server, canceled, notConfigured }
+enum AccountError {
+  invalidEmail,
+  tooManyRequests,
+  wrongCode,
+  wrongPassword,
+  weakPassword,
+  offline,
+  server,
+  canceled,
+  notConfigured,
+
+  /// No account with this e-mail (never made, or deleted): register again.
+  noAccount,
+
+  /// Registering an e-mail that already has an account.
+  accountExists,
+}
+
+/// Shortest password accepted (the server's own rule must not be stricter).
+const minPasswordLength = 8;
 
 /// The server's answer about a store purchase (verify-purchase).
 enum ServerVerdict { verified, pending, rejected, retry }
@@ -52,6 +71,21 @@ enum ClaimStatus {
 
   /// The text cannot be a code or an order number.
   format,
+}
+
+/// The parent's referral code ("POLEC-7K3M9Q"), friends who used it and rewards earned.
+class ReferralInfo {
+  const ReferralInfo({required this.code, this.friends = 0, this.rewards = 0});
+
+  final String code;
+  final int friends;
+  final int rewards;
+
+  static ReferralInfo? fromJson(Object? json) {
+    if (json is! Map || json['code'] is! String) return null;
+    int count(Object? v) => v is int ? v : int.tryParse('$v') ?? 0;
+    return ReferralInfo(code: json['code'] as String, friends: count(json['friends']), rewards: count(json['rewards']));
+  }
 }
 
 class ClaimResult {
@@ -102,13 +136,35 @@ abstract interface class AccountService {
   /// Emits whenever the parent signs in or out.
   Stream<AccountUser?> get changes;
 
-  /// Sends a one-time code to [email]. Creates the account on first use.
+  /// Sends a one-time sign-in code to an existing account (forgotten password). Never creates
+  /// an account: a deleted or unknown e-mail gets [AccountError.noAccount].
   Future<void> sendCode(String email);
+
+  /// Sign-in step one: whether a parent account uses [email]. Null when it cannot be told
+  /// (offline, too many lookups): the screen then offers both signing in and registering.
+  Future<bool?> accountExists(String email);
 
   Future<void> verifyCode(String email, String code);
 
+  /// Registers with e-mail and password. Returns true when the e-mail must be confirmed with
+  /// the code just sent ([verifySignUp]), false when the parent is signed in already.
+  Future<bool> signUp(String email, String password);
+
+  Future<void> verifySignUp(String email, String code);
+
+  /// Sign in with the password the parent set (accounts made with a code have none until they
+  /// set one in the account screen).
+  Future<void> signInWithPassword(String email, String password);
+
+  /// Sets or changes the signed-in parent's password (at least [minPasswordLength] characters).
+  Future<void> setPassword(String password);
+
   /// Sign in with Apple is offered on iOS (App Store guideline 4.8 when Google is offered).
   bool get appleAvailable;
+
+  /// Google sign-in is offered: configured, and not in the App Store build for the Kids
+  /// Category (a third-party sign-in sends data to Google; Apple and e-mail are enough there).
+  bool get googleAvailable;
 
   Future<void> signInWithApple();
 
@@ -121,6 +177,10 @@ abstract interface class AccountService {
   /// Adds what an access code unlocks (gift, tester, promotion) to the account; a guest
   /// account is created when nobody is signed in.
   Future<ClaimResult> redeemCode(String code);
+
+  /// The parent's referral code and how many friends used it (referral-code); a guest account
+  /// is created when nobody is signed in.
+  Future<ReferralInfo> referralInfo();
 
   /// Adds the packs of one shop order, proven by its number and billing e-mail, for buyers
   /// whose shop e-mail differs from the one they sign in with.
@@ -166,15 +226,54 @@ class SupabaseAccountService implements AccountService {
 
   @override
   Future<void> sendCode(String email) =>
-      _guard(() => _auth.signInWithOtp(email: email.trim().toLowerCase(), shouldCreateUser: true));
+      _guard(() => _auth.signInWithOtp(email: email.trim().toLowerCase(), shouldCreateUser: false));
 
   @override
-  Future<void> verifyCode(String email, String code) => _guard(
-    () => _auth.verifyOTP(type: OtpType.email, email: email.trim().toLowerCase(), token: code.trim()),
-  );
+  Future<bool?> accountExists(String email) async {
+    try {
+      final response = await _client.functions.invoke('account-status', body: {'email': email.trim()});
+      final data = response.data;
+      return data is Map && data['exists'] is bool ? data['exists'] as bool : null;
+    } on Object {
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> signUp(String email, String password) => _guard(() async {
+    if (password.length < minPasswordLength) throw const AccountException(AccountError.weakPassword);
+    final response = await _auth.signUp(email: email.trim().toLowerCase(), password: password);
+    // With e-mail confirmation on, an e-mail that already has an account comes back with no
+    // identities (Supabase does not reveal it otherwise).
+    if (response.user != null && (response.user!.identities?.isEmpty ?? false)) {
+      throw const AccountException(AccountError.accountExists);
+    }
+    return response.session == null;
+  });
+
+  @override
+  Future<void> verifySignUp(String email, String code) =>
+      _guard(() => _auth.verifyOTP(type: OtpType.signup, email: email.trim().toLowerCase(), token: code.trim()));
+
+  @override
+  Future<void> verifyCode(String email, String code) =>
+      _guard(() => _auth.verifyOTP(type: OtpType.email, email: email.trim().toLowerCase(), token: code.trim()));
+
+  @override
+  Future<void> signInWithPassword(String email, String password) =>
+      _guard(() => _auth.signInWithPassword(email: email.trim().toLowerCase(), password: password));
+
+  @override
+  Future<void> setPassword(String password) => _guard(() async {
+    if (password.length < minPasswordLength) throw const AccountException(AccountError.weakPassword);
+    await _auth.updateUser(UserAttributes(password: password));
+  });
 
   @override
   bool get appleAvailable => Platform.isIOS;
+
+  @override
+  bool get googleAvailable => BackendConfig.googleConfigured && !(Platform.isIOS && BackendConfig.kidsStoreBuild);
 
   @override
   Future<void> signInWithApple() => _guard(() async {
@@ -219,8 +318,16 @@ class SupabaseAccountService implements AccountService {
   Future<ClaimResult> redeemCode(String code) => _claim('redeem-code', {'code': code});
 
   @override
-  Future<ClaimResult> claimOrder(String order, String email) =>
-      _claim('claim-order', {'order': order, 'email': email});
+  Future<ClaimResult> claimOrder(String order, String email) => _claim('claim-order', {'order': order, 'email': email});
+
+  @override
+  Future<ReferralInfo> referralInfo() => _guard(() async {
+    if (await purchaseAccountId() == null) throw const AccountException(AccountError.offline);
+    final response = await _client.functions.invoke('referral-code');
+    final info = ReferralInfo.fromJson(response.data);
+    if (info == null) throw const AccountException(AccountError.server);
+    return info;
+  });
 
   Future<ClaimResult> _claim(String function, Map<String, Object?> body) => _guard(() async {
     // Anonymous guest account when nobody is signed in: access waits there until sign-in.
@@ -232,9 +339,16 @@ class SupabaseAccountService implements AccountService {
   @override
   Future<List<Entitlement>> entitlements() async {
     if (_auth.currentUser == null) return const [];
-    final rows = await _guard<List<Map<String, dynamic>>>(
-      () async => await _client.from('entitlements').select('scope, status, source, valid_until'),
-    );
+    // Own access plus, for a second parent, the family's (my_entitlements); the table itself
+    // until the server has that function.
+    final rows = await _guard<List<Map<String, dynamic>>>(() async {
+      try {
+        return [for (final r in await _client.rpc('my_entitlements') as List) Map<String, dynamic>.from(r as Map)];
+      } on PostgrestException catch (e) {
+        if (e.code != 'PGRST202') rethrow;
+        return await _client.from('entitlements').select('scope, status, source, valid_until');
+      }
+    });
     return [for (final row in rows) ?entitlementFromRow(row)];
   }
 
@@ -302,9 +416,7 @@ class SupabaseAccountService implements AccountService {
     } on AccountException {
       rethrow;
     } on SignInWithAppleAuthorizationException catch (e) {
-      throw AccountException(
-        e.code == AuthorizationErrorCode.canceled ? AccountError.canceled : AccountError.server,
-      );
+      throw AccountException(e.code == AuthorizationErrorCode.canceled ? AccountError.canceled : AccountError.server);
     } on SignInWithAppleNotSupportedException {
       throw const AccountException(AccountError.notConfigured);
     } on GoogleSignInException catch (e) {
@@ -323,7 +435,11 @@ class SupabaseAccountService implements AccountService {
   static AccountError _authError(AuthException e) => switch (e.code) {
     'email_address_invalid' || 'validation_failed' => AccountError.invalidEmail,
     'over_email_send_rate_limit' || 'over_request_rate_limit' => AccountError.tooManyRequests,
-    'otp_expired' || 'otp_disabled' => AccountError.wrongCode,
+    'otp_disabled' || 'signup_disabled' || 'user_not_found' => AccountError.noAccount,
+    'user_already_exists' || 'email_exists' => AccountError.accountExists,
+    'otp_expired' => AccountError.wrongCode,
+    'invalid_credentials' => AccountError.wrongPassword,
+    'weak_password' || 'same_password' => AccountError.weakPassword,
     _ when e.statusCode == '429' => AccountError.tooManyRequests,
     _ when e.statusCode == '403' || e.statusCode == '401' => AccountError.wrongCode,
     _ => AccountError.server,
@@ -344,11 +460,29 @@ class SignedOutAccountService implements AccountService {
   Future<void> sendCode(String email) async => throw const AccountException(AccountError.server);
 
   @override
-  Future<void> verifyCode(String email, String code) async =>
+  Future<bool?> accountExists(String email) async => null;
+
+  @override
+  Future<void> verifyCode(String email, String code) async => throw const AccountException(AccountError.server);
+
+  @override
+  Future<bool> signUp(String email, String password) async => throw const AccountException(AccountError.server);
+
+  @override
+  Future<void> verifySignUp(String email, String code) async => throw const AccountException(AccountError.server);
+
+  @override
+  Future<void> signInWithPassword(String email, String password) async =>
       throw const AccountException(AccountError.server);
 
   @override
+  Future<void> setPassword(String password) async => throw const AccountException(AccountError.server);
+
+  @override
   bool get appleAvailable => false;
+
+  @override
+  bool get googleAvailable => false;
 
   @override
   Future<void> signInWithApple() async => throw const AccountException(AccountError.notConfigured);
@@ -363,8 +497,10 @@ class SignedOutAccountService implements AccountService {
   Future<ClaimResult> redeemCode(String code) async => throw const AccountException(AccountError.server);
 
   @override
-  Future<ClaimResult> claimOrder(String order, String email) async =>
-      throw const AccountException(AccountError.server);
+  Future<ClaimResult> claimOrder(String order, String email) async => throw const AccountException(AccountError.server);
+
+  @override
+  Future<ReferralInfo> referralInfo() async => throw const AccountException(AccountError.notConfigured);
 
   @override
   Future<List<Entitlement>> entitlements() async => const [];

@@ -11,6 +11,7 @@ import '../../l10n/app_localizations.dart';
 import '../catalog/widgets/catalog_loader.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
+import 'subscription_value.dart';
 import 'shop.dart';
 import 'store_gateway.dart';
 
@@ -85,48 +86,38 @@ class _PaywallContent extends ConsumerWidget {
             const SizedBox(height: AkSpace.m),
             if (item != null) Text(l10n.paywallFor(item!.title), style: text.titleMedium),
             const SizedBox(height: AkSpace.m),
-            Text(l10n.paywallSubscriptionHeader, style: text.titleLarge),
-            Text(l10n.paywallSubscriptionBody, style: text.bodyMedium),
-            const SizedBox(height: AkSpace.s),
-            for (final s in subs)
-              tile(
-                s,
-                title: s.period == BillingPeriod.year ? l10n.paywallYearly : l10n.paywallMonthly,
-                subtitle: s.freeTrialDays != null
-                    ? l10n.paywallTrialThen(
-                        s.freeTrialDays!,
-                        s.price,
-                        s.period == BillingPeriod.year ? l10n.periodYear : l10n.periodMonth,
-                      )
-                    : '${s.price} / ${s.period == BillingPeriod.year ? l10n.periodYear : l10n.periodMonth}',
-                highlight: s.period == BillingPeriod.year,
+            // The subscription is the main offer; buying for good is folded below it.
+            SubscriptionOffer(catalog: catalog, byId: byId),
+            Theme(
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Text(l10n.paywallOneTimeHeader, style: text.titleSmall),
+                subtitle: Text(l10n.paywallOneTimeBody),
+                children: [
+                  if (packProduct != null)
+                    tile(
+                      packProduct,
+                      title: packProduct.title,
+                      subtitle: l10n.itemsCount(catalog.itemsInPack(pack!.id).length),
+                    ),
+                  if (byId[ProductIds.bundleTwo] case final p?)
+                    tile(p, title: p.title, subtitle: l10n.paywallBundleTwo),
+                  if (byId[ProductIds.bundleThree] case final p?)
+                    tile(p, title: p.title, subtitle: l10n.paywallBundleThree),
+                  if (byId[item?.storeProductId] case final p?)
+                    tile(
+                      p,
+                      title: l10n.paywallSingle,
+                      subtitle: packProduct == null ? null : l10n.paywallSingleHint(packProduct.price),
+                    ),
+                ],
               ),
-            const SizedBox(height: AkSpace.l),
-            Text(l10n.paywallOneTimeHeader, style: text.titleLarge),
-            Text(l10n.paywallOneTimeBody, style: text.bodyMedium),
-            const SizedBox(height: AkSpace.s),
-            if (packProduct != null)
-              tile(
-                packProduct,
-                title: packProduct.title,
-                subtitle: l10n.itemsCount(catalog.itemsInPack(pack!.id).length),
-              ),
-            if (byId[ProductIds.bundleTwo] case final p?)
-              tile(p, title: p.title, subtitle: l10n.paywallBundleTwo),
-            if (byId[ProductIds.bundleThree] case final p?)
-              tile(p, title: p.title, subtitle: l10n.paywallBundleThree),
-            if (byId[item?.storeProductId] case final p?)
-              tile(
-                p,
-                title: l10n.paywallSingle,
-                subtitle: packProduct == null ? null : l10n.paywallSingleHint(packProduct.price),
-              ),
+            ),
             const SizedBox(height: AkSpace.m),
             Center(
               child: TextButton(
-                onPressed: busy == null
-                    ? () => ref.read(purchaseControllerProvider.notifier).restore()
-                    : null,
+                onPressed: busy == null ? () => ref.read(purchaseControllerProvider.notifier).restore() : null,
                 child: Text(l10n.paywallRestore),
               ),
             ),
@@ -148,10 +139,7 @@ class _PaywallContent extends ConsumerWidget {
             Wrap(
               children: [
                 TextButton(onPressed: () => openWithGate(context, termsUrl), child: Text(l10n.paywallTerms)),
-                TextButton(
-                  onPressed: () => openWithGate(context, privacyUrl),
-                  child: Text(l10n.paywallPrivacy),
-                ),
+                TextButton(onPressed: () => openWithGate(context, privacyUrl), child: Text(l10n.paywallPrivacy)),
               ],
             ),
           ],
@@ -188,10 +176,7 @@ class _OfferTile extends ConsumerWidget {
         color: palette.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AkRadius.card),
-          side: BorderSide(
-            color: highlight ? palette.primary : palette.surfaceMuted,
-            width: highlight ? 2 : 1,
-          ),
+          side: BorderSide(color: highlight ? palette.primary : palette.surfaceMuted, width: highlight ? 2 : 1),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(AkRadius.card),

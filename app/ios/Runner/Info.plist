@@ -46,6 +46,8 @@
 	</dict>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>W niektórych zabawach dziecko odpowiada słowem, np. „w lewo”. Słowa rozpoznaje sam telefon, bez wysyłania dźwięku: nic nie jest nagrywane ani zapisywane.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>W zabawach dziecko odpowiada klaśnięciem albo głosem: ten dźwięk jest analizowany tylko w telefonie i nie jest nagrywany. Mikrofon służy też do nagrania Twoich krótkich wiadomości dla dziecka, które zostają tylko w tym telefonie.</string>
 	<key>UIApplicationSceneManifest</key>
@@ -65,6 +67,17 @@
 					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
 					<key>UISceneStoryboardFile</key>
 					<string>Main</string>
+				</dict>
+			</array>
+			<key>CPTemplateApplicationSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>CPTemplateApplicationScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>CarPlay</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate</string>
 				</dict>
 			</array>
 		</dict>

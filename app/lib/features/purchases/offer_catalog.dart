@@ -2,12 +2,32 @@ import 'package:ak_core/ak_core.dart';
 
 /// Store product ids. They must match App Store Connect and Play Console exactly.
 abstract final class ProductIds {
+  /// The one subscription, in two billing periods: the whole library for the whole family.
   static const monthly = 'pl.audiokiddo.sub.monthly';
   static const yearly = 'pl.audiokiddo.sub.yearly';
   static const bundleTwo = 'pl.audiokiddo.bundle.two';
   static const bundleThree = 'pl.audiokiddo.bundle.three';
 
   static const subscriptions = {monthly, yearly};
+
+  static bool isYearly(String id) => id == yearly;
+}
+
+/// The subscription: one library, two billing periods, no tiers and no limit on child profiles
+/// (strategy 2026-10-08: "jeden abonament").
+enum SubscriptionPlan {
+  full('Wszystkie zabawy', ProductIds.monthly, ProductIds.yearly);
+
+  const SubscriptionPlan(this.label, this.monthlyId, this.yearlyId);
+
+  final String label;
+  final String monthlyId;
+  final String yearlyId;
+
+  String productId({required bool yearly}) => yearly ? yearlyId : monthlyId;
+
+  static SubscriptionPlan? ofProduct(String productId) =>
+      values.where((p) => p.monthlyId == productId || p.yearlyId == productId).firstOrNull;
 }
 
 /// Packs in the two-pack bundle (as on audiokiddo.pl: Słowa i Wiedza + Wyobraźnia).

@@ -35,13 +35,11 @@ class KidsModeEntryCard extends ConsumerWidget {
                     children: [
                       Text(
                         l10n.kidsEnterTitle,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(color: context.palette.onPrimary),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: context.palette.onPrimary),
                       ),
                       Text(
                         l10n.kidsEnterSubtitle,
-                        style: Theme.of(context).textTheme.bodyMedium
-                            ?.copyWith(color: context.palette.onPrimary),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.palette.onPrimary),
                       ),
                     ],
                   ),

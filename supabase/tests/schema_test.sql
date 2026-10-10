@@ -134,14 +134,17 @@ select 'shop product tests passed';
 -- 11. Store products: both stores, subscriptions give everything, a store purchase upserts.
 insert into auth.users (id, email) values ('00000000-0000-0000-0000-000000000009', null);
 do $$ begin
+  -- A subscription opens everything: one plan for the whole family, no plans by children.
   assert (select scopes from public.store_products where product_ref = 'ios:pl.audiokiddo.sub.yearly') = '{all_content}', 'yearly';
   assert (select scopes from public.store_products where product_ref = 'android:pl.audiokiddo.sub.monthly') = '{all_content}', 'monthly';
+  assert not exists (select 1 from public.store_products where product_ref ilike '%sub.duo.%' or product_ref ilike '%sub.family.%'), 'no plans by children';
   assert (select cardinality(scopes) from public.store_products where product_ref = 'ios:pl.audiokiddo.bundle.three') = 3, 'bundle of three';
   assert exists (select 1 from public.store_products where product_ref = 'android:pl.audiokiddo.item.magiczny_sklep'), 'single item';
   perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-1', 'active', now() + interval '1 year');
   perform public.upsert_entitlement('00000000-0000-0000-0000-000000000009', 'app_store', 'ios:pl.audiokiddo.sub.yearly', 'orig-1', 'refunded', null);
-  assert (select status from public.entitlements where store_original_tx_id = 'orig-1') = 'refunded', 'same purchase is updated, not duplicated';
-  assert (select count(*) from public.entitlements where store_original_tx_id = 'orig-1') = 1;
+  assert (select status from public.entitlements where store_original_tx_id = 'orig-1' and scope = 'all_content') = 'refunded', 'same purchase is updated, not duplicated';
+  assert (select count(*) from public.entitlements where store_original_tx_id = 'orig-1') = 1, 'all_content only';
+  assert (select bool_and(status = 'refunded') from public.entitlements where store_original_tx_id = 'orig-1'), 'both rows follow the store';
 end $$;
 select 'store product tests passed';
 
@@ -258,3 +261,519 @@ begin
   assert not has_table_privilege('authenticated', 'public.access_codes', 'select'), 'codes are not readable';
 end $$;
 select 'access code tests passed';
+
+-- Referrals: the friend gets 14 days, the parent who shared the code gets 30 days after the
+-- friend's first purchase; own code and a second referral are refused.
+insert into auth.users (id, email, email_confirmed_at) values
+  ('00000000-0000-0000-0000-0000000000a1', 'polecajacy@example.com', now()),
+  ('00000000-0000-0000-0000-0000000000a2', 'znajomy@example.com', now());
+do $$
+declare
+  v_code text;
+begin
+  v_code := public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECABCDEF') ->> 'code';
+  assert v_code = 'POLECABCDEF';
+  assert public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECZZZZZZ') ->> 'code' = 'POLECABCDEF', 'one code per parent';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a1', v_code) ->> 'status' = 'invalid', 'own code refused';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a2', v_code) ->> 'status' = 'ok';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a2', v_code) ->> 'status' = 'already';
+  assert exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a2'
+    and scope = 'all_content' and valid_until > now() + interval '13 days'), 'friend trial';
+  assert not exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a1'), 'no reward before a purchase';
+  perform public.upsert_entitlement('00000000-0000-0000-0000-0000000000a2', 'app_store',
+    'ios:pl.audiokiddo.sub.yearly', 'tx-ref', 'active', null);
+  assert exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a1'
+    and product_ref = 'referral-reward' and valid_until > now() + interval '29 days'), 'reward after purchase';
+  assert (public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECZZZZZZ') ->> 'rewards')::int = 1;
+end $$;
+
+-- Statistics, promotions and the published catalog.
+do $$
+declare
+  v integer;
+begin
+  insert into public.app_events (install_id, event, item_id) values
+    ('11111111-1111-1111-1111-111111111111', 'first_open', null),
+    ('11111111-1111-1111-1111-111111111111', 'play_start', 'magiczny-sklep'),
+    ('22222222-2222-2222-2222-222222222222', 'play_start', 'magiczny-sklep');
+  assert (public.admin_stats(30) -> 'events' -> 'play_start' ->> 'installs')::int = 2;
+
+  insert into public.promotions (title, starts_at, ends_at) values
+    ('Mikołajki', now() - interval '1 day', now() + interval '1 day'),
+    ('Za tydzień', now() + interval '7 days', now() + interval '8 days');
+
+  v := public.publish_catalog(
+    '{"packs":[],"items":[{"id":"nowa","pack_id":null,"access":"free","audio":[{"path":"audio/nowa.m4a"}]}]}',
+    'abc', 'test', null);
+  assert (public.published_catalog() ->> 'version')::int = v;
+  assert exists (select 1 from public.content_files where path = 'audio/nowa.m4a' and free and item_id = 'nowa');
+end $$;
+
+-- The app may add events but not read them; it sees only promotions that are running.
+set role anon;
+do $$
+begin
+  insert into public.app_events (install_id, event) values ('33333333-3333-3333-3333-333333333333', 'app_open');
+  assert (select count(*) from public.promotions) = 1, 'only the running promotion';
+  begin
+    perform 1 from public.app_events;
+    assert false, 'anon must not read events';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.app_events (install_id, event) values ('33333333-3333-3333-3333-333333333333', 'hack');
+    assert false, 'unknown event refused';
+  exception when check_violation then null;
+  end;
+end $$;
+reset role;
+
+-- Advanced analytics: completion, replay, next play, retention and conversion.
+do $$
+declare
+  a jsonb;
+begin
+  insert into public.app_events (install_id, event, item_id, props, created_at) values
+    ('44444444-4444-4444-4444-444444444444', 'first_open', null, '{}', now() - interval '9 days'),
+    ('44444444-4444-4444-4444-444444444444', 'play_start', 'magiczny-sklep', '{"free":true}', now() - interval '9 days'),
+    ('44444444-4444-4444-4444-444444444444', 'play_complete', 'magiczny-sklep', '{}', now() - interval '9 days'),
+    ('44444444-4444-4444-4444-444444444444', 'play_start', 'co-to-za-dzwiek', '{"free":true,"next":true}', now() - interval '9 days'),
+    ('44444444-4444-4444-4444-444444444444', 'app_open', null, '{}', now() - interval '8 days'),
+    ('44444444-4444-4444-4444-444444444444', 'play_start', 'magiczny-sklep', '{"free":true,"replay":true}', now() - interval '8 days'),
+    ('44444444-4444-4444-4444-444444444444', 'purchase_done', null, '{}', now() - interval '8 days'),
+    ('55555555-5555-5555-5555-555555555555', 'first_open', null, '{}', now() - interval '9 days'),
+    ('55555555-5555-5555-5555-555555555555', 'welcome_done', null, '{}', now() - interval '9 days');
+  a := public.admin_stats(30) -> 'analytics';
+  assert (a -> 'plays' ->> 'replays')::int = 1, a::text;
+  assert (a -> 'plays' ->> 'next_plays')::int = 1;
+  assert (a -> 'retention' ->> 'd1')::numeric = 50, a -> 'retention';
+  assert (a -> 'conversion' ->> 'paid_after_free')::int = 1, a -> 'conversion';
+  assert (a -> 'onboarding' ->> 'welcome_done')::int = 1;
+  assert jsonb_typeof(a -> 'cohorts') = 'array';
+end $$;
+
+-- CRM: only admins see or change it.
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-0000000000c1', 'szef@audiokiddo.pl'),
+  ('00000000-0000-0000-0000-0000000000c2', 'rodzic@example.com');
+insert into public.admins (user_id) values ('00000000-0000-0000-0000-0000000000c1');
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c2', false); end $$;
+do $$
+begin
+  assert (select count(*) from public.crm_items) = 0, 'a parent sees no CRM items';
+  begin
+    perform public.crm_overview();
+    assert false, 'a parent cannot read the CRM numbers';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.crm_items (kind, title) values ('task', 'hack');
+    assert false, 'a parent cannot add CRM items';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  o jsonb;
+begin
+  assert (select count(*) from public.crm_items where kind = 'task') >= 5, 'the starting board';
+  insert into public.crm_items (kind, area, title, source, decision) values ('idea', 'pack', 'Pakiet Kosmos', 'ai', 'pending');
+  update public.crm_items set decision = 'approved' where title = 'Pakiet Kosmos';
+  o := public.crm_overview();
+  assert (o ->> 'users_total')::int >= 2, o::text;
+  assert (o ->> 'monthly_costs')::numeric = 107, o::text;
+  assert jsonb_typeof(o -> 'recent_users') = 'array';
+end $$;
+reset role;
+select 'crm tests passed';
+
+-- CRM support and trends: admins find a customer, give and take back access; parents cannot.
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c2', false); end $$;
+do $$
+begin
+  begin
+    perform public.crm_customer('rodzic@example.com');
+    assert false, 'a parent cannot look customers up';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'all_content', 30, 'hack');
+    assert false, 'a parent cannot give themselves access';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  c jsonb;
+  t jsonb;
+begin
+  assert public.crm_customer('nikt@example.com') is null, 'unknown e-mail';
+  perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'pack:detektyw', 30, 'reklamacja');
+  c := public.crm_customer('  Rodzic@Example.com ');
+  assert c ->> 'email' = 'rodzic@example.com', c::text;
+  assert jsonb_array_length(c -> 'entitlements') = 1, c::text;
+  assert c -> 'entitlements' -> 0 ->> 'status' = 'active';
+  assert (select count(*) from public.crm_items where area = 'support' and data->>'plan' is null) = 1, 'noted in the history';
+  perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'pack:detektyw', 60, null);
+  c := public.crm_customer('rodzic@example.com');
+  assert jsonb_array_length(c -> 'entitlements') = 1, 'extended, not doubled';
+  perform public.crm_revoke('00000000-0000-0000-0000-0000000000c2', 'pack:detektyw');
+  assert public.crm_customer('rodzic@example.com') -> 'entitlements' -> 0 ->> 'status' = 'revoked';
+  begin
+    perform public.crm_grant('00000000-0000-0000-0000-0000000000c2', 'children:5', 30, null);
+    assert false, 'only content scopes by hand';
+  exception when invalid_parameter_value then null;
+  end;
+  t := public.crm_trend(8);
+  assert jsonb_array_length(t) = 8, t::text;
+  assert (t -> 7 ->> 'week') = to_char(date_trunc('week', now()), 'YYYY-MM-DD'), 'the current week last';
+end $$;
+reset role;
+select 'crm support tests passed';
+
+-- Errors, ranking and the watchdog.
+set role anon;
+insert into public.app_errors (install_id, kind, error_type, message, fingerprint, platform)
+select '66666666-6666-6666-6666-666666666666', 'flutter', 'StateError', 'Bad state', 'abcdef12', 'ios'
+from generate_series(1, 105);
+reset role;
+do $$
+begin
+  assert (select count(*) from public.app_errors where install_id = '66666666-6666-6666-6666-666666666666') = 100,
+    'one phone in a loop is capped at 100 a day';
+end $$;
+set role anon;
+do $$
+begin
+  begin
+    perform 1 from public.app_errors;
+    assert (select count(*) from public.app_errors) = 0, 'the app cannot read errors back';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+reset role;
+insert into public.app_errors (install_id, kind, error_type, message, fingerprint, platform)
+select ('77777777-7777-7777-7777-77777777777' || g)::uuid, 'async', 'TypeError', 'null', '12345678', 'android'
+from generate_series(1, 3) g;
+insert into public.app_events (install_id, event, item_id, props) values
+  ('77777777-7777-7777-7777-777777777771', 'play_start', 'magiczny-sklep', '{}'),
+  ('77777777-7777-7777-7777-777777777771', 'play_complete', 'magiczny-sklep', '{}'),
+  ('77777777-7777-7777-7777-777777777772', 'play_start', 'magiczny-sklep', '{"replay":true}');
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c2', false); end $$;
+do $$
+begin
+  begin
+    perform public.crm_alerts_now();
+    assert false, 'a parent sees no alerts';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  e jsonb;
+  p jsonb;
+  a jsonb;
+  sklep jsonb;
+begin
+  e := public.crm_errors(7);
+  assert e -> 0 ->> 'fingerprint' = 'abcdef12' and (e -> 0 ->> 'count')::int = 100, e::text;
+  assert (e -> 1 ->> 'installs')::int = 3;
+  p := public.crm_plays(30);
+  select x into sklep from jsonb_array_elements(p) x where x ->> 'id' = 'magiczny-sklep';
+  assert (sklep ->> 'starts')::int >= 2 and (sklep ->> 'replays')::int >= 1, p::text;
+  a := public.crm_alerts_now();
+  assert exists (select 1 from jsonb_array_elements(a) x where x ->> 'code' = 'errors_spike'), a::text;
+  assert exists (select 1 from jsonb_array_elements(a) x where x ->> 'code' = 'new_error:12345678'), a::text;
+  perform public.crm_ack((a -> 0 ->> 'id')::uuid);
+end $$;
+reset role;
+delete from public.app_errors;
+do $$
+begin
+  perform public.crm_watch();
+  assert not exists (select 1 from public.crm_alerts where code = 'errors_spike' and resolved_at is null),
+    'an alert closes when it passes';
+end $$;
+select 'quality tests passed';
+
+-- Family, letters and orders.
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-0000000000f1', 'mama@example.com'),
+  ('00000000-0000-0000-0000-0000000000f2', 'tata@example.com'),
+  ('00000000-0000-0000-0000-0000000000f3', 'ktos@example.com');
+insert into public.entitlements (user_id, source, scope, status, valid_until, product_ref, store_original_tx_id) values
+  ('00000000-0000-0000-0000-0000000000f1', 'app_store', 'all_content', 'active', now() + interval '1 month', 'ios:pl.audiokiddo.sub.monthly', 'fam-1');
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f1', false); end $$;
+do $$ begin assert (public.family_status() ->> 'can_invite')::boolean, 'every subscriber may invite a second parent'; end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f1', false); end $$;
+create temporary table invite as select public.family_invite() ->> 'code' code;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f2', false); end $$;
+do $$
+declare
+  v_code text := (select code from invite);
+begin
+  assert (select count(*) from public.my_entitlements()) = 0, 'nothing before joining';
+  perform public.family_join(lower(v_code));
+  assert (select count(*) from public.my_entitlements() where shared and scope = 'all_content') = 1, 'the owner''s plan is shared';
+  assert public.family_status() ->> 'role' = 'member';
+  assert public.family_status() ->> 'partner' = 'ma•••@example.com', public.family_status()::text;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f3', false); end $$;
+do $$
+begin
+  begin
+    perform public.family_join((select code from invite));
+    assert false, 'a code works once';
+  exception when invalid_parameter_value then null;
+  end;
+  insert into public.parent_letters (user_id, weekly, missed) values ('00000000-0000-0000-0000-0000000000f3', true, true);
+  begin
+    update public.parent_letters set last_weekly_at = now() where user_id = '00000000-0000-0000-0000-0000000000f3';
+    assert false, 'only the server marks letters as sent';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+reset role;
+do $$
+begin
+  assert public.can_download('00000000-0000-0000-0000-0000000000f2', 'audio/detektyw/gadajacy-smietnik.m4a'),
+    'the partner downloads the family''s recordings';
+  assert not public.can_download('00000000-0000-0000-0000-0000000000f3', 'audio/detektyw/gadajacy-smietnik.m4a');
+  assert exists (select 1 from public.letters_due('weekly') where email = 'ktos@example.com'), 'weekly letter due';
+  assert not exists (select 1 from public.letters_due('missed') where email = 'ktos@example.com'), 'never played: no "we miss you"';
+end $$;
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$ begin assert jsonb_typeof(public.crm_orders(60)) = 'array'; end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f2', false); end $$;
+do $$ begin perform public.family_leave(); assert (select count(*) from public.my_entitlements()) = 0, 'after leaving'; end $$;
+reset role;
+select 'family and letters tests passed';
+
+-- LTV, cohorts and experiments.
+update public.experiments set active = true, started_at = now() - interval '1 day' where key = 'paywall_cta';
+set role anon;
+do $$ begin assert public.app_experiments() = '{"paywall_cta": ["proba", "oszczednosc"]}'::jsonb, public.app_experiments()::text; end $$;
+insert into public.app_events (install_id, event, props) values
+  ('88888888-8888-8888-8888-888888888881', 'paywall_view', '{"ab": {"paywall_cta": "proba"}}'),
+  ('88888888-8888-8888-8888-888888888881', 'purchase_done', '{"ab": {"paywall_cta": "proba"}}'),
+  ('88888888-8888-8888-8888-888888888882', 'paywall_view', '{"ab": {"paywall_cta": "oszczednosc"}}');
+reset role;
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  r jsonb := public.crm_experiment('paywall_cta');
+  l jsonb := public.crm_ltv();
+begin
+  assert r -> 1 ->> 'variant' = 'proba' and (r -> 1 ->> 'conversion')::numeric = 100, r::text;
+  assert (r -> 0 ->> 'bought')::int = 0, r::text;
+  assert jsonb_typeof(l -> 'cohorts') = 'array' and (l ->> 'paying')::int >= 1, l::text;
+end $$;
+reset role;
+select 'ltv and experiment tests passed';
+
+-- Ads growth: new kinds of change, creatives, keywords; admins read, others do not.
+insert into public.ads_actions (platform, entity_id, action, params, title)
+  values ('google_ads', '1', 'add_negative', '{"term": "bajki youtube"}', 'Wykluczyć');
+insert into public.ads_creatives (platform, format, content) values ('google_ads', 'rsa', '{"headlines": ["a", "b", "c"]}');
+insert into public.ads_competitor_ads (ad_archive_id, page_id, bodies) values ('1', 'p', '{"Tekst"}');
+update public.seo_keywords set trend = '[{"month": "2026-07", "searches": 10}]', use_for = 'blog' where keyword = 'zabawy w aucie dla dzieci';
+do $$ begin
+  begin
+    insert into public.ads_creatives (platform, format) values ('tiktok', 'rsa');
+    assert false, 'unknown platform accepted';
+  exception when check_violation then null;
+  end;
+end $$;
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$ begin
+  assert (select count(*) from public.ads_creatives) = 1, 'admin reads creatives';
+  assert (select count(*) from public.ads_competitor_ads) = 1, 'admin reads competitors';
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f2', false); end $$;
+do $$ begin assert (select count(*) from public.ads_creatives) = 0, 'a parent reads no creatives'; end $$;
+reset role;
+select 'ads growth tests passed';
+
+-- Analytics annex: North Star, activation, per-play table, drop-off and growth by source.
+do $$
+declare
+  k jsonb;
+  g jsonb;
+  f constant uuid := '66666666-6666-6666-6666-666666666666';
+  h constant uuid := '77777777-7777-7777-7777-777777777777';
+begin
+  insert into public.app_events (install_id, event, item_id, props, created_at, age_group, source, session_id) values
+    -- Family F: new, finishes a play, starts another (activated), back the next day (returning).
+    (f, 'first_open', null, '{}', now() - interval '3 days', '3-5', 'tiktok', gen_random_uuid()),
+    (f, 'game_viewed', 'zgubiona-gwiazdka', '{}', now() - interval '3 days' + interval '1 minute', '3-5', 'tiktok', null),
+    (f, 'play_start', 'zgubiona-gwiazdka', '{"free":true,"play_number":1}', now() - interval '3 days' + interval '2 minutes', '3-5', 'tiktok', null),
+    (f, 'play_complete', 'zgubiona-gwiazdka', '{}', now() - interval '3 days' + interval '12 minutes', '3-5', 'tiktok', null),
+    (f, 'play_start', 'magiczny-sklep', '{"play_number":1}', now() - interval '3 days' + interval '13 minutes', '3-5', 'tiktok', null),
+    (f, 'play_exit', 'magiczny-sklep', '{"exit_second":395,"pct":40}', now() - interval '3 days' + interval '20 minutes', '3-5', 'tiktok', null),
+    (f, 'play_start', 'zgubiona-gwiazdka', '{"play_number":2}', now() - interval '2 days', '3-5', 'tiktok', null),
+    (f, 'play_complete', 'zgubiona-gwiazdka', '{}', now() - interval '2 days' + interval '10 minutes', '3-5', 'tiktok', null),
+    (f, 'search_performed', null, '{"query":"dinozaury","results":0}', now() - interval '2 days', '3-5', 'tiktok', null),
+    -- Family H: new, starts once and leaves early, never finishes.
+    (h, 'first_open', null, '{}', now() - interval '2 days', '7-9', null, null),
+    (h, 'play_start', 'magiczny-sklep', '{"free":true,"play_number":1}', now() - interval '2 days' + interval '30 minutes', '7-9', null, null),
+    (h, 'play_exit', 'magiczny-sklep', '{"exit_second":410,"pct":42}', now() - interval '2 days' + interval '37 minutes', '7-9', null, null);
+  k := public.admin_kpi(30);
+  assert (k -> 'ceo' ->> 'weekly_returning_families')::int >= 1, k -> 'ceo';
+  assert (k -> 'ceo' ->> 'new_activated')::int >= 1, k -> 'ceo';
+  assert (k -> 'ceo' -> 'funnel' ->> 'first_play')::int >= 2, k -> 'ceo' -> 'funnel';
+  assert k -> 'product' -> 'dropoff' -> 'magiczny-sklep' @> '[[390, 2]]', k -> 'product' -> 'dropoff';
+  assert k -> 'product' -> 'searches' -> 0 ->> 'query' = 'dinozaury', k -> 'product' -> 'searches';
+  select x into g from jsonb_array_elements(k -> 'growth') x where x ->> 'source' = 'tiktok';
+  assert (g ->> 'activated')::int = 1, k -> 'growth';
+  assert (k -> 'data_health' ->> 'events')::int > 0;
+  -- Per age band: only the 7-9 family.
+  k := public.admin_kpi(30, '7-9');
+  assert (k -> 'ceo' ->> 'new_activated')::int = 0, k -> 'ceo';
+  begin
+    insert into public.app_events (install_id, event, age_group) values (h, 'app_open', '4');
+    assert false, 'age groups are bands only';
+  exception when check_violation then null;
+  end;
+end $$;
+select 'analytics annex tests passed';
+
+-- Gifts from the shop: one code per gift line, retry-safe, ended by a refund.
+do $$
+declare
+  h constant text := repeat('ab', 32);
+  u constant uuid := '00000000-0000-0000-0000-0000000000d1';
+begin
+  insert into auth.users (id, email) values (u, 'obdarowany@example.com');
+  insert into public.gift_products (product_ref, scopes, label) values ('woo:900', '{all_content}', 'Rok AudioKiddo');
+  assert public.issue_gift_code(77, 'woo:1', h) = 'not_gift';
+  assert public.issue_gift_code(77, 'woo:900', h) = 'send';
+  assert public.issue_gift_code(77, 'woo:900', h) = 'send', 'a retry before the note went out sends it again';
+  perform public.mark_gift_note_sent(77, 'woo:900');
+  assert public.issue_gift_code(77, 'woo:900', h) = 'sent';
+  assert (select max_uses from public.access_codes where code_hash = h) = 1;
+  assert public.redeem_access_code(u, h) ->> 'status' = 'ok';
+  assert exists (select 1 from public.entitlements where user_id = u and scope = 'all_content' and status = 'active');
+  assert public.revoke_gift_codes(77) = 1;
+  assert not exists (select 1 from public.entitlements where user_id = u and status = 'active'), 'refund ends the gift';
+end $$;
+select 'gift tests passed';
+
+-- Ad spend and CAC.
+do $$
+declare
+  m jsonb;
+begin
+  insert into public.ad_spend (month, channel, amount) values (date_trunc('month', now())::date, 'meta', 300);
+  insert into public.web_purchases_pending (woo_order_id, product_ref, email_normalized, order_status)
+    values (5001, 'woo:1', 'nowa@example.com', 'completed'), (5002, 'woo:1', 'druga@example.com', 'completed');
+  m := public.admin_economics(30);
+  assert (m ->> 'spend_total')::numeric = 300, m::text;
+  assert (m ->> 'new_paying_web')::int >= 2, m::text;
+  assert (m ->> 'cac_total')::numeric > 0, m::text;
+  begin
+    insert into public.ad_spend (month, channel, amount) values ('2026-10-15', 'meta', 1);
+    assert false, 'months are whole months';
+  exception when check_violation then null;
+  end;
+end $$;
+select 'ad spend tests passed';
+
+-- Cancel reasons and referral channels.
+do $$
+declare
+  s jsonb;
+begin
+  insert into public.app_events (install_id, event, props) values
+    ('88888888-8888-8888-8888-888888888888', 'cancel_reason', '{"reason":"price"}'),
+    ('88888888-8888-8888-8888-888888888888', 'referral_share', '{"channel":"whatsapp"}');
+  s := public.admin_signals(30);
+  assert (s -> 'cancel_reasons' ->> 'price')::int = 1, s::text;
+  assert (s -> 'referral_channels' ->> 'whatsapp')::int = 1, s::text;
+end $$;
+select 'signals tests passed';
+
+-- The launch plan on the CRM board: tasks for each of us, calendar entries, nothing twice.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'task') >= 100, 'plan tasks';
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'calendar') >= 10, 'plan calendar';
+  assert (select count(distinct owner) from public.crm_items where data->>'plan' = 'premiera-2026') = 3, 'Dawid, Nela, Razem';
+  assert not exists (select 1 from public.crm_items where source = 'system' and title = 'Założyć konto Apple Developer' and status = 'todo'),
+    'the old account task gave way to the plan';
+end $$;
+create temp table plan_before as select count(*) n from public.crm_items where data->>'plan' = 'premiera-2026';
+\ir ../migrations/20261019000001_launch_plan.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026') = (select n from plan_before), 'running it again adds nothing';
+end $$;
+select 'launch plan tests passed';
+
+-- Time estimates on the plan, added once.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'task' and data ? 'hours')
+    = (select count(*) from public.crm_items where data->>'plan' = 'premiera-2026' and kind = 'task'), 'every task has hours';
+  assert (select body from public.crm_items where data->>'key' = 'f1-social') like '%Claude przygotował%', 'the prepared texts';
+end $$;
+\ir ../migrations/20261019000002_launch_plan_hours.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where body like '%Czas: ok.%Czas: ok.%') = 0, 'the note is added once';
+end $$;
+select 'launch plan hours tests passed';
+
+-- The faster plan: premiere on 2 November, a task moved on the board stays where it was put.
+do $$
+begin
+  assert (select due from public.crm_items where data->>'key' = 'c-premiere') = '2026-11-02', 'premiere moved';
+  assert (select due from public.crm_items where data->>'key' = 'f1-submit') = '2026-10-12', 'iOS review earlier';
+  assert (select title from public.crm_items where data->>'key' = 'f1-measure') like 'Maile:%', 'Pixel and Analytics done';
+  assert (select body from public.crm_items where data->>'key' = 'f1-measure') like '%Czas: ok. 1,5 h.%', 'hours kept in the note';
+  assert (select body from public.crm_items where data->>'key' = 'f1-closed') like '%26.10.%Czas: ok.%', 'new words, same note';
+end $$;
+update public.crm_items set due = '2026-10-20' where data->>'key' = 'f1-video';
+\ir ../migrations/20261019000003_launch_plan_faster.sql
+do $$
+begin
+  assert (select due from public.crm_items where data->>'key' = 'f1-video') = '2026-10-20', 'moved on the board, stays';
+  assert (select count(*) from public.crm_items where body like '%Czas: ok.%Czas: ok.%') = 0, 'no doubled notes';
+end $$;
+select 'faster plan tests passed';
+
+-- The Christmas pack as three free-in-December episodes.
+do $$
+begin
+  assert (select title from public.crm_items where data->>'key' = 'p-grudzien-0') like '%3 odcinki%', 'episodes';
+  assert (select body from public.crm_items where data->>'key' = 'p-grudzien-3') like '%Czas: ok. 5 h.%', 'less recording';
+  assert (select body from public.crm_items where data->>'key' = 'p-grudzien-5') like 'Studio → Treści. Bez produktu%Czas: ok. 1,5 h.%', 'no store product';
+  assert (select count(*) from public.crm_items where data->>'key' in ('c-swieta-free', 'c-swieta-end')) = 2, 'free window in the calendar';
+end $$;
+\ir ../migrations/20261019000004_christmas_episodes.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' = 'c-swieta-free') = 1, 'added once';
+end $$;
+select 'christmas episodes tests passed';
+
+-- Social content from the content base.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' like 's-post-%' and kind = 'calendar') = 10, 'ten reels';
+  assert (select (data->>'hours')::numeric from public.crm_items where data->>'key' = 's-film1') = 4, 'filming hours';
+end $$;
+\ir ../migrations/20261019000005_social_content.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' like 's-%') = 19, 'added once';
+end $$;
+select 'social content tests passed';

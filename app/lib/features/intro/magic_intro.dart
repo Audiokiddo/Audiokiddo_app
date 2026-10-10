@@ -196,11 +196,7 @@ class _MagicIntroState extends ConsumerState<MagicIntro> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 600),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: background,
-              ),
+              gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: background),
             ),
             child: Stack(
               children: [
@@ -221,10 +217,7 @@ class _MagicIntroState extends ConsumerState<MagicIntro> {
                       duration: const Duration(milliseconds: 450),
                       transitionBuilder: (child, animation) => FadeTransition(
                         opacity: animation,
-                        child: ScaleTransition(
-                          scale: Tween(begin: 0.92, end: 1.0).animate(animation),
-                          child: child,
-                        ),
+                        child: ScaleTransition(scale: Tween(begin: 0.92, end: 1.0).animate(animation), child: child),
                       ),
                       child: KeyedSubtree(
                         key: ValueKey(_stage),
@@ -269,8 +262,7 @@ class _MagicIntroState extends ConsumerState<MagicIntro> {
 }
 
 TextStyle _title(BuildContext context, Color color) =>
-    Theme.of(context).textTheme.displaySmall!
-        .copyWith(fontWeight: FontWeight.w800, color: color, height: 1.1);
+    Theme.of(context).textTheme.displaySmall!.copyWith(fontWeight: FontWeight.w800, color: color, height: 1.1);
 
 class _VolumeScene extends ConsumerStatefulWidget {
   const _VolumeScene({required this.talking});
@@ -328,9 +320,7 @@ class _VolumeSceneState extends ConsumerState<_VolumeScene> with SingleTickerPro
                     decoration: BoxDecoration(
                       color: const Color(0xFF4A3228),
                       borderRadius: BorderRadius.circular(30),
-                      boxShadow: const [
-                        BoxShadow(blurRadius: 24, color: Color(0x33000000), offset: Offset(0, 10)),
-                      ],
+                      boxShadow: const [BoxShadow(blurRadius: 24, color: Color(0x33000000), offset: Offset(0, 10))],
                     ),
                     padding: const EdgeInsets.all(10),
                     child: Container(
@@ -446,12 +436,7 @@ class _HelloScene extends StatelessWidget {
 }
 
 class _PasswordScene extends ConsumerStatefulWidget {
-  const _PasswordScene({
-    required this.talking,
-    required this.byVoice,
-    required this.levels,
-    required this.onOrb,
-  });
+  const _PasswordScene({required this.talking, required this.byVoice, required this.levels, required this.onOrb});
 
   final bool talking;
   final bool byVoice;
@@ -484,10 +469,7 @@ class _PasswordSceneState extends ConsumerState<_PasswordScene> with SingleTicke
     return Column(
       children: [
         const SizedBox(height: AkSpace.xl * 2),
-        Text(
-          l10n.introPasswordTitle,
-          style: text.headlineSmall?.copyWith(color: AkBrand.sun, letterSpacing: 3),
-        ),
+        Text(l10n.introPasswordTitle, style: text.headlineSmall?.copyWith(color: AkBrand.sun, letterSpacing: 3)),
         const SizedBox(height: AkSpace.m),
         Text(l10n.introPasswordSay, style: text.titleLarge?.copyWith(color: Colors.white)),
         ShaderMask(

@@ -10,12 +10,7 @@ import '../catalog/catalog_providers.dart';
 /// Children, the one currently listening, and what each has played. Kept only on this
 /// device (ARCHITECTURE §4); nothing about children goes to the server.
 class FamilyState {
-  const FamilyState({
-    this.children = const [],
-    this.activeId,
-    this.results = const [],
-    this.frozen = const {},
-  });
+  const FamilyState({this.children = const [], this.activeId, this.results = const [], this.frozen = const {}});
 
   final List<ChildProfile> children;
   final String? activeId;

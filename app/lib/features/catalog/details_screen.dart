@@ -17,6 +17,7 @@ import '../discovery/reference_widgets.dart';
 import '../games/microphone.dart';
 import '../games/speech.dart';
 import '../parental_gate/parental_gate.dart';
+import '../pdf/case_files_card.dart';
 import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';
 import '../player/playback_controller.dart';
@@ -24,12 +25,32 @@ import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
 import '../discovery/discovery_model.dart';
 import '../discovery/queue_controller.dart';
+import '../home/quick_pick.dart' show startItem;
 import 'widgets/labels.dart';
+import '../../core/router.dart';
+import '../insights/events.dart';
 
-class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({super.key, required this.itemId});
+class DetailsScreen extends ConsumerStatefulWidget {
+  const DetailsScreen({super.key, required this.itemId, this.autoplay = false});
 
   final String itemId;
+
+  /// Opened from the home-screen widget (`?graj=1`): starts at once when the family can play it.
+  final bool autoplay;
+
+  @override
+  ConsumerState<DetailsScreen> createState() => _DetailsScreenState();
+}
+
+class _DetailsScreenState extends ConsumerState<DetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // "Nobody opens it" and "opened but not started" are different problems.
+    ref.read(eventSinkProvider).track(AppEvent.gameViewed, itemId: widget.itemId);
+  }
+
+  String get itemId => widget.itemId;
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +60,36 @@ class DetailsScreen extends StatelessWidget {
         builder: (context, catalog) {
           final item = catalog.item(itemId);
           if (item == null) return Center(child: Text(AppLocalizations.of(context).notFound));
-          return _DetailsContent(item: item, pack: item.packId == null ? null : catalog.pack(item.packId!));
+          final content = _DetailsContent(item: item, pack: item.packId == null ? null : catalog.pack(item.packId!));
+          return widget.autoplay ? _AutoPlay(item: item, child: content) : content;
         },
       ),
     );
   }
+}
+
+/// Starts [item] once, right after the screen appears (from the widget's one-tap start).
+class _AutoPlay extends ConsumerStatefulWidget {
+  const _AutoPlay({required this.item, required this.child});
+
+  final ContentItem item;
+  final Widget child;
+
+  @override
+  ConsumerState<_AutoPlay> createState() => _AutoPlayState();
+}
+
+class _AutoPlayState extends ConsumerState<_AutoPlay> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ref.read(canPlayProvider(widget.item))) unawaited(startItem(context, widget.item));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class _DetailsContent extends ConsumerWidget {
@@ -62,11 +108,7 @@ class _DetailsContent extends ConsumerWidget {
     try {
       await ref
           .read(playbackControllerProvider)
-          .start(
-            item,
-            album: pack?.title ?? AppLocalizations.of(context).kind(item.kind),
-            fromStart: fromStart,
-          );
+          .start(item, album: pack?.title ?? AppLocalizations.of(context).kind(item.kind), fromStart: fromStart);
       if (context.mounted) await context.push('/odtwarzacz');
     } on Exception {
       if (context.mounted) {
@@ -76,15 +118,15 @@ class _DetailsContent extends ConsumerWidget {
     }
   }
 
-  Future<void> _unlock(BuildContext context) async {
-    if (!await showParentalGate(context) || !context.mounted) return;
+  // The offer itself asks for an adult before any purchase (buyWithGate).
+  Future<void> _unlock(BuildContext context, WidgetRef ref) async {
+    ref.read(eventSinkProvider).track(AppEvent.paywallView, itemId: item.id, props: {'from': 'locked_game'});
     await context.push('/oferta?zabawa=${item.id}');
   }
 
   Future<void> _openPdf(BuildContext context, AssetRef asset) async {
-    if (!await showParentalGate(context) || !context.mounted) return;
     await Navigator.of(context).push(
-      MaterialPageRoute<void>(
+      swipeRoute<void>(
         builder: (_) => PdfScreen(asset: asset, title: item.title),
       ),
     );
@@ -134,20 +176,14 @@ class _DetailsContent extends ConsumerWidget {
                 icon: const Icon(Icons.play_arrow_rounded),
                 label: Text(l10n.resumeGame),
               ),
-              TextButton(
-                onPressed: () => _listen(context, ref, fromStart: true),
-                child: Text(l10n.startOver),
-              ),
+              TextButton(onPressed: () => _listen(context, ref, fromStart: true), child: Text(l10n.startOver)),
             ] else if (!isGame && resumeAt > Duration.zero) ...[
               FilledButton.icon(
                 onPressed: () => _listen(context, ref),
                 icon: const Icon(Icons.play_arrow_rounded),
                 label: Text(l10n.resumeFrom(formatClock(resumeAt))),
               ),
-              TextButton(
-                onPressed: () => _listen(context, ref, fromStart: true),
-                child: Text(l10n.startOver),
-              ),
+              TextButton(onPressed: () => _listen(context, ref, fromStart: true), child: Text(l10n.startOver)),
             ] else
               FilledButton.icon(
                 onPressed: () => _listen(context, ref),
@@ -166,10 +202,7 @@ class _DetailsContent extends ConsumerWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: const Text('Dodano do kolejki'),
-                              action: SnackBarAction(
-                                label: 'Otwórz',
-                                onPressed: () => context.push('/kolejka'),
-                              ),
+                              action: SnackBarAction(label: 'Otwórz', onPressed: () => context.push('/kolejka')),
                             ),
                           );
                         }
@@ -179,21 +212,14 @@ class _DetailsContent extends ConsumerWidget {
               ),
           ],
           ItemAccess.needsRefresh => [
-            FilledButton.icon(
-              onPressed: null,
-              icon: const Icon(Icons.wifi_off_rounded),
-              label: Text(l10n.listen),
-            ),
+            FilledButton.icon(onPressed: null, icon: const Icon(Icons.wifi_off_rounded), label: Text(l10n.listen)),
             const SizedBox(height: AkSpace.s),
             Text(l10n.needsRefresh, style: text.bodyMedium),
           ],
           ItemAccess.locked => [
-            if (item.preview != null) ...[
-              PreviewButton(item: item, wide: true),
-              const SizedBox(height: AkSpace.s),
-            ],
+            if (item.preview != null) ...[PreviewButton(item: item, wide: true), const SizedBox(height: AkSpace.s)],
             FilledButton.icon(
-              onPressed: () => _unlock(context),
+              onPressed: () => _unlock(context, ref),
               icon: const Icon(Icons.lock_open_rounded),
               label: Text(l10n.unlock),
             ),
@@ -205,7 +231,11 @@ class _DetailsContent extends ConsumerWidget {
           ],
         },
         const SizedBox(height: AkSpace.l),
-
+        // Detektyw: the case file right under the play button, with Szop’en saying what is in it.
+        if (item.pdf.isNotEmpty && canPlay && pack?.id == 'detektyw') ...[
+          CaseFileCard(item: item),
+          const SizedBox(height: AkSpace.l),
+        ],
         if (item.skills.isNotEmpty)
           _Section(
             title: l10n.detailsPractises,
@@ -220,16 +250,13 @@ class _DetailsContent extends ConsumerWidget {
             title: AppLocalizations.of(context).micTitle,
             child: _MicrophoneCard(words: scriptListensToWords(script)),
           ),
-        if (item.pdf.isNotEmpty && canPlay)
+        if (item.pdf.isNotEmpty && canPlay && pack?.id != 'detektyw')
           _Section(
-            title: pack?.id == 'detektyw' ? 'Akta sprawy do wydrukowania' : l10n.pdfSection,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: OutlinedButton.icon(
-                onPressed: () => _openPdf(context, item.pdf.first),
-                icon: const Icon(Icons.print_rounded),
-                label: Text(pack?.id == 'detektyw' ? 'Otwórz akta sprawy' : l10n.pdfOpen),
-              ),
+            title: l10n.pdfSection,
+            child: OutlinedButton.icon(
+              onPressed: () => _openPdf(context, item.pdf.first),
+              icon: const Icon(Icons.print_rounded),
+              label: Text(l10n.pdfOpen),
             ),
           ),
         if (item.requirements.isNotEmpty)
@@ -371,7 +398,7 @@ class _FavoriteButton extends ConsumerWidget {
       isSelected: favorite,
       icon: const Icon(Icons.favorite_border_rounded),
       selectedIcon: Icon(Icons.favorite_rounded, color: Theme.of(context).colorScheme.error),
-      onPressed: () => ref.read(personalRepositoryProvider).setFavorite(itemId, favorite: !favorite),
+      onPressed: () => setFavoriteTracked(ref, itemId, favorite: !favorite),
     );
   }
 }

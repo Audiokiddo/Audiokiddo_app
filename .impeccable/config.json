@@ -1,0 +1,56 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "docs/strona/plan-miliona.html"
+        ],
+        "createdAt": "2026-10-04T20:40:05.854Z",
+        "reason": "Claude: detector pairs dark-theme tokens with the light-theme white background; each theme's pairs pass"
+      },
+      {
+        "rule": "all-caps-body",
+        "value": "*",
+        "files": [
+          "docs/strona/plan-miliona.html"
+        ],
+        "createdAt": "2026-10-04T20:50:11.876Z",
+        "reason": "Claude: uppercase only on short table headers and pills, no body passages"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/strona/plan-miliona.html"
+        ],
+        "createdAt": "2026-10-04T20:50:11.907Z",
+        "reason": "Claude: 1.2 only on headings and 1.0 on single-line pills; body text is 1.55"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/strona/plan-miliona.html"
+        ],
+        "createdAt": "2026-10-04T21:24:40.720Z",
+        "reason": "Claude: bordered .table wrapper has no padding by design; its cells carry 10px 12px"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.34, 1.56, .64, 1)",
+        "createdAt": "2026-10-06T11:22:27.957Z",
+        "reason": "Agent: used only for Szop'en the mascot (pop on pose change, peek on entry) — character motion the user asked for; all UI uses ease-out-expo"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "var(--bouncy)",
+        "createdAt": "2026-10-06T11:22:27.984Z",
+        "reason": "Agent: same mascot-only overshoot as cubic-bezier(.34, 1.56, .64, 1)"
+      }
+    ]
+  }
+}

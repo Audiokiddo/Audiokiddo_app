@@ -17,9 +17,16 @@ import '../discovery/discovery_model.dart';
 import '../discovery/reference_widgets.dart';
 import '../discovery/queue_controller.dart';
 import '../home/quick_pick.dart';
+import '../insights/events.dart';
+import '../pdf/case_files_card.dart';
 import 'audio_handler.dart';
+import 'audio_route.dart';
+import 'bottom_dock.dart' show hiddenResumeProvider;
 import 'playback_controller.dart';
 import 'player_providers.dart';
+import 'szop_after_play.dart';
+import '../referral/referral_nudge.dart';
+import '../stickers/stickers.dart';
 
 class PlayerScreen extends StatelessWidget {
   const PlayerScreen({super.key});
@@ -59,8 +66,11 @@ class _Player extends ConsumerWidget {
             onPressed: media == null
                 ? null
                 : () {
-                    handler.endSession();
+                    // The parent ended it: no "Dokończ" card for it, and the player slides
+                    // away first so it never flashes empty.
+                    ref.read(hiddenResumeProvider.notifier).hide(media.id);
                     context.canPop() ? context.pop() : context.go('/');
+                    Future<void>.delayed(const Duration(milliseconds: 400), handler.endSession);
                   },
             icon: const Icon(Icons.stop_circle_outlined),
           ),
@@ -68,7 +78,7 @@ class _Player extends ConsumerWidget {
             tooltip: favorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych',
             onPressed: item == null
                 ? null
-                : () => ref.read(personalRepositoryProvider).setFavorite(item.id, favorite: !favorite),
+                : () => setFavoriteTracked(ref, item.id, favorite: !favorite),
             icon: Icon(favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded),
           ),
         ],
@@ -86,13 +96,14 @@ class _Player extends ConsumerWidget {
                 const SizedBox(height: 24),
                 const Text('Wybierz nagranie w bibliotece.', textAlign: TextAlign.center),
                 const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: () => context.go('/biblioteka'),
-                  child: const Text('Otwórz bibliotekę'),
-                ),
+                FilledButton(onPressed: () => context.go('/biblioteka'), child: const Text('Otwórz bibliotekę')),
               ] else ...[
-                if (item != null && state?.processingState == AudioProcessingState.completed)
+                if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
+                if (item != null && state?.processingState == AudioProcessingState.completed) ...[
+                  const NewStickerCard(),
                   _UpNext(after: item),
+                  const ReferralNudge(),
+                ],
                 item == null
                     ? Center(
                         child: ConstrainedBox(
@@ -106,7 +117,14 @@ class _Player extends ConsumerWidget {
                           ),
                         ),
                       )
-                    : ItemHeaderArt(item: item, maxWidth: 360, radius: 28, seed: media.id.length),
+                    : ItemHeaderArt(
+                        item: item,
+                        // The case file button takes room: a smaller cover keeps the tools in view.
+                        maxWidth: item.pdf.isNotEmpty && item.packId == 'detektyw' ? 290 : 360,
+                        radius: 28,
+                        seed: media.id.length,
+                      ),
+                SzopWhilePlaying(playing: playing),
                 const SizedBox(height: 22),
                 Text(media.title, style: text.headlineSmall),
                 const SizedBox(height: 8),
@@ -114,6 +132,10 @@ class _Player extends ConsumerWidget {
                   '${formatClock(duration)}${item == null ? '' : ' · od ${item.ageMin} lat'}${media.album == null ? '' : ' · ${media.album}'}',
                   style: text.bodySmall,
                 ),
+                if (item != null && item.pdf.isNotEmpty && item.packId == 'detektyw') ...[
+                  const SizedBox(height: 12),
+                  _CaseFileButton(item: item),
+                ],
                 const SizedBox(height: 20),
                 SeekBar(position: position, duration: duration, onSeek: handler.seek),
                 const SizedBox(height: 18),
@@ -147,7 +169,10 @@ class _Player extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
+                // Like music apps: where it plays, and one tap to a Bluetooth or AirPlay speaker.
+                const Center(child: AudioRouteChip()),
+                const SizedBox(height: 16),
                 Wrap(
                   alignment: WrapAlignment.spaceAround,
                   spacing: 8,
@@ -172,9 +197,7 @@ class _Player extends ConsumerWidget {
                                 for (final speed in [.75, 1.0, 1.25])
                                   ListTile(
                                     title: Text('$speed×'),
-                                    trailing: (state?.speed ?? 1) == speed
-                                        ? const Icon(Icons.check_rounded)
-                                        : null,
+                                    trailing: (state?.speed ?? 1) == speed ? const Icon(Icons.check_rounded) : null,
                                     onTap: () {
                                       handler.setSpeed(speed);
                                       Navigator.pop(c);
@@ -185,11 +208,7 @@ class _Player extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    _Tool(
-                      label: 'Timer snu',
-                      icon: Icons.bedtime_outlined,
-                      onTap: () => showSleepPicker(context),
-                    ),
+                    _Tool(label: 'Timer snu', icon: Icons.bedtime_outlined, onTap: () => showSleepPicker(context)),
                     _Tool(
                       label: 'Pobierz',
                       icon: Icons.download_outlined,
@@ -206,11 +225,7 @@ class _Player extends ConsumerWidget {
                               ),
                             ),
                     ),
-                    _Tool(
-                      label: 'Kolejka',
-                      icon: Icons.queue_music_rounded,
-                      onTap: () => context.push('/kolejka'),
-                    ),
+                    _Tool(label: 'Kolejka', icon: Icons.queue_music_rounded, onTap: () => context.push('/kolejka')),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -221,7 +236,7 @@ class _Player extends ConsumerWidget {
                 ),
                 if (item != null) ...[
                   const SizedBox(height: 16),
-                  SimilarPlays(
+                  PlaysByPack(
                     item: item,
                     title: state?.processingState == AudioProcessingState.completed
                         ? 'Przygoda skończona. Co dalej?'
@@ -248,10 +263,7 @@ class _Tool extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
     width: 68,
     child: TextButton(
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 8),
-      ),
+      style: TextButton.styleFrom(foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 8)),
       onPressed: onTap,
       child: Column(
         children: [
@@ -467,9 +479,7 @@ class _SeekBarState extends ConsumerState<SeekBar> {
           children: [
             Text(formatClock(at)),
             if (buffering) const Text('Wczytuję…', style: TextStyle(fontSize: 12)),
-            Text(
-              '-${formatClock(Duration(milliseconds: (widget.duration - at).inMilliseconds.clamp(0, 1 << 40)))}',
-            ),
+            Text('-${formatClock(Duration(milliseconds: (widget.duration - at).inMilliseconds.clamp(0, 1 << 40)))}'),
           ],
         ),
       ],
@@ -495,10 +505,8 @@ class _PullDownToCloseState extends State<PullDownToClose> with SingleTickerProv
   double _pull = 0;
   double _from = 0;
   bool _closing = false;
-  late final AnimationController _settle = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 280),
-  )..addListener(() => setState(() => _pull = _from * (1 - Curves.easeOutCubic.transform(_settle.value))));
+  late final AnimationController _settle = AnimationController(vsync: this, duration: const Duration(milliseconds: 280))
+    ..addListener(() => setState(() => _pull = _from * (1 - Curves.easeOutCubic.transform(_settle.value))));
 
   @override
   void dispose() {
@@ -548,6 +556,55 @@ class _PullDownToCloseState extends State<PullDownToClose> with SingleTickerProv
   }
 }
 
+/// Detektyw: the case file as a slim bar under the title; it opens print and send options.
+class _CaseFileButton extends StatelessWidget {
+  const _CaseFileButton({required this.item});
+
+  final ContentItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    return Material(
+      color: AkBrand.sun,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => showCaseFilesSheet(context, item),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              const Icon(Icons.folder_open_rounded, color: ink),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Akta sprawy  ',
+                        style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                      ),
+                      TextSpan(
+                        text: 'drukuj lub wyślij',
+                        style: text.bodySmall?.copyWith(color: ink),
+                      ),
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded, color: ink),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// When a play ends, the next one is one tap away (the most similar play the family can
 /// start), so the parent does not have to search with a child waiting.
 class _UpNext extends ConsumerWidget {
@@ -583,19 +640,13 @@ class _UpNext extends ConsumerWidget {
                 children: [
                   Text(
                     'Brawo! Co dalej?',
-                    style: text.labelLarge?.copyWith(
-                      color: const Color(0xFF211C35),
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: text.labelLarge?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
                   ),
                   Text(
                     next.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: text.titleMedium?.copyWith(
-                      color: const Color(0xFF211C35),
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: text.titleMedium?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w700),
                   ),
                   Text(
                     '${(next.durationSec / 60).ceil()} min',

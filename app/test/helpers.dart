@@ -14,12 +14,16 @@ import 'package:audiokiddo/features/games/speech.dart';
 import 'package:audiokiddo/features/kids_mode/kids_home_screen.dart';
 import 'package:audiokiddo/features/kids_mode/kids_mode_controller.dart';
 import 'package:audiokiddo/features/onboarding/onboarding_controller.dart';
+import 'package:audiokiddo/features/welcome/welcome_controller.dart';
+import 'package:audiokiddo/core/theme/appearance.dart';
+import 'package:audiokiddo/features/home/launch_greeting.dart';
 import 'package:audiokiddo/features/parent_voice/parent_voice.dart';
 import 'package:audiokiddo/features/player/player_providers.dart';
 import 'package:audiokiddo/features/purchases/preview_player.dart';
 import 'package:drift/drift.dart' show DatabaseConnection, driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter/material.dart' show ThemeMode;
 
 AppDatabase memoryDatabase() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -75,11 +79,15 @@ List<Override> testOverrides(
   Directory? downloadsDir,
   KidsModeController? kidsMode,
   bool onboardingDone = true,
+  bool welcomeDone = true,
   MediaItem? media,
   SpeechInput? speech,
 }) => [
   onboardingProvider.overrideWithValue(OnboardingController(db, done: onboardingDone)),
+  welcomeProvider.overrideWithValue(WelcomeController(db, done: welcomeDone)),
   databaseProvider.overrideWithValue(db),
+  appearanceDefaultProvider.overrideWithValue(ThemeMode.light),
+  launchGreetingEnabledProvider.overrideWithValue(false),
   kidsModeProvider.overrideWithValue(kidsMode ?? KidsModeController(db)),
   fileTransferProvider.overrideWithValue(FakeTransfer(downloadsDir ?? Directory.systemTemp)),
   contentUrlResolverProvider.overrideWithValue(const BaseUrlResolver('http://test.invalid')),

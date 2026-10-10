@@ -9,17 +9,29 @@ import '../../core/theme/tokens.dart';
 import '../catalog/catalog_providers.dart';
 import '../downloads/download_providers.dart';
 import '../downloads/download_manager.dart';
-import '../downloads/download_button.dart';
+import '../downloads/pack_download.dart';
 import '../family/family.dart';
 import '../personal/personal_repository.dart';
-import '../parental_gate/parental_gate.dart';
 import '../kids_mode/kids_mode_setup.dart';
+import '../alerts/alerts.dart';
 import '../diploma/diploma.dart';
+import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
+import '../about/about_screen.dart';
+import '../family_sharing/family_screen.dart';
+import '../purchases/plan_limit.dart';
+import '../reminders/reminder_offer.dart';
+import '../welcome/szop_tour.dart';
+import '../welcome/welcome_controller.dart';
+import '../../core/router.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
+
+  /// Szop’en's tour lights up the downloads.
+  static Widget _tile(String route, Widget child) =>
+      route == '/pobrane' ? TourTarget(id: 'downloads', child: child) : child;
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
     appBar: AppBar(title: const Text('Więcej')),
@@ -29,18 +41,22 @@ class MoreScreen extends ConsumerWidget {
         for (final item in [
           (Icons.favorite_rounded, 'Ulubione', '/ulubione'),
           (Icons.face_rounded, 'Profil dziecka', '/profil'),
+          (Icons.collections_rounded, 'Album naklejek', '/naklejki'),
           (Icons.auto_awesome_rounded, 'Tryby i rutyny', '/rutyny'),
           (Icons.queue_music_rounded, 'Kolejka', '/kolejka'),
           (Icons.download_done_rounded, 'Pobrane', '/pobrane'),
           (Icons.history_rounded, 'Historia słuchania', '/historia'),
           (Icons.route_rounded, 'Plan rozwoju', '/plan'),
         ])
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(item.$1, color: AkBrand.tealDeep),
-            title: Text(item.$2),
-            trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => context.push(item.$3),
+          _tile(
+            item.$3,
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(item.$1, color: AkBrand.tealDeep),
+              title: Text(item.$2),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => context.push(item.$3),
+            ),
           ),
         ListTile(
           contentPadding: EdgeInsets.zero,
@@ -52,23 +68,33 @@ class MoreScreen extends ConsumerWidget {
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.account_circle_outlined),
           title: const Text('Konto i zakupy'),
-          onTap: () async {
-            if (await showParentalGate(context) && context.mounted) context.push('/konto');
-          },
+          onTap: () => context.push('/konto'),
+        ),
+        const ManageSubscriptionTile(),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.family_restroom_rounded, color: AkBrand.tealDeep),
+          title: const Text('Drugi rodzic'),
+          subtitle: const Text('Ten sam abonament na drugim telefonie'),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push('/rodzina'),
         ),
         const RefSection('Wygląd aplikacji'),
         SegmentedButton<ThemeMode>(
           segments: const [
             ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode_rounded), label: Text('Jasny')),
+            ButtonSegment(value: ThemeMode.system, icon: Icon(Icons.brightness_auto_rounded), label: Text('Auto')),
             ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode_rounded), label: Text('Ciemny')),
-            ButtonSegment(
-              value: ThemeMode.system,
-              icon: Icon(Icons.phone_iphone_rounded),
-              label: Text('Jak telefon'),
-            ),
           ],
           selected: {ref.watch(appearanceProvider).value ?? ThemeMode.light},
           onSelectionChanged: (s) => ref.read(appearanceProvider.notifier).set(s.single),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Text(
+            'Auto: jasny w dzień, ciemny wieczorem od 20:00 do 6:00.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ),
         ListTile(
           contentPadding: EdgeInsets.zero,
@@ -78,6 +104,10 @@ class MoreScreen extends ConsumerWidget {
           trailing: const Icon(Icons.chevron_right_rounded),
           onTap: () => context.push('/ikona'),
         ),
+        const RefSection('Powiadomienia'),
+        const ReminderTile(),
+        const AlertsSwitch(),
+        const LettersSwitch(),
         const RefSection('Szop’en — kolega na dyżurze'),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
@@ -85,6 +115,47 @@ class MoreScreen extends ConsumerWidget {
           subtitle: const Text('Przy powrocie i osiągnięciach. Krótko, bez dźwięku.'),
           value: !(ref.watch(discoveryProvider).value?.quiet ?? false),
           onChanged: (v) => ref.read(discoveryProvider.notifier).quiet(!v),
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.tour_rounded, color: AkBrand.tealDeep),
+          title: const Text('Szop’en pokaże, gdzie co jest'),
+          subtitle: const Text('Krótki samouczek po aplikacji, jeszcze raz'),
+          onTap: () {
+            context.go('/');
+            ref.read(welcomeProvider).startTour();
+          },
+        ),
+        const RefSection('Pomóż nam rosnąć'),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const PolishFlag(width: 24),
+          title: const Text('O nas: Nela i Dawid'),
+          subtitle: const Text('Polska rodzinna marka. Sami piszemy i nagrywamy zabawy'),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push('/o-nas'),
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.card_giftcard_rounded, color: AkBrand.tealDeep),
+          title: const Text('Poleć znajomym'),
+          subtitle: const Text('Znajomy 14 dni za darmo, Ty miesiąc gratis'),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push('/polec'),
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.star_rounded, color: AkBrand.tealDeep),
+          title: const Text('Oceń AudioKiddo'),
+          subtitle: const Text('Kilka gwiazdek pomaga innym rodzicom nas znaleźć'),
+          onTap: () => rateApp(context, fromList: true),
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.mail_outline_rounded, color: AkBrand.tealDeep),
+          title: const Text('Napisz do nas'),
+          subtitle: const Text(feedbackEmail),
+          onTap: () => sendFeedback(context),
         ),
         const SizedBox(height: 24),
       ],
@@ -127,66 +198,96 @@ class CollectionScreen extends ConsumerWidget {
   }
 }
 
+/// Downloads: the family's plays by pack, each with its own button and a "whole pack" one, then
+/// what is on the phone and what is still coming.
 class DownloadsScreen extends ConsumerStatefulWidget {
   const DownloadsScreen({super.key});
   @override
   ConsumerState<DownloadsScreen> createState() => _DownloadsScreenState();
 }
 
+enum _DownloadsTab { yours, onPhone, pending }
+
 class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
-  bool pending = false;
+  _DownloadsTab tab = _DownloadsTab.yours;
   @override
   Widget build(BuildContext context) {
-    final catalog = ref.watch(catalogProvider);
+    final catalog = ref.watch(catalogProvider).value;
     final summary = ref.watch(downloadSummaryProvider).value;
     final free = ref.watch(freeBytesProvider).value;
-    final entries = [
-      for (final i in catalog.value?.items ?? <ContentItem>[])
-        (i, ref.watch(downloadStatusProvider(i)).value ?? ItemDownloadStatus.none),
+    final text = Theme.of(context).textTheme;
+    final items = [
+      for (final i in catalog?.items ?? <ContentItem>[])
+        if (i.downloadBytes > 0) i,
     ];
-    final shown = entries
-        .where(
-          (e) => pending
-              ? e.$2.isActive || e.$2.phase == DownloadPhase.failed
-              : e.$2.phase == DownloadPhase.ready,
-        )
-        .toList();
+    final playable = [
+      for (final i in items)
+        if (ref.watch(canPlayProvider(i))) i,
+    ];
+    ItemDownloadStatus status(ContentItem i) => ref.watch(downloadStatusProvider(i)).value ?? ItemDownloadStatus.none;
+    final listed = switch (tab) {
+      _DownloadsTab.yours => playable,
+      _DownloadsTab.onPhone => [
+        for (final i in items)
+          if (status(i).phase == DownloadPhase.ready) i,
+      ],
+      _DownloadsTab.pending => [
+        for (final i in items)
+          if (status(i).isActive || status(i).phase == DownloadPhase.failed) i,
+      ],
+    };
+    final groups = <(String, List<ContentItem>)>[
+      for (final pack in catalog?.packs ?? const <Pack>[])
+        if (listed.where((i) => i.packId == pack.id).toList() case final g when g.isNotEmpty) (pack.title, g),
+      if (listed.where((i) => i.packId == null).toList() case final g when g.isNotEmpty) ('Piosenki i gry', g),
+    ];
     return Scaffold(
       appBar: AppBar(title: const Text('Pobrane')),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            SegmentedButton<bool>(
-              segments: const [
-                ButtonSegment(value: false, label: Text('W urządzeniu')),
-                ButtonSegment(value: true, label: Text('Pobieranie')),
-              ],
-              selected: {pending},
-              onSelectionChanged: (s) => setState(() => pending = s.single),
+            Text(
+              'Pobrane zabawy działają bez internetu: w aucie, samolocie i na działce.',
+              style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
             ),
-            const SizedBox(height: 20),
-            if (catalog.isLoading) const LinearProgressIndicator(),
-            if (shown.isEmpty)
+            const SizedBox(height: 14),
+            SegmentedButton<_DownloadsTab>(
+              segments: const [
+                ButtonSegment(value: _DownloadsTab.yours, label: Text('Wasze zabawy')),
+                ButtonSegment(value: _DownloadsTab.onPhone, label: Text('W telefonie')),
+                ButtonSegment(value: _DownloadsTab.pending, label: Text('W trakcie')),
+              ],
+              selected: {tab},
+              onSelectionChanged: (s) => setState(() => tab = s.single),
+            ),
+            const SizedBox(height: 12),
+            if (catalog == null) const LinearProgressIndicator(),
+            if (catalog != null && groups.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Text(
-                  pending
-                      ? 'Brak trwających pobrań.'
-                      : 'Jeszcze nic nie pobrano. Wybierz zabawę w bibliotece i dotknij „Pobierz”.',
-                ),
+                child: Text(switch (tab) {
+                  _DownloadsTab.yours => 'Nie macie jeszcze zabaw do pobrania.',
+                  _DownloadsTab.onPhone => 'Jeszcze nic nie pobrano. Zacznij od „Wasze zabawy”.',
+                  _DownloadsTab.pending => 'Nic się teraz nie pobiera.',
+                }),
               ),
-            for (final (item, _) in shown) ...[
-              AudioRow(item: item),
-              DownloadControl(item: item),
-              const SizedBox(height: 18),
+            for (final (title, group) in groups) ...[
+              const SizedBox(height: 12),
+              Text(title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+              if (tab == _DownloadsTab.yours) ...[
+                const SizedBox(height: 8),
+                PackDownloadButton(items: group, label: 'Pobierz wszystkie'),
+              ],
+              for (final item in group)
+                AudioRow(
+                  item: item,
+                  trailing: ItemDownloadIcon(item: item),
+                ),
             ],
             const SizedBox(height: 24),
-            Text(
-              'Zajęte miejsce: ${formatBytes(summary?.bytes ?? 0)}',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            if (free != null) Text('Wolne na urządzeniu: ${formatBytes(free)}'),
+            Text('Zajęte miejsce: ${formatBytes(summary?.bytes ?? 0)}', style: text.titleSmall),
+            if (free != null) Text('Wolne w telefonie: ${formatBytes(free)}'),
             if (free != null && (summary?.bytes ?? 0) + free > 0)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
@@ -265,8 +366,7 @@ class ProfileScreen extends ConsumerWidget {
                     IconButton(
                       tooltip: 'Edytuj profil',
                       onPressed: () =>
-                          Navigator.of(context)
-                              .push(MaterialPageRoute<void>(builder: (_) => _EditProfile(child: child))),
+                          Navigator.of(context).push(swipeRoute<void>(builder: (_) => _EditProfile(child: child))),
                       icon: const Icon(Icons.edit_outlined),
                     ),
                   ],
@@ -290,18 +390,8 @@ class ProfileScreen extends ConsumerWidget {
               spacing: 10,
               runSpacing: 10,
               children: [
-                _Stat(
-                  Icons.favorite_rounded,
-                  '${favorites.length}',
-                  'Ulubione rodziny',
-                  const Color(0xFFD45365),
-                ),
-                _Stat(
-                  Icons.star_rounded,
-                  '${results.where((r) => r.completed).length}',
-                  'Ukończone',
-                  AkBrand.sunDeep,
-                ),
+                _Stat(Icons.favorite_rounded, '${favorites.length}', 'Ulubione rodziny', const Color(0xFFD45365)),
+                _Stat(Icons.star_rounded, '${results.where((r) => r.completed).length}', 'Ukończone', AkBrand.sunDeep),
                 _Stat(
                   Icons.bar_chart_rounded,
                   '${results.fold<int>(0, (s, r) => s + r.seconds) ~/ 60} min',
@@ -319,10 +409,7 @@ class ProfileScreen extends ConsumerWidget {
                   for (final (i, c)
                       in (PlayCategory.values.toList()..sort((a, b) {
                             int score(PlayCategory c) => results
-                                .where(
-                                  (r) =>
-                                      catalog?.item(r.itemId) != null && c.matches(catalog!.item(r.itemId)!),
-                                )
+                                .where((r) => catalog?.item(r.itemId) != null && c.matches(catalog!.item(r.itemId)!))
                                 .length;
                             return score(b).compareTo(score(a));
                           }))
@@ -358,8 +445,7 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ],
               ),
-            if (ref.watch(diplomasProvider(child.id)).value case final diplomas?
-                when diplomas.isNotEmpty) ...[
+            if (ref.watch(diplomasProvider(child.id)).value case final diplomas? when diplomas.isNotEmpty) ...[
               const RefSection('Dyplomy'),
               Wrap(
                 spacing: 8,

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/tokens.dart';
 import 'ambient_motion.dart';
-import 'kiddo.dart';
+import 'szop.dart';
 
 /// A little road-trip gag for parents: the family car bumps along, a parent drives, Kiddo
 /// leans out of the back seat with [line]. Decorative; the words are also real text.
@@ -58,11 +58,9 @@ class _CarSceneState extends ConsumerState<CarScene> with SingleTickerProviderSt
               alignment: const Alignment(-0.32, 0),
               child: AnimatedBuilder(
                 animation: _drive,
-                builder: (context, child) => Transform.translate(
-                  offset: Offset(0, -math.sin(_drive.value * math.pi * 2) * 2),
-                  child: child,
-                ),
-                child: const Kiddo(size: 58, mood: KiddoMood.talking),
+                builder: (context, child) =>
+                    Transform.translate(offset: Offset(0, -math.sin(_drive.value * math.pi * 2) * 2), child: child),
+                child: const SzopSticker(SzopPose.zadowolony, height: 58),
               ),
             ),
           ),
@@ -158,10 +156,7 @@ class _CarPainter extends CustomPainter {
 
     // Body and wheels.
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTRB(left, bodyTop, left + carW, bodyBottom),
-        const Radius.circular(18),
-      ),
+      RRect.fromRectAndRadius(Rect.fromLTRB(left, bodyTop, left + carW, bodyBottom), const Radius.circular(18)),
       Paint()..color = const Color(0xFFE8452C),
     );
     canvas.drawRect(

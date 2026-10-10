@@ -14,3 +14,6 @@ void downloadTextFile(String fileName, String content) {
   anchor.remove();
   web.URL.revokeObjectURL(url);
 }
+
+/// Opens [url] in a new browser tab (voice drafts, published articles).
+void openInBrowser(String url) => web.window.open(url, '_blank');

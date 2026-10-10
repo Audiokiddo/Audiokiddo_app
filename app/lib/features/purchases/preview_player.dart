@@ -20,11 +20,7 @@ class JustAudioPreview implements PreviewAudio {
   final _subscriptions = <StreamSubscription<void>>[];
 
   @override
-  Future<void> play(
-    Uri url, {
-    required void Function(double) onProgress,
-    required void Function() onDone,
-  }) async {
+  Future<void> play(Uri url, {required void Function(double) onProgress, required void Function() onDone}) async {
     await stop();
     final player = _player ??= AudioPlayer();
     final duration = await player.setUrl(url.toString());
@@ -169,10 +165,7 @@ class _PreviewButtonState extends ConsumerState<PreviewButton> {
                   dimension: 40,
                   child: CircularProgressIndicator(value: s.loading ? null : s.progress, strokeWidth: 3),
                 ),
-              IconButton(
-                onPressed: tap,
-                icon: Icon(mine ? Icons.stop_rounded : Icons.headphones_rounded, size: 22),
-              ),
+              IconButton(onPressed: tap, icon: Icon(mine ? Icons.stop_rounded : Icons.headphones_rounded, size: 22)),
             ],
           ),
         ),

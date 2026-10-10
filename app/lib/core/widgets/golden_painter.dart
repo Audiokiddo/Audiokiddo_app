@@ -55,8 +55,7 @@ class GoldenPainter extends CustomPainter {
     }
   }
 
-  void _oval(Canvas c, Rect r, Color color, {double line = 2.1}) =>
-      _shape(c, Path()..addOval(r), color, line: line);
+  void _oval(Canvas c, Rect r, Color color, {double line = 2.1}) => _shape(c, Path()..addOval(r), color, line: line);
   void _stroke(Canvas c, Path path, {Color color = ink, double width = 2.2}) => c.drawPath(
     path,
     Paint()
@@ -169,33 +168,21 @@ class GoldenPainter extends CustomPainter {
       }
       _shape(
         canvas,
-        Path()
-          ..addRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(53, 172, 95, 11), const Radius.circular(3))),
+        Path()..addRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(53, 172, 95, 11), const Radius.circular(3))),
         trenchDark,
         line: 1.5,
       );
       _shape(
         canvas,
-        Path()
-          ..addRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(92, 170, 16, 15), const Radius.circular(2))),
+        Path()..addRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(92, 170, 16, 15), const Radius.circular(2))),
         const Color(0xFFE2C68A),
         line: 1.5,
       );
-      for (final p in [
-        const Offset(88, 160),
-        const Offset(112, 160),
-        const Offset(88, 195),
-        const Offset(112, 195),
-      ]) {
+      for (final p in [const Offset(88, 160), const Offset(112, 160), const Offset(88, 195), const Offset(112, 195)]) {
         _oval(canvas, Rect.fromCenter(center: p, width: 5.5, height: 5.5), const Color(0xFF6E5537), line: 0);
       }
     } else if (outfit == GoldenOutfit.pajamas) {
-      for (final p in [
-        const Offset(70, 159),
-        const Offset(116, 173),
-        const Offset(88, 193),
-        const Offset(131, 194),
-      ]) {
+      for (final p in [const Offset(70, 159), const Offset(116, 173), const Offset(88, 193), const Offset(131, 194)]) {
         _star(canvas, p, 4.3);
       }
       _stroke(
@@ -402,12 +389,7 @@ class GoldenPainter extends CustomPainter {
                 ? -3
                 : 1);
         _oval(canvas, Rect.fromCenter(center: Offset(pupilX, 78), width: 12, height: 17), ink, line: 0);
-        _oval(
-          canvas,
-          Rect.fromCenter(center: Offset(pupilX + 2, 74), width: 4, height: 5),
-          Colors.white,
-          line: 0,
-        );
+        _oval(canvas, Rect.fromCenter(center: Offset(pupilX + 2, 74), width: 4, height: 5), Colors.white, line: 0);
         if (cheeky) {
           _shape(
             canvas,
@@ -536,12 +518,7 @@ class GoldenPainter extends CustomPainter {
         ..lineTo(101, 112),
       width: 1.4,
     );
-    for (final p in [
-      const Offset(74, 102),
-      const Offset(80, 106),
-      const Offset(126, 102),
-      const Offset(120, 107),
-    ]) {
+    for (final p in [const Offset(74, 102), const Offset(80, 106), const Offset(126, 102), const Offset(120, 107)]) {
       canvas.drawCircle(p, 1.2, Paint()..color = ear);
     }
     if (outfit == GoldenOutfit.pajamas) {

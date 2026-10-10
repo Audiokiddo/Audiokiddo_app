@@ -82,10 +82,7 @@ class ItemArt extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (!ref.watch(hasCoverProvider(item))) {
-      return ArtScene(
-        category: itemCategory(item),
-        seed: seed ?? item.id.codeUnits.fold(0, (a, b) => a + b) % 5,
-      );
+      return ArtScene(category: itemCategory(item), seed: seed ?? item.id.codeUnits.fold(0, (a, b) => a + b) % 5);
     }
     return CoverImage(asset: coverAssetPath(item.id));
   }

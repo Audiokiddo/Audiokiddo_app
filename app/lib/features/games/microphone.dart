@@ -52,8 +52,7 @@ class RecordMicrophone implements MicrophoneInput {
         AudioSessionConfiguration(
           avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
           avAudioSessionCategoryOptions:
-              AVAudioSessionCategoryOptions.defaultToSpeaker |
-              AVAudioSessionCategoryOptions.allowBluetoothA2dp,
+              AVAudioSessionCategoryOptions.defaultToSpeaker | AVAudioSessionCategoryOptions.allowBluetoothA2dp,
           avAudioSessionMode: AVAudioSessionMode.defaultMode,
         ),
       );

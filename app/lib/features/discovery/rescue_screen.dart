@@ -79,9 +79,7 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              results
-                  ? 'Propozycje do $minutes minut'
-                  : 'Znajdźmy zabawę na tę chwilę. Bez długich przygotowań.',
+              results ? 'Propozycje do $minutes minut' : 'Znajdźmy zabawę na tę chwilę. Bez długich przygotowań.',
               textAlign: TextAlign.center,
               style: text.bodyMedium,
             ),
@@ -146,10 +144,7 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
                 style: text.bodySmall,
               ),
               if (materials.isNotEmpty)
-                TextButton(
-                  onPressed: () => setState(materials.clear),
-                  child: const Text('Dziś bez przygotowań'),
-                ),
+                TextButton(onPressed: () => setState(materials.clear), child: const Text('Dziś bez przygotowań')),
               const SizedBox(height: 24),
               FilledButton.icon(
                 onPressed: catalog.isLoading
@@ -173,10 +168,7 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
                 'Nie ma jeszcze dostępnej zabawy spełniającej wszystkie warunki. Spróbuj dłuższego czasu lub innych materiałów.',
               ),
               const SizedBox(height: 16),
-              FilledButton(
-                onPressed: () => setState(() => results = false),
-                child: const Text('Zmień wybór'),
-              ),
+              FilledButton(onPressed: () => setState(() => results = false), child: const Text('Zmień wybór')),
             ] else ...[
               Text(
                 'Idealne na ${(top.durationSec / 60).ceil() <= 10 ? 'krótką chwilę' : '${(top.durationSec / 60).ceil()} minut'}',

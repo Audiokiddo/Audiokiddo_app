@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart' show ReplacementMode;
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 
@@ -29,20 +32,22 @@ class InAppPurchaseGateway implements gw.StoreGateway {
     for (final d in response.productDetails) {
       final subscription = ProductIds.subscriptions.contains(d.id);
       final trial = subscription ? _freeTrialDays(d) : null;
-      // Google returns one entry per subscription offer; prefer the one with a trial.
-      if (result[d.id]?.freeTrialDays != null) continue;
+      final comeback = subscription ? _comebackPrice(d) : null;
+      // Google returns one entry per subscription offer, only those this user may take: a
+      // win-back offer (tag "winback") first, then one with a trial, then the base plan.
+      final kept = result[d.id];
+      if (kept?.comebackPrice != null || (kept?.freeTrialDays != null && comeback == null)) continue;
       _details[d.id] = d;
       result[d.id] = gw.StoreProduct(
         id: d.id,
         title: d.title,
         price: _basePrice(d),
         kind: subscription ? gw.StoreProductKind.subscription : gw.StoreProductKind.oneTime,
-        period: subscription
-            ? (d.id == ProductIds.yearly ? gw.BillingPeriod.year : gw.BillingPeriod.month)
-            : null,
+        period: subscription ? (ProductIds.isYearly(d.id) ? gw.BillingPeriod.year : gw.BillingPeriod.month) : null,
         freeTrialDays: trial,
         rawPrice: _baseRawPrice(d),
         currencyCode: d.currencyCode,
+        comebackPrice: comeback,
       );
     }
     return result.values.toList();
@@ -60,14 +65,22 @@ class InAppPurchaseGateway implements gw.StoreGateway {
   /// The regular (after-trial) price.
   static String _basePrice(ProductDetails d) {
     if (d is GooglePlayProductDetails && d.subscriptionIndex != null) {
-      return d
-          .productDetails
-          .subscriptionOfferDetails![d.subscriptionIndex!]
-          .pricingPhases
-          .last
-          .formattedPrice;
+      return d.productDetails.subscriptionOfferDetails![d.subscriptionIndex!].pricingPhases.last.formattedPrice;
     }
     return d.price;
+  }
+
+  /// The first, lower price of a Google Play offer tagged "winback" (Play Console → the
+  /// subscription → Offers → tag), or null.
+  static String? _comebackPrice(ProductDetails d) {
+    if (d is! GooglePlayProductDetails || d.subscriptionIndex == null) return null;
+    final offer = d.productDetails.subscriptionOfferDetails![d.subscriptionIndex!];
+    if (!offer.offerTags.contains('winback')) return null;
+    final first = offer.pricingPhases.first;
+    final base = offer.pricingPhases.last;
+    return first.priceAmountMicros > 0 && first.priceAmountMicros < base.priceAmountMicros
+        ? first.formattedPrice
+        : null;
   }
 
   static int? _freeTrialDays(ProductDetails d) {
@@ -111,8 +124,28 @@ class InAppPurchaseGateway implements gw.StoreGateway {
 
   @override
   Future<void> buy(gw.StoreProduct product, {String? accountToken}) async {
-    final details =
-        _details[product.id] ?? (await _iap.queryProductDetails({product.id})).productDetails.first;
+    final details = _details[product.id] ?? (await _iap.queryProductDetails({product.id})).productDetails.first;
+    // Moving to another plan on Google Play replaces the current subscription (the App Store
+    // does this by itself: all plans are in one subscription group).
+    if (Platform.isAndroid && ProductIds.subscriptions.contains(product.id)) {
+      final past = await _iap.getPlatformAddition<InAppPurchaseAndroidPlatformAddition>().queryPastPurchases();
+      final current = past.pastPurchases
+          .where((p) => ProductIds.subscriptions.contains(p.productID) && p.productID != product.id)
+          .firstOrNull;
+      if (current != null) {
+        await _iap.buyNonConsumable(
+          purchaseParam: GooglePlayPurchaseParam(
+            productDetails: details,
+            applicationUserName: accountToken,
+            changeSubscriptionParam: ChangeSubscriptionParam(
+              oldPurchaseDetails: current,
+              replacementMode: ReplacementMode.withTimeProration,
+            ),
+          ),
+        );
+        return;
+      }
+    }
     // Subscriptions and one-time unlocks both use the non-consumable path of the plugin.
     await _iap.buyNonConsumable(
       purchaseParam: PurchaseParam(productDetails: details, applicationUserName: accountToken),

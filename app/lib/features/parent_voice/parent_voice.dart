@@ -64,10 +64,7 @@ class FileParentVoiceStore implements ParentVoiceStore {
   Future<void> startRecording(String childId, ParentClip clip) async {
     final recorder = _recorder = AudioRecorder();
     final path = _recordingPath = await _path(childId, clip);
-    await recorder.start(
-      const RecordConfig(encoder: AudioEncoder.aacLc, bitRate: 64000, numChannels: 1),
-      path: path,
-    );
+    await recorder.start(const RecordConfig(encoder: AudioEncoder.aacLc, bitRate: 64000, numChannels: 1), path: path);
   }
 
   @override
@@ -110,9 +107,7 @@ class FileParentVoiceStore implements ParentVoiceStore {
   String? get recordingPath => _recordingPath;
 }
 
-final parentVoiceStoreProvider = Provider<ParentVoiceStore>(
-  (ref) => FileParentVoiceStore(const DeviceStorage()),
-);
+final parentVoiceStoreProvider = Provider<ParentVoiceStore>((ref) => FileParentVoiceStore(const DeviceStorage()));
 
 /// Clips recorded for a child; invalidate after recording or deleting.
 final parentClipsProvider = FutureProvider.family<Map<ParentClip, String>, String>(

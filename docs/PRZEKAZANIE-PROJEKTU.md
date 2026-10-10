@@ -90,23 +90,13 @@ Materiały źródłowe Dawida (poza repo): `~/Desktop/claude folder/AudioKiddo-m
    bez przewodnika + `detektyw/przewodnik.pdf`, `slowa-i-wiedza/przewodnik.pdf`,
    `wyobraznia/przewodnik.pdf`) do `…/audiokiddo-pliki/nagrania/pdf/<pakiet>/`, potem
    `verify_server_files.py`. Wymaga Maca i FileZilli (Dawid).
-2. **Poprawić 2 testy** w `app/test/screens_test.dart`: „favourite appears on the Moje tab”
-   (tapuje dawną ikonę Ulubionych w pasku – Ulubione są teraz pod sercem w nagłówku Startu
-   i w „Więcej”) oraz „playable item offers a download with its size” (sprawdzić, czy to skutek
-   poprzedniego).
-3. **Interaktywne akta sprawy Detektywa** (prośba Dawida):
-   - akta „pod ręką” w czasie zabawy: przycisk „Akta sprawy” w odtwarzaczu (gdy zabawa ma PDF);
-   - wersja interaktywna: strony PDF rysowane na telefonie (`printing` → `Printing.raster`),
-     pod każdą stroną odpowiedzi do zaznaczenia (duże przyciski / pole kodu), komunikat
-     „Dobry wybór!” albo „Spróbuj jeszcze raz”; zadania otwarte i słuchowe bez oceniania
-     („Sprawdźcie z Maxem i Milą”); dane zadań i odpowiedzi w małym JSON (np. `app/assets/case_files.json`).
-   - Odpowiedzi „Złodziej naszyjnika” (ustalone): 1) 41 (z opcji 38/42/41); 2) drzwi 3 „Figlarz”
-     (trójkąt w dwóch kółkach; opcje Fikołek/Zgrywalski/Figlarz/Wiercipiętek); 3) litera „Z”
-     (A1→A5→C1→C5); 4) kod 7895; 5) „POD LAMPĄ JEST KLUCZ”; 6) osoba 2 (okrągłe okulary);
-     7) „SALA PODUSZKOWA”; 8) kolory z nagrania (słuchowe – bez oceniania).
-   - Pozostałe sprawy (Znikające dzwonki, Na ratunek budce z lodami, Tajemnicze znaki, Gadający
-     śmietnik): odpowiedzi ustalić, oglądając strony (render: PyMuPDF `pip3 install --user pymupdf`).
-     Np. „Na ratunek…” zad. 2 to szyfr 13-1-7-9-3-26-11-1 = „MAGICZKA”? – sprawdzić na stronie.
+2. ~~Poprawić 2 testy~~ – zrobione w chmurze (4.10.2026).
+3. ~~Interaktywne akta sprawy Detektywa~~ – zrobione w chmurze (4.10.2026): ekran `/akta/:id`
+   (`app/lib/features/pdf/case_file_screen.dart`), przycisk „Akta sprawy” w odtwarzaczu
+   i „Rozwiązuj w telefonie” na karcie zabawy, dane w `app/assets/case_files.json`.
+   Do sprawdzenia przez Dawida na iPhonie (rysowanie stron PDF działa tylko na urządzeniu)
+   i w treści nagrań: odpowiedzi odczytane ze stron, nie z nagrań. Labirynt „Znikające dzwonki”
+   zad. 2 i zadania słuchowe/rysunkowe są bez oceniania.
 4. **Przebudowa Biblioteki** (prośba Dawida): czytelniejsza, z wyraźnym podziałem na pakiety
    (karty pakietów z okładką, liczbą zabaw, co masz / co do odblokowania, potem zabawy w pakiecie;
    osobno piosenki i gry; filtry wieku i czasu). `lib/features/catalog/library_screen.dart`.
@@ -136,3 +126,31 @@ gh repo create audiokiddo-app --private --source=. --push
 (albo utworzyć prywatne repo na github.com i `git remote add origin … && git push -u origin main`).
 Potem w Claude Code na claude.ai/code wybrać to repozytorium. **Nie wypychać** kluczy ani plików
 `.env` (są w `.gitignore`; przed pushem sprawdzić `git status`).
+
+---
+
+## Stan na 6.10.2026 (przekazanie do nowej sesji)
+
+Gałąź robocza: `claude/busy-babbage-aeq1ro` (nie wypychać do `main` bez zgody Dawida). Instalacja na iPhonie: `bash tool/phone_build.sh`. Testy: w `app/` `flutter test` (warto plik po pliku z limitem czasu), baza `bash tool/test_db.sh`, funkcje `cd supabase/functions && deno test`.
+
+### Ostatnio zrobione (commity 0089927 i 7d994d7 oraz niezacommitowane poprawki testów)
+- **Samouczek Szop’ena** (`app/lib/features/welcome/szop_tour.dart`): przełącza zakładki, przewija do funkcji (`TourTarget` w home, bibliotece, sklepie, Więcej), żółta ramka, ciemniejsze tło. Dawid zgłosił, że ramki trafiały w złe miejsca: poprawione (pomiar po zakończeniu przewijania), **do sprawdzenia na iPhonie**.
+- **Samouczek detektywa** przy pierwszej zabawie z aktami (`app/lib/features/pdf/case_file_tutorial.dart`).
+- **Tryb samochodu** (`SessionScreen` w `app/lib/features/session/session_screens.dart`): duże przyciski, układ poziomy z przyciskami po prawej. Stary rysowany szop zastąpiony wszędzie obecnym Szop’enem (widżet `Kiddo` rysuje teraz `SzopSticker`).
+- **Abonament pierwszy wszędzie**: wspólny `SubscriptionOffer` (`app/lib/features/purchases/subscription_value.dart`): przekreślona cena miesięczna, 19,99 zł/mies., jedna linia oszczędności, jeden przycisk. Pakiety na zawsze schowane pod „Wolisz kupić pakiet na zawsze?” (Sklep, paywall), na stronie pakietu jako mały link.
+- **Okno po darmowej zabawie** (`after_free_play.dart`, wyzwalane w `now_playing_pill.dart`): najpierw kolejna darmowa zabawa, potem oferta.
+- **„Co teraz?”** (`app/lib/features/home/quick_pick.dart`): czas 15–60 min, losowana kolejność (najpierw niesłuchane), „Jedziemy autem”, zabawa do dokończenia, „Włącz po kolei”.
+- **„Co dziś robimy”**: do 7 zabaw, tylko z naszymi okładkami.
+- **Powitanie Szop’ena po otwarciu** (`app/lib/features/home/launch_greeting.dart`).
+- **Konto**: rejestracja e-mail + hasło (kod tylko potwierdza adres, `signUp`/`verifySignUp`), kod tylko przy zapomnianym haśle i nie zakłada konta (`shouldCreateUser: false`, błąd `noAccount`), po usunięciu konta czyszczone dane z telefonu.
+- **Przypomnienia**: własna godzina, kafelek w Więcej → Powiadomienia.
+- **Tryb jasny/ciemny**: domyślnie automat (ciemny 20:00–6:00), pytanie usunięte z powitania.
+- **Zakupy**: `PreviewStoreGateway` — bez produktów w App Store pokazuje nasze ceny i komunikat zamiast zawieszenia.
+- **CRM w Studio** (zakładka CRM, `studio/lib/crm/`): pulpit, decyzje, zadania, pomysły, kalendarz, reklamy, mailing, użytkownicy, aktualizacje, ustawienia. Agent COO: funkcja `supabase/functions/coo` (Claude API), MailerLite: `supabase/functions/mailerlite`. Opis: `docs/CRM.md`. Migracja `20261008000001_crm.sql` i funkcje **są już wdrożone** przez Dawida.
+
+### Do zrobienia
+1. **Dokończyć testy aplikacji** po ostatnich zmianach. Ostatni pełny przebieg miał błędy w: `screens_test` (cena „7 dni za darmo, potem 239,88 zł / rok” — tekst z nowej oferty), `session_test` („DOBRANOC” w wieczornym hero), `small_screens_test` (przepełnienia o 2–16 px na małych ekranach — prawdopodobnie nowy odtwarzacz samochodowy lub `SubscriptionOffer`), `navigation_motion_test` (animacje widżetu `Kiddo`), `account_test` (nowa rejestracja hasłem — test już poprawiony, sprawdzić), test „parent encounter… large text”. `shop_test` już przechodzi.
+2. Sprawdzić na iPhonie samouczek (ramki), tryb samochodu w poziomie, rejestrację hasłem i usuwanie konta.
+3. Szablon e-maila „Confirm signup” w Supabase musi pokazywać kod (`supabase/templates/kod.html`); jeśli przychodzi link zamiast kodu, Dawid robi `supabase config push`.
+4. Dawid: klucz `ANTHROPIC_API_KEY` (`supabase secrets set`), wgrać `studio/build/web` do `public_html/studio` (zbudowane `bash tool/studio_build.sh`), dopisać swój e-mail do tabeli `admins`, później MailerLite (`MAILERLITE_API_KEY`, `MAILERLITE_FROM`).
+5. Otwarte z wcześniej: konta Apple Developer i Google Play, logowanie Apple/Google, usunięcie `nagrania/pdf/przewodnik.pdf` z serwera, okładka dla „Prawda czy nie?”.

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:ak_core/ak_core.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,9 +15,12 @@ import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
 import '../discovery/reference_widgets.dart';
 import '../home/quick_pick.dart';
+import '../welcome/szop_tour.dart';
 import '../personal/personal_repository.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
+import 'szop_after_play.dart';
+import 'szop_lines.dart';
 
 const _barColor = referencePurple;
 const _barHeight = 68.0;
@@ -48,10 +52,8 @@ class BottomDock extends ConsumerWidget {
             direction: DismissDirection.endToStart,
             onDismissed: (_) {
               ref.read(hiddenResumeProvider.notifier).hide(resume.key);
-              // A paused play swiped away is finished with; a playing one keeps playing.
-              if (resume.loaded && !(ref.read(playbackStateProvider).value?.playing ?? false)) {
-                ref.read(audioHandlerProvider).endSession();
-              }
+              // Swiping the card away ends the play too, playing or paused.
+              if (resume.loaded) ref.read(audioHandlerProvider).endSession();
             },
             child: _ResumeCard(resume: resume),
           ),
@@ -65,7 +67,12 @@ class BottomDock extends ConsumerWidget {
           child: Row(
             children: [
               for (var i = 0; i < 2; i++) _tab(i),
-              const Expanded(child: Center(child: _PlayButton())),
+              // Szop’en's tour lights up the bar's slots (0–4, the play button is 2).
+              Expanded(
+                child: Center(
+                  child: TourTarget(id: 'slot-2', child: const _PlayButton()),
+                ),
+              ),
               for (var i = 2; i < 4; i++) _tab(i),
             ],
           ),
@@ -79,32 +86,35 @@ class BottomDock extends ConsumerWidget {
     final selected = i == current;
     final color = selected ? Colors.white : Colors.white.withValues(alpha: .62);
     return Expanded(
-      child: Semantics(
-        selected: selected,
-        button: true,
-        label: tab.label,
-        excludeSemantics: true,
-        child: InkResponse(
-          onTap: () => onTab(i),
-          radius: 36,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(selected ? tab.selected : tab.icon, color: color, size: 25),
-              const SizedBox(height: 3),
-              Text(
-                tab.label,
-                maxLines: 1,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 11,
-                  color: color,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+      child: TourTarget(
+        id: 'slot-${i < 2 ? i : i + 1}',
+        child: Semantics(
+          selected: selected,
+          button: true,
+          label: tab.label,
+          excludeSemantics: true,
+          child: InkResponse(
+            onTap: () => onTab(i),
+            radius: 36,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(selected ? tab.selected : tab.icon, color: color, size: 25),
+                const SizedBox(height: 3),
+                Text(
+                  tab.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 11,
+                    color: color,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -120,9 +130,10 @@ class _PlayButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final media = ref.watch(currentMediaProvider).value;
     final playing = ref.watch(playbackStateProvider).value?.playing ?? false;
+    final active = media != null && playing;
     return Semantics(
       button: true,
-      label: media == null ? 'Szybki wybór zabawy' : 'Otwórz odtwarzacz: ${media.title}',
+      label: active ? 'Otwórz odtwarzacz: ${media.title}' : 'Co teraz? Szybki wybór zabawy',
       excludeSemantics: true,
       child: GestureDetector(
         // Playing: back to it. Otherwise a choice (with "carry on" on top when something waits).
@@ -133,19 +144,56 @@ class _PlayButton extends ConsumerWidget {
             showQuickPick(context);
           }
         },
-        child: Container(
-          width: 58,
-          height: 58,
-          decoration: BoxDecoration(
-            color: AkBrand.teal,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white.withValues(alpha: .9), width: 3),
-            boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 12, offset: Offset(0, 4))],
-          ),
-          child: Icon(
-            media != null && playing ? Icons.graphic_eq_rounded : Icons.play_arrow_rounded,
-            color: Colors.white,
-            size: 34,
+        // Raised above the bar, warm and round, with a word under it: the one obvious button.
+        child: SizedBox(
+          width: 78,
+          height: _barHeight,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter,
+            children: [
+              Positioned(
+                top: -14,
+                child: Container(
+                  width: 62,
+                  height: 62,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [AkBrand.sun, AkBrand.orange],
+                    ),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                    boxShadow: const [BoxShadow(color: Color(0x66000000), blurRadius: 14, offset: Offset(0, 5))],
+                  ),
+                  child: Icon(
+                    active ? Icons.graphic_eq_rounded : Icons.play_arrow_rounded,
+                    color: Colors.white,
+                    size: 38,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 6,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    active ? 'Słuchacie' : 'Co teraz?',
+                    maxLines: 1,
+                    textScaler: TextScaler.noScaling,
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 11,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -224,7 +272,13 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
     final resume = widget.resume;
     final handler = ref.watch(audioHandlerProvider);
     final playing = resume.loaded && (ref.watch(playbackStateProvider).value?.playing ?? false);
-    final pose = playing ? SzopPose.klaszcze : (resume.loaded ? SzopPose.prosi : SzopPose.chytry);
+    final ended =
+        resume.loaded && ref.watch(playbackStateProvider).value?.processingState == AudioProcessingState.completed;
+    final endedItem = ended ? ref.watch(catalogProvider).value?.item(resume.mediaId!) : null;
+    final afterPlay = ended && !(ref.watch(discoveryProvider).value?.quiet ?? false)
+        ? ref.watch(szopAfterPlayProvider(endedItem))
+        : null;
+    final pose = afterPlay?.pose ?? (playing ? SzopPose.klaszcze : (resume.loaded ? SzopPose.prosi : SzopPose.chytry));
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
     void open() {
@@ -238,7 +292,7 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!playing) const ResumeAside(),
+        ResumeAside(key: ValueKey((afterPlay, playing)), afterPlay: afterPlay?.text, playing: playing),
         SizedBox(
           height: 76,
           child: Stack(
@@ -267,6 +321,8 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
                                 Text(
                                   playing
                                       ? 'Teraz słuchacie'
+                                      : ended
+                                      ? 'Brawo! Przygoda skończona'
                                       : resume.loaded
                                       ? 'Wróćmy do zabawy'
                                       : 'Dokończ przygodę',
@@ -361,9 +417,17 @@ class _BreathingState extends ConsumerState<_Breathing> with SingleTickerProvide
   );
 }
 
-/// One brief comment per day, only beside a paused adventure. Never speaks over audio.
+/// One brief comment now and then beside a paused adventure, and always one when a play has
+/// just ended ([afterPlay]). Never speaks over audio.
 class ResumeAside extends ConsumerStatefulWidget {
-  const ResumeAside({super.key});
+  const ResumeAside({super.key, this.afterPlay, this.playing = false});
+
+  /// Szop’en’s line for the play that just ended: shown at once, outside the daily limit.
+  final String? afterPlay;
+
+  /// Something plays: quieter lines for the parent (the bubble never makes a sound).
+  final bool playing;
+
   @override
   ConsumerState<ResumeAside> createState() => _ResumeAsideState();
 }
@@ -387,13 +451,20 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
 
   // Now and then, never nagging: first after a few seconds, then every few minutes while the
   // card is on screen, at most a handful a day (and never with "Komentarze Szop’ena" off).
-  static const _first = Duration(seconds: 4);
-  static const _every = Duration(minutes: 4);
-  static const _perDay = 6;
+  static const _first = Duration(seconds: 3);
+  static const _every = Duration(minutes: 2);
+  static const _perDay = 15;
 
   @override
   void initState() {
     super.initState();
+    if (widget.afterPlay case final line?) {
+      _line = line;
+      _hide = Timer(const Duration(seconds: 12), () {
+        if (mounted) setState(() => _line = null);
+      });
+      return;
+    }
     _next = Timer(_first, _show);
   }
 
@@ -409,7 +480,11 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
       if (count >= _perDay || !mounted) return;
       await db.writeValue('szopen_bubbles', '$day|${count + 1}');
       if (!mounted) return;
-      setState(() => _line = _lines[_random.nextInt(_lines.length)]);
+      setState(
+        () => _line = widget.playing
+            ? ref.read(szopPlayingBagProvider).next().$2
+            : _lines[_random.nextInt(_lines.length)],
+      );
       _hide = Timer(const Duration(seconds: 9), () {
         if (mounted) setState(() => _line = null);
       });
@@ -446,18 +521,23 @@ class _ResumeAsideState extends ConsumerState<ResumeAside> {
                 curve: Curves.easeOutBack,
                 builder: (context, v, child) =>
                     Transform.scale(scale: v, alignment: Alignment.bottomLeft, child: child),
-                child: GestureDetector(
-                  onTap: () => setState(() => _line = null),
-                  child: Semantics(
-                    label: 'Szop’en mówi: $line',
-                    child: CustomPaint(
-                      painter: const _BubblePainter(color: Colors.white, tailX: 46),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 20),
-                        child: Text(
-                          line,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.25),
+                child: Dismissible(
+                  key: ValueKey(line),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (_) => setState(() => _line = null),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _line = null),
+                    child: Semantics(
+                      label: 'Szop’en mówi: $line',
+                      child: CustomPaint(
+                        painter: const _BubblePainter(color: Colors.white, tailX: 46),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 10, 14, 20),
+                          child: Text(
+                            line,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: ink, fontWeight: FontWeight.w600, height: 1.25),
+                          ),
                         ),
                       ),
                     ),

@@ -190,11 +190,7 @@ class _ParentAsideState extends ConsumerState<ParentAside> {
                 children: [
                   Text(
                     'DLA RODZICA',
-                    style: _typewriter.copyWith(
-                      fontSize: 10,
-                      color: fg.withValues(alpha: 0.55),
-                      letterSpacing: 1.2,
-                    ),
+                    style: _typewriter.copyWith(fontSize: 10, color: fg.withValues(alpha: 0.55), letterSpacing: 1.2),
                   ),
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),

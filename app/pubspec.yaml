@@ -1,7 +1,7 @@
 name: audiokiddo
 description: AudioKiddo — interaktywne audiozabawy i piosenki dla dzieci.
 publish_to: 'none'
-version: 0.1.0+1
+version: 1.0.0+3
 
 environment:
   sdk: ^3.13.4
@@ -25,6 +25,7 @@ dependencies:
   background_downloader: ^9.6.3
   crypto: ^3.0.7
   path: ^1.9.1
+  pdf: ^3.11.0
   printing: ^5.15.1
   in_app_purchase: ^3.3.1
   in_app_purchase_android: ^0.5.3
@@ -41,6 +42,7 @@ dependencies:
   share_plus: ^13.3.0
   speech_to_text: ^7.5.0
   swipeable_page_route: ^0.4.8
+  in_app_review: ^2.0.12
 
 dev_dependencies:
   flutter_test:
@@ -54,10 +56,13 @@ flutter:
   generate: true
   assets:
     - assets/mock/
+    - assets/case_files.json
+    - assets/guide_links.json
     - assets/audio/
     - assets/audio/kiddo/
     - assets/covers/
     - assets/szop/
+    - assets/brand/
   fonts:
     - family: Poppins
       fonts:

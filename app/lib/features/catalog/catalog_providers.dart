@@ -30,12 +30,39 @@ class BundledCatalogSource implements CatalogSource {
 
 final catalogSourceProvider = Provider<CatalogSource>((ref) => const BundledCatalogSource());
 
-final catalogProvider = FutureProvider<Catalog>((ref) async {
+/// Everything in the manifest, plays announced for later included (the calendar of news).
+final fullCatalogProvider = FutureProvider<Catalog>((ref) async {
   final result = parseCatalog(await ref.watch(catalogSourceProvider).load());
   for (final skipped in result.skipped) {
     debugPrint('catalog: skipped $skipped');
   }
   return result.catalog;
+});
+
+/// What families can use today: plays with a release date in the future wait in
+/// [upcomingItemsProvider] until that day.
+final catalogProvider = FutureProvider<Catalog>((ref) async {
+  final full = await ref.watch(fullCatalogProvider.future);
+  final now = ref.watch(clockProvider)();
+  final today = DateTime(now.year, now.month, now.day);
+  final released = [
+    for (final i in full.items)
+      if (i.releasedOn == null || !i.releasedOn!.isAfter(today)) i,
+  ];
+  if (released.length == full.items.length) return full;
+  return Catalog(version: full.version, packs: full.packs, items: released, shelves: full.shelves);
+});
+
+/// Plays announced with a future release date, soonest first ("Wkrótce").
+final upcomingItemsProvider = Provider<List<ContentItem>>((ref) {
+  final full = ref.watch(fullCatalogProvider).value;
+  final now = ref.watch(clockProvider)();
+  final today = DateTime(now.year, now.month, now.day);
+  if (full == null) return const [];
+  return [
+    for (final i in full.items)
+      if (i.releasedOn != null && i.releasedOn!.isAfter(today)) i,
+  ]..sort((a, b) => a.releasedOn!.compareTo(b.releasedOn!));
 });
 
 /// Entitlements known on this device (dev source until Etap 3 — see access_controller.dart).

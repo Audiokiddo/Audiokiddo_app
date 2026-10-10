@@ -9,6 +9,8 @@ import '../account/account_service.dart';
 
 import '../../core/storage/database.dart';
 import '../../core/storage/storage_providers.dart';
+import '../catalog/catalog_providers.dart';
+import '../downloads/download_providers.dart';
 
 /// What this device currently knows about the family's access, persisted locally so
 /// downloaded content keeps working offline within the lease (ARCHITECTURE §8).
@@ -113,18 +115,13 @@ class DevEntitlementBackend implements EntitlementBackend {
     );
     final purchased = [
       for (final p in await _purchases())
-        e(
-          p['scope']! as String,
-          until: p['valid_until'] == null ? null : DateTime.parse(p['valid_until']! as String),
-        ),
+        e(p['scope']! as String, until: p['valid_until'] == null ? null : DateTime.parse(p['valid_until']! as String)),
     ];
     return [
       ...purchased,
       ...switch (await mode()) {
         DevAccessMode.none => const [],
-        DevAccessMode.subscription => [
-          e(Scopes.allContent, until: DateTime.now().add(const Duration(days: 30))),
-        ],
+        DevAccessMode.subscription => [e(Scopes.allContent, until: DateTime.now().add(const Duration(days: 30)))],
         DevAccessMode.packWyobraznia => [e(Scopes.pack('wyobraznia'))],
         DevAccessMode.packDetektyw => [e(Scopes.pack('detektyw'))],
         DevAccessMode.allPacks => [
@@ -174,9 +171,7 @@ class AccessController extends AsyncNotifier<AccessState> {
   @override
   Future<AccessState> build() async {
     final raw = await _db.readValue(_key);
-    final stored = raw == null
-        ? const AccessState()
-        : AccessState.fromJson(jsonDecode(raw) as Map<String, Object?>);
+    final stored = raw == null ? const AccessState() : AccessState.fromJson(jsonDecode(raw) as Map<String, Object?>);
     unawaited(Future.microtask(refresh));
     // Signing in, out or into another account changes what the device may play.
     ref.listen(accountUserProvider, (previous, next) {
@@ -198,12 +193,9 @@ class AccessController extends AsyncNotifier<AccessState> {
     final paidUntil = entitlements
         .where((e) => e.isActiveAt(now))
         .map((e) => e.validUntil)
-        .fold<DateTime?>(
-          null,
-          (latest, d) => d == null || (latest != null && latest.isAfter(d)) ? latest : d,
-        );
+        .fold<DateTime?>(null, (latest, d) => d == null || (latest != null && latest.isAfter(d)) ? latest : d);
     final hasOneTime = entitlements.any((e) => e.isActiveAt(now) && e.validUntil == null);
-    await _save(
+    await _saveAndPrune(
       AccessState(
         entitlements: entitlements,
         leaseValidUntil: entitlements.isEmpty
@@ -212,6 +204,15 @@ class AccessController extends AsyncNotifier<AccessState> {
         lastSeenAt: _later(state.value?.lastSeenAt, now),
       ),
     );
+  }
+
+  /// Saves the server's answer, then removes downloads the family may no longer play (a
+  /// cancelled subscription, an ended trial): paid files must not stay playable on the phone.
+  Future<void> _saveAndPrune(AccessState next) async {
+    await _save(next);
+    if (!ref.mounted) return;
+    // In the background: the refresh never waits for file work.
+    unawaited(pruneLockedDownloads(ref).catchError((Object e) => debugPrint('access: downloads not pruned ($e)')));
   }
 
   /// Developer screen: pretend the device was offline for longer than the lease.
@@ -236,3 +237,15 @@ class AccessController extends AsyncNotifier<AccessState> {
 }
 
 final accessProvider = AsyncNotifierProvider<AccessController, AccessState>(AccessController.new);
+
+/// Removes downloaded plays the family cannot play any more. Free plays always stay.
+Future<void> pruneLockedDownloads(Ref ref) async {
+  final catalog = await ref.read(catalogProvider.future);
+  final manager = ref.read(downloadManagerProvider);
+  final summary = await manager.watchSummary().first;
+  for (final id in summary.itemIds) {
+    final item = catalog.item(id);
+    if (item == null || item.isFree) continue;
+    if (!ref.read(canPlayProvider(item))) await manager.remove(item);
+  }
+}

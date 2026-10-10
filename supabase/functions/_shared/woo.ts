@@ -8,6 +8,11 @@ export interface WooOrder {
   status: WooOrderStatus;
   /** 'woo:<product_id>' for each purchased product (mapped to scopes by store_products). */
   productRefs: string[];
+  /** The buyer ticked "I want letters from AudioKiddo" at checkout (order meta
+   * audiokiddo_newsletter; no leading underscore, or the REST API would hide it). */
+  newsletter?: boolean;
+  firstName?: string;
+  productNames?: string[];
 }
 
 /** Normalised e-mail used to match shop buyers with app accounts. */
@@ -63,7 +68,18 @@ export function parseWooOrder(payload: unknown): WooOrder | null {
         .map((p) => `woo:${p}`),
     ),
   ];
-  return { orderId: id, email, status, productRefs };
+  const meta = Array.isArray(order.meta_data) ? order.meta_data as Record<string, unknown>[] : [];
+  const newsletter = meta.some((m) => m.key === "audiokiddo_newsletter" && (m.value === "yes" || m.value === "1"));
+  const names = items.map((i) => (i as Record<string, unknown>).name).filter((n): n is string => typeof n === "string");
+  return {
+    orderId: id,
+    email,
+    status,
+    productRefs,
+    newsletter,
+    ...(typeof billing?.first_name === "string" ? { firstName: billing.first_name.trim().slice(0, 60) } : {}),
+    productNames: names.map((n) => n.slice(0, 120)),
+  };
 }
 
 /** SHA-256 hex, used for store_events.payload_hash. */
@@ -91,4 +107,40 @@ export async function wooGet(
   withKey.searchParams.set("consumer_key", key);
   withKey.searchParams.set("consumer_secret", secret);
   return await fetch(withKey);
+}
+
+/** The MailerLite subscriber for a buyer who agreed to letters: name, what they bought,
+ * the buyers' group (its automation sends the after-purchase series). */
+export function buyerSubscriber(order: WooOrder, groupId: string): Record<string, unknown> {
+  return {
+    email: order.email,
+    fields: { name: order.firstName ?? "", last_purchase: (order.productNames ?? []).join(", ").slice(0, 250) },
+    groups: [groupId],
+    status: "active",
+  };
+}
+
+/**
+ * Adds a note to an order. A customer note is e-mailed to the buyer by WooCommerce.
+ * Needs a key with write access (WOO_WRITE_KEY / WOO_WRITE_SECRET).
+ */
+export async function wooAddCustomerNote(
+  base: string,
+  key: string,
+  secret: string,
+  orderId: number,
+  note: string,
+): Promise<boolean> {
+  const url = new URL(`/wp-json/wc/v3/orders/${orderId}/notes`, base);
+  const body = JSON.stringify({ note, customer_note: true });
+  const headers = { "Content-Type": "application/json" };
+  let response = await fetch(url, { method: "POST", body, headers: { ...headers, Authorization: `Basic ${btoa(`${key}:${secret}`)}` } });
+  if (response.status === 401) {
+    const withKey = new URL(url);
+    withKey.searchParams.set("consumer_key", key);
+    withKey.searchParams.set("consumer_secret", secret);
+    response = await fetch(withKey, { method: "POST", body, headers });
+  }
+  await response.body?.cancel();
+  return response.ok;
 }

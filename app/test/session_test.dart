@@ -12,7 +12,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:audiokiddo/features/player/player_providers.dart';
+
 import 'helpers.dart';
+import 'queue_runner_test.dart' show QueueAudio;
 
 /// Records what the session plays; catalog items last until [stop] or [finishItem].
 class FakeSessionAudio implements SessionAudio {
@@ -182,6 +185,66 @@ void main() {
       expect(audio.log.where((l) => l.startsWith('line:')), isEmpty);
       expect(container.read(sessionProvider).kind, isNull);
     });
+
+    // The countdown scaled to 250 ms, long enough to look at it mid-way.
+    ProviderContainer slowContainer() {
+      final slow = ProviderContainer(
+        overrides: [
+          sessionAudioProvider.overrideWithValue(audio),
+          parentVoiceStoreProvider.overrideWithValue(voice),
+          sessionTimeScaleProvider.overrideWithValue(0.05),
+        ],
+      );
+      addTearDown(slow.dispose);
+      return slow;
+    }
+
+    int played() => audio.log.where((l) => l.startsWith('item:')).length;
+
+    test('the next recording counts down first; the first one starts at once', () async {
+      final slow = slowContainer();
+      final session = slow.read(sessionProvider.notifier);
+      final done = session.start(SessionKind.trip, [
+        const LineStep('trip_start'),
+        ItemStep(item),
+        ItemStep(item),
+      ]);
+      await settle();
+      expect(slow.read(sessionProvider).countdown, isNull);
+      expect(audio.log, ['line:trip_start', 'item:${item.id}']);
+      audio.finishItem();
+      await settle();
+      final waiting = slow.read(sessionProvider);
+      expect(waiting.index, 2);
+      expect(waiting.countdown, inInclusiveRange(1, autoNextDelay.inSeconds));
+      expect(played(), 1);
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+      expect(slow.read(sessionProvider).countdown, isNull);
+      expect(played(), 2, reason: 'plays on by itself');
+      audio.finishItem();
+      await done;
+    });
+
+    test('a held countdown waits for the parent, then plays on', () async {
+      final slow = slowContainer();
+      final session = slow.read(sessionProvider.notifier);
+      final done = session.start(SessionKind.trip, [ItemStep(item), ItemStep(item)]);
+      await settle();
+      audio.finishItem();
+      await settle();
+      expect(slow.read(sessionProvider).countdown, isNotNull);
+      session.hold();
+      expect(slow.read(sessionProvider).held, isTrue);
+      await Future<void>.delayed(const Duration(milliseconds: 600));
+      expect(slow.read(sessionProvider).held, isTrue);
+      expect(played(), 1);
+      session.resume();
+      await settle();
+      expect(slow.read(sessionProvider).countdown, isNull);
+      expect(played(), 2);
+      audio.finishItem();
+      await done;
+    });
   });
 
   testWidgets('evening hero offers "Dobranoc", which runs the ritual', (tester) async {
@@ -207,6 +270,8 @@ void main() {
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 28, 20)),
           sessionAudioProvider.overrideWithValue(audio),
           sessionTimeScaleProvider.overrideWithValue(0.001),
+          // The car-style session screen shows the player's state and buttons.
+          audioHandlerProvider.overrideWithValue(QueueAudio()),
         ],
         child: const AudioKiddoApp(),
       ),

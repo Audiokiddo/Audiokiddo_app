@@ -18,6 +18,13 @@ class OnboardingController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// After the account was deleted: the next parent on this phone starts from the beginning.
+  Future<void> reset() async {
+    await _db.deleteValue(_key);
+    _done = false;
+    notifyListeners();
+  }
+
   Future<void> complete() async {
     await _db.writeValue(_key, 'true');
     _done = true;
