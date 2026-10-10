@@ -1749,3 +1749,5 @@ html.ak-locked { overflow: hidden; }
   .ak-hero-bubble { right: 0; top: -2%; max-width: 190px; font-size: 13.5px; padding: 10px 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .ak-hero-bubble { animation: none; } }
+/* Woostify puts its own SVG cross inside the remove link: one cross is enough. */
+.ak-drawer .woocommerce-mini-cart-item a.remove .woostify-svg-icon, .ak-drawer .woocommerce-mini-cart-item a.remove svg { display: none !important; }
