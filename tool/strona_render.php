@@ -105,6 +105,7 @@ function is_front_page() { return $GLOBALS['ak_stub']['view'] === 'start'; }
 function is_category() { return false; }
 function is_tag() { return false; }
 function is_admin() { return false; }
+function admin_url($p = '') { return 'https://audiokiddo.pl/wp-admin/' . ltrim($p, '/'); }
 function get_post_thumbnail_id($p = null) { return 0; }
 function get_attached_file($id) { return ''; }
 function rest_url($p = '') { return 'https://audiokiddo.pl/wp-json/' . ltrim($p, '/'); }
