@@ -416,6 +416,8 @@
       }
     });
     window.jQuery(document.body).on('added_to_cart', function (e, fragments, hash, button) {
+      // Some themes fire this on page load with nothing added: only a real add opens the cart.
+      if (!fragments && !button) return;
       var el = button && button.get ? button.get(0) : null;
       if (el && el.classList.contains('ak-btn')) {
         el.classList.add('is-added');

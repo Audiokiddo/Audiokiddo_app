@@ -79,6 +79,7 @@ function ak_packs(): array
     return [
         'wyobraznia' => [
             'title' => 'Wyobraźnia',
+            'short' => 'Dziecko wymyśla historie, postaci i całe światy.',
             'woo' => (int) ak_opt('woo_wyobraznia'),
             'color' => 'lav',
             'age_from' => 4,
@@ -96,6 +97,7 @@ function ak_packs(): array
         ],
         'slowa-i-wiedza' => [
             'title' => 'Słowa i Wiedza',
+            'short' => 'Zagadki, skojarzenia i zabawy słowne na głos.',
             'woo' => (int) ak_opt('woo_slowa'),
             'color' => 'teal',
             'age_from' => 4,
@@ -113,6 +115,7 @@ function ak_packs(): array
         ],
         'detektyw' => [
             'title' => 'Detektyw',
+            'short' => 'Śledztwa ze słuchu i akta sprawy do wydrukowania.',
             'woo' => (int) ak_opt('woo_detektyw'),
             'color' => 'sun',
             'age_from' => 7,

@@ -136,6 +136,31 @@ require AK_DIR . 'parts/header.php';
         </div>
     </section>
 
+    <?php $checker = ak_checked_by(); if ($checker) : ?>
+    <section class="ak-p3-sec" aria-label="Sprawdzone przez logopedkę">
+        <div class="ak-wrap ak-narrow">
+            <figure class="ak-guide-quote">
+                <blockquote><p><?php echo ak_bold($checker['text']); // escaped in ak_bold ?></p></blockquote>
+                <figcaption><img src="<?php echo esc_url(ak_img($checker['photo'])); ?>" alt="<?php echo esc_attr($checker['name']); ?>" width="64" height="64" loading="lazy"><span><strong>Audiozabawy sprawdziła: <?php echo esc_html($checker['name']); ?></strong><?php echo esc_html($checker['role']); ?></span></figcaption>
+            </figure>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <?php $pack_guides = array_unique(array_merge(...array_map(fn($k) => ak_pack_guides($k, 3), array_keys($inside)))); if ($pack_guides) : ?>
+    <nav class="ak-p3-sec ak-related-sec" aria-labelledby="ak-prod-guides-h">
+        <div class="ak-wrap ak-narrow">
+            <h2 id="ak-prod-guides-h">Poradniki dla rodziców</h2>
+            <div class="ak-related"><ul>
+                <?php foreach ($pack_guides as $g) : ?>
+                <li><a href="<?php echo esc_url(ak_landing_url($g)); ?>"><?php echo esc_html(ak_landings()[$g]['anchor']); ?></a></li>
+                <?php endforeach; ?>
+                <li><a href="<?php echo esc_url(ak_landing_url()); ?>">Wszystkie pomysły na zabawy</a></li>
+            </ul></div>
+        </div>
+    </nav>
+    <?php endif; ?>
+
     <?php if ($others) : ?>
     <nav class="ak-p3-sec ak-p3-more" aria-labelledby="ak-prod-more-h">
         <div class="ak-wrap">

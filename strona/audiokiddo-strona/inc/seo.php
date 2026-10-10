@@ -568,6 +568,14 @@ add_filter('wpseo_robots', function ($robots) {
     return $robots;
 });
 
+// Some of these pages are drawn by a page builder that skips Yoast's robots tag: the header
+// says it either way.
+add_action('template_redirect', function () {
+    if (is_page() && in_array(get_queried_object_id(), ak_hidden_page_ids(), true)) {
+        header('X-Robots-Tag: noindex, follow', true);
+    }
+}, 1);
+
 add_filter('wpseo_exclude_from_sitemap_by_post_ids', function ($ids) {
     return array_merge((array) $ids, ak_hidden_page_ids());
 });

@@ -71,6 +71,26 @@ add_action('wp_enqueue_scripts', function () {
         }
     }
     wp_dequeue_style('global-styles');
+    // Fonts come from the plugin; page builders and forms have nothing to draw here.
+    foreach (wp_styles()->queue as $handle) {
+        $src = (string) (wp_styles()->registered[$handle]->src ?? '');
+        if (preg_match('#fonts\.googleapis\.com|/elementor/|/contact-form-7/|wc-blocks|/woocommerce/assets/client/blocks/#', $src)) {
+            wp_dequeue_style($handle);
+        }
+    }
+    // The theme's scripts belong to its own markup, which these views do not use. One of them
+    // (Woostify) fires a fake "added to cart" on every page load.
+    foreach (wp_scripts()->queue as $handle) {
+        $src = (string) (wp_scripts()->registered[$handle]->src ?? '');
+        foreach ($theme_urls as $url) {
+            if ($src !== '' && str_starts_with($src, $url)) {
+                wp_dequeue_script($handle);
+            }
+        }
+    }
+    foreach (['payu-sfsdk', 'payu-sf-init', 'payu-gateway', 'contact-form-7', 'swv', 'wc-add-to-cart-variation', 'wp-util', 'underscore', 'googlesitekit-events-provider-contact-form-7'] as $handle) {
+        wp_dequeue_script($handle);
+    }
 
     wp_enqueue_style('audiokiddo-strona', ak_asset('css/strona.css'), [], AK_VERSION);
     $deps = [];
@@ -87,7 +107,7 @@ add_action('wp_head', function () {
         return;
     }
     // The bold Poppins is the headline voice: fetched early so headings do not jump.
-    echo '<link rel="preload" href="' . esc_url(ak_asset('fonts/Poppins-Bold.ttf')) . '" as="font" type="font/ttf" crossorigin>' . "\n";
+    echo '<link rel="preload" href="' . esc_url(ak_asset('fonts/Poppins-Bold.woff2')) . '" as="font" type="font/woff2" crossorigin>' . "\n";
     echo '<meta name="theme-color" content="#FFFBF2">' . "\n";
     // Things wait hidden for their entrance only when the script runs; if it does not come
     // within 3 seconds, everything is shown as it is.

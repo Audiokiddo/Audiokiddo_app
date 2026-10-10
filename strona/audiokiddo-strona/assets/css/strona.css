@@ -1,10 +1,10 @@
 /* AudioKiddo – strona. Simple and calm like a product page, warm like a nursery: cream, teal, sun,
    lavender, a dark room for the packs. Slides on the home page, Szop'en guides through them. */
 
-@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
-@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
-@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "AK Poppins"; src: url("../fonts/Poppins-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
 body.ak-site {
   --cream: #FFFBF2; --paper: #FFFFFF; --sand: #F7EADB; --peach: #FFE3CC;
@@ -1751,3 +1751,22 @@ html.ak-locked { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .ak-hero-bubble { animation: none; } }
 /* Woostify puts its own SVG cross inside the remove link: one cross is enough. */
 .ak-drawer .woocommerce-mini-cart-item a.remove .woostify-svg-icon, .ak-drawer .woocommerce-mini-cart-item a.remove svg { display: none !important; }
+
+/* Home: the packs, short (3.7) */
+.ak-a-packs-more { margin-top: 22px !important; }
+
+/* Links between guides, packs and home (3.7) */
+.ak-a-guides .ak-guide-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 26px; }
+.ak-a-guides .ak-guide-card strong { font-size: 17px; }
+.ak-guide-topic { margin-top: 34px; }
+.ak-guide-topic h2 { font-size: clamp(22px, 3vw, 28px); margin: 0 0 14px; }
+.ak-prose a:not(.ak-btn) { color: var(--teal-deep); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.ak-guide-pack { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; align-items: center; margin: 34px 0; padding: 20px; border-radius: 22px; background: var(--tone, var(--paper)); }
+.ak-guide-pack img { width: 120px; height: 120px; border-radius: 16px; object-fit: cover; }
+.ak-guide-pack p { margin: 0 0 6px; }
+.ak-guide-pack-h { font-size: 20px; font-weight: 700; }
+.ak-guide-pack-h small { font-size: 14px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+.ak-guide-pack-links { font-weight: 600; }
+.ak-related-sec .ak-related { margin: 12px 0 0; }
+@media (max-width: 960px) { .ak-a-guides .ak-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .ak-a-guides .ak-guide-grid { grid-template-columns: minmax(0, 1fr); } .ak-guide-pack { grid-template-columns: 1fr; } .ak-guide-pack img { width: 96px; height: 96px; } }

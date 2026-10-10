@@ -150,7 +150,7 @@ function ak_pack_url(string $key): string
  * The packs as part of the subscription: cover with a sample, name, age, one line and the way
  * to the details. No prices here: they wait on the pack's own page.
  */
-function ak_pack_cards(string $class = ''): void
+function ak_pack_cards(string $class = '', bool $short = false): void
 {
     echo '<div class="ak-packs ' . esc_attr($class) . '">';
     $i = 0;
@@ -164,7 +164,7 @@ function ak_pack_cards(string $class = ''): void
             esc_html($pack['title']),
             ak_sample_button(ak_upload($pack['sample']), 'Posłuchaj fragmentu: ' . $pack['title'], 'ak-play-on-cover'),
             esc_html(ak_age($pack) . ' · ' . count($pack['plays']) . ' zabaw'),
-            esc_html($pack['desc']),
+            esc_html($short ? $pack['short'] : $pack['desc']),
             esc_url(ak_pack_url($id))
         );
     }
