@@ -1,0 +1,65 @@
+<!--
+  AudioKiddo: sekcja „Pakiety” na stronie głównej audiokiddo.pl.
+  Wklej całość w WordPressie do bloku „Własny HTML” na stronie głównej, PRZED cennikiem.
+  Pozycja „Pakiety” w menu ma prowadzić do #pakiety. Jeśli jakiś inny element na stronie
+  ma już id="pakiety" (np. jednozdaniowy link pod cennikiem), usuń mu to id, żeby menu
+  przewijało do tej sekcji.
+  Style są zamknięte w klasie .akp, więc nie ruszają reszty strony. Bez zewnętrznych skryptów.
+  Do sprawdzenia przed publikacją: adres przycisku (href="#cennik").
+-->
+<section class="akp" id="pakiety" aria-labelledby="akp-title">
+<style>
+.akp{--ink:#231A16;--muted:#6B5A50;--bg:#FFF7EE;--terra:#B8431C;--teal:#1D7478;--lav:#6B4C8A;--sun:#E0A800;
+  background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding:64px 16px;line-height:1.5;scroll-margin-top:80px}
+.akp *{box-sizing:border-box}
+.akp .w{max-width:1080px;margin:0 auto}
+.akp .kicker{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);margin:0 0 8px}
+.akp h2{font-size:clamp(28px,4.5vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 12px;font-weight:800}
+.akp h3{font-size:20px;margin:0;font-weight:700;letter-spacing:-.01em}
+.akp p{margin:0}
+.akp .lead{font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:640px}
+.akp .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+.akp .card{background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 30px rgba(138,75,42,.10);border-top:6px solid var(--c)}
+.akp .meta{font-size:13px;font-weight:700;color:var(--c);margin:4px 0 10px}
+.akp .card p{color:var(--muted)}
+.akp .sub{margin-top:24px;border-radius:24px;padding:24px 28px;background:linear-gradient(135deg,#FFD27A,#FF9A6B);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.akp .sub ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:17px}
+.akp .sub li::before{content:"✓";font-weight:800;margin-right:8px}
+.akp .btn{display:inline-flex;padding:14px 22px;border-radius:999px;font-weight:700;text-decoration:none;font-size:16px;background:var(--ink);color:#fff}
+@media (max-width:820px){.akp .grid{grid-template-columns:1fr}}
+@media (max-width:560px){.akp{padding:48px 16px}.akp .sub{padding:20px}}
+</style>
+<div class="w">
+  <p class="kicker">Pakiety</p>
+  <h2 id="akp-title">Trzy pakiety audiozabaw</h2>
+  <p class="lead">Każdy pakiet to kilka zabaw po kilka minut. Dziecko słucha, odpowiada i działa, bez patrzenia w ekran.</p>
+
+  <div class="grid">
+    <div class="card" style="--c:var(--lav)">
+      <h3>Wyobraźnia</h3>
+      <p class="meta">od 3 lat · 10 zabaw</p>
+      <p>Dziecko wymyśla historie, postaci i całe światy: magiczny sklep, podróż na inną planetę, własny superbohater.</p>
+    </div>
+    <div class="card" style="--c:var(--teal)">
+      <h3>Słowa i Wiedza</h3>
+      <p class="meta">od 3 lat · 10 zabaw</p>
+      <p>Zagadki, skojarzenia, przeciwieństwa i dźwięki do odgadnięcia. Słownictwo i logiczne myślenie w formie zabawy.</p>
+    </div>
+    <div class="card" style="--c:var(--sun)">
+      <h3>Detektyw</h3>
+      <p class="meta">od 6 lat · 5 spraw</p>
+      <p>Dłuższe śledztwa z aktami do wydrukowania. Dziecko szuka poszlak, łamie szyfry i rozwiązuje zagadki.</p>
+    </div>
+  </div>
+
+  <div class="sub">
+    <ul>
+      <li><strong>Wszystkie pakiety są w subskrypcji</strong></li>
+      <li>Co miesiąc dochodzi jeden nowy pakiet</li>
+    </ul>
+    <a class="btn" href="#cennik">Zobacz cennik</a>
+  </div>
+</div>
+</section>
