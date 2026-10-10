@@ -8,23 +8,26 @@ Stałe regularne tempo i przydatne treści to dla Google sygnał jakości, a nie
 
 ## Opublikowane i zaplanowane
 
-| Data | Wpis | Kategoria | Fraza |
-|---|---|---|---|
-| 10.10.2026 | Ile czasu przed ekranem dla dziecka? Zalecenia WHO i pediatrów | Czas bez ekranu | czas przed ekranem dziecko |
-| 10.10.2026 | Słuch fonemowy u dziecka: co to jest i jak go ćwiczyć zabawą | Rozwój i mowa | słuch fonemowy ćwiczenia |
-| 13.10.2026 | Jak rozwijać mowę dziecka w domu: 12 codziennych nawyków | Rozwój i mowa | jak rozwijać mowę dziecka |
-| 20.10.2026 | Zabawy dla chorego dziecka w łóżku | Zabawy i codzienność | zabawy dla chorego dziecka |
-| 27.10.2026 | Koncentracja u przedszkolaka: ile minut to norma | Rozwój i mowa | koncentracja u przedszkolaka |
-| 3.11.2026 | Podróż samolotem z przedszkolakiem | Zabawy i codzienność | lot z dzieckiem |
-| 10.11.2026 | Prezent dla dziecka bez ekranu: 20 pomysłów | Czas bez ekranu | prezent dla 5 latka |
-| 17.11.2026 | Zabawy na urodziny dziecka w domu: scenariusz | Zabawy i codzienność | zabawy na urodziny w domu |
+Zmiana z 10.10.2026: nie piszemy, że ekran jest zły. Wpisy „Ile czasu przed ekranem”, „Dlaczego ekrany tak mocno przyciągają” i „Interaktywne audiobooki zamiast ekranów” są w koszu, a ich adresy przekierowują (301) na pasujące strony. We wpisach co jakiś czas wtrąca się Szop'en z ciekawostką: `<aside class="ak-szop-note" data-pose="chytry"><p>…</p></aside>`. Stare wpisy bez takiego dymka dostają jeden fakt automatycznie.
+
+| Data | Wpis | Kategoria |
+|---|---|---|
+| 10.10.2026 | Słuch fonemowy u dziecka: co to jest i jak go ćwiczyć zabawą | Rozwój i mowa |
+| 10.10.2026 | „Co było w przedszkolu?” „Nic”. 15 pytań, na które dziecko odpowie | Rozwój i mowa |
+| 13.10.2026 | Jak rozwijać mowę dziecka w domu: 12 codziennych nawyków | Rozwój i mowa |
+| 20.10.2026 | Zabawy dla chorego dziecka w łóżku | Zabawy i codzienność |
+| 27.10.2026 | Koncentracja u przedszkolaka: ile minut to norma | Rozwój i mowa |
+| 3.11.2026 | Podróż samolotem z przedszkolakiem | Zabawy i codzienność |
+| 10.11.2026 | Prezent dla dziecka 3–9 lat: 20 pomysłów | Pomysły i inspiracje |
+| 17.11.2026 | Zabawy na urodziny dziecka w domu: scenariusz | Zabawy i codzienność |
+| 24.11.2026 | Kalendarz adwentowy z zabawami: 24 pomysły | Zabawy i codzienność |
+| 1.12.2026 | Zabawy słowne dla dzieci: 15 gier | Rozwój i mowa |
 
 ## Następne tematy (do napisania w listopadzie)
 
 | Data | Temat | Dlaczego teraz |
 |---|---|---|
-| 24.11 | Mikołajki bez ekranu: 10 pomysłów na niespodziankę | sezon, szukają od połowy listopada |
-| 1.12 | Kalendarz adwentowy z zabawami (do druku) | sezon, dobry na zapis do newslettera |
+| 8.12 | Mikołajki: 10 pomysłów na niespodziankę (spóźnione, ale na przyszły rok) | sezon |
 | 8.12 | Jak zająć dziecko w święta, gdy przyjeżdża rodzina | sezon |
 | 15.12 | Zabawy na Wigilię i święta dla dzieci 3–9 lat | sezon |
 | 22.12 | Nuda w ferie? Plan na tydzień w domu | ferie zimowe |
