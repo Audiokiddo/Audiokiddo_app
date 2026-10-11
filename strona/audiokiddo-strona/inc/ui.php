@@ -157,7 +157,7 @@ function ak_statement(string $text, string $id): void
         $out .= '<span' . ($mark ? ' class="ak-say-hl"' : '') . '>' . esc_html(trim($word, '*')) . '</span> ';
         $mark = $mark && !$closes;
     }
-    echo '<section class="ak-say" id="' . esc_attr($id) . '"><div class="ak-wrap"><p class="ak-statement">' . trim($out) . '</p></div></section>';
+    echo '<section class="ak-say" id="' . esc_attr($id) . '"><div class="ak-wrap"><p class="ak-say-who">Szop’en opowiada</p><p class="ak-statement">' . trim($out) . '</p></div></section>';
 }
 
 /** One word in a heading, painted over with the brand's yellow when it comes into view. */
