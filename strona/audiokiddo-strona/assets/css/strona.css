@@ -2488,3 +2488,9 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
 .ak-site .cky-btn.cky-btn-accept { background: #1D7478 !important; border-color: #1D7478 !important; color: #fff !important; }
 .ak-site .cky-btn.cky-btn-reject, .ak-site .cky-btn.cky-btn-customize, .ak-site .cky-btn.cky-btn-preferences { background: transparent !important; border-color: #1D7478 !important; color: #1D7478 !important; }
 .ak-site .cky-notice-des a, .ak-site .cky-policy { color: #1D7478 !important; }
+
+/* 3.17.1: words waiting to light up are grey that is still readable (not nearly invisible) */
+.ak-js .ak-say .ak-statement span { opacity: 1; color: #8F8A82; transition: color .3s ease; }
+.ak-js .ak-say .ak-statement span.on { opacity: 1; color: var(--ink); }
+.ak-js .ak-say .ak-statement span.ak-say-hl.on { color: var(--sun-deep); }
+@media (prefers-reduced-motion: reduce) { .ak-js .ak-say .ak-statement span { color: var(--ink); } .ak-js .ak-say .ak-statement span.ak-say-hl { color: var(--sun-deep); } }
