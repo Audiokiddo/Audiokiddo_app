@@ -229,7 +229,6 @@ $poses = ['obiad', '', 'przedszkole', 'auto', '', 'nuda', 'sen', '', 'zero-mocy'
         <h2 id="ak-price-h" class="ak-center" data-reveal>Pełna biblioteka. <span class="ak-hl-word">Bez liczenia zabaw na sztuki.</span></h2>
         <p class="ak-a-lead ak-center" data-reveal>Najpierw możesz sprawdzić darmowe zabawy w aplikacji. Jeśli dzieciak chce więcej, wybierasz dostęp miesięczny albo roczny.</p>
         <div id="pobierz"><?php ak_price_cards(); ?></div>
-        <p class="ak-price-szop ak-center" data-reveal><span class="ak-sr">Szop’en: </span>„Dzieciak raczej nie przestanie się nudzić po miesiącu. Obstawiam, że ma dobry gust.”<small>Szop’en, dział finansów</small></p>
         <div class="ak-nosub" data-reveal>
             <div>
                 <h3>Nie lubisz subskrypcji? <span class="ak-hl-word">Spoko.</span></h3>

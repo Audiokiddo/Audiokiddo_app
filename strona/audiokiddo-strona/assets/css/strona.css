@@ -2572,9 +2572,7 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
   .ak-try-btns .ak-stores { justify-content: center; }
 }
 
-/* The price: Szop'en's one dry line, and the way without a subscription */
-.ak-price-szop { max-width: 620px; margin: clamp(22px, 3vw, 32px) auto 0 !important; font-weight: 600; font-size: clamp(16px, 1.7vw, 19px); line-height: 1.45; color: var(--ink); }
-.ak-price-szop small { display: block; margin-top: 4px; font-weight: 500; font-size: 13px; color: var(--muted); }
+/* The price: the way without a subscription */
 .ak-nosub { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 920px; margin: clamp(28px, 4vw, 44px) auto 0; padding: clamp(22px, 3vw, 32px); border-radius: 32px; background: var(--lav-soft); }
 .ak-site .ak-nosub h3 { margin: 0 0 8px; font-size: clamp(22px, 2.6vw, 30px); }
 .ak-nosub p { margin: 0 0 6px; max-width: 60ch; }
