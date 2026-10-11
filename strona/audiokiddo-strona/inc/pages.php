@@ -30,7 +30,7 @@ function ak_info_pages(): array
         'pakiety' => [
             'anchor' => 'Pakiety audiozabaw',
             'title' => 'Pakiety audiozabaw dla dzieci: Wyobraźnia, Słowa, Detektyw',
-            'desc' => 'Pakiety audiozabaw Audiokiddo: Wyobraźnia i Słowa i Wiedza od 4 lat, Detektyw od 7 lat. Wszystkie w abonamencie, a pojedyncze pakiety także na własność.',
+            'desc' => 'Pakiety audiozabaw Audiokiddo: Wyobraźnia i Słowa i Wiedza od 3 lat, Detektyw od 7 lat. Wszystkie w abonamencie, a pojedyncze pakiety także na własność.',
             'h1' => 'Pakiety audiozabaw',
             'lead' => 'Każdy pakiet to kilka albo kilkanaście audiozabaw wokół jednego tematu: wyobraźnia, słowa i zagadki albo śledztwa. Wszystkie są w abonamencie Audiokiddo, a co miesiąc dochodzi nowy. Wolisz mieć konkretny pakiet na własność? Też się da.',
         ],

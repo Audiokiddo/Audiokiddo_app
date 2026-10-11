@@ -82,7 +82,7 @@ function ak_packs(): array
             'short' => 'Dziecko wymyśla historie, postaci i całe światy.',
             'woo' => (int) ak_opt('woo_wyobraznia'),
             'color' => 'lav',
-            'age_from' => 4,
+            'age_from' => 3,
             'cover' => 'okladka-wyobraznia',
             'sample' => '2025/02/Wyobraznia-AudioKiddo.mp3',
             'desc' => 'W każdej zabawie Twoje dziecko będzie musiało tworzyć swoje historie, odpowiadać na pytania i wykonywać zadania. Tu nie ma złych odpowiedzi.',
@@ -100,7 +100,7 @@ function ak_packs(): array
             'short' => 'Zagadki, skojarzenia i zabawy słowne na głos.',
             'woo' => (int) ak_opt('woo_slowa'),
             'color' => 'teal',
-            'age_from' => 4,
+            'age_from' => 3,
             'cover' => 'okladka-slowa',
             'sample' => '2025/02/Slowa-i-wiedza_AudioKiddo_dluzsza_wersja.mp3',
             'desc' => 'W każdej zabawie Twoje dziecko będzie musiało odpowiadać na pytania oraz rozwiązywać zagadki i łamigłówki.',
@@ -260,15 +260,15 @@ function ak_ages(): array
     ];
 }
 
-/** The library by kind of play: name, colour, one line and a few real titles. */
+/** The library by kind of play: name, colour, one line, a few real titles and a cover that shows it. */
 function ak_library(): array
 {
     return [
-        ['Ruchowe', 'sun', 'Maszerowanie, skradanie, szukanie po mieszkaniu. Kanapa przestaje być bezpieczna.', ['Magiczny teatr', 'Mistrz kuchni']],
-        ['Logiczne', 'teal', 'Co tu nie pasuje, co z czym się łączy, kto ma rację. Dziecko myśli na głos.', ['Co tu nie pasuje?', 'Szybkie skojarzenia', 'Znajdź przeciwieństwo']],
-        ['Kreatywne', 'lav', 'Wymyśl miksturę, superbohatera albo nowe znaczenie słowa. Tu nie ma złych odpowiedzi.', ['Mikstura', 'Mój superbohater', 'Wymyśl znaczenie']],
-        ['Fabularne', 'sun', 'Przygody, w których bohaterem jest dziecko. To ono decyduje, co dalej.', ['Zaginiony skarb', 'Podróż na inną planetę', 'Dokończ historię']],
-        ['Zagadki i śledztwa', 'teal', 'Kto wydaje taki dźwięk? Kto ukradł naszyjnik? Odpowiedź pada szybciej, niż myślisz.', ['Co to za dźwięk?', 'Co to za przedmiot?', 'Złodziej naszyjnika']],
+        ['Ruchowe', 'sun', 'Maszerowanie, skradanie, szukanie po mieszkaniu. Kanapa przestaje być bezpieczna.', ['Magiczny teatr', 'Mistrz kuchni'], 'magiczny-teatr'],
+        ['Logiczne', 'teal', 'Co tu nie pasuje, co z czym się łączy, kto ma rację. Dziecko myśli na głos.', ['Co tu nie pasuje?', 'Szybkie skojarzenia', 'Znajdź przeciwieństwo'], 'co-tu-nie-pasuje'],
+        ['Kreatywne', 'lav', 'Wymyśl miksturę, superbohatera albo nowe znaczenie słowa. Tu nie ma złych odpowiedzi.', ['Mikstura', 'Mój superbohater', 'Wymyśl znaczenie'], 'mikstura'],
+        ['Fabularne', 'sun', 'Przygody, w których bohaterem jest dziecko. To ono decyduje, co dalej.', ['Zaginiony skarb', 'Podróż na inną planetę', 'Dokończ historię'], 'zaginiony-skarb'],
+        ['Zagadki i śledztwa', 'teal', 'Kto wydaje taki dźwięk? Kto ukradł naszyjnik? Odpowiedź pada szybciej, niż myślisz.', ['Co to za dźwięk?', 'Co to za przedmiot?', 'Złodziej naszyjnika'], 'co-to-za-dzwiek'],
     ];
 }
 

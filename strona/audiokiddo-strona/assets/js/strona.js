@@ -209,6 +209,22 @@
     }
   }
 
+  // "When to play it": a row of cards to swipe; the two arrows move it by a card
+  var when = $('.ak-when2');
+  if (when) {
+    var whenPrev = $('.ak-when2-prev');
+    var whenNext = $('.ak-when2-next');
+    var whenStep = function () { var c = $('.ak-when2-card', when); return c ? c.getBoundingClientRect().width + 16 : 320; };
+    var whenEnds = function () {
+      if (whenPrev) whenPrev.disabled = when.scrollLeft < 8;
+      if (whenNext) whenNext.disabled = when.scrollLeft + when.clientWidth > when.scrollWidth - 8;
+    };
+    if (whenPrev) whenPrev.addEventListener('click', function () { when.scrollBy({ left: -whenStep(), behavior: still ? 'auto' : 'smooth' }); });
+    if (whenNext) whenNext.addEventListener('click', function () { when.scrollBy({ left: whenStep(), behavior: still ? 'auto' : 'smooth' }); });
+    when.addEventListener('scroll', whenEnds, { passive: true });
+    whenEnds();
+  }
+
   // Tabs (the moments, the ages): click or arrow keys pick one; its panel shows, the rest hide.
   function tabs(list, onPick) {
     var btns = $$('[role="tab"]', list);
