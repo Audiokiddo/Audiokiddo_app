@@ -48,6 +48,23 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
     </div>
 </section>
 
+<?php // What an audio play is and why it is not an audiobook: said once, plainly, before anything else. ?>
+<section class="ak-slide ak-a-sec ak-nb-sec" id="co-to" data-slide="Co to jest" aria-labelledby="ak-nb-h">
+    <div class="ak-wrap">
+        <h2 id="ak-nb-h" class="ak-center" data-reveal>To nie audiobook. <span class="ak-hl-word">To zabawa na głos.</span></h2>
+        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal><strong>Audiozabawa</strong> to zabawa prowadzona głosem. Lektor daje zadanie albo zadaje pytanie i czeka, a dziecko odpowiada, szuka i rusza się. Audiobooka się słucha. W audiozabawie bierze się udział.</p>
+        <table class="ak-nb" data-reveal>
+            <caption class="ak-sr">Audiobook a audiozabawa Audiokiddo: czym się różnią</caption>
+            <thead><tr><td></td><th scope="col">Audiobook, słuchowisko</th><th scope="col" class="ak-nb-us">Audiozabawa Audiokiddo</th></tr></thead>
+            <tbody>
+                <?php foreach (ak_not_audiobook() as [$what, $book, $play_it]) : ?>
+                <tr><th scope="row"><?php echo esc_html($what); ?></th><td><?php echo esc_html($book); ?></td><td class="ak-nb-us"><?php echo esc_html($play_it); ?></td></tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
+
 <section class="ak-slide ak-a-sec ak-a-how ak-how2" id="jak-to-dziala" data-slide="Jak to działa" aria-labelledby="ak-how-h">
     <div class="ak-wrap ak-how2-in">
         <div class="ak-how2-art" data-reveal="left">
@@ -94,35 +111,20 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
     </div>
 </section>
 
-<section class="ak-slide ak-a-sec ak-a-gains ak-q-sec" id="co-zyskujesz" data-slide="Co zyskujesz" aria-labelledby="ak-gains-h">
+<?php // One minute of a play as a talk: the voice asks, the child answers; under it, who gets what. ?>
+<section class="ak-slide ak-a-sec ak-a-gains ak-q-sec ak-talk-sec" id="co-zyskujesz" data-slide="Co zyskujesz" aria-labelledby="ak-gains-h">
     <div class="ak-wrap">
-        <h2 id="ak-gains-h" class="ak-center" data-reveal>Ono ćwiczy. <span class="ak-hl-word">Ty odpoczywasz.</span></h2>
-        <p class="ak-a-lead ak-center" data-reveal>Jeden kwadrans. Zobacz, co w tym czasie robi dziecko, a co Ty.</p>
-        <?php // Fifteen minutes on a clock: it runs by itself, each third shows what the child and the parent are doing. ?>
-        <div class="ak-q" data-reveal data-at="0">
-            <div class="ak-q-side ak-q-kid">
-                <h3><?php echo ak_icon('kid', 24); // static ?>Dziecko</h3>
-                <?php foreach (ak_quarter() as $i => [, $kid, $trains]) : ?>
-                <p class="ak-q-now<?php echo $i === 0 ? ' is-on' : ''; ?>" data-i="<?php echo (int) $i; ?>"><strong><?php echo esc_html($kid); ?></strong><span>ćwiczy: <?php echo esc_html($trains); ?></span></p>
-                <?php endforeach; ?>
-            </div>
-            <div class="ak-q-clock" aria-hidden="true">
-                <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52"/><circle class="ak-q-ring" cx="60" cy="60" r="52"/></svg>
-                <strong class="ak-q-time">00:00</strong>
-                <span>z 15 minut</span>
-            </div>
-            <div class="ak-q-side ak-q-you">
-                <h3><?php echo ak_icon('coffee', 24); // static ?>Ty</h3>
-                <?php foreach (ak_quarter() as $i => [, , , $you, $gain]) : ?>
-                <p class="ak-q-now<?php echo $i === 0 ? ' is-on' : ''; ?>" data-i="<?php echo (int) $i; ?>"><strong><?php echo esc_html($you); ?></strong><span><?php echo esc_html($gain); ?></span></p>
-                <?php endforeach; ?>
-            </div>
-            <div class="ak-q-tabs" role="group" aria-label="Minuty kwadransa">
-                <?php foreach (ak_quarter() as $i => [$when]) : ?>
-                <button type="button" data-i="<?php echo (int) $i; ?>" aria-pressed="<?php echo $i === 0 ? 'true' : 'false'; ?>"><?php echo esc_html($when); ?></button>
-                <?php endforeach; ?>
-            </div>
+        <h2 id="ak-gains-h" class="ak-center" data-reveal>Głos pyta. <span class="ak-hl-word">Dziecko odpowiada.</span> Ty pijesz kawę.</h2>
+        <p class="ak-a-lead ak-center" data-reveal>Tak brzmi jedna minuta audiozabawy.</p>
+        <div class="ak-talk">
+            <?php foreach (ak_talk() as $i => [$who, $line]) : ?>
+            <p class="ak-talk-<?php echo esc_attr($who); ?>" data-reveal style="--d:<?php echo esc_attr(0.25 * $i); ?>s"><span class="ak-talk-who"><?php echo $who === 'kid' ? 'Dziecko' : 'Głos'; ?></span><?php echo esc_html($line); ?></p>
+            <?php endforeach; ?>
         </div>
+        <ul class="ak-talk-got" data-reveal>
+            <li><?php echo ak_icon('kid', 26); // static ?><span><strong>Dziecko ćwiczy</strong>uważne słuchanie, mowę i ruch</span></li>
+            <li><?php echo ak_icon('coffee', 26); // static ?><span><strong>Ty masz 15 minut</strong>nikt nie pyta, co ma robić</span></li>
+        </ul>
         <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('logopedzi-i-pedagodzy')); ?>">Polecają logopedzi i pedagodzy <?php echo $arrow; // static ?></a></p>
     </div>
 </section>
@@ -175,8 +177,8 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
     </div>
 </section>
 
-<?php // After the purchase, as simple as it gets: three short rows and the app on a phone. ?>
-<section class="ak-slide ak-a-sec ak-buy ak-buy2" id="po-zakupie" data-slide="Po zakupie" aria-labelledby="ak-buy-h">
+<?php // After the purchase: three short rows, and the app on a phone whose screen changes (.ak-app in strona.js). ?>
+<section class="ak-slide ak-a-sec ak-buy ak-buy2 ak-app" id="po-zakupie" data-slide="Po zakupie" aria-labelledby="ak-buy-h">
     <div class="ak-wrap ak-buy2-in">
         <div class="ak-buy2-txt">
             <h2 id="ak-buy-h" data-reveal>Kupujesz raz. <span class="ak-hl-word">Masz wszędzie.</span></h2>
@@ -187,12 +189,20 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
             </ol>
             <p class="ak-small" data-reveal>Logujesz się tym samym e-mailem. Bez haseł, kod przychodzi mailem.</p>
         </div>
-        <div class="ak-phone-wrap ak-buy2-phone ak-rise" data-reveal="scale" aria-hidden="true">
-            <img class="ak-rise-szop" src="<?php echo esc_url(ak_asset('img/szop/zza-dolu.webp')); ?>" alt="" width="600" height="395" loading="lazy" decoding="async">
-            <div class="ak-phone"><div class="ak-phone-screen">
-                <span class="ak-phone-island"></span>
-                <img class="ak-phone-shot is-on" src="<?php echo esc_url(ak_asset('img/app/start.webp')); ?>" alt="" width="600" height="1304" loading="lazy">
-            </div></div>
+        <div class="ak-buy3" data-reveal="scale">
+            <div class="ak-phone-wrap ak-buy2-phone">
+                <div class="ak-phone" id="ak-buy-phone" role="tabpanel" aria-label="Ekran aplikacji Audiokiddo"><div class="ak-phone-screen">
+                    <span class="ak-phone-island" aria-hidden="true"></span>
+                    <?php foreach (ak_app_peek() as $i => [$shot, , $title]) : ?>
+                    <img class="ak-phone-shot<?php echo $i === 0 ? ' is-on' : ''; ?>" data-shot="<?php echo esc_attr($shot); ?>" src="<?php echo esc_url(ak_asset('img/app/' . $shot . '.webp')); ?>" alt="Aplikacja Audiokiddo: <?php echo esc_attr($title); ?>" width="600" height="1304" loading="lazy" decoding="async">
+                    <?php endforeach; ?>
+                </div></div>
+            </div>
+            <div class="ak-buy3-tabs" role="tablist" aria-label="Co jest w aplikacji">
+                <?php foreach (ak_app_peek() as $i => [$shot, $icon, $title]) : ?>
+                <button type="button" role="tab" class="ak-feat ak-buy3-tab" aria-controls="ak-buy-phone" aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>" data-shot="<?php echo esc_attr($shot); ?>"><?php echo ak_icon($icon, 20); // static ?><?php echo esc_html($title); ?></button>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 </section>
@@ -244,9 +254,12 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 </section>
 
 <section class="ak-slide ak-a-sec ak-faq-sec" id="pytania" data-slide="Pytania" aria-labelledby="ak-faq-h">
-    <?php ak_peek('pytania'); ?>
     <div class="ak-wrap ak-faq-in">
         <h2 id="ak-faq-h" class="ak-center" data-reveal>Pytania, które <span class="ak-hl-word">i tak by padły</span></h2>
+        <figure class="ak-faq-szop" data-reveal>
+            <img src="<?php echo esc_url(ak_asset('img/szop/zza-dolu.webp')); ?>" alt="" width="600" height="395" loading="lazy" decoding="async">
+            <figcaption><span class="ak-sr">Szop’en: </span>Nie ma głupich pytań. Jest tylko „daleko jeszcze?”.</figcaption>
+        </figure>
         <div class="ak-faq">
             <?php foreach (ak_home_faq() as $i => [$q, $a]) : ?>
             <details data-reveal style="--d:<?php echo esc_attr(0.04 * $i); ?>s"><summary><?php echo esc_html($q); ?><span class="ak-plus" aria-hidden="true"></span></summary><div><p><?php echo esc_html($a); ?></p></div></details>

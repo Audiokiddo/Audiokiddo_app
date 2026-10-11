@@ -2251,3 +2251,76 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
 @font-face { font-family: "AK Baloo Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Roboto Bold"), local("Roboto-Bold"); font-weight: 400 800; size-adjust: 95.2%; ascent-override: 113%; descent-override: 55%; line-gap-override: 0%; }
 @font-face { font-family: "AK Poppins Fallback"; src: local("Arial"), local("ArialMT"), local("Roboto"), local("Roboto-Regular"); font-weight: 400 500; size-adjust: 109.4%; ascent-override: 96%; descent-override: 32%; line-gap-override: 0%; }
 @font-face { font-family: "AK Poppins Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Roboto Bold"), local("Roboto-Bold"); font-weight: 600 800; size-adjust: 105%; ascent-override: 100%; descent-override: 33%; line-gap-override: 0%; }
+
+/* =============================================================================================
+   3.12: what an audio play is (beside an audiobook), one minute of a play as a talk, the app's
+   screens on the phone picked with four buttons, Szop'en looking over the questions, a yellow
+   picked moment, tiles of one size.
+   ============================================================================================= */
+/* Audiobook vs audio play */
+.ak-nb-lead { max-width: 760px; }
+.ak-nb { width: 100%; max-width: 860px; margin: clamp(24px, 3.5vw, 40px) auto 0; border-collapse: separate; border-spacing: 0; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.35; }
+.ak-nb th, .ak-nb td { padding: 14px 18px; text-align: left; vertical-align: middle; }
+.ak-nb thead th { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding-bottom: 12px; }
+.ak-nb tbody th { width: 22%; font-weight: 600; color: var(--muted); font-size: 14px; }
+.ak-nb tbody td { width: 39%; color: var(--muted); border-top: 1px solid var(--line); }
+.ak-nb tbody tr:first-child td { border-top: 0; }
+.ak-nb .ak-nb-us { background: var(--sun-soft); color: var(--ink); font-weight: 700; border-top-color: rgba(138, 98, 0, .14); }
+.ak-nb thead .ak-nb-us { color: var(--sun-deep); border-radius: 24px 24px 0 0; padding-top: 16px; }
+.ak-nb tbody tr:last-child .ak-nb-us { border-radius: 0 0 24px 24px; padding-bottom: 18px; }
+
+/* One minute of a play */
+.ak-talk { max-width: 620px; margin: clamp(24px, 3.5vw, 40px) auto 0; display: grid; gap: 12px; }
+.ak-talk p { margin: 0 !important; max-width: 84%; padding: 14px 18px; border-radius: 22px 22px 22px 6px; background: #fff; color: var(--ink); font-size: clamp(16px, 1.7vw, 19px); font-weight: 500; line-height: 1.4; box-shadow: 0 10px 24px rgba(0, 0, 0, .18); }
+.ak-talk .ak-talk-kid { justify-self: end; border-radius: 22px 22px 6px 22px; background: var(--sun); font-weight: 700; }
+.ak-talk-who { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--lav-deep); }
+.ak-talk-kid .ak-talk-who { color: var(--sun-deep); }
+.ak-talk-got { list-style: none; padding: 0; margin: clamp(24px, 3.5vw, 36px) auto 14px; max-width: 620px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ak-talk-got li { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 22px; background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); color: #CFC9DA; font-size: 14px; line-height: 1.35; }
+.ak-talk-got .ak-ico { flex: none; color: var(--sun); }
+.ak-talk-got strong { display: block; color: #fff; font-size: 16px; }
+
+/* The app on the phone: four small buttons change the screen */
+.ak-buy3 { display: grid; justify-items: center; gap: 18px; }
+.ak-buy3 .ak-buy2-phone { margin-top: 0; }
+.ak-buy3-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 360px; }
+.ak-feat.ak-buy3-tab { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; width: auto; padding: 9px 14px; border-radius: 999px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); font-size: 14px; font-weight: 600; color: var(--ink); transition: background-color .25s, box-shadow .25s, transform .25s var(--spring); }
+.ak-feat.ak-buy3-tab:hover { transform: translateY(-2px); background: var(--paper); }
+.ak-feat.ak-buy3-tab:focus-visible { outline: 3px solid var(--teal-deep); outline-offset: 2px; }
+.ak-feat.ak-buy3-tab[aria-selected="true"] { background: var(--sun); box-shadow: 0 6px 16px rgba(250, 193, 25, .4); }
+
+/* Szop'en looks over the list of questions */
+.ak-faq-szop { display: flex; align-items: center; justify-content: center; gap: 12px; margin: clamp(14px, 2vw, 22px) 0 0; }
+.ak-faq-szop img { flex: none; width: clamp(130px, 15vw, 170px); height: auto; align-self: flex-end; }
+.ak-faq-szop figcaption { max-width: 230px; padding: 11px 14px; border-radius: 20px 20px 20px 6px; background: var(--cream); box-shadow: var(--shadow); font-weight: 600; font-size: 14px; line-height: 1.4; text-align: left; }
+.ak-faq-szop + .ak-faq { margin-top: 0; border-top: 2px solid var(--ink); }
+
+/* The picked moment of the day is yellow, not black */
+.ak-a-times button[aria-selected="true"] { background: var(--sun) !important; color: var(--ink); box-shadow: 0 10px 24px rgba(250, 193, 25, .4); }
+.ak-a-times button[aria-selected="true"] .ak-a-time { color: var(--ink); }
+
+/* Tiles of one size, whatever the length of the name */
+.ak-tiles li { display: flex; min-width: 0; }
+.ak-tiles a { width: 100%; min-width: 0; align-content: start; }
+.ak-tiles span { overflow-wrap: anywhere; hyphens: auto; }
+
+@media (max-width: 760px) {
+  .ak-nb, .ak-nb tbody, .ak-nb thead { display: block; }
+  .ak-nb tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ak-nb thead td { display: none; }
+  .ak-nb thead th { padding: 0 12px 10px; font-size: 11.5px; }
+  .ak-nb thead .ak-nb-us { padding-top: 12px; }
+  .ak-nb tbody th { grid-column: 1 / -1; width: auto; padding: 14px 12px 4px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; background: linear-gradient(90deg, transparent 50%, var(--sun-soft) 50%); }
+  .ak-nb tbody td { width: auto; padding: 0 12px 14px; border-top: 0; font-size: 15px; }
+  .ak-nb tbody tr + tr { border-top: 1px solid var(--line); }
+  .ak-talk p { max-width: 90%; padding: 12px 15px; }
+  .ak-talk-got { grid-template-columns: minmax(0, 1fr); }
+  .ak-buy3-tabs { max-width: 320px; }
+  .ak-feat.ak-buy3-tab { padding: 8px 12px; font-size: 13px; }
+  .ak-faq-szop img { width: 118px; }
+  .ak-faq-szop figcaption { max-width: min(200px, 52vw); font-size: 13px; }
+  .ak-tiles { grid-auto-columns: 37%; }
+  .ak-tiles span { font-size: 13px; }
+}
+.ak-buy3 .ak-phone-wrap { order: 0; }
+.ak-buy3-tabs { order: 1; }

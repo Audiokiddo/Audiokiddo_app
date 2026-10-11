@@ -480,7 +480,39 @@ function ak_peeks(): array
 {
     return [
         'pakiety' => ['chytry', 'right', 'Detektyw jest najlepszy. Tylko nie mówcie pozostałym pakietom.'],
-        'pytania' => ['prosi', 'left', 'Nie ma głupich pytań. Jest tylko „daleko jeszcze?”.'],
+    ];
+}
+
+/** An audiobook and an audio play side by side: what, the audiobook, the play (home page). */
+function ak_not_audiobook(): array
+{
+    return [
+        ['Dziecko', 'słucha', 'odpowiada, szuka, rusza się'],
+        ['Głos', 'czyta historię do końca', 'pyta i czeka na odpowiedź'],
+        ['Ciało', 'siedzi albo leży', 'wstaje, skacze, biega po pokoju'],
+        ['Historia', 'za każdym razem taka sama', 'zależy od tego, co wymyśli dziecko'],
+        ['Po kwadransie', 'zna bajkę', 'ćwiczyło mowę, uwagę i wyobraźnię'],
+    ];
+}
+
+/** One minute of a play as a talk: who speaks (voice or kid) and the line (home page). */
+function ak_talk(): array
+{
+    return [
+        ['voice', 'Detektywie! Złodziej zostawił ślad. Znajdź w pokoju coś okrągłego. Masz 30 sekund!'],
+        ['kid', 'Mam! Talerz! I… kota.'],
+        ['voice', 'Kot się nie liczy. Ale za refleks: plus dziesięć do sprytu.'],
+    ];
+}
+
+/** The app's screens shown on the home page's phone: screenshot, icon, short name. */
+function ak_app_peek(): array
+{
+    return [
+        ['start', 'home', 'Plan na dziś'],
+        ['odtwarzacz', 'play', 'Ekran w dół'],
+        ['podroz', 'car', 'W samochodzie'],
+        ['dobranoc', 'moon', 'Na dobranoc'],
     ];
 }
 
@@ -510,19 +542,6 @@ function ak_buy_where(): array
         ['offline', 'Bez internetu, gdy pliki są pobrane'],
         ['print', 'Przy stole, z kartami do druku'],
         ['gift', 'U babci: pliki zabierasz ze sobą'],
-    ];
-}
-
-/**
- * One quarter of an hour in three parts for the clock on the home page: the minutes, what the
- * child is doing, what that trains, what the parent is doing meanwhile and what they get from it.
- */
-function ak_quarter(): array
-{
-    return [
-        ['0–5 min', 'Szuka po domu trzech czerwonych rzeczy', 'uważne słuchanie i ruch', 'Nastawiasz wodę na kawę', 'Nikt nie pyta, co ma robić.'],
-        ['5–10 min', 'Odpowiada na głos i zgaduje zagadki', 'mowę i myślenie', 'Pijesz ją. Ciepłą.', 'Bez ekranu, więc bez wyrzutów.'],
-        ['10–15 min', 'Kończy misję i chce następną', 'wyobraźnię i samodzielność', 'Nadal siedzisz', 'Zero wymyślania: zabawa była gotowa.'],
     ];
 }
 
