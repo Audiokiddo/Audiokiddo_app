@@ -483,15 +483,23 @@ function ak_peeks(): array
     ];
 }
 
-/** An audiobook and an audio play side by side: what, the audiobook, the play (home page). */
+/** An audiobook and an audio play as two cards: the name, the icon and what happens (home page). */
 function ak_not_audiobook(): array
 {
     return [
-        ['Dziecko', 'słucha', 'odpowiada, szuka, rusza się'],
-        ['Głos', 'czyta historię do końca', 'pyta i czeka na odpowiedź'],
-        ['Ciało', 'siedzi albo leży', 'wstaje, skacze, biega po pokoju'],
-        ['Historia', 'za każdym razem taka sama', 'zależy od tego, co wymyśli dziecko'],
-        ['Po kwadransie', 'zna bajkę', 'ćwiczyło mowę, uwagę i wyobraźnię'],
+        'book' => ['Audiobook', 'ear', [
+            'Dziecko słucha',
+            'Głos czyta historię do końca',
+            'Siedzi albo leży',
+            'Historia zawsze ta sama',
+        ]],
+        'play' => ['Audiozabawa', 'run', [
+            'Dziecko odpowiada, szuka i rusza się',
+            'Głos pyta i czeka na odpowiedź',
+            'Wstaje, skacze, biega po pokoju',
+            'Historia zależy od tego, co wymyśli',
+            'Ćwiczy mowę, uwagę i wyobraźnię',
+        ]],
     ];
 }
 

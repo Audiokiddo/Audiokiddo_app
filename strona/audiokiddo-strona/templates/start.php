@@ -28,17 +28,12 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
             <p class="ak-hero-sub ak-a-sub">Włączasz Audiokiddo i odkładasz telefon. Głos daje dziecku misję. <strong>15 minut bez ekranu.</strong></p>
             <div class="ak-hero-btns ak-a-btns">
                 <?php echo ak_app_cta(); // escaped inside ?>
-                <span class="ak-a-listen ak-c-<?php echo esc_attr($first['color']); ?>">
-                    <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj, jak to brzmi', 'ak-play-small'); // escaped inside ?>
-                    <span>Posłuchaj, jak to brzmi</span>
-                </span>
             </div>
-            <?php if (!$live) : ?><p class="ak-h5-note">36 zabaw do druku od razu i 3 audiozabawy na maila. Za 0 zł.</p><?php endif; ?>
-            <ul class="ak-h5-proof">
-                <li>Bez ekranu</li>
-                <li>Bez reklam</li>
-                <li>Polecają logopedzi</li>
-            </ul>
+            <?php if (!$live) : ?><p class="ak-h5-note">36 zabaw do druku i 3 audiozabawy na maila. Za 0 zł.</p><?php endif; ?>
+            <p class="ak-h5-listen ak-c-<?php echo esc_attr($first['color']); ?>">
+                <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj, jak to brzmi', 'ak-play-small'); // escaped inside ?>
+                <span>Posłuchaj, jak to brzmi</span>
+            </p>
         </div>
         <?php // Szop'en with the microphone is the whole picture; the rings behind him pulse like sound. ?>
         <figure class="ak-h5-szop">
@@ -53,16 +48,19 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 <section class="ak-slide ak-a-sec ak-nb-sec" id="co-to" data-slide="Co to jest" aria-labelledby="ak-nb-h">
     <div class="ak-wrap">
         <h2 id="ak-nb-h" class="ak-center" data-reveal>To nie audiobook. <span class="ak-hl-word">To zabawa na głos.</span></h2>
-        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal><strong>Audiozabawa</strong> to zabawa prowadzona głosem. Lektor daje zadanie albo zadaje pytanie i czeka, a dziecko odpowiada, szuka i rusza się. Audiobooka się słucha. W audiozabawie bierze się udział.</p>
-        <table class="ak-nb" data-reveal>
-            <caption class="ak-sr">Audiobook a audiozabawa Audiokiddo: czym się różnią</caption>
-            <thead><tr><td></td><th scope="col">Audiobook, słuchowisko</th><th scope="col" class="ak-nb-us">Audiozabawa Audiokiddo</th></tr></thead>
-            <tbody>
-                <?php foreach (ak_not_audiobook() as [$what, $book, $play_it]) : ?>
-                <tr><th scope="row"><?php echo esc_html($what); ?></th><td><?php echo esc_html($book); ?></td><td class="ak-nb-us"><?php echo esc_html($play_it); ?></td></tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal>Audiobooka się słucha. <strong>W audiozabawie bierze się udział</strong>: głos daje zadanie i czeka, a dziecko odpowiada, szuka i rusza się.</p>
+        <div class="ak-nb2">
+            <?php foreach (ak_not_audiobook() as $side => [$name, $icon, $points]) : ?>
+            <article class="ak-nb2-card ak-nb2-<?php echo esc_attr($side); ?>" data-reveal<?php echo $side === 'play' ? ' style="--d:.15s"' : ''; ?>>
+                <h3><span class="ak-nb2-ico"><?php echo ak_icon($icon, 30); // static ?></span><?php echo esc_html($name); ?></h3>
+                <ul>
+                    <?php foreach ($points as $point) : ?>
+                    <li><?php echo esc_html($point); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </article>
+            <?php endforeach; ?>
+        </div>
         <p class="ak-center ak-nb-cta" data-reveal><?php echo ak_app_cta(); // escaped inside ?></p>
     </div>
 </section>

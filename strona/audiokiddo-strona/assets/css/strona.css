@@ -2356,3 +2356,45 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
 }
 @media (max-width: 359px) { .ak-top-cta.ak-top-free { display: none !important; } .ak-top .ak-top-free ~ .ak-cart { margin-left: auto; } }
 .ak-q-sec .ak-kind-you { margin-top: clamp(22px, 3vw, 32px) !important; }
+
+/* =============================================================================================
+   3.13: the first screen with fewer things and more air; audiobook and audio play as two cards.
+   ============================================================================================= */
+.ak-h5 .ak-hero-sub { margin-top: 18px; }
+.ak-h5 .ak-a-btns { margin-top: 30px; }
+.ak-h5-note { margin-top: 14px !important; }
+.ak-h5-listen { display: flex; align-items: center; gap: 12px; margin: 26px 0 0 !important; font-weight: 600; font-size: 16px; }
+.ak-h5-listen .ak-play { flex: none; }
+@media (max-width: 960px) {
+  .ak-h5 .ak-hero-sub { margin-top: 16px !important; }
+  .ak-h5 .ak-a-btns { margin-top: 28px; }
+  .ak-h5 .ak-h5-szop { margin-top: 48px; }
+  .ak-h5 .ak-h5-listen { order: 5; justify-content: center; margin-top: 22px !important; }
+}
+
+.ak-nb-lead { max-width: 640px; }
+.ak-nb2 { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1fr); gap: 20px; align-items: center; max-width: 860px; margin: clamp(28px, 4vw, 48px) auto 0; }
+.ak-nb2-card { border-radius: 36px; padding: clamp(24px, 3vw, 36px); text-align: left; }
+.ak-site .ak-nb2-card h3 { display: flex; align-items: center; gap: 14px; margin: 0 0 20px; font-size: clamp(24px, 2.8vw, 32px); }
+.ak-nb2-ico { display: grid; place-items: center; flex: none; width: 56px; height: 56px; border-radius: 18px; }
+.ak-nb2-card ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.ak-nb2-card li { position: relative; padding-left: 34px; font-size: clamp(16px, 1.6vw, 18px); line-height: 1.35; }
+.ak-nb2-card li::before { content: ""; position: absolute; left: 0; top: .1em; width: 22px; height: 22px; border-radius: 50%; }
+.ak-nb2-book { background: var(--cream); box-shadow: inset 0 0 0 1.5px var(--line); color: var(--muted); }
+.ak-site .ak-nb2-book h3 { color: var(--muted); }
+.ak-nb2-book .ak-nb2-ico { background: #EFE9DD; color: var(--muted); }
+.ak-nb2-book li::before { background: #EFE9DD; box-shadow: inset 0 0 0 7px #EFE9DD, inset 0 0 0 11px #B9B2A6; }
+.ak-nb2-play { background: var(--sun); color: var(--ink); box-shadow: 0 30px 60px -24px rgba(250, 193, 25, .7); padding-block: clamp(30px, 4vw, 46px); }
+.ak-nb2-play .ak-nb2-ico { background: var(--ink); color: var(--sun); }
+.ak-nb2-play li { font-weight: 600; }
+.ak-nb2-play li::before { background: var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6.5 11.5l3 3 6-6.5' fill='none' stroke='%23FAC119' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 22px no-repeat; }
+@media (max-width: 760px) {
+  .ak-nb2 { grid-template-columns: minmax(0, 1fr); gap: 14px; max-width: 440px; }
+  .ak-nb2-card { border-radius: 30px; padding: 22px; }
+  .ak-nb2-book { order: 0; }
+  .ak-nb2-book ul { gap: 10px; }
+  .ak-nb2-book li { font-size: 15.5px; }
+  .ak-nb2-play { padding-block: 26px; }
+  .ak-site .ak-nb2-card h3 { margin-bottom: 16px; }
+  .ak-nb2-ico { width: 48px; height: 48px; border-radius: 16px; }
+}
