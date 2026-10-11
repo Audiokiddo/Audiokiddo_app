@@ -117,14 +117,10 @@ $tones = ['sun', 'teal', 'lav'];
             </li>
             <?php endforeach; ?>
         </ol>
-        <div class="ak-how4-can" data-reveal>
-            <span>Dziecko może:</span>
-            <ul class="ak-chips-row"><?php foreach (ak_kid_can() as $can) : ?><li><?php echo esc_html($can); ?></li><?php endforeach; ?></ul>
-        </div>
         <ul class="ak-how4-more" data-reveal>
-            <li><?php echo ak_icon('offline', 26); // static ?><span><strong>Działa też bez internetu.</strong> Zabawy możesz pobrać na telefon i odpalić offline: w samolocie albo w samochodzie, gdzie nie ma zasięgu.</span></li>
-            <li><?php echo ak_icon('speaker', 26); // static ?><span><strong>Gra na głośniku.</strong> Jednym dotknięciem przełączasz dźwięk na głośnik bezprzewodowy (Bluetooth albo AirPlay), na przykład w kuchni.</span></li>
-            <li><?php echo ak_icon('car', 26); // static ?><span><strong>Gotowa do jazdy.</strong> Aplikacja działa z Apple CarPlay i Android Auto, więc zabawę wybierzesz z ekranu samochodu.</span></li>
+            <li><?php echo ak_icon('offline', 24); // static ?><span><strong>Bez internetu.</strong> Pobierasz zabawy i grasz offline: w samolocie albo w aucie bez zasięgu.</span></li>
+            <li><?php echo ak_icon('speaker', 24); // static ?><span><strong>Na głośniku.</strong> Jednym dotknięciem przełączasz dźwięk na głośnik Bluetooth albo AirPlay.</span></li>
+            <li><?php echo ak_icon('car', 24); // static ?><span><strong>W samochodzie.</strong> Działa z Apple CarPlay i Android Auto.</span></li>
         </ul>
         <div class="ak-most ak-how4-most" data-reveal>
             <img src="<?php echo esc_url(ak_asset('img/szop/mikrofon-540.webp')); ?>" alt="" width="504" height="540" loading="lazy" decoding="async">
@@ -202,10 +198,9 @@ $tones = ['sun', 'teal', 'lav'];
             <?php endforeach; ?>
         </ul>
         <p class="ak-try3-see ak-center" data-reveal>To normalne, pełne audiozabawy. Dzięki nim zobaczysz, czy dziecko się wkręci, czy chce dokończyć i czy prosi o kolejną. I dopiero wtedy decydujesz, czy pełny dostęp ma dla Was sens.</p>
-        <p class="ak-try3-say ak-center" data-reveal><span class="ak-sr">Szop’en: </span>„Najpierw niech dzieciak przejdzie kontrolę jakości. Potem pogadamy o pieniądzach.”</p>
         <div class="ak-try-btns ak-try3-btns" data-reveal>
             <?php echo ak_app_cta(); // escaped inside ?>
-            <?php ak_store_buttons(); ?>
+            <?php if ($live) : ak_store_buttons(); endif; ?>
         </div>
         <p class="ak-small ak-center" data-reveal><?php echo $live ? 'Darmowe zabawy czekają w aplikacji. Bez kupowania abonamentu na start.' : 'Aplikacja wchodzi do App Store i Google Play lada dzień. Zostaw e-mail niżej, a damy znać pierwszego dnia.'; ?></p>
     </div>
@@ -257,7 +252,7 @@ $tones = ['sun', 'teal', 'lav'];
                 <li><?php echo ak_icon('clock', 22); // static ?>Anulujesz, kiedy chcesz</li>
             </ul>
             <?php echo ak_app_cta('ak-btn ak-btn-sun ak-btn-wide'); // escaped inside ?>
-            <?php ak_store_buttons('ak-stores-center'); ?>
+            <?php if ($live) : ak_store_buttons('ak-stores-center'); endif; ?>
             <p class="ak-small ak-center"><?php echo $live ? 'Subskrypcję wybierzesz w aplikacji. Darmowe zabawy czekają od razu.' : 'Aplikacja startuje wkrótce. Zostaw e-mail wyżej, a damy znać pierwszego dnia.'; ?></p>
         </div>
         </div>
