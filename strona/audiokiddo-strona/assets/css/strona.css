@@ -2747,3 +2747,13 @@ ul.ak-try3 li > div { padding: 16px 18px 20px; }
   .ak-try3-free { right: 6px; top: 6px; width: 44px; height: 44px; font-size: 14px; }
   ul.ak-try3 li > div { padding: 10px 14px; }
 }
+
+/* 3.23: three things the app does beyond the phone (offline, a speaker, the car); a shorter page */
+.ak-how4-more { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ak-how4-more li { align-items: flex-start; font-size: 14.5px; }
+.ak-how4-more li:nth-child(2) { background: var(--lav-soft); }
+.ak-how4-more li:nth-child(2) .ak-ico { color: var(--lav-deep); }
+.ak-how4-more li:nth-child(3) { background: var(--sun-soft); }
+.ak-how4-more li:nth-child(3) .ak-ico { color: var(--sun-deep); }
+@media (max-width: 860px) { .ak-how4-more { grid-template-columns: minmax(0, 1fr); max-width: 440px; } }
+.ak-faq-links { display: grid; gap: 10px; justify-items: center; }

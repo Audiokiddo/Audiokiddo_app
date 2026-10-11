@@ -123,6 +123,7 @@ $tones = ['sun', 'teal', 'lav'];
         </div>
         <ul class="ak-how4-more" data-reveal>
             <li><?php echo ak_icon('offline', 26); // static ?><span><strong>Działa też bez internetu.</strong> Zabawy możesz pobrać na telefon i odpalić offline: w samolocie albo w samochodzie, gdzie nie ma zasięgu.</span></li>
+            <li><?php echo ak_icon('speaker', 26); // static ?><span><strong>Gra na głośniku.</strong> Jednym dotknięciem przełączasz dźwięk na głośnik bezprzewodowy (Bluetooth albo AirPlay), na przykład w kuchni.</span></li>
             <li><?php echo ak_icon('car', 26); // static ?><span><strong>Gotowa do jazdy.</strong> Aplikacja działa z Apple CarPlay i Android Auto, więc zabawę wybierzesz z ekranu samochodu.</span></li>
         </ul>
         <div class="ak-most ak-how4-most" data-reveal>
@@ -232,8 +233,6 @@ $tones = ['sun', 'teal', 'lav'];
     </div>
 </section>
 
-<?php ak_statement('Nie musisz płacić, żeby sprawdzić Audiokiddo. *Najpierw odpal darmowe zabawy.*', 'najpierw-sprawdz'); ?>
-
 <section class="ak-slide ak-a-sec ak-a-price" id="cennik" data-slide="Cennik" aria-labelledby="ak-price-h">
     <div class="ak-wrap">
         <h2 id="ak-price-h" class="ak-center" data-reveal>Pełna biblioteka. <span class="ak-hl-word">Bez liczenia zabaw na sztuki.</span></h2>
@@ -277,39 +276,9 @@ $tones = ['sun', 'teal', 'lav'];
     <?php ak_peek('pakiety'); ?>
     <div class="ak-wrap">
         <h2 id="ak-packs-h" class="ak-center" data-reveal>Pakiety <span class="ak-hl-word">na własność</span></h2>
-        <p class="ak-a-lead ak-center" data-reveal>Kupujesz raz i masz stały dostęp. Kliknij okładkę i posłuchaj fragmentu.</p>
+        <p class="ak-a-lead ak-center" data-reveal>Kupujesz raz i masz stały dostęp: pliki przychodzą mailem, a ten sam pakiet czeka w aplikacji. Kliknij okładkę i posłuchaj fragmentu.</p>
         <?php ak_pack_cards('', true); ?>
         <p class="ak-center ak-a-packs-more" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Wszystkie pakiety i co jest w środku <?php echo $arrow; // static ?></a></p>
-    </div>
-</section>
-
-<?php // After the purchase: three short rows, and the app on a phone whose screen changes (.ak-app in strona.js). ?>
-<section class="ak-slide ak-a-sec ak-buy ak-buy2 ak-app" id="po-zakupie" data-slide="Po zakupie" aria-labelledby="ak-buy-h">
-    <div class="ak-wrap ak-buy2-in">
-        <div class="ak-buy2-txt">
-            <h2 id="ak-buy-h" data-reveal>Kupujesz raz. <span class="ak-hl-word">Masz wszędzie.</span></h2>
-            <ol class="ak-buy2-rows">
-                <li data-reveal><span><?php echo ak_icon('cart', 28); // static ?></span><strong>Płacisz w sklepie</strong></li>
-                <li data-reveal style="--d:.08s"><span><?php echo ak_icon('mail', 28); // static ?></span><strong>Pliki przychodzą mailem</strong></li>
-                <li data-reveal style="--d:.16s"><span><?php echo ak_icon('phone', 28); // static ?></span><strong>Ten sam pakiet jest w aplikacji</strong></li>
-            </ol>
-            <p class="ak-small" data-reveal>Logujesz się tym samym e-mailem. Bez haseł, kod przychodzi mailem.</p>
-        </div>
-        <div class="ak-buy3" data-reveal="scale">
-            <div class="ak-phone-wrap ak-buy2-phone">
-                <div class="ak-phone" id="ak-buy-phone" role="tabpanel" aria-label="Ekran aplikacji Audiokiddo"><div class="ak-phone-screen">
-                    <span class="ak-phone-island" aria-hidden="true"></span>
-                    <?php foreach (ak_app_peek() as $i => [$shot, , $title]) : ?>
-                    <img class="ak-phone-shot<?php echo $i === 0 ? ' is-on' : ''; ?>" data-shot="<?php echo esc_attr($shot); ?>" src="<?php echo esc_url(ak_asset('img/app/' . $shot . '.webp')); ?>" alt="Aplikacja Audiokiddo: <?php echo esc_attr($title); ?>" width="600" height="1304" loading="lazy" decoding="async">
-                    <?php endforeach; ?>
-                </div></div>
-            </div>
-            <div class="ak-buy3-tabs" role="tablist" aria-label="Co jest w aplikacji">
-                <?php foreach (ak_app_peek() as $i => [$shot, $icon, $title]) : ?>
-                <button type="button" role="tab" class="ak-feat ak-buy3-tab" aria-controls="ak-buy-phone" aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>" data-shot="<?php echo esc_attr($shot); ?>"><?php echo ak_icon($icon, 20); // static ?><?php echo esc_html($title); ?></button>
-                <?php endforeach; ?>
-            </div>
-        </div>
     </div>
 </section>
 
@@ -346,21 +315,6 @@ $tones = ['sun', 'teal', 'lav'];
     </div>
 </section>
 
-<section class="ak-slide ak-a-sec ak-a-guides" id="poradniki" data-slide="Poradniki" aria-labelledby="ak-guides-h">
-    <div class="ak-wrap">
-        <h2 id="ak-guides-h" class="ak-center" data-reveal>Pomysły na zabawy <span class="ak-hl-word">na każdą sytuację</span></h2>
-        <ul class="ak-tiles" data-reveal>
-            <?php foreach (ak_home_guides() as $s) : $g = $guides[$s]; $art = ak_home_guide_art($s); ?>
-            <li><a href="<?php echo esc_url(ak_landing_url($s)); ?>" title="<?php echo esc_attr($g['desc']); ?>">
-                <img src="<?php echo esc_url(ak_asset($art)); ?>" alt="" width="240" height="240" loading="lazy">
-                <span><?php echo esc_html($g['anchor']); ?></span>
-            </a></li>
-            <?php endforeach; ?>
-        </ul>
-        <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_landing_url()); ?>">Wszystkie pomysły na zabawy <?php echo $arrow; // static ?></a></p>
-    </div>
-</section>
-
 <section class="ak-slide ak-a-sec ak-faq-sec" id="pytania" data-slide="Pytania" aria-labelledby="ak-faq-h">
     <div class="ak-wrap ak-faq-in">
         <h2 id="ak-faq-h" class="ak-center" data-reveal>Pytania, które <span class="ak-hl-word">i tak by padły</span></h2>
@@ -381,7 +335,7 @@ $tones = ['sun', 'teal', 'lav'];
                 <?php endforeach; ?>
             </dl>
         </details>
-        <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('pytania')); ?>">Wszystkie pytania i odpowiedzi <?php echo $arrow; // static ?></a></p>
+        <p class="ak-center ak-faq-links" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('pytania')); ?>">Wszystkie pytania i odpowiedzi <?php echo $arrow; // static ?></a><a class="ak-link-more" id="poradniki" href="<?php echo esc_url(ak_landing_url()); ?>">Pomysły na zabawy na każdą sytuację <?php echo $arrow; // static ?></a></p>
     </div>
 </section>
 
