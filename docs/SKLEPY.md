@@ -41,7 +41,7 @@ Adresy stron (gotowe fragmenty HTML w `docs/strona/sklepy/`, do wklejenia w Word
 > • Timer snu, tryb bez patrzenia, kolejka i ulubione
 > • Bez reklam i bez śledzenia
 >
-> Część zabaw jest za darmo. Pozostałe odblokujesz abonamentem: wszystkie zabawy teraz i jeden nowy pakiet co miesiąc (miesięcznie albo rocznie, z 7 dniami za darmo dla nowych subskrybentów). Możesz też kupić wybrane pakiety na zawsze.
+> Część zabaw jest za darmo. Pozostałe odblokujesz abonamentem: wszystkie zabawy teraz i nowy pakiet co miesiąc, miesięcznie albo rocznie. Możesz też kupić wybrane pakiety na zawsze.
 
 ## Kategoria i wiek
 

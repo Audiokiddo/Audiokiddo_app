@@ -55,7 +55,7 @@ Sprawdzenie: Studio → CRM → Ustawienia → „Wyślij poranny raport teraz�
 
 Konta zakłada **Nela**, bo działalność to jej JDG. Przychód ze sklepów trafia wtedy do firmy. Ciebie dodaje jako użytkownika.
 
-- [ ] 2.1 Apple Developer Program, 99 USD rocznie. Pełna lista kroków: `KROKI-DLA-DAWIDA.md`, krok 3.
+- [x] 2.1 (sprawdzone 11.10.2026) Apple Developer Program, 99 USD rocznie. Pełna lista kroków: `KROKI-DLA-DAWIDA.md`, krok 3.
   1. Nela instaluje aplikację **Apple Developer** na iPhonie i loguje się swoim Apple ID z włączonym 2FA.
   2. Account → **Enroll Now** → typ „Individual” (przy JDG Apple przyjmuje tylko taki), skan dowodu, płatność.
   3. Czeka na mail „Welcome to the Apple Developer Program”, zwykle do 48 godzin.
@@ -88,12 +88,12 @@ Sklepy wymagają tych adresów przed wysłaniem do recenzji. Gotowy kod jest w `
 
 ## Etap 4. Apple: aplikacja i podpisywanie (po etapie 2.1, ok. 1 h)
 
-- [ ] 4.1 developer.apple.com/account → Certificates, IDs & Profiles → **Identifiers** → **+** → App IDs → App:
+- [x] 4.1 (sprawdzone 11.10.2026) developer.apple.com/account → Certificates, IDs & Profiles → **Identifiers** → **+** → App IDs → App:
   - opis `AudioKiddo`, Bundle ID **Explicit** `pl.audiokiddo.app`;
   - zaznacz **In-App Purchase**, **Sign in with Apple**, **App Groups** → Continue → Register.
-- [ ] 4.2 Identifiers → **+** → **App Groups** → identyfikator `group.pl.audiokiddo.app` → Register. Widżet czyta z niej plan dziecka.
-- [ ] 4.3 Wróć do `pl.audiokiddo.app` → App Groups → Edit → zaznacz `group.pl.audiokiddo.app` → Save.
-- [ ] 4.4 Identifiers → **+** → App IDs → `pl.audiokiddo.app.widget` (opis „AudioKiddo widżet”), zaznacz tylko **App Groups** i tę samą grupę.
+- [x] 4.2 (sprawdzone 11.10.2026) Identifiers → **+** → **App Groups** → identyfikator `group.pl.audiokiddo.app` → Register. Widżet czyta z niej plan dziecka.
+- [x] 4.3 (sprawdzone 11.10.2026) Wróć do `pl.audiokiddo.app` → App Groups → Edit → zaznacz `group.pl.audiokiddo.app` → Save.
+- [x] 4.4 (sprawdzone 11.10.2026) Identifiers → **+** → App IDs → `pl.audiokiddo.app.widget` (opis „AudioKiddo widżet”), zaznacz tylko **App Groups** i tę samą grupę.
 - [ ] 4.5 Na Macu: Xcode → Settings → Accounts → **+** → Apple ID → zaloguj się (konto Neli albo Twoje, jeśli jesteś w zespole).
 - [ ] 4.6 Otwórz `app/ios/Runner.xcworkspace` w Xcode:
   1. Po lewej kliknij **Runner** (niebieska ikona), potem cel **Runner** → zakładka **Signing & Capabilities**.
@@ -101,7 +101,7 @@ Sklepy wymagają tych adresów przed wysłaniem do recenzji. Gotowy kod jest w `
   3. Powtórz to samo dla celu **AudioKiddoWidget**.
   4. Jeśli Xcode pokaże czerwony błąd przy App Groups, kliknij „Try Again” albo „Register”.
 - [ ] 4.7 W celu Runner sprawdź, czy są capabilities: **In-App Purchase**, **Sign in with Apple**, **App Groups**, **Background Modes → Audio**. Brakujące dodasz przyciskiem **+ Capability**.
-- [ ] 4.8 appstoreconnect.apple.com → Aplikacje → **+** → Nowa aplikacja:
+- [x] 4.8 (sprawdzone 11.10.2026) appstoreconnect.apple.com → Aplikacje → **+** → Nowa aplikacja:
   - platforma iOS, nazwa **AudioKiddo**;
   - język podstawowy: polski;
   - Bundle ID `pl.audiokiddo.app`;
@@ -114,7 +114,7 @@ Sklepy wymagają tych adresów przed wysłaniem do recenzji. Gotowy kod jest w `
   - zadeklaruj status przedsiębiorcy (DSA).
 
   Bez tego zakupy nie działają nawet w testach.
-- [ ] 4.10 App Store Connect → Twoja aplikacja → Informacje o aplikacji → **App Store Server Notifications**. Wersja 2, ten sam adres dla produkcji i sandboxa:
+- [ ] 4.10 (11.10.2026: adres ustawiony dla produkcji i sandboxa; zostało powiadomienie testowe) App Store Connect → Twoja aplikacja → Informacje o aplikacji → **App Store Server Notifications**. Wersja 2, ten sam adres dla produkcji i sandboxa:
   `https://ypdxofcwewwdyoelamgy.supabase.co/functions/v1/store-notifications/apple`
   Potem kliknij „Wyślij powiadomienie testowe”.
 - [ ] 4.11 Użytkownicy i dostęp → **Sandbox** → Testerzy → **+**: utwórz dwa konta testowe na adresy `kontakt.audiokiddo+sandbox1@gmail.com` i `kontakt.audiokiddo+sandbox2@gmail.com`. Hasła zapisz w aplikacji Hasła.

@@ -40,7 +40,7 @@ DLA RODZICÓW
 • Timer snu, kolejka i ulubione
 • Bez reklam i bez śledzenia
 
-Część zabaw jest za darmo. Pozostałe odblokujesz abonamentem: wszystkie zabawy teraz i nowy pakiet co miesiąc, miesięcznie albo rocznie, z 7 dniami za darmo dla nowych subskrybentów. Możesz też kupić wybrane pakiety na zawsze.
+Część zabaw jest za darmo. Pozostałe odblokujesz abonamentem: wszystkie zabawy teraz i nowy pakiet co miesiąc, miesięcznie albo rocznie. Możesz też kupić wybrane pakiety na zawsze.
 
 Pytania i pomysły: kontakt@audiokiddo.pl
 ```
