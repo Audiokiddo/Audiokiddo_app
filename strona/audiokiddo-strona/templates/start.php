@@ -57,8 +57,10 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
             </ul>
         </figure>
     </div>
-    <a class="ak-h6-next" href="#co-to">Czym to się różni od audiobooka? <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="ak-h6-next" href="#w-skrocie">Zobacz, jak to działa <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </section>
+
+<?php ak_statement('Audiokiddo to aplikacja, w której *głos daje dziecku misję.* Ono odpowiada, szuka i się rusza. *Ty odkładasz telefon.*', 'w-skrocie'); ?>
 
 <?php // What an audio play is and why it is not an audiobook: said once, plainly, before anything else. ?>
 <section class="ak-slide ak-a-sec ak-nb-sec" id="co-to" data-slide="Co to jest" aria-labelledby="ak-nb-h">
@@ -228,6 +230,8 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
         </div>
     </div>
 </section>
+
+<?php ak_statement('Bez ekranu. Bez reklam. Bez wymyślania. *Naciskasz play i masz kwadrans dla siebie.*', 'bez-ekranu'); ?>
 
 <section class="ak-slide ak-a-sec ak-a-price" id="cennik" data-slide="Abonament" aria-labelledby="ak-price-h">
     <div class="ak-wrap">

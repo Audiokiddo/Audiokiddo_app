@@ -85,8 +85,7 @@
 
   // Scrolling: header, progress, the statement lighting up, the hero drifting, the snapping
   var top = $('.ak-top');
-  var statement = $('.ak-statement');
-  var statementWords = statement ? $$('span', statement) : [];
+  var statements = $$('.ak-statement').map(function (el) { return { el: el, words: $$('span', el) }; });
   var heroImg = $('.ak-hero-img');
   var lastY = window.scrollY;
   var ticking = false;
@@ -102,12 +101,14 @@
       var max = document.documentElement.scrollHeight - vh;
       top.style.setProperty('--scroll', max > 0 ? (y / max).toFixed(4) : 0);
     }
-    if (statementWords.length && !still) {
-      var r = statement.getBoundingClientRect();
-      var p = clamp((vh * 0.88 - r.top) / (r.height + vh * 0.3), 0, 1);
-      var lit = Math.round(p * statementWords.length);
-      statementWords.forEach(function (s, i) { s.classList.toggle('on', i < lit); });
-    }
+    // Each big sentence lights up word by word as it travels up the screen.
+    if (!still) statements.forEach(function (st) {
+      var r = st.el.getBoundingClientRect();
+      if (r.bottom < -vh || r.top > vh * 2) return;
+      var p = clamp((vh * 0.86 - r.top) / (r.height + vh * 0.28), 0, 1);
+      var lit = Math.round(p * st.words.length);
+      st.words.forEach(function (w, i) { w.classList.toggle('on', i < lit); });
+    });
     if (heroImg && !still && y < vh * 1.2) heroImg.style.setProperty('--para', (y * 0.12).toFixed(1) + 'px');
     onScrollHooks.forEach(function (fn) { fn(y, vh); });
     lastY = y;

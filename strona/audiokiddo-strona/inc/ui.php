@@ -142,6 +142,24 @@ function ak_testimonials(): array
     return $items;
 }
 
+/**
+ * A big sentence between sections that lights up word by word on scroll (strona.js). Words
+ * between asterisks are the ones in the brand's yellow.
+ */
+function ak_statement(string $text, string $id): void
+{
+    $out = '';
+    $mark = false;
+    foreach (preg_split('/\s+/u', trim($text)) as $word) {
+        $opens = str_starts_with($word, '*');
+        $closes = str_ends_with($word, '*');
+        $mark = $mark || $opens;
+        $out .= '<span' . ($mark ? ' class="ak-say-hl"' : '') . '>' . esc_html(trim($word, '*')) . '</span> ';
+        $mark = $mark && !$closes;
+    }
+    echo '<section class="ak-say" id="' . esc_attr($id) . '"><div class="ak-wrap"><p class="ak-statement">' . trim($out) . '</p></div></section>';
+}
+
 /** One word in a heading, painted over with the brand's yellow when it comes into view. */
 function ak_mark(string $word): string
 {

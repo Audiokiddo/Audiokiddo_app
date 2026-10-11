@@ -2460,3 +2460,23 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
   .ak-h6 .ak-h6-stores { order: 3; justify-content: center; }
   .ak-h6 .ak-h5-szop .ak-h5-proof { width: 100vw; margin-left: 50%; translate: -50% 0; }
 }
+
+/* =============================================================================================
+   3.16: breathing room. On phones the first screen keeps the headline, one sentence, the button
+   and the picture; between sections a big sentence lights up word by word as you scroll.
+   ============================================================================================= */
+.ak-say { padding: clamp(84px, 16vh, 170px) 0; background: var(--cream); }
+.ak-view-start .ak-say { background: var(--cream); }
+.ak-say .ak-statement { margin: 0 auto; max-width: 900px; text-align: center; font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: clamp(30px, 4.6vw, 58px); line-height: 1.14; letter-spacing: -.012em; color: var(--ink); }
+.ak-js .ak-say .ak-statement span { opacity: .13; transition: opacity .3s ease; }
+.ak-js .ak-say .ak-statement span.on { opacity: 1; }
+.ak-say-hl { color: var(--sun-deep); }
+@media (max-width: 960px) {
+  .ak-h6 .ak-h6-app, .ak-h6 .ak-h6-said { display: none; }
+  .ak-h6 .ak-h5-szop { margin-top: 44px; }
+}
+@media (max-width: 760px) {
+  .ak-say { padding: 92px 0; }
+  .ak-say .ak-statement { font-size: clamp(30px, 8.6vw, 38px); line-height: 1.16; }
+}
+@media (prefers-reduced-motion: reduce) { .ak-js .ak-say .ak-statement span { opacity: 1; } }
