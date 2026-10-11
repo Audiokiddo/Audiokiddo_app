@@ -495,13 +495,13 @@ function ak_not_audiobook(): array
     ];
 }
 
-/** One minute of a play as a talk: who speaks (voice or kid) and the line (home page). */
-function ak_talk(): array
+/** What the child does in each kind of play, in the packs' order: the verb and one line (home page). */
+function ak_doing(): array
 {
     return [
-        ['voice', 'Detektywie! Złodziej zostawił ślad. Znajdź w pokoju coś okrągłego. Masz 30 sekund!'],
-        ['kid', 'Mam! Talerz! I… kota.'],
-        ['voice', 'Kot się nie liczy. Ale za refleks: plus dziesięć do sprytu.'],
+        ['Wymyśla', 'Kończy historię po swojemu, tworzy postaci i całe światy. Tu nie ma złych odpowiedzi.'],
+        ['Zgaduje', 'Rozwiązuje zagadki i szuka słów: skojarzenia, przeciwieństwa, „co tu nie pasuje?”.'],
+        ['Tropi', 'Zbiera poszlaki ze słuchu i rozwiązuje sprawę. Do każdej są akta do wydrukowania.'],
     ];
 }
 

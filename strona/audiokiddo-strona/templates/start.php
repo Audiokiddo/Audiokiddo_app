@@ -33,6 +33,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
                     <span>Posłuchaj, jak to brzmi</span>
                 </span>
             </div>
+            <?php if (!$live) : ?><p class="ak-h5-note">36 zabaw do druku od razu i 3 audiozabawy na maila. Za 0 zł.</p><?php endif; ?>
             <ul class="ak-h5-proof">
                 <li>Bez ekranu</li>
                 <li>Bez reklam</li>
@@ -62,6 +63,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <p class="ak-center ak-nb-cta" data-reveal><?php echo ak_app_cta(); // escaped inside ?></p>
     </div>
 </section>
 
@@ -111,20 +113,26 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
     </div>
 </section>
 
-<?php // One minute of a play as a talk: the voice asks, the child answers; under it, who gets what. ?>
-<section class="ak-slide ak-a-sec ak-a-gains ak-q-sec ak-talk-sec" id="co-zyskujesz" data-slide="Co zyskujesz" aria-labelledby="ak-gains-h">
+<?php // What the child actually does: the three kinds of plays, each with a real fragment to hear. ?>
+<section class="ak-slide ak-a-sec ak-a-gains ak-q-sec ak-kinds-sec" id="co-zyskujesz" data-slide="Co robi dziecko" aria-labelledby="ak-gains-h">
     <div class="ak-wrap">
-        <h2 id="ak-gains-h" class="ak-center" data-reveal>Głos pyta. <span class="ak-hl-word">Dziecko odpowiada.</span> Ty pijesz kawę.</h2>
-        <p class="ak-a-lead ak-center" data-reveal>Tak brzmi jedna minuta audiozabawy.</p>
-        <div class="ak-talk">
-            <?php foreach (ak_talk() as $i => [$who, $line]) : ?>
-            <p class="ak-talk-<?php echo esc_attr($who); ?>" data-reveal style="--d:<?php echo esc_attr(0.25 * $i); ?>s"><span class="ak-talk-who"><?php echo $who === 'kid' ? 'Dziecko' : 'Głos'; ?></span><?php echo esc_html($line); ?></p>
+        <h2 id="ak-gains-h" class="ak-center" data-reveal>Dziecko nie tylko słucha. <span class="ak-hl-word">Wymyśla, zgaduje, tropi.</span></h2>
+        <p class="ak-a-lead ak-center" data-reveal>Trzy rodzaje audiozabaw. Posłuchaj fragmentu każdej.</p>
+        <div class="ak-kinds">
+            <?php $n = 0; foreach ($packs as $id => $pack) : [$verb, $does] = ak_doing()[$n]; ?>
+            <article class="ak-kind-card ak-c-<?php echo esc_attr($pack['color']); ?>" data-reveal style="--d:<?php echo esc_attr(0.1 * $n++); ?>s">
+                <h3><?php echo esc_html($verb); ?></h3>
+                <p><?php echo esc_html($does); ?></p>
+                <p class="ak-kind-trains"><strong>Ćwiczy:</strong> <?php echo esc_html($pack['trains']); ?></p>
+                <div class="ak-kind-play">
+                    <?php echo ak_sample_button(ak_upload($pack['sample']), 'Posłuchaj fragmentu: pakiet ' . $pack['title'], 'ak-play-small'); // escaped inside ?>
+                    <span>Posłuchaj fragmentu<small>Pakiet <?php echo esc_html($pack['title'] . ' · ' . ak_age($pack)); ?></small></span>
+                </div>
+            </article>
             <?php endforeach; ?>
         </div>
-        <ul class="ak-talk-got" data-reveal>
-            <li><?php echo ak_icon('kid', 26); // static ?><span><strong>Dziecko ćwiczy</strong>uważne słuchanie, mowę i ruch</span></li>
-            <li><?php echo ak_icon('coffee', 26); // static ?><span><strong>Ty masz 15 minut</strong>nikt nie pyta, co ma robić</span></li>
-        </ul>
+        <p class="ak-a-lead ak-center ak-kind-you" data-reveal>A Ty w tym czasie masz kwadrans dla siebie.</p>
+        <p class="ak-center" data-reveal><?php echo ak_app_cta(); // escaped inside ?></p>
         <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('logopedzi-i-pedagodzy')); ?>">Polecają logopedzi i pedagodzy <?php echo $arrow; // static ?></a></p>
     </div>
 </section>

@@ -38,7 +38,8 @@ function ak_store_buttons(string $class = ''): void
 
 /**
  * The main call to action. With the app in the stores it leads to the store buttons (the script
- * swaps in the store for the visitor's phone); before that, honestly, to the launch sign-up.
+ * swaps in the store for the visitor's phone); before that to the sign-up, which sends the free
+ * plays at once and the news of the launch later.
  */
 function ak_app_cta(string $class = 'ak-btn ak-btn-sun', bool $arrow = true): string
 {
@@ -46,7 +47,7 @@ function ak_app_cta(string $class = 'ak-btn ak-btn-sun', bool $arrow = true): st
     if (ak_app_live()) {
         return '<a class="' . esc_attr($class) . ' ak-app-cta" href="' . esc_url(home_url('/#pobierz')) . '" data-ios="' . esc_attr(ak_opt('app_store_url')) . '" data-android="' . esc_attr(ak_opt('google_play_url')) . '">Pobierz Audiokiddo' . $svg . '</a>';
     }
-    return '<a class="' . esc_attr($class) . '" href="' . esc_url(home_url('/#start-aplikacji')) . '">Daj znać, gdy aplikacja ruszy' . $svg . '</a>';
+    return '<a class="' . esc_attr($class) . '" href="' . esc_url(home_url('/#start-aplikacji')) . '">Odbierz darmowe zabawy' . $svg . '</a>';
 }
 
 /** Szop'en says one dry line next to something (a small figure with a speech bubble). */
@@ -94,10 +95,11 @@ function ak_leadmagnet(bool $slide = false): void
                 <h2 id="ak-free-h">Karty ratunkowe Szop’ena <span class="ak-hl-word">za darmo</span></h2>
                 <p class="ak-sub">36 zabaw bez ekranu do wydrukowania: na obiad, auto, deszcz i wieczór. Wpisz e-mail, pobierz od razu, a raz na jakiś czas napiszemy, co nowego.</p>
                 <?php else : ?>
-                <h2 id="ak-free-h">Aplikacja rusza lada dzień. <span class="ak-hl-word">Karty już są.</span></h2>
-                <p class="ak-sub">Zostaw e-mail: damy znać, gdy Audiokiddo pojawi się w App Store i Google Play. A żeby nie czekać z pustymi rękami, od razu pobierzesz 36 zabaw do druku i mini śledztwo.</p>
+                <h2 id="ak-free-h">36 zabaw bez ekranu i 3 audiozabawy. <span class="ak-hl-word">Za darmo.</span></h2>
+                <p class="ak-sub">Zostaw e-mail. Karty do druku pobierzesz od razu, audiozabawy przyjdą mailem, a my damy znać, gdy aplikacja pojawi się w App Store i Google Play.</p>
                 <?php endif; ?>
-                <?php ak_signup_form('newsletter', 'Chcę karty'); ?>
+                <?php ak_signup_form('newsletter', ak_app_live() ? 'Chcę karty' : 'Wyślij mi zabawy'); ?>
+                <ul class="ak-free-proof"><li>Za 0 zł</li><li>Bez reklam</li><li>Wypisujesz się jednym kliknięciem</li></ul>
                 <p class="ak-small"><a href="<?php echo esc_url(ak_info_url('zabawy-do-druku')); ?>">Zobacz, co jest w środku →</a></p>
             </div>
         </div>

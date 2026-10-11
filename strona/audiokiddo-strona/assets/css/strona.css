@@ -2324,3 +2324,35 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
 }
 .ak-buy3 .ak-phone-wrap { order: 0; }
 .ak-buy3-tabs { order: 1; }
+
+/* 3.12.1: what the child does, as three cards with a fragment to hear (instead of the talk) */
+.ak-kinds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; max-width: 1040px; margin: clamp(24px, 3.5vw, 40px) auto 0; }
+.ak-kind-card { display: flex; flex-direction: column; gap: 10px; padding: clamp(20px, 2.4vw, 28px); border-radius: 30px; background: #fff; color: var(--ink); text-align: left; }
+.ak-site .ak-kind-card h3 { margin: 0; font-size: clamp(28px, 3vw, 36px); color: var(--deep); }
+.ak-kind-card p { margin: 0 !important; font-size: 16px; line-height: 1.45; color: var(--ink); }
+.ak-kind-card .ak-kind-trains { font-size: 14px; color: var(--muted); }
+.ak-kind-card .ak-kind-trains strong { color: var(--ink); }
+.ak-kind-play { display: flex; align-items: center; gap: 12px; margin-top: auto; padding: 10px 14px 10px 10px; border-radius: 999px; background: var(--tone); font-weight: 700; font-size: 15px; line-height: 1.2; }
+.ak-kind-play small { display: block; font-weight: 500; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.ak-kind-play .ak-play { flex: none; }
+.ak-q-sec .ak-kind-you { margin-top: clamp(20px, 3vw, 30px); color: #fff; font-weight: 600; }
+@media (max-width: 860px) {
+  .ak-kinds { grid-template-columns: minmax(0, 1fr); max-width: 480px; gap: 12px; }
+  .ak-kind-card { padding: 20px; border-radius: 26px; }
+}
+
+/* Calls to action: what you get under the first button, the bar's button on phones too */
+.ak-h5-note { margin: 12px 0 0 !important; font-size: 14px; font-weight: 600; color: var(--muted); }
+.ak-nb-cta { margin-top: clamp(22px, 3vw, 32px) !important; }
+.ak-kinds { margin-bottom: 4px; }
+.ak-kinds-sec .ak-btn { margin-top: 6px; }
+.ak-free-proof { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; font-weight: 600; color: #5A4B3C; }
+.ak-free-proof li::before { content: "✓ "; color: var(--teal-deep); }
+@media (max-width: 960px) { .ak-h5 .ak-h5-note { order: 3; text-align: center; } }
+@media (max-width: 760px) {
+  .ak-top-cta.ak-top-free { display: inline-flex !important; margin-left: auto; min-height: 36px; padding: 6px 12px; font-size: 12.5px; }
+  .ak-top-free + .ak-cart, .ak-top .ak-top-free ~ .ak-cart { margin-left: 0; }
+  .ak-logo img { width: 104px; }
+}
+@media (max-width: 359px) { .ak-top-cta.ak-top-free { display: none !important; } .ak-top .ak-top-free ~ .ak-cart { margin-left: auto; } }
+.ak-q-sec .ak-kind-you { margin-top: clamp(22px, 3vw, 32px) !important; }

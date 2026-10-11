@@ -45,12 +45,12 @@ $pages = $home === '' ? [] : [
             <a class="ak-nav-extra" href="<?php echo esc_url($pages['#pytania'] ?? $home . '#pytania'); ?>">Pytania</a>
             <a href="<?php echo esc_url(ak_landing_url()); ?>"<?php echo ak_view() === 'guide' ? ' aria-current="page"' : ''; ?>>Pomysły</a>
             <a href="<?php echo esc_url(ak_blog_url()); ?>"<?php echo in_array(ak_view(), ['blog', 'post'], true) ? ' aria-current="page"' : ''; ?>>Blog</a>
-            <?php echo ak_app_cta('ak-btn ak-btn-sun ak-nav-cta', false); // escaped inside; phones only ?>
+            <?php if (ak_app_live()) : echo ak_app_cta('ak-btn ak-btn-sun ak-nav-cta', false); endif; // escaped inside; phones only ?>
         </nav>
         <?php if (ak_app_live()) : ?>
         <a class="ak-btn ak-btn-sun ak-top-cta ak-app-cta" href="<?php echo esc_url($home . '#pobierz'); ?>" data-ios="<?php echo esc_attr(ak_opt('app_store_url')); ?>" data-android="<?php echo esc_attr(ak_opt('google_play_url')); ?>">Pobierz aplikację</a>
         <?php else : ?>
-        <a class="ak-btn ak-btn-sun ak-top-cta" href="<?php echo esc_url($home . '#cennik'); ?>">Abonament</a>
+        <a class="ak-btn ak-btn-sun ak-top-cta ak-top-free" href="<?php echo esc_url($home . '#start-aplikacji'); ?>">Darmowe zabawy</a>
         <?php endif; ?>
         <?php if (ak_has_woo()) : ?>
         <a class="ak-cart" href="<?php echo esc_url(ak_cart_url()); ?>" aria-label="Koszyk">
