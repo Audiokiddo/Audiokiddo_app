@@ -275,7 +275,7 @@
     new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         clearInterval(dayTimer);
-        if (entry.isIntersecting && !dayHand) dayTimer = setInterval(dayStep, 4200);
+        if (entry.isIntersecting && !dayHand) dayTimer = setInterval(dayStep, 5200);
       });
     }, { threshold: 0.5 }).observe(dayTabs);
   }

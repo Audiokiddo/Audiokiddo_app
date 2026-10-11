@@ -93,9 +93,9 @@ function ak_leadmagnet(bool $slide = false): void
             <div data-reveal="right">
                 <?php if (ak_app_live()) : ?>
                 <h2 id="ak-free-h">Karty ratunkowe Szop’ena <span class="ak-hl-word">za darmo</span></h2>
-                <p class="ak-sub">36 zabaw bez ekranu do wydrukowania: na obiad, auto, deszcz i wieczór. Wpisz e-mail, pobierz od razu, a raz na jakiś czas napiszemy, co nowego.</p>
+                <p class="ak-sub">Zabawy bez ekranu do wydrukowania: na obiad, auto, deszcz i wieczór. Wpisz e-mail, pobierz od razu, a raz na jakiś czas napiszemy, co nowego.</p>
                 <?php else : ?>
-                <h2 id="ak-free-h">36 zabaw bez ekranu i 3 audiozabawy. <span class="ak-hl-word">Za darmo.</span></h2>
+                <h2 id="ak-free-h">Zabawy bez ekranu na start. <span class="ak-hl-word">Za darmo.</span></h2>
                 <p class="ak-sub">Zostaw e-mail. Karty do druku pobierzesz od razu, audiozabawy przyjdą mailem, a my damy znać, gdy aplikacja pojawi się w App Store i Google Play.</p>
                 <?php endif; ?>
                 <?php ak_signup_form('newsletter', ak_app_live() ? 'Chcę karty' : 'Wyślij mi zabawy'); ?>

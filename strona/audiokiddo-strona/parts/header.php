@@ -21,6 +21,8 @@ $pages = $home === '' ? [] : [
     '#pytania' => ak_info_url('pytania'),
     '#o-nas' => ak_info_url('o-nas'),
 ];
+// The packs have their own page from everywhere (the home page no longer lists them).
+$pages['#pakiety'] = ak_info_url('pakiety');
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
