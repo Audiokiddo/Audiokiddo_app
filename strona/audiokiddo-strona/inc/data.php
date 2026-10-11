@@ -234,7 +234,17 @@ function ak_steps(): array
     ];
 }
 
-/** The questions the home page shows (all of them are on /pytania/). */
+/** The three steps in a few words for the home page: title, one line, icon, colour. */
+function ak_steps_short(): array
+{
+    return [
+        ['Pobierasz', 'Darmowe zabawy czekają w środku.', 'download', 'sun'],
+        ['Wybierasz', 'Wiek i ochota: zagadki, ruch albo śledztwo.', 'puzzle', 'teal'],
+        ['Naciskasz play', 'Głos prowadzi. Telefon leży na stole.', 'play', 'lav'],
+    ];
+}
+
+/** The questions shown on the home page. */
 function ak_home_faq(): array
 {
     $faq = ak_faq();

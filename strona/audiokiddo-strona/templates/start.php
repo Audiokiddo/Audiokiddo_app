@@ -104,40 +104,36 @@ $tones = ['sun', 'teal', 'lav'];
     </ul>
 </section>
 
-<section class="ak-slide ak-a-sec ak-a-how ak-how2 ak-how3" id="jak-to-dziala" data-slide="Jak to działa" aria-labelledby="ak-how-h">
-    <div class="ak-wrap ak-how2-in">
-        <div class="ak-how2-art" data-reveal="left">
-            <img src="<?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/mikrofon-540.webp')); ?> 504w, <?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?> 709w" sizes="(max-width: 860px) 220px, 400px" alt="Szop’en z mikrofonem prowadzi audiozabawę" width="709" height="760" loading="lazy" decoding="async">
-        </div>
-        <div>
-            <p class="ak-a-eyebrow" data-reveal>Jak to działa?</p>
-            <h2 id="ak-how-h" data-reveal>Pobierasz. Wybierasz. <span class="ak-hl-word">Dziecko działa.</span></h2>
-            <ol class="ak-how2-steps">
-                <?php foreach (ak_steps() as $i => [$title, $text]) : ?>
-                <li data-reveal style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
-                    <strong><?php echo esc_html($title); ?></strong>
-                    <span><?php echo esc_html($text); ?></span>
-                    <?php if ($i === 2) : ?>
-                    <span class="ak-how3-can">Dziecko może:</span>
-                    <ul class="ak-chips-row"><?php foreach (ak_kid_can() as $can) : ?><li><?php echo esc_html($can); ?></li><?php endforeach; ?></ul>
-                    <?php endif; ?>
-                </li>
-                <?php endforeach; ?>
-            </ol>
-            <p class="ak-offline" data-reveal><?php echo ak_icon('offline', 28); // static ?><span><strong>Działa też bez internetu.</strong> Zabawy możesz pobrać na telefon i odpalić offline: w samolocie albo w samochodzie, gdzie nie ma zasięgu.</span></p>
-        </div>
-    </div>
+<section class="ak-slide ak-a-sec ak-how4" id="jak-to-dziala" data-slide="Jak to działa" aria-labelledby="ak-how-h">
     <div class="ak-wrap">
-        <div class="ak-most" data-reveal>
+        <p class="ak-a-eyebrow ak-center" data-reveal>Jak to działa?</p>
+        <h2 id="ak-how-h" class="ak-center" data-reveal>Pobierasz. Wybierasz. <span class="ak-hl-word">Dziecko działa.</span></h2>
+        <ol class="ak-how4-steps">
+            <?php foreach (ak_steps_short() as $i => [$title, $line, $icon, $tone]) : ?>
+            <li class="ak-c-<?php echo esc_attr($tone); ?>" data-reveal style="--d:<?php echo esc_attr(0.12 * $i); ?>s">
+                <span class="ak-how4-ico"><?php echo ak_icon($icon, 34); // static ?></span>
+                <strong><?php echo esc_html($title); ?></strong>
+                <span><?php echo esc_html($line); ?></span>
+            </li>
+            <?php endforeach; ?>
+        </ol>
+        <div class="ak-how4-can" data-reveal>
+            <span>Dziecko może:</span>
+            <ul class="ak-chips-row"><?php foreach (ak_kid_can() as $can) : ?><li><?php echo esc_html($can); ?></li><?php endforeach; ?></ul>
+        </div>
+        <p class="ak-offline ak-how4-off" data-reveal><?php echo ak_icon('offline', 26); // static ?><span><strong>Działa też bez internetu.</strong> Pobierasz zabawy na telefon i odpalasz offline: w samolocie albo w aucie bez zasięgu.</span></p>
+        <div class="ak-most ak-how4-most" data-reveal>
+            <img src="<?php echo esc_url(ak_asset('img/szop/mikrofon-540.webp')); ?>" alt="" width="504" height="540" loading="lazy" decoding="async">
             <div>
                 <p class="ak-most-h">I najważniejsze</p>
-                <p>Większość audiozabaw tworzymy tak, żeby dziecko mogło bawić się samodzielnie. Chcesz dołączyć? Jasne. Nie chcesz? Też jasne. <strong>Właśnie po to tu jesteśmy.</strong></p>
+                <p>Dziecko bawi się samo. Chcesz dołączyć? Jasne. Nie chcesz? Też jasne. <strong>Właśnie po to tu jesteśmy.</strong></p>
             </div>
             <div class="ak-most-cta">
                 <?php echo ak_app_cta(); // escaped inside ?>
                 <small>Pierwsze zabawy sprawdzisz za darmo w aplikacji.</small>
             </div>
         </div>
+        <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('jak-to-dziala')); ?>">Zobacz dokładnie, jak to działa <?php echo $arrow; // static ?></a></p>
     </div>
 </section>
 
@@ -181,25 +177,27 @@ $tones = ['sun', 'teal', 'lav'];
     </div>
 </section>
 
-<section class="ak-slide ak-a-sec ak-try" id="darmowe-zabawy" data-slide="Darmowe zabawy" aria-labelledby="ak-try-h">
-    <div class="ak-wrap ak-try-in">
-        <div data-reveal>
+<section class="ak-slide ak-a-sec ak-try ak-try2" id="darmowe-zabawy" data-slide="Darmowe zabawy" aria-labelledby="ak-try-h">
+    <div class="ak-wrap ak-try2-in">
+        <div data-reveal="left">
             <p class="ak-a-eyebrow">Darmowe zabawy w aplikacji</p>
             <h2 id="ak-try-h">Najpierw sprawdź. <span class="ak-hl-word">Potem zdecyduj.</span></h2>
-            <p>Nie musisz kupować abonamentu w ciemno. Pobierz Audiokiddo, wybierz wiek dziecka i odpal darmowe zabawy dostępne w aplikacji.</p>
-            <p>To normalne, pełne audiozabawy. Dzięki nim zobaczysz:</p>
-            <ul class="ak-ticks">
-                <li>czy dziecko się wkręci,</li>
-                <li>czy chce dokończyć,</li>
-                <li>czy prosi o kolejną.</li>
-            </ul>
-            <p>I dopiero wtedy decydujesz, czy pełny dostęp ma dla Was sens.</p>
-            <p class="ak-try-say"><span class="ak-sr">Szop’en: </span>„Najpierw niech dzieciak przejdzie kontrolę jakości. Potem pogadamy o pieniądzach.”<small>Szop’en</small></p>
+            <p class="ak-try2-lead">Nie kupujesz w ciemno. Darmowe zabawy to normalne, pełne audiozabawy, a nie zwiastuny.</p>
             <div class="ak-try-btns">
                 <?php echo ak_app_cta(); // escaped inside ?>
                 <?php ak_store_buttons(); ?>
             </div>
             <p class="ak-small"><?php echo $live ? 'Darmowe zabawy czekają w aplikacji. Bez kupowania abonamentu na start.' : 'Aplikacja wchodzi do App Store i Google Play lada dzień. Zostaw e-mail niżej, a damy znać pierwszego dnia.'; ?></p>
+        </div>
+        <div class="ak-try2-test" data-reveal="right">
+            <p class="ak-try2-h">Test na własnym dziecku <span>0 zł</span></p>
+            <ol>
+                <li>Wkręciło się?</li>
+                <li>Chce dokończyć?</li>
+                <li>Prosi o kolejną?</li>
+            </ol>
+            <p class="ak-try2-then"><strong>Trzy razy tak?</strong> Dopiero wtedy myślisz o abonamencie.</p>
+            <p class="ak-try2-say"><span class="ak-sr">Szop’en: </span>„Najpierw niech dzieciak przejdzie kontrolę jakości. Potem pogadamy o pieniądzach.”</p>
         </div>
     </div>
 </section>

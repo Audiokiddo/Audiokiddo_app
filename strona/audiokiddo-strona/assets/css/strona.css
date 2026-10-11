@@ -2657,3 +2657,58 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
 .ak-try-say { margin: 16px 0 0 !important; padding: 14px 18px; border-radius: 22px 22px 22px 6px; background: var(--paper); box-shadow: var(--shadow); font-weight: 600; line-height: 1.4; }
 .ak-try-say small { display: block; margin-top: 4px; font-weight: 500; font-size: 13px; color: var(--muted); }
 .ak-lib2 figcaption { bottom: auto; top: 10px; }
+
+/* =============================================================================================
+   3.21: "how it works" as three short cards on a line; the free plays as a test of three
+   questions beside the button.
+   ============================================================================================= */
+.ak-how4 .ak-a-eyebrow { margin-bottom: 8px !important; }
+.ak-how4-steps { list-style: none; counter-reset: h4; padding: 0; margin: clamp(26px, 4vw, 44px) auto 0; max-width: 980px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; position: relative; }
+.ak-how4-steps::before { content: ""; position: absolute; left: 16%; right: 16%; top: 58px; border-top: 3px dashed var(--line); }
+.ak-how4-steps li { counter-increment: h4; position: relative; display: grid; justify-items: center; gap: 6px; padding: 22px 18px 24px; border-radius: 30px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); text-align: center; transition: transform .3s var(--spring), box-shadow .3s; }
+.ak-how4-steps li:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+.ak-how4-steps li::before { content: counter(h4); position: absolute; left: 16px; top: 14px; font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: 30px; line-height: 1; color: var(--deep); opacity: .5; }
+.ak-how4-ico { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 26px; background: var(--tone); color: var(--deep); margin-bottom: 8px; }
+.ak-how4-steps li.ak-c-teal .ak-how4-ico { background: var(--teal-light); }
+.ak-how4-steps strong { font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.1; }
+.ak-how4-steps li > span:last-child { font-size: 15.5px; line-height: 1.4; color: var(--muted); max-width: 24ch; }
+.ak-how4-can { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 12px; max-width: 980px; margin: 22px auto 0; font-weight: 700; }
+.ak-how4-can .ak-chips-row { margin: 0; justify-content: center; }
+.ak-how4-can .ak-chips-row li { background: var(--teal-soft); color: var(--teal-deep); }
+.ak-how4 .ak-how4-off { max-width: 720px; margin: 18px auto 0 !important; justify-content: center; }
+.ak-how4-most { position: relative; max-width: 980px; margin: clamp(60px, 8vw, 84px) auto 18px; background: var(--lav-deep); color: #F1ECF6; padding-left: clamp(150px, 17vw, 190px); }
+.ak-how4-most > img { position: absolute; left: 18px; bottom: 0; width: clamp(120px, 14vw, 160px); height: auto; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .25)); }
+.ak-how4-most .ak-most-cta small { color: #E4DCEC; }
+@media (max-width: 760px) {
+  .ak-how4-steps { grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 440px; }
+  .ak-how4-steps::before { display: none; }
+  .ak-how4-steps li { grid-template-columns: 60px minmax(0, 1fr); justify-items: start; text-align: left; column-gap: 14px; row-gap: 2px; padding: 14px 44px 14px 14px; border-radius: 24px; }
+  .ak-how4-steps li::before { left: auto; right: 16px; top: 50%; translate: 0 -50%; }
+  .ak-how4-ico { grid-row: span 2; width: 60px; height: 60px; border-radius: 20px; margin: 0; }
+  .ak-how4-steps strong { align-self: end; font-size: 21px; }
+  .ak-how4-steps li > span:last-child { align-self: start; max-width: none; font-size: 14.5px; }
+  .ak-how4-can { flex-direction: column; gap: 8px; }
+  .ak-how4-most { flex-direction: column; text-align: center; padding: 96px 20px 22px; margin-top: 96px; }
+  .ak-how4-most > img { left: 50%; bottom: auto; top: -70px; translate: -50% 0; width: 140px; }
+}
+
+.ak-try2-in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 5vw, 64px); align-items: center; }
+.ak-try2-lead { font-size: clamp(17px, 1.8vw, 20px); line-height: 1.5; max-width: 34ch; }
+.ak-try2-test { padding: clamp(22px, 3vw, 32px); border-radius: 36px; background: var(--paper); box-shadow: var(--shadow-big); rotate: 1.5deg; }
+.ak-try2-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px !important; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.ak-try2-h span { padding: 6px 14px; border-radius: 999px; background: var(--sun); color: var(--ink); font-size: 15px; letter-spacing: 0; }
+.ak-try2-test ol { list-style: none; counter-reset: t2; padding: 0; margin: 0; display: grid; gap: 10px; }
+.ak-try2-test li { counter-increment: t2; display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 20px; background: var(--teal-soft); font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: clamp(20px, 2.2vw, 25px); line-height: 1.1; }
+.ak-try2-test li::before { content: ""; flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--teal-deep) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6.5 11.5l3 3 6-6.5' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 22px no-repeat; }
+.ak-try2-test li:nth-child(2) { background: var(--sun-soft); }
+.ak-try2-test li:nth-child(3) { background: var(--lav-soft); }
+.ak-try2-then { margin: 16px 0 0 !important; font-size: 16px; line-height: 1.45; }
+.ak-try2-say { margin: 14px 0 0 !important; padding-top: 14px; border-top: 1px dashed var(--line); font-size: 14.5px; font-weight: 600; line-height: 1.4; color: var(--muted); }
+@media (max-width: 860px) {
+  .ak-try2-in { grid-template-columns: minmax(0, 1fr); }
+  .ak-try2-test { rotate: none; order: -1; border-radius: 28px; }
+  .ak-try2 .ak-a-eyebrow, .ak-try2 h2, .ak-try2-lead { text-align: center; margin-inline: auto; }
+}
+@media (max-width: 860px) { .ak-try2-test { order: 0; } }
+.ak-how4-most { overflow: visible; }
+.ak-how4-most > img { z-index: 1; }
