@@ -20,7 +20,7 @@ $arrow = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><pa
 $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>';
 ?>
 
-<section class="ak-slide ak-hero ak-a-hero ak-x-hero ak-h5" id="start" data-slide="Start" aria-labelledby="ak-h1">
+<section class="ak-slide ak-hero ak-a-hero ak-x-hero ak-h5 ak-h6" id="start" data-slide="Start" aria-labelledby="ak-h1">
     <div class="ak-wrap ak-x-hero-in">
         <div class="ak-x-hero-txt">
             <p class="ak-h5-eyebrow">Interaktywne audiozabawy dla dzieci 3–9 lat</p>
@@ -30,18 +30,25 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
                 <?php echo ak_app_cta(); // escaped inside ?>
             </div>
             <?php if (!$live) : ?><p class="ak-h5-note">36 zabaw do druku i 3 audiozabawy na maila. Za 0 zł.</p><?php endif; ?>
-            <p class="ak-h5-listen ak-c-<?php echo esc_attr($first['color']); ?>">
-                <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj, jak to brzmi', 'ak-play-small'); // escaped inside ?>
-                <span>Posłuchaj, jak to brzmi</span>
-            </p>
+            <ul class="ak-h5-proof">
+                <li>Bez ekranu</li>
+                <li>Bez reklam</li>
+                <li>Polecają logopedzi</li>
+            </ul>
         </div>
-        <?php // Szop'en with the microphone is the whole picture; the rings behind him pulse like sound. ?>
+        <?php // The picture is the product: a child with headphones on, and a fragment to play right under it. ?>
         <figure class="ak-h5-szop">
             <span class="ak-h5-rings" aria-hidden="true"><i></i><i></i><i></i></span>
-            <img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/mikrofon-540.webp')); ?> 504w, <?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?> 709w" sizes="(max-width: 960px) 250px, 430px" alt="Szop’en, maskotka aplikacji Audiokiddo, prowadzi audiozabawę z mikrofonem" width="709" height="760" fetchpriority="high">
+            <img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/sluchawki-520.webp')); ?> 520w, <?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?> 760w" sizes="(max-width: 960px) 290px, 460px" alt="Szop’en, maskotka Audiokiddo, zakłada dziecku słuchawki: audiozabawa bez ekranu" width="760" height="740" fetchpriority="high">
             <figcaption><span class="ak-sr">Szop’en: </span>Halo, halo! Przejmuję dziecko na 15 minut.</figcaption>
+            <div class="ak-h6-player ak-c-<?php echo esc_attr($first['color']); ?>">
+                <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj fragmentu audiozabawy', 'ak-play-small'); // escaped inside ?>
+                <span><strong>Posłuchaj, jak to brzmi</strong><small>Fragment pakietu <?php echo esc_html($first['title']); ?></small></span>
+                <i class="ak-h6-eq" aria-hidden="true"><b></b><b></b><b></b><b></b></i>
+            </div>
         </figure>
     </div>
+    <a class="ak-h6-next" href="#co-to">Czym to się różni od audiobooka? <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </section>
 
 <?php // What an audio play is and why it is not an audiobook: said once, plainly, before anything else. ?>
@@ -68,7 +75,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 <section class="ak-slide ak-a-sec ak-a-how ak-how2" id="jak-to-dziala" data-slide="Jak to działa" aria-labelledby="ak-how-h">
     <div class="ak-wrap ak-how2-in">
         <div class="ak-how2-art" data-reveal="left">
-            <img src="<?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/sluchawki-520.webp')); ?> 520w, <?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?> 760w" sizes="(max-width: 860px) 260px, 440px" alt="Szop’en zakłada dziecku słuchawki: audiozabawa bez ekranu" width="760" height="740" loading="lazy" decoding="async">
+            <img src="<?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/mikrofon-540.webp')); ?> 504w, <?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?> 709w" sizes="(max-width: 860px) 240px, 400px" alt="Szop’en z mikrofonem prowadzi audiozabawę" width="709" height="760" loading="lazy" decoding="async">
         </div>
         <div>
             <h2 id="ak-how-h" data-reveal>Odpalasz. <span class="ak-hl-word">Dziecko działa.</span> Ty masz chwilę.</h2>

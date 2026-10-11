@@ -151,9 +151,9 @@ add_action('wp_head', function () {
     // The first screen's drawing is the largest thing on it: asked for along with the page.
     if (ak_view() === 'start') {
         printf(
-            '<link rel="preload" as="image" type="image/webp" fetchpriority="high" imagesrcset="%s 504w, %s 709w" imagesizes="(max-width: 960px) 250px, 430px">' . "\n",
-            esc_url(ak_asset('img/szop/mikrofon-540.webp')),
-            esc_url(ak_asset('img/szop/mikrofon.webp'))
+            '<link rel="preload" as="image" type="image/webp" fetchpriority="high" imagesrcset="%s 520w, %s 760w" imagesizes="(max-width: 960px) 290px, 460px">' . "\n",
+            esc_url(ak_asset('img/szop/sluchawki-520.webp')),
+            esc_url(ak_asset('img/szop/sluchawki.webp'))
         );
     }
     echo '<meta name="theme-color" content="#FFFBF2">' . "\n";

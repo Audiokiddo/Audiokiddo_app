@@ -2398,3 +2398,45 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
   .ak-site .ak-nb2-card h3 { margin-bottom: 16px; }
   .ak-nb2-ico { width: 48px; height: 48px; border-radius: 16px; }
 }
+
+/* =============================================================================================
+   3.14: the first screen shows the product: a child in headphones, a fragment to play under the
+   picture, the three promises back, and a line that leads down the page.
+   ============================================================================================= */
+.ak-h6 { padding-bottom: clamp(64px, 9vh, 96px); }
+.ak-h6 .ak-h5-szop { width: min(460px, 100%); }
+.ak-h6 .ak-h5-szop img { animation: none; filter: drop-shadow(0 24px 28px rgba(36, 27, 58, .16)); }
+.ak-h6 .ak-h5-szop figcaption { right: -2%; top: -3%; }
+.ak-h6 .ak-h5-rings { top: 46%; }
+.ak-h6 .ak-h5-proof { margin-top: 22px; }
+.ak-h6-player { position: relative; z-index: 2; display: flex; align-items: center; gap: 12px; width: min(340px, 100%); margin: -30px auto 0; padding: 9px 18px 9px 9px; border-radius: 999px; background: var(--paper); box-shadow: var(--shadow-big), 0 0 0 1px var(--line); text-align: left; line-height: 1.2; }
+.ak-h6-player .ak-play { flex: none; }
+.ak-h6-player > span { flex: 1; min-width: 0; }
+.ak-h6-player strong { display: block; font-size: 16px; }
+.ak-h6-player small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+.ak-h6-eq { display: flex; align-items: center; gap: 3px; height: 22px; flex: none; }
+.ak-h6-eq b { width: 4px; height: 8px; border-radius: 2px; background: var(--deep, var(--lav-deep)); opacity: .45; }
+.ak-h6-player:has(.ak-play.is-playing) .ak-h6-eq b { opacity: 1; animation: ak-h6-eq .9s ease-in-out infinite alternate; }
+.ak-h6-eq b:nth-child(2) { height: 16px; animation-delay: .15s !important; }
+.ak-h6-eq b:nth-child(3) { height: 11px; animation-delay: .3s !important; }
+.ak-h6-eq b:nth-child(4) { height: 19px; animation-delay: .45s !important; }
+@keyframes ak-h6-eq { from { transform: scaleY(.35); } to { transform: scaleY(1.15); } }
+.ak-h6-next { position: absolute; left: 50%; bottom: 18px; translate: -50% 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--teal-deep) !important; text-decoration: none !important; white-space: nowrap; }
+.ak-h6-next svg { animation: ak-h6-down 1.6s ease-in-out infinite; }
+.ak-h6-next:hover { background: rgba(29, 116, 120, .08); }
+@keyframes ak-h6-down { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(4px); } }
+@media (max-width: 960px) {
+  .ak-h6 .ak-h5-szop { width: min(290px, 74vw); margin-top: 40px; order: 4; }
+  .ak-h6 .ak-h5-szop figcaption { right: -12%; top: -9%; }
+  .ak-h6 .ak-h5-proof { order: 5; margin-top: 26px; }
+  .ak-h6-player { width: min(330px, 88vw); margin-left: 50%; translate: -50% 0; }
+  .ak-h6 { padding-bottom: 64px; }
+}
+@media (prefers-reduced-motion: reduce) { .ak-h6-next svg, .ak-h6-eq b { animation: none !important; } }
+@media (max-width: 960px) {
+  .ak-h6 { padding-bottom: 86px; }
+  .ak-h6 .ak-h5-proof { flex-wrap: nowrap; justify-content: center; gap: 0 12px; font-size: 12.5px; white-space: nowrap; }
+}
+/* The line that leads down sits in the flow under everything, so nothing can land on it */
+.ak-h6 .ak-h6-next { position: static; translate: none; align-self: center; margin-top: clamp(20px, 3vh, 34px); }
+.ak-view-start .ak-h6 { padding-bottom: 22px; }
