@@ -23,6 +23,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 <section class="ak-slide ak-hero ak-a-hero ak-x-hero ak-h5" id="start" data-slide="Start" aria-labelledby="ak-h1">
     <div class="ak-wrap ak-x-hero-in">
         <div class="ak-x-hero-txt">
+            <p class="ak-h5-eyebrow">Interaktywne audiozabawy dla dzieci 3–9 lat</p>
             <h1 id="ak-h1">Ty pijesz ciepłą kawę. <span class="ak-hl-word">Dziecko ratuje świat.</span></h1>
             <p class="ak-hero-sub ak-a-sub">Włączasz Audiokiddo i odkładasz telefon. Głos daje dziecku misję. <strong>15 minut bez ekranu.</strong></p>
             <div class="ak-hero-btns ak-a-btns">
@@ -41,7 +42,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
         <?php // Szop'en with the microphone is the whole picture; the rings behind him pulse like sound. ?>
         <figure class="ak-h5-szop">
             <span class="ak-h5-rings" aria-hidden="true"><i></i><i></i><i></i></span>
-            <img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?>" alt="Szop’en, maskotka Audiokiddo, z mikrofonem" width="709" height="760" fetchpriority="high">
+            <img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/mikrofon-540.webp')); ?> 504w, <?php echo esc_url(ak_asset('img/szop/mikrofon.webp')); ?> 709w" sizes="(max-width: 960px) 250px, 430px" alt="Szop’en, maskotka aplikacji Audiokiddo, prowadzi audiozabawę z mikrofonem" width="709" height="760" fetchpriority="high">
             <figcaption><span class="ak-sr">Szop’en: </span>Halo, halo! Przejmuję dziecko na 15 minut.</figcaption>
         </figure>
     </div>
@@ -50,7 +51,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 <section class="ak-slide ak-a-sec ak-a-how ak-how2" id="jak-to-dziala" data-slide="Jak to działa" aria-labelledby="ak-how-h">
     <div class="ak-wrap ak-how2-in">
         <div class="ak-how2-art" data-reveal="left">
-            <img src="<?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?>" alt="Szop’en zakłada dziecku słuchawki" width="760" height="740" loading="lazy">
+            <img src="<?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/sluchawki-520.webp')); ?> 520w, <?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?> 760w" sizes="(max-width: 860px) 260px, 440px" alt="Szop’en zakłada dziecku słuchawki: audiozabawa bez ekranu" width="760" height="740" loading="lazy" decoding="async">
         </div>
         <div>
             <h2 id="ak-how-h" data-reveal>Odpalasz. <span class="ak-hl-word">Dziecko działa.</span> Ty masz chwilę.</h2>
@@ -81,7 +82,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
             <div class="ak-a-say">
                 <?php foreach (ak_moments() as $i => [, , $label, $line, $guide, $pose]) : ?>
                 <div class="ak-moment<?php echo $i === 0 ? ' is-on' : ''; ?>" role="tabpanel" id="ak-moment-<?php echo (int) $i; ?>" aria-labelledby="ak-mtab-<?php echo (int) $i; ?>">
-                    <img class="ak-moment-szop" src="<?php echo esc_url(ak_asset('img/szop/dzien-' . $pose . '.webp')); ?>" alt="" width="260" height="270" loading="lazy">
+                    <img class="ak-moment-szop" src="<?php echo esc_url(ak_asset('img/szop/dzien-' . $pose . '.webp')); ?>" alt="" width="360" height="360" loading="lazy" decoding="async">
                     <div>
                         <p class="ak-moment-say"><span class="ak-sr"><?php echo esc_html($label); ?>. Szop’en: </span><?php echo esc_html($line); ?></p>
                         <?php if (isset($guides[$guide])) : ?><a class="ak-moment-more" href="<?php echo esc_url(ak_landing_url($guide)); ?>"><?php echo esc_html($guides[$guide]['anchor']); ?> <?php echo $arrow; // static ?></a><?php endif; ?>
@@ -187,7 +188,7 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
             <p class="ak-small" data-reveal>Logujesz się tym samym e-mailem. Bez haseł, kod przychodzi mailem.</p>
         </div>
         <div class="ak-phone-wrap ak-buy2-phone ak-rise" data-reveal="scale" aria-hidden="true">
-            <img class="ak-rise-szop" src="<?php echo esc_url(ak_asset('img/szop/zza-dolu.webp')); ?>" alt="" width="760" height="501" loading="lazy">
+            <img class="ak-rise-szop" src="<?php echo esc_url(ak_asset('img/szop/zza-dolu.webp')); ?>" alt="" width="600" height="395" loading="lazy" decoding="async">
             <div class="ak-phone"><div class="ak-phone-screen">
                 <span class="ak-phone-island"></span>
                 <img class="ak-phone-shot is-on" src="<?php echo esc_url(ak_asset('img/app/start.webp')); ?>" alt="" width="600" height="1304" loading="lazy">
@@ -200,9 +201,11 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
     <div class="ak-wrap">
         <h2 id="ak-price-h" class="ak-center" data-reveal>Jeden abonament. <span class="ak-hl-word">Cała biblioteka.</span></h2>
         <p class="ak-a-lead ak-center" data-reveal>Najpierw darmowe zabawy w aplikacji. Abonament dopiero, gdy dziecko poprosi o więcej.</p>
-        <div class="ak-a-plan-wrap ak-rise" data-reveal>
-        <img class="ak-rise-szop" src="<?php echo esc_url(ak_asset('img/szop/zza-dolu.webp')); ?>" alt="" width="760" height="501" loading="lazy">
-        <p class="ak-rise-say"><span class="ak-sr">Szop’en: </span>Roczny wychodzi najtaniej. Sam bym wziął, ale szopom nie dają karty.</p>
+        <div class="ak-a-plan-wrap" data-reveal>
+        <figure class="ak-plan-szop">
+            <img src="<?php echo esc_url(ak_asset('img/szop/prezent.webp')); ?>" alt="" width="392" height="400" loading="lazy" decoding="async">
+            <figcaption><span class="ak-sr">Szop’en: </span>Roczny wychodzi najtaniej. Sam bym wziął, ale szopom nie dają karty.</figcaption>
+        </figure>
         <div class="ak-a-plan" id="pobierz">
             <div class="ak-a-toggle" role="radiogroup" aria-label="Okres rozliczenia">
                 <label><input type="radio" name="ak-plan" value="year" checked><span>Rocznie<?php if ($price['save']) : ?> <em>−<?php echo esc_html((string) round(ak_price_num($price['save']))); ?> zł</em><?php endif; ?></span></label>
@@ -249,8 +252,8 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
             <details data-reveal style="--d:<?php echo esc_attr(0.04 * $i); ?>s"><summary><?php echo esc_html($q); ?><span class="ak-plus" aria-hidden="true"></span></summary><div><p><?php echo esc_html($a); ?></p></div></details>
             <?php endforeach; ?>
         </div>
-        <details class="ak-facts" data-reveal>
-            <summary>Audiokiddo w skrócie</summary>
+        <details class="ak-facts" data-reveal open>
+            <summary><h3>Audiokiddo w skrócie</h3></summary>
             <dl>
                 <?php foreach (ak_facts() as $label => $fact) : ?>
                 <dt><?php echo esc_html($label); ?></dt><dd><?php echo esc_html($fact); ?></dd>

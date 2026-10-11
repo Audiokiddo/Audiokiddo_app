@@ -238,7 +238,7 @@ function ak_steps(): array
 function ak_home_faq(): array
 {
     $faq = ak_faq();
-    return [$faq[1], $faq[2], $faq[5], $faq[6], $faq[7]];
+    return [$faq[0], $faq[1], $faq[2], $faq[3], $faq[5], $faq[6], $faq[7]];
 }
 
 /** What the child does during a play (the list under step 3). */

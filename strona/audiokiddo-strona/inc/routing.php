@@ -148,6 +148,14 @@ add_action('wp_head', function () {
     foreach (['Baloo2-latin', 'Baloo2-latin-ext'] as $font) {
         echo '<link rel="preload" href="' . esc_url(ak_asset('fonts/' . $font . '.woff2')) . '" as="font" type="font/woff2" crossorigin>' . "\n";
     }
+    // The first screen's drawing is the largest thing on it: asked for along with the page.
+    if (ak_view() === 'start') {
+        printf(
+            '<link rel="preload" as="image" type="image/webp" fetchpriority="high" imagesrcset="%s 504w, %s 709w" imagesizes="(max-width: 960px) 250px, 430px">' . "\n",
+            esc_url(ak_asset('img/szop/mikrofon-540.webp')),
+            esc_url(ak_asset('img/szop/mikrofon.webp'))
+        );
+    }
     echo '<meta name="theme-color" content="#FFFBF2">' . "\n";
     // Things wait hidden for their entrance only when the script runs; if it does not come
     // within 3 seconds, everything is shown as it is.
