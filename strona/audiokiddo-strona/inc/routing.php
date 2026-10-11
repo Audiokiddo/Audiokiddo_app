@@ -156,7 +156,7 @@ add_action('wp_head', function () {
             esc_url(ak_asset('img/szop/sluchawki.webp'))
         );
     }
-    echo '<meta name="theme-color" content="#FFFBF2">' . "\n";
+    echo '<meta name="theme-color" content="#FFFFFF">' . "\n";
     // Things wait hidden for their entrance only when the script runs; if it does not come
     // within 3 seconds, everything is shown as it is.
     echo "<script>document.documentElement.classList.add('ak-js');setTimeout(function(){if(!window.akReady)document.documentElement.classList.remove('ak-js')},3000);</script>\n";

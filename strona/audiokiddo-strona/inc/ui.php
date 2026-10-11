@@ -41,11 +41,11 @@ function ak_store_buttons(string $class = ''): void
  * swaps in the store for the visitor's phone); before that to the sign-up, which sends the free
  * plays at once and the news of the launch later.
  */
-function ak_app_cta(string $class = 'ak-btn ak-btn-sun', bool $arrow = true): string
+function ak_app_cta(string $class = 'ak-btn ak-btn-sun', bool $arrow = true, string $label = 'Pobierz Audiokiddo'): string
 {
     $svg = $arrow ? ' <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
     if (ak_app_live()) {
-        return '<a class="' . esc_attr($class) . ' ak-app-cta" href="' . esc_url(home_url('/#pobierz')) . '" data-ios="' . esc_attr(ak_opt('app_store_url')) . '" data-android="' . esc_attr(ak_opt('google_play_url')) . '">Pobierz Audiokiddo' . $svg . '</a>';
+        return '<a class="' . esc_attr($class) . ' ak-app-cta" href="' . esc_url(home_url('/#pobierz')) . '" data-ios="' . esc_attr(ak_opt('app_store_url')) . '" data-android="' . esc_attr(ak_opt('google_play_url')) . '">' . esc_html($label) . $svg . '</a>';
     }
     return '<a class="' . esc_attr($class) . '" href="' . esc_url(home_url('/#start-aplikacji')) . '">Odbierz darmowe zabawy' . $svg . '</a>';
 }

@@ -421,23 +421,6 @@ function ak_minutes(int $seconds): string
     return max(1, (int) round($seconds / 60)) . ' min';
 }
 
-/**
- * The home page's day with Audiokiddo (like a timeline): time, icon, the moment in two words,
- * Szop'en's line (short, warm, never at the child's expense), the guide with more ideas and
- * his pose for that moment (assets/img/szop/dzien-<pose>.webp, cut by tool/szop_sheet.py).
- */
-function ak_moments(): array
-{
-    return [
-        ['7:40', 'car', 'W samochodzie', '„Daleko jeszcze?” padło przed pierwszym rondem. Spokojnie, mam zabawy na całą trasę.', 'jak-zajac-dziecko-w-samochodzie', 'auto'],
-        ['15:30', 'backpack', 'Po przedszkolu', 'Ty masz baterię na 3%, ono na 300%. Wyrównam.', 'zabawy-ruchowe-dla-dzieci-w-domu', 'przedszkole'],
-        ['17:30', 'pot', 'Robisz obiad', 'Ty kroisz cebulę, ja zajmuję dziecko. Nikt nie płacze.', 'jak-zajac-dziecko-gdy-pracujesz', 'obiad'],
-        ['18:37', 'battery', 'Zero mocy', 'Czwarty raz być smokiem? Dziś smokiem jestem ja.', 'samodzielna-zabawa-dziecka', 'zero-mocy'],
-        ['19:30', 'moon', 'Przed snem', 'Trzy oddechy, cicha zabawa, dobranoc. Działa nawet na szopy.', 'zabawy-wyciszajace-przed-snem', 'sen'],
-        ['Kiedykolwiek', 'bored', '„Nudzi mi się”', 'W końcu pytanie, na które znam odpowiedź.', 'dziecko-sie-nudzi', 'nuda'],
-    ];
-}
-
 /** The hero's little scene: what the game says, what the child answers (it loops in the CSS). */
 function ak_hero_chat(): array
 {
@@ -480,36 +463,6 @@ function ak_peeks(): array
 {
     return [
         'pakiety' => ['chytry', 'right', 'Detektyw jest najlepszy. Tylko nie mówcie pozostałym pakietom.'],
-    ];
-}
-
-/** An audiobook and an audio play as two cards: the name, the icon and what happens (home page). */
-function ak_not_audiobook(): array
-{
-    return [
-        'book' => ['Audiobook', 'ear', [
-            'Dziecko słucha',
-            'Głos czyta historię do końca',
-            'Siedzi albo leży',
-            'Historia zawsze ta sama',
-        ]],
-        'play' => ['Audiozabawa', 'run', [
-            'Dziecko odpowiada, szuka i rusza się',
-            'Głos pyta i czeka na odpowiedź',
-            'Wstaje, skacze, biega po pokoju',
-            'Historia zależy od tego, co wymyśli',
-            'Ćwiczy mowę, uwagę i wyobraźnię',
-        ]],
-    ];
-}
-
-/** What the child does in each kind of play, in the packs' order: the verb and one line (home page). */
-function ak_doing(): array
-{
-    return [
-        ['Wymyśla', 'Kończy historię po swojemu, tworzy postaci i całe światy. Tu nie ma złych odpowiedzi.'],
-        ['Zgaduje', 'Rozwiązuje zagadki i szuka słów: skojarzenia, przeciwieństwa, „co tu nie pasuje?”.'],
-        ['Tropi', 'Zbiera poszlaki ze słuchu i rozwiązuje sprawę. Do każdej są akta do wydrukowania.'],
     ];
 }
 
