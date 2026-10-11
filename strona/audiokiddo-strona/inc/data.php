@@ -238,10 +238,28 @@ function ak_steps(): array
 function ak_steps_short(): array
 {
     return [
-        ['Pobierasz', 'Darmowe zabawy czekają w środku.', 'download', 'sun'],
-        ['Wybierasz', 'Wiek i ochota: zagadki, ruch albo śledztwo.', 'puzzle', 'teal'],
-        ['Naciskasz play', 'Głos prowadzi. Telefon leży na stole.', 'play', 'lav'],
+        ['Pobierasz Audiokiddo', 'Ściągasz aplikację z App Store albo Google Play. W środku od razu znajdziesz darmowe zabawy.', 'download', 'sun'],
+        ['Wybierasz zabawę', 'Podajesz wiek i wybierasz coś, na co akurat jest ochota: zagadki, ruch, wyobraźnia, śledztwo.', 'puzzle', 'teal'],
+        ['Naciskasz play', 'I od tego momentu audio prowadzi zabawę. A telefon? Może leżeć na stole.', 'play', 'lav'],
     ];
+}
+
+/**
+ * The play from each pack that is free in the app: title, the pack, its length in seconds, the
+ * pack's colour and the cover (home page).
+ */
+function ak_free_plays(): array
+{
+    $covers = ['Magiczny sklep' => 'magiczny-sklep', 'Co to za dźwięk?' => 'co-to-za-dzwiek', 'Złodziej naszyjnika' => 'zlodziej-naszyjnika'];
+    $free = [];
+    foreach (ak_packs() as $pack) {
+        foreach ($pack['plays'] as [$title, $seconds, $is_free]) {
+            if ($is_free && isset($covers[$title])) {
+                $free[] = [$title, $pack['title'], $seconds, $pack['color'], $covers[$title], ak_age($pack)];
+            }
+        }
+    }
+    return $free;
 }
 
 /** The questions shown on the home page. */

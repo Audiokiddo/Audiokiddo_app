@@ -121,12 +121,15 @@ $tones = ['sun', 'teal', 'lav'];
             <span>Dziecko może:</span>
             <ul class="ak-chips-row"><?php foreach (ak_kid_can() as $can) : ?><li><?php echo esc_html($can); ?></li><?php endforeach; ?></ul>
         </div>
-        <p class="ak-offline ak-how4-off" data-reveal><?php echo ak_icon('offline', 26); // static ?><span><strong>Działa też bez internetu.</strong> Pobierasz zabawy na telefon i odpalasz offline: w samolocie albo w aucie bez zasięgu.</span></p>
+        <ul class="ak-how4-more" data-reveal>
+            <li><?php echo ak_icon('offline', 26); // static ?><span><strong>Działa też bez internetu.</strong> Zabawy możesz pobrać na telefon i odpalić offline: w samolocie albo w samochodzie, gdzie nie ma zasięgu.</span></li>
+            <li><?php echo ak_icon('car', 26); // static ?><span><strong>Gotowa do jazdy.</strong> Aplikacja działa z Apple CarPlay i Android Auto, więc zabawę wybierzesz z ekranu samochodu.</span></li>
+        </ul>
         <div class="ak-most ak-how4-most" data-reveal>
             <img src="<?php echo esc_url(ak_asset('img/szop/mikrofon-540.webp')); ?>" alt="" width="504" height="540" loading="lazy" decoding="async">
             <div>
                 <p class="ak-most-h">I najważniejsze</p>
-                <p>Dziecko bawi się samo. Chcesz dołączyć? Jasne. Nie chcesz? Też jasne. <strong>Właśnie po to tu jesteśmy.</strong></p>
+                <p>Większość audiozabaw tworzymy tak, żeby dziecko mogło bawić się samodzielnie. Chcesz dołączyć? Jasne. Nie chcesz? Też jasne. <strong>Właśnie po to tu jesteśmy.</strong></p>
             </div>
             <div class="ak-most-cta">
                 <?php echo ak_app_cta(); // escaped inside ?>
@@ -177,28 +180,33 @@ $tones = ['sun', 'teal', 'lav'];
     </div>
 </section>
 
-<section class="ak-slide ak-a-sec ak-try ak-try2" id="darmowe-zabawy" data-slide="Darmowe zabawy" aria-labelledby="ak-try-h">
-    <div class="ak-wrap ak-try2-in">
-        <div data-reveal="left">
-            <p class="ak-a-eyebrow">Darmowe zabawy w aplikacji</p>
-            <h2 id="ak-try-h">Najpierw sprawdź. <span class="ak-hl-word">Potem zdecyduj.</span></h2>
-            <p class="ak-try2-lead">Nie kupujesz w ciemno. Darmowe zabawy to normalne, pełne audiozabawy, a nie zwiastuny.</p>
-            <div class="ak-try-btns">
-                <?php echo ak_app_cta(); // escaped inside ?>
-                <?php ak_store_buttons(); ?>
-            </div>
-            <p class="ak-small"><?php echo $live ? 'Darmowe zabawy czekają w aplikacji. Bez kupowania abonamentu na start.' : 'Aplikacja wchodzi do App Store i Google Play lada dzień. Zostaw e-mail niżej, a damy znać pierwszego dnia.'; ?></p>
+<section class="ak-slide ak-a-sec ak-try ak-try3" id="darmowe-zabawy" data-slide="Darmowe zabawy" aria-labelledby="ak-try-h">
+    <div class="ak-wrap">
+        <p class="ak-a-eyebrow ak-center" data-reveal>Darmowe zabawy w aplikacji</p>
+        <h2 id="ak-try-h" class="ak-center" data-reveal>Najpierw sprawdź. <span class="ak-hl-word">Potem zdecyduj.</span></h2>
+        <p class="ak-a-lead ak-center" data-reveal>Nie musisz kupować abonamentu w ciemno. Po pobraniu aplikacji odpalasz za darmo <strong>jedną pełną zabawę z każdego pakietu.</strong></p>
+        <ul class="ak-try3">
+            <?php foreach (ak_free_plays() as $i => [$title, $pack_name, $seconds, $color, $cover, $age]) : ?>
+            <li class="ak-c-<?php echo esc_attr($color); ?>" data-reveal style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
+                <figure>
+                    <img src="<?php echo esc_url(ak_asset('img/covers/' . $cover . '.webp')); ?>" alt="Okładka audiozabawy <?php echo esc_attr($title); ?>" width="520" height="520" loading="lazy" decoding="async">
+                    <span class="ak-try3-free">0 zł</span>
+                </figure>
+                <div>
+                    <p class="ak-try3-pack">Pakiet <?php echo esc_html($pack_name); ?></p>
+                    <h3><?php echo esc_html($title); ?></h3>
+                    <p class="ak-try3-meta"><?php echo esc_html(ak_minutes($seconds) . ' · ' . $age); ?></p>
+                </div>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+        <p class="ak-try3-see ak-center" data-reveal>To normalne, pełne audiozabawy. Dzięki nim zobaczysz, czy dziecko się wkręci, czy chce dokończyć i czy prosi o kolejną. I dopiero wtedy decydujesz, czy pełny dostęp ma dla Was sens.</p>
+        <p class="ak-try3-say ak-center" data-reveal><span class="ak-sr">Szop’en: </span>„Najpierw niech dzieciak przejdzie kontrolę jakości. Potem pogadamy o pieniądzach.”</p>
+        <div class="ak-try-btns ak-try3-btns" data-reveal>
+            <?php echo ak_app_cta(); // escaped inside ?>
+            <?php ak_store_buttons(); ?>
         </div>
-        <div class="ak-try2-test" data-reveal="right">
-            <p class="ak-try2-h">Test na własnym dziecku <span>0 zł</span></p>
-            <ol>
-                <li>Wkręciło się?</li>
-                <li>Chce dokończyć?</li>
-                <li>Prosi o kolejną?</li>
-            </ol>
-            <p class="ak-try2-then"><strong>Trzy razy tak?</strong> Dopiero wtedy myślisz o abonamencie.</p>
-            <p class="ak-try2-say"><span class="ak-sr">Szop’en: </span>„Najpierw niech dzieciak przejdzie kontrolę jakości. Potem pogadamy o pieniądzach.”</p>
-        </div>
+        <p class="ak-small ak-center" data-reveal><?php echo $live ? 'Darmowe zabawy czekają w aplikacji. Bez kupowania abonamentu na start.' : 'Aplikacja wchodzi do App Store i Google Play lada dzień. Zostaw e-mail niżej, a damy znać pierwszego dnia.'; ?></p>
     </div>
 </section>
 
