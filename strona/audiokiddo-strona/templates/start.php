@@ -23,29 +23,38 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 <section class="ak-slide ak-hero ak-a-hero ak-x-hero ak-h5 ak-h6" id="start" data-slide="Start" aria-labelledby="ak-h1">
     <div class="ak-wrap ak-x-hero-in">
         <div class="ak-x-hero-txt">
-            <p class="ak-h5-eyebrow">Interaktywne audiozabawy dla dzieci 3–9 lat</p>
+            <p class="ak-h5-eyebrow">Aplikacja z audiozabawami dla dzieci 3–9 lat</p>
             <h1 id="ak-h1">Ty pijesz ciepłą kawę. <span class="ak-hl-word">Dziecko ratuje świat.</span></h1>
-            <p class="ak-hero-sub ak-a-sub">Włączasz Audiokiddo i odkładasz telefon. Głos daje dziecku misję. <strong>15 minut bez ekranu.</strong></p>
+            <p class="ak-hero-sub ak-a-sub">Włączasz zabawę w aplikacji i odkładasz telefon. Głos daje dziecku misję. <strong>15 minut bez ekranu.</strong></p>
             <div class="ak-hero-btns ak-a-btns">
                 <?php echo ak_app_cta(); // escaped inside ?>
             </div>
-            <?php if (!$live) : ?><p class="ak-h5-note">36 zabaw do druku i 3 audiozabawy na maila. Za 0 zł.</p><?php endif; ?>
-            <ul class="ak-h5-proof">
-                <li>Bez ekranu</li>
-                <li>Bez reklam</li>
-                <li>Polecają logopedzi</li>
-            </ul>
+            <?php // It is an app: said under the button, with the stores it is coming to (or is in). ?>
+            <?php if ($live) : ak_store_buttons('ak-h6-stores'); else : ?>
+            <p class="ak-h6-app"><?php echo ak_icon('phone', 20); // static ?><span>Aplikacja na iPhone’a i Androida. <strong>Wkrótce w App Store i Google Play.</strong></span></p>
+            <?php endif; ?>
+            <?php $said = ak_reviews()[3]; ?>
+            <p class="ak-h6-said">
+                <span class="ak-h6-faces" aria-hidden="true"><?php foreach ([3, 1, 0] as $r) : ?><img src="<?php echo esc_url(ak_img(ak_reviews()[$r]['photo'])); ?>" alt="" width="36" height="36"><?php endforeach; ?></span>
+                <span><q>Staś jest zachwycony.</q> <?php echo esc_html($said['name'] . ', ' . $said['who']); ?></span>
+            </p>
         </div>
         <?php // The picture is the product: a child with headphones on, and a fragment to play right under it. ?>
         <figure class="ak-h5-szop">
             <span class="ak-h5-rings" aria-hidden="true"><i></i><i></i><i></i></span>
             <img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/sluchawki-520.webp')); ?> 520w, <?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?> 760w" sizes="(max-width: 960px) 290px, 460px" alt="Szop’en, maskotka Audiokiddo, zakłada dziecku słuchawki: audiozabawa bez ekranu" width="760" height="740" fetchpriority="high">
             <figcaption><span class="ak-sr">Szop’en: </span>Halo, halo! Przejmuję dziecko na 15 minut.</figcaption>
-            <div class="ak-h6-player ak-c-<?php echo esc_attr($first['color']); ?>">
-                <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj fragmentu audiozabawy', 'ak-play-small'); // escaped inside ?>
-                <span><strong>Posłuchaj, jak to brzmi</strong><small>Fragment pakietu <?php echo esc_html($first['title']); ?></small></span>
+            <?php $heard = $packs['detektyw']; ?>
+            <div class="ak-h6-player ak-c-<?php echo esc_attr($heard['color']); ?>">
+                <?php echo ak_sample_button(ak_upload($heard['sample']), 'Posłuchaj fragmentu audiozabawy', 'ak-play-small'); // escaped inside ?>
+                <span><strong>Posłuchaj, jak to brzmi</strong><small>Fragment pakietu <?php echo esc_html($heard['title']); ?></small></span>
                 <i class="ak-h6-eq" aria-hidden="true"><b></b><b></b><b></b><b></b></i>
             </div>
+            <ul class="ak-h5-proof">
+                <li>Bez ekranu</li>
+                <li>Bez reklam</li>
+                <li>Polecają logopedzi</li>
+            </ul>
         </figure>
     </div>
     <a class="ak-h6-next" href="#co-to">Czym to się różni od audiobooka? <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>

@@ -2440,3 +2440,23 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
 /* The line that leads down sits in the flow under everything, so nothing can land on it */
 .ak-h6 .ak-h6-next { position: static; translate: none; align-self: center; margin-top: clamp(20px, 3vh, 34px); }
 .ak-view-start .ak-h6 { padding-bottom: 22px; }
+
+/* 3.15: the first screen says it is an app, shows a parent's word by the button, and the
+   promises sit under the fragment to play */
+.ak-h6-app { display: flex; align-items: center; gap: 10px; margin: 18px 0 0 !important; font-size: 14.5px; line-height: 1.35; color: var(--muted); }
+.ak-h6-app .ak-ico { flex: none; width: 34px; height: 34px; padding: 7px; border-radius: 11px; background: var(--ink); color: #fff; }
+.ak-h6-app strong { color: var(--ink); }
+.ak-h6 .ak-h6-stores { margin-top: 18px; }
+.ak-h6-said { display: flex; align-items: center; gap: 12px; margin: 22px 0 0 !important; font-size: 14.5px; line-height: 1.35; color: var(--muted); }
+.ak-h6-said q { color: var(--ink); font-weight: 700; quotes: "„" "”"; }
+.ak-h6-faces { display: flex; flex: none; }
+.ak-h6-faces img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2.5px var(--cream); }
+.ak-h6-faces img + img { margin-left: -10px; }
+.ak-h6 .ak-h5-szop .ak-h5-proof { position: relative; z-index: 2; justify-content: center; margin: 18px 0 0; gap: 6px 16px; }
+@media (max-width: 960px) {
+  .ak-h6 .ak-h6-app, .ak-h6 .ak-h6-said { order: 3; justify-content: center; text-align: left; }
+  .ak-h6 .ak-h6-app { margin-top: 16px !important; }
+  .ak-h6 .ak-h6-said { margin-top: 16px !important; }
+  .ak-h6 .ak-h6-stores { order: 3; justify-content: center; }
+  .ak-h6 .ak-h5-szop .ak-h5-proof { width: 100vw; margin-left: 50%; translate: -50% 0; }
+}
