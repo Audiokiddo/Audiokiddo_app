@@ -144,8 +144,8 @@ add_action('wp_head', function () {
         return;
     }
     // Baloo is the headline voice: fetched early so headings do not jump.
-    // Both halves: Polish letters (ą, ę, ś…) live in the second file, and a late one reflows the headline.
-    foreach (['Baloo2-latin', 'Baloo2-latin-ext'] as $font) {
+    // Both halves (cut down to Polish text): ą, ę, ś… live in the second file, and a late one reflows the headline.
+    foreach (['Baloo2-pl-a', 'Baloo2-pl-b'] as $font) {
         echo '<link rel="preload" href="' . esc_url(ak_asset('fonts/' . $font . '.woff2')) . '" as="font" type="font/woff2" crossorigin>' . "\n";
     }
     // The first screen's drawing is the largest thing on it: asked for along with the page.

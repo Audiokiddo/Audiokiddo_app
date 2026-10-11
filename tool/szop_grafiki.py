@@ -46,5 +46,5 @@ if __name__ == "__main__":
             copy = im.copy()
             copy.thumbnail((side, side), Image.LANCZOS)
             path = OUT / f"{out}.webp"
-            copy.save(path, "WEBP", quality=86, method=6)
+            copy.save(path, "WEBP", quality=80, method=6)
             print(f"{out}.webp {copy.size} ({path.stat().st_size // 1024} KB)")
