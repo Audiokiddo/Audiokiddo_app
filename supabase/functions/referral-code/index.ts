@@ -1,5 +1,6 @@
 // The signed-in parent's referral code and how many friends used it. Auth: the signed-in user
-// (guest accounts included). Answer: { code: "POLEC-7K3M9Q", friends, rewards }.
+// (guest accounts included). Answer: { code: "POLEC-7K3M9Q", friends, rewards, left_this_year,
+// balance } (balance: referral credit in grosze).
 import { formatReferralCode, generateReferralCode } from "../_shared/codes.ts";
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
 

@@ -149,7 +149,33 @@ class FakeAccountService implements AccountService {
 
   @override
   Future<ReferralInfo> referralInfo() async =>
-      const ReferralInfo(code: 'POLEC-ABCDEF', friends: 2, rewards: 1);
+      ReferralInfo(code: 'POLEC-ABCDEF', friends: 2, rewards: 2, leftThisYear: 1, balance: credit);
+
+  /// Referral credit (grosze); spending adds the scope to the account.
+  int credit = 6000;
+  final creditPrices = const [
+    CreditOffer(scope: 'all_content', title: 'Miesiąc całej biblioteki', price: 2999),
+    CreditOffer(scope: 'item:magiczny-sklep', title: 'Magiczny sklep', price: 999),
+  ];
+
+  @override
+  Future<CreditInfo> creditOffers() async {
+    if (offline) throw const AccountException(AccountError.offline);
+    return CreditInfo(balance: credit, offers: creditPrices);
+  }
+
+  @override
+  Future<SpendResult> spendCredit(String scope) async {
+    final offer = creditPrices.where((o) => o.scope == scope).firstOrNull;
+    if (offer == null) return SpendResult(SpendStatus.unknown, credit);
+    if (offer.price > credit) return SpendResult(SpendStatus.insufficient, credit);
+    credit -= offer.price;
+    _entitlements = [
+      ..._entitlements,
+      Entitlement(scope: scope, status: EntitlementStatus.active, source: EntitlementSource.manual),
+    ];
+    return SpendResult(SpendStatus.ok, credit);
+  }
 
   @override
   Future<List<Entitlement>> entitlements() async {

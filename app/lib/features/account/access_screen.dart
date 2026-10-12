@@ -27,7 +27,11 @@ String describeScopes(List<String> scopes, Catalog? catalog) {
 
 /// What to tell the parent about [result]; [forOrder] picks the wording for an order number.
 String claimMessage(ClaimResult result, {required bool forOrder, Catalog? catalog}) => switch (result.status) {
+  ClaimStatus.ok when result.referral =>
+    'Gotowe. Masz ${formatZloty(result.credit > 0 ? result.credit : referralCredit)} do wykorzystania w aplikacji, '
+        'a znajomy, który polecił, też dostał tyle samo. Wydasz je w: Poleć znajomym → Twoje środki.',
   ClaimStatus.ok => 'Gotowe. Dodano: ${describeScopes(result.scopes, catalog)}.',
+  ClaimStatus.already when result.referral => 'Na tym koncie wpisano już kod od znajomego. Działa jeden na konto.',
   ClaimStatus.already => 'Masz już ten dostęp na tym koncie.',
   ClaimStatus.notFound =>
     forOrder
@@ -35,6 +39,8 @@ String claimMessage(ClaimResult result, {required bool forOrder, Catalog? catalo
               'z potwierdzeniem, a e-mail to ten, który podałeś w sklepie.'
         : 'Nie znamy takiego kodu. Sprawdź, czy wszystkie znaki się zgadzają.',
   ClaimStatus.expired => 'Ten kod już wygasł.',
+  ClaimStatus.usedUp when result.referral =>
+    'Ten kod nagrodził już $referralsPerYear osoby w tym roku. Poproś o kod kogoś innego albo wróć z nim w nowym roku.',
   ClaimStatus.usedUp => 'Ten kod został już wykorzystany.',
   ClaimStatus.notPaid => 'To zamówienie nie jest opłacone albo zostało zwrócone, więc nie możemy go dodać.',
   ClaimStatus.taken =>
@@ -44,6 +50,9 @@ String claimMessage(ClaimResult result, {required bool forOrder, Catalog? catalo
   ClaimStatus.rateLimited => 'Za dużo prób. Spróbuj ponownie za godzinę.',
   ClaimStatus.format =>
     forOrder ? 'Podaj numer zamówienia (same cyfry) i adres e-mail z zamówienia.' : 'Kod wygląda tak: AK-XXXX-XXXX.',
+  ClaimStatus.accountRequired =>
+    'Kod od znajomego działa na koncie. Załóż konto albo zaloguj się, a potem wpisz kod jeszcze raz. '
+        'Oboje dostaniecie po ${formatZloty(referralCredit)}.',
 };
 
 /// Turns what a user types into capitals, so a code reads the same however it was typed.
@@ -204,7 +213,11 @@ class _AccessScreenState extends ConsumerState<AccessScreen> {
               _Result(
                 message: claimMessage(last.result, forOrder: last.forOrder, catalog: catalog),
                 good: last.result.granted,
-                action: last.result.granted && !signedIn
+                action: last.result.status == ClaimStatus.accountRequired
+                    ? TextButton(onPressed: () => context.push('/konto'), child: const Text('Załóż konto'))
+                    : last.result.granted && last.result.referral
+                    ? TextButton(onPressed: () => context.push('/polec'), child: const Text('Wykorzystaj środki'))
+                    : last.result.granted && !signedIn
                     ? TextButton(
                         onPressed: () => context.push('/konto'),
                         child: const Text('Zaloguj się, żeby dostęp nie zginął'),

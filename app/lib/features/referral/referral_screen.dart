@@ -6,26 +6,32 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
+import '../access/access_controller.dart';
 import '../account/account_service.dart';
 import '../parental_gate/parental_gate.dart';
 import '../insights/events.dart';
 
-/// Friend's reward and parent's reward, said the same way everywhere.
-const referralFriendGift = '14 dni całej biblioteki za darmo';
-const referralParentGift = 'miesiąc całej biblioteki gratis';
+/// What each side gets (the friend and the parent who shared), said the same way everywhere.
+final referralGift = '${formatZloty(referralCredit)} na zabawy w aplikacji';
 
 final referralInfoProvider = FutureProvider.autoDispose<ReferralInfo>(
   (ref) => ref.watch(accountServiceProvider).referralInfo(),
 );
 
-/// "Poleć znajomym": the parent's code to share; the friend gets 14 days, the parent a month
-/// after the friend's first purchase.
+final creditInfoProvider = FutureProvider.autoDispose<CreditInfo>(
+  (ref) => ref.watch(accountServiceProvider).creditOffers(),
+);
+
+/// "Poleć znajomym": the parent's code to share. A friend who signs up and enters it gets
+/// 30 zł to spend in the app, and so does the parent, for up to 3 friends a year. Below, the
+/// parent's credit and what it buys.
 class ReferralScreen extends ConsumerWidget {
   const ReferralScreen({super.key});
 
   String _message(String code) =>
-      'Mam dla Ciebie $referralFriendGift w AudioKiddo: audiozabawy, w których dziecko jest bohaterem. '
-      'Pobierz aplikację i wpisz kod $code (Sklep → Odbierz dostęp → Mam kod). https://audiokiddo.pl';
+      'Mam dla Ciebie $referralGift AudioKiddo: audiozabawy, w których dziecko jest bohaterem. '
+      'Pobierz aplikację, załóż konto i wpisz kod $code (Sklep → Odbierz dostęp → Mam kod). '
+      'https://audiokiddo.pl';
 
   Future<void> _share(BuildContext context, WidgetRef ref, String code) async {
     final origin = context.findRenderObject() as RenderBox?;
@@ -74,12 +80,17 @@ class ReferralScreen extends ConsumerWidget {
           _Benefit(
             icon: Icons.card_giftcard_rounded,
             title: 'Znajomy dostaje',
-            body: '$referralFriendGift po wpisaniu Twojego kodu.',
+            body: '$referralGift, gdy pobierze AudioKiddo, założy konto i wpisze Twój kod.',
           ),
           _Benefit(
             icon: Icons.celebration_rounded,
             title: 'Ty dostajesz',
-            body: '$referralParentGift, gdy znajomy kupi abonament lub pakiet. Za każdego znajomego, do 12 miesięcy.',
+            body: '$referralGift za każdego takiego znajomego. Kod nagradza do $referralsPerYear osób w roku.',
+          ),
+          _Benefit(
+            icon: Icons.account_balance_wallet_rounded,
+            title: 'Na co wydać',
+            body: 'Miesiąc całej biblioteki, pakiet albo pojedyncze zabawy. Środki są tylko do użycia w aplikacji.',
           ),
           const SizedBox(height: 18),
           info.when(
@@ -129,15 +140,20 @@ class ReferralScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  info.friends == 0
-                      ? 'Nikt jeszcze nie użył Twojego kodu.'
-                      : 'Kod użyło: ${info.friends}. Zdobyte miesiące gratis: ${info.rewards}.',
+                  [
+                    info.friends == 0 ? 'Nikt jeszcze nie użył Twojego kodu.' : 'Kod użyło: ${info.friends}.',
+                    info.leftThisYear == 0
+                        ? 'W tym roku kod nagrodził już $referralsPerYear osoby. Znów zadziała od stycznia.'
+                        : 'W tym roku kod nagrodzi jeszcze: ${info.leftThisYear}.',
+                  ].join(' '),
                   textAlign: TextAlign.center,
                   style: text.bodyMedium,
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 22),
+          const CreditSection(),
           const SizedBox(height: 18),
           TextButton(
             onPressed: () => context.push('/dostep'),
@@ -181,6 +197,93 @@ class _Benefit extends StatelessWidget {
   }
 }
 
+/// "Twoje środki": the referral credit and what it buys. Spending asks for an adult, then
+/// for a confirmation, and opens the content at once.
+class CreditSection extends ConsumerStatefulWidget {
+  const CreditSection({super.key});
+
+  @override
+  ConsumerState<CreditSection> createState() => _CreditSectionState();
+}
+
+class _CreditSectionState extends ConsumerState<CreditSection> {
+  bool _busy = false;
+
+  Future<void> _spend(CreditOffer offer) async {
+    if (!await showParentalGate(context) || !mounted) return;
+    final sure = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(offer.title),
+        content: Text('Wykorzystać ${formatZloty(offer.price)} ze środków za polecenia?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Anuluj')),
+          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Wykorzystaj')),
+        ],
+      ),
+    );
+    if (sure != true || !mounted) return;
+    setState(() => _busy = true);
+    String message;
+    try {
+      final result = await ref.read(accountServiceProvider).spendCredit(offer.scope);
+      message = switch (result.status) {
+        SpendStatus.ok =>
+          offer.scope == 'all_content'
+              ? 'Gotowe. Cała biblioteka otwarta na 30 dni więcej.'
+              : 'Gotowe. „${offer.title}” jest już Wasze.',
+        SpendStatus.insufficient => 'Za mało środków na „${offer.title}”.',
+        SpendStatus.owned => 'Masz już „${offer.title}”.',
+        SpendStatus.unknown => 'Tego nie da się teraz kupić za środki. Spróbuj ponownie później.',
+      };
+      if (result.status == SpendStatus.ok) await ref.read(accessProvider.notifier).refresh();
+    } on AccountException catch (e) {
+      message = e.error == AccountError.offline
+          ? 'Bez internetu nie wykorzystasz środków. Połącz się i spróbuj ponownie.'
+          : 'Coś poszło nie tak. Spróbuj ponownie za chwilę.';
+    }
+    ref
+      ..invalidate(creditInfoProvider)
+      ..invalidate(referralInfoProvider);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final credit = ref.watch(creditInfoProvider).value;
+    if (credit == null) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Twoje środki', style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+        const SizedBox(height: 4),
+        Text(
+          credit.balance == 0
+              ? 'Na razie 0 zł. Gdy znajomy wpisze Twój kod, dostaniesz ${formatZloty(referralCredit)}.'
+              : 'Masz ${formatZloty(credit.balance)} do wykorzystania w aplikacji.',
+          style: text.bodyMedium,
+        ),
+        if (credit.balance > 0)
+          for (final offer in credit.offers)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(offer.title),
+              subtitle: Text(formatZloty(offer.price)),
+              trailing: offer.price <= credit.balance
+                  ? FilledButton.tonal(
+                      onPressed: _busy ? null : () => _spend(offer),
+                      child: const Text('Wykorzystaj'),
+                    )
+                  : Text('brakuje ${formatZloty(offer.price - credit.balance)}', style: text.bodySmall),
+            ),
+      ],
+    );
+  }
+}
+
 /// A small card on Start: share AudioKiddo, both of you gain.
 class ReferralCard extends StatelessWidget {
   const ReferralCard({super.key});
@@ -212,7 +315,7 @@ class ReferralCard extends StatelessWidget {
                         style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
                       ),
                       Text(
-                        'Znajomy: $referralFriendGift. Ty: $referralParentGift.',
+                        'Ty i znajomy: po $referralGift.',
                         style: text.bodySmall?.copyWith(color: ink),
                       ),
                     ],

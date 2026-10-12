@@ -2,7 +2,9 @@
 // the parent's account. Auth: the signed-in user, anonymous accounts included (a guest account
 // may hold access until the parent signs in). Body: { code }. Answer: { status, scopes } with
 // status ok | already | invalid | expired | used_up | rate_limited | format. Referral codes
-// (POLEC-…) give 14 days of everything (redeem_referral).
+// (POLEC-…) give 30 zł of credit to the friend and to the parent who shared the code
+// (redeem_referral): answer { status, scopes: [], credit?, referral: true }, status also
+// account_required (a guest account must sign up first).
 import { hashCode, normalizeCode, normalizeReferralCode } from "../_shared/codes.ts";
 import { adminClient, json, requestUser } from "../_shared/supabase.ts";
 
@@ -26,7 +28,7 @@ Deno.serve(async (req) => {
       console.error("redeem-code (referral):", error.message);
       return json({ error: "retry" }, 503);
     }
-    return json(data);
+    return json({ ...data, referral: true });
   }
   const code = normalizeCode(text);
   if (!code) return json({ status: "format", scopes: [] });

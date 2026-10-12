@@ -50,7 +50,7 @@ class ReferralNudge extends ConsumerWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Spodobało się? Poleć znajomym: oni mają $referralFriendGift, Ty $referralParentGift.',
+                    'Spodobało się? Poleć znajomym: Ty i znajomy dostaniecie po $referralGift.',
                     style: text.bodyMedium,
                   ),
                 ),

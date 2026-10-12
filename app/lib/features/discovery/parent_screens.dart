@@ -139,7 +139,7 @@ class MoreScreen extends ConsumerWidget {
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.card_giftcard_rounded, color: AkBrand.tealDeep),
           title: const Text('Poleć znajomym'),
-          subtitle: const Text('Znajomy 14 dni za darmo, Ty miesiąc gratis'),
+          subtitle: const Text('Ty i znajomy: po 30 zł na zabawy'),
           trailing: const Icon(Icons.chevron_right_rounded),
           onTap: () => context.push('/polec'),
         ),

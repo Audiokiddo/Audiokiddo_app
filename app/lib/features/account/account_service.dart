@@ -71,32 +71,123 @@ enum ClaimStatus {
 
   /// The text cannot be a code or an order number.
   format,
+
+  /// A friend's code (POLEC-…) on a guest account: the friend signs up first.
+  accountRequired,
 }
 
-/// The parent's referral code ("POLEC-7K3M9Q"), friends who used it and rewards earned.
+int _count(Object? v) => v is int ? v : int.tryParse('$v') ?? 0;
+
+/// Credit earned by referrals, in grosze: 30 zł for the friend and for the parent who shared.
+const referralCredit = 3000;
+
+/// Friends a parent's code may reward in a calendar year.
+const referralsPerYear = 3;
+
+/// The parent's referral code ("POLEC-7K3M9Q"), friends who used it, rewards earned, rewards
+/// left this year and the credit to spend (grosze).
 class ReferralInfo {
-  const ReferralInfo({required this.code, this.friends = 0, this.rewards = 0});
+  const ReferralInfo({
+    required this.code,
+    this.friends = 0,
+    this.rewards = 0,
+    this.leftThisYear = referralsPerYear,
+    this.balance = 0,
+  });
 
   final String code;
   final int friends;
   final int rewards;
+  final int leftThisYear;
+  final int balance;
 
   static ReferralInfo? fromJson(Object? json) {
     if (json is! Map || json['code'] is! String) return null;
-    int count(Object? v) => v is int ? v : int.tryParse('$v') ?? 0;
-    return ReferralInfo(code: json['code'] as String, friends: count(json['friends']), rewards: count(json['rewards']));
+    return ReferralInfo(
+      code: json['code'] as String,
+      friends: _count(json['friends']),
+      rewards: _count(json['rewards']),
+      leftThisYear: json.containsKey('left_this_year') ? _count(json['left_this_year']) : referralsPerYear,
+      balance: _count(json['balance']),
+    );
   }
 }
 
+/// Something credit can buy: a month of everything (`all_content`), a pack or a play.
+class CreditOffer {
+  const CreditOffer({required this.scope, required this.title, required this.price});
+
+  final String scope;
+  final String title;
+
+  /// Grosze.
+  final int price;
+}
+
+/// The parent's credit and what it can buy now (owned packs and plays left out).
+class CreditInfo {
+  const CreditInfo({required this.balance, this.offers = const []});
+
+  final int balance;
+  final List<CreditOffer> offers;
+
+  static CreditInfo? fromJson(Object? json) {
+    if (json is! Map || json['balance'] == null) return null;
+    final offers = json['offers'];
+    return CreditInfo(
+      balance: _count(json['balance']),
+      offers: [
+        if (offers is List)
+          for (final o in offers.whereType<Map>())
+            if (o['scope'] is String && o['title'] is String)
+              CreditOffer(scope: o['scope'] as String, title: o['title'] as String, price: _count(o['price'])),
+      ],
+    );
+  }
+}
+
+enum SpendStatus { ok, insufficient, owned, unknown }
+
+class SpendResult {
+  const SpendResult(this.status, this.balance);
+
+  final SpendStatus status;
+  final int balance;
+
+  factory SpendResult.fromJson(Object? json) {
+    if (json is! Map) return const SpendResult(SpendStatus.unknown, 0);
+    return SpendResult(switch (json['status']) {
+      'ok' => SpendStatus.ok,
+      'insufficient' => SpendStatus.insufficient,
+      'owned' => SpendStatus.owned,
+      _ => SpendStatus.unknown,
+    }, _count(json['balance']));
+  }
+}
+
+/// "30 zł", "20,01 zł".
+String formatZloty(int grosze) {
+  final zl = grosze ~/ 100;
+  final gr = grosze % 100;
+  return gr == 0 ? '$zl zł' : '$zl,${gr.toString().padLeft(2, '0')} zł';
+}
+
 class ClaimResult {
-  const ClaimResult(this.status, [this.scopes = const []]);
+  const ClaimResult(this.status, [this.scopes = const [], this.credit = 0, this.referral = false]);
 
   final ClaimStatus status;
 
   /// What was added (`pack:detektyw`, `all_content`…); empty unless [status] is ok or already.
   final List<String> scopes;
 
-  bool get granted => status == ClaimStatus.ok || status == ClaimStatus.already;
+  /// Credit added by a friend's code (grosze).
+  final int credit;
+
+  /// The code was a friend's (POLEC-…).
+  final bool referral;
+
+  /// Access or credit is on the account. A friend's code entered twice adds nothing.
+  bool get granted => status == ClaimStatus.ok || (status == ClaimStatus.already && !referral);
 
   /// Reads the Edge Function's `{status, scopes}`.
   factory ClaimResult.fromJson(Object? json) {
@@ -111,10 +202,16 @@ class ClaimResult {
       'taken' => ClaimStatus.taken,
       'nothing' => ClaimStatus.nothing,
       'rate_limited' => ClaimStatus.rateLimited,
+      'account_required' => ClaimStatus.accountRequired,
       _ => ClaimStatus.format,
     };
     final scopes = json['scopes'];
-    return ClaimResult(status, [if (scopes is List) ...scopes.whereType<String>()]);
+    return ClaimResult(
+      status,
+      [if (scopes is List) ...scopes.whereType<String>()],
+      _count(json['credit']),
+      json['referral'] == true,
+    );
   }
 }
 
@@ -181,6 +278,12 @@ abstract interface class AccountService {
   /// The parent's referral code and how many friends used it (referral-code); a guest account
   /// is created when nobody is signed in.
   Future<ReferralInfo> referralInfo();
+
+  /// Referral credit and what it can buy (credit, action offers).
+  Future<CreditInfo> creditOffers();
+
+  /// Spends credit on [scope] (credit, action spend); access is refreshed by the caller.
+  Future<SpendResult> spendCredit(String scope);
 
   /// Adds the packs of one shop order, proven by its number and billing e-mail, for buyers
   /// whose shop e-mail differs from the one they sign in with.
@@ -327,6 +430,22 @@ class SupabaseAccountService implements AccountService {
     final info = ReferralInfo.fromJson(response.data);
     if (info == null) throw const AccountException(AccountError.server);
     return info;
+  });
+
+  @override
+  Future<CreditInfo> creditOffers() => _guard(() async {
+    if (await purchaseAccountId() == null) throw const AccountException(AccountError.offline);
+    final response = await _client.functions.invoke('credit', body: {'action': 'offers'});
+    final info = CreditInfo.fromJson(response.data);
+    if (info == null) throw const AccountException(AccountError.server);
+    return info;
+  });
+
+  @override
+  Future<SpendResult> spendCredit(String scope) => _guard(() async {
+    if (await purchaseAccountId() == null) throw const AccountException(AccountError.offline);
+    final response = await _client.functions.invoke('credit', body: {'action': 'spend', 'scope': scope});
+    return SpendResult.fromJson(response.data);
   });
 
   Future<ClaimResult> _claim(String function, Map<String, Object?> body) => _guard(() async {
@@ -501,6 +620,12 @@ class SignedOutAccountService implements AccountService {
 
   @override
   Future<ReferralInfo> referralInfo() async => throw const AccountException(AccountError.notConfigured);
+
+  @override
+  Future<CreditInfo> creditOffers() async => throw const AccountException(AccountError.notConfigured);
+
+  @override
+  Future<SpendResult> spendCredit(String scope) async => throw const AccountException(AccountError.notConfigured);
 
   @override
   Future<List<Entitlement>> entitlements() async => const [];

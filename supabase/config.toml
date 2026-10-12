@@ -460,6 +460,10 @@ verify_jwt = false
 [functions.referral-code]
 verify_jwt = false
 
+# Referral credit: balance, offers and spending. Checks the caller itself, like the others.
+[functions.credit]
+verify_jwt = false
+
 # Studio panel; checks the caller itself and allows only accounts in public.admins.
 [functions.admin]
 verify_jwt = false

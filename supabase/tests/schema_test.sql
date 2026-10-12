@@ -262,29 +262,49 @@ begin
 end $$;
 select 'access code tests passed';
 
--- Referrals: the friend gets 14 days, the parent who shared the code gets 30 days after the
--- friend's first purchase; own code and a second referral are refused.
-insert into auth.users (id, email, email_confirmed_at) values
-  ('00000000-0000-0000-0000-0000000000a1', 'polecajacy@example.com', now()),
-  ('00000000-0000-0000-0000-0000000000a2', 'znajomy@example.com', now());
+-- Referrals: a friend with an account who redeems a code gets 30 zł of credit, and so does the
+-- parent who shared it, at most 3 friends a year; own code, guests and a second referral are
+-- refused. Credit buys a month of everything (stacked), a pack or a play, once.
+insert into auth.users (id, email, email_confirmed_at, is_anonymous) values
+  ('00000000-0000-0000-0000-0000000000a1', 'polecajacy@example.com', now(), false),
+  ('00000000-0000-0000-0000-0000000000a2', 'znajomy@example.com', now(), false),
+  ('00000000-0000-0000-0000-0000000000a3', null, null, true),
+  ('00000000-0000-0000-0000-0000000000a4', 'b@example.com', now(), false),
+  ('00000000-0000-0000-0000-0000000000a5', 'c@example.com', now(), false),
+  ('00000000-0000-0000-0000-0000000000a6', 'd@example.com', now(), false);
 do $$
 declare
   v_code text;
+  v_info jsonb;
 begin
   v_code := public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECABCDEF') ->> 'code';
   assert v_code = 'POLECABCDEF';
   assert public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECZZZZZZ') ->> 'code' = 'POLECABCDEF', 'one code per parent';
   assert public.redeem_referral('00000000-0000-0000-0000-0000000000a1', v_code) ->> 'status' = 'invalid', 'own code refused';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a3', v_code) ->> 'status' = 'account_required', 'guest refused';
   assert public.redeem_referral('00000000-0000-0000-0000-0000000000a2', v_code) ->> 'status' = 'ok';
   assert public.redeem_referral('00000000-0000-0000-0000-0000000000a2', v_code) ->> 'status' = 'already';
-  assert exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a2'
-    and scope = 'all_content' and valid_until > now() + interval '13 days'), 'friend trial';
-  assert not exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a1'), 'no reward before a purchase';
-  perform public.upsert_entitlement('00000000-0000-0000-0000-0000000000a2', 'app_store',
-    'ios:pl.audiokiddo.sub.yearly', 'tx-ref', 'active', null);
-  assert exists (select 1 from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a1'
-    and product_ref = 'referral-reward' and valid_until > now() + interval '29 days'), 'reward after purchase';
-  assert (public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECZZZZZZ') ->> 'rewards')::int = 1;
+  assert public.credit_balance('00000000-0000-0000-0000-0000000000a2') = 3000, 'friend credit';
+  assert public.credit_balance('00000000-0000-0000-0000-0000000000a1') = 3000, 'parent credit';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a4', v_code) ->> 'status' = 'ok';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a5', v_code) ->> 'status' = 'ok';
+  assert public.redeem_referral('00000000-0000-0000-0000-0000000000a6', v_code) ->> 'status' = 'used_up', '3 a year';
+  v_info := public.referral_code_for('00000000-0000-0000-0000-0000000000a1', 'POLECZZZZZZ');
+  assert (v_info ->> 'rewards')::int = 3 and (v_info ->> 'left_this_year')::int = 0 and (v_info ->> 'balance')::int = 9000, v_info::text;
+
+  assert public.spend_credit('00000000-0000-0000-0000-0000000000a2', 'pack:detektyw') ->> 'status' = 'insufficient';
+  assert public.spend_credit('00000000-0000-0000-0000-0000000000a2', 'nope') ->> 'status' = 'unknown';
+  assert public.spend_credit('00000000-0000-0000-0000-0000000000a2', 'item:mikstura') ->> 'status' = 'ok';
+  assert public.spend_credit('00000000-0000-0000-0000-0000000000a2', 'item:mikstura') ->> 'status' = 'owned';
+  assert public.credit_balance('00000000-0000-0000-0000-0000000000a2') = 2001;
+  assert not exists (select 1 from jsonb_array_elements(public.credit_offers('00000000-0000-0000-0000-0000000000a2') -> 'offers') o
+    where o ->> 'scope' = 'item:mikstura'), 'owned play not offered';
+  assert public.spend_credit('00000000-0000-0000-0000-0000000000a1', 'all_content') ->> 'status' = 'ok';
+  assert public.spend_credit('00000000-0000-0000-0000-0000000000a1', 'all_content') ->> 'status' = 'ok';
+  assert (select max(valid_until) from public.entitlements where user_id = '00000000-0000-0000-0000-0000000000a1'
+    and product_ref = 'credit') > now() + interval '59 days', 'months stack';
+  assert not has_function_privilege('authenticated', 'public.spend_credit(uuid, text)', 'execute'), 'service role only';
+  assert not has_table_privilege('authenticated', 'public.credit_ledger', 'select'), 'ledger is private';
 end $$;
 
 -- Statistics, promotions and the published catalog.
