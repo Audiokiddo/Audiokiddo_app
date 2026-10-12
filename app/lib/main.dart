@@ -109,16 +109,21 @@ Future<void> main() async {
   audioHandler
     ..browse = car.children
     ..playById = car.play;
-  // CarPlay asks for the same shelves (ios/Runner/SceneDelegate.swift, CarPlaySceneDelegate).
-  const MethodChannel('pl.audiokiddo/carplay').setMethodCallHandler((call) async {
+  // CarPlay asks for its tabs (ios/Runner/SceneDelegate.swift, CarPlaySceneDelegate) and is
+  // told to ask again when what the family may play, has downloaded or hears now changes.
+  const carPlay = MethodChannel('pl.audiokiddo/carplay');
+  carPlay.setMethodCallHandler((call) async {
     switch (call.method) {
-      case 'shelves':
-        return car.carPlayShelves();
+      case 'library':
+        return car.carPlayLibrary();
       case 'play':
         await car.play('${call.arguments}');
         return null;
+      case 'toggleLoop':
+        return car.toggleLoop();
     }
     return null;
   });
+  watchCarPlayChanges(container, () => carPlay.invokeMethod<void>('reload').catchError((Object _) {}));
   runApp(UncontrolledProviderScope(container: container, child: const AudioKiddoApp()));
 }

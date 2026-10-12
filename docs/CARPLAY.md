@@ -1,6 +1,14 @@
 # CarPlay
 
-Kod jest gotowy. W aucie pojawi się lista jak w Android Auto: Na drogę, Pobrane, Piosenki, Na dobranoc. Stuknięcie włącza zabawę i pokazuje ekran „Teraz odtwarzane” z okładką i przyciskami.
+Kod jest gotowy. W aucie są cztery zakładki:
+- **Na drogę**: zabawy na podróż, pobrane najpierw;
+- **Ostatnie**: to, czego rodzina słuchała, z paskiem postępu i „Zostało X min”;
+- **Pakiety**: każdy pakiet otwiera listę swoich zabaw, niżej darmowe zabawy „Na start”;
+- **Więcej**: Piosenki, Na dobranoc, Pobrane.
+
+Stuknięcie włącza zabawę i pokazuje ekran „Teraz odtwarzane” z okładką, przyciskami i przyciskiem **zapętlenia** (ten sam co w aplikacji). Aktualnie grana zabawa ma znacznik na liście. Listy odświeżają się same, gdy zmieni się dostęp (zakup), pobrane, aktywne dziecko albo grana zabawa.
+
+Kod natywny jest w `app/ios/Runner/SceneDelegate.swift` (CarPlaySceneDelegate), dane w `app/lib/features/player/car_library.dart` (`carPlayTabs`, testy w `app/test/car_library_test.dart`). Swift nie był kompilowany w chmurze: przy pierwszym buildzie na Macu sprawdzić, czy Xcode nie zgłasza błędów w tym pliku.
 
 Gry na głos (z mikrofonem) są w aucie ukryte celowo, bo potrzebują telefonu.
 

@@ -9,7 +9,7 @@ import '../games/game_controller.dart' show GameAudio;
 const _skipInterval = Duration(seconds: 15);
 const _sleepFade = Duration(seconds: 10);
 
-/// Extra on [MediaItem] marking content whose timing matters (rhythm games): no speed change.
+/// Extra on [MediaItem] marking content whose timing matters (rhythm games).
 const timingSensitiveExtra = 'timing_sensitive';
 
 Future<AkAudioHandler> initAudio() async {
@@ -112,9 +112,8 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
 
   /// Plays a local file or a URL, starting at [start].
   Future<void> playItem(MediaItem media, Uri source, {Duration start = Duration.zero}) async {
-    final timingSensitive = media.extras?[timingSensitiveExtra] == true;
-    if (timingSensitive) await _player.setSpeed(1);
     _clearFade();
+    await _player.setLoopMode(_loop ? LoopMode.one : LoopMode.off);
     await _player.setVolume(1);
     // Publish the item only once it loaded, so a failed start does not linger in the mini player.
     final duration = await _player.setAudioSource(AudioSource.uri(source, tag: media), initialPosition: start);
@@ -171,11 +170,27 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
-  @override
-  Future<void> setSpeed(double speed) async {
-    if (mediaItem.value?.extras?[timingSensitiveExtra] == true) return;
-    await _player.setSpeed(speed);
+  bool _loop = false;
+
+  /// The parent's choice: the play starts over when it ends, until switched off. Kept for the
+  /// next play too, like in music apps; game segments and beds set their own loop mode.
+  bool get looping => _loop;
+
+  Future<void> setLooping(bool on) async {
+    _loop = on;
+    await _player.setLoopMode(on ? LoopMode.one : LoopMode.off);
+    _broadcast(_player.playbackEvent);
   }
+
+  /// Lock screen, headset, CarPlay and Android Auto switch the same loop.
+  @override
+  Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) =>
+      setLooping(repeatMode != AudioServiceRepeatMode.none);
+
+  /// Fires each time a looped play reaches its end and starts again (counts as heard to the end).
+  Stream<void> get loopedToStart => _player.positionDiscontinuityStream
+      .where((d) => _loop && d.reason == PositionDiscontinuityReason.autoAdvance)
+      .map((_) {});
 
   @override
   Future<void> stop() async {
@@ -227,7 +242,12 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
           if (playing) MediaControl.pause else MediaControl.play,
           MediaControl.fastForward,
         ],
-        systemActions: const {MediaAction.seek, MediaAction.rewind, MediaAction.fastForward},
+        systemActions: const {
+          MediaAction.seek,
+          MediaAction.rewind,
+          MediaAction.fastForward,
+          MediaAction.setRepeatMode,
+        },
         androidCompactActionIndices: const [0, 1, 2],
         processingState: switch (_player.processingState) {
           ProcessingState.idle => AudioProcessingState.idle,
@@ -240,6 +260,7 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
         updatePosition: _player.position,
         bufferedPosition: _player.bufferedPosition,
         speed: _player.speed,
+        repeatMode: _loop ? AudioServiceRepeatMode.one : AudioServiceRepeatMode.none,
       ),
     );
   }

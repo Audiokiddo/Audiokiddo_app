@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:ak_core/ak_core.dart';
@@ -179,34 +180,21 @@ class _Player extends ConsumerWidget {
                   runSpacing: 8,
                   children: [
                     _Tool(
-                      label: 'Tempo',
-                      icon: Icons.speed_rounded,
-                      onTap: () => showModalBottomSheet<void>(
-                        context: context,
-                        showDragHandle: true,
-                        builder: (c) => SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (media.extras?[timingSensitiveExtra] == true)
-                                const Padding(
-                                  padding: EdgeInsets.all(24),
-                                  child: Text('Ta zabawa wymaga oryginalnego tempa.'),
-                                )
-                              else
-                                for (final speed in [.75, 1.0, 1.25])
-                                  ListTile(
-                                    title: Text('$speed×'),
-                                    trailing: (state?.speed ?? 1) == speed ? const Icon(Icons.check_rounded) : null,
-                                    onTap: () {
-                                      handler.setSpeed(speed);
-                                      Navigator.pop(c);
-                                    },
-                                  ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      label: 'Zapętl',
+                      icon: handler.looping ? Icons.repeat_one_rounded : Icons.repeat_rounded,
+                      active: (state?.repeatMode ?? AudioServiceRepeatMode.none) != AudioServiceRepeatMode.none,
+                      onTap: () {
+                        final on = !handler.looping;
+                        unawaited(handler.setLooping(on));
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                              content: Text(on ? 'Zapętlone: zabawa zacznie się od nowa.' : 'Zapętlanie wyłączone.'),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                      },
                     ),
                     _Tool(label: 'Timer snu', icon: Icons.bedtime_outlined, onTap: () => showSleepPicker(context)),
                     _Tool(
@@ -255,10 +243,13 @@ class _Player extends ConsumerWidget {
 }
 
 class _Tool extends StatelessWidget {
-  const _Tool({required this.label, required this.icon, required this.onTap});
+  const _Tool({required this.label, required this.icon, required this.onTap, this.active = false});
   final String label;
   final IconData icon;
   final VoidCallback? onTap;
+
+  /// A switch that is on (the loop): the icon sits in a light circle.
+  final bool active;
   @override
   Widget build(BuildContext context) => SizedBox(
     width: 68,
@@ -267,8 +258,18 @@ class _Tool extends StatelessWidget {
       onPressed: onTap,
       child: Column(
         children: [
-          Icon(icon, size: 23),
-          const SizedBox(height: 7),
+          Semantics(
+            toggled: active,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: active ? Colors.white.withValues(alpha: .22) : Colors.transparent,
+              ),
+              child: Icon(icon, size: 23),
+            ),
+          ),
+          const SizedBox(height: 3),
           Text(label, style: const TextStyle(fontSize: 11)),
         ],
       ),

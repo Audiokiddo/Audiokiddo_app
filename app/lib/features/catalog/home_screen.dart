@@ -827,16 +827,18 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
       (i.audio.isNotEmpty || i.script != null) &&
       (child == null || (i.ageMin <= child.age && (i.ageMax == null || i.ageMax! >= child.age)));
   final fresh = ref.watch(newItemsProvider).where(fits);
-  final rest = catalog.items.where((i) => fits(i) && !fresh.contains(i)).toList()
-    ..sort((a, b) {
-      int rank(ContentItem i) => ref.watch(canPlayProvider(i)) ? 0 : 1;
-      return rank(a).compareTo(rank(b));
-    });
-  // Up to seven, new ones first; when few are left unheard, favourites heard before fill in.
+  final rest = catalog.items.where((i) => fits(i) && !fresh.contains(i));
+  // When few are left unheard, favourites heard before fill in.
   final heard = catalog.items.where(
     (i) => hasCover(i) && played.contains(i.id) && (child == null || i.ageMin <= child.age),
   );
-  final picks = [...fresh, ...rest, ...heard].where((i) => i.id != _closingPlayId).take(7).toList();
+  // Up to seven: what the family can play right now comes first (new ones first among them),
+  // then the plays that open with the subscription, clearly marked on their cards.
+  final ordered = [...fresh, ...rest, ...heard].where((i) => i.id != _closingPlayId).toList();
+  final picks = [
+    ...ordered.where((i) => ref.watch(canPlayProvider(i))),
+    ...ordered.where((i) => !ref.watch(canPlayProvider(i))),
+  ].take(7).toList();
   // "Prawda czy nie?" always closes the row: a quick game for any moment.
   final closing = catalog.item(_closingPlayId);
   return [...picks, if (closing != null && hasCover(closing)) closing];
@@ -897,6 +899,7 @@ class _HeroCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final fresh = ref.watch(isNewItemProvider(item));
+    final open = ref.watch(canPlayProvider(item));
     final text = Theme.of(context).textTheme;
     final age = item.ageMax == null ? '${item.ageMin}+ lat' : '${item.ageMin}–${item.ageMax} lat';
     // Covers carry their own title art: shown whole (square), the title goes underneath.
@@ -904,7 +907,9 @@ class _HeroCard extends ConsumerWidget {
       onTap: () => context.push('/zabawa/${item.id}'),
       child: Semantics(
         button: true,
-        label: '${fresh ? 'Nowość' : 'Jeszcze nie słuchane'}: ${item.title}, ${(item.durationSec / 60).ceil()} min',
+        label: open
+            ? '${fresh ? 'Nowość' : 'Jeszcze nie słuchane'}: ${item.title}, ${(item.durationSec / 60).ceil()} min'
+            : '${item.title}, ${(item.durationSec / 60).ceil()} min. Zablokowane: dostępne w abonamencie.',
         excludeSemantics: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -917,22 +922,38 @@ class _HeroCard extends ConsumerWidget {
                   fit: StackFit.expand,
                   children: [
                     ItemArt(item: item),
+                    // Locked: the cover dims, so the parent sees at a glance it is not free.
+                    if (!open) const ColoredBox(color: Color(0x73211C35)),
                     Positioned(
                       left: 12,
                       top: 12,
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(12)),
-                        child: Text(
-                          fresh
-                              ? 'Nowość'
-                              : item.id == _closingPlayId
-                              ? 'Szybka gra'
-                              : 'Jeszcze nie słuchane',
-                          style: text.labelMedium?.copyWith(
-                            color: const Color(0xFF211C35),
-                            fontWeight: FontWeight.w700,
-                          ),
+                        decoration: BoxDecoration(
+                          color: open ? AkBrand.sun : const Color(0xFF211C35),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (!open) ...[
+                              const Icon(Icons.lock_rounded, size: 14, color: Colors.white),
+                              const SizedBox(width: 4),
+                            ],
+                            Text(
+                              !open
+                                  ? 'W abonamencie'
+                                  : fresh
+                                  ? 'Nowość'
+                                  : item.id == _closingPlayId
+                                  ? 'Szybka gra'
+                                  : 'Jeszcze nie słuchane',
+                              style: text.labelMedium?.copyWith(
+                                color: open ? const Color(0xFF211C35) : Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -948,7 +969,7 @@ class _HeroCard extends ConsumerWidget {
                           border: Border.all(color: Colors.white, width: 3),
                         ),
                         child: Icon(
-                          ref.watch(canPlayProvider(item)) ? Icons.play_arrow_rounded : Icons.lock_rounded,
+                          open ? Icons.play_arrow_rounded : Icons.lock_rounded,
                           color: Colors.white,
                           size: 28,
                         ),
@@ -966,9 +987,15 @@ class _HeroCard extends ConsumerWidget {
               style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
             ),
             Text(
-              '${(item.durationSec / 60).ceil()} min · $age',
+              open ? '${(item.durationSec / 60).ceil()} min · $age' : 'Dostępne po wykupieniu abonamentu',
               maxLines: 1,
-              style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+              overflow: TextOverflow.ellipsis,
+              style: open
+                  ? text.bodySmall?.copyWith(color: context.palette.inkMuted)
+                  : text.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
             ),
           ],
         ),

@@ -27,6 +27,8 @@ class PlaybackController {
           .map((s) => (s.playing, s.processingState))
           .distinct()
           .listen((s) => unawaited(_save(completed: s.$2 == AudioProcessingState.completed))),
+      // A looped play went round once: heard to the end, then it starts again.
+      handler.loopedToStart.listen((_) => unawaited(_save(completed: true))),
       // The play was left for another one or the session ended: where the family stopped.
       handler.mediaItem.map((m) => m?.id).distinct().listen((id) {
         if (_open != null && _open!.id != id) _closeOpen();

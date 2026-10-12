@@ -18,6 +18,8 @@ class QueueAudio extends BaseAudioHandler implements AkAudioHandler {
   @override
   Duration get position => Duration.zero;
   @override
+  Stream<void> get loopedToStart => const Stream.empty();
+  @override
   Future<void> playItem(MediaItem media, Uri source, {Duration start = Duration.zero}) async {
     played.add(media.id);
     mediaItem.add(media);

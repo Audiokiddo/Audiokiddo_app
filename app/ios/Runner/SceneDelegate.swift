@@ -113,18 +113,27 @@ struct KiddoShortcuts: AppShortcutsProvider {
   }
 }
 
-// CarPlay (audio apps, iOS 14+): the same shelves as on Android Auto (Na drogę, Pobrane,
-// Piosenki, Na dobranoc), asked from the Dart side over `pl.audiokiddo/carplay`; a tap plays
-// and shows the system Now Playing screen, which audio_service already fills. It appears in
-// the car once Apple grants the CarPlay audio entitlement (docs/CARPLAY.md).
+// CarPlay (audio apps, iOS 14+): tabs asked from the Dart side over `pl.audiokiddo/carplay`
+// (CarLibrary.carPlayLibrary): Na drogę, Ostatnie (with how far), Pakiety (each opens its plays)
+// and Więcej (songs, bedtime, downloaded). A tap plays and shows the system Now Playing screen,
+// which audio_service fills; there a loop button switches the same loop as in the app. The Dart
+// side says "reload" when the lists change. It appears in the car once Apple grants the CarPlay
+// audio entitlement (docs/CARPLAY.md).
 final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+  /// The car screen now connected, so a "reload" from the Dart side reaches it.
+  static weak var current: CarPlaySceneDelegate?
+
   private var interface: CPInterfaceController?
+  private var tabBar: CPTabBarTemplate?
+  private var looping = false
 
   func templateApplicationScene(
     _ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController
   ) {
     interface = interfaceController
+    CarPlaySceneDelegate.current = self
     interfaceController.setRootTemplate(CPListTemplate(title: "AudioKiddo", sections: []), animated: false, completion: nil)
+    updateLoopButton()
     reload()
   }
 
@@ -133,37 +142,94 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
     didDisconnectInterfaceController interfaceController: CPInterfaceController
   ) {
     interface = nil
+    tabBar = nil
+    if CarPlaySceneDelegate.current === self { CarPlaySceneDelegate.current = nil }
   }
 
-  private func reload() {
+  func reload() {
     guard let channel = CarPlayBridge.channel else {
       return message("Otwórz AudioKiddo na telefonie, żeby wczytać zabawy.")
     }
-    channel.invokeMethod("shelves", arguments: nil) { [weak self] result in
+    channel.invokeMethod("library", arguments: nil) { [weak self] result in
       guard let self else { return }
-      guard let shelves = result as? [[String: Any]], !shelves.isEmpty else {
+      guard let library = result as? [String: Any], let tabs = library["tabs"] as? [[String: Any]], !tabs.isEmpty
+      else {
         return self.message("Otwórz AudioKiddo na telefonie, żeby wczytać zabawy.")
       }
-      let sections = shelves.map { shelf -> CPListSection in
-        let items = (shelf["items"] as? [[String: Any]] ?? []).map { raw -> CPListItem in
-          let item = CPListItem(text: raw["title"] as? String, detailText: raw["detail"] as? String)
-          if let path = raw["image"] as? String, let image = UIImage(contentsOfFile: path) {
-            item.setImage(image)
-          }
-          let id = raw["id"] as? String ?? ""
-          item.handler = { [weak self] _, done in
-            channel.invokeMethod("play", arguments: id) { _ in
-              self?.interface?.pushTemplate(CPNowPlayingTemplate.shared, animated: true, completion: nil)
-              done()
-            }
-          }
-          return item
+      let playing = library["playing"] as? String
+      self.looping = library["looping"] as? Bool ?? false
+      self.updateLoopButton()
+      let shown = Array(tabs.prefix(CPTabBarTemplate.maximumTabCount))
+      // Same tabs as before: only their rows change, so the car keeps the open tab and list.
+      if let tabBar = self.tabBar, tabBar.templates.count == shown.count,
+        zip(tabBar.templates, shown).allSatisfy({ $0.tabTitle == $1["title"] as? String })
+      {
+        for (template, tab) in zip(tabBar.templates, shown) {
+          (template as? CPListTemplate)?.updateSections(self.sections(tab["sections"], playing: playing))
         }
-        return CPListSection(items: items, header: shelf["title"] as? String, sectionIndexTitle: nil)
+        return
       }
-      self.interface?.setRootTemplate(
-        CPListTemplate(title: "AudioKiddo", sections: sections), animated: false, completion: nil)
+      let templates: [CPTemplate] = shown.map { tab in
+        let title = tab["title"] as? String ?? "AudioKiddo"
+        let list = CPListTemplate(title: title, sections: self.sections(tab["sections"], playing: playing))
+        list.tabTitle = title
+        if let symbol = tab["symbol"] as? String { list.tabImage = UIImage(systemName: symbol) }
+        return list
+      }
+      let tabBar = CPTabBarTemplate(templates: templates)
+      self.tabBar = tabBar
+      self.interface?.setRootTemplate(tabBar, animated: false, completion: nil)
     }
+  }
+
+  private func sections(_ raw: Any?, playing: String?) -> [CPListSection] {
+    let list = raw as? [[String: Any]] ?? []
+    return list.prefix(CPListTemplate.maximumSectionCount).map { section in
+      let rows = (section["rows"] as? [[String: Any]] ?? []).prefix(CPListTemplate.maximumItemCount)
+      return CPListSection(
+        items: rows.map { row($0, playing: playing) }, header: section["title"] as? String, sectionIndexTitle: nil)
+    }
+  }
+
+  /// A play (tap plays it) or a pack (tap opens its plays).
+  private func row(_ raw: [String: Any], playing: String?) -> CPListItem {
+    let item = CPListItem(text: raw["title"] as? String, detailText: raw["detail"] as? String)
+    if let path = raw["image"] as? String, let image = UIImage(contentsOfFile: path) {
+      item.setImage(image)
+    }
+    let id = raw["id"] as? String ?? ""
+    if let children = raw["rows"] as? [[String: Any]] {
+      item.accessoryType = .disclosureIndicator
+      item.handler = { [weak self] _, done in
+        guard let self else { return done() }
+        let rows = children.prefix(CPListTemplate.maximumItemCount).map { self.row($0, playing: playing) }
+        let list = CPListTemplate(title: raw["title"] as? String ?? "", sections: [CPListSection(items: rows)])
+        self.interface?.pushTemplate(list, animated: true, completion: nil)
+        done()
+      }
+      return item
+    }
+    if let progress = raw["progress"] as? Double { item.playbackProgress = CGFloat(progress) }
+    item.isPlaying = id == playing
+    item.handler = { [weak self] _, done in
+      CarPlayBridge.channel?.invokeMethod("play", arguments: id) { _ in
+        self?.interface?.pushTemplate(CPNowPlayingTemplate.shared, animated: true, completion: nil)
+        done()
+      }
+    }
+    return item
+  }
+
+  /// The loop button on Now Playing, lit while the play loops.
+  private func updateLoopButton() {
+    let button = CPNowPlayingRepeatButton { [weak self] _ in
+      CarPlayBridge.channel?.invokeMethod("toggleLoop", arguments: nil) { result in
+        self?.looping = result as? Bool ?? false
+        self?.updateLoopButton()
+      }
+    }
+    button.isSelected = looping
+    CPNowPlayingTemplate.shared.updateNowPlayingButtons([button])
   }
 
   private func message(_ text: String) {
@@ -172,6 +238,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
       self?.reload()
       done()
     }
+    tabBar = nil
     interface?.setRootTemplate(
       CPListTemplate(title: "AudioKiddo", sections: [CPListSection(items: [item])]), animated: false, completion: nil)
   }

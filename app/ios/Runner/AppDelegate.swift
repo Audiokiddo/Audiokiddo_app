@@ -27,7 +27,13 @@ import UIKit
       AudioRoutePlugin.register(with: registrar)
     }
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "CarPlayBridge") {
-      CarPlayBridge.channel = FlutterMethodChannel(name: "pl.audiokiddo/carplay", binaryMessenger: registrar.messenger())
+      let channel = FlutterMethodChannel(name: "pl.audiokiddo/carplay", binaryMessenger: registrar.messenger())
+      // The Dart side says when the car's lists changed (CarLibrary, watchCarPlayChanges).
+      channel.setMethodCallHandler { call, result in
+        if call.method == "reload" { CarPlaySceneDelegate.current?.reload() }
+        result(nil)
+      }
+      CarPlayBridge.channel = channel
     }
   }
 }
