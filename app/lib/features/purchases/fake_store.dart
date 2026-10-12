@@ -20,8 +20,8 @@ class FakeStoreGateway implements StoreGateway {
   var _counter = 0;
 
   static const _prices = {
-    'pl.audiokiddo.sub.monthly': '24,99 zł',
-    'pl.audiokiddo.sub.yearly': '149,99 zł',
+    'pl.audiokiddo.sub.monthly': '29,99 zł',
+    'pl.audiokiddo.sub.yearly': '269,99 zł',
     'pl.audiokiddo.pack.wyobraznia': '49,99 zł',
     'pl.audiokiddo.pack.slowa_i_wiedza': '49,99 zł',
     'pl.audiokiddo.pack.detektyw': '69,99 zł',
@@ -68,8 +68,7 @@ class FakeStoreGateway implements StoreGateway {
         ),
   ];
 
-  static double _raw(String price) =>
-      double.parse(price.replaceAll(RegExp(r'[^0-9,]'), '').replaceAll(',', '.'));
+  static double _raw(String price) => double.parse(price.replaceAll(RegExp(r'[^0-9,]'), '').replaceAll(',', '.'));
 
   static bool _isDetektywItem(String id) => const [
     'zlodziej_naszyjnika',

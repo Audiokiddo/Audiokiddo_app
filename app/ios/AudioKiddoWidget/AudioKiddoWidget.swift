@@ -71,11 +71,22 @@ enum DayPart: CaseIterable {
     }
   }
 
+  /// Szop’en in his current look: a coffee in the morning, sneaking up on the day, listening
+  /// on the road, yawning at night.
   var mascot: String {
     switch self {
-    // Szop’en von Ekran in his officer's coat for the parent; in pajamas at night.
-    case .morning, .midday, .afternoon: return "golden_official"
-    case .evening: return "golden_pajamas"
+    case .morning: return "szop_rano"
+    case .midday: return "szop_dzien"
+    case .afternoon: return "szop_droga"
+    case .evening: return "szop_wieczor"
+    }
+  }
+
+  /// The second shortcut next to the part's own: bedtime by day, the road in the evening.
+  var other: (label: String, symbol: String, url: URL) {
+    switch self {
+    case .evening: return ("W drogę", "car.fill", URL(string: "audiokiddo://open/podroz")!)
+    default: return ("Dobranoc", "moon.stars.fill", URL(string: "audiokiddo://open/dobranoc")!)
     }
   }
 
@@ -92,8 +103,24 @@ extension Color {
   }
 }
 
-/// The child's week, written by the app (lib/features/home/home_widget_sync.dart) into the
-/// shared App Group. Empty until a child profile exists.
+/// A play on the widget, written by the app: one tap opens it (and starts it).
+struct PlayLink {
+  let title: String
+  let detail: String
+  let url: URL
+
+  static func load(_ defaults: UserDefaults?, _ key: String) -> PlayLink? {
+    guard let title = defaults?.string(forKey: "\(key)_title"), !title.isEmpty,
+      let path = defaults?.string(forKey: "\(key)_path"), !path.isEmpty,
+      let encoded = path.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+      let url = URL(string: "audiokiddo://open\(encoded)")
+    else { return nil }
+    return PlayLink(title: title, detail: defaults?.string(forKey: "\(key)_detail") ?? "", url: url)
+  }
+}
+
+/// What the app wrote into the shared App Group (lib/features/home/home_widget_sync.dart): the
+/// child's week, today's play from the plan and the play stopped halfway.
 struct ChildWeek {
   /// From Info.plist (AK_APP_GROUP in Flutter/AppIds.xcconfig): a personal test build uses its own.
   static let appGroup = Bundle.main.object(forInfoDictionaryKey: "AKAppGroup") as? String ?? "group.pl.audiokiddo.app"
@@ -101,15 +128,25 @@ struct ChildWeek {
   let line: String
   let notes: Int
   let todayDone: Bool
+  let next: PlayLink?
+  let resume: PlayLink?
+
+  var hasChild: Bool { !line.isEmpty }
+
+  var resumeOnly: ChildWeek? {
+    resume == nil ? nil : ChildWeek(line: "", notes: 0, todayDone: false, next: nil, resume: resume)
+  }
 
   static func load() -> ChildWeek? {
     let defaults = UserDefaults(suiteName: appGroup)
-    guard let line = defaults?.string(forKey: "line"), !line.isEmpty else { return nil }
-    return ChildWeek(
-      line: line,
+    let week = ChildWeek(
+      line: defaults?.string(forKey: "line") ?? "",
       notes: Int(defaults?.string(forKey: "notes") ?? "") ?? 0,
-      todayDone: defaults?.string(forKey: "done") == "1"
+      todayDone: defaults?.string(forKey: "done") == "1",
+      next: PlayLink.load(defaults, "next"),
+      resume: PlayLink.load(defaults, "resume")
     )
+    return week.hasChild || week.resume != nil ? week : nil
   }
 }
 
@@ -156,9 +193,10 @@ struct PartProvider: TimelineProvider {
         guard let date = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: day), date > now,
           date.timeIntervalSince(now) <= 24 * 3600
         else { continue }
-        // After midnight "today's note" is a new one; the app refreshes it when opened.
+        // After midnight "today's note" and today's play are new ones; the app refreshes them
+        // when opened. The play to finish stays.
         let sameDay = calendar.isDate(date, inSameDayAs: now)
-        entries.append(PartEntry(date: date, part: DayPart.of(date), week: sameDay ? week : nil))
+        entries.append(PartEntry(date: date, part: DayPart.of(date), week: sameDay ? week : week?.resumeOnly))
       }
     }
     completion(Timeline(entries: entries, policy: .atEnd))
@@ -182,51 +220,86 @@ struct NotesRow: View {
   }
 }
 
+/// One tappable row on the medium widget.
+struct ShortcutRow: View {
+  let symbol: String
+  let label: String
+  let title: String
+  let url: URL
+  let color: Color
+
+  var body: some View {
+    Link(destination: url) {
+      HStack(spacing: 8) {
+        Image(systemName: symbol).font(.system(size: 13, weight: .bold)).frame(width: 18)
+        VStack(alignment: .leading, spacing: 0) {
+          Text(label).font(.system(size: 10, weight: .semibold)).opacity(0.75).lineLimit(1)
+          Text(title).font(.system(size: 13, weight: .bold)).lineLimit(1).minimumScaleFactor(0.8)
+        }
+        Spacer(minLength: 0)
+      }
+      .padding(.horizontal, 10).padding(.vertical, 6)
+      .background(RoundedRectangle(cornerRadius: 12).fill(color.opacity(0.14)))
+    }
+  }
+}
+
 struct PartView: View {
   let entry: PartEntry
   @Environment(\.widgetFamily) private var family
 
+  /// The play the small widget and the lock screen open: the unfinished one, else today's.
+  private var main: (label: String, link: PlayLink)? {
+    if let resume = entry.week?.resume { return ("Dokończ", resume) }
+    if let next = entry.week?.next { return ("Na dziś", next) }
+    return nil
+  }
+
   var body: some View {
-    let part = entry.part
-    let content = HStack(spacing: 8) {
-      VStack(alignment: .leading, spacing: 5) {
-        HStack {
-          if family == .systemSmall {
-            Image(part.mascot).resizable().scaledToFit().frame(width: 38, height: 42)
-              .accessibilityLabel("Szop’en von Ekran")
-          }
-          if let week = entry.week {
-            NotesRow(notes: week.notes, color: part.foreground)
-          } else {
-            Text("AudioKiddo").font(.system(size: 11, weight: .bold))
-          }
-        }
-        Spacer(minLength: 0)
-        if family == .systemSmall {
-          // Small widget: Szop’en's line is the headline.
-          Text(entry.joke)
-            .font(.system(size: 13, weight: .semibold)).italic()
-            .minimumScaleFactor(0.8).lineLimit(3)
-        } else {
-          Text(part.title)
-            .font(.system(size: 18, weight: .heavy))
-            .minimumScaleFactor(0.8).lineLimit(1)
-          Text("„\(entry.joke)”")
-            .font(.system(size: 13)).italic()
-            .minimumScaleFactor(0.85).lineLimit(2)
-        }
-        Text(part.action)
-          .font(.system(size: 13, weight: .bold))
-          .padding(.horizontal, 12).padding(.vertical, 5)
-          .background(Capsule().fill(part.foreground.opacity(0.16)))
+    if #available(iOSApplicationExtension 16.0, *) {
+      if [WidgetFamily.accessoryRectangular, .accessoryCircular, .accessoryInline].contains(family) {
+        accessory
+      } else {
+        home
       }
-      if family != .systemSmall {
-        Image(part.mascot).resizable().scaledToFit().frame(width: 88)
-          .accessibilityLabel("Szop’en von Ekran")
+    } else {
+      home
+    }
+  }
+
+  @available(iOSApplicationExtension 16.0, *)
+  @ViewBuilder private var accessory: some View {
+    let part = entry.part
+    switch family {
+    case .accessoryCircular:
+      ZStack {
+        Circle().fill(Color.white.opacity(0.15))
+        Image(systemName: main == nil ? part.symbol : "play.fill").font(.system(size: 20, weight: .bold))
+      }
+      .widgetURL(main?.link.url ?? part.url)
+      .accessibilityLabel(main.map { "\($0.label): \($0.link.title)" } ?? part.action)
+    default:
+      VStack(alignment: .leading, spacing: 1) {
+        Text(main?.label ?? "AudioKiddo").font(.system(size: 12, weight: .semibold))
+        Text(main?.link.title ?? part.title).font(.system(size: 15, weight: .bold)).lineLimit(1)
+        Text(main?.link.detail ?? part.action).font(.system(size: 12)).lineLimit(1)
+      }
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .widgetURL(main?.link.url ?? part.url)
+    }
+  }
+
+  @ViewBuilder private var home: some View {
+    let part = entry.part
+    let ink = part.foreground
+    let content = Group {
+      if family == .systemSmall {
+        small(part: part, ink: ink)
+      } else {
+        medium(part: part, ink: ink)
       }
     }
-    .foregroundColor(part.foreground)
-    .widgetURL(part.url)
+    .foregroundColor(ink)
 
     let gradient = LinearGradient(colors: part.colors, startPoint: .topLeading, endPoint: .bottomTrailing)
     if #available(iOSApplicationExtension 17.0, *) {
@@ -234,6 +307,79 @@ struct PartView: View {
     } else {
       content.padding().background(gradient)
     }
+  }
+
+  private func header(ink: Color) -> some View {
+    Group {
+      if let week = entry.week, week.hasChild {
+        NotesRow(notes: week.notes, color: ink)
+      } else {
+        Text("AudioKiddo").font(.system(size: 11, weight: .bold))
+      }
+    }
+  }
+
+  /// Small: Szop’en, then the one play to start (or his line), the whole widget is the button.
+  private func small(part: DayPart, ink: Color) -> some View {
+    VStack(alignment: .leading, spacing: 4) {
+      HStack(alignment: .top) {
+        header(ink: ink)
+        Spacer(minLength: 0)
+        Image(part.mascot).resizable().scaledToFit().frame(width: 50, height: 46)
+          .accessibilityLabel("Szop’en")
+      }
+      Spacer(minLength: 0)
+      if let main {
+        Text(main.label.uppercased()).font(.system(size: 10, weight: .heavy)).opacity(0.75)
+        Text(main.link.title).font(.system(size: 15, weight: .heavy)).lineLimit(2).minimumScaleFactor(0.8)
+        Label(main.link.detail.isEmpty ? "Graj" : main.link.detail, systemImage: "play.fill")
+          .font(.system(size: 12, weight: .bold))
+          .padding(.horizontal, 10).padding(.vertical, 4)
+          .background(Capsule().fill(ink.opacity(0.16)))
+      } else {
+        Text(entry.joke)
+          .font(.system(size: 13, weight: .semibold)).italic()
+          .minimumScaleFactor(0.8).lineLimit(3)
+        Text(part.action)
+          .font(.system(size: 13, weight: .bold))
+          .padding(.horizontal, 12).padding(.vertical, 5)
+          .background(Capsule().fill(ink.opacity(0.16)))
+      }
+    }
+    .widgetURL(main?.link.url ?? part.url)
+  }
+
+  /// Medium: Szop’en with the child's week on the left; up to three one-tap shortcuts on the
+  /// right (finish, today's play, the part of the day, bedtime or the road).
+  private func medium(part: DayPart, ink: Color) -> some View {
+    var rows: [(String, String, String, URL)] = []
+    if let resume = entry.week?.resume { rows.append(("play.fill", "Dokończ", resume.title, resume.url)) }
+    if let next = entry.week?.next {
+      rows.append(("star.fill", next.detail.isEmpty ? "Na dziś" : "Na dziś · \(next.detail)", next.title, next.url))
+    }
+    rows.append((part.symbol, part.title, part.action, part.url))
+    if rows.count < 3 { rows.append((part.other.symbol, "Jednym dotknięciem", part.other.label, part.other.url)) }
+    return HStack(alignment: .top, spacing: 10) {
+      VStack(alignment: .leading, spacing: 4) {
+        header(ink: ink)
+        Image(part.mascot).resizable().scaledToFit().frame(maxWidth: 92, maxHeight: 74)
+          .accessibilityLabel("Szop’en")
+        Spacer(minLength: 0)
+        if let week = entry.week, week.hasChild {
+          Text(week.line).font(.system(size: 11, weight: .semibold)).lineLimit(2).minimumScaleFactor(0.8)
+        } else {
+          Text(entry.joke).font(.system(size: 11)).italic().lineLimit(3).minimumScaleFactor(0.8)
+        }
+      }
+      .frame(width: 104, alignment: .leading)
+      VStack(spacing: 6) {
+        ForEach(Array(rows.prefix(3).enumerated()), id: \.offset) { _, row in
+          ShortcutRow(symbol: row.0, label: row.1, title: row.2, url: row.3, color: ink)
+        }
+        Spacer(minLength: 0)
+      }
+    }
+    .widgetURL(part.url)
   }
 }
 
@@ -244,7 +390,15 @@ struct AudioKiddoWidget: Widget {
       PartView(entry: entry)
     }
     .configurationDisplayName("Szop’en na dziś")
-    .description("Zabawa na tę porę dnia: rano rozgrzewka, po południu droga, wieczorem kołysanka.")
-    .supportedFamilies([.systemSmall, .systemMedium])
+    .description("Jednym dotknięciem: dokończ zabawę, włącz dzisiejszą z planu, W drogę albo Dobranoc.")
+    .supportedFamilies(Self.families)
+  }
+
+  /// The home screen everywhere; the lock screen from iOS 16.
+  static var families: [WidgetFamily] {
+    if #available(iOSApplicationExtension 16.0, *) {
+      return [.systemSmall, .systemMedium, .accessoryRectangular, .accessoryCircular]
+    }
+    return [.systemSmall, .systemMedium]
   }
 }

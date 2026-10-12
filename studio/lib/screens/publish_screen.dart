@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../state/studio_controller.dart';
+import '../theme.dart';
 
 /// Validation summary and publishing. Local mode exports catalog.json; with the server
 /// (Etap 3) this becomes "Publikuj" with version history and "Przywróć".
@@ -23,15 +24,35 @@ class PublishScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        Text(
-          'Katalog w wersji ${state.catalog['version']}',
-          style: Theme.of(context).textTheme.headlineSmall,
+        SectionHeader(
+          tint: Tint.publish,
+          pose: v.canPublish ? 'klaszcze' : 'zdziwiony',
+          title: 'Sprawdzenie przed publikacją',
+          text:
+              'Katalog w wersji ${state.catalog['version']}: ${state.items.length} zabaw (w tym $free za darmo), '
+              '${state.packs.length} pakiety, ${state.shelves.length} półek. Publikujesz w zakładce Serwer.',
+          actions: [
+            OutlinedButton.icon(
+              icon: const Icon(Icons.restart_alt_rounded),
+              label: const Text('Wczytaj katalog z aplikacji'),
+              onPressed: () async {
+                final sure = await confirmDelete(
+                  context,
+                  'obecny szkic i wczytać katalog wbudowany w aplikację',
+                );
+                if (!sure) return;
+                final ok = await ref.read(studioProvider.notifier).loadStarter();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(ok ? 'Wczytano katalog z aplikacji.' : 'Nie udało się wczytać katalogu.'),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          '${state.items.length} pozycji, w tym $free za darmo · ${state.packs.length} pakiety · ${state.shelves.length} półki',
-        ),
-        const SizedBox(height: 24),
         if (v.canPublish)
           Card(
             child: ListTile(
@@ -48,7 +69,10 @@ class PublishScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Do poprawienia: ${v.errorCount}', style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    'Do poprawienia: ${v.errorCount} (popraw w „Treści”)',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 8),
                   if (v.fatal != null) Text('• Cały katalog: ${v.fatal}'),
                   for (final MapEntry(:key, :value) in v.itemErrors.entries) Text('• $key: $value'),
@@ -78,9 +102,8 @@ class PublishScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Tryb lokalny: plik zastępuje app/assets/mock/catalog.json. '
-          'Po podłączeniu serwera ten przycisk opublikuje katalog od razu dla wszystkich '
-          'i pozwoli wrócić do poprzedniej wersji.',
+          'Plik catalog.json to kopia na dysk (np. do wbudowania w aplikację). '
+          'Rodzinom katalog publikujesz w zakładce Serwer → „Publikuj w aplikacji”.',
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],

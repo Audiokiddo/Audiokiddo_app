@@ -8,8 +8,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
+import '../player/audio_handler.dart';
+import '../player/player_providers.dart';
+import '../../core/widgets/szop.dart';
 import '../../core/widgets/doodles.dart';
-import '../../core/widgets/kiddo.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
 import '../downloads/download_providers.dart';
@@ -48,7 +50,7 @@ class TripScreen extends ConsumerStatefulWidget {
 class _TripScreenState extends ConsumerState<TripScreen> {
   int _minutes = 30;
 
-  static const durations = [15, 30, 45, 60, 90];
+  static const durations = [15, 20, 30, 45, 60, 90];
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +83,7 @@ class _TripScreenState extends ConsumerState<TripScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.xl),
         children: [
-          const Center(
-            child: Kiddo(size: 110, mood: KiddoMood.happy, wave: true, outfit: GoldenOutfit.adventure),
-          ),
+          const Center(child: SzopSticker(SzopPose.klaszcze, height: 120)),
           const SizedBox(height: AkSpace.m),
           Text(l10n.tripTitle, style: text.displaySmall, textAlign: TextAlign.center),
           const SizedBox(height: AkSpace.s),
@@ -199,19 +199,14 @@ class BedtimeScreen extends ConsumerWidget {
       LineStep() => l10n.bedtimeBreaths,
       ItemStep(:final item) =>
         item.kind == ContentKind.song ? l10n.bedtimeSong(item.title) : l10n.bedtimeQuiet(item.title),
-      ParentStep() =>
-        clips?[ParentClip.goodnight] != null ? l10n.bedtimeParentGoodnight : l10n.bedtimeKiddoGoodnight,
+      ParentStep() => clips?[ParentClip.goodnight] != null ? l10n.bedtimeParentGoodnight : l10n.bedtimeKiddoGoodnight,
     };
     const fg = Color(0xFFFFF3E6);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: const Color(0xFF1E1A3A),
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          foregroundColor: fg,
-          leading: const _CloseToStart(),
-        ),
+        appBar: AppBar(backgroundColor: Colors.transparent, foregroundColor: fg, leading: const _CloseToStart()),
         extendBodyBehindAppBar: true,
         body: Container(
           decoration: const BoxDecoration(
@@ -231,7 +226,7 @@ class BedtimeScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(AkSpace.l),
                   children: [
                     const SizedBox(height: AkSpace.l),
-                    const Center(child: Kiddo(size: 130, mood: KiddoMood.sleepy)),
+                    const Center(child: SzopSticker(SzopPose.zmeczony, height: 130)),
                     const SizedBox(height: AkSpace.m),
                     Text(
                       l10n.bedtimeTitle,
@@ -275,9 +270,7 @@ class BedtimeScreen extends ConsumerWidget {
                     const SizedBox(height: AkSpace.l),
                     FilledButton.icon(
                       onPressed: () {
-                        ref
-                            .read(sessionProvider.notifier)
-                            .start(SessionKind.bedtime, steps, childId: child?.id);
+                        ref.read(sessionProvider.notifier).start(SessionKind.bedtime, steps, childId: child?.id);
                         context.pushReplacement('/sesja');
                       },
                       style: FilledButton.styleFrom(
@@ -298,8 +291,9 @@ class BedtimeScreen extends ConsumerWidget {
   }
 }
 
-/// The running session: what plays, what comes next, skip and stop. Dark and calm; the
-/// phone can lie face down.
+/// The running session (car trip or bedtime): a simple player with big buttons a parent can
+/// hit without looking twice. Upright: Szop’en and the title on top, buttons below. Sideways
+/// (phone in a car holder): the title on the left, the buttons on the right under the thumb.
 class SessionScreen extends ConsumerWidget {
   const SessionScreen({super.key});
 
@@ -315,22 +309,122 @@ class SessionScreen extends ConsumerWidget {
       LineStep(:final line) when line.startsWith('window') => l10n.sessionWindow,
       LineStep(:final line) when line == 'bedtime_start' => l10n.bedtimeBreaths,
       LineStep(:final line) when line == 'trip_end' => l10n.sessionArrived,
-      LineStep() => l10n.sessionKiddo,
+      LineStep() => 'Szop’en mówi',
       ParentStep() => l10n.sessionParent,
       null => '',
     };
-    final mood = switch (session.current) {
-      _ when session.finished => night ? KiddoMood.sleepy : KiddoMood.happy,
-      // In the evening Kiddo stays calm and sleepy, even while it talks.
-      _ when night => KiddoMood.sleepy,
-      ItemStep() => KiddoMood.listening,
-      _ => KiddoMood.talking,
+    final waiting = !session.finished && session.countdown != null;
+    final playing = ref.watch(playbackStateProvider).value?.playing ?? false;
+    final pose = switch (session.current) {
+      _ when session.finished => SzopPose.klaszcze,
+      _ when night => SzopPose.zmeczony,
+      _ when waiting => SzopPose.zadowolony,
+      ItemStep() => SzopPose.nasluchuje,
+      _ => SzopPose.prosi,
     };
+    final notifier = ref.read(sessionProvider.notifier);
+    // Read on tap: the handler starts with the app, not with this screen.
+    AkAudioHandler handler() => ref.read(audioHandlerProvider);
 
     Future<void> close() async {
-      await ref.read(sessionProvider.notifier).stop();
+      await notifier.stop();
       if (context.mounted) context.canPop() ? context.pop() : context.go('/');
     }
+
+    final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final small = MediaQuery.sizeOf(context).shortestSide < 380;
+
+    final info = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SzopSticker(pose, height: landscape ? 110 : (small ? 120 : 170)),
+        const SizedBox(height: AkSpace.m),
+        Semantics(
+          liveRegion: true,
+          child: Text(
+            session.finished ? (night ? l10n.sessionSleepWell : l10n.sessionArrived) : title(session.current),
+            style: text.headlineMedium?.copyWith(color: fg, fontWeight: FontWeight.w800),
+            textAlign: TextAlign.center,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(height: AkSpace.s),
+        if (waiting)
+          _Countdown(seconds: session.countdown!, held: session.held, color: fg)
+        else if (!session.finished && session.next != null)
+          Text(
+            l10n.sessionNext(title(session.next)),
+            style: text.titleMedium?.copyWith(color: fg.withValues(alpha: 0.75)),
+            textAlign: TextAlign.center,
+          ),
+        if (!session.finished && session.kind == SessionKind.trip)
+          Padding(
+            padding: const EdgeInsets.only(top: AkSpace.s),
+            child: Text(
+              l10n.sessionLeft(session.secondsLeft ~/ 60),
+              style: text.titleSmall?.copyWith(color: fg.withValues(alpha: 0.6)),
+            ),
+          ),
+      ],
+    );
+
+    // Big round buttons: from the start, play/pause (or hold the countdown), next.
+    final controls = session.finished
+        ? FilledButton(
+            style: FilledButton.styleFrom(minimumSize: const Size(220, 72), textStyle: text.titleLarge),
+            onPressed: close,
+            child: Text(l10n.sessionDone),
+          )
+        : Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 18,
+            runSpacing: 18,
+            children: [
+              _BigButton(
+                icon: Icons.replay_rounded,
+                label: 'Od początku',
+                size: 76,
+                color: fg,
+                onTap: session.current is ItemStep ? () => handler().seek(Duration.zero) : null,
+              ),
+              _BigButton(
+                icon: waiting
+                    ? (session.held ? Icons.play_arrow_rounded : Icons.pause_rounded)
+                    : (playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
+                label: waiting ? (session.held ? l10n.sessionResume : l10n.sessionHold) : (playing ? 'Pauza' : 'Graj'),
+                size: 112,
+                color: AkBrand.sun,
+                filled: true,
+                onTap: () {
+                  if (waiting) {
+                    session.held ? notifier.resume() : notifier.hold();
+                  } else {
+                    playing ? handler().pause() : handler().play();
+                  }
+                },
+              ),
+              _BigButton(
+                icon: Icons.skip_next_rounded,
+                label: l10n.sessionSkip,
+                size: 76,
+                color: fg,
+                onTap: notifier.skip,
+              ),
+            ],
+          );
+
+    final close_ = IconButton(
+      tooltip: l10n.sessionStop,
+      iconSize: 32,
+      onPressed: close,
+      icon: const Icon(Icons.close_rounded, color: fg),
+    );
+    final heading = Text(
+      (night ? l10n.bedtimeTitle : l10n.tripTitle).toUpperCase(),
+      style: text.labelLarge?.copyWith(color: fg.withValues(alpha: 0.7), letterSpacing: 1.6),
+    );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -338,69 +432,151 @@ class SessionScreen extends ConsumerWidget {
         backgroundColor: night ? const Color(0xFF141226) : const Color(0xFF140E0B),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(AkSpace.l),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: IconButton(
-                    tooltip: l10n.sessionStop,
-                    onPressed: close,
-                    icon: const Icon(Icons.close_rounded, color: fg),
-                  ),
-                ),
-                Text(
-                  (night ? l10n.bedtimeTitle : l10n.tripTitle).toUpperCase(),
-                  style: text.labelLarge?.copyWith(color: fg.withValues(alpha: 0.7), letterSpacing: 1.6),
-                ),
-                const Spacer(),
-                Kiddo(size: MediaQuery.sizeOf(context).height < 700 ? 120 : 180, mood: mood),
-                const SizedBox(height: AkSpace.l),
-                Semantics(
-                  liveRegion: true,
-                  child: Text(
-                    session.finished
-                        ? (night ? l10n.sessionSleepWell : l10n.sessionArrived)
-                        : title(session.current),
-                    style: text.headlineMedium?.copyWith(color: fg),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const SizedBox(height: AkSpace.s),
-                if (!session.finished && session.next != null)
-                  Text(
-                    l10n.sessionNext(title(session.next)),
-                    style: text.bodyLarge?.copyWith(color: fg.withValues(alpha: 0.7)),
-                    textAlign: TextAlign.center,
-                  ),
-                if (!session.finished && session.kind == SessionKind.trip)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AkSpace.s),
-                    child: Text(
-                      l10n.sessionLeft(session.secondsLeft ~/ 60),
-                      style: text.bodyMedium?.copyWith(color: fg.withValues(alpha: 0.6)),
-                    ),
-                  ),
-                const Spacer(),
-                ParentAside(dark: true, pool: night ? LordPool.bedtime : LordPool.trip),
-                const SizedBox(height: AkSpace.s),
-                if (!session.finished)
-                  OutlinedButton.icon(
-                    onPressed: () => ref.read(sessionProvider.notifier).skip(),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: fg,
-                      side: const BorderSide(color: Color(0x66FFF3E6)),
-                    ),
-                    icon: const Icon(Icons.skip_next_rounded),
-                    label: Text(l10n.sessionSkip),
+            padding: const EdgeInsets.all(AkSpace.m),
+            child: landscape
+                ? Row(
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          children: [
+                            Align(alignment: Alignment.centerLeft, child: heading),
+                            Expanded(
+                              child: Center(child: SingleChildScrollView(child: info)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: AkSpace.m),
+                      Expanded(
+                        flex: 4,
+                        child: Column(
+                          children: [
+                            Align(alignment: Alignment.centerRight, child: close_),
+                            Expanded(child: Center(child: controls)),
+                          ],
+                        ),
+                      ),
+                    ],
                   )
-                else
-                  FilledButton(onPressed: close, child: Text(l10n.sessionDone)),
-              ],
-            ),
+                : Column(
+                    children: [
+                      Row(children: [heading, const Spacer(), close_]),
+                      Expanded(
+                        child: Center(child: SingleChildScrollView(child: info)),
+                      ),
+                      ParentAside(dark: true, pool: night ? LordPool.bedtime : LordPool.trip),
+                      const SizedBox(height: AkSpace.m),
+                      controls,
+                      const SizedBox(height: AkSpace.m),
+                    ],
+                  ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// A round button big enough to hit in a moving car, with its word under it.
+class _BigButton extends StatelessWidget {
+  const _BigButton({
+    required this.icon,
+    required this.label,
+    required this.size,
+    required this.color,
+    required this.onTap,
+    this.filled = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final double size;
+  final Color color;
+  final bool filled;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onTap != null;
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: Opacity(
+        opacity: enabled ? 1 : .35,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Material(
+              color: filled ? color : Colors.transparent,
+              shape: CircleBorder(
+                side: BorderSide(color: color, width: filled ? 0 : 3),
+              ),
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onTap,
+                child: SizedBox.square(
+                  dimension: size,
+                  child: Icon(icon, size: size * .55, color: filled ? const Color(0xFF211C35) : color),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(label, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: const Color(0xFFFFF3E6))),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The few seconds before the next recording starts by itself: a draining ring and the
+/// seconds left, or a note that the parent held it.
+class _Countdown extends StatelessWidget {
+  const _Countdown({required this.seconds, required this.held, required this.color});
+
+  final int seconds;
+  final bool held;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final total = autoNextDelay.inSeconds;
+    return Column(
+      children: [
+        SizedBox.square(
+          dimension: 64,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned.fill(
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: held ? 1 : (seconds - 1).clamp(0, total) / total),
+                  duration: held ? Duration.zero : const Duration(seconds: 1),
+                  builder: (context, value, _) => CircularProgressIndicator(
+                    value: value,
+                    strokeWidth: 4,
+                    color: color,
+                    backgroundColor: color.withValues(alpha: 0.15),
+                  ),
+                ),
+              ),
+              held
+                  ? Icon(Icons.pause_rounded, color: color, size: 30)
+                  : Text('$seconds', style: text.headlineSmall?.copyWith(color: color)),
+            ],
+          ),
+        ),
+        const SizedBox(height: AkSpace.s),
+        Text(
+          held ? l10n.sessionHeldInfo : l10n.sessionUpNext(seconds),
+          style: text.bodyLarge?.copyWith(color: color.withValues(alpha: 0.75)),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }
@@ -511,9 +687,7 @@ class _ParentVoiceScreenState extends ConsumerState<ParentVoiceScreen> {
                     Row(
                       children: [
                         FilledButton.icon(
-                          onPressed: _recording != null && _recording != clip
-                              ? null
-                              : () => _toggle(child.id, clip),
+                          onPressed: _recording != null && _recording != clip ? null : () => _toggle(child.id, clip),
                           icon: Icon(_recording == clip ? Icons.stop_rounded : Icons.mic_rounded),
                           label: Text(
                             _recording == clip

@@ -82,7 +82,7 @@ function ak_packs(): array
             'short' => 'Dziecko wymyśla historie, postaci i całe światy.',
             'woo' => (int) ak_opt('woo_wyobraznia'),
             'color' => 'lav',
-            'age_from' => 4,
+            'age_from' => 3,
             'cover' => 'okladka-wyobraznia',
             'sample' => '2025/02/Wyobraznia-AudioKiddo.mp3',
             'desc' => 'W każdej zabawie Twoje dziecko będzie musiało tworzyć swoje historie, odpowiadać na pytania i wykonywać zadania. Tu nie ma złych odpowiedzi.',
@@ -100,7 +100,7 @@ function ak_packs(): array
             'short' => 'Zagadki, skojarzenia i zabawy słowne na głos.',
             'woo' => (int) ak_opt('woo_slowa'),
             'color' => 'teal',
-            'age_from' => 4,
+            'age_from' => 3,
             'cover' => 'okladka-slowa',
             'sample' => '2025/02/Slowa-i-wiedza_AudioKiddo_dluzsza_wersja.mp3',
             'desc' => 'W każdej zabawie Twoje dziecko będzie musiało odpowiadać na pytania oraz rozwiązywać zagadki i łamigłówki.',
@@ -234,11 +234,39 @@ function ak_steps(): array
     ];
 }
 
-/** The questions the home page shows (all of them are on /pytania/). */
+/** The three steps in a few words for the home page: title, one line, icon, colour. */
+function ak_steps_short(): array
+{
+    return [
+        ['Pobierasz Audiokiddo', 'Ściągasz aplikację z App Store albo Google Play. W środku od razu znajdziesz darmowe zabawy.', 'download', 'sun'],
+        ['Wybierasz zabawę', 'Podajesz wiek i wybierasz coś, na co akurat jest ochota: zagadki, ruch, wyobraźnia, śledztwo.', 'puzzle', 'teal'],
+        ['Naciskasz play', 'I od tego momentu audio prowadzi zabawę. A telefon? Może leżeć na stole.', 'play', 'lav'],
+    ];
+}
+
+/**
+ * The play from each pack that is free in the app: title, the pack, its length in seconds, the
+ * pack's colour and the cover (home page).
+ */
+function ak_free_plays(): array
+{
+    $covers = ['Magiczny sklep' => 'magiczny-sklep', 'Co to za dźwięk?' => 'co-to-za-dzwiek', 'Złodziej naszyjnika' => 'zlodziej-naszyjnika'];
+    $free = [];
+    foreach (ak_packs() as $pack) {
+        foreach ($pack['plays'] as [$title, $seconds, $is_free]) {
+            if ($is_free && isset($covers[$title])) {
+                $free[] = [$title, $pack['title'], $seconds, $pack['color'], $covers[$title], ak_age($pack)];
+            }
+        }
+    }
+    return $free;
+}
+
+/** The questions shown on the home page. */
 function ak_home_faq(): array
 {
     $faq = ak_faq();
-    return [$faq[1], $faq[2], $faq[5], $faq[6], $faq[7]];
+    return [$faq[0], $faq[1], $faq[2], $faq[6], $faq[7]];
 }
 
 /** What the child does during a play (the list under step 3). */
@@ -260,15 +288,15 @@ function ak_ages(): array
     ];
 }
 
-/** The library by kind of play: name, colour, one line and a few real titles. */
+/** The library by kind of play: name, colour, one line, a few real titles and a cover that shows it. */
 function ak_library(): array
 {
     return [
-        ['Ruchowe', 'sun', 'Maszerowanie, skradanie, szukanie po mieszkaniu. Kanapa przestaje być bezpieczna.', ['Magiczny teatr', 'Mistrz kuchni']],
-        ['Logiczne', 'teal', 'Co tu nie pasuje, co z czym się łączy, kto ma rację. Dziecko myśli na głos.', ['Co tu nie pasuje?', 'Szybkie skojarzenia', 'Znajdź przeciwieństwo']],
-        ['Kreatywne', 'lav', 'Wymyśl miksturę, superbohatera albo nowe znaczenie słowa. Tu nie ma złych odpowiedzi.', ['Mikstura', 'Mój superbohater', 'Wymyśl znaczenie']],
-        ['Fabularne', 'sun', 'Przygody, w których bohaterem jest dziecko. To ono decyduje, co dalej.', ['Zaginiony skarb', 'Podróż na inną planetę', 'Dokończ historię']],
-        ['Zagadki i śledztwa', 'teal', 'Kto wydaje taki dźwięk? Kto ukradł naszyjnik? Odpowiedź pada szybciej, niż myślisz.', ['Co to za dźwięk?', 'Co to za przedmiot?', 'Złodziej naszyjnika']],
+        ['Ruchowe', 'sun', 'Maszerowanie, skradanie, szukanie po mieszkaniu. Kanapa przestaje być bezpieczna.', ['Magiczny teatr', 'Mistrz kuchni'], 'magiczny-teatr'],
+        ['Logiczne', 'teal', 'Co tu nie pasuje, co z czym się łączy, kto ma rację. Dziecko myśli na głos.', ['Co tu nie pasuje?', 'Szybkie skojarzenia', 'Znajdź przeciwieństwo'], 'co-tu-nie-pasuje'],
+        ['Kreatywne', 'lav', 'Wymyśl miksturę, superbohatera albo nowe znaczenie słowa. Tu nie ma złych odpowiedzi.', ['Mikstura', 'Mój superbohater', 'Wymyśl znaczenie'], 'mikstura'],
+        ['Fabularne', 'sun', 'Przygody, w których bohaterem jest dziecko. To ono decyduje, co dalej.', ['Zaginiony skarb', 'Podróż na inną planetę', 'Dokończ historię'], 'zaginiony-skarb'],
+        ['Zagadki i śledztwa', 'teal', 'Kto wydaje taki dźwięk? Kto ukradł naszyjnik? Odpowiedź pada szybciej, niż myślisz.', ['Co to za dźwięk?', 'Co to za przedmiot?', 'Złodziej naszyjnika'], 'co-to-za-dzwiek'],
     ];
 }
 
@@ -403,10 +431,10 @@ function ak_people(): array
 function ak_tour(): array
 {
     return [
-        'start' => ['chytry', [['.ak-a-btns', 'Psst. Jestem Szop’en. Przewijaj, pokażę Ci, co tu się dzieje.', false]]],
         'jak-to-dziala' => ['zadowolony', [['.ak-a-flow', 'Trzy kroki. Najtrudniejszy to odłożyć telefon. Wiem, też mam z tym problem.', false]]],
         'kiedy' => ['chytry', [['.ak-a-times', 'Kliknij godzinę. Mam plan na cały dzień. Nawet na 18:37.', true]]],
         'co-zyskujesz' => ['klaszcze', [['.ak-a-gains-in', 'Dziecko ćwiczy, Ty odpoczywasz. Ja tylko zbieram pochwały.', false]]],
+        'po-zakupie' => ['zadowolony', [['.ak-buy2-rows', 'Kupujesz raz: pliki w mailu, pakiet w aplikacji. Ja wchodzę w pakiecie gratis.', false]]],
         'w-akcji' => ['nasluchuje', [['.ak-video:first-child', 'Tu nie żartuję. Włącz film i zobacz sam.', false]]],
         'opinie' => ['zadowolony', [['.ak-a-quotes', 'Mnie nie wierz, ja tu pracuję. Wierz im.', false]]],
         'cennik' => ['prosi', [['.ak-a-plan', 'Najpierw darmowe zabawy. O pieniądzach pogadamy, jak dziecko poprosi o więcej.', false]]],
@@ -421,39 +449,107 @@ function ak_minutes(int $seconds): string
     return max(1, (int) round($seconds / 60)) . ' min';
 }
 
-/**
- * The home page's day with Audiokiddo (like a timeline): time, icon, the moment in two words,
- * Szop'en's line (short, warm, never at the child's expense) and the guide with more ideas.
- */
-function ak_moments(): array
+/** The hero's little scene: what the game says, what the child answers (it loops in the CSS). */
+function ak_hero_chat(): array
 {
     return [
-        ['7:40', 'car', 'W samochodzie', '„Daleko jeszcze?” padło przed pierwszym rondem. Spokojnie, mam zabawy na całą trasę.', 'jak-zajac-dziecko-w-samochodzie'],
-        ['15:30', 'backpack', 'Po przedszkolu', 'Ty masz baterię na 3%, ono na 300%. Wyrównam.', 'zabawy-ruchowe-dla-dzieci-w-domu'],
-        ['17:30', 'pot', 'Robisz obiad', 'Ty kroisz cebulę, ja zajmuję dziecko. Nikt nie płacze.', 'jak-zajac-dziecko-gdy-pracujesz'],
-        ['18:37', 'battery', 'Zero mocy', 'Czwarty raz być smokiem? Dziś smokiem jestem ja.', 'samodzielna-zabawa-dziecka'],
-        ['19:30', 'moon', 'Przed snem', 'Trzy oddechy, cicha zabawa, dobranoc. Działa nawet na szopy.', 'zabawy-wyciszajace-przed-snem'],
-        ['Kiedykolwiek', 'bored', '„Nudzi mi się”', 'W końcu pytanie, na które znam odpowiedź.', 'dziecko-sie-nudzi'],
+        ['game', 'Detektywie! Złodziej zostawił ślad. Znajdź w pokoju coś okrągłego. Masz 30 sekund!'],
+        ['kid', 'Mam! Talerz! I… kota.'],
+        ['game', 'Kot się nie liczy. Ale za refleks: plus dziesięć do sprytu.'],
     ];
 }
 
-/** What the child and the parent get: icon and three or four words each. */
+/** Without and with Audiokiddo, the same 15 minutes: icon, what we look at, without, with. */
+function ak_home_contrast(): array
+{
+    return [
+        ['bored', '„Nudzi mi się”', 'padło 14 razy, licząc te z jękiem', 'zero razy, padło „jeszcze raz!”'],
+        ['coffee', 'Twoja kawa', 'zimna, wypita na stojąco', 'ciepła, wypita na siedząco'],
+        ['eye-off', 'Ekran', 'trzeci odcinek „tylko jednej” bajki', 'wyłączony, nikt nie tęskni'],
+        ['speech', 'Dziecko ćwiczy', 'Twoją cierpliwość', 'słuch, mowę, wyobraźnię i spryt'],
+        ['idea-off', 'Ty wymyślasz', 'dwunastą zabawę z klockiem', 'nic. Szop wymyślił za Ciebie'],
+    ];
+}
+
+/** What a child trains, shown on the cover of a real game: cover, skill, game. */
+function ak_home_skills(): array
+{
+    return [
+        ['co-to-za-dzwiek', 'Słuch i uwaga', 'Co to za dźwięk?'],
+        ['uloz-zdanie', 'Mowa i słowa', 'Ułóż zdanie'],
+        ['dokoncz-historie', 'Wyobraźnia', 'Dokończ historię'],
+        ['zaginiony-skarb', 'Ruch', 'Zaginiony skarb'],
+        ['tajemnicze-znaki', 'Logika i zagadki', 'Tajemnicze znaki'],
+    ];
+}
+
+/**
+ * Szop'en peeks into a few sections (not all of them: he is a guest, not a pop-up). He slides out
+ * from an edge when the section is in view and hides when it leaves: pose, edge, line.
+ */
+function ak_peeks(): array
+{
+    return [
+        'pakiety' => ['chytry', 'right', 'Detektyw jest najlepszy. Tylko nie mówcie pozostałym pakietom.'],
+    ];
+}
+
+/** The app's screens shown on the home page's phone: screenshot, icon, short name. */
+function ak_app_peek(): array
+{
+    return [
+        ['start', 'home', 'Plan na dziś'],
+        ['odtwarzacz', 'play', 'Ekran w dół'],
+        ['podroz', 'car', 'W samochodzie'],
+        ['dobranoc', 'moon', 'Na dobranoc'],
+    ];
+}
+
+/**
+ * From the order to the first game (as inc/woo.php tells the buyer, docs/DOSTEP-Z-SKLEPU.md):
+ * MP3 links by e-mail, and the same pack in the app under the order's e-mail.
+ */
+function ak_buy_steps(bool $live): array
+{
+    return [
+        ['cart', 'Wybierasz pakiet', 'Płacisz jak w każdym sklepie. Konto nie jest potrzebne.'],
+        ['mail', 'Mail w minutę', 'Linki do MP3, a przy Detektywie także akta sprawy do druku.'],
+        ['key', 'Pakiet w aplikacji', $live
+            ? 'Logujesz się w aplikacji tym samym e-mailem. Kod przyjdzie mailem, żadnych haseł. Pakiet już czeka.'
+            : 'Gdy aplikacja wystartuje, logujesz się tym samym e-mailem. Pakiet już tam będzie, bez dopłat.'],
+        ['play', 'Odpalasz', 'W domu, w aucie, u babci. Szop jedzie z Wami.'],
+    ];
+}
+
+/** Where the bought pack plays. */
+function ak_buy_where(): array
+{
+    return [
+        ['car', 'W aucie, przez głośnik samochodu'],
+        ['home', 'W domu, przy obiedzie i sprzątaniu'],
+        ['speaker', 'Na głośniku Bluetooth'],
+        ['offline', 'Bez internetu, gdy pliki są pobrane'],
+        ['print', 'Przy stole, z kartami do druku'],
+        ['gift', 'U babci: pliki zabierasz ze sobą'],
+    ];
+}
+
+/**
+ * What the parent and the child get, three things each and the parent first: icon, the benefit
+ * in a few words and one short line that makes it concrete.
+ */
 function ak_gains(): array
 {
     return [
-        'Dziecko' => [
-            ['ear', 'Uważnie słucha'],
-            ['speech', 'Mówi i odpowiada'],
-            ['bulb', 'Wymyśla i wyobraża'],
-            ['run', 'Rusza się'],
-            ['puzzle', 'Rozwiązuje zagadki'],
-        ],
         'Ty' => [
-            ['coffee', '15 minut dla siebie'],
-            ['idea-off', 'Zero wymyślania'],
-            ['eye-off', 'Bez ekranu i wyrzutów'],
-            ['offline', 'Działa bez internetu'],
-            ['shield', 'Bez reklam. Nigdy.'],
+            ['coffee', '15 minut dla siebie', 'Na obiad, maila albo ciepłą kawę.'],
+            ['idea-off', 'Zero wymyślania', 'Zabawa jest gotowa. Naciskasz play.'],
+            ['eye-off', 'Bez wyrzutów sumienia', 'Dziecko nie patrzy w ekran.'],
+        ],
+        'Dziecko' => [
+            ['speech', 'Mówi i słucha uważniej', 'Odpowiada na głos, poznaje nowe słowa.'],
+            ['run', 'Rusza się i myśli', 'Szuka, skacze, rozwiązuje zagadki.'],
+            ['kid', 'Bawi się samo', 'Głos prowadzi je krok po kroku.'],
         ],
     ];
 }

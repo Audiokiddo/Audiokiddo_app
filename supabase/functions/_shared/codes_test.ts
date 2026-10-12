@@ -1,5 +1,14 @@
 import { assertEquals, assertNotEquals } from "jsr:@std/assert@1";
-import { CODE_ALPHABET, formatCode, generateCode, hashCode, normalizeCode } from "./codes.ts";
+import {
+  CODE_ALPHABET,
+  formatCode,
+  formatReferralCode,
+  generateCode,
+  generateReferralCode,
+  hashCode,
+  normalizeCode,
+  normalizeReferralCode,
+} from "./codes.ts";
 
 Deno.test("codes are read the way people type them", () => {
   const expected = "AK7K3M9QXD";
@@ -31,4 +40,16 @@ Deno.test("the hash is the SHA-256 of the normalised code (pinned against openss
   // printf 'AK7K3M9QXD' | openssl dgst -sha256
   assertEquals(await hashCode("AK7K3M9QXD"), "fc9bce72581853d85f4048b48f1d9ef46a00a941174263c59b6e7645188fc53f");
   assertNotEquals(await hashCode("AK7K3M9QXD"), await hashCode("AK7K3M9QXE"));
+});
+
+Deno.test("referral codes are read the way people type them and refused otherwise", () => {
+  for (const text of ["POLEC-7K3M9Q", "polec 7k3m9q", "POLEC7K3M9Q", " polec_7k3m-9q "]) {
+    assertEquals(normalizeReferralCode(text), "POLEC7K3M9Q", text);
+  }
+  for (const text of ["", "POLEC-7K3M", "POLEC-7K3M9Q1", "POLEC-0K3M9Q", "AK-7K3M-9QXD", "PROMO-7K3M9Q"]) {
+    assertEquals(normalizeReferralCode(text), null, text);
+  }
+  assertEquals(formatReferralCode("POLEC7K3M9Q"), "POLEC-7K3M9Q");
+  const code = generateReferralCode();
+  assertEquals(normalizeReferralCode(code), code);
 });

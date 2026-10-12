@@ -1,0 +1,57 @@
+# A copy of the database every night, encrypted with AES-256 (BACKUP_PASSPHRASE), kept 30
+# days as a workflow artifact. The encryption keeps it safe even while the repository is
+# public; it should be private all the same (docs/KOPIA-BAZY.md). Lets AudioKiddo stay on
+# Supabase's free plan, which keeps no backups. Setup and restore: docs/KOPIA-BAZY.md.
+# Secrets (GitHub → Settings → Secrets and variables → Actions):
+#   SUPABASE_DB_URL     the "Session pooler" connection string, with the database password
+#   BACKUP_PASSPHRASE   a long phrase from the password manager (needed to open a copy)
+name: Kopia bazy
+
+on:
+  schedule:
+    - cron: "15 2 * * *" # 4:15 in Polish summer time
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Sekrety
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Brak sekretów SUPABASE_DB_URL i BACKUP_PASSPHRASE (docs/KOPIA-BAZY.md)."
+            exit 1
+          fi
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Zrzut bazy (role, schemat, dane z kontami)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          mkdir backup
+          supabase db dump --db-url "$SUPABASE_DB_URL" --role-only -f backup/roles.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/schema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only --use-copy -f backup/data.sql
+          ls -la backup
+          test -s backup/data.sql
+      - name: Szyfrowanie
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          name="audiokiddo-$(date -u +%Y-%m-%d)"
+          tar czf "$name.tar.gz" backup
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
+            --symmetric --cipher-algo AES256 -o "$name.tar.gz.gpg" "$name.tar.gz"
+          rm -rf backup "$name.tar.gz"
+          echo "NAME=$name" >> "$GITHUB_ENV"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.NAME }}
+          path: ${{ env.NAME }}.tar.gz.gpg
+          retention-days: 30
+          if-no-files-found: error

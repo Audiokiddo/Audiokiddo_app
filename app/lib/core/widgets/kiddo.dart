@@ -1,13 +1,15 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'ambient_motion.dart';
 import 'golden_painter.dart';
-import 'raccoon_painter.dart';
+import 'szop.dart';
 export 'golden_painter.dart' show GoldenOutfit, KiddoMood, goldenOutfitAt;
 
-/// AudioKiddo raccoon. Keeps the existing Kiddo API so every established surface
-/// uses the same raccoon, including onboarding, travel, bedtime and interactive games.
+/// Szop’en for the screens built on the older Kiddo API (onboarding, games, kids mode, plan,
+/// diplomas): the mood picks his pose from the current artwork.
 class Kiddo extends ConsumerStatefulWidget {
   const Kiddo({
     super.key,
@@ -73,27 +75,26 @@ class _KiddoState extends ConsumerState<Kiddo> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     ref.watch(ambientMotionProvider);
     _sync();
-    final outfit =
-        widget.outfit ??
-        (widget.mood == KiddoMood.sleepy ? GoldenOutfit.pajamas : goldenOutfitAt(DateTime.now()));
+    // The current Szop’en artwork everywhere; the old drawn raccoon is retired.
+    final pose = switch (widget.mood) {
+      KiddoMood.sleepy => SzopPose.zmeczony,
+      KiddoMood.listening => SzopPose.nasluchuje,
+      KiddoMood.talking => widget.cheeky ? SzopPose.chytry : SzopPose.prosi,
+      KiddoMood.happy => widget.wave ? SzopPose.klaszcze : SzopPose.zadowolony,
+      KiddoMood.idle => widget.cheeky ? SzopPose.chytry : SzopPose.zadowolony,
+    };
     return ExcludeSemantics(
-      child: RepaintBoundary(
-        child: SizedBox(
-          width: widget.size,
-          height: widget.size * 1.15,
-          child: AnimatedBuilder(
-            animation: _motion,
-            builder: (context, _) => CustomPaint(
-              painter: RaccoonPainter(
-                mood: widget.mood,
-                outfit: outfit,
-                phase: _enabled ? _motion.value : 0,
-                animated: _enabled,
-                wave: widget.wave,
-                cheeky: widget.cheeky,
-              ),
-            ),
+      child: SizedBox(
+        width: widget.size,
+        height: widget.size * 1.15,
+        child: AnimatedBuilder(
+          animation: _motion,
+          // A gentle bob while the app is in front (off with reduced motion).
+          builder: (context, child) => Transform.translate(
+            offset: Offset(0, _enabled ? 3 * math.sin(_motion.value * 2 * math.pi * 2) : 0),
+            child: child,
           ),
+          child: Center(child: SzopSticker(pose, height: widget.size * 1.1)),
         ),
       ),
     );

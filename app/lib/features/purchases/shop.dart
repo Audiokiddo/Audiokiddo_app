@@ -11,17 +11,17 @@ import '../../core/storage/storage_providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
 import '../parental_gate/parental_gate.dart';
-import '../pdf/pdf_screen.dart';
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'store_gateway.dart';
 
-/// Everything the Shop tab can sell: both subscriptions, every pack and both bundles.
+/// Everything the Shop tab can sell: both subscriptions, every pack, both bundles and single plays.
 Set<String> shopProductIds(Catalog catalog) => {
   ...ProductIds.subscriptions,
   for (final p in catalog.packs) ?p.storeProductId,
   ProductIds.bundleTwo,
   ProductIds.bundleThree,
+  for (final i in catalog.items) ?i.storeProductId,
 };
 
 /// Packs of a bundle product, in catalog order.
@@ -37,6 +37,23 @@ List<Pack> bundlePacks(String productId, Catalog catalog) {
 final activeScopesProvider = Provider<Set<String>>(
   (ref) => ref.watch(accessPolicyProvider).activeScopes(ref.watch(clockProvider)()),
 );
+
+/// When the family's subscription ended (and none is active now): a "come back" moment.
+final lapsedSubscriptionProvider = Provider<DateTime?>((ref) {
+  final now = ref.watch(clockProvider)();
+  final subs = [
+    for (final e in ref.watch(entitlementsProvider))
+      if (e.scope == Scopes.allContent && e.source != EntitlementSource.manual) e,
+  ];
+  if (subs.isEmpty || subs.any((e) => e.isActiveAt(now))) return null;
+  return subs.map((e) => e.validUntil ?? now).reduce((a, b) => a.isAfter(b) ? a : b);
+});
+
+/// Plays released since [since], newest first (what the family missed during the break).
+List<ContentItem> releasedSince(Catalog catalog, DateTime since) => [
+  for (final i in catalog.items)
+    if (i.releasedOn != null && i.releasedOn!.isAfter(since)) i,
+]..sort((a, b) => b.releasedOn!.compareTo(a.releasedOn!));
 
 bool ownsPack(Set<String> scopes, String packId) =>
     scopes.contains(Scopes.allContent) || scopes.contains(Scopes.pack(packId));
@@ -117,11 +134,14 @@ Future<void> buyWithGate(BuildContext context, WidgetRef ref, StoreProduct produ
 /// Links out of the app are for parents only, too.
 Future<void> openWithGate(BuildContext context, Uri url) async {
   if (!await showParentalGate(context) || !context.mounted) return;
-  await launchUrl(url, mode: LaunchMode.externalApplication);
+  await openExternal(url);
 }
 
+/// Opens a page outside the app; callers ask for an adult first (Kids Category).
+Future<void> openExternal(Uri url) => launchUrl(url, mode: LaunchMode.externalApplication);
+
 final termsUrl = Uri.parse('https://audiokiddo.pl/regulamin/');
-final privacyUrl = Uri.parse('https://audiokiddo.pl/polityka-prywatnosci/');
+final privacyUrl = Uri.parse('https://audiokiddo.pl/polityka-prywatnosci-aplikacji/');
 Uri get manageSubscriptionsUrl => Platform.isIOS
     ? Uri.parse('https://apps.apple.com/account/subscriptions')
     : Uri.parse('https://play.google.com/store/account/subscriptions');
@@ -134,6 +154,8 @@ void listenPurchaseMessages(BuildContext context, WidgetRef ref, {VoidCallback? 
       PurchaseMessage.success => l10n.purchaseSuccess,
       PurchaseMessage.pendingApproval => l10n.purchasePending,
       PurchaseMessage.storeError => l10n.purchaseStoreError,
+      PurchaseMessage.storeNotReady =>
+        'Zakupy w aplikacji ruszą, gdy AudioKiddo pojawi się w App Store. Ceny są już takie, jak widzisz.',
       PurchaseMessage.verifyLater => l10n.purchaseVerifyLater,
       PurchaseMessage.nothingToRestore => l10n.purchaseNothingToRestore,
       PurchaseMessage.canceled || PurchaseMessage.none => null,
@@ -174,12 +196,15 @@ Future<void> hidePackSuggestion(WidgetRef ref, String packId) async {
   ref.invalidate(hiddenPackSuggestionProvider);
 }
 
-/// The pack's guide for parents (a free PDF): a parent area, so it opens after the gate.
-Future<void> openGuide(BuildContext context, AssetRef guide, String packTitle) async {
-  if (!await showParentalGate(context) || !context.mounted) return;
-  await Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) => PdfScreen(asset: guide, title: 'Przewodnik: $packTitle'),
-    ),
+/// For families who bought on audiokiddo.pl or got a gift code: the way to their access.
+/// Only redeeming here; the app itself never sends anyone to buy outside the store.
+class RedeemAccessLink extends StatelessWidget {
+  const RedeemAccessLink({super.key});
+
+  @override
+  Widget build(BuildContext context) => TextButton.icon(
+    onPressed: () => context.push('/dostep'),
+    icon: const Icon(Icons.redeem_rounded),
+    label: const Text('Masz zakup z audiokiddo.pl albo kod? Odbierz dostęp'),
   );
 }

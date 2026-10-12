@@ -72,8 +72,7 @@ class TodayHero extends ConsumerWidget {
       onAction = () => context.go('/plan');
     } else {
       final day = plan[position.currentDay - 1];
-      final minutes =
-          day.itemIds.map((id) => catalog.item(id)?.durationSec ?? 0).fold(0, (a, b) => a + b) ~/ 60;
+      final minutes = day.itemIds.map((id) => catalog.item(id)?.durationSec ?? 0).fold(0, (a, b) => a + b) ~/ 60;
       subtitle = l10n.todayPortion(childLabel(l10n, child, index), day.day, minutes);
       action = l10n.todayStart;
       final results = family!.resultsOf(child.id);
@@ -94,11 +93,7 @@ class TodayHero extends ConsumerWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: _gradients[part]!,
-            ),
+            gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: _gradients[part]!),
             boxShadow: akSoftShadow(context),
           ),
           clipBehavior: Clip.antiAlias,

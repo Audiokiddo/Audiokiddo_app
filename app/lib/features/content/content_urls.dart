@@ -37,8 +37,7 @@ class SignedUrlResolver implements ContentUrlResolver {
   final Future<Uri?> Function(String path) _sign;
 
   @override
-  Future<Uri> urlFor(AssetRef asset) async =>
-      await _sign(asset.path) ?? (throw ContentUnavailable(asset.path));
+  Future<Uri> urlFor(AssetRef asset) async => await _sign(asset.path) ?? (throw ContentUnavailable(asset.path));
 }
 
 /// Debug: the local server started with tool/dev_server.py. Store builds: signed links.

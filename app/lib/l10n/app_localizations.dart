@@ -1237,6 +1237,18 @@ abstract class AppLocalizations {
   /// **'Kod jest nieprawidłowy albo wygasł. Wyślij nowy.'**
   String get accountErrorWrongCode;
 
+  /// No description provided for @accountErrorWrongPassword.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem. Konto usunięte? Załóż je na nowo.'**
+  String get accountErrorWrongPassword;
+
+  /// No description provided for @accountErrorWeakPassword.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hasło musi mieć co najmniej 8 znaków.'**
+  String get accountErrorWeakPassword;
+
   /// No description provided for @accountErrorOffline.
   ///
   /// In pl, this message translates to:
@@ -1426,7 +1438,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingStartWithoutAccount.
   ///
   /// In pl, this message translates to:
-  /// **'Zacznij bez konta'**
+  /// **'Dalej'**
   String get onboardingStartWithoutAccount;
 
   /// No description provided for @introSkip.
@@ -2574,6 +2586,30 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Jeszcze ok. {minutes} min'**
   String sessionLeft(int minutes);
+
+  /// No description provided for @sessionUpNext.
+  ///
+  /// In pl, this message translates to:
+  /// **'Następna za {seconds} s'**
+  String sessionUpNext(int seconds);
+
+  /// No description provided for @sessionHeldInfo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wstrzymane. Następna zabawa poczeka na Ciebie.'**
+  String get sessionHeldInfo;
+
+  /// No description provided for @sessionHold.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatrzymaj'**
+  String get sessionHold;
+
+  /// No description provided for @sessionResume.
+  ///
+  /// In pl, this message translates to:
+  /// **'Graj dalej'**
+  String get sessionResume;
 
   /// No description provided for @sessionSkip.
   ///

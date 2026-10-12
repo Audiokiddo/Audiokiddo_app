@@ -48,19 +48,18 @@ class BackgroundFileTransfer implements FileTransfer {
   Future<String> directory() async => p.join((await getApplicationSupportDirectory()).path, _subdirectory);
 
   @override
-  Future<bool> enqueue({required String taskId, required Uri url, required String fileName}) =>
-      _downloader.enqueue(
-        DownloadTask(
-          taskId: taskId,
-          url: url.toString(),
-          filename: fileName,
-          directory: _subdirectory,
-          baseDirectory: BaseDirectory.applicationSupport,
-          updates: Updates.statusAndProgress,
-          retries: 3,
-          allowPause: true,
-        ),
-      );
+  Future<bool> enqueue({required String taskId, required Uri url, required String fileName}) => _downloader.enqueue(
+    DownloadTask(
+      taskId: taskId,
+      url: url.toString(),
+      filename: fileName,
+      directory: _subdirectory,
+      baseDirectory: BaseDirectory.applicationSupport,
+      updates: Updates.statusAndProgress,
+      retries: 3,
+      allowPause: true,
+    ),
+  );
 
   @override
   Future<void> cancel(Iterable<String> taskIds) async {

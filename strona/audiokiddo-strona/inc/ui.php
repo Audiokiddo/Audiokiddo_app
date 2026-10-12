@@ -38,15 +38,16 @@ function ak_store_buttons(string $class = ''): void
 
 /**
  * The main call to action. With the app in the stores it leads to the store buttons (the script
- * swaps in the store for the visitor's phone); before that, honestly, to the launch sign-up.
+ * swaps in the store for the visitor's phone); before that to the sign-up, which sends the free
+ * plays at once and the news of the launch later.
  */
-function ak_app_cta(string $class = 'ak-btn ak-btn-sun', bool $arrow = true): string
+function ak_app_cta(string $class = 'ak-btn ak-btn-sun', bool $arrow = true, string $label = 'Pobierz Audiokiddo'): string
 {
     $svg = $arrow ? ' <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
     if (ak_app_live()) {
-        return '<a class="' . esc_attr($class) . ' ak-app-cta" href="' . esc_url(home_url('/#pobierz')) . '" data-ios="' . esc_attr(ak_opt('app_store_url')) . '" data-android="' . esc_attr(ak_opt('google_play_url')) . '">Pobierz Audiokiddo' . $svg . '</a>';
+        return '<a class="' . esc_attr($class) . ' ak-app-cta" href="' . esc_url(home_url('/#pobierz')) . '" data-ios="' . esc_attr(ak_opt('app_store_url')) . '" data-android="' . esc_attr(ak_opt('google_play_url')) . '">' . esc_html($label) . $svg . '</a>';
     }
-    return '<a class="' . esc_attr($class) . '" href="' . esc_url(home_url('/#start-aplikacji')) . '">Daj znać, gdy aplikacja ruszy' . $svg . '</a>';
+    return '<a class="' . esc_attr($class) . '" href="' . esc_url(home_url('/#start-aplikacji')) . '">Odbierz darmowe zabawy' . $svg . '</a>';
 }
 
 /** Szop'en says one dry line next to something (a small figure with a speech bubble). */
@@ -57,6 +58,23 @@ function ak_szop(string $pose, string $text, string $class = ''): void
         esc_attr($class),
         esc_url(ak_asset('img/szop/' . $pose . '.webp')),
         esc_html($text)
+    );
+}
+
+/** Szop'en peeking in from the section's edge (ak_peeks(); the script slides him out and back). */
+function ak_peek(string $section): void
+{
+    $peek = ak_peeks()[$section] ?? null;
+    if (!$peek) {
+        return;
+    }
+    [$pose, $edge, $text] = $peek;
+    printf(
+        '<aside class="ak-peek is-%s" aria-label="Szop’en"><p class="ak-peek-say">%s</p><span class="ak-peek-clip"><img src="%s" alt="" width="320" height="480" loading="lazy" decoding="async"></span></aside>',
+        esc_attr($edge),
+        esc_html($text),
+        // Drawn leaning out of an edge, so nothing of him is cut off.
+        esc_url(ak_asset('img/szop/' . ($edge === 'left' ? 'zza-lewej' : 'zza-prawej') . '.webp'))
     );
 }
 
@@ -75,12 +93,13 @@ function ak_leadmagnet(bool $slide = false): void
             <div data-reveal="right">
                 <?php if (ak_app_live()) : ?>
                 <h2 id="ak-free-h">Karty ratunkowe Szop’ena <span class="ak-hl-word">za darmo</span></h2>
-                <p class="ak-sub">36 zabaw bez ekranu do wydrukowania: na obiad, auto, deszcz i wieczór. Wpisz e-mail, pobierz od razu, a raz na jakiś czas napiszemy, co nowego.</p>
+                <p class="ak-sub">Zabawy bez ekranu do wydrukowania: na obiad, auto, deszcz i wieczór. Wpisz e-mail, pobierz od razu, a raz na jakiś czas napiszemy, co nowego.</p>
                 <?php else : ?>
-                <h2 id="ak-free-h">Aplikacja rusza lada dzień. <span class="ak-hl-word">Karty już są.</span></h2>
-                <p class="ak-sub">Zostaw e-mail: damy znać, gdy Audiokiddo pojawi się w App Store i Google Play. A żeby nie czekać z pustymi rękami, od razu pobierzesz 36 zabaw do druku i mini śledztwo.</p>
+                <h2 id="ak-free-h">Zabawy bez ekranu na start. <span class="ak-hl-word">Za darmo.</span></h2>
+                <p class="ak-sub">Zostaw e-mail. Karty do druku pobierzesz od razu, audiozabawy przyjdą mailem, a my damy znać, gdy aplikacja pojawi się w App Store i Google Play.</p>
                 <?php endif; ?>
-                <?php ak_signup_form('newsletter', 'Chcę karty'); ?>
+                <?php ak_signup_form('newsletter', ak_app_live() ? 'Chcę karty' : 'Wyślij mi zabawy'); ?>
+                <ul class="ak-free-proof"><li>Za 0 zł</li><li>Bez reklam</li><li>Wypisujesz się jednym kliknięciem</li></ul>
                 <p class="ak-small"><a href="<?php echo esc_url(ak_info_url('zabawy-do-druku')); ?>">Zobacz, co jest w środku →</a></p>
             </div>
         </div>
@@ -121,6 +140,24 @@ function ak_testimonials(): array
     // A failed fetch is kept for 10 minutes only, so the section comes back quickly.
     set_transient('ak_testimonials', $items, $items ? 6 * HOUR_IN_SECONDS : 10 * MINUTE_IN_SECONDS);
     return $items;
+}
+
+/**
+ * A big sentence between sections that lights up word by word on scroll (strona.js). Words
+ * between asterisks are the ones in the brand's yellow.
+ */
+function ak_statement(string $text, string $id): void
+{
+    $out = '';
+    $mark = false;
+    foreach (preg_split('/\s+/u', trim($text)) as $word) {
+        $opens = str_starts_with($word, '*');
+        $closes = str_ends_with($word, '*');
+        $mark = $mark || $opens;
+        $out .= '<span' . ($mark ? ' class="ak-say-hl"' : '') . '>' . esc_html(trim($word, '*')) . '</span> ';
+        $mark = $mark && !$closes;
+    }
+    echo '<section class="ak-say" id="' . esc_attr($id) . '"><div class="ak-wrap"><p class="ak-statement">' . trim($out) . '</p></div></section>';
 }
 
 /** One word in a heading, painted over with the brand's yellow when it comes into view. */
@@ -290,6 +327,14 @@ function ak_icon(string $name, int $size = 28): string
         'flag' => '<path d="M5 21V4M5 4h12l-2 4 2 4H5"/>',
         'star' => '<path d="M12 3l2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8z"/>',
         'play' => '<path d="M8 5.5v13l10-6.5z" fill="currentColor"/>',
+        'cart' => '<path d="M3 4h2.5l2.2 10.5h10.6L20.5 7H7"/><circle cx="9.5" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>',
+        'mail' => '<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/>',
+        'download' => '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/>',
+        'print' => '<path d="M7 9V3.5h10V9M7 17H4.5V9h15v8H17M7 14h10v6.5H7z"/>',
+        'speaker' => '<rect x="6" y="2.5" width="12" height="19" rx="3"/><circle cx="12" cy="14" r="3.2"/><path d="M12 6.5h.01"/>',
+        'home' => '<path d="M4 11l8-7 8 7v9H4zM10 20v-5h4v5"/>',
+        'key' => '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16.5 6.5l2.5 2.5M14 9l2 2"/>',
+        'gift' => '<path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-1.5-3-5-3-5-1s3 1 5 1zm0 0c1.5-3 5-3 5-1s-3 1-5 1z"/>',
     ];
     return '<svg class="ak-ico" viewBox="0 0 24 24" width="' . $size . '" height="' . $size . '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . ($paths[$name] ?? '') . '</svg>';
 }

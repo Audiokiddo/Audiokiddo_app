@@ -675,6 +675,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get accountErrorWrongCode => 'Kod jest nieprawidłowy albo wygasł. Wyślij nowy.';
 
   @override
+  String get accountErrorWrongPassword =>
+      'Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem. Konto usunięte? Załóż je na nowo.';
+
+  @override
+  String get accountErrorWeakPassword => 'Hasło musi mieć co najmniej 8 znaków.';
+
+  @override
   String get accountErrorOffline => 'Brak połączenia z internetem.';
 
   @override
@@ -776,7 +783,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onboardingAccountDone => 'Zalogowano';
 
   @override
-  String get onboardingStartWithoutAccount => 'Zacznij bez konta';
+  String get onboardingStartWithoutAccount => 'Dalej';
 
   @override
   String get introSkip => 'Pomiń';
@@ -1475,6 +1482,20 @@ class AppLocalizationsPl extends AppLocalizations {
   String sessionLeft(int minutes) {
     return 'Jeszcze ok. $minutes min';
   }
+
+  @override
+  String sessionUpNext(int seconds) {
+    return 'Następna za $seconds s';
+  }
+
+  @override
+  String get sessionHeldInfo => 'Wstrzymane. Następna zabawa poczeka na Ciebie.';
+
+  @override
+  String get sessionHold => 'Zatrzymaj';
+
+  @override
+  String get sessionResume => 'Graj dalej';
 
   @override
   String get sessionSkip => 'Dalej';

@@ -13,6 +13,7 @@ class StoreProduct {
     this.freeTrialDays,
     this.rawPrice,
     this.currencyCode,
+    this.comebackPrice,
   });
 
   final String id;
@@ -29,6 +30,10 @@ class StoreProduct {
   /// The same price as a number and its ISO currency, for comparisons such as bundle savings.
   final double? rawPrice;
   final String? currencyCode;
+
+  /// A lower first price for those coming back (Google Play win-back offer for *this* user,
+  /// e.g. "12,49 zł"); null when there is none. Apple shows its win-back offers by itself.
+  final String? comebackPrice;
 }
 
 enum PurchaseStatus { pending, purchased, restored, canceled, error }

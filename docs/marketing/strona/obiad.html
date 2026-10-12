@@ -1,0 +1,80 @@
+<!--
+  AudioKiddo: strona pod jedną sytuację (audiokiddo.pl/obiad) do reklam Meta i rolek.
+  Wklej w WordPressie do bloku „Własny HTML”. Style zamknięte w klasie .ako, bez zewnętrznych skryptów.
+  Do podmiany (szukaj „#”):
+    #zestaw   → produkt „Zestaw 3 pakietów” w WooCommerce (najlepiej od razu link „dodaj do koszyka”:
+                https://audiokiddo.pl/zamowienie/?add-to-cart=ID_PRODUKTU, wtedy rodzic ląduje w kasie)
+    #pakiet   → pojedynczy pakiet
+    #probka   → plik próbki mp3 (60–90 s prawdziwej zabawy, nie zwiastun)
+    #film     → krótki pionowy film: dziecko bawi się w kuchni, rodzic gotuje (mp4, z napisami)
+  Źródło sprzedaży: reklamy linkują tu z parametrami utm, np.
+    https://audiokiddo.pl/obiad/?utm_source=meta&utm_medium=paid&utm_campaign=obiad&utm_content=rolka1
+  WooCommerce (od 8.5) zapisuje je przy zamówieniu („Atrybucja zamówień”, kolumna „Pochodzenie”).
+  Wariant „podróż”: skopiuj plik, zmień nagłówek, film i pierwsze dwa pytania.
+-->
+<section class="ako" aria-labelledby="ako-title">
+<style>
+.ako{--ink:#231A16;--muted:#6B5A50;--bg:#FFF7EE;--sand:#F7EADB;--terra:#B8431C;--teal:#1D7478;--sun:#FAC119;
+  background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 16px 56px;line-height:1.5}
+.ako *{box-sizing:border-box}
+.ako .w{max-width:880px;margin:0 auto}
+.ako h1{font-size:clamp(30px,6.5vw,50px);line-height:1.08;letter-spacing:-.02em;font-weight:800;margin:0 0 12px}
+.ako h2{font-size:clamp(22px,4vw,30px);letter-spacing:-.01em;font-weight:800;margin:44px 0 12px}
+.ako p{margin:0 0 10px}
+.ako .lead{font-size:clamp(17px,2.4vw,20px);color:var(--muted)}
+.ako .btn{display:flex;align-items:center;justify-content:center;width:100%;max-width:420px;padding:16px 24px;border-radius:999px;font-weight:700;text-decoration:none;font-size:18px;min-height:56px;background:var(--terra);color:#fff}
+.ako .sub{font-size:14px;color:var(--muted);margin-top:8px}
+.ako video,.ako audio{width:100%;border-radius:20px;margin:16px 0 4px;background:#000}
+.ako audio{background:none}
+.ako .box{background:#fff;border-radius:24px;padding:22px;box-shadow:0 12px 30px rgba(138,75,42,.10);margin-top:14px}
+.ako .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.ako .fact{background:var(--sand);border-radius:16px;padding:14px}
+.ako .fact b{display:block;font-size:20px}
+.ako ul{padding-left:20px;margin:6px 0}
+.ako li{margin:4px 0}
+.ako .price{font-size:34px;font-weight:800}
+.ako .old{color:var(--muted);text-decoration:line-through;font-size:18px;margin-left:8px}
+.ako details{background:#fff;border-radius:18px;padding:16px 20px;margin-top:10px;box-shadow:0 6px 18px rgba(138,75,42,.08)}
+.ako summary{font-weight:700;cursor:pointer}
+.ako details p{margin:10px 0 0;color:var(--muted)}
+.ako .alt{display:inline-block;margin-top:14px;color:var(--teal);font-weight:600}
+</style>
+<div class="w">
+  <h1 id="ako-title">Gotujesz obiad, a dziecko szuka skarbu w kuchni</h1>
+  <p class="lead">Audiozabawa, w której dziecko dostaje zadanie, szuka, zgaduje i odpowiada na głos. Ty kroisz marchewkę. Bez ekranu, dla dzieci 3–9 lat.</p>
+  <video controls playsinline preload="metadata" src="#film"></video>
+
+  <h2>Posłuchajcie razem, zanim kupisz</h2>
+  <p>Fragment prawdziwej zabawy. Włącz przy dziecku i zobacz, co zrobi.</p>
+  <audio controls preload="none" src="#probka"></audio>
+  <div class="facts">
+    <div class="fact"><b>10–20 min</b>jedna zabawa</div>
+    <div class="fact"><b>3–9 lat</b>wiek przy każdej zabawie</div>
+    <div class="fact"><b>0 ekranu</b>dziecko tylko słucha</div>
+    <div class="fact"><b>Offline</b>działa po pobraniu</div>
+  </div>
+
+  <h2>Co dostajesz</h2>
+  <div class="box">
+    <p><strong>Zestaw 3 pakietów AudioKiddo</strong>, na zawsze, bez abonamentu:</p>
+    <ul>
+      <li><strong>Detektyw:</strong> zagadki z Maxem i Milą, akta sprawy do rozwiązywania także w telefonie</li>
+      <li><strong>Słowa i Wiedza:</strong> zgadywanki, skojarzenia, przeciwieństwa</li>
+      <li><strong>Wyobraźnia:</strong> przygody, w których dziecko decyduje, co dalej</li>
+    </ul>
+    <p><span class="price">159,99 zł</span></p>
+    <a class="btn" href="#zestaw">Kupuję i włączamy dziś</a>
+    <p class="sub">Dostęp od razu po zakupie: w aplikacji AudioKiddo logujesz się tym samym e-mailem i zabawy są Twoje.</p>
+    <a class="alt" href="#pakiet">Wolę na początek jeden pakiet (od 49,99 zł)</a>
+  </div>
+
+  <h2>Pytania rodziców</h2>
+  <details><summary>Czy dziecko musi patrzeć w telefon?</summary><p>Nie. Telefon leży na blacie, dziecko słucha i działa. Właśnie po to są te zabawy.</p></details>
+  <details><summary>Co jeśli dziecko nie chce mówić na głos?</summary><p>Może odpowiadać klaśnięciem albo po prostu słuchać. Zabawa idzie dalej w każdym przypadku.</p></details>
+  <details><summary>Czy to działa bez internetu?</summary><p>Tak, po pobraniu zabaw w aplikacji. Dobre też na wyjazd i do samochodu.</p></details>
+  <details><summary>Czy to abonament?</summary><p>Nie. Zestaw kupujesz raz i masz na zawsze.</p></details>
+  <details><summary>Czy aplikacja ma reklamy albo zbiera dane dziecka?</summary><p>Nie ma reklam. Imię dziecka zostaje w telefonie, nagrania głosu nigdzie nie są wysyłane. Mikrofon działa tylko po zgodzie rodzica.</p></details>
+  <details><summary>Jak odebrać zakup?</summary><p>Pobierz darmową aplikację AudioKiddo i zaloguj się e-mailem z zamówienia. Inny e-mail? W aplikacji: Sklep › „Masz już dostęp z audiokiddo.pl?” › numer zamówienia.</p></details>
+  <div style="margin-top:24px"><a class="btn" href="#zestaw">Kupuję zestaw</a></div>
+</div>
+</section>

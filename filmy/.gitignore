@@ -9,3 +9,4 @@
 *.aac
 */sceny/*/wersje/*
 !*/sceny/*/wersje/.gitkeep
+__pycache__/

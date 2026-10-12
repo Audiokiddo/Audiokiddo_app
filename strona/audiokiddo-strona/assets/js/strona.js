@@ -85,8 +85,7 @@
 
   // Scrolling: header, progress, the statement lighting up, the hero drifting, the snapping
   var top = $('.ak-top');
-  var statement = $('.ak-statement');
-  var statementWords = statement ? $$('span', statement) : [];
+  var statements = $$('.ak-statement').map(function (el) { return { el: el, words: $$('span', el) }; });
   var heroImg = $('.ak-hero-img');
   var lastY = window.scrollY;
   var ticking = false;
@@ -102,12 +101,14 @@
       var max = document.documentElement.scrollHeight - vh;
       top.style.setProperty('--scroll', max > 0 ? (y / max).toFixed(4) : 0);
     }
-    if (statementWords.length && !still) {
-      var r = statement.getBoundingClientRect();
-      var p = clamp((vh * 0.88 - r.top) / (r.height + vh * 0.3), 0, 1);
-      var lit = Math.round(p * statementWords.length);
-      statementWords.forEach(function (s, i) { s.classList.toggle('on', i < lit); });
-    }
+    // Each big sentence lights up word by word as it travels up the screen.
+    if (!still) statements.forEach(function (st) {
+      var r = st.el.getBoundingClientRect();
+      if (r.bottom < -vh || r.top > vh * 2) return;
+      var p = clamp((vh * 0.86 - r.top) / (r.height + vh * 0.28), 0, 1);
+      var lit = Math.round(p * st.words.length);
+      st.words.forEach(function (w, i) { w.classList.toggle('on', i < lit); });
+    });
     if (heroImg && !still && y < vh * 1.2) heroImg.style.setProperty('--para', (y * 0.12).toFixed(1) + 'px');
     onScrollHooks.forEach(function (fn) { fn(y, vh); });
     lastY = y;
@@ -208,6 +209,22 @@
     }
   }
 
+  // "When to play it": a row of cards to swipe; the two arrows move it by a card
+  var when = $('.ak-when2');
+  if (when) {
+    var whenPrev = $('.ak-when2-prev');
+    var whenNext = $('.ak-when2-next');
+    var whenStep = function () { var c = $('.ak-when2-card', when); return c ? c.getBoundingClientRect().width + 16 : 320; };
+    var whenEnds = function () {
+      if (whenPrev) whenPrev.disabled = when.scrollLeft < 8;
+      if (whenNext) whenNext.disabled = when.scrollLeft + when.clientWidth > when.scrollWidth - 8;
+    };
+    if (whenPrev) whenPrev.addEventListener('click', function () { when.scrollBy({ left: -whenStep(), behavior: still ? 'auto' : 'smooth' }); });
+    if (whenNext) whenNext.addEventListener('click', function () { when.scrollBy({ left: whenStep(), behavior: still ? 'auto' : 'smooth' }); });
+    when.addEventListener('scroll', whenEnds, { passive: true });
+    whenEnds();
+  }
+
   // Tabs (the moments, the ages): click or arrow keys pick one; its panel shows, the rest hide.
   function tabs(list, onPick) {
     var btns = $$('[role="tab"]', list);
@@ -241,6 +258,78 @@
       void momentSzop.offsetWidth;
       momentSzop.classList.add('is-pop');
     });
+  }
+  // The day with Audiokiddo moves on by itself while it is in view, so nobody has to find the
+  // buttons; a click takes over and stops the show.
+  var dayTabs = $('.ak-a-times');
+  if (dayTabs && !still && 'IntersectionObserver' in window) {
+    var dayBtns = $$('[role="tab"]', dayTabs);
+    var dayTimer = null;
+    var dayHand = false;
+    function dayStep() {
+      var at = dayBtns.findIndex(function (b) { return b.getAttribute('aria-selected') === 'true'; });
+      var nxt = dayBtns[(at + 1) % dayBtns.length];
+      nxt.click();
+    }
+    dayBtns.forEach(function (b) { b.addEventListener('pointerdown', function () { dayHand = true; clearInterval(dayTimer); }); });
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        clearInterval(dayTimer);
+        if (entry.isIntersecting && !dayHand) dayTimer = setInterval(dayStep, 5200);
+      });
+    }, { threshold: 0.5 }).observe(dayTabs);
+  }
+  // The quarter of an hour: the clock runs while the section is in view, each third shows what
+  // the child and the parent are doing; the buttons under it jump to a third.
+  var q = $('.ak-q');
+  if (q) {
+    var qTabs = $$('.ak-q-tabs button', q);
+    var qNow = $$('.ak-q-now', q);
+    var qRing = $('.ak-q-ring', q);
+    var qTime = $('.ak-q-time', q);
+    var Q_LEN = 326.73;
+    var Q_PART = 4400;
+    var qAt = 0;
+    var qStart = null;
+    var qFrame = null;
+    function qShow(i) {
+      qAt = i;
+      q.setAttribute('data-at', i);
+      qNow.forEach(function (el) { el.classList.toggle('is-on', Number(el.getAttribute('data-i')) === i); });
+      qTabs.forEach(function (b, k) { b.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
+    }
+    function qDraw(part) {
+      var secs = Math.round(part * 900);
+      qRing.style.strokeDashoffset = (Q_LEN * (1 - part)).toFixed(2);
+      qTime.textContent = ('0' + Math.floor(secs / 60)).slice(-2) + ':' + ('0' + (secs % 60)).slice(-2);
+    }
+    function qTick(now) {
+      if (qStart === null) qStart = now - qAt * Q_PART;
+      var gone = (now - qStart) % (Q_PART * 3 + 1600);
+      var part = Math.min(gone / (Q_PART * 3), 1);
+      var i = Math.min(2, Math.floor(part * 3));
+      qDraw(part);
+      if (i !== qAt) qShow(i);
+      qFrame = window.requestAnimationFrame(qTick);
+    }
+    qTabs.forEach(function (b, i) {
+      b.addEventListener('click', function () {
+        qShow(i);
+        if (still) { qDraw((i + 1) / 3); return; }
+        qStart = window.performance.now() - i * Q_PART;
+      });
+    });
+    if (still) {
+      qDraw(1 / 3);
+    } else if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          window.cancelAnimationFrame(qFrame);
+          qStart = null;
+          if (entry.isIntersecting) qFrame = window.requestAnimationFrame(qTick);
+        });
+      }, { threshold: 0.35 }).observe(q);
+    }
   }
   var agePick = $('.ak-agepick-tabs');
   if (agePick) tabs(agePick);
@@ -554,6 +643,66 @@
     settle = setTimeout(function () { listeners.forEach(function (fn) { fn(slide); }); }, 450);
   });
   onScroll();
+
+  // Home: without / with Audiokiddo. It flips to "with" by itself once it is seen; a click wins.
+  $$('.ak-vs').forEach(function (vs) {
+    var picks = $$('[data-vs-pick]', vs);
+    var touched = false;
+    function set(state) {
+      vs.setAttribute('data-vs', state);
+      picks.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-vs-pick') === state ? 'true' : 'false'); });
+    }
+    picks.forEach(function (b) {
+      b.addEventListener('click', function () { touched = true; set(b.getAttribute('data-vs-pick')); });
+    });
+    if (!('IntersectionObserver' in window)) { set('with'); return; }
+    var seen = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      seen.disconnect();
+      setTimeout(function () { if (!touched) set('with'); }, 1600);
+    }, { threshold: 0.6 });
+    seen.observe(vs);
+  });
+
+  // Home: the 15 minutes in the hero count down while the hero is in view.
+  var clock = $('.ak-x-clock');
+  if (clock && !still && 'IntersectionObserver' in window) {
+    var left = 15 * 60;
+    var clockTimer = null;
+    new IntersectionObserver(function (entries) {
+      clearInterval(clockTimer);
+      if (!entries[0].isIntersecting) return;
+      clockTimer = setInterval(function () {
+        left = left > 0 ? left - 1 : 15 * 60;
+        clock.textContent = Math.floor(left / 60) + ':' + ('0' + (left % 60)).slice(-2);
+      }, 1000);
+    }).observe(clock);
+  }
+
+  // Home: Szop'en peeks out of a few sections while they are in view and hides when they leave.
+  // While he peeks, the guide in the corner steps aside: one Szop'en at a time.
+  var peeks = $$('.ak-peek');
+  if (peeks.length && 'IntersectionObserver' in window) {
+    var out = 0;
+    var peeker = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var peek = $('.ak-peek', entry.target);
+        var show = entry.isIntersecting;
+        if (show === peek.classList.contains('is-out')) return;
+        peek.classList.toggle('is-out', show);
+        out += show ? 1 : -1;
+      });
+      document.body.classList.toggle('ak-peeking', out > 0);
+    }, { rootMargin: '-40% 0px -40% 0px' }); // "in view" = across the middle of the screen, however tall
+    peeks.forEach(function (p) { peeker.observe(p.parentElement); });
+    // The hero has its own Szop'en in the scene: the corner one waits until the hero is gone.
+    var scene = $('.ak-x-scene');
+    if (scene) {
+      new IntersectionObserver(function (entries) {
+        document.body.classList.toggle('ak-hero-szop', entries[0].isIntersecting);
+      }).observe(scene);
+    }
+  }
 
   // Szop'en presents each slide and points at what matters
   var guide = $('.ak-guide');

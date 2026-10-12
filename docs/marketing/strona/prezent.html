@@ -1,0 +1,99 @@
+<!--
+  AudioKiddo: strona „Prezent” (audiokiddo.pl/prezent) na Mikołajki i Święta.
+  Wklej w WordPressie do bloku „Własny HTML”. Style zamknięte w klasie .akg, bez zewnętrznych skryptów.
+  Do podmiany przed publikacją (szukaj „#”):
+    #prezent-zestaw, #prezent-pakiet  → linki do produktów prezentowych w WooCommerce
+    #probka                            → plik próbki mp3 (np. pierwsze 60 s „Magicznego sklepu”)
+    #kartka                            → link do docs/marketing/prezent/kartka-prezentowa.pdf wgranej do WordPressa
+  Ceny są z obecnego sklepu (zestaw 159,99 zł, pakiet 49,99 zł); sprawdź je przed publikacją.
+-->
+<section class="akg" aria-labelledby="akg-title">
+<style>
+.akg{--ink:#231A16;--muted:#6B5A50;--bg:#FFF7EE;--sand:#F7EADB;--terra:#B8431C;--teal:#1D7478;--sun:#FAC119;
+  background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;padding:48px 16px;line-height:1.5}
+.akg *{box-sizing:border-box}
+.akg .w{max-width:1000px;margin:0 auto}
+.akg .kicker{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);margin:0 0 8px}
+.akg h1,.akg h2{letter-spacing:-.02em;font-weight:800;margin:0 0 12px;line-height:1.1}
+.akg h1{font-size:clamp(32px,6vw,52px)}
+.akg h2{font-size:clamp(24px,4vw,34px);margin-top:48px}
+.akg h3{font-size:19px;margin:0 0 6px}
+.akg p{margin:0 0 10px}
+.akg .lead{font-size:clamp(17px,2.4vw,20px);color:var(--muted);max-width:620px}
+.akg .btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 24px;border-radius:999px;font-weight:700;text-decoration:none;font-size:17px;min-height:52px}
+.akg .btn-main{background:var(--terra);color:#fff}
+.akg .btn-ghost{border:1.5px solid rgba(35,26,22,.25);color:var(--ink)}
+.akg .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.akg .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
+.akg .card{background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 30px rgba(138,75,42,.10);display:flex;flex-direction:column}
+.akg .card .price{font-size:30px;font-weight:800;margin:6px 0 4px}
+.akg .card ul{padding-left:18px;color:var(--muted);margin:8px 0 18px;flex:1}
+.akg .card.best{outline:3px solid var(--sun)}
+.akg .badge{display:inline-block;background:var(--sun);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;margin-bottom:8px}
+.akg .steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:16px}
+.akg .step{background:var(--sand);border-radius:20px;padding:20px}
+.akg .step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;margin-bottom:10px}
+.akg audio{width:100%;margin-top:12px}
+.akg details{background:#fff;border-radius:18px;padding:16px 20px;margin-top:10px;box-shadow:0 6px 18px rgba(138,75,42,.08)}
+.akg summary{font-weight:700;cursor:pointer}
+.akg details p{margin:10px 0 0;color:var(--muted)}
+.akg .note{background:#fff;border-left:5px solid var(--teal);border-radius:12px;padding:14px 18px;margin-top:20px}
+</style>
+<div class="w">
+  <p class="kicker">Prezent na Mikołajki i Święta</p>
+  <h1 id="akg-title">Prezent, który zajmie dziecko bez ekranu</h1>
+  <p class="lead">Interaktywne audiozabawy dla dzieci 3–9 lat. Dziecko słucha, szuka, zgaduje i odpowiada. Rodzice dostają chwilę oddechu, a Wy prezent, który nie zbiera kurzu.</p>
+  <div class="cta">
+    <a class="btn btn-main" href="#prezent-zestaw">Kup prezent: zestaw 3 pakietów</a>
+    <a class="btn btn-ghost" href="#akg-probka">Posłuchaj próbki</a>
+  </div>
+
+  <h2>Jak to działa</h2>
+  <div class="steps">
+    <div class="step"><h3>Kupujesz tutaj</h3><p>Płacisz jak w zwykłym sklepie. Nie musisz mieć aplikacji.</p></div>
+    <div class="step"><h3>Dostajesz kod mailem</h3><p>Od razu po opłaceniu, w mailu ze sklepu. Kod działa na jednym koncie.</p></div>
+    <div class="step"><h3>Drukujesz kartkę</h3><p>Gotowa kartka z Szop’enem: wpisujesz kod i imię dziecka. <a href="#kartka">Pobierz kartkę (PDF)</a></p></div>
+    <div class="step"><h3>Rodzice wpisują kod</h3><p>W darmowej aplikacji AudioKiddo. Zabawy działają też bez internetu.</p></div>
+  </div>
+  <div class="note"><strong>Zdążysz na pewno.</strong> Kod przychodzi mailem w kilka minut, więc to dobry prezent także w Wigilię rano.</div>
+
+  <h2>Wybierz prezent</h2>
+  <div class="grid">
+    <div class="card best">
+      <span class="badge">Najwięcej zabaw</span>
+      <h3>Zestaw 3 pakietów</h3>
+      <div class="price">159,99 zł</div>
+      <ul>
+        <li>Detektyw: zagadki z Maxem i Milą, akta sprawy do rozwiązywania</li>
+        <li>Słowa i Wiedza: zgadywanki, skojarzenia, przeciwieństwa</li>
+        <li>Wyobraźnia: przygody, w których dziecko decyduje</li>
+        <li>Na zawsze, bez abonamentu</li>
+      </ul>
+      <a class="btn btn-main" href="#prezent-zestaw">Kupuję zestaw</a>
+    </div>
+    <div class="card">
+      <h3>Jeden pakiet</h3>
+      <div class="price">od 49,99 zł</div>
+      <ul>
+        <li>Wybierasz Detektywa, Słowa i Wiedzę albo Wyobraźnię</li>
+        <li>Dobry drobny prezent albo dodatek do paczki</li>
+        <li>Na zawsze, bez abonamentu</li>
+      </ul>
+      <a class="btn btn-ghost" href="#prezent-pakiet">Wybieram pakiet</a>
+    </div>
+  </div>
+
+  <h2 id="akg-probka">Posłuchaj, jak to brzmi</h2>
+  <p class="lead">Fragment prawdziwej zabawy. Tak dziecko dostaje zadanie i samo działa.</p>
+  <audio controls preload="none" src="#probka"></audio>
+
+  <h2>Pytania</h2>
+  <details><summary>Dla ilu lat?</summary><p>Dla dzieci od 3 do 9 lat. Przy każdej zabawie jest podany wiek.</p></details>
+  <details><summary>Czy potrzebny jest telefon dziecka albo ekran?</summary><p>Nie. Rodzic włącza zabawę na swoim telefonie, a dziecko tylko słucha i odpowiada. Nie trzeba patrzeć w ekran.</p></details>
+  <details><summary>Czy to abonament?</summary><p>Nie. Pakiety kupione w prezencie zostają na zawsze, bez kolejnych opłat.</p></details>
+  <details><summary>Co jeśli rodzice nie mają jeszcze aplikacji?</summary><p>Aplikacja AudioKiddo jest darmowa. Po instalacji wystarczy wpisać kod: Sklep › „Masz już dostęp z audiokiddo.pl?” › „Mam kod”.</p></details>
+  <details><summary>Czy aplikacja ma reklamy lub zbiera dane dziecka?</summary><p>Nie ma reklam. Imię dziecka zostaje w telefonie, a nagrania głosu nigdzie nie są wysyłane. Mikrofon działa tylko po zgodzie rodzica.</p></details>
+  <details><summary>A jeśli prezent nie trafi?</summary><p>Napisz na kontakt@audiokiddo.pl. Zwroty działają według regulaminu sklepu, a zwrócony kod przestaje działać.</p></details>
+  <div class="cta"><a class="btn btn-main" href="#prezent-zestaw">Kup prezent</a></div>
+</div>
+</section>

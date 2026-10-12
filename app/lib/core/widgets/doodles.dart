@@ -48,8 +48,7 @@ class _FloatingDoodlesState extends ConsumerState<FloatingDoodles> with SingleTi
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final reduce =
-        (MediaQuery.maybeDisableAnimationsOf(context) ?? false) || !ref.read(ambientMotionProvider);
+    final reduce = (MediaQuery.maybeDisableAnimationsOf(context) ?? false) || !ref.read(ambientMotionProvider);
     if (reduce && _ticker.isActive) _ticker.stop();
     if (!reduce && !_ticker.isActive) _ticker.start();
   }
@@ -125,28 +124,15 @@ class _DoodlePainter extends CustomPainter {
       stroke.strokeWidth = s * 0.12;
       switch (d.kind) {
         case _DoodleKind.note:
-          canvas.drawOval(
-            Rect.fromCenter(center: Offset(0, s * 0.35), width: s * 0.55, height: s * 0.4),
-            fill,
-          );
+          canvas.drawOval(Rect.fromCenter(center: Offset(0, s * 0.35), width: s * 0.55, height: s * 0.4), fill);
           canvas.drawLine(Offset(s * 0.25, s * 0.3), Offset(s * 0.25, -s * 0.45), stroke);
           canvas.drawLine(Offset(s * 0.25, -s * 0.45), Offset(s * 0.5, -s * 0.2), stroke);
         case _DoodleKind.doubleNote:
-          canvas.drawOval(
-            Rect.fromCenter(center: Offset(-s * 0.3, s * 0.35), width: s * 0.45, height: s * 0.34),
-            fill,
-          );
-          canvas.drawOval(
-            Rect.fromCenter(center: Offset(s * 0.3, s * 0.25), width: s * 0.45, height: s * 0.34),
-            fill,
-          );
+          canvas.drawOval(Rect.fromCenter(center: Offset(-s * 0.3, s * 0.35), width: s * 0.45, height: s * 0.34), fill);
+          canvas.drawOval(Rect.fromCenter(center: Offset(s * 0.3, s * 0.25), width: s * 0.45, height: s * 0.34), fill);
           canvas.drawLine(Offset(-s * 0.1, s * 0.3), Offset(-s * 0.1, -s * 0.4), stroke);
           canvas.drawLine(Offset(s * 0.5, s * 0.2), Offset(s * 0.5, -s * 0.5), stroke);
-          canvas.drawLine(
-            Offset(-s * 0.1, -s * 0.4),
-            Offset(s * 0.5, -s * 0.5),
-            stroke..strokeWidth = s * 0.16,
-          );
+          canvas.drawLine(Offset(-s * 0.1, -s * 0.4), Offset(s * 0.5, -s * 0.5), stroke..strokeWidth = s * 0.16);
         case _DoodleKind.star:
           final path = Path();
           for (var i = 0; i < 10; i++) {
@@ -178,8 +164,7 @@ class ConfettiBurst extends StatefulWidget {
 }
 
 class _ConfettiBurstState extends State<ConfettiBurst> with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600))
-    ..forward();
+  late final _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600))..forward();
   late final List<_Piece> _pieces;
 
   static const _colors = [AkBrand.sun, AkBrand.orange, AkBrand.teal, AkBrand.lavender, Colors.white];

@@ -61,11 +61,7 @@ class _GoldenHelloState extends ConsumerState<_GoldenHello> {
             mood: _amused ? KiddoMood.happy : KiddoMood.idle,
             outfit: GoldenOutfit.official,
           ),
-          Text(
-            'Szop’en von Ekran',
-            style: Theme.of(context).textTheme.headlineSmall,
-            textAlign: TextAlign.center,
-          ),
+          Text('Szop’en von Ekran', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
           const SizedBox(height: 12),
           Semantics(
             liveRegion: true,

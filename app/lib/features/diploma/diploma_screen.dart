@@ -280,10 +280,7 @@ class _DiplomaCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        DateFormat('d MMMM y', 'pl').format(day),
-                        style: text.bodySmall?.copyWith(color: _ink),
-                      ),
+                      Text(DateFormat('d MMMM y', 'pl').format(day), style: text.bodySmall?.copyWith(color: _ink)),
                       const SizedBox(height: 2),
                       Text(
                         'Szop’en von Ekran\nkolega na dyżurze',

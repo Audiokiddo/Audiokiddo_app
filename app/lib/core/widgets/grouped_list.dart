@@ -123,8 +123,7 @@ class GroupedRow extends StatelessWidget {
                 ),
               ),
               ?trailing,
-              if (chevron)
-                ExcludeSemantics(child: Icon(Icons.chevron_right_rounded, color: palette.inkMuted)),
+              if (chevron) ExcludeSemantics(child: Icon(Icons.chevron_right_rounded, color: palette.inkMuted)),
             ],
           ),
         ),

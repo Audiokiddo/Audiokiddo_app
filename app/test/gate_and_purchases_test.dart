@@ -115,7 +115,10 @@ void main() {
     });
 
     test('products map to scopes', () {
+      // One subscription, two periods: the whole library, no limit on child profiles.
       expect(scopesForProduct(ProductIds.yearly, catalog), [Scopes.allContent]);
+      expect(scopesForProduct(ProductIds.monthly, catalog), [Scopes.allContent]);
+      expect(ProductIds.subscriptions, {ProductIds.monthly, ProductIds.yearly});
       expect(scopesForProduct('pl.audiokiddo.pack.detektyw', catalog), [Scopes.pack('detektyw')]);
       expect(scopesForProduct(ProductIds.bundleThree, catalog), hasLength(3));
       expect(scopesForProduct(ProductIds.bundleTwo, catalog), [
