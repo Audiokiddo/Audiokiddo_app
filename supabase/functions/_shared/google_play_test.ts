@@ -5,9 +5,9 @@ import { GooglePlayClient, parsePubSubPush, verifyPubSubToken } from "./google_p
 Deno.test("google: service-account token request is a signed JWT for androidpublisher, cached", async () => {
   const { publicKey, privateKey } = await generateKeyPair("RS256", { extractable: true });
   const calls: { url: string; body: string }[] = [];
-  const fakeFetch = (async (url: string | URL | Request, init?: RequestInit) => {
+  const fakeFetch = ((url: string | URL | Request, init?: RequestInit) => {
     calls.push({ url: String(url), body: String(init?.body ?? "") });
-    return new Response(JSON.stringify({ access_token: "ya29.test", expires_in: 3600 }));
+    return Promise.resolve(new Response(JSON.stringify({ access_token: "ya29.test", expires_in: 3600 })));
   }) as typeof fetch;
   const client = new GooglePlayClient(
     { client_email: "verifier@audiokiddo.iam.gserviceaccount.com", private_key: await exportPKCS8(privateKey) },
