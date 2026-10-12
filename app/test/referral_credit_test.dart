@@ -2,8 +2,11 @@ import 'package:audiokiddo/core/theme/app_theme.dart';
 import 'package:audiokiddo/features/access/access_controller.dart';
 import 'package:audiokiddo/features/account/access_screen.dart';
 import 'package:audiokiddo/features/account/account_service.dart';
+import 'package:audiokiddo/features/parental_gate/parental_gate.dart';
 import 'package:audiokiddo/features/referral/referral_screen.dart';
+import 'package:audiokiddo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -73,6 +76,14 @@ void main() {
         overrides: [...testOverrides(db), accountServiceProvider.overrideWithValue(account)],
         child: MaterialApp(
           theme: buildTheme(Brightness.light),
+          locale: const Locale('pl'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           home: const Scaffold(body: SingleChildScrollView(child: CreditSection())),
         ),
       ),
@@ -83,6 +94,12 @@ void main() {
 
     await tester.tap(find.widgetWithText(FilledButton, 'Wykorzystaj').last);
     await tester.pumpAndSettle();
+    // The App Store build asks for an adult first; the parent passes it.
+    expect(find.byType(ParentalGateScreen), askInParentArea ? findsOneWidget : findsNothing);
+    if (askInParentArea) {
+      Navigator.of(tester.element(find.byType(ParentalGateScreen))).pop(true);
+      await tester.pumpAndSettle();
+    }
     expect(find.text('Wykorzystać 9,99 zł ze środków za polecenia?'), findsOneWidget);
     await tester.tap(find.widgetWithText(FilledButton, 'Wykorzystaj').last);
     await tester.pumpAndSettle();

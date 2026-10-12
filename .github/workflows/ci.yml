@@ -82,8 +82,8 @@ jobs:
       - name: Function tests
         working-directory: supabase/functions
         run: |
-          deno test _shared/
-          deno check woo-webhook/index.ts sync-web-purchases/index.ts delete-account/index.ts
+          deno test --allow-env _shared/
+          deno check woo-webhook/index.ts sync-web-purchases/index.ts delete-account/index.ts credit/index.ts
           deno lint
 
   android:
