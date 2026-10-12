@@ -1331,7 +1331,56 @@ add_filter('query_vars', function ($vars) {
     return $vars;
 });
 
-// Our own little sitemap of the guides, announced in Yoast's index and in robots.txt.
+/**
+ * The day each page's text last changed: the sitemap's lastmod. Change the date together with
+ * the text. A page missing here goes into the sitemap without a date, which is better than a
+ * wrong one (the day the plugin was packed says nothing about the content).
+ */
+function ak_content_dates(): array
+{
+    return [
+        'jak-to-dziala' => '2026-10-09',
+        'abonament' => '2026-10-09',
+        'pakiety' => '2026-10-11',
+        'pytania' => '2026-10-09',
+        'o-nas' => '2026-10-09',
+        'zabawy-do-druku' => '2026-10-10',
+        'logopedzi-i-pedagodzy' => '2026-10-09',
+        'pomysly-na-zabawy' => '2026-10-10',
+        'zabawy-bez-ekranu' => '2026-10-09',
+        'zabawy-dla-dzieci-w-domu' => '2026-10-09',
+        'jak-zajac-dziecko-w-samochodzie' => '2026-10-09',
+        'zabawy-logopedyczne' => '2026-10-09',
+        'zagadki-dla-dzieci' => '2026-10-10',
+        'zabawy-na-koncentracje' => '2026-10-09',
+        'zabawy-wyciszajace-przed-snem' => '2026-10-09',
+        'audiobooki-i-sluchowiska-dla-dzieci' => '2026-10-09',
+        'aplikacje-edukacyjne-dla-dzieci' => '2026-10-09',
+        'zabawy-dla-przedszkolakow' => '2026-10-09',
+        'zabawy-dla-dzieci-7-9-lat' => '2026-10-10',
+        'zabawy-ruchowe-dla-dzieci-w-domu' => '2026-10-09',
+        'zabawy-dla-3-latka' => '2026-10-09',
+        'zabawy-dla-4-latka' => '2026-10-10',
+        'zabawy-dla-5-latka' => '2026-10-10',
+        'zabawy-dla-6-latka' => '2026-10-09',
+        'zabawy-dla-7-latka' => '2026-10-10',
+        'zabawy-dla-8-latka' => '2026-10-10',
+        'interaktywne-bajki-dla-dzieci' => '2026-10-09',
+        'dziecko-sie-nudzi' => '2026-10-09',
+        'samodzielna-zabawa-dziecka' => '2026-10-09',
+        'jak-zajac-dziecko-gdy-pracujesz' => '2026-10-10',
+        'zagadki-o-zwierzetach' => '2026-10-10',
+        'zagadki-logiczne-dla-dzieci' => '2026-10-10',
+        'zagadki-zimowe-i-swiateczne' => '2026-10-10',
+        'zabawy-w-pociagu-z-dzieckiem' => '2026-10-10',
+        'jak-zajac-dziecko-w-samolocie' => '2026-10-10',
+        'gra-detektywistyczna-dla-dzieci' => '2026-10-10',
+        'szyfry-dla-dzieci' => '2026-10-10',
+    ];
+}
+
+// Our own little sitemap of the guides, announced in Yoast's index and in robots.txt. Each
+// address is here once: Yoast leaves these pages out of its own maps (inc/seo.php).
 add_action('init', function () {
     $path = (string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
     $home = rtrim((string) parse_url(home_url('/'), PHP_URL_PATH), '/');
@@ -1339,22 +1388,30 @@ add_action('init', function () {
         return;
     }
     header('Content-Type: application/xml; charset=utf-8');
-    $urls = array_merge(array_map('ak_info_url', array_keys(ak_info_pages())), [ak_landing_url()], array_map('ak_landing_url', array_keys(ak_landings())));
+    $dates = ak_content_dates();
+    $urls = [];
+    foreach (array_keys(ak_info_pages()) as $slug) {
+        $urls[ak_info_url($slug)] = $dates[$slug] ?? '';
+    }
+    $urls[ak_landing_url()] = $dates['pomysly-na-zabawy'] ?? '';
+    foreach (array_keys(ak_landings()) as $slug) {
+        $urls[ak_landing_url($slug)] = $dates[$slug] ?? '';
+    }
     echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
-    foreach ($urls as $url) {
-        echo '<url><loc>' . esc_url($url) . '</loc><lastmod>' . esc_html(gmdate('Y-m-d', (int) filemtime(__FILE__))) . '</lastmod></url>' . "\n";
+    foreach ($urls as $url => $date) {
+        echo '<url><loc>' . esc_url($url) . '</loc>' . ($date !== '' ? '<lastmod>' . esc_html($date) . '</lastmod>' : '') . '</url>' . "\n";
     }
     echo '</urlset>';
     exit;
 }, 21);
 
 add_filter('wpseo_sitemap_index', function ($xml) {
-    return $xml . '<sitemap><loc>' . esc_url(home_url('/ak-poradniki-sitemap.xml')) . '</loc><lastmod>' . esc_html(gmdate('c', (int) filemtime(__FILE__))) . '</lastmod></sitemap>';
+    $loc = esc_url(home_url('/ak-poradniki-sitemap.xml'));
+    if (str_contains((string) $xml, $loc)) {
+        return $xml;
+    }
+    return $xml . '<sitemap><loc>' . $loc . '</loc><lastmod>' . esc_html(max(ak_content_dates()) . 'T00:00:00+00:00') . '</lastmod></sitemap>';
 });
-
-add_filter('robots_txt', function ($output) {
-    return rtrim((string) $output) . "\nSitemap: " . home_url('/ak-poradniki-sitemap.xml') . "\n";
-}, 99);
 
 /** Structured data for a guide: the article, its steps as a list, the questions, the way back. */
 function ak_landing_schema(string $slug): array

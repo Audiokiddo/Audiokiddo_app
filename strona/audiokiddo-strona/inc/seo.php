@@ -606,6 +606,7 @@ add_action('template_redirect', function () {
         return;
     }
     $to = '';
+    $code = 301;
     if (function_exists('is_shop') && is_shop()) {
         $to = ak_info_url('pakiety');
     } elseif (function_exists('is_product_category') && is_product_category()) {
@@ -615,22 +616,42 @@ add_action('template_redirect', function () {
     } elseif (is_404()) {
         $path = trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
         $to = ak_old_posts()[$path] ?? '';
+        // The new post is not out yet: its readers go to the guides for now, and not for good.
+        if (isset(AK_OLD_POSTS_TO_NEW[$path]) && ak_post_url(AK_OLD_POSTS_TO_NEW[$path]) === '') {
+            $code = 302;
+        }
     }
     if ($to !== '') {
-        wp_safe_redirect($to, 301, 'Audiokiddo');
+        wp_safe_redirect($to, $code, 'Audiokiddo');
         exit;
     }
 }, 2);
 
+/** Old posts rewritten under a new address (old slug => new slug). */
+const AK_OLD_POSTS_TO_NEW = [
+    'prezent-dla-dziecka-bez-ekranu' => 'prezent-dla-dziecka-3-9-lat',
+];
+
+/** The address of a published post by its slug, or '' while it is a draft or scheduled. */
+function ak_post_url(string $slug): string
+{
+    $posts = get_posts(['name' => $slug, 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => 1]);
+    return $posts ? (string) get_permalink($posts[0]) : '';
+}
+
 /** Posts taken down (we no longer argue that screens are bad): where their readers go now. */
 function ak_old_posts(): array
 {
-    return [
+    $moved = [];
+    foreach (AK_OLD_POSTS_TO_NEW as $from => $slug) {
+        $url = ak_post_url($slug);
+        $moved[$from] = $url !== '' ? $url : ak_landing_url();
+    }
+    return $moved + [
         'ile-czasu-przed-ekranem-dziecko' => ak_blog_url(),
         'dlaczego-ekrany-tak-mocno-przyciagaja-dzieci-i-doroslych' => home_url('/audiozabawy-co-to-jest-dlaczego-sa-wazne-i-jak-dzialaja-przewodnik-dla-rodzicow/'),
         'dlaczego-warto-wybierac-interaktywne-audiobooki-zamiast-ekranow' => ak_landing_url('interaktywne-bajki-dla-dzieci'),
         'studio-spring-summer-man-2017' => ak_landing_url('interaktywne-bajki-dla-dzieci'),
-        'prezent-dla-dziecka-bez-ekranu' => home_url('/prezent-dla-dziecka-3-9-lat/'),
     ];
 }
 
@@ -642,9 +663,53 @@ add_filter('wpseo_sitemap_exclude_taxonomy', function ($exclude, $taxonomy) {
     return $taxonomy === 'product_cat' ? true : $exclude;
 }, 11, 2);
 
-// The redirected pages leave the sitemap too.
+// The redirected pages leave the sitemap too, and so do the WordPress pages standing at an
+// address we draw ourselves (/o-nas/): those are listed once, in ak-poradniki-sitemap.xml.
 add_filter('wpseo_exclude_from_sitemap_by_post_ids', function ($ids) {
-    $more = get_posts(['post_type' => 'page', 'post_name__in' => array_keys(ak_old_pages()), 'fields' => 'ids', 'numberposts' => -1]);
+    $slugs = array_merge(array_keys(ak_old_pages()), array_keys(ak_info_pages()), array_keys(ak_landings()), ['pomysly-na-zabawy']);
+    $more = get_posts(['post_type' => 'page', 'post_name__in' => $slugs, 'fields' => 'ids', 'numberposts' => -1]);
     $shop = function_exists('wc_get_page_id') ? (int) wc_get_page_id('shop') : 0;
     return array_values(array_unique(array_merge((array) $ids, $more, $shop > 0 ? [$shop] : [])));
 });
+
+// The products' archive (/sklep-produkty/) redirects to the packs page: not in the sitemap.
+add_filter('wpseo_sitemap_post_type_archive_link', function ($link, $post_type) {
+    return $post_type === 'product' ? false : $link;
+}, 10, 2);
+
+/*
+ * robots.txt: WordPress, WooCommerce, this plugin and Yoast each add their own lines, which
+ * ended as two "User-agent: *" groups with a Sitemap line in the middle of one. Here they become
+ * one group and the sitemaps, each once. With rules for any other robot the file stays as it is.
+ */
+function ak_robots_merge(string $txt, array $sitemaps): string
+{
+    $rules = [];
+    foreach (preg_split('/\R/', $txt) as $line) {
+        $line = trim((string) preg_replace('/#.*$/', '', $line));
+        if ($line === '' || !str_contains($line, ':')) {
+            continue;
+        }
+        [$field, $value] = array_map('trim', explode(':', $line, 2));
+        $field = strtolower($field);
+        if ($field === 'user-agent') {
+            if ($value !== '*') {
+                return rtrim($txt) . "\n";
+            }
+        } elseif ($field === 'sitemap') {
+            $sitemaps[] = $value;
+        } elseif ($value !== '') {
+            $rules[] = ucfirst($field) . ': ' . $value;
+        }
+    }
+    $out = "User-agent: *\n" . implode("\n", array_unique($rules)) . "\n";
+    foreach (array_unique($sitemaps) as $url) {
+        $out .= "\nSitemap: " . $url;
+    }
+    return $out . "\n";
+}
+
+// After Yoast's own block (priority 99999).
+add_filter('robots_txt', function ($output) {
+    return ak_robots_merge((string) $output, [home_url('/sitemap_index.xml'), home_url('/ak-poradniki-sitemap.xml')]);
+}, PHP_INT_MAX);
