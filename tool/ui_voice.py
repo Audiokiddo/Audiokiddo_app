@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
 """Kiddo's voice lines and interface sounds bundled with the app (app/assets/audio/kiddo/).
 
-Placeholder speech: macOS `say` (voice Zosia). Nela records the real lines listed in
-docs/NAGRANIA-DO-GIER.md ("Głos Lorda"); the files keep the same names. Sounds are
-synthesised here. Short files, bundled so the welcome works offline on the first launch.
+Placeholder speech: macOS `say` (voice Zosia). With --voice NAME the lines are spoken by that
+ElevenLabs voice instead (Dawid's own voice is "fantazjusz"); the files keep the same names, so
+the app needs no change. The key is read from the macOS keychain (item "elevenlabs-api-key"),
+never from the repository. Every line is cached by its text, there is no automatic retry and a
+character limit stops the run before it can cost more than planned. Sounds are synthesised here.
+Short files, bundled so the welcome works offline on the first launch.
+
+    python3 tool/ui_voice.py --voice fantazjusz --dry-run          # what it would cost, nothing sent
+    python3 tool/ui_voice.py --voice fantazjusz --only hello       # one line to listen to first
+    python3 tool/ui_voice.py --voice fantazjusz                    # all the lines
 """
+import argparse
+import hashlib
+import json
+import urllib.request
 import math
 import pathlib
 import random
@@ -16,6 +27,9 @@ import wave
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "app/assets/audio/kiddo"
 RATE = 44100
+ELEVEN_VOICES = {"nela": "PCOFCZ4Ict9D0opt85il", "fantazjusz": "ijH86K9sA5IEvCDBMgFn"}
+ELEVEN_MODEL = "eleven_v4"
+CACHE = ROOT / "dev_content/tts-cache"
 
 LINES = {
     "volume": "Hej! Podgłośnij telefon, żeby dobrze mnie słyszeć!",
@@ -115,7 +129,63 @@ def encode(source, target):
     )
 
 
+def eleven_key():
+    key = subprocess.run(["security", "find-generic-password", "-a", "audiokiddo", "-s", "elevenlabs-api-key", "-w"],
+                         capture_output=True, text=True).stdout.strip()
+    if not key:
+        raise SystemExit("Brak klucza ElevenLabs w pęku kluczy (elevenlabs-api-key).")
+    return key
+
+
+def eleven_speech(text, voice_name):
+    """The mp3 of [text] in the named voice: from the cache, or bought once and kept."""
+    cache = CACHE / voice_name / (hashlib.sha1(f"{ELEVEN_MODEL}|{text}".encode()).hexdigest() + ".mp3")
+    if cache.exists():
+        return cache
+    request = urllib.request.Request(
+        f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVEN_VOICES[voice_name]}?output_format=mp3_44100_128",
+        data=json.dumps({"text": text, "model_id": ELEVEN_MODEL, "language_code": "pl",
+                         "voice_settings": {"stability": 0.5, "similarity_boost": 0.8}}).encode(),
+        headers={"xi-api-key": eleven_key(), "Content-Type": "application/json"}, method="POST")
+    # No automatic retry: a failed call may already have used credits.
+    with urllib.request.urlopen(request, timeout=120) as response:
+        data = response.read()
+    if not data:
+        raise SystemExit("ElevenLabs zwrócił pusty plik.")
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    cache.write_bytes(data)
+    return cache
+
+
+def speak_with_voice(args):
+    """Replaces the spoken lines with [args.voice]; the sounds are left as they are."""
+    names = [n for n in LINES if not args.only or n in args.only.split(",")]
+    unknown = set(args.only.split(",")) - set(LINES) if args.only else set()
+    if unknown:
+        raise SystemExit(f"Nieznane pliki: {', '.join(sorted(unknown))}. Dostępne: {', '.join(LINES)}")
+    cost = sum(len(LINES[n]) for n in names
+               if not (CACHE / args.voice / (hashlib.sha1(f"{ELEVEN_MODEL}|{LINES[n]}".encode()).hexdigest() + ".mp3")).exists())
+    print(f"{len(names)} nagrań, do kupienia {cost} znaków (limit {args.limit}), reszta z pamięci podręcznej.")
+    if args.dry_run:
+        return
+    if cost > args.limit:
+        raise SystemExit(f"Limit znaków ({args.limit}) byłby przekroczony. Użyj --only albo większego --limit.")
+    OUT.mkdir(parents=True, exist_ok=True)
+    for name in names:
+        encode(eleven_speech(LINES[name], args.voice), OUT / f"{name}.m4a")
+        print(f"  {name}.m4a")
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--voice", choices=sorted(ELEVEN_VOICES), help="ElevenLabs voice for the lines (default: placeholder)")
+    parser.add_argument("--only", help="comma-separated file names, e.g. hello,goodnight")
+    parser.add_argument("--limit", type=int, default=2500, help="character limit for one run (default 2500)")
+    parser.add_argument("--dry-run", action="store_true", help="only count the characters to buy")
+    args = parser.parse_args()
+    if args.voice:
+        speak_with_voice(args)
+        return
     OUT.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
         for name, text in LINES.items():
@@ -138,8 +208,9 @@ def main():
     doc = ROOT / "docs/NAGRANIA-DO-GIER.md"
     text = doc.read_text()
     marker = "## Głos Szop’ena (aplikacja)"
-    section = [marker, "", "Krótkie kwestie Szop'ena von Ekrana do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). "
-               "Radośnie, z uśmiechem, bez muzyki pod spodem.", "", "| Plik | Tekst |", "|---|---|"]
+    section = [marker, "", "Krótkie kwestie Szop'ena do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). "
+               "Radośnie, z uśmiechem, bez muzyki pod spodem. Tymczasowy głos (macOS Zosia) zastępuje głos Dawida z ElevenLabs: "
+               "`python3 tool/ui_voice.py --voice fantazjusz` (najpierw `--only hello`, koszt w `--dry-run`).", "", "| Plik | Tekst |", "|---|---|"]
     section += [f"| `{name}.m4a` | {line} |" for name, line in LINES.items()]
     if marker in text:
         text = text[: text.index(marker)].rstrip() + "\n"
