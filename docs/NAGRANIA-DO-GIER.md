@@ -6,7 +6,7 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 
 | Segment | Tekst |
 |---|---|
-| `intro` | Cześć! Zagramy w zgadywanie dźwięków. Posłuchaj uważnie i powiedz na głos, co słyszysz. |
+| `intro` | Cześć, tu Szop'en! Zagramy w zgadywanie dźwięków. Posłuchaj uważnie i powiedz na głos, co słyszysz. |
 | `heard_you` | Słyszę, że masz pomysł! Sprawdźmy. |
 | `outro` | Brawo za uważne słuchanie! To już koniec zabawy. |
 | `q_dzwonek` | Posłuchaj. … [dźwięk] … Co to za dźwięk? |
@@ -20,7 +20,7 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 
 | Segment | Tekst |
 |---|---|
-| `intro` | Kiedy gra muzyka, tańczymy w miejscu. Kiedy usłyszysz stop, zamieniamy się w posągi! Uwaga, zaczynamy. |
+| `intro` | Tu Szop'en! Kiedy gra muzyka, tańczymy w miejscu. Kiedy usłyszysz stop, zamieniamy się w posągi! Uwaga, zaczynamy. |
 | `stop` | Stop! Zamieniamy się w posągi! |
 | `go` | Tańczymy dalej! |
 | `outro` | Ale z Was świetne posągi! Koniec tańca. |
@@ -29,7 +29,7 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 
 | Segment | Tekst |
 |---|---|
-| `intro` | W podróży tańczą tylko rączki i minki. Kiedy usłyszysz stop, rączki zamarzają! Uwaga, zaczynamy. |
+| `intro` | Tu Szop'en! W podróży tańczą tylko rączki i minki. Kiedy usłyszysz stop, rączki zamarzają! Uwaga, zaczynamy. |
 | `stop` | Stop! Zamieniamy się w posągi! |
 | `go` | Tańczymy dalej! |
 | `outro` | Ale z Was świetne posągi! Koniec tańca. |
@@ -38,7 +38,7 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 
 | Segment | Tekst |
 |---|---|
-| `intro` | Zagramy w echo! Ja zaklaszczę rytm, a potem ty klaśniesz tak samo. |
+| `intro` | Cześć, tu Szop'en! Zagramy w echo! Ja zaklaszczę rytm, a potem ty klaśniesz tak samo. |
 | `your_turn` | Teraz ty! |
 | `heard_claps` | Słyszę klaskanie! |
 | `again` | Posłuchaj jeszcze raz, jak to brzmiało. |
@@ -48,10 +48,10 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 
 | Segment | Tekst |
 |---|---|
-| `intro` | Cześć! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, klaśnij raz! Jeśli to nieprawda, powiedz głośno: nie! Gotowi? Zaczynamy. |
+| `intro` | Cześć, tu Szop'en! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, klaśnij raz! Jeśli to nieprawda, powiedz głośno: nie! Gotowi? Zaczynamy. |
 | `correct` | Tak jest, brawo! |
 | `oops` | Hmm, posłuchaj. |
-| `not_heard` | Nie usłyszałam odpowiedzi, ale nic nie szkodzi. |
+| `not_heard` | Nie usłyszałem odpowiedzi, ale nic nie szkodzi. |
 | `think` | Pomyśl chwilę. Prawda czy nie? |
 | `outro_great` | Wow, prawie wszystko dobrze! Jesteś mistrzem prawdy. To koniec zabawy. |
 | `outro_good` | Świetnie się bawiliśmy! Następnym razem zagramy znowu. To koniec zabawy. |

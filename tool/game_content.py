@@ -88,16 +88,32 @@ def write_wav(samples, path):
         w.writeframes(b"".join(struct.pack("<h", int(max(-1, min(1, s)) * 32767)) for s in samples))
 
 
-def encode(inputs, target):
-    """Concatenate wav/aiff inputs into one AAC file."""
+def encode(inputs, target, normalize=False):
+    """Concatenate wav/aiff/mp3 inputs into one AAC file. With [normalize] the result is brought
+    to -19 LUFS / -1.5 dBTP in two passes, the level of Szop'en's lines in the app."""
     target.parent.mkdir(parents=True, exist_ok=True)
     args = ["ffmpeg", "-v", "error", "-y"]
     for i in inputs:
         args += ["-i", str(i)]
     chain = "".join(f"[{i}]aresample={RATE},aformat=channel_layouts=mono[a{i}];" for i in range(len(inputs)))
     chain += "".join(f"[a{i}]" for i in range(len(inputs))) + f"concat=n={len(inputs)}:v=0:a=1"
-    args += ["-filter_complex", chain, "-c:a", "aac", "-b:a", "64k", "-movflags", "+faststart", str(target)]
-    subprocess.run(args, check=True)
+    if not normalize:
+        args += ["-filter_complex", chain, "-c:a", "aac", "-b:a", "64k", "-movflags", "+faststart", str(target)]
+        subprocess.run(args, check=True)
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        joined = pathlib.Path(tmp) / "joined.wav"
+        subprocess.run(args + ["-filter_complex", chain, str(joined)], check=True)
+        target_level = "I=-19:TP=-1.5:LRA=11"
+        report = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(joined), "-af",
+                                 f"loudnorm={target_level}:print_format=json", "-f", "null", "-"],
+                                capture_output=True, text=True).stderr
+        m = json.loads(report[report.rindex("{"):report.rindex("}") + 1])
+        measured = (f"measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
+                    f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(joined), "-af",
+                        f"loudnorm={target_level}:{measured},aresample={RATE}", "-ac", "1",
+                        "-c:a", "aac", "-b:a", "64k", "-movflags", "+faststart", str(target)], check=True)
 
 
 # --- segments --------------------------------------------------------------------------
@@ -109,7 +125,9 @@ SCRIPT_LINES = {}  # game -> [(segment, text)] for the narrator list
 # "elevenlabs-api-key"; never in the repository). Every line is cached by its text, so a
 # rerun costs nothing for lines already bought.
 ELEVEN = {"voice": None, "games": set(), "model": "eleven_v4", "spent": 0, "limit": 6000}
-ELEVEN_VOICES = {"nela": "PCOFCZ4Ict9D0opt85il", "fantazjusz": "ijH86K9sA5IEvCDBMgFn"}
+ELEVEN_VOICES = {"nela": "PCOFCZ4Ict9D0opt85il", "fantazjusz": "ijH86K9sA5IEvCDBMgFn",
+                 # Dawid's own voice as Szop'en ("Szop Dawid" in his ElevenLabs library); hosts the games.
+                 "szop": "XTfqpBVdD9r8ufFy99wh"}
 TTS_CACHE = OUT / "tts-cache"
 
 
@@ -166,7 +184,7 @@ def segment(game, name, speech=None, sound=None, after=None):
                     parts.append(p)
                 elif text:
                     parts.append(speak(text, pathlib.Path(tmp) / f"s{i}.{'mp3' if fresh_voice else 'aiff'}", game))
-            encode(parts, target)
+            encode(parts, target, normalize=bool(fresh_voice))
     data = target.read_bytes()
     return {"path": f"games/{game}/{name}.m4a", "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
 
@@ -200,7 +218,7 @@ def zgadnij_dzwiek():
         ("zegar", clock(4), "To był zegar! Tik, tak, tik, tak."),
     ]
     assets = {
-        "intro": segment(g, "intro", "Cześć! Zagramy w zgadywanie dźwięków. Posłuchaj uważnie i powiedz na głos, co słyszysz."),
+        "intro": segment(g, "intro", "Cześć, tu Szop'en! Zagramy w zgadywanie dźwięków. Posłuchaj uważnie i powiedz na głos, co słyszysz."),
         "heard_you": segment(g, "heard_you", "Słyszę, że masz pomysł! Sprawdźmy."),
         "thinking": segment(g, "thinking", sound=tone(220, 1.0, 0.03)),
         "outro": segment(g, "outro", "Brawo za uważne słuchanie! To już koniec zabawy."),
@@ -247,7 +265,7 @@ def echo_rytmu():
     g = "echo-rytmu"
     rhythms = [[0.4, 0.4, 0.8], [0.25, 0.6, 0.25, 0.8], [0.2, 0.2, 0.2, 0.8]]
     assets = {
-        "intro": segment(g, "intro", "Zagramy w echo! Ja zaklaszczę rytm, a potem ty klaśniesz tak samo."),
+        "intro": segment(g, "intro", "Cześć, tu Szop'en! Zagramy w echo! Ja zaklaszczę rytm, a potem ty klaśniesz tak samo."),
         "your_turn": segment(g, "your_turn", "Teraz ty!"),
         "heard_claps": segment(g, "heard_claps", "Słyszę klaskanie!"),
         "again": segment(g, "again", "Posłuchaj jeszcze raz, jak to brzmiało."),
@@ -284,11 +302,11 @@ def prawda_czy_nie():
     ]
     assets = {
         "intro": segment(g, "intro",
-                         "Cześć! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, klaśnij raz! "
+                         "Cześć, tu Szop'en! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, klaśnij raz! "
                          "Jeśli to nieprawda, powiedz głośno: nie! Gotowi? Zaczynamy."),
         "correct": segment(g, "correct", "Tak jest, brawo!"),
         "oops": segment(g, "oops", "Hmm, posłuchaj."),
-        "not_heard": segment(g, "not_heard", "Nie usłyszałam odpowiedzi, ale nic nie szkodzi."),
+        "not_heard": segment(g, "not_heard", "Nie usłyszałem odpowiedzi, ale nic nie szkodzi."),
         "think": segment(g, "think", "Pomyśl chwilę. Prawda czy nie?"),
         "thinking": segment(g, "thinking", sound=tone(220, 1.0, 0.03)),
         "outro_great": segment(g, "outro_great", "Wow, prawie wszystko dobrze! Jesteś mistrzem prawdy. To koniec zabawy."),
@@ -572,11 +590,11 @@ def main():
              zgadnij_dzwiek(), ["podroz", "w_domu"], ["mikrofon"], 3, access="free"),
         item("zamrozony-taniec", "Zamrożony taniec",
              "Gdy gra muzyka, dziecko tańczy; na „stop” zamienia się w posąg. Telefon leży, aplikacja niczego nie mierzy.",
-             taniec("zamrozony-taniec", "Kiedy gra muzyka, tańczymy w miejscu. Kiedy usłyszysz stop, zamieniamy się w posągi! Uwaga, zaczynamy."),
+             taniec("zamrozony-taniec", "Tu Szop'en! Kiedy gra muzyka, tańczymy w miejscu. Kiedy usłyszysz stop, zamieniamy się w posągi! Uwaga, zaczynamy."),
              ["w_domu"], ["miejsce_do_ruchu"], 2),
         item("zamrozone-raczki", "Zamrożone rączki (w podróży)",
              "Wersja do samochodu: tańczą tylko rączki i minki, bez wstawania z fotelika.",
-             taniec("zamrozone-raczki", "W podróży tańczą tylko rączki i minki. Kiedy usłyszysz stop, rączki zamarzają! Uwaga, zaczynamy."),
+             taniec("zamrozone-raczki", "Tu Szop'en! W podróży tańczą tylko rączki i minki. Kiedy usłyszysz stop, rączki zamarzają! Uwaga, zaczynamy."),
              ["podroz"], [], 2),
         item("echo-rytmu", "Echo rytmu",
              "Aplikacja klaszcze rytm, dziecko go powtarza. Z mikrofonem (opcjonalnie) aplikacja słyszy klaskanie, ale nie ocenia, "

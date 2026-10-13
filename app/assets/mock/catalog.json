@@ -1030,53 +1030,53 @@
     "assets": {
      "intro": {
       "path": "games/zgadnij-dzwiek/intro.m4a",
-      "bytes": 54020,
-      "sha256": "75d1618e099e6066f6aa592962a65caa324865c9a86805760d2d367c04523e41"
+      "bytes": 62213,
+      "sha256": "99a0b832c8f5f322e35496bd8b5085bd8109f7ebfd272f0bd079169de1e23868"
      },
      "heard_you": {
       "path": "games/zgadnij-dzwiek/heard_you.m4a",
-      "bytes": 28537,
-      "sha256": "4b0f7bf552460813c80e172d714c221b344c8f839205d8f0c06a445b3ed9100e"
+      "bytes": 21004,
+      "sha256": "3cebd201725ef12f5459ddb54004e6bb8c6947ff9d16de7244ea501795eb4c37"
      },
      "thinking": {
       "path": "games/zgadnij-dzwiek/thinking.m4a",
-      "bytes": 9380,
-      "sha256": "26ae42ae1d4ad5d2dba33cdd352ff7ed607b01721ee9f6271c97b87d62a263d9"
+      "bytes": 9474,
+      "sha256": "eb1162f40fb09496880472956f99ec9b6f59e87bfd014ae4cb121806d2a87573"
      },
      "outro": {
       "path": "games/zgadnij-dzwiek/outro.m4a",
-      "bytes": 28779,
-      "sha256": "0addfc9a97dfdac5e6eefd10b6ad1779974502f6222e22e4440bb26c53ba752d"
+      "bytes": 30362,
+      "sha256": "92033988e7bff4a2c40ec5fa664b0a959cb90f52d2f28a6f1e73a9be72c613a1"
      },
      "q_dzwonek": {
       "path": "games/zgadnij-dzwiek/q_dzwonek.m4a",
-      "bytes": 32784,
-      "sha256": "b58317fa146e297fdbc5da477cdc7571ce6d51e69203e52f453812894ee6aac3"
+      "bytes": 29891,
+      "sha256": "013ded78e4afc79c5d851ed7a40874d96606791c65ce2245baa24fae3a7bc88a"
      },
      "a_dzwonek": {
       "path": "games/zgadnij-dzwiek/a_dzwonek.m4a",
-      "bytes": 28609,
-      "sha256": "df02da4b438916bfd3e4284dd1f80b7b394a921c1b2881db07b5791549717f94"
+      "bytes": 32147,
+      "sha256": "5c85adeb00c9a0acf819e4f92cd904e207d79e0222e7302756f64a468d84941f"
      },
      "q_deszcz": {
       "path": "games/zgadnij-dzwiek/q_deszcz.m4a",
-      "bytes": 53288,
-      "sha256": "de30a8a1db58e2650cb42aa4f2c6fda1b309b057e4680a1336feea190f64fdbb"
+      "bytes": 50519,
+      "sha256": "57f7c8cbc20654b2a091cc89457fb5407307fa69ffa3b6a03a8610a23e641042"
      },
      "a_deszcz": {
       "path": "games/zgadnij-dzwiek/a_deszcz.m4a",
-      "bytes": 26120,
-      "sha256": "7838c6ee4909f18e01528a07f9f08e73ffc765cac973bf1d0dbde66fa9bacc53"
+      "bytes": 27477,
+      "sha256": "40402a439623104c6d5bc5d18a56bcdc851d235f283aa193a8d96b3eff887bf3"
      },
      "q_zegar": {
       "path": "games/zgadnij-dzwiek/q_zegar.m4a",
-      "bytes": 30123,
-      "sha256": "9e0693f1d7d1f4167cbe06b72b9ae744167c6750361d1fae7b685679dd4e7f20"
+      "bytes": 27992,
+      "sha256": "60d7421aa1dffb59c322e03a0b5038853e796a522bd390527f8ec813086877a4"
      },
      "a_zegar": {
       "path": "games/zgadnij-dzwiek/a_zegar.m4a",
-      "bytes": 29936,
-      "sha256": "b889caee76020ea1a38eebad8125ccf3151f19802d2ad42e9ab81c306159fc4f"
+      "bytes": 32818,
+      "sha256": "3137e2dbe39879c518316f31be712c7d381c43e2e39700a0d1c916fbb88342c0"
      }
     },
     "variables": {},
@@ -1219,38 +1219,38 @@
     "assets": {
      "intro": {
       "path": "games/zamrozony-taniec/intro.m4a",
-      "bytes": 65312,
-      "sha256": "c0dd11f6a028706d7046611b76161b5ca8a04500682587c3ae7568eb3741adff"
+      "bytes": 71657,
+      "sha256": "3cf1f905c16002e9156e32e75a3fd989df1a02e8eb98c30ade887cedec879cd3"
      },
      "stop": {
       "path": "games/zamrozony-taniec/stop.m4a",
-      "bytes": 22875,
-      "sha256": "2d61b7b07ca34c4005d0afa4db3d396745879520ece391582825ca2481bc275b"
+      "bytes": 20340,
+      "sha256": "316799019c4b95b008fbcdcf5983c2e47514551717ab7bc7a281a62570cb20dd"
      },
      "go": {
       "path": "games/zamrozony-taniec/go.m4a",
-      "bytes": 10119,
-      "sha256": "f393a04dc24780db7b7515eddd4b28367add9b35a2885773f731095ed2c0c1a2"
+      "bytes": 11081,
+      "sha256": "026950aa32daa503222935013380c1d1b0c091772f635b5427e56ad4cdd005ea"
      },
      "outro": {
       "path": "games/zamrozony-taniec/outro.m4a",
-      "bytes": 26103,
-      "sha256": "53db03cdecc9e317f4e67e6d0fce222592a4287c6ebc7b862aea2b46161d45d2"
+      "bytes": 31447,
+      "sha256": "13d0b3f536da11ec288c0e04ececba4f666f3a0a0363eb7bbd7d29b6ec032339"
      },
      "music_1": {
       "path": "games/zamrozony-taniec/music_1.m4a",
-      "bytes": 100287,
-      "sha256": "9848fbefcfd23fffe271e92f8d5f37214119e865eb8a50893e677f162f0d137c"
+      "bytes": 99987,
+      "sha256": "b60ce472ca634fd2d6e5c7ab00208df71a6341727c69d4aa4264bd4ab96150b2"
      },
      "music_2": {
       "path": "games/zamrozony-taniec/music_2.m4a",
-      "bytes": 66752,
-      "sha256": "7dfeb1a0079be17284058c59cec94e63918b332217bdc29ad0d05ba83bab50b0"
+      "bytes": 66946,
+      "sha256": "96ab8ffe25c182511e174e2ed6532485a9dec1ba99aeb1d823244135485008d8"
      },
      "music_3": {
       "path": "games/zamrozony-taniec/music_3.m4a",
-      "bytes": 125136,
-      "sha256": "506d42da100070adfab3f13e88b23ab8a61cec2a72f90a6d71c6502ed3643fdd"
+      "bytes": 124378,
+      "sha256": "cbd2c65046df0b3f8d04d8f75f05422197582d580ec0f039f2b04c56c22fd754"
      }
     },
     "variables": {},
@@ -1350,38 +1350,38 @@
     "assets": {
      "intro": {
       "path": "games/zamrozone-raczki/intro.m4a",
-      "bytes": 59789,
-      "sha256": "e9f5504948c7fd4d468a3701594459d030f526768cc170c2a5d3af3563aaf3f1"
+      "bytes": 73860,
+      "sha256": "9803d118105506d1f72f6606ef56ce8217988a6e59ac33347913ff5c821fa941"
      },
      "stop": {
       "path": "games/zamrozone-raczki/stop.m4a",
-      "bytes": 22875,
-      "sha256": "2d61b7b07ca34c4005d0afa4db3d396745879520ece391582825ca2481bc275b"
+      "bytes": 20340,
+      "sha256": "316799019c4b95b008fbcdcf5983c2e47514551717ab7bc7a281a62570cb20dd"
      },
      "go": {
       "path": "games/zamrozone-raczki/go.m4a",
-      "bytes": 10119,
-      "sha256": "f393a04dc24780db7b7515eddd4b28367add9b35a2885773f731095ed2c0c1a2"
+      "bytes": 11081,
+      "sha256": "026950aa32daa503222935013380c1d1b0c091772f635b5427e56ad4cdd005ea"
      },
      "outro": {
       "path": "games/zamrozone-raczki/outro.m4a",
-      "bytes": 26103,
-      "sha256": "53db03cdecc9e317f4e67e6d0fce222592a4287c6ebc7b862aea2b46161d45d2"
+      "bytes": 31447,
+      "sha256": "13d0b3f536da11ec288c0e04ececba4f666f3a0a0363eb7bbd7d29b6ec032339"
      },
      "music_1": {
       "path": "games/zamrozone-raczki/music_1.m4a",
-      "bytes": 100287,
-      "sha256": "9848fbefcfd23fffe271e92f8d5f37214119e865eb8a50893e677f162f0d137c"
+      "bytes": 99987,
+      "sha256": "b60ce472ca634fd2d6e5c7ab00208df71a6341727c69d4aa4264bd4ab96150b2"
      },
      "music_2": {
       "path": "games/zamrozone-raczki/music_2.m4a",
-      "bytes": 66752,
-      "sha256": "7dfeb1a0079be17284058c59cec94e63918b332217bdc29ad0d05ba83bab50b0"
+      "bytes": 66946,
+      "sha256": "96ab8ffe25c182511e174e2ed6532485a9dec1ba99aeb1d823244135485008d8"
      },
      "music_3": {
       "path": "games/zamrozone-raczki/music_3.m4a",
-      "bytes": 125136,
-      "sha256": "506d42da100070adfab3f13e88b23ab8a61cec2a72f90a6d71c6502ed3643fdd"
+      "bytes": 124378,
+      "sha256": "cbd2c65046df0b3f8d04d8f75f05422197582d580ec0f039f2b04c56c22fd754"
      }
     },
     "variables": {},
@@ -1483,43 +1483,43 @@
     "assets": {
      "intro": {
       "path": "games/echo-rytmu/intro.m4a",
-      "bytes": 39617,
-      "sha256": "6b84c6c9c3ef06e0386c22a1698e2bb44d4eba84e27bbaf15bb13623607ab853"
+      "bytes": 53879,
+      "sha256": "35e32bc9dcac162123abd684aed26ad4a58a1255cfbd2883cfdeee6f5d11a83e"
      },
      "your_turn": {
       "path": "games/echo-rytmu/your_turn.m4a",
-      "bytes": 7992,
-      "sha256": "67d99b1ff23611ba08dd06257da64921fb1b9d9e10dc30e793172ea2d193d205"
+      "bytes": 8385,
+      "sha256": "22e951de2202ad9c47827ce9f03065007e11f49d572ad87f868afdc50f5d268b"
      },
      "heard_claps": {
       "path": "games/echo-rytmu/heard_claps.m4a",
-      "bytes": 13008,
-      "sha256": "ef0d7f05d7b1d1e30d72d81010daea364ff21bc31d6a1c1c231bf732fa322b44"
+      "bytes": 13032,
+      "sha256": "52e936803d86f7c061827d71eea4e2306b99db09afdba8d974ca68d886270781"
      },
      "again": {
       "path": "games/echo-rytmu/again.m4a",
-      "bytes": 24143,
-      "sha256": "e0e1b9180035fd33525ce485f50a97a3cced16b7c1670402d4ea105287d2a1d1"
+      "bytes": 20434,
+      "sha256": "cbadb0671af6fe850ec7acdfb6fd466e60ca308f5c3983066266ae6933f7edaf"
      },
      "outro": {
       "path": "games/echo-rytmu/outro.m4a",
-      "bytes": 23088,
-      "sha256": "79cb1b5621098c6ef7d4495442d996c05651f34cd858f80661157dc107514f29"
+      "bytes": 23545,
+      "sha256": "0e70c6cf2c860dac59406f476fa529c6f7cb5d9e2e40cc7cbb9e65217ace1776"
      },
      "rhythm_1": {
       "path": "games/echo-rytmu/rhythm_1.m4a",
-      "bytes": 7356,
-      "sha256": "53b9fcbc37a30a741fdd091821e8655cee60c7efc3e0fc76eaac5448064e3150"
+      "bytes": 7372,
+      "sha256": "351da94fea421300cb6d81c4d0af24fe5a5146c16adf9b71e4e70171073a0932"
      },
      "rhythm_2": {
       "path": "games/echo-rytmu/rhythm_2.m4a",
-      "bytes": 10290,
-      "sha256": "f676eb0f359e34b39025ba7ba8267be735b3b97ac391614c74e2d7c5a7768300"
+      "bytes": 9826,
+      "sha256": "c73f4a36a92f9cad69b456413d4076d7d8c66c81377cb2a55081811b82d91b71"
      },
      "rhythm_3": {
       "path": "games/echo-rytmu/rhythm_3.m4a",
-      "bytes": 10682,
-      "sha256": "b5624b98800096445ac7e6e6f736aceee9ed67635a77103e1787e79a6c26c4d2"
+      "bytes": 10706,
+      "sha256": "8443a69460e6824748014c718203624e9a5be1a6328b750300b20e5da8bca19f"
      }
     },
     "variables": {},
@@ -1694,103 +1694,103 @@
     "assets": {
      "intro": {
       "path": "games/prawda-czy-nie/intro.m4a",
-      "bytes": 94619,
-      "sha256": "0d8dc446743bb5fcba1c7b0a4b8b3b13b8bcf0f54f34f8145878a8eac3f52408"
+      "bytes": 101702,
+      "sha256": "925db5a0ef97072d3877d58579523d19391031ee1dd9912fa6163adb5adc81ac"
      },
      "correct": {
       "path": "games/prawda-czy-nie/correct.m4a",
-      "bytes": 16074,
-      "sha256": "f1e97048c21930b7c8a9135fd938f320bcb60f60ce8c1ed2279f9235a4cc60bf"
+      "bytes": 15686,
+      "sha256": "0d8da2d376edbcf2d6df84f6c8cc6bc6c8c3ce83f1650c3461bda6224956dc61"
      },
      "oops": {
       "path": "games/prawda-czy-nie/oops.m4a",
-      "bytes": 17173,
-      "sha256": "88786084ef22831c9c9cc343f482e611b53302a4db9cd3ba9eb4f9c8cc5ce48a"
+      "bytes": 14426,
+      "sha256": "4553bb30ffd69af9e218df5ea5887ee0f325168c546f5f38744d9e4e8f4fed3a"
      },
      "not_heard": {
       "path": "games/prawda-czy-nie/not_heard.m4a",
-      "bytes": 26712,
-      "sha256": "57f4ed211158fe7616018537b4d3c54acd30028bfd0a03d3f8683ce08369b387"
+      "bytes": 28455,
+      "sha256": "d48c448e4c06e0a41d4c140c5223c76cb3de1ecd248f463e7783ee487f3cfa97"
      },
      "think": {
       "path": "games/prawda-czy-nie/think.m4a",
-      "bytes": 18956,
-      "sha256": "9b320ed4637047a34693da58aafb70889f5c7b758e54865f172c5c22853a2279"
+      "bytes": 23682,
+      "sha256": "50959de0b77cbf78f35cc910e6710e1b73873a5d7deb8598b67332789e7d84df"
      },
      "thinking": {
       "path": "games/prawda-czy-nie/thinking.m4a",
-      "bytes": 9380,
-      "sha256": "26ae42ae1d4ad5d2dba33cdd352ff7ed607b01721ee9f6271c97b87d62a263d9"
+      "bytes": 9474,
+      "sha256": "eb1162f40fb09496880472956f99ec9b6f59e87bfd014ae4cb121806d2a87573"
      },
      "outro_great": {
       "path": "games/prawda-czy-nie/outro_great.m4a",
-      "bytes": 44312,
-      "sha256": "7e8305aa00fa465a0d8d132efe4245a9536adc56c0685356b852e9e865e330ee"
+      "bytes": 47268,
+      "sha256": "8937528f73b2a0ee8714e2e363f5a77c171ac90254240745125951490260d660"
      },
      "outro_good": {
       "path": "games/prawda-czy-nie/outro_good.m4a",
-      "bytes": 44370,
-      "sha256": "1362c3a9da6ded1f13fd3b77466fcfaef20f21dedf5abad2a47c603e70b34780"
+      "bytes": 46318,
+      "sha256": "4f1129feb723e71d436ab247665856298d6f70fc2902b60a075eb68c225394e6"
      },
      "q_krowa": {
       "path": "games/prawda-czy-nie/q_krowa.m4a",
-      "bytes": 17683,
-      "sha256": "6e07956759bbcacc10f9b675d358147ab382b6a9dcd444c4c43b15746821dbca"
+      "bytes": 23628,
+      "sha256": "a493678f4217274ba74f4d702d6d73aa3c3a40ccfb4caf678bb99e1a549dbd8e"
      },
      "a_krowa": {
       "path": "games/prawda-czy-nie/a_krowa.m4a",
-      "bytes": 19098,
-      "sha256": "e391cdd6d2d8edc6f4b5d6eec5afa87f18a754838bbf603c2a77bf3df2def189"
+      "bytes": 23533,
+      "sha256": "8069844921aacffda5743f0a4c7ae9d5caac4725989aa9fa1ca364d318cccbf9"
      },
      "q_ryby": {
       "path": "games/prawda-czy-nie/q_ryby.m4a",
-      "bytes": 22480,
-      "sha256": "aa4a77a25320a7c3dc9f1c093825ee6e2419b56c984a8c2ee89afcd24388ae5d"
+      "bytes": 24991,
+      "sha256": "3d0f26435d6eb57560504961d2588cea4b43af84f322247290abe21227189ea3"
      },
      "a_ryby": {
       "path": "games/prawda-czy-nie/a_ryby.m4a",
-      "bytes": 18819,
-      "sha256": "843d667f4ba2b09dc4a500c185dd849a7c88382d42cb91bd5b89345a03507304"
+      "bytes": 22296,
+      "sha256": "cf12db745faefc7ff35520bf9d92b473ebdb898ca20214b9f1b24d80404bc23f"
      },
      "q_snieg": {
       "path": "games/prawda-czy-nie/q_snieg.m4a",
-      "bytes": 18278,
-      "sha256": "25a2cd64d12dc016a3125c9bcf5b2270d6603eacf69eb31102593ded1813a70d"
+      "bytes": 21557,
+      "sha256": "b1274934592cb63b331fc802dc21e2b9e48e3c4c55fd5b67ab356cbf34c2508b"
      },
      "a_snieg": {
       "path": "games/prawda-czy-nie/a_snieg.m4a",
-      "bytes": 22304,
-      "sha256": "b9e69928ba48c35fd959d5114c0a3b838337c65e1e66ade9f31195d1c9a0763d"
+      "bytes": 25573,
+      "sha256": "8916e78861196125dfdd47ddf86a7a5c6407fb04127865d3e0228f49d3140f54"
      },
      "q_slon": {
       "path": "games/prawda-czy-nie/q_slon.m4a",
-      "bytes": 23610,
-      "sha256": "fcec9b19d76c0ea80681ddaa0e3c26dae5218a545302d179b9979925014c630f"
+      "bytes": 30578,
+      "sha256": "45cafb96d91402a9959c9295a4a2ea151d0ee60744c2b7d1f64cec87a887fd07"
      },
      "a_slon": {
       "path": "games/prawda-czy-nie/a_slon.m4a",
-      "bytes": 28894,
-      "sha256": "ee3e0b209bc52d61ef6e33f41bc130ec7d41c1ac747eec7343443d7430b11292"
+      "bytes": 36379,
+      "sha256": "12d957b323d10c1d1fa4b09e56b4b349d505ea4736d7954c4490f42e30c872db"
      },
      "q_lato": {
       "path": "games/prawda-czy-nie/q_lato.m4a",
-      "bytes": 22656,
-      "sha256": "05581698c3cebce404ee95fe095a670b3de387d200adba5a3cfcf0424a5651c9"
+      "bytes": 29900,
+      "sha256": "95642155a7bfba434b3f37fdf5ce0f4b2b3e89f833462f17c40f56f02d9c19b2"
      },
      "a_lato": {
       "path": "games/prawda-czy-nie/a_lato.m4a",
-      "bytes": 25128,
-      "sha256": "e0cf5aacf3339880c138285a448f4dd70a80e363a28628436164d26f797f30c8"
+      "bytes": 26906,
+      "sha256": "1deeac30f5f4c85249791debc8aae179b08d31c3a0786d0eed4317083196ff3f"
      },
      "q_auta": {
       "path": "games/prawda-czy-nie/q_auta.m4a",
-      "bytes": 23606,
-      "sha256": "fa6a85a6487338a975fcd64d5c64bc86fbc34fa16cdce1ccab49acb202febba9"
+      "bytes": 27590,
+      "sha256": "c886d8895fc842618868875db5c45baf2421f2b213052e0e0a426f01916e715b"
      },
      "a_auta": {
       "path": "games/prawda-czy-nie/a_auta.m4a",
-      "bytes": 21884,
-      "sha256": "1d07ebf06d7299d2f4fe2ae78353ed286afe0b33c77b6142f95f0e3875f03fc9"
+      "bytes": 27431,
+      "sha256": "4e51e03e340fa2ac4c69fb967837f5ee450d860c528037d0dc8899dde53eb636"
      }
     },
     "variables": {
