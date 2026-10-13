@@ -15,6 +15,7 @@ class LibraryFilter {
     this.noPrep = false,
     this.printable = false,
     this.available = false,
+    this.lyingDown = false,
   });
 
   factory LibraryFilter.fromQuery(Map<String, String> query) => LibraryFilter(
@@ -28,6 +29,7 @@ class LibraryFilter {
     noPrep: query['bez_przygotowan'] == '1',
     printable: query['do_druku'] == '1',
     available: query['dostepne'] == '1',
+    lyingDown: query['na_lezaco'] == '1',
   );
 
   final PlayCategory? category;
@@ -49,6 +51,9 @@ class LibraryFilter {
   /// Only what the family can play now (see [apply]).
   final bool available;
 
+  /// "Na leżąco": for a sick day on the sofa, nothing that needs moving about.
+  final bool lyingDown;
+
   bool get isEmpty =>
       kind == null &&
       packId == null &&
@@ -58,7 +63,8 @@ class LibraryFilter {
       maxMinutes == null &&
       !noPrep &&
       !printable &&
-      !available;
+      !available &&
+      !lyingDown;
 
   /// Filters behind the "Filtry" button (all but the type row).
   int get extraCount => [packId, age, situation].where((f) => f != null).length;
@@ -74,6 +80,7 @@ class LibraryFilter {
     if (noPrep) 'bez_przygotowan': '1',
     if (printable) 'do_druku': '1',
     if (available) 'dostepne': '1',
+    if (lyingDown) 'na_lezaco': '1',
   };
 
   String toLocation() => Uri(path: '/biblioteka', queryParameters: isEmpty ? null : toQuery()).toString();
@@ -89,6 +96,7 @@ class LibraryFilter {
     bool? noPrep,
     bool? printable,
     bool? available,
+    bool? lyingDown,
   }) => LibraryFilter(
     category: category == null ? this.category : category(),
     maxMinutes: maxMinutes == null ? this.maxMinutes : maxMinutes(),
@@ -100,6 +108,7 @@ class LibraryFilter {
     noPrep: noPrep ?? this.noPrep,
     printable: printable ?? this.printable,
     available: available ?? this.available,
+    lyingDown: lyingDown ?? this.lyingDown,
   );
 
   /// [canPlay] decides [available]; without it that filter is not applied.
@@ -114,7 +123,8 @@ class LibraryFilter {
             (situation == null || i.situations.contains(situation)) &&
             (!noPrep || i.requirements.isEmpty) &&
             (!printable || i.pdf.isNotEmpty || i.requirements.contains(Requirement.wydrukPdf)) &&
-            (!available || canPlay == null || canPlay(i)),
+            (!available || canPlay == null || canPlay(i)) &&
+            (!lyingDown || !PlayCategory.movement.matches(i)),
       )
       .toList();
 }

@@ -52,4 +52,23 @@ void main() {
     final result = const LibraryFilter(packId: 'wyobraznia', situation: Situation.podroz).apply(items);
     expect(result.map((i) => i.id), ['a']);
   });
+
+  test('Na leżąco: nothing that needs moving about; survives the address', () {
+    final calm = item('spokojna');
+    final moving = ContentItem(
+      id: 'ruch',
+      kind: ContentKind.audioGame,
+      title: 'ruch',
+      parentDescription: '',
+      ageMin: 3,
+      durationSec: 60,
+      access: ContentAccess.paid,
+      audio: const [],
+      requirements: const [Requirement.miejsceDoRuchu],
+    );
+    const f = LibraryFilter(lyingDown: true);
+    expect(f.apply([calm, moving]).map((i) => i.id), ['spokojna']);
+    expect(LibraryFilter.fromQuery(Uri.parse(f.toLocation()).queryParameters).lyingDown, isTrue);
+    expect(f.isEmpty, isFalse);
+  });
 }

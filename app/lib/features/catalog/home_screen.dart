@@ -760,11 +760,16 @@ class _QuickNeeds extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // The parent's situation, not a menu: offline and routines live in Więcej and below.
+    // November to March, the season of colds: a sick day on the sofa replaces "no preparation"
+    // (research 2026-10-12, segment "Dzień w domu").
+    final sickSeason = isSickSeason(DateTime.now());
     final needs = [
       (Icons.schedule_rounded, 'Mam 20 minut', 'Dobierzemy zabawy', '/ratunku'),
       (Icons.directions_car_rounded, 'W podróży', 'Telefon leży, dziecko gra', '/podroz'),
       (Icons.bedtime_rounded, 'Na dobranoc', 'Wyciszenie przed snem', '/dobranoc'),
-      (Icons.bolt_rounded, 'Bez przygotowań', 'Nic nie trzeba szykować', const LibraryFilter(noPrep: true).toLocation()),
+      sickSeason
+          ? (Icons.weekend_rounded, 'Na leżąco', 'Dziecko chore, zabawy bez ruchu', const LibraryFilter(lyingDown: true).toLocation())
+          : (Icons.bolt_rounded, 'Bez przygotowań', 'Nic nie trzeba szykować', const LibraryFilter(noPrep: true).toLocation()),
     ];
     const colors = [AkBrand.sun, Color(0xFFB8E3DF), Color(0xFFDED0EF), Color(0xFFE5DCEF)];
     return Column(
@@ -939,6 +944,9 @@ class FavoriteCard extends ConsumerWidget {
     );
   }
 }
+
+/// November to March: the season of colds, when "Na leżąco" is on Start.
+bool isSickSeason(DateTime now) => now.month >= 11 || now.month <= 3;
 
 /// Whether [now] is in the after-work window, 16:30–19:30.
 bool isDinnerWindow(DateTime now) {

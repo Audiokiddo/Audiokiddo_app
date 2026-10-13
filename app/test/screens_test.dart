@@ -1,6 +1,7 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
+import 'package:audiokiddo/features/catalog/home_screen.dart' show isSickSeason;
 import 'package:audiokiddo/features/parental_gate/gate_challenge.dart';
 import 'package:audiokiddo/features/parental_gate/parental_gate.dart';
 import 'package:go_router/go_router.dart';
@@ -104,7 +105,12 @@ void main() {
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
     expect(find.text('Co dziś robimy?'), findsOneWidget);
-    for (final label in ['Mam 20 minut', 'W podróży', 'Na dobranoc', 'Bez przygotowań']) {
+    for (final label in [
+      'Mam 20 minut',
+      'W podróży',
+      'Na dobranoc',
+      isSickSeason(DateTime.now()) ? 'Na leżąco' : 'Bez przygotowań',
+    ]) {
       await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
       expect(find.text(label), findsOneWidget);
     }
