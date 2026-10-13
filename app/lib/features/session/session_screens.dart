@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,8 @@ class TripScreen extends ConsumerStatefulWidget {
 
 class _TripScreenState extends ConsumerState<TripScreen> {
   int _minutes = 30;
+  // Which of Szop'en's lines this ride gets; fixed while the screen is open.
+  final int _variant = Random().nextInt(1 << 16);
 
   static const durations = [15, 20, 30, 45, 60, 90];
 
@@ -67,6 +70,7 @@ class _TripScreenState extends ConsumerState<TripScreen> {
             age: _ageOf(ref),
             canPlay: (i) => ref.watch(canPlayProvider(i)),
             downloaded: downloaded,
+            variant: _variant,
           );
     final items = [
       for (final s in steps)
@@ -319,7 +323,7 @@ class SessionScreen extends ConsumerWidget {
       ItemStep(:final item) => item.title,
       LineStep(:final line) when line.startsWith('window') => l10n.sessionWindow,
       LineStep(:final line) when line == 'bedtime_start' => l10n.bedtimeBreaths,
-      LineStep(:final line) when line == 'trip_end' => l10n.sessionArrived,
+      LineStep(:final line) when line.startsWith('trip_end') => l10n.sessionArrived,
       LineStep() => 'Szop’en mówi',
       ParentStep() => l10n.sessionParent,
       null => '',

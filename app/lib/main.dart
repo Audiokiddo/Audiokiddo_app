@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
+import 'core/audio/kiddo_voice.dart';
 import 'core/backend/backend_config.dart';
 import 'core/storage/storage_providers.dart';
 import 'core/storage/database.dart';
@@ -35,6 +36,7 @@ const appVersion = '1.0.0';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await clearBundledAudioCopies();
   final audioHandler = await initAudio();
   // Works offline: the saved session is read from the device, nothing waits for the network.
   final supabase = await Supabase.initialize(url: BackendConfig.url, publishableKey: BackendConfig.publishableKey);

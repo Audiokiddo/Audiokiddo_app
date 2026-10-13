@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 /// Kiddo's bundled voice lines and interface sounds (assets/audio/kiddo/). Separate from the
 /// main player: they never show on the lock screen and never replace what the child listens to.
@@ -13,6 +16,19 @@ abstract interface class KiddoVoice {
   void effect(String sound);
 
   Future<void> stop();
+}
+
+/// just_audio plays a bundled asset from a copy it extracts once into the temporary folder and
+/// keeps reusing; that copy survives an app update, so a re-recorded line would still play the
+/// old file. Called once at launch, before anything plays: the copies are made again from the
+/// current bundle (a few small files).
+Future<void> clearBundledAudioCopies() async {
+  try {
+    final dir = Directory(p.join((await getTemporaryDirectory()).path, 'just_audio_cache', 'assets'));
+    if (dir.existsSync()) await dir.delete(recursive: true);
+  } on Exception {
+    // Worst case the old copy plays; never block the launch.
+  }
 }
 
 class AssetKiddoVoice implements KiddoVoice {

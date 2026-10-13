@@ -71,6 +71,19 @@ void main() {
       expect(seconds, lessThanOrEqualTo(30 * 60 + items.last.durationSec));
     });
 
+    test('Szop’en says different things on different rides, every line is bundled', () {
+      final starts = {
+        for (var v = 0; v < tripStartLines.length; v++)
+          (buildTrip(catalog, minutes: 30, age: 6, canPlay: all, variant: v).first as LineStep).line,
+      };
+      expect(starts, tripStartLines.toSet());
+      final end = buildTrip(catalog, minutes: 30, age: 6, canPlay: all, variant: 1);
+      expect((end[end.length - 2] as LineStep).line, 'trip_end_2');
+      for (final line in [...tripStartLines, ...windowLines, ...tripEndLines]) {
+        expect(File('assets/audio/kiddo/$line.m4a').existsSync(), isTrue, reason: line);
+      }
+    });
+
     test('long rides get "look out of the window" breaks', () {
       final steps = buildTrip(catalog, minutes: 90, age: 8, canPlay: all);
       final breaks = [

@@ -44,19 +44,27 @@ class ParentStep extends SessionStep {
 
 enum SessionKind { trip, bedtime }
 
+/// Szop'en's lines at the start of a ride; one per trip, so he does not repeat himself.
+const tripStartLines = ['trip_start', 'trip_start_2', 'trip_start_3', 'trip_start_4', 'trip_start_5', 'trip_start_6'];
+
 /// Kiddo lines between trip activities, in turn.
-const windowLines = ['window_1', 'window_2', 'window_3'];
+const windowLines = ['window_1', 'window_2', 'window_3', 'window_4', 'window_5', 'window_6'];
+
+/// Szop'en's goodbye when the ride ends.
+const tripEndLines = ['trip_end', 'trip_end_2', 'trip_end_3'];
 
 /// Activities for a car ride of [minutes]: travel-friendly first, what is downloaded first
 /// (tunnels, no signal), songs every few games, a "look out of the window" break about
 /// every quarter of an hour. Interactive games are left out: nobody should reach for the
-/// phone while driving.
+/// phone while driving. [variant] picks which of Szop'en's lines this ride gets (start, the
+/// first window break, goodbye); the same variant always gives the same ride.
 List<SessionStep> buildTrip(
   Catalog catalog, {
   required int minutes,
   required int age,
   required bool Function(ContentItem) canPlay,
   Set<String> downloaded = const {},
+  int variant = 0,
 }) {
   final candidates = [
     for (final i in catalog.items)
@@ -75,11 +83,11 @@ List<SessionStep> buildTrip(
       if (i.kind == ContentKind.song) i,
   ]..sort((a, b) => score(b).compareTo(score(a)));
 
-  final steps = <SessionStep>[const LineStep('trip_start')];
+  final steps = <SessionStep>[LineStep(tripStartLines[variant % tripStartLines.length])];
   final target = minutes * 60;
   var total = 0;
   var sinceBreak = 0;
-  var breaks = 0;
+  var breaks = variant;
   var gi = 0;
   var si = 0;
   var sinceSong = 0;
@@ -103,7 +111,7 @@ List<SessionStep> buildTrip(
     }
   }
   steps
-    ..add(const LineStep('trip_end'))
+    ..add(LineStep(tripEndLines[variant % tripEndLines.length]))
     ..add(const ParentStep(ParentClip.praise));
   return steps;
 }
@@ -224,8 +232,7 @@ class SessionState {
   final DateTime? endedAt;
 
   /// Whole minutes from start to end, once finished.
-  int? get minutesTaken =>
-      startedAt == null || endedAt == null ? null : endedAt!.difference(startedAt!).inMinutes;
+  int? get minutesTaken => startedAt == null || endedAt == null ? null : endedAt!.difference(startedAt!).inMinutes;
 
   SessionStep? get current => index < steps.length ? steps[index] : null;
   SessionStep? get next => index + 1 < steps.length ? steps[index + 1] : null;
