@@ -72,13 +72,18 @@ Future<void> goBack(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('library: "Moje pakiety" comes first; with the subscription it lists the packs', (tester) async {
+  testWidgets('"Moje pakiety" on Start and in the library: free plays without a subscription', (tester) async {
     await pumpApp(tester);
+    await tester.scrollUntilVisible(find.text('Moje pakiety'), 200, scrollable: mainScroll);
+    expect(find.text('Moje pakiety'), findsOneWidget, reason: 'on Start, under Co robicie?');
     await openLibrary(tester);
-    expect(find.text('Moje pakiety'), findsOneWidget);
-    expect(find.textContaining('Tu będą Wasze pakiety'), findsOneWidget, reason: 'no packs yet');
-    await tester.scrollUntilVisible(find.text('Kategorie'), 200, scrollable: mainScroll);
-    expect(find.text('Kategorie'), findsOneWidget);
+    expect(find.textContaining('do włączenia od razu · w tym darmowe'), findsOneWidget);
+    await tester.tap(find.text('Moje pakiety'));
+    await tester.pumpAndSettle();
+    expect(find.text('Wszystko tutaj możecie włączyć od razu.'), findsOneWidget);
+    expect(find.text('Darmowe zabawy z pakietów'), findsOneWidget);
+    expect(find.textContaining('za darmo'), findsWidgets);
+    expect(find.text('Wasz pakiet'), findsNothing);
   });
 
   testWidgets('library: a subscriber opens "Moje pakiety" and sees every pack', (tester) async {
@@ -89,10 +94,11 @@ void main() {
       ],
     );
     await openLibrary(tester);
-    expect(find.textContaining('przesłuchane 0 z'), findsOneWidget);
+    expect(find.textContaining('do włączenia od razu · 3 pakiety'), findsOneWidget);
     await tester.tap(find.text('Moje pakiety'));
     await tester.pumpAndSettle();
     expect(find.text('Wasz pakiet'), findsWidgets);
+    expect(find.text('Darmowe zabawy z pakietów'), findsNothing);
   });
 
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {

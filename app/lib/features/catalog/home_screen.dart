@@ -28,6 +28,7 @@ import '../purchases/store_gateway.dart';
 import '../downloads/download_providers.dart';
 import 'catalog_providers.dart';
 import 'library_filter.dart';
+import 'library_screen.dart' show MyPacksTile;
 import 'seasonal.dart';
 import 'widgets/item_art.dart';
 import '../home/launch_greeting.dart';
@@ -96,6 +97,9 @@ class HomeScreen extends ConsumerWidget {
               // What the family already has, right under today's picks.
               _OwnedPacks(catalog: catalog),
               const RefSection('Co robicie?'),
+              // Everything the family can start now, one tap away (also first in the library).
+              const MyPacksTile(),
+              const SizedBox(height: 12),
               const _QuickNeeds(),
               if (items.isNotEmpty) ...[
                 RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
