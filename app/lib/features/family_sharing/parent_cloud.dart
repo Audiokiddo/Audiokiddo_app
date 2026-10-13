@@ -58,7 +58,7 @@ class FamilyException implements Exception {
     }
     final text = e is PostgrestException ? e.message : '$e';
     return FamilyException(switch (text) {
-      'plan' => 'Drugi rodzic jest w planach dla 2 dzieci i dla 3–5 dzieci.',
+      'plan' => 'Drugi rodzic jest w abonamencie. Wybierz abonament, a potem zaproś drugiego rodzica.',
       'code' => 'Ten kod nie działa albo wygasł. Poproś o nowy.',
       'full' => 'W tej rodzinie jest już drugi rodzic.',
       'self' => 'To Twój własny kod. Przekaż go drugiemu rodzicowi.',

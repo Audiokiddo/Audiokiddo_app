@@ -15,17 +15,22 @@ if (is_page()) {
     $query = $wp_query;
 }
 $term = (is_category() || is_tag()) ? get_queried_object() : null;
+$search = is_search() ? get_search_query() : '';
 $cats = get_categories(['hide_empty' => true, 'number' => 12, 'orderby' => 'count', 'order' => 'DESC']);
 $items = $query->posts;
-$first = ($paged === 1 && !$term && $items) ? array_shift($items) : null;
+$first = ($paged === 1 && !$term && $search === '' && $items) ? array_shift($items) : null;
 
 require AK_DIR . 'parts/header.php';
 ?>
 <section class="ak-blog-hero" aria-labelledby="ak-blog-h">
     <div class="ak-wrap">
-        <p class="ak-kicker"><?php echo $term ? 'Blog · temat' : 'Blog AudioKiddo'; ?></p>
+        <p class="ak-kicker"><?php echo $search !== '' ? 'Szukasz' : ($term ? 'Blog · temat' : 'Blog Audiokiddo'); ?></p>
+        <?php if ($search !== '') : ?>
+        <h1 id="ak-blog-h">Wyniki dla „<?php echo esc_html($search); ?>”</h1>
+        <?php else : ?>
         <h1 id="ak-blog-h"><?php echo $term ? esc_html($term->name) : 'Blog z wiedzą ' . ak_mark('dla rodziców'); ?></h1>
         <p class="ak-lead-p"><?php echo $term && $term->description ? esc_html($term->description) : 'Zabawy do auta, na wieczór i na deszczowy dzień, mowa, koncentracja i czas bez ekranu. Krótko i do rzeczy.'; ?></p>
+        <?php endif; ?>
         <form class="ak-search" role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
             <label class="ak-sr" for="ak-s">Szukaj na blogu</label>
             <input id="ak-s" type="search" name="s" placeholder="Np. zabawy w aucie" value="<?php echo esc_attr(get_search_query()); ?>">
@@ -50,7 +55,12 @@ require AK_DIR . 'parts/header.php';
             <?php foreach (array_slice($items, 0, 6) as $item) { ak_post_card($item); } ?>
         </div>
         <?php endif; ?>
-        <?php if (!$first && !$items) : ?><p class="ak-empty">Tu wkrótce pojawią się pierwsze wpisy.</p><?php endif; ?>
+        <?php if (!$first && !$items) : ?>
+        <div class="ak-empty">
+            <img src="<?php echo esc_url(ak_asset('img/szop/zdziwiony.webp')); ?>" alt="" width="420" height="392" loading="lazy">
+            <p><?php echo $search !== '' ? 'Nic. Sprawdziliśmy nawet pod kanapą. Spróbuj innego słowa, np. „samochód” albo „deszcz”.' : 'Tu wkrótce pojawią się pierwsze wpisy.'; ?></p>
+        </div>
+        <?php endif; ?>
     </div>
 </section>
 

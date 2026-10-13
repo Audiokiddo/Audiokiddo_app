@@ -23,8 +23,10 @@
   var menuBtns = $$('.ak-menu-btn, .ak-dock-menu');
   var nav = document.getElementById('ak-nav');
   function setMenu(open) {
+    if (!nav) return;
     nav.classList.toggle('is-open', open);
     menuBtns.forEach(function (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    menuBtns.forEach(function (b) { b.setAttribute('aria-label', open ? 'Zamknij menu' : 'Otwórz menu'); });
   }
   if (menuBtns.length && nav) {
     menuBtns.forEach(function (b) {
@@ -32,6 +34,15 @@
     });
     nav.addEventListener('click', function (e) {
       if (e.target.tagName === 'A') setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+        setMenu(false);
+        menuBtns[0].focus();
+      }
+    });
+    document.addEventListener('click', function (e) {
+      if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtns.some(function (b) { return b.contains(e.target); })) setMenu(false);
     });
   }
 
@@ -74,8 +85,7 @@
 
   // Scrolling: header, progress, the statement lighting up, the hero drifting, the snapping
   var top = $('.ak-top');
-  var statement = $('.ak-statement');
-  var statementWords = statement ? $$('span', statement) : [];
+  var statements = $$('.ak-statement').map(function (el) { return { el: el, words: $$('span', el) }; });
   var heroImg = $('.ak-hero-img');
   var lastY = window.scrollY;
   var ticking = false;
@@ -91,12 +101,14 @@
       var max = document.documentElement.scrollHeight - vh;
       top.style.setProperty('--scroll', max > 0 ? (y / max).toFixed(4) : 0);
     }
-    if (statementWords.length && !still) {
-      var r = statement.getBoundingClientRect();
-      var p = clamp((vh * 0.88 - r.top) / (r.height + vh * 0.3), 0, 1);
-      var lit = Math.round(p * statementWords.length);
-      statementWords.forEach(function (s, i) { s.classList.toggle('on', i < lit); });
-    }
+    // Each big sentence lights up word by word as it travels up the screen.
+    if (!still) statements.forEach(function (st) {
+      var r = st.el.getBoundingClientRect();
+      if (r.bottom < -vh || r.top > vh * 2) return;
+      var p = clamp((vh * 0.86 - r.top) / (r.height + vh * 0.28), 0, 1);
+      var lit = Math.round(p * st.words.length);
+      st.words.forEach(function (w, i) { w.classList.toggle('on', i < lit); });
+    });
     if (heroImg && !still && y < vh * 1.2) heroImg.style.setProperty('--para', (y * 0.12).toFixed(1) + 'px');
     onScrollHooks.forEach(function (fn) { fn(y, vh); });
     lastY = y;
@@ -197,6 +209,193 @@
     }
   }
 
+  // "When to play it": a row of cards to swipe; the two arrows move it by a card
+  var when = $('.ak-when2');
+  if (when) {
+    var whenPrev = $('.ak-when2-prev');
+    var whenNext = $('.ak-when2-next');
+    var whenStep = function () { var c = $('.ak-when2-card', when); return c ? c.getBoundingClientRect().width + 16 : 320; };
+    var whenEnds = function () {
+      if (whenPrev) whenPrev.disabled = when.scrollLeft < 8;
+      if (whenNext) whenNext.disabled = when.scrollLeft + when.clientWidth > when.scrollWidth - 8;
+    };
+    if (whenPrev) whenPrev.addEventListener('click', function () { when.scrollBy({ left: -whenStep(), behavior: still ? 'auto' : 'smooth' }); });
+    if (whenNext) whenNext.addEventListener('click', function () { when.scrollBy({ left: whenStep(), behavior: still ? 'auto' : 'smooth' }); });
+    when.addEventListener('scroll', whenEnds, { passive: true });
+    whenEnds();
+  }
+
+  // Tabs (the moments, the ages): click or arrow keys pick one; its panel shows, the rest hide.
+  function tabs(list, onPick) {
+    var btns = $$('[role="tab"]', list);
+    function pick(i, focus) {
+      btns.forEach(function (b, k) {
+        var on = k === i;
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+        b.tabIndex = on ? 0 : -1;
+        var panel = document.getElementById(b.getAttribute('aria-controls'));
+        if (panel) panel.classList.toggle('is-on', on);
+      });
+      if (focus) btns[i].focus();
+      if (onPick) onPick(i);
+    }
+    btns.forEach(function (b, i) {
+      b.addEventListener('click', function () { pick(i, false); });
+      b.addEventListener('keydown', function (e) {
+        var step = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        pick((i + step + btns.length) % btns.length, true);
+      });
+    });
+  }
+  var momentsPick = $('.ak-a-times, .ak-moments-pick');
+  if (momentsPick) {
+    var momentSzop = $('.ak-moments-szop');
+    tabs(momentsPick, function () {
+      if (!momentSzop || still) return;
+      momentSzop.classList.remove('is-pop');
+      void momentSzop.offsetWidth;
+      momentSzop.classList.add('is-pop');
+    });
+  }
+  // The day with Audiokiddo moves on by itself while it is in view, so nobody has to find the
+  // buttons; a click takes over and stops the show.
+  var dayTabs = $('.ak-a-times');
+  if (dayTabs && !still && 'IntersectionObserver' in window) {
+    var dayBtns = $$('[role="tab"]', dayTabs);
+    var dayTimer = null;
+    var dayHand = false;
+    function dayStep() {
+      var at = dayBtns.findIndex(function (b) { return b.getAttribute('aria-selected') === 'true'; });
+      var nxt = dayBtns[(at + 1) % dayBtns.length];
+      nxt.click();
+    }
+    dayBtns.forEach(function (b) { b.addEventListener('pointerdown', function () { dayHand = true; clearInterval(dayTimer); }); });
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        clearInterval(dayTimer);
+        if (entry.isIntersecting && !dayHand) dayTimer = setInterval(dayStep, 5200);
+      });
+    }, { threshold: 0.5 }).observe(dayTabs);
+  }
+  // The quarter of an hour: the clock runs while the section is in view, each third shows what
+  // the child and the parent are doing; the buttons under it jump to a third.
+  var q = $('.ak-q');
+  if (q) {
+    var qTabs = $$('.ak-q-tabs button', q);
+    var qNow = $$('.ak-q-now', q);
+    var qRing = $('.ak-q-ring', q);
+    var qTime = $('.ak-q-time', q);
+    var Q_LEN = 326.73;
+    var Q_PART = 4400;
+    var qAt = 0;
+    var qStart = null;
+    var qFrame = null;
+    function qShow(i) {
+      qAt = i;
+      q.setAttribute('data-at', i);
+      qNow.forEach(function (el) { el.classList.toggle('is-on', Number(el.getAttribute('data-i')) === i); });
+      qTabs.forEach(function (b, k) { b.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
+    }
+    function qDraw(part) {
+      var secs = Math.round(part * 900);
+      qRing.style.strokeDashoffset = (Q_LEN * (1 - part)).toFixed(2);
+      qTime.textContent = ('0' + Math.floor(secs / 60)).slice(-2) + ':' + ('0' + (secs % 60)).slice(-2);
+    }
+    function qTick(now) {
+      if (qStart === null) qStart = now - qAt * Q_PART;
+      var gone = (now - qStart) % (Q_PART * 3 + 1600);
+      var part = Math.min(gone / (Q_PART * 3), 1);
+      var i = Math.min(2, Math.floor(part * 3));
+      qDraw(part);
+      if (i !== qAt) qShow(i);
+      qFrame = window.requestAnimationFrame(qTick);
+    }
+    qTabs.forEach(function (b, i) {
+      b.addEventListener('click', function () {
+        qShow(i);
+        if (still) { qDraw((i + 1) / 3); return; }
+        qStart = window.performance.now() - i * Q_PART;
+      });
+    });
+    if (still) {
+      qDraw(1 / 3);
+    } else if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          window.cancelAnimationFrame(qFrame);
+          qStart = null;
+          if (entry.isIntersecting) qFrame = window.requestAnimationFrame(qTick);
+        });
+      }, { threshold: 0.35 }).observe(q);
+    }
+  }
+  var agePick = $('.ak-agepick-tabs');
+  if (agePick) tabs(agePick);
+
+  // How it works: each step shows its screen on the phone; while the section is in view and
+  // nobody has clicked, the steps take turns by themselves.
+  var howto = $('.ak-howto');
+  if (howto) {
+    var steps = $$('.ak-howto-step', howto);
+    var stepShots = $$('.ak-phone-shot', howto);
+    var stepAt = 0;
+    var stepTimer = null;
+    var stepTouched = false;
+    function pickStep(i) {
+      stepAt = (i + steps.length) % steps.length;
+      var shot = steps[stepAt].getAttribute('data-shot');
+      steps.forEach(function (st, k) { st.setAttribute('aria-selected', k === stepAt ? 'true' : 'false'); });
+      stepShots.forEach(function (img) { img.classList.toggle('is-on', img.getAttribute('data-shot') === shot); });
+    }
+    function runSteps(on) {
+      clearInterval(stepTimer);
+      if (on && !stepTouched && !still) stepTimer = setInterval(function () { pickStep(stepAt + 1); }, 4200);
+    }
+    steps.forEach(function (st, i) {
+      st.addEventListener('click', function () { stepTouched = true; runSteps(false); pickStep(i); });
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { runSteps(entry.isIntersecting); });
+      }, { threshold: 0.4 }).observe(howto);
+    }
+  }
+
+  // Szop'en's bubbles next to the content type themselves in when they come into view.
+  if (!still && 'IntersectionObserver' in window) {
+    var typer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        typer.unobserve(entry.target);
+        var cap = $('figcaption', entry.target);
+        var node = cap ? cap.lastChild : null;
+        if (!node || node.nodeType !== 3) return;
+        var full = node.nodeValue;
+        var n = 0;
+        node.nodeValue = '';
+        setTimeout(function type() {
+          n += 2;
+          node.nodeValue = full.slice(0, n);
+          if (n < full.length) setTimeout(type, 26);
+        }, 450);
+      });
+    }, { threshold: 0.6 });
+    $$('.ak-szop').forEach(function (el) { typer.observe(el); });
+  }
+
+  // Pack page: once the buy box scrolls away, a slim bar with the price and the cart follows.
+  var buybar = $('.ak-buybar');
+  var buybox = document.getElementById('kup');
+  if (buybar && buybox && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        buybar.classList.toggle('is-on', !entry.isIntersecting && entry.boundingClientRect.top < 0);
+      });
+    }).observe(buybox);
+  }
+
   // Parents' row: arrows, and dragging with the mouse
   var row = $('.ak-reviews');
   if (row) {
@@ -244,16 +443,76 @@
     });
   }
 
+  // The cart opens at the side instead of loading the cart page: the items, the total and the
+  // way to checkout. WooCommerce keeps its contents fresh (cart fragments); the cart icons still
+  // lead to the cart page when the script is off or with a modifier key.
+  var drawer = document.getElementById('ak-cart-drawer');
+  var veil = $('.ak-drawer-veil');
+  var drawerBack = null;
+  function openCart(added) {
+    if (!drawer) return;
+    drawerBack = document.activeElement;
+    drawer.hidden = false;
+    if (veil) veil.hidden = false;
+    var note = $('.ak-drawer-added', drawer);
+    if (note) note.hidden = !added;
+    void drawer.offsetWidth;
+    drawer.classList.add('is-open');
+    if (veil) veil.classList.add('is-open');
+    root.classList.add('ak-locked');
+    $('.ak-drawer-close', drawer).focus({ preventScroll: true });
+  }
+  function closeCart() {
+    if (!drawer || drawer.hidden) return;
+    drawer.classList.remove('is-open');
+    if (veil) veil.classList.remove('is-open');
+    root.classList.remove('ak-locked');
+    setTimeout(function () { drawer.hidden = true; if (veil) veil.hidden = true; }, still ? 0 : 350);
+    if (drawerBack && drawerBack.focus) drawerBack.focus({ preventScroll: true });
+  }
+  if (drawer) {
+    $$('.ak-cart, .ak-dock-cart').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        openCart(false);
+      });
+    });
+    $('.ak-drawer-close', drawer).addEventListener('click', closeCart);
+    if (veil) veil.addEventListener('click', closeCart);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeCart();
+      // Keep Tab inside the open cart.
+      if (e.key === 'Tab' && drawer.classList.contains('is-open')) {
+        var f = $$('a[href], button:not([disabled]), input', drawer).filter(function (el) { return el.offsetParent !== null; });
+        if (!f.length) return;
+        if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    });
+  }
+
   // After WooCommerce adds to the cart: the button itself says so and WooCommerce's own link
   // to the cart sits under it; the cart in the bar and the dock bounces. Nothing floats over
   // the page.
   if (window.jQuery) {
+    // While WooCommerce works on it, the button says so in Szop's words.
+    window.jQuery(document.body).on('adding_to_cart', function (e, button) {
+      var el = button && button.get ? button.get(0) : null;
+      if (el && el.classList.contains('ak-btn')) {
+        el.setAttribute('data-label', el.textContent);
+        el.textContent = 'Szop coś grzebie…';
+      }
+    });
     window.jQuery(document.body).on('added_to_cart', function (e, fragments, hash, button) {
+      // Some themes fire this on page load with nothing added: only a real add opens the cart.
+      if (!fragments && !button) return;
       var el = button && button.get ? button.get(0) : null;
       if (el && el.classList.contains('ak-btn')) {
         el.classList.add('is-added');
         el.textContent = '✓ W koszyku';
       }
+      openCart(true);
       $$('.ak-cart, .ak-dock-cart').forEach(function (c) {
         c.classList.remove('is-bump');
         void c.offsetWidth;
@@ -262,18 +521,52 @@
     });
   }
 
-  // The MailerLite form comes with the site's tags; if it never shows up, a mail link does
-  var ml = $('.ak-form .ml-embedded');
-  if (ml) {
-    setTimeout(function () {
-      if (!ml.children.length) {
-        var form = ml.closest('.ak-form');
-        if (form) form.hidden = true;
-        var fallback = $('.ak-form-fallback');
-        if (fallback) fallback.hidden = false;
-      }
-    }, 7000);
+  // "Pobierz Audiokiddo" goes straight to the store of the phone in hand; on a computer it
+  // stays on the section with both store buttons.
+  var ua = navigator.userAgent || '';
+  var os = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document) ? 'ios' : (/Android/.test(ua) ? 'android' : '');
+  if (os) {
+    $$('.ak-app-cta').forEach(function (a) {
+      var url = a.getAttribute('data-' + os);
+      if (url) { a.href = url; a.rel = 'noopener'; }
+    });
+    $$('.ak-stores').forEach(function (box) {
+      var mine = box.querySelector('.ak-store[data-os="' + os + '"]');
+      if (mine) box.insertBefore(mine, box.firstChild);
+    });
   }
+
+  // Our newsletter sign-up: sent through the site to MailerLite; the cards download right away.
+  $$('.ak-signup').forEach(function (form) {
+    var msg = $('.ak-signup-msg', form);
+    var btn = $('button[type="submit"]', form);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim();
+      msg.textContent = '';
+      form.classList.remove('is-error');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = 'Ten adres e-mail wygląda podejrzanie. Sprawdź literówki.'; form.classList.add('is-error'); form.email.focus(); return; }
+      if (!form.zgoda.checked) { msg.textContent = 'Zaznacz zgodę na newsletter, wtedy wyślemy Ci materiały.'; form.classList.add('is-error'); return; }
+      var label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Szop coś grzebie…';
+      var body = new URLSearchParams({ action: 'ak_zapis', email: email, zgoda: '1', strona: form.strona.value });
+      fetch(form.getAttribute('data-endpoint'), { method: 'POST', body: body, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (data) {
+        if (!data || !data.ok) throw new Error(data && data.message ? data.message : '');
+        $('.ak-signup-row', form).hidden = true;
+        $('.ak-signup-ok', form).hidden = true;
+        var done = $('.ak-signup-done', form);
+        $('.ak-signup-dl', done).href = data.download;
+        done.hidden = false;
+        if (window.dataLayer) window.dataLayer.push({ event: 'generate_lead', lead_source: form.id });
+      }).catch(function (err) {
+        msg.textContent = (err && err.message) || 'Coś się wysypało po drodze. Spróbuj jeszcze raz za chwilę.';
+        form.classList.add('is-error');
+        btn.disabled = false;
+        btn.textContent = label;
+      });
+    });
+  });
 
   // Article contents: mark the section being read
   var tocLinks = $$('.ak-toc a');
@@ -351,6 +644,66 @@
   });
   onScroll();
 
+  // Home: without / with Audiokiddo. It flips to "with" by itself once it is seen; a click wins.
+  $$('.ak-vs').forEach(function (vs) {
+    var picks = $$('[data-vs-pick]', vs);
+    var touched = false;
+    function set(state) {
+      vs.setAttribute('data-vs', state);
+      picks.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-vs-pick') === state ? 'true' : 'false'); });
+    }
+    picks.forEach(function (b) {
+      b.addEventListener('click', function () { touched = true; set(b.getAttribute('data-vs-pick')); });
+    });
+    if (!('IntersectionObserver' in window)) { set('with'); return; }
+    var seen = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      seen.disconnect();
+      setTimeout(function () { if (!touched) set('with'); }, 1600);
+    }, { threshold: 0.6 });
+    seen.observe(vs);
+  });
+
+  // Home: the 15 minutes in the hero count down while the hero is in view.
+  var clock = $('.ak-x-clock');
+  if (clock && !still && 'IntersectionObserver' in window) {
+    var left = 15 * 60;
+    var clockTimer = null;
+    new IntersectionObserver(function (entries) {
+      clearInterval(clockTimer);
+      if (!entries[0].isIntersecting) return;
+      clockTimer = setInterval(function () {
+        left = left > 0 ? left - 1 : 15 * 60;
+        clock.textContent = Math.floor(left / 60) + ':' + ('0' + (left % 60)).slice(-2);
+      }, 1000);
+    }).observe(clock);
+  }
+
+  // Home: Szop'en peeks out of a few sections while they are in view and hides when they leave.
+  // While he peeks, the guide in the corner steps aside: one Szop'en at a time.
+  var peeks = $$('.ak-peek');
+  if (peeks.length && 'IntersectionObserver' in window) {
+    var out = 0;
+    var peeker = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var peek = $('.ak-peek', entry.target);
+        var show = entry.isIntersecting;
+        if (show === peek.classList.contains('is-out')) return;
+        peek.classList.toggle('is-out', show);
+        out += show ? 1 : -1;
+      });
+      document.body.classList.toggle('ak-peeking', out > 0);
+    }, { rootMargin: '-40% 0px -40% 0px' }); // "in view" = across the middle of the screen, however tall
+    peeks.forEach(function (p) { peeker.observe(p.parentElement); });
+    // The hero has its own Szop'en in the scene: the corner one waits until the hero is gone.
+    var scene = $('.ak-x-scene');
+    if (scene) {
+      new IntersectionObserver(function (entries) {
+        document.body.classList.toggle('ak-hero-szop', entries[0].isIntersecting);
+      }).observe(scene);
+    }
+  }
+
   // Szop'en presents each slide and points at what matters
   var guide = $('.ak-guide');
   var tourData = document.getElementById('ak-tour');
@@ -362,6 +715,7 @@
   var poses = {};
   $$('.ak-guide-me img', guide).forEach(function (img) { img.loading = 'eager'; poses[img.getAttribute('data-pose')] = img; });
   var quiet = store.get('ak_szop_cicho') === '1';
+  var phoneQuiet = ['start', 'cennik', 'pytania', 'start-aplikacji', 'koniec'];
   var shown = null;
   var lines = [];
   var at = -1;
@@ -433,8 +787,8 @@
     var line = lines[i];
     talk(line.say);
     drawSteps();
-    if (point) spotOn(line.el); else spotOff();
-    var wait = Math.max(3800, line.say.length * 60);
+    if (point && line.spot && !phone.matches) spotOn(line.el); else spotOff();
+    var wait = Math.max(phone.matches ? 2800 : 3400, line.say.length * (phone.matches ? 45 : 55));
     if (i < lines.length - 1) {
       lineTimer = setTimeout(function () { showLine(i + 1, point); }, wait);
     } else {
@@ -450,12 +804,14 @@
     if (data) {
       data.lines.forEach(function (l) {
         var el = $(l.at, slide);
-        if (el) lines.push({ el: el, say: l.say });
+        if (el) lines.push({ el: el, say: l.say, spot: !!l.spot });
       });
     }
-    // Only a few slides are his stops; on the others (and on a stop already shown) he sits
+    // Each section gets one line, once; after it (and on a section already shown) he sits
     // quietly in the corner, the bubble folded away.
-    var stop = lines.length && (fromStart || (!seen[slide.id] && (!phone.matches || slide === slides[0])));
+    // On phones the bubble takes a good part of the screen, so he keeps quiet where it would
+    // cover the buttons that matter (the hero, the subscription, the forms, the end).
+    var stop = lines.length && (fromStart || (!seen[slide.id] && !(phone.matches && phoneQuiet.indexOf(slide.id) > -1)));
     guide.classList.toggle('is-idle', !stop);
     if (!stop) {
       clearTimeout(typeTimer);

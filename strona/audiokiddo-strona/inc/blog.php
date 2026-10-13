@@ -53,6 +53,8 @@ function ak_article(WP_Post $post): array
         return $cache[$post->ID];
     }
     $html = apply_filters('the_content', $post->post_content);
+    $html = ak_drop_repeats($html, $post);
+    $html = ak_szop_notes($html, $post);
     $words = str_word_count(wp_strip_all_tags($html), 0, 'ąćęłńóśźżĄĆĘŁŃÓŚŹŻ');
 
     // The summary at the top becomes a box.
@@ -114,12 +116,12 @@ function ak_inline_app_card(): string
 {
     ob_start();
     ?>
-    <aside class="ak-inline-app" aria-label="Aplikacja AudioKiddo">
+    <aside class="ak-inline-app" aria-label="Aplikacja Audiokiddo">
         <img src="<?php echo esc_url(ak_asset('img/szop/klaszcze.webp')); ?>" alt="" width="96" height="96" loading="lazy">
         <div>
-            <p class="ak-inline-app-h">Takie zabawy są w AudioKiddo, gotowe do słuchania</p>
-            <p>Włączasz, odkładasz telefon, dziecko odpowiada i się rusza. Część zabaw jest za darmo.</p>
-            <a href="<?php echo esc_url(home_url('/#aplikacja')); ?>">Zobacz, jak to działa →</a>
+            <p class="ak-inline-app-h">Nie chce Ci się tego wymyślać? Audiokiddo ma to gotowe.</p>
+            <p>Odpalasz, odkładasz telefon, dziecko dostaje misję, odpowiada i się rusza. W aplikacji są darmowe zabawy.</p>
+            <a href="<?php echo esc_url(home_url('/#jak-to-dziala')); ?>">Zobacz, jak to działa →</a>
         </div>
     </aside>
     <?php
@@ -184,4 +186,91 @@ function ak_related(WP_Post $post, int $count = 3): array
         $posts = array_merge($posts, $more);
     }
     return $posts;
+}
+
+/**
+ * Old posts (built in Elementor) start by repeating the title as a heading and the featured
+ * picture as an image. The page already shows both above the text: the copies go.
+ */
+function ak_drop_repeats(string $html, WP_Post $post): string
+{
+    $title = mb_strtolower(trim(wp_strip_all_tags(get_the_title($post))));
+    $html = preg_replace_callback('#<h([1-3])[^>]*>(.*?)</h\1>#isu', function ($m) use ($title) {
+        static $done = false;
+        if ($done) {
+            return $m[0];
+        }
+        $done = true;
+        $text = mb_strtolower(trim(html_entity_decode(wp_strip_all_tags($m[2]), ENT_QUOTES)));
+        return similar_text($text, $title) >= 0.9 * max(mb_strlen($title), 1) ? '' : $m[0];
+    }, $html, 1);
+    // Old posts built in Elementor carry stock photos (a golden retriever): the mascot is Szop'en now.
+    $html = preg_replace('#<div[^>]+elementor-widget-image[^>]*>.*?</div>\s*</div>#isu', '', $html);
+    $thumb = (int) get_post_thumbnail_id($post);
+    if ($thumb) {
+        $file = pathinfo((string) get_attached_file($thumb), PATHINFO_FILENAME);
+        if ($file !== '') {
+            $html = preg_replace('#<img[^>]+' . preg_quote($file, '#') . '[^>]*>#iu', '', $html, 1);
+        }
+    }
+    return $html;
+}
+
+/** Guides that continue a post's topic, by its category (and always the printable cards). */
+function ak_post_guides(WP_Post $post): array
+{
+    $by_cat = [
+        'pomysly-i-inspiracje' => ['zabawy-bez-ekranu', 'dziecko-sie-nudzi', 'samodzielna-zabawa-dziecka', 'interaktywne-bajki-dla-dzieci'],
+        'rozwoj-i-mowa' => ['zabawy-logopedyczne', 'zabawy-na-koncentracje', 'zagadki-dla-dzieci', 'zabawy-dla-4-latka'],
+        'zabawy-i-codziennosc' => ['zabawy-dla-dzieci-w-domu', 'jak-zajac-dziecko-w-samochodzie', 'zabawy-wyciszajace-przed-snem', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+    ];
+    $cats = get_the_category($post->ID);
+    $slugs = $by_cat[$cats ? (string) ($cats[0]->slug ?? '') : ''] ?? $by_cat['pomysly-i-inspiracje'];
+    return array_values(array_filter($slugs, fn($s) => isset(ak_landings()[$s])));
+}
+
+/**
+ * Szop'en drops in now and then: <aside class="ak-szop-note" data-pose="…"> in the text becomes
+ * his figure with a speech bubble. Posts without any get one fun fact before the second heading.
+ */
+function ak_szop_notes(string $html, WP_Post $post): string
+{
+    $poses = ['zadowolony', 'chytry', 'klaszcze', 'nasluchuje', 'zdziwiony', 'prosi'];
+    $figure = function (string $pose, string $text) use ($poses): string {
+        $pose = in_array($pose, $poses, true) ? $pose : 'chytry';
+        return '<aside class="ak-szop-note"><img src="' . esc_url(ak_asset('img/szop/' . $pose . '.webp')) . '" alt="" width="88" height="82" loading="lazy">'
+            . '<div><p class="ak-szop-note-h">Szop’en mówi</p>' . $text . '</div></aside>';
+    };
+    $count = 0;
+    $html = preg_replace_callback('#<aside class="ak-szop-note"(?: data-pose="([a-z]+)")?>(.*?)</aside>#isu', function ($m) use ($figure, &$count) {
+        $count++;
+        return $figure((string) $m[1], $m[2]);
+    }, $html);
+    if ($count > 0) {
+        return $html;
+    }
+    $facts = [
+        'Ciekawostka: dzieci uczą się nowych słów najszybciej w rozmowie, kiedy ktoś czeka na ich odpowiedź. Ja czekam zawsze. Głównie na przekąski.',
+        'Ciekawostka: szopy myją jedzenie w wodzie, zanim je zjedzą. Ja myję tylko winogrona. I to rzadko.',
+        'Ciekawostka: przedszkolak zadaje dziennie nawet kilkaset pytań. Ja też, ale nikt nie odpowiada mi na „gdzie są ciastka?”.',
+        'Ciekawostka: zabawa z ruchem pomaga dzieciom zapamiętywać. Dlatego w moich misjach się maszeruje. Ja maszeruję do lodówki.',
+        'Ciekawostka: słuchanie bez obrazka to trening wyobraźni. Dziecko samo „rysuje” historię w głowie. Moja głowa rysuje głównie orzechy.',
+    ];
+    $fact = $facts[$post->ID % count($facts)];
+    $pose = $poses[($post->ID + 2) % count($poses)];
+    $note = $figure($pose, '<p>' . esc_html($fact) . '</p>');
+    $seen = 0;
+    $out = (string) preg_replace_callback('#<h2#i', function ($m) use (&$seen, $note) {
+        $seen++;
+        return $seen === 2 ? $note . $m[0] : $m[0];
+    }, $html);
+    if ($seen >= 2) {
+        return $out;
+    }
+    // No second heading (some old posts): after the third paragraph.
+    $paras = 0;
+    return (string) preg_replace_callback('#</p>#i', function ($m) use (&$paras, $note) {
+        $paras++;
+        return $paras === 3 ? $m[0] . $note : $m[0];
+    }, $html);
 }

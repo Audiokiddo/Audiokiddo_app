@@ -95,19 +95,16 @@ void main() {
       expect(find.text('Abonament AudioKiddo'), findsOneWidget);
       expect(find.text('NAJLEPIEJ SIĘ OPŁACA'), findsOneWidget);
       // Yearly first, with the cloud saying how much it saves and the year crossed out
-      // against twelve months; plans for 1, 2 and 3–5 children with what they add.
+      // against twelve months; one subscription, no plans by the number of children.
       expect(find.text('Rocznie'), findsOneWidget);
-      expect(find.textContaining('oszczędzasz 60'), findsOneWidget);
-      expect(find.textContaining('299,88'), findsOneWidget, reason: '12 × 24,99 crossed out');
-      expect(find.textContaining('19,99'), findsWidgets);
-      expect(find.text('2 dzieci'), findsOneWidget);
-      expect(find.textContaining(RegExp(r'^\+5\s+zł miesięcznie$')), findsOneWidget);
-      expect(find.text('3–5 dzieci'), findsOneWidget);
-      expect(find.textContaining(RegExp(r'Drugie dziecko \+5\s+zł')), findsOneWidget);
+      expect(find.textContaining('oszczędzasz 89,89'), findsOneWidget);
+      expect(find.textContaining('359,88'), findsOneWidget, reason: '12 × 29,99 crossed out');
+      expect(find.textContaining('22,50'), findsWidgets);
+      expect(find.text('2 dzieci'), findsNothing);
+      expect(find.text('3–5 dzieci'), findsNothing);
       expect(find.text('Wypróbuj 7 dni za darmo'), findsOneWidget);
       await tester.tap(find.text('Miesięcznie'));
       await tester.pumpAndSettle();
-      expect(find.textContaining(RegExp(r'^24,99\s+zł / miesiąc$')), findsOneWidget);
       expect(find.textContaining(RegExp(r'^29,99\s+zł / miesiąc$')), findsOneWidget);
       // Buying for good is folded below.
       expect(find.text('Detektyw'), findsNothing);
@@ -149,7 +146,7 @@ void main() {
       await tester.scrollUntilVisible(find.text('Wypróbuj za darmo'), 200, scrollable: packScroll);
       expect(find.text('Wypróbuj za darmo'), findsOneWidget);
       expect(
-        find.textContaining('Wszystkie pakiety za 19,99'),
+        find.textContaining('Wszystkie pakiety za 22,50'),
         findsOneWidget,
         reason: 'the subscription first',
       );
@@ -237,7 +234,7 @@ void main() {
     await tester.tap(find.text('Więcej').last);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Zarządzaj subskrypcją'), 200, scrollable: mainScroll);
-    expect(find.textContaining('1, 2 lub 3–5 dzieci'), findsOneWidget);
+    expect(find.textContaining('miesięcznie albo rocznie'), findsOneWidget);
     await tester.tap(find.text('Zarządzaj subskrypcją'));
     await tester.pumpAndSettle();
     expect(find.text('Wybierz abonament'), findsOneWidget);

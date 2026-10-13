@@ -123,7 +123,7 @@ Zrobimy to razem, po krokach 3–5:
 - ręcznie w obu panelach (ok. 2 h);
 - albo napiszę skrypt, który **Ty** uruchomisz w swoim terminalu z kluczem API na dysku. Klucz nie trafi do rozmowy.
 
-Ustawienia subskrypcji: grupa „AudioKiddo”, plany 24,99 zł/mies. i 239,88 zł/rok (19,99 zł miesięcznie), **oferta wstępna 7 dni za darmo** na obu. Kraj: Polska.
+Ustawienia subskrypcji: grupa „AudioKiddo”, plany 29,99 zł/mies. i 269,99 zł/rok (około 22,50 zł miesięcznie), **bez oferty wstępnej** (darmowe demonstracje zamiast próby z kartą). Kraj: Polska.
 
 **Apple: klucz `.p8` nie jest już potrzebny.** Serwer sprawdza podpis Apple na samym zakupie (łańcuch certyfikatów aż do głównego certyfikatu Apple), bez logowania do API Apple.
 1. App Store Connect → Twoja aplikacja → Informacje o aplikacji → **App Store Server Notifications**: wersja 2, ten sam adres dla produkcji i sandboxa:

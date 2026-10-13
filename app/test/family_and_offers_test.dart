@@ -110,12 +110,12 @@ void main() {
     expect(find.text('Korzystasz z abonamentu rodziny'), findsOneWidget);
   });
 
-  testWidgets('a plan for one child explains the second parent and leads to the plans', (tester) async {
+  testWidgets('without a subscription the second parent is explained and leads to the plans', (tester) async {
     final cloud = FakeCloud()..status = const FamilyStatus();
     await pumpWith(tester, [parentCloudProvider.overrideWithValue(cloud)]);
     GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/rodzina');
     await tester.pumpAndSettle();
-    expect(find.text('Drugi rodzic jest w planach dla 2 i 3–5 dzieci'), findsOneWidget);
+    expect(find.text('Drugi rodzic jest w abonamencie'), findsOneWidget);
     expect(find.text('Zobacz plany'), findsOneWidget);
   });
 
@@ -125,7 +125,7 @@ void main() {
     ]);
     await tester.tap(find.text('Sklep').last);
     await tester.pumpAndSettle();
-    expect(find.textContaining('Zacznij za darmo i oszczędzaj 60'), findsOneWidget);
+    expect(find.textContaining('Zacznij za darmo i oszczędzaj 89,89'), findsOneWidget);
   });
 
   testWidgets('after a subscription ended: what is new since, and the way back', (tester) async {

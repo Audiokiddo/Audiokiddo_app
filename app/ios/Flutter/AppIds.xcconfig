@@ -3,4 +3,6 @@
 // in git), so a free Apple ID never claims pl.audiokiddo.app before Nela's developer account.
 AK_APP_ID = pl.audiokiddo.app
 AK_APP_GROUP = group.$(AK_APP_ID)
+// Nela's developer team (Biznesowelove Nela Mariak); a personal build overrides it in Local.xcconfig.
+DEVELOPMENT_TEAM = D83635FL35
 #include? "Local.xcconfig"

@@ -20,12 +20,8 @@ class FakeStoreGateway implements StoreGateway {
   var _counter = 0;
 
   static const _prices = {
-    'pl.audiokiddo.sub.monthly': '24,99 zł',
-    'pl.audiokiddo.sub.yearly': '239,88 zł',
-    'pl.audiokiddo.sub.duo.monthly': '29,99 zł',
-    'pl.audiokiddo.sub.duo.yearly': '287,88 zł',
-    'pl.audiokiddo.sub.family.monthly': '34,99 zł',
-    'pl.audiokiddo.sub.family.yearly': '335,88 zł',
+    'pl.audiokiddo.sub.monthly': '29,99 zł',
+    'pl.audiokiddo.sub.yearly': '269,99 zł',
     'pl.audiokiddo.pack.wyobraznia': '49,99 zł',
     'pl.audiokiddo.pack.slowa_i_wiedza': '49,99 zł',
     'pl.audiokiddo.pack.detektyw': '69,99 zł',
@@ -36,10 +32,6 @@ class FakeStoreGateway implements StoreGateway {
   static const _titles = {
     'pl.audiokiddo.sub.monthly': 'AudioKiddo miesięcznie',
     'pl.audiokiddo.sub.yearly': 'AudioKiddo rocznie',
-    'pl.audiokiddo.sub.duo.monthly': 'AudioKiddo dla 2 dzieci miesięcznie',
-    'pl.audiokiddo.sub.duo.yearly': 'AudioKiddo dla 2 dzieci rocznie',
-    'pl.audiokiddo.sub.family.monthly': 'AudioKiddo dla rodziny miesięcznie',
-    'pl.audiokiddo.sub.family.yearly': 'AudioKiddo dla rodziny rocznie',
     'pl.audiokiddo.pack.wyobraznia': 'Pakiet Wyobraźnia',
     'pl.audiokiddo.pack.slowa_i_wiedza': 'Pakiet Słowa i Wiedza',
     'pl.audiokiddo.pack.detektyw': 'Pakiet Detektyw',

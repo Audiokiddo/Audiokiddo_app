@@ -217,7 +217,7 @@ void main() {
       await tester.drag(mainScroll, const Offset(0, -350));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(find.text('Wypróbuj 7 dni za darmo'), 200, scrollable: mainScroll);
-      expect(find.textContaining('Potem 239,88 zł za rok'), findsOneWidget);
+      expect(find.textContaining('Potem 269,99 zł za rok'), findsOneWidget);
       // Buying for good is folded under the subscription.
       await tester.scrollUntilVisible(find.text('Na zawsze, bez subskrypcji'), 200, scrollable: mainScroll);
       await Scrollable.ensureVisible(tester.element(find.text('Na zawsze, bez subskrypcji')), alignment: .3);
