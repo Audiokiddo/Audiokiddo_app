@@ -10,15 +10,22 @@ import '../personal/personal_repository.dart';
 import 'quick_pick.dart';
 
 /// The play a new family starts with: Studio can name it with a shelf "pierwsza"; otherwise
-/// a short free play that needs nothing to prepare and works from age 3.
-ContentItem? firstPlay(Catalog catalog) {
+/// a free play that needs nothing to prepare and suits [age]. Up to 4 the shortest and
+/// simplest (made for the youngest); older children get the one made closest to their age.
+ContentItem? firstPlay(Catalog catalog, {int? age}) {
   final shelf = catalog.shelves.where((s) => s.id == 'pierwsza').firstOrNull;
   final named = shelf == null ? null : [for (final id in shelf.itemIds) ?catalog.item(id)].firstOrNull;
   if (named != null) return named;
+  final years = age ?? 3;
   final candidates = [
     for (final i in catalog.items)
-      if (i.isFree && i.kind == ContentKind.audioGame && i.requirements.isEmpty && i.ageMin <= 3) i,
-  ]..sort((a, b) => a.durationSec.compareTo(b.durationSec));
+      if (i.isFree && i.kind == ContentKind.audioGame && i.requirements.isEmpty && i.ageMin <= (years <= 4 ? 3 : years))
+        i,
+  ]..sort((a, b) => years <= 4
+      ? a.durationSec.compareTo(b.durationSec)
+      : (years - a.ageMin).compareTo(years - b.ageMin) != 0
+      ? (years - a.ageMin).compareTo(years - b.ageMin)
+      : a.durationSec.compareTo(b.durationSec));
   return candidates.firstOrNull;
 }
 
@@ -34,7 +41,7 @@ class FirstPlayCard extends ConsumerWidget {
     final recent = ref.watch(recentProvider).value;
     if (catalog == null || family == null || recent == null) return const SizedBox.shrink();
     if (family.results.any((r) => r.completed) || recent.isNotEmpty) return const SizedBox.shrink();
-    final item = firstPlay(catalog);
+    final item = firstPlay(catalog, age: family.active?.age);
     if (item == null) return const SizedBox.shrink();
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
@@ -80,8 +87,8 @@ class FirstPlayCard extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              'Włącz zabawę, połóż telefon ekranem do dołu obok dziecka i wróć do swoich spraw. '
-              'Dziecko odpowiada na głos, rusza się i wymyśla. Pierwszy raz posłuchajcie razem.',
+              'Pierwszy raz posłuchajcie razem i sprawdźcie głośność. Telefon połóżcie ekranem do dołu. '
+              'Dziecko odpowiada na głos, rusza się i wymyśla. Potem zobaczycie, ile da radę samo.',
               style: text.bodyMedium?.copyWith(color: ink, height: 1.35),
             ),
             const SizedBox(height: 12),

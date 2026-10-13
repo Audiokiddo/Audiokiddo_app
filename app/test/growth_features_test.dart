@@ -30,6 +30,17 @@ void main() {
     expect(item.kind, ContentKind.audioGame);
   });
 
+  test('a 4-year-old starts with the shortest free play; an older child with one closer to their age', () {
+    final young = firstPlay(catalog, age: 4)!;
+    final free = catalog.items.where(
+      (i) => i.isFree && i.kind == ContentKind.audioGame && i.requirements.isEmpty && i.ageMin <= 3,
+    );
+    expect(young.durationSec, free.map((i) => i.durationSec).reduce((a, b) => a < b ? a : b));
+    final older = firstPlay(catalog, age: 8)!;
+    expect(older.ageMin, greaterThanOrEqualTo(young.ageMin));
+    expect(older.ageMin, lessThanOrEqualTo(8));
+  });
+
   test('no placeholder songs; ages as decided', () {
     expect(catalog.items.where((i) => i.kind == ContentKind.song), isEmpty);
     for (final i in catalog.itemsInPack('detektyw')) {
