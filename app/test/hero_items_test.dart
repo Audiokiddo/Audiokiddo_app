@@ -55,4 +55,26 @@ void main() {
       isFalse,
     );
   });
+
+  test('after work, 16:30–19:30: about 25 minutes of no-prep plays, unheard first', () async {
+    expect(isDinnerWindow(DateTime(2026, 10, 13, 16, 29)), isFalse);
+    expect(isDinnerWindow(DateTime(2026, 10, 13, 16, 30)), isTrue);
+    expect(isDinnerWindow(DateTime(2026, 10, 13, 19, 29)), isTrue);
+    expect(isDinnerWindow(DateTime(2026, 10, 13, 19, 30)), isFalse);
+
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    final c = ProviderContainer(overrides: testOverrides(db));
+    addTearDown(c.dispose);
+    final catalog = await c.read(catalogProvider.future);
+    final now = DateTime(2026, 10, 13, 17);
+    final picks = dinnerPicks(catalog, age: 5, canPlay: (_) => true, heard: const {}, now: now);
+    expect(picks, isNotEmpty);
+    expect(picks.every((i) => i.requirements.isEmpty && i.ageMin <= 5), isTrue);
+    final seconds = picks.fold(0, (s, i) => s + i.durationSec);
+    expect(seconds - picks.last.durationSec, lessThan(25 * 60), reason: 'stops once about 25 minutes are lined up');
+    final heardFirst = dinnerPicks(catalog, age: 5, canPlay: (_) => true, heard: {picks.first.id}, now: now);
+    expect(heardFirst.first.id, isNot(picks.first.id), reason: 'unheard plays come first');
+    expect(dinnerPicks(catalog, age: 5, canPlay: (_) => false, heard: const {}, now: now), isEmpty);
+  });
 }

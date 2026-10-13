@@ -29,6 +29,7 @@ import '../downloads/download_providers.dart';
 import 'catalog_providers.dart';
 import 'library_filter.dart';
 import 'library_screen.dart' show MyPacksTile;
+import '../discovery/queue_controller.dart';
 import 'seasonal.dart';
 import 'widgets/item_art.dart';
 import '../home/launch_greeting.dart';
@@ -91,6 +92,8 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               TourTarget(id: 'hero', child: const HeroShelf()),
               const SizedBox(height: 18),
+              // 16:30–19:30: the after-work window (research 2026-10-12), one tap for dinner.
+              const DinnerCard(),
 
               // Plays first, the way parents think: what now, then for which age and kind;
               // packs, offers and helpers after them.
@@ -852,6 +855,109 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
 });
 
 const _closingPlayId = 'prawda-czy-nie';
+
+/// Whether [now] is in the after-work window, 16:30–19:30.
+bool isDinnerWindow(DateTime now) {
+  final m = now.hour * 60 + now.minute;
+  return m >= 16 * 60 + 30 && m < 19 * 60 + 30;
+}
+
+/// About [minutes] of plays the family can start now with nothing to get ready, for [age]:
+/// unheard ones first, then the rest, back to back.
+List<ContentItem> dinnerPicks(
+  Catalog catalog, {
+  required int age,
+  required bool Function(ContentItem) canPlay,
+  required Set<String> heard,
+  required DateTime now,
+  int minutes = 25,
+}) {
+  final fits = catalog.items.where(
+    (i) =>
+        i.kind == ContentKind.audioGame &&
+        i.requirements.isEmpty &&
+        i.audio.isNotEmpty &&
+        i.releasedOn?.isAfter(now) != true &&
+        i.ageMin <= age &&
+        (i.ageMax == null || i.ageMax! >= age) &&
+        canPlay(i),
+  );
+  final ordered = [...fits.where((i) => !heard.contains(i.id)), ...fits.where((i) => heard.contains(i.id))];
+  final picks = <ContentItem>[];
+  var seconds = 0;
+  for (final i in ordered) {
+    if (seconds >= minutes * 60) break;
+    picks.add(i);
+    seconds += i.durationSec;
+  }
+  return picks;
+}
+
+/// "Obiad bez wołania": in the after-work window, about 25 minutes of no-prep plays, one tap,
+/// one after another. Says what it is, with real numbers.
+class DinnerCard extends ConsumerWidget {
+  const DinnerCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final now = ref.watch(clockProvider)();
+    final catalog = ref.watch(catalogProvider).value;
+    if (catalog == null || !isDinnerWindow(now)) return const SizedBox.shrink();
+    final family = ref.watch(familyProvider).value;
+    final child = family?.active;
+    final picks = dinnerPicks(
+      catalog,
+      age: child?.age ?? 5,
+      canPlay: (i) => ref.watch(canPlayProvider(i)),
+      heard: {
+        if (child != null)
+          for (final r in family!.resultsOf(child.id)) r.itemId,
+      },
+      now: now,
+    );
+    if (picks.isEmpty) return const SizedBox.shrink();
+    final minutes = (picks.fold(0, (s, i) => s + i.durationSec) / 60).round();
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Material(
+        color: const Color(0xFFFFE3C2),
+        borderRadius: BorderRadius.circular(22),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+          child: Row(
+            children: [
+              const Icon(Icons.restaurant_rounded, color: ink, size: 30),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Obiad bez wołania', style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800)),
+                    Text(
+                      '${playsCount(picks.length)} bez przygotowań, razem $minutes min. Jedna po drugiej.',
+                      style: text.bodySmall?.copyWith(color: ink),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                style: FilledButton.styleFrom(backgroundColor: ink, foregroundColor: Colors.white),
+                onPressed: () async {
+                  await ref.read(queueRunnerProvider.notifier).start(picks);
+                  if (context.mounted && ref.read(queueRunnerProvider).running) context.push('/odtwarzacz');
+                },
+                child: const Text('Włącz'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 /// Big covers at the top of Start: one swipe away from something new.
 class HeroShelf extends ConsumerStatefulWidget {
