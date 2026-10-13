@@ -821,24 +821,27 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
   final covers = ref.watch(coverAssetsProvider).value;
   if (covers == null) return const [];
   bool hasCover(ContentItem i) => i.cover != null || covers.contains(coverAssetPath(i.id));
+  bool open(ContentItem i) => ref.watch(canPlayProvider(i));
+  // Plays the family can start right now are always shown (every free one, the card says the
+  // age); locked ones only when they suit the child's age.
+  bool forAge(ContentItem i) =>
+      open(i) || child == null || (i.ageMin <= child.age && (i.ageMax == null || i.ageMax! >= child.age));
   bool fits(ContentItem i) =>
-      hasCover(i) &&
-      !played.contains(i.id) &&
-      (i.audio.isNotEmpty || i.script != null) &&
-      (child == null || (i.ageMin <= child.age && (i.ageMax == null || i.ageMax! >= child.age)));
+      hasCover(i) && !played.contains(i.id) && (i.audio.isNotEmpty || i.script != null) && forAge(i);
   final fresh = ref.watch(newItemsProvider).where(fits);
   final rest = catalog.items.where((i) => fits(i) && !fresh.contains(i));
   // When few are left unheard, favourites heard before fill in.
   final heard = catalog.items.where(
-    (i) => hasCover(i) && played.contains(i.id) && (child == null || i.ageMin <= child.age),
+    (i) => hasCover(i) && played.contains(i.id) && forAge(i),
   );
   // Up to seven: what the family can play right now comes first (new ones first among them),
   // then the plays that open with the subscription, clearly marked on their cards.
   final ordered = [...fresh, ...rest, ...heard].where((i) => i.id != _closingPlayId).toList();
+  final available = ordered.where(open).toList();
   final picks = [
-    ...ordered.where((i) => ref.watch(canPlayProvider(i))),
-    ...ordered.where((i) => !ref.watch(canPlayProvider(i))),
-  ].take(7).toList();
+    ...available,
+    ...ordered.where((i) => !open(i)).take((7 - available.length).clamp(2, 7)),
+  ];
   // "Prawda czy nie?" always closes the row: a quick game for any moment.
   final closing = catalog.item(_closingPlayId);
   return [...picks, if (closing != null && hasCover(closing)) closing];
