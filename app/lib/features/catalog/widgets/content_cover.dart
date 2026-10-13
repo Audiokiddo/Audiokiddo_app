@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'item_art.dart';
 
-/// A play's square cover with its badges (lock, "NOWE"); the drawn scene stands in until the
+/// A play's square cover with its badges (lock, "NOWE", "ZA DARMO"); the drawn scene stands in until the
 /// cover image arrives (assets/covers, tool/import_covers.py).
 class ContentCover extends StatelessWidget {
   const ContentCover({
@@ -13,6 +13,7 @@ class ContentCover extends StatelessWidget {
     this.size = 120,
     this.locked = false,
     this.fresh = false,
+    this.free = false,
   });
   final ContentItem item;
   final Pack? pack;
@@ -21,6 +22,9 @@ class ContentCover extends StatelessWidget {
 
   /// Released recently: a small yellow "NOWE" label.
   final bool fresh;
+
+  /// Free to play: a green "ZA DARMO" label at the bottom.
+  final bool free;
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
     child: SizedBox.square(
@@ -43,6 +47,24 @@ class ContentCover extends StatelessWidget {
                       fontSize: size < 80 ? 8 : 10,
                       fontWeight: FontWeight.w800,
                       color: const Color(0xFF211C35),
+                      letterSpacing: .5,
+                    ),
+                  ),
+                ),
+              ),
+            if (free)
+              Positioned(
+                left: 5,
+                bottom: 5,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(color: const Color(0xFF2E9D57), borderRadius: BorderRadius.circular(8)),
+                  child: Text(
+                    'ZA DARMO',
+                    style: TextStyle(
+                      fontSize: size < 80 ? 8 : 10,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
                       letterSpacing: .5,
                     ),
                   ),

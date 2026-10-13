@@ -950,6 +950,8 @@ class _HeroCard extends ConsumerWidget {
                             Text(
                               !open
                                   ? 'W abonamencie'
+                                  : ref.watch(showFreeBadgeProvider(item))
+                                  ? 'Za darmo'
                                   : fresh
                                   ? 'Nowość'
                                   : item.id == _closingPlayId

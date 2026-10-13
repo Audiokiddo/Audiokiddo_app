@@ -36,4 +36,23 @@ void main() {
     expect(hero.skip(free.length).any((i) => i.isFree && i.id != 'prawda-czy-nie'), isFalse);
     expect(hero.where((i) => !i.isFree), isNotEmpty, reason: 'locked plays follow, marked on their cards');
   });
+
+  test('"ZA DARMO" marks free plays, but not for subscribers', () async {
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    Future<bool> badge(List<Entitlement> entitlements) async {
+      final c = ProviderContainer(overrides: [...testOverrides(db), entitlementsProvider.overrideWithValue(entitlements)]);
+      addTearDown(c.dispose);
+      final catalog = await c.read(catalogProvider.future);
+      return c.read(showFreeBadgeProvider(catalog.items.firstWhere((i) => i.isFree)));
+    }
+
+    expect(await badge(const []), isTrue);
+    expect(
+      await badge(const [
+        Entitlement(scope: Scopes.allContent, status: EntitlementStatus.active, source: EntitlementSource.appStore),
+      ]),
+      isFalse,
+    );
+  });
 }

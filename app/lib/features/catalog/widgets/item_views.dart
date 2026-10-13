@@ -50,6 +50,7 @@ class ItemCard extends ConsumerWidget {
                 pack: item.packId == null ? null : catalog.pack(item.packId!),
                 size: width,
                 locked: !canPlay,
+                free: ref.watch(showFreeBadgeProvider(item)),
               ),
               const SizedBox(height: AkSpace.s),
               Flexible(
@@ -103,7 +104,13 @@ class ItemTile extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: AkSpace.m, vertical: AkSpace.s),
           child: Row(
             children: [
-              ContentCover(item: item, pack: pack, size: 72, locked: !canPlay),
+              ContentCover(
+                item: item,
+                pack: pack,
+                size: 72,
+                locked: !canPlay,
+                free: ref.watch(showFreeBadgeProvider(item)),
+              ),
               const SizedBox(width: AkSpace.m),
               Expanded(
                 child: Column(

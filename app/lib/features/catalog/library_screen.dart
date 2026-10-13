@@ -675,6 +675,7 @@ class _Covers extends ConsumerWidget {
                     size: 116,
                     locked: !ref.watch(canPlayProvider(item)),
                     fresh: ref.watch(isNewItemProvider(item)),
+                    free: ref.watch(showFreeBadgeProvider(item)),
                   ),
                   const SizedBox(height: 6),
                   Text(item.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: text.bodySmall?.copyWith(fontWeight: FontWeight.w700)),

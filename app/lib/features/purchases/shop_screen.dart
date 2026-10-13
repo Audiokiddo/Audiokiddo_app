@@ -82,6 +82,7 @@ class ShopScreen extends ConsumerWidget {
                       style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                     ),
                   ),
+                if (!subscribed) _ThreeWays(catalog: catalog, byId: byId),
                 const SizedBox(height: 18),
                 if (!subscribed) const WinBackCard(withButton: false),
                 if (subscribed)
@@ -306,6 +307,72 @@ class _PriceList extends StatelessWidget {
   static String? _sum(List<StoreProduct?> products, String? currency) {
     if (products.isEmpty || products.any((p) => p?.rawPrice == null)) return null;
     return formatMoney(products.fold(0.0, (a, p) => a + p!.rawPrice!), currency);
+  }
+}
+
+/// The three ways side by side, plainly (research 2026-10-12, finding 12: no surprise with
+/// payments): what is free already, a pack for good, the subscription per month. No stars.
+class _ThreeWays extends ConsumerWidget {
+  const _ThreeWays({required this.catalog, required this.byId});
+
+  final Catalog catalog;
+  final Map<String, StoreProduct> byId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = Theme.of(context).textTheme;
+    final free = catalog.items.where((i) => i.isFree).length;
+    final packPrices = [
+      for (final p in catalog.packs) ?byId[p.storeProductId],
+    ].where((p) => p.rawPrice != null).toList()..sort((a, b) => a.rawPrice!.compareTo(b.rawPrice!));
+    final monthly = byId[ProductIds.monthly];
+    final yearly = byId[ProductIds.yearly];
+    final perMonth = yearly?.rawPrice == null ? null : formatMoney(yearly!.rawPrice! / 12, yearly.currencyCode);
+    final ways = [
+      ('Za darmo', playsCount(free), 'już działa, bez płacenia'),
+      ('Pakiet na zawsze', packPrices.isEmpty ? 'od 49,99 zł' : 'od ${packPrices.first.price}', 'płacisz raz'),
+      (
+        'Abonament',
+        monthly == null ? 'wszystkie zabawy' : '${monthly.price} / mies.',
+        perMonth == null ? 'i nowy pakiet co miesiąc' : 'rocznie $perMonth / mies., nowy pakiet co miesiąc',
+      ),
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Semantics(
+        container: true,
+        label: [for (final w in ways) '${w.$1}: ${w.$2}, ${w.$3}'].join('. '),
+        excludeSemantics: true,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final (i, w) in ways.indexed) ...[
+              if (i > 0) const SizedBox(width: 8),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: context.palette.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: context.palette.inkMuted.withValues(alpha: .25)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(w.$1, style: text.labelLarge?.copyWith(fontWeight: FontWeight.w800)),
+                      const SizedBox(height: 4),
+                      Text(w.$2, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 2),
+                      Text(w.$3, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }
 

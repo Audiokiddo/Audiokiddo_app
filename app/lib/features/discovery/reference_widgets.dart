@@ -306,7 +306,13 @@ class AudioRow extends ConsumerWidget {
             // The title next to it opens the same page and carries the label for VoiceOver.
             excludeFromSemantics: true,
             onTap: () => context.push('/zabawa/${item.id}'),
-            child: ContentCover(item: item, size: 64, locked: !playable, fresh: ref.watch(isNewItemProvider(item))),
+            child: ContentCover(
+              item: item,
+              size: 64,
+              locked: !playable,
+              fresh: ref.watch(isNewItemProvider(item)),
+              free: ref.watch(showFreeBadgeProvider(item)),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -609,6 +615,7 @@ class CoverRow extends ConsumerWidget {
                     size: size,
                     locked: !ref.watch(canPlayProvider(item)),
                     fresh: ref.watch(isNewItemProvider(item)),
+                    free: ref.watch(showFreeBadgeProvider(item)),
                   ),
                   ListenedBar(item: item, compact: true),
                   const SizedBox(height: 6),

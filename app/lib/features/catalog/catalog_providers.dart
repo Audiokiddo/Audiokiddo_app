@@ -96,3 +96,10 @@ final itemAccessProvider = Provider.family<ItemAccess, ContentItem>((ref, item) 
 final canPlayProvider = Provider.family<bool, ContentItem>(
   (ref, item) => ref.watch(itemAccessProvider(item)) == ItemAccess.playable,
 );
+
+/// A free play shows "ZA DARMO" on its cover, so a parent sees at once what costs nothing
+/// (research 2026-10-12, finding 12). Subscribers have everything, so no label for them.
+final showFreeBadgeProvider = Provider.family<bool, ContentItem>(
+  (ref, item) =>
+      item.isFree && !ref.watch(accessPolicyProvider).activeScopes(ref.watch(clockProvider)()).contains(Scopes.allContent),
+);

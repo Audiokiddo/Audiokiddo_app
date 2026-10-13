@@ -92,6 +92,8 @@ void main() {
       await tester.tap(find.text('Sklep').last);
       await tester.pumpAndSettle();
       // The subscription first, said simply: crossed-out monthly price, the yearly per month.
+      // The three ways side by side first: free, a pack for good, the subscription per month.
+      expect(find.bySemanticsLabel(RegExp(r'^Za darmo: .*Pakiet na zawsze: od .*Abonament: ')), findsOneWidget);
       expect(find.text('Abonament AudioKiddo'), findsOneWidget);
       expect(find.text('NAJLEPIEJ SIĘ OPŁACA'), findsOneWidget);
       // Yearly first, with the cloud saying how much it saves and the year crossed out
