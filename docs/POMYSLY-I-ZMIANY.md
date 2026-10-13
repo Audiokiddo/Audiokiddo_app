@@ -95,7 +95,7 @@ Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
 
 | Pomysł | Status | Uwagi |
 |---|---|---|
-| Rosnąca cena roczna dla późniejszych (+5 zł co miesiąc), start na Black Friday | **pomysł, do decyzji** | Opinia w raporcie: dobre jako „drabina wczesnych”, ale z górnym limitem, gwarancją ceny dla już płacących i prawdziwą datą kolejnej zmiany. Technicznie: zaplanowane zmiany cen w App Store Connect i Play Console |
+| Rosnąca cena roczna dla późniejszych (+5 zł co miesiąc), start na Black Friday | **pomysł, do decyzji** | Opinia (14.10): tak, pod trzema warunkami: (1) gwarancja ceny dla już płacących (w sklepach zmiana tylko dla nowych klientów), (2) prawdziwa data i kwota kolejnej podwyżki, bez przekreślonych cen, (3) górny limit, np. 199,99 zł. Przykład: Black Friday 149,99 → +5 zł co miesiąc → limit 199,99. Strona z podsumowaniem: https://claude.ai/artifact/QexpmdjinESyeWMTjXWCwv |
 | Prezent: abonament 3 i 12 miesięcy bez odnawiania, kod plus karta PDF lub pocztówka | pomysł ★★★ | Wpisywanie kodu w aplikacji już działa |
 | Kody twórców (np. `SZOP-TATA`) z licznikiem w CRM | pomysł ★★ | |
 | Licencja dla przedszkoli | pomysł ★★ | |
