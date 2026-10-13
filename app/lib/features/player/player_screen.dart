@@ -25,6 +25,7 @@ import 'audio_route.dart';
 import 'bottom_dock.dart' show hiddenResumeProvider;
 import 'playback_controller.dart';
 import 'player_providers.dart';
+import 'listen_mode.dart';
 import 'szop_after_play.dart';
 import '../referral/referral_nudge.dart';
 import '../stickers/stickers.dart';
@@ -100,7 +101,11 @@ class _Player extends ConsumerWidget {
                 FilledButton(onPressed: () => context.go('/biblioteka'), child: const Text('Otwórz bibliotekę')),
               ] else ...[
                 if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
+                // Listen together or let the child play alone (research 2026-10-12, finding 10).
+                if (item != null && state?.processingState != AudioProcessingState.completed)
+                  const ListenModeChooser(),
                 if (item != null && state?.processingState == AudioProcessingState.completed) ...[
+                  TalkAfterPlayCard(item: item),
                   const NewStickerCard(),
                   _UpNext(after: item),
                   const ReferralNudge(),
