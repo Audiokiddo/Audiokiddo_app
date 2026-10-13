@@ -2,15 +2,15 @@
 """Kiddo's voice lines and interface sounds bundled with the app (app/assets/audio/kiddo/).
 
 Placeholder speech: macOS `say` (voice Zosia). With --voice NAME the lines are spoken by that
-ElevenLabs voice instead (Dawid's own voice is "fantazjusz"); the files keep the same names, so
+ElevenLabs voice instead (Dawid's own voice is the one named "szop" in his ElevenLabs library); the files keep the same names, so
 the app needs no change. The key is read from the macOS keychain (item "elevenlabs-api-key"),
 never from the repository. Every line is cached by its text, there is no automatic retry and a
 character limit stops the run before it can cost more than planned. Sounds are synthesised here.
 Short files, bundled so the welcome works offline on the first launch.
 
-    python3 tool/ui_voice.py --voice fantazjusz --dry-run          # what it would cost, nothing sent
-    python3 tool/ui_voice.py --voice fantazjusz --only hello       # one line to listen to first
-    python3 tool/ui_voice.py --voice fantazjusz                    # all the lines
+    python3 tool/ui_voice.py --voice szop --dry-run          # what it would cost, nothing sent
+    python3 tool/ui_voice.py --voice szop --only hello       # one line to listen to first
+    python3 tool/ui_voice.py --voice szop                    # all the lines
 """
 import argparse
 import hashlib
@@ -137,13 +137,32 @@ def eleven_key():
     return key
 
 
+def voice_id(name):
+    """The id of a voice: the known ones, else the voice of that name in the account's library."""
+    if name in ELEVEN_VOICES:
+        return ELEVEN_VOICES[name]
+    known = CACHE / "voice-ids.json"
+    ids = json.loads(known.read_text()) if known.exists() else {}
+    if name not in ids:
+        request = urllib.request.Request("https://api.elevenlabs.io/v1/voices", headers={"xi-api-key": eleven_key()})
+        with urllib.request.urlopen(request, timeout=60) as response:
+            voices = json.load(response).get("voices", [])
+        match = [v for v in voices if v.get("name", "").strip().lower() == name.lower()]
+        if not match:
+            raise SystemExit(f'Nie ma głosu o nazwie "{name}" w ElevenLabs. Są: ' + ", ".join(sorted(v.get("name", "?") for v in voices)))
+        ids[name] = match[0]["voice_id"]
+        CACHE.mkdir(parents=True, exist_ok=True)
+        known.write_text(json.dumps(ids))
+    return ids[name]
+
+
 def eleven_speech(text, voice_name):
     """The mp3 of [text] in the named voice: from the cache, or bought once and kept."""
     cache = CACHE / voice_name / (hashlib.sha1(f"{ELEVEN_MODEL}|{text}".encode()).hexdigest() + ".mp3")
     if cache.exists():
         return cache
     request = urllib.request.Request(
-        f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVEN_VOICES[voice_name]}?output_format=mp3_44100_128",
+        f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id(voice_name)}?output_format=mp3_44100_128",
         data=json.dumps({"text": text, "model_id": ELEVEN_MODEL, "language_code": "pl",
                          "voice_settings": {"stability": 0.5, "similarity_boost": 0.8}}).encode(),
         headers={"xi-api-key": eleven_key(), "Content-Type": "application/json"}, method="POST")
@@ -178,7 +197,7 @@ def speak_with_voice(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--voice", choices=sorted(ELEVEN_VOICES), help="ElevenLabs voice for the lines (default: placeholder)")
+    parser.add_argument("--voice", help="name of the ElevenLabs voice for the lines, e.g. szop (default: the placeholder speech)")
     parser.add_argument("--only", help="comma-separated file names, e.g. hello,goodnight")
     parser.add_argument("--limit", type=int, default=2500, help="character limit for one run (default 2500)")
     parser.add_argument("--dry-run", action="store_true", help="only count the characters to buy")
@@ -210,7 +229,7 @@ def main():
     marker = "## Głos Szop’ena (aplikacja)"
     section = [marker, "", "Krótkie kwestie Szop'ena do dziecka (ciepły, łagodny ton), wbudowane w aplikację (`app/assets/audio/kiddo/`). "
                "Radośnie, z uśmiechem, bez muzyki pod spodem. Tymczasowy głos (macOS Zosia) zastępuje głos Dawida z ElevenLabs: "
-               "`python3 tool/ui_voice.py --voice fantazjusz` (najpierw `--only hello`, koszt w `--dry-run`).", "", "| Plik | Tekst |", "|---|---|"]
+               "`python3 tool/ui_voice.py --voice szop` (najpierw `--only hello`, koszt w `--dry-run`).", "", "| Plik | Tekst |", "|---|---|"]
     section += [f"| `{name}.m4a` | {line} |" for name, line in LINES.items()]
     if marker in text:
         text = text[: text.index(marker)].rstrip() + "\n"
