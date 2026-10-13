@@ -1,3 +1,4 @@
+import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -12,6 +13,7 @@ import '../parental_gate/parental_gate.dart';
 
 const feedbackEmail = 'kontakt@audiokiddo.pl';
 const _askedKey = 'rating_asked_at';
+const _happyKey = 'rating_happy_at';
 
 /// Plays a family must have finished before Szop’en asks how they like the app.
 const ratingAfterPlays = 3;
@@ -22,9 +24,42 @@ final ratingAskedProvider = FutureProvider<DateTime?>((ref) async {
   return raw == null ? null : DateTime.tryParse(raw);
 });
 
-/// Whether to show the question now: after a few good moments, never twice in 60 days.
-bool shouldAskForRating({required int finishedPlays, required DateTime? askedAt, required DateTime now}) =>
-    finishedPlays >= ratingAfterPlays && (askedAt == null || now.difference(askedAt).inDays >= 60);
+/// The last good moment: the parent said the child wants more, or the child asked for the same
+/// play again. The store is where parents read and write opinions (research 2026-10-12), so we
+/// ask right after such a moment, never out of the blue.
+final ratingHappyProvider = FutureProvider<DateTime?>((ref) async {
+  final raw = await ref.watch(databaseProvider).readValue(_happyKey);
+  return raw == null ? null : DateTime.tryParse(raw);
+});
+
+/// Remembers a good moment (see [ratingHappyProvider]).
+Future<void> markHappyMoment(WidgetRef ref) async {
+  await ref.read(databaseProvider).writeValue(_happyKey, ref.read(clockProvider)().toIso8601String());
+  ref.invalidate(ratingHappyProvider);
+}
+
+/// When a child last finished a play they had already finished before (asked for it again).
+DateTime? lastReplayAt(Iterable<ActivityResult> results) {
+  final seen = <String>{};
+  DateTime? last;
+  for (final r in [...results.where((r) => r.completed)]..sort((a, b) => a.at.compareTo(b.at))) {
+    if (!seen.add('${r.childId}/${r.itemId}') && (last == null || r.at.isAfter(last))) last = r.at;
+  }
+  return last;
+}
+
+/// Whether to show the question now: after a few finished plays, within 3 days of a good moment,
+/// never twice in 60 days.
+bool shouldAskForRating({
+  required int finishedPlays,
+  required DateTime? askedAt,
+  required DateTime now,
+  required DateTime? happyAt,
+}) =>
+    finishedPlays >= ratingAfterPlays &&
+    happyAt != null &&
+    now.difference(happyAt).inDays < 3 &&
+    (askedAt == null || now.difference(askedAt).inDays >= 60);
 
 Future<void> _remember(WidgetRef ref) async {
   await ref.read(databaseProvider).writeValue(_askedKey, ref.read(clockProvider)().toIso8601String());
@@ -68,9 +103,18 @@ class RatingCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final family = ref.watch(familyProvider).value;
     final asked = ref.watch(ratingAskedProvider);
-    if (family == null || !asked.hasValue) return const SizedBox.shrink();
+    final happy = ref.watch(ratingHappyProvider);
+    if (family == null || !asked.hasValue || !happy.hasValue) return const SizedBox.shrink();
     final finished = family.results.where((r) => r.completed).length;
-    if (!shouldAskForRating(finishedPlays: finished, askedAt: asked.value, now: ref.watch(clockProvider)())) {
+    if (!shouldAskForRating(
+      finishedPlays: finished,
+      askedAt: asked.value,
+      now: ref.watch(clockProvider)(),
+      happyAt: [?happy.value, ?lastReplayAt(family.results)].fold<DateTime?>(
+        null,
+        (a, b) => a == null || b.isAfter(a) ? b : a,
+      ),
+    )) {
       return const SizedBox.shrink();
     }
     final text = Theme.of(context).textTheme;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,7 @@ import '../family/family.dart' hide progressProvider;
 import '../home/quick_pick.dart' show startItem;
 import '../insights/events.dart';
 import '../personal/personal_repository.dart';
+import '../rating/rating.dart' show markHappyMoment;
 import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
@@ -109,6 +112,7 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
 
   void _answered(WantsMore a) {
     ref.read(eventSinkProvider).track(AppEvent.wantsMore, itemId: widget.item.id, props: {'answer': a.wire});
+    if (a == WantsMore.yes) unawaited(markHappyMoment(ref));
     if (a == WantsMore.willAsk) {
       Navigator.of(context).maybePop();
       return;
