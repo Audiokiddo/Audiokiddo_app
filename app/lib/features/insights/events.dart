@@ -39,7 +39,9 @@ enum AppEvent {
   favoriteRemoved('favorite_removed'),
   searchPerformed('search_performed'),
   sourceAnswered('source_answered'),
-  cancelReason('cancel_reason');
+  cancelReason('cancel_reason'),
+  // After a free play: does the child want more? (yes / not_today / will_ask).
+  wantsMore('wants_more');
 
   const AppEvent(this.wire);
   final String wire;

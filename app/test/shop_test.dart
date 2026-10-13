@@ -193,7 +193,12 @@ void main() {
       await pumpApp(tester);
       final free = catalog.items.firstWhere((i) => i.isFree && i.packId == 'wyobraznia');
       await showOffer(tester, free);
-      expect(find.text('Brawo! Lecimy dalej?'), findsOneWidget);
+      // First the question; "Tak, od razu" opens the offer.
+      expect(find.text('Czy dziecko chce jeszcze?'), findsOneWidget);
+      expect(find.text('Abonament AudioKiddo'), findsNothing);
+      await tester.tap(find.text('Tak, od razu'));
+      await tester.pumpAndSettle();
+      expect(find.text('Jest ciąg dalszy. Tak go otworzycie:'), findsOneWidget);
       expect(find.text('Następna darmowa zabawa'), findsOneWidget, reason: 'another free play first');
       expect(find.text('Abonament AudioKiddo'), findsOneWidget);
       expect(find.textContaining('Nowy pakiet co miesiąc'), findsOneWidget);
@@ -207,6 +212,16 @@ void main() {
         askInParentArea ? findsOneWidget : findsNothing,
         reason: 'the parent area buys without the number question',
       );
+    });
+
+    testWidgets('"Nie dziś" after a free play: the next free play, no offer', (tester) async {
+      await pumpApp(tester);
+      final free = catalog.items.firstWhere((i) => i.isFree && i.packId == 'wyobraznia');
+      await showOffer(tester, free);
+      await tester.tap(find.text('Nie dziś'));
+      await tester.pumpAndSettle();
+      expect(find.text('Następna darmowa zabawa'), findsOneWidget);
+      expect(find.text('Abonament AudioKiddo'), findsNothing);
     });
 
     testWidgets('with the subscription everything is unlocked', (tester) async {

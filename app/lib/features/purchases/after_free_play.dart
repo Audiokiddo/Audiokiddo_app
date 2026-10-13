@@ -90,9 +90,31 @@ class AfterFreePlayOffer extends ConsumerStatefulWidget {
   ConsumerState<AfterFreePlayOffer> createState() => _AfterFreePlayOfferState();
 }
 
+/// The parent's answer to "Czy dziecko chce jeszcze?" (research 2026-10-12: the child who asks
+/// again decides the purchase, so the offer follows the answer).
+enum WantsMore {
+  yes('yes'),
+  notToday('not_today'),
+  willAsk('will_ask');
+
+  const WantsMore(this.wire);
+
+  final String wire;
+}
+
 class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
   bool _tracked = false;
   late final Set<String> _heard = heardIds(ref);
+  WantsMore? _answer;
+
+  void _answered(WantsMore a) {
+    ref.read(eventSinkProvider).track(AppEvent.wantsMore, itemId: widget.item.id, props: {'answer': a.wire});
+    if (a == WantsMore.willAsk) {
+      Navigator.of(context).maybePop();
+      return;
+    }
+    setState(() => _answer = a);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +130,10 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
         : catalog.itemsInPack(pack.id).where((i) => !ref.watch(canPlayProvider(i))).toList();
     final anyLocked = catalog.items.any((i) => !ref.watch(canPlayProvider(i)));
     if (next == null && !anyLocked) return const SizedBox.shrink();
-    if (!_tracked && anyLocked) {
+    // First the question, while something is still locked; the answer decides what follows.
+    if (anyLocked && _answer == null) return _question(context);
+    final showOffer = anyLocked && _answer != WantsMore.notToday;
+    if (!_tracked && showOffer) {
       _tracked = true;
       ref.read(eventSinkProvider).track(AppEvent.paywallView, itemId: item.id, props: {'from': 'after_free_play'});
     }
@@ -142,7 +167,12 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                next != null ? 'Brawo! Lecimy dalej?' : 'Spodobało się? To dopiero początek.',
+                switch (_answer) {
+                  WantsMore.yes => 'Jest ciąg dalszy. Tak go otworzycie:',
+                  WantsMore.notToday when next != null => 'Jasne. Na później jest jeszcze jedna darmowa.',
+                  WantsMore.notToday => 'Jasne. Pakiety poczekają w Sklepie.',
+                  _ => 'Lecimy dalej?',
+                },
                 style: text.titleLarge?.copyWith(color: ink, fontWeight: FontWeight.w800),
               ),
             ),
@@ -197,7 +227,7 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
             ),
           ),
         ],
-        if (anyLocked) ...[
+        if (showOffer) ...[
           const SizedBox(height: 14),
           if (next != null)
             Text(
@@ -232,6 +262,43 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
             ),
           ],
         ],
+      ],
+    );
+  }
+
+  Widget _question(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            const SzopSticker(SzopPose.klaszcze, height: 72),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Czy dziecko chce jeszcze?',
+                style: text.titleLarge?.copyWith(color: ink, fontWeight: FontWeight.w800),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text('Jedno dotknięcie. Od tego zależy, co pokażemy dalej.', style: text.bodyMedium?.copyWith(color: ink)),
+        const SizedBox(height: 14),
+        FilledButton(
+          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+          onPressed: () => _answered(WantsMore.yes),
+          child: const Text('Tak, od razu'),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+          onPressed: () => _answered(WantsMore.notToday),
+          child: const Text('Nie dziś'),
+        ),
+        TextButton(onPressed: () => _answered(WantsMore.willAsk), child: const Text('Zapytam')),
       ],
     );
   }
