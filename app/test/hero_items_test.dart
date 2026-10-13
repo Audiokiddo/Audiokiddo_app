@@ -77,4 +77,13 @@ void main() {
     expect(heardFirst.first.id, isNot(picks.first.id), reason: 'unheard plays come first');
     expect(dinnerPicks(catalog, age: 5, canPlay: (_) => false, heard: const {}, now: now), isEmpty);
   });
+
+  test('the favourite is the play finished most often, at least twice', () {
+    ActivityResult done(String item, int day, {String child = 'z'}) =>
+        ActivityResult(childId: child, itemId: item, at: DateTime(2026, 10, day), seconds: 300);
+    expect(favoritePlayId([done('a', 1), done('b', 2)], 'z'), isNull, reason: 'once is not a favourite');
+    expect(favoritePlayId([done('a', 1), done('a', 2), done('b', 3), done('b', 4), done('b', 5)], 'z'), 'b');
+    expect(favoritePlayId([done('a', 1), done('a', 2), done('b', 3), done('b', 4)], 'z'), 'b', reason: 'latest wins a tie');
+    expect(favoritePlayId([done('a', 1, child: 'x'), done('a', 2, child: 'x')], 'z'), isNull);
+  });
 }

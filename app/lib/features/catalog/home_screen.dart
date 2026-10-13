@@ -92,6 +92,8 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               TourTarget(id: 'hero', child: const HeroShelf()),
               const SizedBox(height: 18),
+              // The play the child keeps asking for ("mamo, włącz mi…"), one tap away.
+              const FavoriteCard(),
               // 16:30–19:30: the after-work window (research 2026-10-12), one tap for dinner.
               const DinnerCard(),
 
@@ -855,6 +857,86 @@ final heroItemsProvider = Provider<List<ContentItem>>((ref) {
 });
 
 const _closingPlayId = 'prawda-czy-nie';
+
+/// The play [childId] finished most often, at least twice (latest wins a tie), or null.
+String? favoritePlayId(Iterable<ActivityResult> results, String childId) {
+  final count = <String, int>{};
+  final last = <String, DateTime>{};
+  for (final r in results) {
+    if (r.childId != childId || !r.completed) continue;
+    count[r.itemId] = (count[r.itemId] ?? 0) + 1;
+    if (last[r.itemId] == null || r.at.isAfter(last[r.itemId]!)) last[r.itemId] = r.at;
+  }
+  final best = count.entries.where((e) => e.value >= 2).toList()
+    ..sort((a, b) => b.value != a.value ? b.value.compareTo(a.value) : last[b.key]!.compareTo(last[a.key]!));
+  return best.firstOrNull?.key;
+}
+
+/// "Ulubiona Zosi": the play the child finished most often, with "Jeszcze raz". A free play
+/// from a pack the family lacks also says how much more of that series there is.
+class FavoriteCard extends ConsumerWidget {
+  const FavoriteCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(catalogProvider).value;
+    final family = ref.watch(familyProvider).value;
+    final child = family?.active;
+    if (catalog == null || child == null) return const SizedBox.shrink();
+    final id = favoritePlayId(family!.results, child.id);
+    final item = id == null ? null : catalog.item(id);
+    if (item == null || !ref.watch(canPlayProvider(item))) return const SizedBox.shrink();
+    final times = family.resultsOf(child.id).where((r) => r.completed && r.itemId == item.id).length;
+    final pack = item.packId == null ? null : catalog.pack(item.packId!);
+    final more = pack == null || ownsPack(ref.watch(activeScopesProvider), pack.id)
+        ? 0
+        : catalog.itemsInPack(pack.id).where((i) => !ref.watch(canPlayProvider(i))).length;
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Material(
+        color: context.palette.surface,
+        borderRadius: BorderRadius.circular(22),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  SizedBox.square(
+                    dimension: 64,
+                    child: ClipRRect(borderRadius: BorderRadius.circular(14), child: ItemArt(item: item)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Ulubiona: ${child.name}',
+                          style: text.labelLarge?.copyWith(color: context.palette.inkMuted),
+                        ),
+                        Text(item.title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                        Text('Słuchane $times razy', style: text.bodySmall),
+                      ],
+                    ),
+                  ),
+                  FilledButton(onPressed: () => startItem(context, item), child: const Text('Jeszcze raz')),
+                ],
+              ),
+              if (more > 0)
+                TextButton(
+                  onPressed: () => openPack(context, pack.id),
+                  child: Text('W pakiecie ${pack!.title} czeka jeszcze ${playsCount(more)} w tym stylu'),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 /// Whether [now] is in the after-work window, 16:30–19:30.
 bool isDinnerWindow(DateTime now) {
