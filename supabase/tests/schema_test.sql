@@ -797,3 +797,30 @@ begin
   assert (select count(*) from public.crm_items where data->>'key' like 's-%') = 19, 'added once';
 end $$;
 select 'social content tests passed';
+
+-- Bedtime grace: the whole library ended earlier today, the bedtime plays still download until
+-- midnight; other plays do not, and a library that ended yesterday gets nothing.
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-0000000000b1', 'dobranoc@example.com'),
+  ('00000000-0000-0000-0000-0000000000b2', 'wczoraj@example.com');
+do $$
+declare
+  v_start timestamptz := (date_trunc('day', now() at time zone 'Europe/Warsaw')) at time zone 'Europe/Warsaw';
+  v_version integer;
+begin
+  insert into public.catalog_versions (manifest, manifest_sha256)
+  values ('{"items":[{"id":"zaginiony-skarb","situations":["przed_snem"]},{"id":"znikajace-dzwonki","situations":["w_domu"]}]}', 'x')
+  returning version into v_version;
+  insert into public.catalog_pointer (singleton, version) values (true, v_version)
+  on conflict (singleton) do update set version = excluded.version;
+  insert into public.entitlements (user_id, source, scope, status, valid_until, product_ref, store_original_tx_id) values
+    ('00000000-0000-0000-0000-0000000000b1', 'app_store', 'all_content', 'expired',
+     greatest(v_start, now() - interval '1 minute'), 'ios:pl.audiokiddo.sub.monthly', 'grace-today'),
+    ('00000000-0000-0000-0000-0000000000b2', 'app_store', 'all_content', 'expired',
+     v_start - interval '1 hour', 'ios:pl.audiokiddo.sub.monthly', 'grace-yesterday');
+  assert public.can_download('00000000-0000-0000-0000-0000000000b1', 'audio/wyobraznia/zaginiony-skarb.m4a'), 'bedtime play tonight';
+  assert not public.can_download('00000000-0000-0000-0000-0000000000b1', 'audio/detektyw/znikajace-dzwonki.m4a'), 'not a bedtime play';
+  assert not public.can_download('00000000-0000-0000-0000-0000000000b2', 'audio/wyobraznia/zaginiony-skarb.m4a'), 'ended yesterday';
+  assert not has_function_privilege('authenticated', 'public.bedtime_grace(uuid)', 'execute'), 'service role only';
+end $$;
+select 'bedtime grace tests passed';

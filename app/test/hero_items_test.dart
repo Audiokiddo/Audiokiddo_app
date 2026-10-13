@@ -94,4 +94,21 @@ void main() {
     expect(daysUntil(DateTime(2026, 10, 15), now), 'Pojutrze');
     expect(daysUntil(DateTime(2026, 10, 18), now), 'Za 5 dni');
   });
+
+  test('Dobranoc zawsze działa: bedtime plays keep playing until midnight on the day the library ended', () async {
+    final db = memoryDatabase();
+    addTearDown(db.close);
+    final c = ProviderContainer(overrides: testOverrides(db));
+    addTearDown(c.dispose);
+    final catalog = await c.read(catalogProvider.future);
+    final bedtime = catalog.items.firstWhere((i) => !i.isFree && i.situations.contains(Situation.przedSnem));
+    final other = catalog.items.firstWhere((i) => !i.isFree && !i.situations.contains(Situation.przedSnem));
+    final now = DateTime(2026, 10, 13, 20);
+    Entitlement ended(DateTime at, [EntitlementStatus s = EntitlementStatus.expired]) =>
+        Entitlement(scope: Scopes.allContent, status: s, source: EntitlementSource.appStore, validUntil: at);
+    expect(bedtimeGrace([ended(DateTime(2026, 10, 13, 9))], bedtime, now), isTrue);
+    expect(bedtimeGrace([ended(DateTime(2026, 10, 13, 9))], other, now), isFalse);
+    expect(bedtimeGrace([ended(DateTime(2026, 10, 12, 23))], bedtime, now), isFalse, reason: 'ended yesterday');
+    expect(bedtimeGrace([ended(DateTime(2026, 10, 13, 9), EntitlementStatus.refunded)], bedtime, now), isFalse);
+  });
 }

@@ -86,10 +86,30 @@ final leaseStateProvider = Provider<LeaseState>((ref) {
 
 enum ItemAccess { playable, locked, needsRefresh }
 
+/// "Dobranoc zawsze działa" (research 2026-10-12: a child left without the bedtime play after a
+/// subscription lapsed is the worst review). When the whole library ended earlier today, the
+/// bedtime plays keep playing until midnight. Refunds and revoked access get no grace.
+bool bedtimeGrace(List<Entitlement> entitlements, ContentItem item, DateTime now) {
+  if (!item.situations.contains(Situation.przedSnem)) return false;
+  return entitlements.any((e) {
+    final until = e.validUntil?.toLocal();
+    return e.scope == Scopes.allContent &&
+        until != null &&
+        !until.isAfter(now) &&
+        until.year == now.year &&
+        until.month == now.month &&
+        until.day == now.day &&
+        const {EntitlementStatus.active, EntitlementStatus.grace, EntitlementStatus.expired}.contains(e.status);
+  });
+}
+
 /// Free content always plays; paid content needs an entitlement and a valid lease.
 final itemAccessProvider = Provider.family<ItemAccess, ContentItem>((ref, item) {
   if (item.isFree) return ItemAccess.playable;
-  if (!ref.watch(accessPolicyProvider).canPlay(item, ref.watch(clockProvider)())) return ItemAccess.locked;
+  final now = ref.watch(clockProvider)();
+  if (!ref.watch(accessPolicyProvider).canPlay(item, now)) {
+    return bedtimeGrace(ref.watch(entitlementsProvider), item, now) ? ItemAccess.playable : ItemAccess.locked;
+  }
   return ref.watch(leaseStateProvider) == LeaseState.valid ? ItemAccess.playable : ItemAccess.needsRefresh;
 });
 
