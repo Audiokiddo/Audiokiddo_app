@@ -20,6 +20,7 @@ import 'discovery_model.dart';
 import 'reference_widgets.dart';
 import '../about/about_screen.dart';
 import '../family_sharing/family_screen.dart';
+import '../family_sharing/grandparents.dart';
 import '../purchases/plan_limit.dart';
 import '../reminders/reminder_offer.dart';
 import '../welcome/szop_tour.dart';
@@ -134,6 +135,14 @@ class MoreScreen extends ConsumerWidget {
           subtitle: const Text('Polska rodzinna marka. Sami piszemy i nagrywamy zabawy'),
           trailing: const Icon(Icons.chevron_right_rounded),
           onTap: () => context.push('/o-nas'),
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.elderly_woman_rounded, color: AkBrand.tealDeep),
+          title: const Text('Dla dziadków'),
+          subtitle: const Text('Wyślij babci i dziadkowi, jak włączyć ulubione zabawy'),
+          trailing: const Icon(Icons.ios_share_rounded),
+          onTap: () => shareWithGrandparents(context, ref),
         ),
         ListTile(
           contentPadding: EdgeInsets.zero,
