@@ -1,4 +1,5 @@
 import 'package:ak_core/ak_core.dart';
+import 'package:audiokiddo/features/alerts/alerts.dart' show daysUntil;
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/features/catalog/home_screen.dart';
 import 'package:audiokiddo/features/catalog/widgets/item_art.dart';
@@ -85,5 +86,12 @@ void main() {
     expect(favoritePlayId([done('a', 1), done('a', 2), done('b', 3), done('b', 4), done('b', 5)], 'z'), 'b');
     expect(favoritePlayId([done('a', 1), done('a', 2), done('b', 3), done('b', 4)], 'z'), 'b', reason: 'latest wins a tie');
     expect(favoritePlayId([done('a', 1, child: 'x'), done('a', 2, child: 'x')], 'z'), isNull);
+  });
+
+  test('the premiere countdown says days plainly', () {
+    final now = DateTime(2026, 10, 13, 21);
+    expect(daysUntil(DateTime(2026, 10, 14), now), 'Jutro');
+    expect(daysUntil(DateTime(2026, 10, 15), now), 'Pojutrze');
+    expect(daysUntil(DateTime(2026, 10, 18), now), 'Za 5 dni');
   });
 }

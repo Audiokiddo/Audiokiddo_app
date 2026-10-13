@@ -94,6 +94,8 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 18),
               // The play the child keeps asking for ("mamo, włącz mi…"), one tap away.
               const FavoriteCard(),
+              // A new play within two weeks: the countdown children ask about.
+              const PremiereCountdown(),
               // 16:30–19:30: the after-work window (research 2026-10-12), one tap for dinner.
               const DinnerCard(),
 

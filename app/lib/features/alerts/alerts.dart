@@ -189,6 +189,76 @@ class AccessEndingBanner extends ConsumerWidget {
 }
 
 /// "Wkrótce": plays announced with a date, and the opt-in to hear when they arrive.
+/// "Za 5 dni", "Jutro", "Pojutrze" until a release on [day].
+String daysUntil(DateTime day, DateTime now) {
+  final n = DateTime(day.year, day.month, day.day).difference(DateTime(now.year, now.month, now.day)).inDays;
+  return switch (n) {
+    1 => 'Jutro',
+    2 => 'Pojutrze',
+    _ => 'Za $n dni',
+  };
+}
+
+/// On Start, two weeks before the next new play: how many days are left. Children wait for
+/// new episodes ("Czy już jest Jesień?"), so the date is said plainly; the bell turns on the
+/// release-day notification (only when the parent asks for it).
+class PremiereCountdown extends ConsumerWidget {
+  const PremiereCountdown({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final now = ref.watch(clockProvider)();
+    final next = ref.watch(upcomingItemsProvider).firstOrNull;
+    if (next == null || next.releasedOn!.difference(now).inDays >= 14) return const SizedBox.shrink();
+    final on = ref.watch(alertsOptInProvider).value ?? false;
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Material(
+        color: AkBrand.tealDeep.withValues(alpha: .12),
+        borderRadius: BorderRadius.circular(22),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 10, 6, 10),
+          child: Row(
+            children: [
+              const Icon(Icons.event_rounded, color: AkBrand.tealDeep, size: 28),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${daysUntil(next.releasedOn!, now)}: ${next.title}',
+                      style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                    Text(
+                      on ? 'Damy znać w dniu premiery.' : 'Nowa zabawa w AudioKiddo, ${dayAndMonth(next.releasedOn!)}.',
+                      style: text.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              if (!on)
+                IconButton(
+                  tooltip: 'Powiadom w dniu premiery',
+                  onPressed: () async {
+                    final ok = await ref.read(alertsOptInProvider.notifier).set(true);
+                    if (!ok && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Powiadomienia są wyłączone w ustawieniach telefonu.')),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.notifications_none_rounded, color: AkBrand.tealDeep),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class UpcomingShelf extends ConsumerWidget {
   const UpcomingShelf({super.key});
 
