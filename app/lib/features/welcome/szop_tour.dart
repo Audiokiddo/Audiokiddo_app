@@ -31,7 +31,7 @@ const tourStops = <TourStop>[
     target: null,
     slot: null,
     pose: SzopPose.prosi,
-    title: 'Cześć, jestem Szop’en!',
+    title: 'Cześć, jestem Szop’en.',
     body: 'Pokażę Ci w minutę, gdzie co jest. Stuknij „Dalej” albo gdziekolwiek na ekranie.',
   ),
   (
@@ -107,7 +107,7 @@ const tourStops = <TourStop>[
     target: null,
     slot: null,
     pose: SzopPose.klaszcze,
-    title: 'Gotowe!',
+    title: 'Gotowe.',
     body: 'Zacznijcie od darmowej zabawy na Starcie. Ja będę w pobliżu.',
   ),
 ];

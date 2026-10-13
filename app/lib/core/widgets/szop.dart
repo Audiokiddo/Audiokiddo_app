@@ -49,7 +49,7 @@ const szopNudges = <(SzopPose, String)>[
   (SzopPose.chytry, 'Mam zabawę na 10 minut. Wy macie 10 minut kawy.'),
   (SzopPose.nasluchuje, 'Słyszę marudzenie z daleka. Mam na to procedurę.'),
   (SzopPose.zdziwiony, 'Jeszcze nie słuchaliście nowości? Zdziwiłem się urzędowo.'),
-  (SzopPose.placze, 'Nadepnąłem na klocek. Wy nie musicie: włączcie zabawę bez ekranu.'),
+  (SzopPose.placze, 'Nadepnąłem na klocek. Wy nie musicie: włączcie zabawę.'),
 ];
 
 /// Today's mood and line: a different one each day, the same all day.
@@ -75,7 +75,7 @@ List<(SzopPose, String)> szopTipsFor(DateTime now) {
     ],
     if (h >= 18 && h < 21) ...[
       (SzopPose.zmeczony, 'Wieczorem coś spokojnego. „Na dobranoc” włącza cały rytuał jednym przyciskiem.'),
-      (SzopPose.zmeczony, 'Po kąpieli bez ekranu: spokojna zabawa, potem kołysanka. Ja już ziewam.'),
+      (SzopPose.zmeczony, 'Po kąpieli telefon ekranem w dół: spokojna zabawa, potem kołysanka. Ja już ziewam.'),
     ],
     if (h >= 21 || h < 6)
       (SzopPose.znudzony, 'Późno. Szopy o tej porze buszują, dzieci raczej śpią. Zaplanuj jutro w Planie.'),

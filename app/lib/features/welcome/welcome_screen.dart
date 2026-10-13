@@ -164,7 +164,7 @@ class _Fanfare extends ConsumerWidget {
                     ),
                     onPressed: onNext,
                     icon: const Icon(Icons.redeem_rounded),
-                    label: const Text('Odbieram!'),
+                    label: const Text('Odbieram'),
                   ),
                 ),
               ],

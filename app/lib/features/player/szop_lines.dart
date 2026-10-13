@@ -8,7 +8,7 @@ import '../../core/widgets/szop.dart';
 /// family hears each one rarely.
 const szopPlayingLines = <(SzopPose, String)>[
   (SzopPose.chytry, 'Ja pilnuję nagrania. Ty pilnuj kawy, zanim wystygnie.'),
-  (SzopPose.zadowolony, 'Dziecko słucha, Ty masz chwilę. Nie zmarnuj jej na składanie skarpetek.'),
+  (SzopPose.zadowolony, 'Dziecko słucha. Obiad sam się nie zrobi, ale przynajmniej nikt nie woła.'),
   (SzopPose.nasluchuje, 'Głośne odpowiedzi to znak, że działa. Sąsiedzi niech też się cieszą.'),
   (SzopPose.chytry, 'Możesz zablokować telefon. Nagranie gra dalej, a ja nikomu nie powiem.'),
   (SzopPose.zmeczony, 'Zabawa za długa? Timer snu w odtwarzaczu skróci ją elegancko.'),
@@ -46,7 +46,7 @@ const szopPlayingLines = <(SzopPose, String)>[
   (SzopPose.chytry, 'Rodzeństwo może grać razem. Wtedy jest głośniej, ale weselej.'),
   (SzopPose.zmeczony, 'Tryb bez patrzenia w odtwarzaczu blokuje przypadkowe stuknięcia małych palców.'),
   (SzopPose.znudzony, 'Gdyby szopy umiały gotować, ugotowałbym obiad. Nie umiemy.'),
-  (SzopPose.zadowolony, 'Każda minuta słuchania to minuta wyobraźni. Ja liczę, Ty odpoczywaj.'),
+  (SzopPose.zadowolony, 'Minuty słuchania liczę ja. Ty nie musisz.'),
   (SzopPose.zdziwiony, 'Dziecko tańczy? Wolno Ci się przyłączyć. Nikt nie patrzy. Oprócz mnie.'),
   (SzopPose.prosi, 'Po zabawie dwie minuty rozmowy dają więcej niż kolejna zabawa od razu.'),
 ];

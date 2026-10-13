@@ -74,7 +74,7 @@ void main() {
     expect(find.textContaining('Najpierw skończcie dzień 1'), findsOneWidget);
     await tester.pumpAndSettle();
 
-    expect(find.text('Co rozwijamy'), findsOneWidget);
+    expect(find.text('Co dziecko ćwiczy w zabawach'), findsOneWidget);
     await tester.tap(find.byIcon(Icons.insights_rounded).first);
     await tester.pumpAndSettle();
     expect(find.text('Postęp: Zosia'), findsOneWidget);

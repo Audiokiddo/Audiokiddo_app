@@ -69,7 +69,7 @@ class ShopScreen extends ConsumerWidget {
                 Text('Sklep', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 4),
                 Text(
-                  'Zabawy bez ekranu na każdy dzień. W abonamencie masz wszystkie i nowy pakiet co miesiąc.',
+                  'Głos zadaje pytania, dziecko odpowiada. W abonamencie masz wszystkie zabawy i nowy pakiet co miesiąc.',
                   style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
                 ),
                 const PromotionBanner(),

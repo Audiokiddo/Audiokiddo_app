@@ -73,7 +73,7 @@ class _RescueScreenState extends ConsumerState<RescueScreen> {
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
           children: [
             Text(
-              results ? 'Mamy coś!' : 'Ratunku,\nmam $minutes minut!',
+              results ? 'Mamy coś.' : 'Ratunku,\nmam $minutes minut!',
               textAlign: TextAlign.center,
               style: text.headlineMedium,
             ),

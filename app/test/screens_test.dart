@@ -134,7 +134,7 @@ void main() {
     await tester.scrollUntilVisible(find.text('Pokaż propozycje'), 200, scrollable: mainScroll);
     await tester.tap(find.text('Pokaż propozycje'));
     await tester.pumpAndSettle();
-    expect(find.text('Mamy coś!'), findsOneWidget);
+    expect(find.text('Mamy coś.'), findsOneWidget);
   });
   testWidgets('category shortcut opens the filtered library', (tester) async {
     await pumpApp(tester);

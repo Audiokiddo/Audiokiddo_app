@@ -112,7 +112,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeGreeting.
   ///
   /// In pl, this message translates to:
-  /// **'Czas na zabawę!'**
+  /// **'Czas na zabawę'**
   String get homeGreeting;
 
   /// No description provided for @homeSubtitle.
@@ -226,7 +226,7 @@ abstract class AppLocalizations {
   /// No description provided for @kindInteractiveGame.
   ///
   /// In pl, this message translates to:
-  /// **'Gry bez ekranu'**
+  /// **'Gry z odpowiedziami'**
   String get kindInteractiveGame;
 
   /// No description provided for @filterAge.
@@ -916,7 +916,7 @@ abstract class AppLocalizations {
   /// No description provided for @purchaseSuccess.
   ///
   /// In pl, this message translates to:
-  /// **'Gotowe! Zabawy są odblokowane.'**
+  /// **'Gotowe. Zabawy są odblokowane.'**
   String get purchaseSuccess;
 
   /// No description provided for @purchasePending.
@@ -994,13 +994,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingHelloTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Cześć! Tu AudioKiddo.'**
+  /// **'Cześć, tu AudioKiddo.'**
   String get onboardingHelloTitle;
 
   /// No description provided for @onboardingHelloBody.
   ///
   /// In pl, this message translates to:
-  /// **'Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne!'**
+  /// **'Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne.'**
   String get onboardingHelloBody;
 
   /// No description provided for @onboardingHowTitle.
@@ -1396,7 +1396,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingHowListenTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Słuchanie bez ekranu'**
+  /// **'Telefon leży, dziecko słucha'**
   String get onboardingHowListenTitle;
 
   /// No description provided for @onboardingHowKidsTitle.
@@ -1510,7 +1510,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeNew.
   ///
   /// In pl, this message translates to:
-  /// **'Nowość!'**
+  /// **'Nowość'**
   String get homeNew;
 
   /// No description provided for @homeNewHint.
@@ -1552,7 +1552,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizHello.
   ///
   /// In pl, this message translates to:
-  /// **'Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Szop’en nie kłamie.'**
+  /// **'Cześć. Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Szop’en nie kłamie.'**
   String get quizHello;
 
   /// No description provided for @quizHelloPoint1.
@@ -1648,7 +1648,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizSummary.
   ///
   /// In pl, this message translates to:
-  /// **'Gotowe! Plan dla: {name}. Po {minutes} min dziennie, zaczynamy od łatwych zabaw.'**
+  /// **'Gotowe. Plan dla: {name}. Po {minutes} min dziennie, zaczynamy od łatwych zabaw.'**
   String quizSummary(String name, int minutes);
 
   /// No description provided for @quizSummaryAge.
@@ -1768,7 +1768,7 @@ abstract class AppLocalizations {
   /// No description provided for @reminder3Title.
   ///
   /// In pl, this message translates to:
-  /// **'Seria trwa!'**
+  /// **'Seria trwa'**
   String get reminder3Title;
 
   /// No description provided for @reminder3Body.
@@ -1804,13 +1804,13 @@ abstract class AppLocalizations {
   /// No description provided for @reminder6Title.
   ///
   /// In pl, this message translates to:
-  /// **'Bez ekranu, bez wyrzutów'**
+  /// **'Telefon ekranem w dół'**
   String get reminder6Title;
 
   /// No description provided for @reminder6Body.
   ///
   /// In pl, this message translates to:
-  /// **'Oczy odpoczywają, uszy pracują, a Ty może nawet usiądziesz. Na chwilę.'**
+  /// **'Oczy odpoczywają, uszy pracują. Dziecko odpowiada na głos.'**
   String get reminder6Body;
 
   /// No description provided for @reminder7Title.
@@ -1960,7 +1960,7 @@ abstract class AppLocalizations {
   /// No description provided for @planTodayDone.
   ///
   /// In pl, this message translates to:
-  /// **'Dzisiejsza nuta dopisana do melodii! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.'**
+  /// **'Dzisiejsza nuta dopisana do melodii. Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.'**
   String get planTodayDone;
 
   /// No description provided for @planOpensTomorrow.
@@ -2008,7 +2008,7 @@ abstract class AppLocalizations {
   /// No description provided for @planChest.
   ///
   /// In pl, this message translates to:
-  /// **'Cały tydzień zagrany! Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.'**
+  /// **'Cały tydzień zagrany. Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.'**
   String get planChest;
 
   /// No description provided for @level1Name.
@@ -2224,13 +2224,13 @@ abstract class AppLocalizations {
   /// No description provided for @adviceExcelling.
   ///
   /// In pl, this message translates to:
-  /// **'{skill}: świetnie idzie! Czas na coś trudniejszego.'**
+  /// **'{skill}: idzie świetnie. Czas na coś trudniejszego.'**
   String adviceExcelling(String skill);
 
   /// No description provided for @adviceExcellingPack.
   ///
   /// In pl, this message translates to:
-  /// **'{skill}: świetnie idzie! Spróbujcie pakietu {pack}.'**
+  /// **'{skill}: idzie świetnie. Spróbujcie pakietu {pack}.'**
   String adviceExcellingPack(String skill, String pack);
 
   /// No description provided for @adviceNeedsPractice.
@@ -2266,7 +2266,7 @@ abstract class AppLocalizations {
   /// No description provided for @adviceLevelUp.
   ///
   /// In pl, this message translates to:
-  /// **'Regularność na medal! Można dodać kilka minut dziennie.'**
+  /// **'Regularność na medal. Można dodać kilka minut dziennie.'**
   String get adviceLevelUp;
 
   /// No description provided for @paywallCarTrial.
@@ -2278,7 +2278,7 @@ abstract class AppLocalizations {
   /// No description provided for @paywallCar.
   ///
   /// In pl, this message translates to:
-  /// **'Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!'**
+  /// **'Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej.'**
   String get paywallCar;
 
   /// No description provided for @onboardingDailyTitle.
@@ -2326,7 +2326,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayDone.
   ///
   /// In pl, this message translates to:
-  /// **'Porcja zaliczona ({name}). Nowa nuta w melodii tygodnia!'**
+  /// **'Porcja zaliczona ({name}). Nowa nuta w melodii tygodnia.'**
   String todayDone(String name);
 
   /// No description provided for @todayListenMelody.
@@ -2380,7 +2380,7 @@ abstract class AppLocalizations {
   /// No description provided for @talkGame.
   ///
   /// In pl, this message translates to:
-  /// **'Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada!'**
+  /// **'Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada.'**
   String get talkGame;
 
   /// No description provided for @talkDetective.
@@ -2632,7 +2632,7 @@ abstract class AppLocalizations {
   /// No description provided for @sessionArrived.
   ///
   /// In pl, this message translates to:
-  /// **'Dojechaliście!'**
+  /// **'Dojechaliście.'**
   String get sessionArrived;
 
   /// No description provided for @sessionSleepWell.
@@ -2860,13 +2860,13 @@ abstract class AppLocalizations {
   /// No description provided for @weekCardAsk.
   ///
   /// In pl, this message translates to:
-  /// **'Zapytajcie, o czym była „{title}”. Opowie Wam wszystko!'**
+  /// **'Zapytajcie, o czym była „{title}”. Opowie Wam wszystko.'**
   String weekCardAsk(String title);
 
   /// No description provided for @weekCardAskGeneric.
   ///
   /// In pl, this message translates to:
-  /// **'Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko!'**
+  /// **'Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko.'**
   String get weekCardAskGeneric;
 
   /// No description provided for @weekCardShareText.
@@ -2914,13 +2914,13 @@ abstract class AppLocalizations {
   /// No description provided for @screenFree.
   ///
   /// In pl, this message translates to:
-  /// **'{minutes} min zabawy bez ekranu w tym tygodniu'**
+  /// **'{minutes} min zabaw na głos w tym tygodniu'**
   String screenFree(int minutes);
 
   /// No description provided for @screenFreeEpisodes.
   ///
   /// In pl, this message translates to:
-  /// **'{minutes} min zabawy bez ekranu w tym tygodniu. To jak {episodes, plural, =1{1 odcinek} few{{episodes} odcinki} many{{episodes} odcinków} other{{episodes} odcinka}} bajki mniej.'**
+  /// **'{minutes} min zabaw na głos w tym tygodniu. To jak {episodes, plural, =1{1 odcinek} few{{episodes} odcinki} many{{episodes} odcinków} other{{episodes} odcinka}} bajki mniej.'**
   String screenFreeEpisodes(int minutes, int episodes);
 
   /// No description provided for @modesTitle.

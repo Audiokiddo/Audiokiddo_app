@@ -29,7 +29,7 @@ const _jokes = <SzopLine>[
   SzopLine(SzopPose.chytry, 'Cisza przez całe nagranie. Nikt nie musi wiedzieć, że to moja zasługa.'),
   SzopLine(SzopPose.zmeczony, 'Ja bym teraz poleżał. Dziecko pewnie nie. Następna zabawa jest niżej.'),
   SzopLine(SzopPose.zdziwiony, 'Już koniec? Dopiero się rozsiadłem.'),
-  SzopLine(SzopPose.zadowolony, 'Kolejne minuty bez ekranu. Potwierdzam urzędowo, z pieczątką.'),
+  SzopLine(SzopPose.zadowolony, 'Kolejne minuty słuchania. Potwierdzam urzędowo, z pieczątką.'),
   SzopLine(SzopPose.znudzony, 'Nagranie skończone. Moja kariera lektora nadal w zawieszeniu.'),
   SzopLine(SzopPose.klaszcze, 'Gdyby za słuchanie dawali medale, mielibyście już szufladę.'),
 ];

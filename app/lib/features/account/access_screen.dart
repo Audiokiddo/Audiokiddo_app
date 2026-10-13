@@ -36,7 +36,7 @@ String claimMessage(ClaimResult result, {required bool forOrder, Catalog? catalo
   ClaimStatus.notFound =>
     forOrder
         ? 'Nie znaleźliśmy zamówienia z tym numerem i adresem e-mail. Numer jest w mailu '
-              'z potwierdzeniem, a e-mail to ten, który podałeś w sklepie.'
+              'z potwierdzeniem, a e-mail to ten podany w sklepie.'
         : 'Nie znamy takiego kodu. Sprawdź, czy wszystkie znaki się zgadzają.',
   ClaimStatus.expired => 'Ten kod już wygasł.',
   ClaimStatus.usedUp when result.referral =>
@@ -136,8 +136,8 @@ class _AccessScreenState extends ConsumerState<AccessScreen> {
                 children: [
                   Text(
                     signedIn
-                        ? 'Jesteś zalogowany. Pakiety z zamówień na ten adres e-mail dodają się same.'
-                        : 'Zaloguj się tym samym adresem e-mail, którego użyłeś w sklepie. Pakiety dodadzą się '
+                        ? 'Logowanie zrobione. Pakiety z zamówień na ten adres e-mail dodają się same.'
+                        : 'Zaloguj się tym samym adresem e-mail, który był podany w sklepie. Pakiety dodadzą się '
                               'same.',
                     style: text.bodyMedium,
                   ),
@@ -152,7 +152,7 @@ class _AccessScreenState extends ConsumerState<AccessScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Przydaje się, gdy w sklepie podałeś inny adres e-mail niż ten, którego używasz tutaj.',
+                    'Przydaje się, gdy adres e-mail w sklepie był inny niż ten tutaj.',
                     style: text.bodyMedium,
                   ),
                   const SizedBox(height: 12),

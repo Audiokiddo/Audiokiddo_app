@@ -36,7 +36,7 @@ class _RoutinesScreenState extends ConsumerState<RoutinesScreen> {
             for (final row in [
               (
                 'Samochód',
-                'Zabawy idealne w podróży. Bez ekranu.',
+                'Zabawy na drogę. Telefon w uchwycie, dziecko odpowiada na głos.',
                 Icons.directions_car_rounded,
                 AkBrand.sun,
                 '/podroz',

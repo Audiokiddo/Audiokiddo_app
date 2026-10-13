@@ -187,7 +187,7 @@ class _GreetingSheet extends StatelessWidget {
           text: news.left == 1
               ? 'Została Wam jeszcze jedna nieodkryta zabawa. Ostatni kawałek pizzy, ale w wersji audio.'
               : _pick([
-                  'Do odkrycia zostało Wam ${news.left} zabaw, czyli ${news.leftMinutes} minut bez ekranu. Spokojnie, do emerytury zdążymy.',
+                  'Do odkrycia zostało Wam ${news.left} zabaw, czyli ${news.leftMinutes} minut słuchania. Spokojnie, do emerytury zdążymy.',
                   'Jeszcze ${news.left} zabaw przed Wami. Liczyłem na palcach. Mam ich tylko dziesięć, więc pożyczyłem od sąsiada.',
                 ]),
           action: 'Losuj',

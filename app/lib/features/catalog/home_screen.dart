@@ -408,7 +408,7 @@ class _NextPackCard extends ConsumerWidget {
                   const SizedBox(height: 2),
                   Text(
                     '„${next.tried.title}” jest z pakietu ${next.pack.pack.title}. '
-                    'W środku czeka jeszcze ${playsCount(paid.length)}, razem $minutes min bez ekranu.',
+                    'W środku czeka jeszcze ${playsCount(paid.length)}, razem $minutes min słuchania.',
                     style: text.bodySmall,
                   ),
                   TextButton(
@@ -500,7 +500,7 @@ class _OwnedPacks extends ConsumerWidget {
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          left == 0 ? 'Wszystko przesłuchane!' : 'Czeka jeszcze ${playsCount(left)}',
+                          left == 0 ? 'Wszystko przesłuchane' : 'Czeka jeszcze ${playsCount(left)}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
@@ -549,9 +549,9 @@ class _DiscoverPacks extends ConsumerWidget {
         RefSection(ownedCount == 0 ? 'Pakiety przygód' : 'Czeka na odkrycie'),
         Text(
           ownedCount == 0
-              ? '$plays zabaw i $minutes minut bez ekranu. W każdym pakiecie część posłuchacie za darmo.'
+              ? '$plays zabaw i $minutes minut słuchania. W każdym pakiecie część posłuchacie za darmo.'
               : 'Macie $ownedCount z ${all.length} pakietów. Do pełnej kolekcji brakuje $plays zabaw, '
-                    'czyli $minutes minut bez ekranu.',
+                    'czyli $minutes minut słuchania.',
           style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
         ),
         const SizedBox(height: 10),
@@ -755,7 +755,7 @@ class _QuickNeeds extends StatelessWidget {
     // The parent's situation, not a menu: offline and routines live in Więcej and below.
     final needs = [
       (Icons.schedule_rounded, 'Mam 20 minut', 'Dobierzemy zabawy', '/ratunku'),
-      (Icons.directions_car_rounded, 'W podróży', 'Cała droga bez ekranu', '/podroz'),
+      (Icons.directions_car_rounded, 'W podróży', 'Telefon leży, dziecko gra', '/podroz'),
       (Icons.bedtime_rounded, 'Na dobranoc', 'Wyciszenie przed snem', '/dobranoc'),
       (Icons.bolt_rounded, 'Bez przygotowań', 'Nic nie trzeba szykować', const LibraryFilter(noPrep: true).toLocation()),
     ];

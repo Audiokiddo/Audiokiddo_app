@@ -3,7 +3,7 @@
   "appTitle": "AudioKiddo",
   "navHome": "Start",
   "navLibrary": "Biblioteka",
-  "homeGreeting": "Czas na zabawę!",
+  "homeGreeting": "Czas na zabawę",
   "homeSubtitle": "Słuchajcie, odpowiadajcie, wymyślajcie. Bez patrzenia w ekran.",
   "homeFeatured": "Zabawa dnia",
   "homeStartHere": "Zacznij tu",
@@ -67,7 +67,7 @@
   "kindAll": "Wszystko",
   "kindAudioGame": "Audiozabawy",
   "kindSong": "Piosenki",
-  "kindInteractiveGame": "Gry bez ekranu",
+  "kindInteractiveGame": "Gry z odpowiedziami",
   "filterAge": "Wiek",
   "filterPack": "Pakiet",
   "filterSituation": "Sytuacja",
@@ -299,7 +299,7 @@
   "paywallTerms": "Regulamin",
   "paywallPrivacy": "Polityka prywatności",
   "paywallUnavailable": "Sklep jest teraz niedostępny. Sprawdź internet i spróbuj później.",
-  "purchaseSuccess": "Gotowe! Zabawy są odblokowane.",
+  "purchaseSuccess": "Gotowe. Zabawy są odblokowane.",
   "purchasePending": "Zakup czeka na zatwierdzenie (np. przez opiekuna konta rodzinnego).",
   "purchaseStoreError": "Sklep zgłosił błąd. Spróbuj ponownie.",
   "purchaseVerifyLater": "Nie udało się jeszcze potwierdzić zakupu. Spróbujemy ponownie automatycznie, nie płać drugi raz.",
@@ -312,8 +312,8 @@
   "gameTapNow": "Dotknij ekranu!",
   "gameFinished": "Koniec zabawy",
   "gameFailed": "Nie udało się uruchomić zabawy.",
-  "onboardingHelloTitle": "Cześć! Tu AudioKiddo.",
-  "onboardingHelloBody": "Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne!",
+  "onboardingHelloTitle": "Cześć, tu AudioKiddo.",
+  "onboardingHelloBody": "Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne.",
   "onboardingHowTitle": "Jak to działa",
   "onboardingHowListen": "Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada i wykonuje zadania.",
   "onboardingHowKids": "Tylko duże okładki: bez zakupów, linków i ustawień. Wyjście z niego wymaga rodzica.",
@@ -417,7 +417,7 @@
   "accountDeleteFooter": "Usuwa adres e-mail i informacje o dostępie z naszego serwera. Subskrypcję anulujesz w ustawieniach App Store albo Google Play.",
   "onboardingHelloSubtitle": "Audiozabawy pełne przygód",
   "onboardingVolumeTitle": "Najpierw głośność",
-  "onboardingHowListenTitle": "Słuchanie bez ekranu",
+  "onboardingHowListenTitle": "Telefon leży, dziecko słucha",
   "onboardingHowKidsTitle": "Tryb dziecka",
   "onboardingHowOfflineTitle": "Działa bez internetu",
   "onboardingHowNoAdsTitle": "Bez reklam",
@@ -436,14 +436,14 @@
   "introPasswordOrb": "Magiczna kula. Dotknij, aby wejść.",
   "introGranted": "Dostęp przyznany!",
   "homeKiddo": "Szop’en von Ekran. Dotknij, a coś powie.",
-  "homeNew": "Nowość!",
+  "homeNew": "Nowość",
   "homeNewHint": "Odpowiadaj klaśnięciem albo głosem!",
   "kidsHello1": "Uszy gotowe? Moje są duże. To trochę nie fair.",
   "kidsHello2": "Potrzebuję kogoś z wyobraźnią. Ja mam głównie sierść. Wchodzisz w to?",
   "kidsHello3": "Jeśli usłyszysz burczenie, to mój brzuch. Tego nie liczymy.",
   "quizBack": "Wstecz",
   "quizYourChild": "Twoje dziecko",
-  "quizHello": "Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Szop’en nie kłamie.",
+  "quizHello": "Cześć. Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Szop’en nie kłamie.",
   "quizHelloPoint1": "Około minuty na każde dziecko.",
   "quizHelloPoint2": "Odpowiedzi zostają tylko w tym telefonie.",
   "quizHelloPoint3": "Masz więcej dzieci? Każde dostanie własny plan.",
@@ -473,7 +473,7 @@
   "quizMinutes10": "W sam raz. Jeden cykl wirowania pralki.",
   "quizMinutes15": "Ambitnie. Pół odcinka serialu, którego i tak nie obejrzysz.",
   "quizMinutes20": "Z rozmachem. Prawie cały obiad bez „mamo, tato, a wiesz co?”.",
-  "quizSummary": "Gotowe! Plan dla: {name}. Po {minutes} min dziennie, zaczynamy od łatwych zabaw.",
+  "quizSummary": "Gotowe. Plan dla: {name}. Po {minutes} min dziennie, zaczynamy od łatwych zabaw.",
   "@quizSummary": {
     "placeholders": {
       "name": {
@@ -510,14 +510,14 @@
   "reminder1Body": "Dzień był długi? 10 minut zabawy i przez chwilę to ktoś inny odpowiada na pytania.",
   "reminder2Title": "Pora na przygodę",
   "reminder2Body": "Kawa znowu wystygła? Kawy nie uratujemy. Ciszę może tak: dzisiejsza zabawa czeka.",
-  "reminder3Title": "Seria trwa!",
+  "reminder3Title": "Seria trwa",
   "reminder3Body": "Jeszcze jeden dzień, a seria będzie dłuższa niż Twój ostatni nieprzerwany sen.",
   "reminder4Title": "Szop’en melduje",
   "reminder4Body": "Dziecko zadało dziś już 347 pytań? Oddaj kilka Szop’enowi. On to lubi. Serio.",
   "reminder5Title": "Cisza w domu?",
   "reminder5Body": "Podejrzane. Sprawdź, co się dzieje, a potem włącz dzisiejszą zabawę.",
-  "reminder6Title": "Bez ekranu, bez wyrzutów",
-  "reminder6Body": "Oczy odpoczywają, uszy pracują, a Ty może nawet usiądziesz. Na chwilę.",
+  "reminder6Title": "Telefon ekranem w dół",
+  "reminder6Body": "Oczy odpoczywają, uszy pracują. Dziecko odpowiada na głos.",
   "reminder7Title": "Szop’en nie śpi",
   "reminder7Body": "Szop’en nie śpi. Szop’en czeka. Szop’en trochę tęskni. Dzisiejsza porcja to kilka minut.",
   "remindersAsk": "Mogę przypominać o codziennej zabawie? Obiecuję nie przesadzać. Raz dziennie, z humorem.",
@@ -556,7 +556,7 @@
   "planStreak": "dni z rzędu",
   "planDays": "nut w melodii",
   "planAccuracy": "dobrych odpowiedzi",
-  "planTodayDone": "Dzisiejsza nuta dopisana do melodii! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.",
+  "planTodayDone": "Dzisiejsza nuta dopisana do melodii. Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.",
   "planOpensTomorrow": "Ten dzień otworzy się jutro. Po trochu, codziennie: tak działa najlepiej.",
   "planLockedDay": "Najpierw skończcie dzień {day}.",
   "@planLockedDay": {
@@ -612,7 +612,7 @@
       }
     }
   },
-  "planChest": "Cały tydzień zagrany! Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.",
+  "planChest": "Cały tydzień zagrany. Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.",
   "level1Name": "Poznajemy się",
   "level1News": "Krótkie zabawy i piosenki. Bez presji.",
   "level2Name": "Rozkręcamy się",
@@ -679,7 +679,7 @@
   "progressRemindersOff": "Wyłączone. Dotknij, aby włączyć.",
   "progressRemoveChild": "Usuń profil dziecka",
   "progressRemoveBody": "Usuniemy profil i postęp tego dziecka z telefonu. Zakupy zostają.",
-  "adviceExcelling": "{skill}: świetnie idzie! Czas na coś trudniejszego.",
+  "adviceExcelling": "{skill}: idzie świetnie. Czas na coś trudniejszego.",
   "@adviceExcelling": {
     "placeholders": {
       "skill": {
@@ -687,7 +687,7 @@
       }
     }
   },
-  "adviceExcellingPack": "{skill}: świetnie idzie! Spróbujcie pakietu {pack}.",
+  "adviceExcellingPack": "{skill}: idzie świetnie. Spróbujcie pakietu {pack}.",
   "@adviceExcellingPack": {
     "placeholders": {
       "skill": {
@@ -737,9 +737,9 @@
     }
   },
   "adviceComeBack": "Kilka dni przerwy? Zdarza się najlepszym. Wystarczy 5 minut dziś, żeby wrócić do rytmu.",
-  "adviceLevelUp": "Regularność na medal! Można dodać kilka minut dziennie.",
+  "adviceLevelUp": "Regularność na medal. Można dodać kilka minut dziennie.",
   "paywallCarTrial": "Mamo, tato… daleko jeszcze? A może 7 dni za darmo, zanim dojedziemy?",
-  "paywallCar": "Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!",
+  "paywallCar": "Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej.",
   "onboardingDailyTitle": "Po trochu, codziennie",
   "onboardingDailyBody": "Kilka minut dziennie, zabawy rozłożone na dni. Bez przytłaczania.",
   "todayMorning": "Poranna rozgrzewka",
@@ -747,7 +747,7 @@
   "todayAfternoon": "W drodze i po przedszkolu",
   "todayEvening": "Wieczorne wyciszenie",
   "todayNoPlan": "Odpowiedz na kilka pytań, a Szop’en ułoży zabawy na każdy dzień.",
-  "todayDone": "Porcja zaliczona ({name}). Nowa nuta w melodii tygodnia!",
+  "todayDone": "Porcja zaliczona ({name}). Nowa nuta w melodii tygodnia.",
   "@todayDone": {
     "placeholders": {
       "name": {
@@ -790,7 +790,7 @@
     }
   },
   "talkSong": "Zaśpiewajcie refren razem w kąpieli albo w samochodzie. Kto głośniej?",
-  "talkGame": "Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada!",
+  "talkGame": "Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada.",
   "talkDetective": "Kto był winny i po czym to poznaliście? Niech dziecko wszystko wyjaśni. Ty udawaj, że nie wiesz.",
   "talkWords": "Każdy mówi słowo na tę samą literę. Kto się zatnie, opowiada żart.",
   "talkLogic": "Co tu nie pasuje: łyżka, widelec, kapeć? Wymyślajcie takie zagadki na zmianę.",
@@ -915,7 +915,7 @@
   "sessionSkip": "Dalej",
   "sessionStop": "Zakończ",
   "sessionDone": "Gotowe",
-  "sessionArrived": "Dojechaliście!",
+  "sessionArrived": "Dojechaliście.",
   "sessionSleepWell": "Śpij dobrze",
   "voiceTitle": "Twój głos",
   "voiceBody": "Nagraj trzy krótkie wiadomości dla: {name}. Szop’en wplecie je w zabawę: przywitanie, pochwałę po zabawie i dobranoc. Nagrania zostają tylko w tym telefonie.",
@@ -1043,7 +1043,7 @@
       }
     }
   },
-  "weekCardAsk": "Zapytajcie, o czym była „{title}”. Opowie Wam wszystko!",
+  "weekCardAsk": "Zapytajcie, o czym była „{title}”. Opowie Wam wszystko.",
   "@weekCardAsk": {
     "placeholders": {
       "title": {
@@ -1051,7 +1051,7 @@
       }
     }
   },
-  "weekCardAskGeneric": "Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko!",
+  "weekCardAskGeneric": "Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko.",
   "weekCardShareText": "Tydzień z AudioKiddo: {name}",
   "@weekCardShareText": {
     "placeholders": {
@@ -1073,7 +1073,7 @@
       }
     }
   },
-  "screenFree": "{minutes} min zabawy bez ekranu w tym tygodniu",
+  "screenFree": "{minutes} min zabaw na głos w tym tygodniu",
   "@screenFree": {
     "placeholders": {
       "minutes": {
@@ -1081,7 +1081,7 @@
       }
     }
   },
-  "screenFreeEpisodes": "{minutes} min zabawy bez ekranu w tym tygodniu. To jak {episodes, plural, =1{1 odcinek} few{{episodes} odcinki} many{{episodes} odcinków} other{{episodes} odcinka}} bajki mniej.",
+  "screenFreeEpisodes": "{minutes} min zabaw na głos w tym tygodniu. To jak {episodes, plural, =1{1 odcinek} few{{episodes} odcinki} many{{episodes} odcinków} other{{episodes} odcinka}} bajki mniej.",
   "@screenFreeEpisodes": {
     "placeholders": {
       "minutes": {

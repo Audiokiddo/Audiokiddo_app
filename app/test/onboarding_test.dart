@@ -109,7 +109,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Nie teraz'));
     await tester.pumpAndSettle();
-    expect(find.text('Cześć! Tu AudioKiddo.'), findsOneWidget);
+    expect(find.text('Cześć, tu AudioKiddo.'), findsOneWidget);
     await tester.tap(find.text('Dalej'));
     await tester.pumpAndSettle();
     expect(find.text('Jak to działa'), findsOneWidget);
@@ -120,8 +120,8 @@ void main() {
     // What is free now and what the subscription adds, said right after the first sign-in.
     expect(find.byType(FreeVsSubscription), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp('Co miesiąc: nowy pakiet')), findsOneWidget);
-    await tester.ensureVisible(find.text('Odbieram!'));
-    await tester.tap(find.text('Odbieram!'));
+    await tester.ensureVisible(find.text('Odbieram'));
+    await tester.tap(find.text('Odbieram'));
     await tester.pumpAndSettle();
     expect(find.text('Jak ma wyglądać aplikacja?'), findsNothing, reason: 'the look is automatic');
     expect(find.text('Pomiń'), findsNothing, reason: 'the age is needed');
@@ -186,13 +186,13 @@ void main() {
     await tester.tap(find.text('TikTok'));
     await tester.pumpAndSettle();
     // Szop’en's tour over Start, skippable.
-    expect(find.text('Cześć, jestem Szop’en!'), findsOneWidget);
+    expect(find.text('Cześć, jestem Szop’en.'), findsOneWidget);
     await tester.tap(find.text('Dalej').last);
     await tester.pumpAndSettle();
     expect(find.text('Start'), findsWidgets);
     await tester.tap(find.text('Pomiń'));
     await tester.pumpAndSettle();
-    expect(find.text('Cześć, jestem Szop’en!'), findsNothing);
+    expect(find.text('Cześć, jestem Szop’en.'), findsNothing);
     expect(find.text('Co dziś robimy?'), findsOneWidget);
     final container = ProviderScope.containerOf(tester.element(find.text('Co dziś robimy?')));
     final family = container.read(familyProvider).value!;

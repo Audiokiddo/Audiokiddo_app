@@ -229,7 +229,7 @@ class _TodayCard extends ConsumerWidget {
             ],
           ),
           Text(
-            done ? 'Na dziś zrobione!' : title,
+            done ? 'Na dziś zrobione' : title,
             style: text.headlineSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 4),
@@ -447,7 +447,7 @@ class _Numbers extends StatelessWidget {
     return Row(
       children: [
         n(Icons.local_fire_department_rounded, AkBrand.orange, '${progress?.streak ?? 0}', 'dni z rzędu'),
-        n(Icons.headphones_rounded, AkBrand.tealDeep, '${progress?.minutes ?? 0} min', 'bez ekranu'),
+        n(Icons.headphones_rounded, AkBrand.tealDeep, '${progress?.minutes ?? 0} min', 'słuchania'),
         n(Icons.emoji_events_rounded, AkBrand.sunDeep, '${progress?.activities ?? 0}', 'zabaw'),
       ],
     );
@@ -476,7 +476,7 @@ class _Growing extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Co rozwijamy', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+        Text('Co dziecko ćwiczy w zabawach', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
         const SizedBox(height: 10),
         for (final goal in goals)
           () {

@@ -270,7 +270,7 @@ class _LettersSwitchState extends ConsumerState<LettersSwitch> {
     title: const Text('Listy od Szop’ena (e-mail)'),
     subtitle: const Text(
       'W niedzielę: pytanie do rozmowy po każdej zabawie z tygodnia, dwie zabawy na nowy tydzień '
-      'i pomysł bez ekranu. Po dłuższej przerwie jeden krótki list. Wypiszesz się jednym kliknięciem.',
+      'i pomysł bez patrzenia w ekran. Po dłuższej przerwie jeden krótki list. Wypiszesz się jednym kliknięciem.',
     ),
     value: _on ?? false,
     onChanged: _on == null

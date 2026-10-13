@@ -19,7 +19,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get navLibrary => 'Biblioteka';
 
   @override
-  String get homeGreeting => 'Czas na zabawę!';
+  String get homeGreeting => 'Czas na zabawę';
 
   @override
   String get homeSubtitle => 'Słuchajcie, odpowiadajcie, wymyślajcie. Bez patrzenia w ekran.';
@@ -104,7 +104,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get kindSong => 'Piosenki';
 
   @override
-  String get kindInteractiveGame => 'Gry bez ekranu';
+  String get kindInteractiveGame => 'Gry z odpowiedziami';
 
   @override
   String get filterAge => 'Wiek';
@@ -495,7 +495,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get paywallUnavailable => 'Sklep jest teraz niedostępny. Sprawdź internet i spróbuj później.';
 
   @override
-  String get purchaseSuccess => 'Gotowe! Zabawy są odblokowane.';
+  String get purchaseSuccess => 'Gotowe. Zabawy są odblokowane.';
 
   @override
   String get purchasePending => 'Zakup czeka na zatwierdzenie (np. przez opiekuna konta rodzinnego).';
@@ -535,11 +535,11 @@ class AppLocalizationsPl extends AppLocalizations {
   String get gameFailed => 'Nie udało się uruchomić zabawy.';
 
   @override
-  String get onboardingHelloTitle => 'Cześć! Tu AudioKiddo.';
+  String get onboardingHelloTitle => 'Cześć, tu AudioKiddo.';
 
   @override
   String get onboardingHelloBody =>
-      'Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne!';
+      'Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne.';
 
   @override
   String get onboardingHowTitle => 'Jak to działa';
@@ -761,7 +761,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onboardingVolumeTitle => 'Najpierw głośność';
 
   @override
-  String get onboardingHowListenTitle => 'Słuchanie bez ekranu';
+  String get onboardingHowListenTitle => 'Telefon leży, dziecko słucha';
 
   @override
   String get onboardingHowKidsTitle => 'Tryb dziecka';
@@ -819,7 +819,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get homeKiddo => 'Szop’en von Ekran. Dotknij, a coś powie.';
 
   @override
-  String get homeNew => 'Nowość!';
+  String get homeNew => 'Nowość';
 
   @override
   String get homeNewHint => 'Odpowiadaj klaśnięciem albo głosem!';
@@ -841,7 +841,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get quizHello =>
-      'Cześć! Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Szop’en nie kłamie.';
+      'Cześć. Zadam kilka szybkich pytań, żeby dobrać zabawy. Minutka, obiecuję. Szop’en nie kłamie.';
 
   @override
   String get quizHelloPoint1 => 'Około minuty na każde dziecko.';
@@ -894,7 +894,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String quizSummary(String name, int minutes) {
-    return 'Gotowe! Plan dla: $name. Po $minutes min dziennie, zaczynamy od łatwych zabaw.';
+    return 'Gotowe. Plan dla: $name. Po $minutes min dziennie, zaczynamy od łatwych zabaw.';
   }
 
   @override
@@ -968,7 +968,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Kawa znowu wystygła? Kawy nie uratujemy. Ciszę może tak: dzisiejsza zabawa czeka.';
 
   @override
-  String get reminder3Title => 'Seria trwa!';
+  String get reminder3Title => 'Seria trwa';
 
   @override
   String get reminder3Body =>
@@ -987,10 +987,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get reminder5Body => 'Podejrzane. Sprawdź, co się dzieje, a potem włącz dzisiejszą zabawę.';
 
   @override
-  String get reminder6Title => 'Bez ekranu, bez wyrzutów';
+  String get reminder6Title => 'Telefon ekranem w dół';
 
   @override
-  String get reminder6Body => 'Oczy odpoczywają, uszy pracują, a Ty może nawet usiądziesz. Na chwilę.';
+  String get reminder6Body => 'Oczy odpoczywają, uszy pracują. Dziecko odpowiada na głos.';
 
   @override
   String get reminder7Title => 'Szop’en nie śpi';
@@ -1074,7 +1074,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get planTodayDone =>
-      'Dzisiejsza nuta dopisana do melodii! Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.';
+      'Dzisiejsza nuta dopisana do melodii. Kolejna otworzy się jutro. Odpocznijcie, zasłużyliście.';
 
   @override
   String get planOpensTomorrow => 'Ten dzień otworzy się jutro. Po trochu, codziennie: tak działa najlepiej.';
@@ -1111,7 +1111,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get planChest =>
-      'Cały tydzień zagrany! Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.';
+      'Cały tydzień zagrany. Nagroda: puśćcie melodię tygodnia przy kolacji i pochwalcie się, czego się nauczyliście.';
 
   @override
   String get level1Name => 'Poznajemy się';
@@ -1249,12 +1249,12 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String adviceExcelling(String skill) {
-    return '$skill: świetnie idzie! Czas na coś trudniejszego.';
+    return '$skill: idzie świetnie. Czas na coś trudniejszego.';
   }
 
   @override
   String adviceExcellingPack(String skill, String pack) {
-    return '$skill: świetnie idzie! Spróbujcie pakietu $pack.';
+    return '$skill: idzie świetnie. Spróbujcie pakietu $pack.';
   }
 
   @override
@@ -1282,13 +1282,13 @@ class AppLocalizationsPl extends AppLocalizations {
       'Kilka dni przerwy? Zdarza się najlepszym. Wystarczy 5 minut dziś, żeby wrócić do rytmu.';
 
   @override
-  String get adviceLevelUp => 'Regularność na medal! Można dodać kilka minut dziennie.';
+  String get adviceLevelUp => 'Regularność na medal. Można dodać kilka minut dziennie.';
 
   @override
   String get paywallCarTrial => 'Mamo, tato… daleko jeszcze? A może 7 dni za darmo, zanim dojedziemy?';
 
   @override
-  String get paywallCar => 'Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej!';
+  String get paywallCar => 'Mamo, tato… daleko jeszcze? Z zabawami będzie bliżej.';
 
   @override
   String get onboardingDailyTitle => 'Po trochu, codziennie';
@@ -1313,7 +1313,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String todayDone(String name) {
-    return 'Porcja zaliczona ($name). Nowa nuta w melodii tygodnia!';
+    return 'Porcja zaliczona ($name). Nowa nuta w melodii tygodnia.';
   }
 
   @override
@@ -1347,7 +1347,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get talkSong => 'Zaśpiewajcie refren razem w kąpieli albo w samochodzie. Kto głośniej?';
 
   @override
-  String get talkGame => 'Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada!';
+  String get talkGame => 'Zadajcie sobie trzy pytania „prawda czy nie?” o Waszym dniu. Rodzic też odpowiada.';
 
   @override
   String get talkDetective =>
@@ -1507,7 +1507,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get sessionDone => 'Gotowe';
 
   @override
-  String get sessionArrived => 'Dojechaliście!';
+  String get sessionArrived => 'Dojechaliście.';
 
   @override
   String get sessionSleepWell => 'Śpij dobrze';
@@ -1672,11 +1672,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String weekCardAsk(String title) {
-    return 'Zapytajcie, o czym była „$title”. Opowie Wam wszystko!';
+    return 'Zapytajcie, o czym była „$title”. Opowie Wam wszystko.';
   }
 
   @override
-  String get weekCardAskGeneric => 'Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko!';
+  String get weekCardAskGeneric => 'Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko.';
 
   @override
   String weekCardShareText(String name) {
@@ -1706,7 +1706,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String screenFree(int minutes) {
-    return '$minutes min zabawy bez ekranu w tym tygodniu';
+    return '$minutes min zabaw na głos w tym tygodniu';
   }
 
   @override
@@ -1719,7 +1719,7 @@ class AppLocalizationsPl extends AppLocalizations {
       few: '$episodes odcinki',
       one: '1 odcinek',
     );
-    return '$minutes min zabawy bez ekranu w tym tygodniu. To jak $_temp0 bajki mniej.';
+    return '$minutes min zabaw na głos w tym tygodniu. To jak $_temp0 bajki mniej.';
   }
 
   @override

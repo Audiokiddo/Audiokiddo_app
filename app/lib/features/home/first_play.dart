@@ -81,7 +81,7 @@ class FirstPlayCard extends ConsumerWidget {
             const SizedBox(height: 10),
             Text(
               'Włącz zabawę, połóż telefon ekranem do dołu obok dziecka i wróć do swoich spraw. '
-              'Dziecko odpowiada na głos, rusza się i wymyśla, a Ty masz chwilę dla siebie.',
+              'Dziecko odpowiada na głos, rusza się i wymyśla. Pierwszy raz posłuchajcie razem.',
               style: text.bodyMedium?.copyWith(color: ink, height: 1.35),
             ),
             const SizedBox(height: 12),
