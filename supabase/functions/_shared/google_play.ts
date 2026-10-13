@@ -13,14 +13,14 @@ export interface ServiceAccount {
 
 type Fetch = typeof fetch;
 
-function b64url(bytes: Uint8Array | string): string {
+export function b64url(bytes: Uint8Array | string): string {
   const raw = typeof bytes === "string" ? new TextEncoder().encode(bytes) : bytes;
   let s = "";
   for (const b of raw) s += String.fromCharCode(b);
   return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-function pemToDer(pem: string): ArrayBuffer {
+export function pemToDer(pem: string): ArrayBuffer {
   const b64 = pem.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
   const binary = atob(b64);
   const out = new Uint8Array(new ArrayBuffer(binary.length));
@@ -108,6 +108,22 @@ export class GooglePlayClient {
       { headers: { authorization: `Bearer ${await this.accessToken()}` } },
     );
     if (!res.ok) throw new GooglePlayError(`${path.split("/")[1]} ${res.status}`, res.status);
+    return (await res.json()) as T;
+  }
+
+  /** Any call under the app (reviews, …): GET without [body], POST with it. */
+  async call<T>(path: string, body?: unknown): Promise<T> {
+    const res = await this.fetchFn(
+      `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${
+        encodeURIComponent(this.packageName)
+      }/${path}`,
+      {
+        method: body === undefined ? "GET" : "POST",
+        headers: { authorization: `Bearer ${await this.accessToken()}`, "content-type": "application/json" },
+        body: body === undefined ? undefined : JSON.stringify(body),
+      },
+    );
+    if (!res.ok) throw new GooglePlayError(`${path.split("?")[0]} ${res.status}`, res.status);
     return (await res.json()) as T;
   }
 

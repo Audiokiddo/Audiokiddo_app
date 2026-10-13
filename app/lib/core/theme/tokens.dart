@@ -107,9 +107,7 @@ abstract final class AkRadius {
 /// Soft, wide shadow for floating cards (Apple-style depth without hard edges).
 List<BoxShadow> akSoftShadow(BuildContext context) => [
   BoxShadow(
-    color: Theme.of(context).brightness == Brightness.dark
-        ? const Color(0x66000000)
-        : const Color(0x1A8A4B2A),
+    color: Theme.of(context).brightness == Brightness.dark ? const Color(0x66000000) : const Color(0x1A8A4B2A),
     blurRadius: 30,
     offset: const Offset(0, 12),
   ),

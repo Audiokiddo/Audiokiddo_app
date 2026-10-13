@@ -1,4 +1,5 @@
 import 'package:ak_core/ak_core.dart';
+import 'package:audiokiddo/core/backend/backend_config.dart';
 import 'package:audiokiddo/core/theme/app_theme.dart';
 import 'package:audiokiddo/features/account/access_screen.dart';
 import 'package:audiokiddo/features/access/access_controller.dart';
@@ -94,7 +95,7 @@ void main() {
         reason: 'a guest account is told',
       );
       expect(container.read(accessProvider).value, isNotNull);
-    });
+    }, skip: !BackendConfig.redeemCodes);
 
     testWidgets('every refusal has its own plain answer', (tester) async {
       final account = FakeAccountService();
@@ -112,7 +113,7 @@ void main() {
         await tapVisible(tester, find.text('Odbierz dostęp'));
         expect(find.textContaining(value), findsOneWidget, reason: '$key');
       }
-    });
+    }, skip: !BackendConfig.redeemCodes);
 
     testWidgets('an order needs its number and e-mail; a wrong pair never says which is wrong', (
       tester,
@@ -140,6 +141,12 @@ void main() {
       await tapVisible(tester, find.text('Odbierz dostęp'));
       expect(find.textContaining('internet', findRichText: true), findsWidgets);
       expect(find.text('AKABCD2345'), findsOneWidget, reason: 'the code stays for another try');
-    });
+    }, skip: !BackendConfig.redeemCodes);
+
+    testWidgets('the iOS store build has no code field, the order stays', (tester) async {
+      await pumpAccess(tester, FakeAccountService());
+      expect(find.text('Mam kod'), findsNothing);
+      expect(find.text('Dodaj zamówienie'), findsOneWidget);
+    }, skip: BackendConfig.redeemCodes);
   });
 }

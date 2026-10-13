@@ -14,7 +14,8 @@ cert=$(security find-certificate -a -c "Apple Development" -p 2>/dev/null | awk 
 team=$(printf '%s' "$cert" | openssl x509 -noout -subject -nameopt multiline | awk -F' = ' '/organizationalUnitName/{print $2; exit}')
 [[ $team =~ ^[A-Z0-9]{10}$ ]] || { echo "Nie udało się odczytać zespołu z certyfikatu."; exit 1; }
 
-device=$(xcrun devicectl list devices 2>/dev/null | awk '/physical/ && /connected/ {for (i=1;i<=NF;i++) if ($i ~ /^[0-9A-F]{8}-[0-9A-F]{16}$/) print $i}' | head -1)
+# A phone that is reachable now ("unavailable" also contains "available", hence the exclusion).
+device=$(xcrun devicectl list devices 2>/dev/null | awk '/physical/ && !/unavailable/ && (/connected/ || /available/) {for (i=1;i<=NF;i++) if ($i ~ /^[0-9A-F]{8}-[0-9A-F]{16}$/) print $i}' | head -1)
 [[ -n $device ]] || { echo "Nie widzę podłączonego iPhone'a. Podłącz go kablem, odblokuj i stuknij Zaufaj."; exit 1; }
 
 app_id="pl.audiokiddo.test.$(printf '%s' "$team" | tr 'A-Z' 'a-z')"

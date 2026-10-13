@@ -10,7 +10,6 @@ import '../../l10n/app_localizations.dart';
 import '../catalog/widgets/catalog_loader.dart';
 import '../catalog/widgets/item_views.dart';
 import '../downloads/download_providers.dart';
-import '../parental_gate/parental_gate.dart';
 import 'personal_repository.dart';
 
 class MineScreen extends StatelessWidget {
@@ -29,9 +28,7 @@ class MineScreen extends StatelessWidget {
           IconButton(
             tooltip: l10n.accountTitle,
             icon: const Icon(Icons.account_circle_rounded),
-            onPressed: () async {
-              if (await showParentalGate(context) && context.mounted) await context.push('/konto');
-            },
+            onPressed: () => context.push('/konto'),
           ),
           if (kDebugMode)
             IconButton(
@@ -51,9 +48,7 @@ class _MineContent extends ConsumerWidget {
 
   final Catalog catalog;
 
-  List<ContentItem> _items(List<String>? ids) => [
-    for (final id in ids ?? const <String>[]) ?catalog.item(id),
-  ];
+  List<ContentItem> _items(List<String>? ids) => [for (final id in ids ?? const <String>[]) ?catalog.item(id)];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -145,9 +140,6 @@ class _Empty extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: AkSpace.m, vertical: AkSpace.s),
-    child: Text(
-      message,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.palette.inkMuted),
-    ),
+    child: Text(message, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.palette.inkMuted)),
   );
 }

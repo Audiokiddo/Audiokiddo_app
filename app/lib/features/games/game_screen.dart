@@ -13,6 +13,7 @@ import '../player/player_providers.dart';
 import '../lord/lord_lines.dart';
 import '../lord/lord_widgets.dart';
 import 'game_controller.dart';
+import '../stickers/stickers.dart';
 
 /// Nothing to watch: the whole screen is one tap target when the game waits for a touch,
 /// otherwise a big pause button. Leaving needs a long press (kids mode included).
@@ -111,6 +112,8 @@ class GameScreen extends ConsumerWidget {
                     icon: const Icon(Icons.replay_rounded),
                     label: const Text('Powtórz polecenie'),
                   ),
+                if (game.phase == GamePhase.finished)
+                  const Padding(padding: EdgeInsets.symmetric(horizontal: 24), child: NewStickerCard()),
                 // Szop’en is gentle with the child; the parent gets his dry aside on the screen.
                 if (game.phase == GamePhase.finished)
                   ParentAside(

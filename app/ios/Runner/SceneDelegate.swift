@@ -1,4 +1,5 @@
 import AppIntents
+import CarPlay
 import Flutter
 import UIKit
 
@@ -110,4 +111,73 @@ struct KiddoShortcuts: AppShortcutsProvider {
       systemImageName: "car.fill"
     )
   }
+}
+
+// CarPlay (audio apps, iOS 14+): the same shelves as on Android Auto (Na drogę, Pobrane,
+// Piosenki, Na dobranoc), asked from the Dart side over `pl.audiokiddo/carplay`; a tap plays
+// and shows the system Now Playing screen, which audio_service already fills. It appears in
+// the car once Apple grants the CarPlay audio entitlement (docs/CARPLAY.md).
+final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+  private var interface: CPInterfaceController?
+
+  func templateApplicationScene(
+    _ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController
+  ) {
+    interface = interfaceController
+    interfaceController.setRootTemplate(CPListTemplate(title: "AudioKiddo", sections: []), animated: false, completion: nil)
+    reload()
+  }
+
+  func templateApplicationScene(
+    _ templateApplicationScene: CPTemplateApplicationScene,
+    didDisconnectInterfaceController interfaceController: CPInterfaceController
+  ) {
+    interface = nil
+  }
+
+  private func reload() {
+    guard let channel = CarPlayBridge.channel else {
+      return message("Otwórz AudioKiddo na telefonie, żeby wczytać zabawy.")
+    }
+    channel.invokeMethod("shelves", arguments: nil) { [weak self] result in
+      guard let self else { return }
+      guard let shelves = result as? [[String: Any]], !shelves.isEmpty else {
+        return self.message("Otwórz AudioKiddo na telefonie, żeby wczytać zabawy.")
+      }
+      let sections = shelves.map { shelf -> CPListSection in
+        let items = (shelf["items"] as? [[String: Any]] ?? []).map { raw -> CPListItem in
+          let item = CPListItem(text: raw["title"] as? String, detailText: raw["detail"] as? String)
+          if let path = raw["image"] as? String, let image = UIImage(contentsOfFile: path) {
+            item.setImage(image)
+          }
+          let id = raw["id"] as? String ?? ""
+          item.handler = { [weak self] _, done in
+            channel.invokeMethod("play", arguments: id) { _ in
+              self?.interface?.pushTemplate(CPNowPlayingTemplate.shared, animated: true, completion: nil)
+              done()
+            }
+          }
+          return item
+        }
+        return CPListSection(items: items, header: shelf["title"] as? String, sectionIndexTitle: nil)
+      }
+      self.interface?.setRootTemplate(
+        CPListTemplate(title: "AudioKiddo", sections: sections), animated: false, completion: nil)
+    }
+  }
+
+  private func message(_ text: String) {
+    let item = CPListItem(text: text, detailText: nil)
+    item.handler = { [weak self] _, done in
+      self?.reload()
+      done()
+    }
+    interface?.setRootTemplate(
+      CPListTemplate(title: "AudioKiddo", sections: [CPListSection(items: [item])]), animated: false, completion: nil)
+  }
+}
+
+/// The channel to the Dart side, set when the Flutter engine starts (AppDelegate).
+enum CarPlayBridge {
+  static var channel: FlutterMethodChannel?
 }

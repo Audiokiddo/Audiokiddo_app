@@ -30,7 +30,14 @@ Deno.test("woo order parsing", () => {
     billing: { email: "  Rodzic@Example.com " },
     line_items: [{ product_id: 11 }, { product_id: 12 }, { product_id: 11 }, { product_id: 0 }],
   });
-  assertEquals(order, { orderId: 501, email: "rodzic@example.com", status: "completed", productRefs: ["woo:11", "woo:12"] });
+  assertEquals(order, {
+    orderId: 501,
+    email: "rodzic@example.com",
+    status: "completed",
+    productRefs: ["woo:11", "woo:12"],
+    newsletter: false,
+    productNames: [],
+  });
   assertEquals(parseWooOrder({ id: 1, status: "processing", billing: { email: "a@b.pl" } }), null);
   assertEquals(parseWooOrder({ id: 1, status: "completed", billing: {} }), null);
   assertEquals(parseWooOrder("nonsense"), null);

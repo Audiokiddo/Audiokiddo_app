@@ -79,9 +79,10 @@ class ItemEditor extends ConsumerWidget {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
-            IconButton(
-              tooltip: 'Usuń pozycję',
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(foregroundColor: Colors.red.shade700),
               icon: const Icon(Icons.delete_outline),
+              label: const Text('Usuń zabawę'),
               onPressed: () async {
                 final ok = await showDialog<bool>(
                   context: context,

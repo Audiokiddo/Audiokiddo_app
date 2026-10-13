@@ -30,3 +30,31 @@ export async function hashCode(normalized: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(normalized));
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
+
+// Referral codes: "POLEC-7K3M9Q", one per parent, shared with friends. Stored as they are
+// (they give a friend a trial, not paid access), so the parent can always see their own.
+export const REFERRAL_PREFIX = "POLEC";
+export const REFERRAL_LENGTH = 6;
+
+/** "polec 7k3m-9q" → "POLEC7K3M9Q"; null when the text is not a referral code. */
+export function normalizeReferralCode(input: string): string | null {
+  const text = input.toUpperCase().replace(/[\s\-_.]/g, "");
+  if (!text.startsWith(REFERRAL_PREFIX)) return null;
+  const body = text.slice(REFERRAL_PREFIX.length);
+  if (body.length !== REFERRAL_LENGTH) return null;
+  for (const c of body) if (!CODE_ALPHABET.includes(c)) return null;
+  return `${REFERRAL_PREFIX}${body}`;
+}
+
+/** "POLEC7K3M9Q" → "POLEC-7K3M9Q". */
+export function formatReferralCode(normalized: string): string {
+  return `${REFERRAL_PREFIX}-${normalized.slice(REFERRAL_PREFIX.length)}`;
+}
+
+export function generateReferralCode(
+  random: (n: number) => Uint8Array = (n) => crypto.getRandomValues(new Uint8Array(n)),
+): string {
+  let body = "";
+  for (const b of random(REFERRAL_LENGTH)) body += CODE_ALPHABET[b % CODE_ALPHABET.length];
+  return `${REFERRAL_PREFIX}${body}`;
+}

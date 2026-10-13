@@ -41,6 +41,9 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze --fatal-infos
       - run: flutter test --timeout 60s
+      # The App Store build (tool/release_build.sh ios): number question everywhere, no code field.
+      - name: Tests as the App Store build
+        run: flutter test --timeout 60s --dart-define=PARENT_GATE_EVERYWHERE=true --dart-define=REDEEM_CODES=false
 
   studio:
     name: Studio (testy i build web)

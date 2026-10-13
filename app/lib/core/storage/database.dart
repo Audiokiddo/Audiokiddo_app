@@ -63,4 +63,22 @@ class AppDatabase extends _$AppDatabase {
       into(keyValues).insertOnConflictUpdate(KeyValuesCompanion.insert(key: key, value: value));
 
   Future<void> deleteValue(String key) => (delete(keyValues)..where((t) => t.key.equals(key))).go();
+
+  /// Removes every value whose key starts with [prefix] (per-child and per-game entries).
+  Future<void> deleteValuesStartingWith(String prefix) async {
+    final keys = [
+      for (final row in await select(keyValues).get())
+        if (row.key.startsWith(prefix)) row.key,
+    ];
+    for (final key in keys) {
+      await deleteValue(key);
+    }
+  }
+
+  /// The family's own listening data: favourites and progress (downloads stay, they are
+  /// governed by access).
+  Future<void> clearListening() async {
+    await delete(favorites).go();
+    await delete(playbackProgress).go();
+  }
 }

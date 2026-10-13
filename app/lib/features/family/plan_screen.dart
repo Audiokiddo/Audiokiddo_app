@@ -67,11 +67,7 @@ class _NoChildren extends StatelessWidget {
           children: [
             const Kiddo(size: 140, mood: KiddoMood.sleepy),
             const SizedBox(height: AkSpace.m),
-            Text(
-              l10n.planEmptyTitle,
-              style: Theme.of(context).textTheme.titleLarge,
-              textAlign: TextAlign.center,
-            ),
+            Text(l10n.planEmptyTitle, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
             const SizedBox(height: AkSpace.s),
             Text(l10n.planEmptyBody, textAlign: TextAlign.center),
             const SizedBox(height: AkSpace.l),
@@ -166,9 +162,7 @@ class _Path extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final open = day.day <= position.completedDays || day.day == position.currentDay;
     if (!open) {
-      final text = day.day == position.completedDays + 1
-          ? l10n.planOpensTomorrow
-          : l10n.planLockedDay(day.day - 1);
+      final text = day.day == position.completedDays + 1 ? l10n.planOpensTomorrow : l10n.planLockedDay(day.day - 1);
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(SnackBar(content: Text(text)));
@@ -228,11 +222,7 @@ class _TodayCard extends ConsumerWidget {
               Expanded(
                 child: Text(
                   'DZIEŃ ${day.day} Z $total · ${levelName(l10n, day.level.number).toUpperCase()}',
-                  style: text.labelMedium?.copyWith(
-                    color: AkBrand.sun,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: .8,
-                  ),
+                  style: text.labelMedium?.copyWith(color: AkBrand.sun, fontWeight: FontWeight.w800, letterSpacing: .8),
                 ),
               ),
               SzopSticker(done ? SzopPose.zadowolony : SzopPose.chytry, height: 54),
@@ -330,9 +320,7 @@ class _PlanItemRow extends ConsumerWidget {
                     tooltip: canPlay ? 'Zaczynamy: ${item.title}' : 'Odblokuj: ${item.title}',
                     onPressed: () => canPlay
                         ? startItem(context, item)
-                        : (item.packId != null
-                              ? openPack(context, item.packId!)
-                              : context.push('/zabawa/${item.id}')),
+                        : (item.packId != null ? openPack(context, item.packId!) : context.push('/zabawa/${item.id}')),
                     icon: Icon(canPlay ? Icons.play_arrow_rounded : Icons.lock_open_rounded),
                   ),
               ],
@@ -498,10 +486,7 @@ class _Growing extends ConsumerWidget {
             var bestCount = 0;
             for (final pack in catalog.packs) {
               if (ownsPack(scopes, pack.id)) continue;
-              final count = catalog
-                  .itemsInPack(pack.id)
-                  .where((i) => i.skills.any(goal.skills.contains))
-                  .length;
+              final count = catalog.itemsInPack(pack.id).where((i) => i.skills.any(goal.skills.contains)).length;
               if (count > bestCount) {
                 best = pack;
                 bestCount = count;
@@ -533,10 +518,7 @@ class _Growing extends ConsumerWidget {
                   ),
                   if (best != null)
                     TextButton.icon(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        visualDensity: VisualDensity.compact,
-                      ),
+                      style: TextButton.styleFrom(padding: EdgeInsets.zero, visualDensity: VisualDensity.compact),
                       onPressed: () => openPack(context, best!.id),
                       icon: const Icon(Icons.add_circle_outline_rounded, size: 18),
                       label: Text(
@@ -591,9 +573,7 @@ class _NextStages extends ConsumerWidget {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor: past
-                          ? AkBrand.teal
-                          : (isCurrent ? AkBrand.sun : context.palette.surfaceMuted),
+                      backgroundColor: past ? AkBrand.teal : (isCurrent ? AkBrand.sun : context.palette.surfaceMuted),
                       child: past
                           ? const Icon(Icons.check_rounded, color: Colors.white)
                           : Text(
@@ -620,10 +600,7 @@ class _NextStages extends ConsumerWidget {
                       ),
                     ),
                     if (locked.isNotEmpty && !past && packs.isNotEmpty)
-                      TextButton(
-                        onPressed: () => openPack(context, packs.first),
-                        child: const Text('Odblokuj'),
-                      ),
+                      TextButton(onPressed: () => openPack(context, packs.first), child: const Text('Odblokuj')),
                   ],
                 ),
               ),

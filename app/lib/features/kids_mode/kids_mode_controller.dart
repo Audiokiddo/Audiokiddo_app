@@ -52,8 +52,7 @@ class KidsModeController extends ChangeNotifier {
       _save(KidsModeSettings(active: _settings.active, age: age, onlyDownloaded: _settings.onlyDownloaded));
 
   /// Call only after the parental gate.
-  Future<void> exit() =>
-      _save(KidsModeSettings(age: _settings.age, onlyDownloaded: _settings.onlyDownloaded));
+  Future<void> exit() => _save(KidsModeSettings(age: _settings.age, onlyDownloaded: _settings.onlyDownloaded));
 
   Future<void> _save(KidsModeSettings next) async {
     await _db.writeValue(_key, jsonEncode(next.toJson()));

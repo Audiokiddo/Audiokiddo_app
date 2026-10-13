@@ -62,11 +62,7 @@ class ItemCard extends ConsumerWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                [
-                  l10n.duration(item.durationSec),
-                  l10n.ageFrom(item.ageMin),
-                  if (item.isFree) l10n.free,
-                ].join(' · '),
+                [l10n.duration(item.durationSec), l10n.ageFrom(item.ageMin), if (item.isFree) l10n.free].join(' · '),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: palette.inkMuted),

@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
+import '../kids_mode/kids_mode_controller.dart';
 import 'gate_challenge.dart';
 
 /// Shared across the app so closing and reopening the gate does not reset the lockout.
@@ -13,9 +15,20 @@ final _attempts = GateAttempts();
 @visibleForTesting
 GateChallenge Function()? debugGateChallengeFactory;
 
-/// Asks for an adult before purchases, links, sharing, settings and leaving kids mode
-/// (ARCHITECTURE §12). This is NOT age verification or parental consent.
+/// Whether the parent area asks too. Off by default: the parent area is opened only by a
+/// signed-in parent and the child uses kids mode, so the question appears only when leaving
+/// kids mode (parents found it tiresome everywhere else). The App Store build for the Kids
+/// Category (guideline 1.3: a gate before purchases and links) turns it on with
+/// `--dart-define=PARENT_GATE_EVERYWHERE=true` (docs/PUBLIKACJA.md).
+const askInParentArea = bool.fromEnvironment('PARENT_GATE_EVERYWHERE');
+
+/// Asks for an adult before leaving kids mode (and, with [askInParentArea], before
+/// purchases, links, sharing and settings; ARCHITECTURE §12). This is NOT age verification
+/// or parental consent.
 Future<bool> showParentalGate(BuildContext context) async {
+  if (!askInParentArea && !ProviderScope.containerOf(context, listen: false).read(kidsModeProvider).active) {
+    return true;
+  }
   final passed = await Navigator.of(
     context,
     rootNavigator: true,

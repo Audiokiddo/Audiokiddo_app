@@ -1,0 +1,44 @@
+{
+  "_comment": "Interactive case files of the Detektyw pack. Keyed by item id; page is the 1-based page of the item's PDF. kind: choice (answer = index into options), code (answer = accepted texts, compared without case, spaces or Polish diacritics) or open (not graded).",
+  "zlodziej-naszyjnika": [
+    {"page": 2, "prompt": "Dodaj wszystkie cyfry numeru 917-836-421. Jaki jest wynik?", "kind": "choice", "options": ["38", "42", "41"], "answer": 2},
+    {"page": 3, "prompt": "Sala jest oznaczona trójkątem i dwoma kółkami. Czyje nazwisko jest na tych drzwiach?", "kind": "choice", "options": ["Fikołek", "Zgrywalski", "Figlarz", "Wiercipiętek"], "answer": 2},
+    {"page": 4, "prompt": "Połącz miejsca A1, A5, C1, C5. Jaka litera wyszła?", "kind": "code", "answer": ["Z"]},
+    {"page": 5, "prompt": "Rozwiąż równania i wpisz kod z czterech cyfr.", "kind": "code", "answer": ["7895"]},
+    {"page": 6, "prompt": "Jakie hasło widać w lusterku?", "kind": "code", "answer": ["POD LAMPĄ JEST KLUCZ"]},
+    {"page": 7, "prompt": "Kto ma krawat, nieeleganckie buty i okrągłe okulary?", "kind": "choice", "options": ["Osoba 1", "Osoba 2", "Osoba 3", "Osoba 4"], "answer": 1},
+    {"page": 8, "prompt": "Rozszyfruj tajny kod złodzieja.", "kind": "code", "answer": ["SALA PODUSZKOWA"]},
+    {"page": 9, "prompt": "Policz kliknięcia z nagrania i dopisz kolory.", "kind": "open"}
+  ],
+  "znikajace-dzwonki": [
+    {"page": 2, "prompt": "Rozwiąż rebus. Jakie miejsce jest przy parku?", "kind": "code", "answer": ["SKLEP"]},
+    {"page": 3, "prompt": "Przejdź ścieżką od startu. Dokąd prowadzi?", "kind": "open"},
+    {"page": 4, "prompt": "Połącz kropki i przeczytaj napis w lusterku.", "kind": "code", "answer": ["SKLEP Z ZABAWKAMI"]},
+    {"page": 5, "prompt": "Uzupełnij literami O, N, R, I: D_M _A D_ZEW_E.", "kind": "code", "answer": ["DOM NA DRZEWIE"]},
+    {"page": 6, "prompt": "Które drzewo ma najgęstszą koronę? Jakie hasło jest nad nim?", "kind": "choice", "options": ["Dzwoneczek", "Muzyka", "Gumka do włosów"], "answer": 0}
+  ],
+  "na-ratunek-budce-z-lodami": [
+    {"page": 2, "prompt": "Ile wyrwanych kartek udało Ci się znaleźć?", "kind": "code", "answer": ["5", "PIĘĆ"]},
+    {"page": 3, "prompt": "Rozszyfruj wiadomość 13-1-7-9-3-26-11-1.", "kind": "code", "answer": ["MAGICZKA"]},
+    {"page": 4, "prompt": "Zamień kształty na skrzynce na cyfry. Jaki jest kod?", "kind": "code", "answer": ["2645"]},
+    {"page": 5, "prompt": "Gdzie są lody waniliowe z bitą śmietaną i piankami?", "kind": "choice", "options": ["Budka z frytkami", "Skatepark", "Plac zabaw", "Budka z lodami"], "answer": 3},
+    {"page": 6, "prompt": "Zbierz cyfry z drogi przez labirynt i ułóż je od największej. Jaki kod?", "kind": "code", "answer": ["8431"]}
+  ],
+  "tajemnicze-znaki": [
+    {"page": 2, "prompt": "Uzupełnij literami K, N, R: _Y_E_.", "kind": "code", "answer": ["RYNEK"]},
+    {"page": 3, "prompt": "Zamień symbole na litery. Jakie słowo wyszło?", "kind": "code", "answer": ["PIASKOWNICA"]},
+    {"page": 4, "prompt": "Cofnij każdą literę o 5 w alfabecie. Jakie słowo wyszło?", "kind": "code", "answer": ["BIBLIOTEKA"]},
+    {"page": 5, "prompt": "Która książka różni się od pozostałych? Licz od lewej.", "kind": "choice", "options": ["1", "2", "3", "4", "5", "6", "7", "8"], "answer": 2},
+    {"page": 6, "prompt": "Zbierz litery z drogi przez labirynt. Jakie miejsce z nich ułożysz?", "kind": "code", "answer": ["WIEŻA"]},
+    {"page": 7, "prompt": "Ustaw dźwięki z nagrania w kolejności i zapisz kod.", "kind": "open"},
+    {"page": 8, "prompt": "Dopasuj obrazki do przedmiotów szkolnych i zapisz pierwsze litery.", "kind": "open"}
+  ],
+  "gadajacy-smietnik": [
+    {"page": 2, "prompt": "Który kosz ma coś, co daje mu energię do mówienia?", "kind": "choice", "options": ["Kosz 1", "Kosz 2", "Kosz 3", "Kosz 4"], "answer": 1},
+    {"page": 3, "prompt": "Gdzie najpewniej narodził się pomysł na gadający kosz?", "kind": "choice", "options": ["Fabryka metali", "Uniwersytet nowych technologii", "Magazyn rzeczy nowych"], "answer": 1},
+    {"page": 4, "prompt": "Które ogłoszenie dotyczy gadającego kosza?", "kind": "choice", "options": ["1", "2", "3", "4", "5"], "answer": 2},
+    {"page": 5, "prompt": "Wstaw litery I, L, W, T, S. Jaki jest adres e-mail?", "kind": "code", "answer": ["ZIELONI@UNIWERSYTET.PL"]},
+    {"page": 6, "prompt": "Co dzieje się najpierw, gdy ktoś wrzuci śmieci?", "kind": "choice", "options": ["Kosz mówi „Dziękuję”", "Ktoś wrzuca śmieci", "Czujnik wykrywa ruch"], "answer": 1},
+    {"page": 7, "prompt": "Wymyśl trzy teksty, które kosz mógłby mówić.", "kind": "open"}
+  ]
+}

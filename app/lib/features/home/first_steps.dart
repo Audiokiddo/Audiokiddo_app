@@ -66,30 +66,15 @@ class FirstStepsCard extends ConsumerWidget {
     if (count == done.length) return const SizedBox.shrink();
 
     (IconData, String, String, VoidCallback) row(FirstStep step) => switch (step) {
-      FirstStep.plan => (
-        Icons.tune_rounded,
-        l10n.stepPlan,
-        l10n.stepPlanHint,
-        () => context.push('/plan/dziecko'),
-      ),
-      FirstStep.play => (
-        Icons.play_arrow_rounded,
-        l10n.stepPlay,
-        l10n.stepPlayHint,
-        () => showQuickPick(context),
-      ),
+      FirstStep.plan => (Icons.tune_rounded, l10n.stepPlan, l10n.stepPlanHint, () => context.push('/plan/dziecko')),
+      FirstStep.play => (Icons.play_arrow_rounded, l10n.stepPlay, l10n.stepPlayHint, () => showQuickPick(context)),
       FirstStep.download => (
         Icons.download_rounded,
         l10n.stepDownload,
         l10n.stepDownloadHint,
         () => context.push('/podroz'),
       ),
-      FirstStep.voice => (
-        Icons.mic_rounded,
-        l10n.stepVoice,
-        l10n.stepVoiceHint,
-        () => context.push('/plan/glos'),
-      ),
+      FirstStep.voice => (Icons.mic_rounded, l10n.stepVoice, l10n.stepVoiceHint, () => context.push('/plan/glos')),
       FirstStep.reminders => (
         Icons.notifications_rounded,
         l10n.stepReminders,

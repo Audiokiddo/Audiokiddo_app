@@ -10,6 +10,7 @@ import 'fake_store.dart';
 import 'iap_store.dart';
 import 'offer_catalog.dart';
 import 'store_gateway.dart';
+import '../insights/events.dart';
 
 enum VerificationResult { verified, rejected, retryLater }
 
@@ -45,11 +46,7 @@ class ServerPurchaseVerifier implements PurchaseVerifier {
         .verifyStorePurchase(
           ios
               ? {'platform': 'ios', 'signedTransaction': purchase.verificationData}
-              : {
-                  'platform': 'android',
-                  'productId': purchase.productId,
-                  'purchaseToken': purchase.verificationData,
-                },
+              : {'platform': 'android', 'productId': purchase.productId, 'purchaseToken': purchase.verificationData},
         );
     return switch (verdict) {
       ServerVerdict.verified => VerificationResult.verified,
@@ -73,20 +70,69 @@ class DevPurchaseVerifier implements PurchaseVerifier {
     if (scopes.isEmpty) return VerificationResult.rejected;
     final backend = _ref.read(devEntitlementBackendProvider);
     if (backend == null) return VerificationResult.retryLater;
-    final days = purchase.productId == ProductIds.yearly
+    final days = ProductIds.isYearly(purchase.productId)
         ? 365
-        : purchase.productId == ProductIds.monthly
+        : ProductIds.subscriptions.contains(purchase.productId)
         ? 30
         : null;
-    await backend.addPurchase(
-      scopes,
-      validUntil: days == null ? null : DateTime.now().add(Duration(days: days)),
-    );
+    await backend.addPurchase(scopes, validUntil: days == null ? null : DateTime.now().add(Duration(days: days)));
     return VerificationResult.verified;
   }
 }
 
 const _realStore = bool.fromEnvironment('REAL_STORE');
+
+/// Thrown by [buy] for a product the store does not sell (yet).
+class StoreNotReady implements Exception {
+  const StoreNotReady();
+}
+
+/// The real store, with the approved prices shown for products it does not sell yet (test
+/// builds before App Store Connect, a product not approved yet). Asking the store never hangs
+/// the offer: after a few seconds the reference prices are shown, and buying such a product
+/// says plainly that purchases start with the App Store release.
+class PreviewStoreGateway implements StoreGateway {
+  PreviewStoreGateway(this._store, {this.timeout = const Duration(seconds: 6)});
+
+  final StoreGateway _store;
+  final Duration timeout;
+  final _reference = FakeStoreGateway();
+  final _previewIds = <String>{};
+
+  @override
+  Future<bool> isAvailable() async => true;
+
+  @override
+  Future<List<StoreProduct>> products(Set<String> ids) async {
+    var real = const <StoreProduct>[];
+    try {
+      if (await _store.isAvailable().timeout(timeout)) real = await _store.products(ids).timeout(timeout);
+    } on Object catch (e) {
+      debugPrint('store: products unavailable ($e)');
+    }
+    final sold = {for (final p in real) p.id};
+    final missing = ids.difference(sold);
+    _previewIds
+      ..removeAll(sold)
+      ..addAll(missing);
+    return [...real, if (missing.isNotEmpty) ...await _reference.products(missing)];
+  }
+
+  @override
+  Stream<List<StorePurchase>> get purchases => _store.purchases;
+
+  @override
+  Future<void> buy(StoreProduct product, {String? accountToken}) async {
+    if (_previewIds.contains(product.id)) throw const StoreNotReady();
+    await _store.buy(product, accountToken: accountToken).timeout(timeout * 5);
+  }
+
+  @override
+  Future<void> restore() => _store.restore();
+
+  @override
+  Future<void> complete(StorePurchase purchase) => _store.complete(purchase);
+}
 
 final storeGatewayProvider = Provider<StoreGateway>((ref) {
   if (kDebugMode && !_realStore) {
@@ -94,14 +140,23 @@ final storeGatewayProvider = Provider<StoreGateway>((ref) {
     ref.onDispose(fake.dispose);
     return fake;
   }
-  return InAppPurchaseGateway();
+  return PreviewStoreGateway(InAppPurchaseGateway());
 });
 
 final purchaseVerifierProvider = Provider<PurchaseVerifier>(
   (ref) => kDebugMode && !_realStore ? DevPurchaseVerifier(ref) : ServerPurchaseVerifier(ref),
 );
 
-enum PurchaseMessage { none, success, pendingApproval, canceled, storeError, verifyLater, nothingToRestore }
+enum PurchaseMessage {
+  none,
+  success,
+  pendingApproval,
+  canceled,
+  storeError,
+  storeNotReady,
+  verifyLater,
+  nothingToRestore,
+}
 
 @immutable
 class PurchaseUiState {
@@ -118,21 +173,48 @@ class PurchaseController extends Notifier<PurchaseUiState> {
   @override
   PurchaseUiState build() {
     _subscription = ref.watch(storeGatewayProvider).purchases.listen(_onPurchases);
-    ref.onDispose(() => _subscription?.cancel());
+    ref.onDispose(() {
+      _subscription?.cancel();
+      _watchdog?.cancel();
+    });
     return const PurchaseUiState();
   }
 
   Future<void> buy(StoreProduct product) async {
     state = PurchaseUiState(busyProductId: product.id);
+    ref
+        .read(eventSinkProvider)
+        .track(
+          AppEvent.purchaseStart,
+          props: {'product': product.id, 'price': ?product.rawPrice, 'currency': ?product.currencyCode},
+        );
     try {
       // Ties the purchase to our server user (appAccountToken / obfuscatedAccountId), so
       // store notifications find the right account.
       final account = await ref.read(accountServiceProvider).purchaseAccountId();
       await ref.read(storeGatewayProvider).buy(product, accountToken: account);
-    } on Exception {
+    } on StoreNotReady {
+      _failed(product.id, 'store_not_ready');
+      state = const PurchaseUiState(message: PurchaseMessage.storeNotReady);
+      return;
+    } on Object {
+      _failed(product.id, 'store_error');
       state = const PurchaseUiState(message: PurchaseMessage.storeError);
+      return;
     }
+    // The store answers on the purchase stream; if it never does, the button comes back.
+    _watchdog?.cancel();
+    _watchdog = Timer(const Duration(minutes: 3), () {
+      if (ref.mounted && state.busyProductId == product.id) {
+        state = const PurchaseUiState(message: PurchaseMessage.storeError);
+      }
+    });
   }
+
+  Timer? _watchdog;
+
+  void _failed(String product, String error) =>
+      ref.read(eventSinkProvider).track(AppEvent.checkoutFailed, props: {'product': product, 'error_type': error});
 
   Future<void> restore() async {
     _restoring = true;
@@ -153,13 +235,16 @@ class PurchaseController extends Notifier<PurchaseUiState> {
   void clearMessage() => state = const PurchaseUiState();
 
   Future<void> _onPurchases(List<StorePurchase> purchases) async {
+    _watchdog?.cancel();
     for (final p in purchases) {
       switch (p.status) {
         case PurchaseStatus.pending:
           state = const PurchaseUiState(message: PurchaseMessage.pendingApproval);
         case PurchaseStatus.canceled:
+          _failed(p.productId, 'canceled');
           state = const PurchaseUiState(message: PurchaseMessage.canceled);
         case PurchaseStatus.error:
+          _failed(p.productId, 'store_error');
           state = const PurchaseUiState(message: PurchaseMessage.storeError);
         case PurchaseStatus.purchased || PurchaseStatus.restored:
           _restoring = false;
@@ -170,8 +255,12 @@ class PurchaseController extends Notifier<PurchaseUiState> {
             // anything we failed to process.
             if (p.needsCompletion) await ref.read(storeGatewayProvider).complete(p);
             await ref.read(accessProvider.notifier).refresh();
+            if (p.status == PurchaseStatus.purchased) {
+              ref.read(eventSinkProvider).track(AppEvent.purchaseDone, props: {'product': p.productId});
+            }
             if (ref.mounted) state = const PurchaseUiState(message: PurchaseMessage.success);
           } else {
+            _failed(p.productId, 'verify_failed');
             state = const PurchaseUiState(message: PurchaseMessage.verifyLater);
           }
       }
@@ -179,9 +268,7 @@ class PurchaseController extends Notifier<PurchaseUiState> {
   }
 }
 
-final purchaseControllerProvider = NotifierProvider<PurchaseController, PurchaseUiState>(
-  PurchaseController.new,
-);
+final purchaseControllerProvider = NotifierProvider<PurchaseController, PurchaseUiState>(PurchaseController.new);
 
 /// Store products for the paywall, prices from the store. Key: sorted ids joined by ','
 /// (a Set would not compare by value and would refetch on every build).

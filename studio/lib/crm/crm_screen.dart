@@ -1,0 +1,1510 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase/supabase.dart' show AuthException;
+
+import '../server/studio_server.dart';
+import 'ads_screen.dart';
+import 'agent_manual.dart';
+import 'crm_calendar.dart';
+import 'crm_insights.dart';
+import 'crm_quality.dart';
+import '../theme.dart';
+import 'crm_widgets.dart';
+import 'factory_tab.dart';
+import 'owners.dart';
+import 'task_board.dart';
+import 'task_prompt.dart';
+
+/// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
+/// proposes; nothing it proposes happens before Dawid approves it under "Decyzje".
+class CrmScreen extends ConsumerStatefulWidget {
+  const CrmScreen({super.key});
+
+  @override
+  ConsumerState<CrmScreen> createState() => _CrmScreenState();
+}
+
+class _CrmScreenState extends ConsumerState<CrmScreen> {
+  /// A tab: icon over the word on a big screen, icon beside a small word on a phone.
+  static Tab _tab(IconData icon, String label, Color color, {int badge = 0, bool compact = false}) {
+    final glyph = Badge(
+      isLabelVisible: badge > 0,
+      label: Text('$badge'),
+      child: Icon(icon, color: color, size: compact ? 16 : 24),
+    );
+    if (!compact) return Tab(icon: glyph, text: label);
+    return Tab(
+      height: 34,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          glyph,
+          const SizedBox(width: 5),
+          Text(label, style: const TextStyle(fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final server = ref.watch(studioServerProvider);
+    if (!server.signedIn) return AdminSignIn(onSignedIn: () => setState(() {}));
+    final pending = ref.watch(crmPendingProvider).value?.length ?? 0;
+    final adsPending = ref.watch(adsPendingProvider);
+    final compact = MediaQuery.sizeOf(context).shortestSide < 600;
+    return DefaultTabController(
+      length: 16,
+      child: Column(
+        children: [
+          Container(
+            color: Colors.white,
+            child: TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              labelPadding: EdgeInsets.symmetric(horizontal: compact ? 9 : 16),
+              tabs: [
+                _tab(Icons.dashboard_rounded, 'Pulpit', Brand.tealDeep, compact: compact),
+                _tab(Icons.how_to_vote_rounded, 'Decyzje', Brand.lavDeep, badge: pending, compact: compact),
+                _tab(Icons.view_kanban_rounded, 'Zadania', Brand.sunDeep, compact: compact),
+                _tab(Icons.lightbulb_rounded, 'Pomysły', Brand.sunDeep, compact: compact),
+                _tab(Icons.calendar_month_rounded, 'Kalendarz', Brand.tealDeep, compact: compact),
+                _tab(Icons.campaign_rounded, 'Reklamy', Brand.coral, compact: compact),
+                _tab(Icons.insights_rounded, 'Kampanie', Brand.coral, badge: adsPending, compact: compact),
+                _tab(Icons.mail_rounded, 'Mailing', Brand.lavDeep, compact: compact),
+                _tab(Icons.precision_manufacturing_rounded, 'Fabryka', Brand.tealDeep, compact: compact),
+                _tab(Icons.query_stats_rounded, 'Analiza', Brand.tealDeep, compact: compact),
+                _tab(Icons.reviews_rounded, 'Opinie', Brand.sunDeep, compact: compact),
+                _tab(Icons.receipt_long_rounded, 'Zamówienia', Brand.lavDeep, compact: compact),
+                _tab(Icons.bug_report_rounded, 'Błędy z telefonów', Brand.coral, compact: compact),
+                _tab(Icons.people_rounded, 'Użytkownicy', Brand.tealDeep, compact: compact),
+                _tab(Icons.update_rounded, 'Aktualizacje', Brand.lavDeep, compact: compact),
+                _tab(Icons.tune_rounded, 'Ustawienia', Brand.ink, compact: compact),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          const Expanded(
+            child: TabBarView(
+              children: [
+                _Dashboard(),
+                _Decisions(),
+                _Tasks(),
+                _Ideas(),
+                _Calendar(),
+                _Ads(),
+                CampaignsTab(),
+                _Mailing(),
+                FactoryTab(),
+                AnalysisTab(),
+                ReviewsTab(),
+                OrdersTab(),
+                ErrorsTab(),
+                _Users(),
+                _Updates(),
+                _Settings(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Sign-in with an e-mail code (admins only); the session is kept in this browser.
+class AdminSignIn extends ConsumerStatefulWidget {
+  const AdminSignIn({super.key, required this.onSignedIn});
+
+  final VoidCallback onSignedIn;
+
+  @override
+  ConsumerState<AdminSignIn> createState() => _AdminSignInState();
+}
+
+class _AdminSignInState extends ConsumerState<AdminSignIn> {
+  final _email = TextEditingController();
+  final _code = TextEditingController();
+  bool _sent = false;
+  bool _busy = false;
+  String? _note;
+  DateTime? _sentAt;
+  Timer? _tick;
+
+  // An iPhone home-screen shortcut often reloads while you read the mail, so the sent code is
+  // remembered for a while and the code field comes back.
+  static const _pendingKey = 'studio_code_sent';
+  static const _resendAfter = Duration(seconds: 60);
+  static const _codeLives = Duration(minutes: 55);
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      final saved = prefs.getString(_pendingKey)?.split('|');
+      if (saved == null || saved.length != 2 || !mounted) return;
+      final at = DateTime.tryParse(saved[1]);
+      if (at == null || DateTime.now().difference(at) > _codeLives) return;
+      setState(() {
+        _email.text = saved[0];
+        _sent = true;
+        _sentAt = at;
+        _note = 'Kod już wysłaliśmy na ${saved[0]}. Wpisz go poniżej.';
+      });
+      _startTick();
+    });
+  }
+
+  @override
+  void dispose() {
+    _tick?.cancel();
+    _email.dispose();
+    _code.dispose();
+    super.dispose();
+  }
+
+  void _startTick() {
+    _tick?.cancel();
+    _tick = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted || _wait == 0) t.cancel();
+      if (mounted) setState(() {});
+    });
+  }
+
+  int get _wait {
+    final at = _sentAt;
+    if (at == null) return 0;
+    final left = _resendAfter - DateTime.now().difference(at);
+    return left.isNegative ? 0 : left.inSeconds + 1;
+  }
+
+  Future<void> _remember(String email, DateTime at) async =>
+      (await SharedPreferences.getInstance()).setString(_pendingKey, '$email|${at.toIso8601String()}');
+
+  Future<void> _forget() async => (await SharedPreferences.getInstance()).remove(_pendingKey);
+
+  void _snack(String text) => ScaffoldMessenger.of(
+    context,
+  ).showSnackBar(SnackBar(content: Text(text), duration: const Duration(seconds: 8), showCloseIcon: true));
+
+  Future<void> _send() async {
+    final email = _email.text.trim().toLowerCase();
+    if (!email.contains('@')) {
+      _snack('Wpisz swój e-mail.');
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await ref.read(studioServerProvider).sendCode(email);
+      final now = DateTime.now();
+      await _remember(email, now);
+      setState(() {
+        _sent = true;
+        _sentAt = now;
+        _note = 'Wysłaliśmy kod na $email. Sprawdź pocztę (także Spam) i wpisz go poniżej.';
+      });
+      _startTick();
+    } on AuthException catch (e) {
+      if (e.statusCode == '429' || e.code == 'over_email_send_rate_limit') {
+        // A code went out a moment ago and is still good: let them type it.
+        final seconds = int.tryParse(RegExp(r'(\d+) second').firstMatch(e.message)?.group(1) ?? '');
+        final at = DateTime.now().subtract(_resendAfter - Duration(seconds: seconds ?? 60));
+        await _remember(email, at);
+        setState(() {
+          _sent = true;
+          _sentAt = at;
+          _note = 'Kod wysłaliśmy już przed chwilą na $email. Wpisz ten z ostatniego maila.';
+        });
+        _startTick();
+      } else if (e.code == 'otp_disabled' || e.message.contains('Signups not allowed')) {
+        _snack('Tego e-maila nie ma w Studio. Wejdą tylko konta Neli i Dawida.');
+      } else {
+        _snack('Nie udało się wysłać kodu: ${e.message}');
+      }
+    } on Object catch (e) {
+      _snack('Brak połączenia z serwerem. Sprawdź internet i spróbuj jeszcze raz. ($e)');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _verify() async {
+    final code = _code.text.replaceAll(RegExp(r'\s'), '');
+    if (code.length < 6) {
+      _snack('Wpisz cały kod z maila (6 cyfr).');
+      return;
+    }
+    final server = ref.read(studioServerProvider);
+    setState(() => _busy = true);
+    try {
+      await server.verify(_email.text.trim().toLowerCase(), code);
+      await _forget();
+    } on AuthException catch (e) {
+      _snack(
+        e.code == 'otp_expired' || e.message.contains('expired') || e.message.contains('invalid')
+            ? 'Ten kod nie pasuje albo już wygasł. Wpisz kod z najnowszego maila albo wyślij nowy.'
+            : 'Nie udało się zalogować: ${e.message}',
+      );
+    } on Object catch (e) {
+      _snack('Brak połączenia z serwerem. Spróbuj jeszcze raz. ($e)');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+    if (mounted && server.signedIn) widget.onSignedIn();
+  }
+
+  Future<void> _otherEmail() async {
+    await _forget();
+    _tick?.cancel();
+    setState(() {
+      _sent = false;
+      _sentAt = null;
+      _note = null;
+      _code.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final wait = _wait;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: AutofillGroup(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Image.asset('assets/brand/szop-zadowolony.png', height: 120),
+                const SizedBox(height: 8),
+                Text(
+                  'Zaloguj się',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _note ?? 'Wyślemy kod na Twój e-mail. Wejdą tylko konta właścicieli: Neli i Dawida.',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _email,
+                  enabled: !_sent,
+                  decoration: const InputDecoration(labelText: 'E-mail', border: OutlineInputBorder()),
+                  keyboardType: TextInputType.emailAddress,
+                  autofillHints: const [AutofillHints.email],
+                  autocorrect: false,
+                  onSubmitted: (_) => _send(),
+                ),
+                if (_sent) ...[
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _code,
+                    autofocus: true,
+                    decoration: const InputDecoration(labelText: 'Kod z maila', border: OutlineInputBorder()),
+                    keyboardType: TextInputType.number,
+                    autofillHints: const [AutofillHints.oneTimeCode],
+                    style: const TextStyle(fontSize: 22, letterSpacing: 6, fontWeight: FontWeight.w700),
+                    textAlign: TextAlign.center,
+                    onSubmitted: (_) => _verify(),
+                  ),
+                ],
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: _busy ? null : (_sent ? _verify : _send),
+                  child: Text(_sent ? 'Zaloguj' : 'Wyślij kod'),
+                ),
+                if (_sent) ...[
+                  const SizedBox(height: 8),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 4,
+                    children: [
+                      TextButton(
+                        onPressed: _busy || wait > 0 ? null : _send,
+                        child: Text(wait > 0 ? 'Nowy kod za $wait s' : 'Wyślij nowy kod'),
+                      ),
+                      TextButton(onPressed: _busy ? null : _otherEmail, child: const Text('Inny e-mail')),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Pulpit ---------------------------------------------------------------------------------------
+
+class _Dashboard extends ConsumerWidget {
+  const _Dashboard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final overview = ref.watch(crmOverviewProvider);
+    final briefings = ref.watch(crmItemsProvider('briefing'));
+    final tasks = ref.watch(crmItemsProvider('task'));
+    final calendar = ref.watch(crmItemsProvider('calendar'));
+    final text = Theme.of(context).textTheme;
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    String zl(Object? v) => v == null ? '–' : '${(v as num).toStringAsFixed(0)} zł';
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        const AlertsCard(),
+        const SizedBox(height: 16),
+        crmAsync(
+          overview,
+          (o) => Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              KpiTile(
+                'Zysk w tym miesiącu (szac.)',
+                zl(o['profit_month_estimate']),
+                hint: 'MRR netto minus koszty',
+                color: Colors.green.shade50,
+              ),
+              KpiTile('MRR brutto', zl(o['mrr_gross']), hint: 'netto ${zl(o['mrr_net'])}'),
+              KpiTile('Płacące rodziny', '${o['paying_families']}'),
+              KpiTile(
+                'Abonamenty',
+                '${o['subs_yearly']} roczne · ${o['subs_monthly']} mies.',
+                hint: o['subs_multi_child'] == null ? null : 'w tym dla 2+ dzieci: ${o['subs_multi_child']}',
+              ),
+              KpiTile('Użytkownicy', '${o['users_total']}', hint: '+${o['users_7d']} w 7 dni'),
+              KpiTile('Przychód 30 dni (brutto)', zl(o['revenue_30d_gross'])),
+              KpiTile('Otwarte zadania', '${o['open_tasks']}'),
+              KpiTile('Czeka na decyzję', '${o['pending_decisions']}', color: Colors.amber.shade50),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        const TrendCard(),
+        const SizedBox(height: 24),
+        const _CooBox(),
+        const SizedBox(height: 16),
+        crmAsync(briefings, (list) {
+          final last = list.where((b) => b['area'] == 'brief').firstOrNull;
+          if (last == null) {
+            return const Card(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text('Nie ma jeszcze raportu COO. Kliknij „Raport COO”, żeby dostać pierwszy.'),
+              ),
+            );
+          }
+          return Card(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${last['title']}', style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 8),
+                  SelectableText('${last['body']}'),
+                ],
+              ),
+            ),
+          );
+        }),
+        const SizedBox(height: 24),
+        Text('Na dziś i zaległe', style: text.titleMedium),
+        crmAsync(tasks, (list) {
+          final now = [
+            for (final t in list)
+              if (!['done', 'archived'].contains(t['status']) &&
+                  t['decision'] != 'pending' &&
+                  t['decision'] != 'rejected' &&
+                  (t['due'] == null ? t['priority'] == 1 : (t['due'] as String).compareTo(today) <= 0))
+                t,
+          ];
+          if (now.isEmpty) return const Padding(padding: EdgeInsets.all(8), child: Text('Nic pilnego.'));
+          return Column(children: [for (final t in now) CrmCard(item: t, dense: true)]);
+        }),
+        const SizedBox(height: 24),
+        Text('W kalendarzu (14 dni)', style: text.titleMedium),
+        crmAsync(calendar, (list) {
+          final soon = DateTime.now().add(const Duration(days: 14)).toIso8601String().substring(0, 10);
+          final next = [
+            for (final c in list)
+              if (c['due'] != null &&
+                  (c['due'] as String).compareTo(today) >= 0 &&
+                  (c['due'] as String).compareTo(soon) <= 0)
+                c,
+          ]..sort((a, b) => (a['due'] as String).compareTo(b['due'] as String));
+          if (next.isEmpty) return const Padding(padding: EdgeInsets.all(8), child: Text('Pusto.'));
+          return Column(children: [for (final c in next) CrmCard(item: c, dense: true)]);
+        }),
+      ],
+    );
+  }
+}
+
+/// The generators of the AI director, with an optional instruction.
+class _CooBox extends ConsumerStatefulWidget {
+  const _CooBox();
+
+  @override
+  ConsumerState<_CooBox> createState() => _CooBoxState();
+}
+
+class _CooBoxState extends ConsumerState<_CooBox> {
+  final _note = TextEditingController();
+  String? _busy;
+
+  static const modes = [
+    ('brief', Icons.assignment_outlined, 'Raport COO'),
+    ('packs', Icons.inventory_2_outlined, 'Pomysły na pakiety'),
+    ('ads', Icons.campaign_outlined, 'Reklamy i rolki'),
+    ('newsletter', Icons.mail_outline, 'Newsletter'),
+    ('improve', Icons.trending_up, 'Propozycje zmian'),
+  ];
+
+  @override
+  void dispose() {
+    _note.dispose();
+    super.dispose();
+  }
+
+  Future<void> _ask(String mode, String label) async {
+    setState(() => _busy = mode);
+    final ok = await askAgent(
+      context,
+      ref,
+      mode,
+      label: label,
+      note: _note.text.trim().isEmpty ? null : _note.text.trim(),
+    );
+    if (ok) {
+      ref.read(crmRefreshProvider.notifier).bump();
+      if (mounted && !ref.read(agentManualProvider)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              mode == 'brief'
+                  ? 'Raport gotowy. Propozycje zadań czekają w „Decyzje”.'
+                  : 'Propozycje czekają w „Decyzje”.',
+            ),
+          ),
+        );
+      }
+    }
+    if (mounted) setState(() => _busy = null);
+  }
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.smart_toy_outlined),
+              const SizedBox(width: 8),
+              Text(
+                'Agent COO',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Zna liczby, zadania, pomysły, kalendarz i Twoje wcześniejsze decyzje. Każda propozycja '
+            'trafia do „Decyzje”: Ty wybierasz, co robimy dalej.',
+          ),
+          const SizedBox(height: 10),
+          SegmentedButton<bool>(
+            segments: const [
+              ButtonSegment(
+                value: true,
+                icon: Icon(Icons.forum_rounded),
+                label: Text('Przez czat (Claude / ChatGPT)'),
+              ),
+              ButtonSegment(
+                value: false,
+                icon: Icon(Icons.bolt_rounded),
+                label: Text('Automatycznie (klucz API)'),
+              ),
+            ],
+            selected: {ref.watch(agentManualProvider)},
+            onSelectionChanged: (s) => ref.read(agentManualProvider.notifier).set(s.single),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _note,
+            decoration: const InputDecoration(
+              labelText: 'Wskazówka dla agenta (opcjonalnie), np. „skup się na święta”',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final (mode, icon, label) in modes)
+                FilledButton.tonalIcon(
+                  onPressed: _busy != null ? null : () => _ask(mode, label),
+                  icon: _busy == mode
+                      ? const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                      : Icon(icon),
+                  label: Text(label),
+                ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+// Decyzje --------------------------------------------------------------------------------------
+
+class _Decisions extends ConsumerWidget {
+  const _Decisions();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final server = ref.read(studioServerProvider);
+    void refresh() => ref.read(crmRefreshProvider.notifier).bump();
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        const _CooBox(),
+        const SizedBox(height: 16),
+        crmAsync(ref.watch(crmPendingProvider), (list) {
+          if (list.isEmpty) {
+            return const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text('Nic nie czeka na decyzję. Poproś agenta o propozycje powyżej.'),
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Do decyzji: ${list.length}', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              for (final item in list)
+                CrmCard(
+                  item: item,
+                  actions: [
+                    FilledButton.icon(
+                      onPressed: () async {
+                        if (await crmRun(context, () => server.decide(item, approve: true))) refresh();
+                      },
+                      icon: const Icon(Icons.check),
+                      label: const Text('Zatwierdzam'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        if (await crmRun(context, () => server.decide(item, approve: false))) refresh();
+                      },
+                      icon: const Icon(Icons.close),
+                      label: const Text('Odrzucam'),
+                    ),
+                    TextButton.icon(
+                      onPressed: () async {
+                        final edited = await editCrmItem(
+                          context,
+                          kind: item['kind'] as String,
+                          item: item,
+                          areas: [item['area'] as String? ?? 'other'],
+                          statuses: [item['status'] as String? ?? 'todo'],
+                        );
+                        if (edited == null || !context.mounted) return;
+                        if (await crmRun(context, () => server.saveCrmItem(edited))) refresh();
+                      },
+                      icon: const Icon(Icons.edit_outlined),
+                      label: const Text('Popraw'),
+                    ),
+                  ],
+                ),
+            ],
+          );
+        }),
+      ],
+    );
+  }
+}
+
+/// Items Dawid decided on or wrote himself (rejected and pending ones stay out).
+List<Map<String, dynamic>> decided(List<Map<String, dynamic>> list) => [
+  for (final i in list)
+    if (i['decision'] != 'pending' && i['decision'] != 'rejected') i,
+];
+
+// Zadania --------------------------------------------------------------------------------------
+
+class _Tasks extends ConsumerStatefulWidget {
+  const _Tasks();
+
+  @override
+  ConsumerState<_Tasks> createState() => _TasksState();
+}
+
+class _TasksState extends ConsumerState<_Tasks> {
+  /// Whose tasks are shown: null for everyone's.
+  Owner? _who;
+
+  /// Only tasks due in the next two weeks (and overdue or undated ones).
+  bool _soon = true;
+
+  static const columns = [
+    ('todo', 'Do zrobienia', Brand.lavDeep, Brand.lavSoft),
+    ('doing', 'W toku', Brand.sunDeep, Brand.sunSoft),
+    ('done', 'Zrobione', Brand.tealDeep, Brand.tealSoft),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final server = ref.read(studioServerProvider);
+    void refresh() => ref.read(crmRefreshProvider.notifier).bump();
+    Future<void> edit([Map<String, dynamic>? item]) async {
+      final saved = await editCrmItem(
+        context,
+        kind: 'task',
+        item: item,
+        areas: const ['launch', 'marketing', 'feature', 'crm', 'server', 'release'],
+      );
+      if (saved == null || !context.mounted) return;
+      if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
+    }
+
+    Future<void> moveTo(Map<String, dynamic> task, String status) async {
+      if (task['status'] == status) return;
+      if (await crmRun(context, () => server.saveCrmItem({'id': task['id'], 'status': status}))) refresh();
+    }
+
+    Future<void> assign(Map<String, dynamic> task, String owner) async {
+      if (await crmRun(context, () => server.saveCrmItem({'id': task['id'], 'owner': owner}))) refresh();
+    }
+
+    // Shared tasks show for both; unassigned ones only under "Wszystkie".
+    bool mine(Map<String, dynamic> t) {
+      if (_who == null) return true;
+      final owner = Owner.of(t['owner']);
+      return owner == _who || owner == Owner.razem;
+    }
+
+    Future<void> remove(Map<String, dynamic> task) async {
+      if (!await confirmDelete(context, 'zadanie „${task['title']}”')) return;
+      if (!context.mounted) return;
+      if (await crmRun(context, () => server.deleteCrmItem('${task['id']}'))) refresh();
+    }
+
+    final phone = MediaQuery.sizeOf(context).shortestSide < 600;
+    return Scaffold(
+      floatingActionButton: phone
+          ? FloatingActionButton.small(
+              tooltip: 'Dodaj zadanie',
+              onPressed: edit,
+              child: const Icon(Icons.add),
+            )
+          : FloatingActionButton.extended(
+              onPressed: edit,
+              icon: const Icon(Icons.add),
+              label: const Text('Dodaj zadanie'),
+            ),
+      body: crmAsync(ref.watch(crmItemsProvider('task')), (all) {
+        final today = DateTime.now();
+        final list = [
+          for (final t in decided(all))
+            if (mine(t) && (!_soon || dueSoon(t, today))) t,
+        ]..sort(byUrgency);
+        return TaskBoard(
+          columns: [
+            for (final (status, label, deep, soft) in columns)
+              (status: status, label: label, deep: deep, soft: soft),
+          ],
+          tasks: list,
+          onMove: moveTo,
+          header: Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              SegmentedButton<Owner?>(
+                segments: [
+                  const ButtonSegment(
+                    value: null,
+                    icon: Icon(Icons.groups_rounded),
+                    label: Text('Wszystkie'),
+                  ),
+                  for (final o in const [Owner.dawid, Owner.nela])
+                    ButtonSegment(
+                      value: o,
+                      icon: Icon(o.icon, color: o.color),
+                      label: Text(o.name),
+                    ),
+                ],
+                selected: {_who},
+                onSelectionChanged: (v) => setState(() => _who = v.single),
+              ),
+              SegmentedButton<bool>(
+                segments: const [
+                  ButtonSegment(value: true, icon: Icon(Icons.today_rounded), label: Text('2 tygodnie')),
+                  ButtonSegment(value: false, icon: Icon(Icons.date_range_rounded), label: Text('Cały plan')),
+                ],
+                selected: {_soon},
+                onSelectionChanged: (v) => setState(() => _soon = v.single),
+              ),
+              Text(
+                'Przeciągnij kartę do innej kolumny (na telefonie: przytrzymaj). Kliknij, żeby zmienić.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+          cardFor: (t) => CrmCard(
+            item: t,
+            dense: true,
+            onTap: () => edit(t),
+            onDelete: () => remove(t),
+            actions: [
+              OwnerPicker(item: t, onChange: (o) => assign(t, o)),
+              if (t['status'] != 'done') TaskAiActions(t),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+}
+
+// Pomysły --------------------------------------------------------------------------------------
+
+class _Ideas extends ConsumerStatefulWidget {
+  const _Ideas();
+
+  @override
+  ConsumerState<_Ideas> createState() => _IdeasState();
+}
+
+class _IdeasState extends ConsumerState<_Ideas> {
+  String? _area;
+  String? _writing;
+
+  static const areas = ['pack', 'scenario', 'feature', 'post', 'reel'];
+  static const statuses = ['new', 'chosen', 'in_production', 'published', 'archived'];
+
+  @override
+  Widget build(BuildContext context) {
+    final server = ref.read(studioServerProvider);
+    void refresh() => ref.read(crmRefreshProvider.notifier).bump();
+    Future<void> edit([Map<String, dynamic>? item]) async {
+      final saved = await editCrmItem(context, kind: 'idea', item: item, areas: areas, statuses: statuses);
+      if (saved == null || !context.mounted) return;
+      if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
+    }
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: edit,
+        icon: const Icon(Icons.add),
+        label: const Text('Pomysł'),
+      ),
+      body: crmAsync(ref.watch(crmItemsProvider('idea')), (all) {
+        final list = [
+          for (final i in decided(all))
+            if (i['area'] != 'ad' && (_area == null || i['area'] == _area)) i,
+        ];
+        return ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            Wrap(
+              spacing: 8,
+              children: [
+                ChoiceChip(
+                  label: const Text('Wszystkie'),
+                  selected: _area == null,
+                  onSelected: (_) => setState(() => _area = null),
+                ),
+                for (final a in areas)
+                  ChoiceChip(
+                    label: Text(areaLabel(a)),
+                    selected: _area == a,
+                    onSelected: (_) => setState(() => _area = a),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (list.isEmpty) const Text('Brak pomysłów. Dodaj własny albo poproś agenta w „Decyzje”.'),
+            for (final item in list)
+              CrmCard(
+                item: item,
+                onDelete: () async {
+                  if (!await confirmDelete(context, 'pomysł „${item['title']}”')) return;
+                  if (!context.mounted) return;
+                  if (await crmRun(context, () => server.deleteCrmItem('${item['id']}'))) refresh();
+                },
+                actions: [
+                  Chip(label: Text(statusLabels[item['status']] ?? '${item['status']}')),
+                  TaskAiActions(item),
+                  TextButton(onPressed: () => edit(item), child: const Text('Edytuj')),
+                  if (item['area'] == 'pack' || item['area'] == 'feature')
+                    TextButton.icon(
+                      onPressed: _writing != null
+                          ? null
+                          : () async {
+                              setState(() => _writing = item['id'] as String);
+                              final ok = await askAgent(
+                                context,
+                                ref,
+                                'scenario',
+                                label: 'Scenariusz zabawy',
+                                focusId: item['id'] as String,
+                              );
+                              if (ok) {
+                                refresh();
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Scenariusz gotowy: czeka w „Decyzje”.')),
+                                  );
+                                }
+                              }
+                              if (mounted) setState(() => _writing = null);
+                            },
+                      icon: _writing == item['id']
+                          ? const SizedBox.square(
+                              dimension: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.auto_stories_outlined),
+                      label: const Text('Agent: napisz scenariusz zabawy'),
+                    ),
+                  TextButton.icon(
+                    onPressed: () async {
+                      final ok = await crmRun(
+                        context,
+                        () => server.saveCrmItem({
+                          'kind': 'calendar',
+                          'area': item['area'] == 'pack' ? 'release' : 'post',
+                          'title': '${item['title']}',
+                          'body': '${item['body']}',
+                          'status': 'todo',
+                          'data': {'idea_id': item['id']},
+                        }),
+                        done: 'Dodano do kalendarza. Ustaw datę w zakładce Kalendarz.',
+                      );
+                      if (ok) refresh();
+                    },
+                    icon: const Icon(Icons.event_available),
+                    label: const Text('Do kalendarza'),
+                  ),
+                ],
+              ),
+          ],
+        );
+      }),
+    );
+  }
+}
+
+// Kalendarz ------------------------------------------------------------------------------------
+
+class _Calendar extends ConsumerWidget {
+  const _Calendar();
+
+  static const areas = ['release', 'post', 'reel', 'newsletter', 'promotion', 'update'];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final server = ref.read(studioServerProvider);
+    void refresh() => ref.read(crmRefreshProvider.notifier).bump();
+    Future<void> edit([Map<String, dynamic>? item]) async {
+      final saved = await editCrmItem(context, kind: 'calendar', item: item, areas: areas);
+      if (saved == null || !context.mounted) return;
+      if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
+    }
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: edit,
+        icon: const Icon(Icons.add),
+        label: const Text('Publikacja'),
+      ),
+      body: crmAsync(ref.watch(crmItemsProvider('calendar')), (all) {
+        final list = decided(all);
+        return ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const Text('Plan: jeden nowy pakiet w miesiącu, 3 rolki w tygodniu, newsletter co 2 tygodnie.'),
+            const SizedBox(height: 12),
+            CalendarMonth(
+              items: list,
+              onTap: edit,
+              onMove: (item, day) async {
+                if (await crmRun(context, () => server.saveCrmItem({'id': item['id'], 'due': day}))) {
+                  refresh();
+                }
+              },
+            ),
+          ],
+        );
+      }),
+    );
+  }
+}
+
+// Reklamy --------------------------------------------------------------------------------------
+
+/// Ad ideas as previews of a social post (hook, text on screen, caption, CTA).
+class _Ads extends ConsumerWidget {
+  const _Ads();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final server = ref.read(studioServerProvider);
+    void refresh() => ref.read(crmRefreshProvider.notifier).bump();
+    Future<void> edit([Map<String, dynamic>? item]) async {
+      final saved = await editCrmItem(
+        context,
+        kind: 'idea',
+        item: item ?? {'area': 'ad'},
+        areas: const ['ad'],
+        statuses: const ['new', 'chosen', 'in_production', 'published', 'archived'],
+      );
+      if (saved == null || !context.mounted) return;
+      if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
+    }
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: edit,
+        icon: const Icon(Icons.add),
+        label: const Text('Reklama'),
+      ),
+      body: crmAsync(ref.watch(crmItemsProvider('idea')), (all) {
+        final ads = [
+          for (final i in decided(all))
+            if (i['area'] == 'ad') i,
+        ];
+        if (ads.isEmpty) {
+          return const Center(child: Text('Brak reklam. Poproś agenta o „Reklamy i rolki” w „Decyzje”.'));
+        }
+        return GridView.extent(
+          maxCrossAxisExtent: 340,
+          padding: const EdgeInsets.all(20),
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: .52,
+          children: [for (final ad in ads) _AdPreview(ad: ad, onTap: () => edit(ad))],
+        );
+      }),
+    );
+  }
+}
+
+class _AdPreview extends StatelessWidget {
+  const _AdPreview({required this.ad, required this.onTap});
+
+  final Map<String, dynamic> ad;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final data = Map<String, dynamic>.from(ad['data'] as Map? ?? {});
+    final text = Theme.of(context).textTheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(28),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: Colors.black, width: 6),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF3EADB2), Color(0xFFFAC119)],
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const CircleAvatar(radius: 14, child: Text('A', style: TextStyle(fontSize: 12))),
+                        const SizedBox(width: 6),
+                        Text('audiokiddo', style: text.labelMedium?.copyWith(color: Colors.white)),
+                        const Spacer(),
+                        Text(
+                          '${data['format'] ?? 'rolka'}',
+                          style: text.labelSmall?.copyWith(color: Colors.white70),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Text(
+                      '${ad['title']}',
+                      style: text.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w900),
+                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      flex: 3,
+                      child: SingleChildScrollView(
+                        child: Text('${ad['body']}', style: text.bodySmall?.copyWith(color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      [
+                        if (data['audience'] != null) 'Dla: ${data['audience']}',
+                        if (data['budget_test_pln'] != null) 'Test: ${data['budget_test_pln']} zł',
+                        statusLabels[ad['status']] ?? '${ad['status']}',
+                      ].join(' · '),
+                      style: text.labelSmall,
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: null,
+                    style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+                    child: const Text('Sprawdź'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Mailing --------------------------------------------------------------------------------------
+
+class _Mailing extends ConsumerStatefulWidget {
+  const _Mailing();
+
+  @override
+  ConsumerState<_Mailing> createState() => _MailingState();
+}
+
+class _MailingState extends ConsumerState<_Mailing> {
+  Future<Map<String, dynamic>>? _overview;
+  String? _busy;
+
+  @override
+  Widget build(BuildContext context) {
+    final server = ref.read(studioServerProvider);
+    final text = Theme.of(context).textTheme;
+    void refresh() => ref.read(crmRefreshProvider.notifier).bump();
+    Future<void> edit([Map<String, dynamic>? item]) async {
+      final saved = await editCrmItem(
+        context,
+        kind: 'mailing',
+        item: item,
+        areas: const ['newsletter', 'automation'],
+      );
+      if (saved == null || !context.mounted) return;
+      if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
+    }
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: edit,
+        icon: const Icon(Icons.add),
+        label: const Text('Mail'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: _overview == null
+                  ? Row(
+                      children: [
+                        const Expanded(
+                          child: Text('MailerLite: subskrybenci, wyniki kampanii i automatyzacje.'),
+                        ),
+                        FilledButton.tonal(
+                          onPressed: () => setState(() => _overview = server.mailerLite()),
+                          child: const Text('Wczytaj z MailerLite'),
+                        ),
+                      ],
+                    )
+                  : FutureBuilder<Map<String, dynamic>>(
+                      future: _overview,
+                      builder: (context, snap) {
+                        if (snap.hasError) return Text('${snap.error}');
+                        if (!snap.hasData) return const LinearProgressIndicator();
+                        final o = snap.data!;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Subskrybenci: ${o['subscribers'] ?? '–'}', style: text.titleMedium),
+                            const SizedBox(height: 8),
+                            Text('Grupy', style: text.labelLarge),
+                            for (final g in (o['groups'] as List? ?? const []).cast<Map>())
+                              Text(
+                                '• ${g['name']}: ${g['active']} aktywnych, otwarcia ${g['open_rate'] ?? '–'}',
+                              ),
+                            const SizedBox(height: 8),
+                            Text('Ostatnie kampanie', style: text.labelLarge),
+                            for (final c in (o['campaigns'] as List? ?? const []).cast<Map>())
+                              Text(
+                                '• ${c['subject'] ?? c['name']}: wysłano ${c['sent'] ?? '–'}, otwarcia ${c['open_rate'] ?? '–'}, kliknięcia ${c['click_rate'] ?? '–'}',
+                              ),
+                            const SizedBox(height: 8),
+                            Text('Automatyzacje', style: text.labelLarge),
+                            for (final a in (o['automations'] as List? ?? const []).cast<Map>())
+                              Text(
+                                '• ${a['name']}: ${a['enabled'] == true ? 'włączona' : 'wyłączona'}, ukończyło ${a['completed'] ?? '–'}',
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          crmAsync(ref.watch(crmItemsProvider('mailing')), (all) {
+            final list = decided(all);
+            if (list.isEmpty) return const Text('Brak maili. Poproś agenta o newsletter w „Decyzje”.');
+            return Column(
+              children: [
+                for (final m in list)
+                  CrmCard(
+                    item: m,
+                    actions: [
+                      Chip(label: Text(statusLabels[m['status']] ?? '${m['status']}')),
+                      TextButton(onPressed: () => edit(m), child: const Text('Edytuj')),
+                      TextButton.icon(
+                        onPressed: () => showDialog<void>(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text('${(m['data'] as Map?)?['subject'] ?? m['title']}'),
+                            content: SizedBox(
+                              width: 560,
+                              child: SingleChildScrollView(child: SelectableText('${m['body']}')),
+                            ),
+                          ),
+                        ),
+                        icon: const Icon(Icons.visibility_outlined),
+                        label: const Text('Podgląd'),
+                      ),
+                      if (m['area'] == 'newsletter')
+                        TextButton.icon(
+                          onPressed: _busy != null
+                              ? null
+                              : () async {
+                                  setState(() => _busy = m['id'] as String);
+                                  final ok = await crmRun(
+                                    context,
+                                    () => server.mailerLiteDraft(m['id'] as String),
+                                    done: 'Szkic jest w MailerLite. Sprawdź i wyślij go tam.',
+                                  );
+                                  if (ok) refresh();
+                                  if (mounted) setState(() => _busy = null);
+                                },
+                          icon: const Icon(Icons.outbox_outlined),
+                          label: const Text('Szkic w MailerLite'),
+                        ),
+                      if (m['area'] == 'newsletter' && (m['data'] as Map?)?['scheduled'] == null)
+                        FilledButton.tonalIcon(
+                          onPressed: _busy != null
+                              ? null
+                              : () async {
+                                  final plan = await askNewsletterSchedule(
+                                    context,
+                                    server,
+                                    day: DateTime.tryParse('${m['due'] ?? ''}'),
+                                  );
+                                  if (plan == null || !context.mounted) return;
+                                  final (group, date, time) = plan;
+                                  setState(() => _busy = m['id'] as String);
+                                  final ok = await crmRun(
+                                    context,
+                                    () => server.mailerLiteSchedule(m['id'] as String, group, date, time),
+                                    done: 'Zaplanowano: $date o $time. Zmienisz to jeszcze w MailerLite.',
+                                  );
+                                  if (ok) refresh();
+                                  if (mounted) setState(() => _busy = null);
+                                },
+                          icon: const Icon(Icons.schedule_send_outlined),
+                          label: const Text('Zaplanuj wysyłkę'),
+                        ),
+                      if ((m['data'] as Map?)?['scheduled'] case final at?)
+                        Chip(avatar: const Icon(Icons.schedule_send, size: 16), label: Text('Wysyłka $at')),
+                    ],
+                  ),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+// Użytkownicy ----------------------------------------------------------------------------------
+
+class _Users extends ConsumerWidget {
+  const _Users();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => crmAsync(ref.watch(crmOverviewProvider), (o) {
+    final users = (o['recent_users'] as List? ?? const []).cast<Map>();
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        const CustomerLookup(),
+        const SizedBox(height: 20),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            KpiTile('Wszyscy', '${o['users_total']}'),
+            KpiTile('Nowi w 7 dni', '${o['users_7d']}'),
+            KpiTile('Nowi w 30 dni', '${o['users_30d']}'),
+            KpiTile('Płacący', '${o['paying_families']}'),
+            KpiTile('Sprzedane pakiety', '${o['packs_sold']}'),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Text('Ostatnio założone konta', style: Theme.of(context).textTheme.titleMedium),
+        DataTable(
+          columns: const [
+            DataColumn(label: Text('E-mail')),
+            DataColumn(label: Text('Założone')),
+            DataColumn(label: Text('Płaci')),
+          ],
+          rows: [
+            for (final u in users)
+              DataRow(
+                cells: [
+                  DataCell(Text('${u['email'] ?? 'gość'}')),
+                  DataCell(Text('${u['created_at']}'.substring(0, 16).replaceFirst('T', ' '))),
+                  DataCell(Icon(u['paying'] == true ? Icons.check_circle : Icons.remove, size: 18)),
+                ],
+              ),
+          ],
+        ),
+      ],
+    );
+  });
+}
+
+// Aktualizacje ---------------------------------------------------------------------------------
+
+class _Updates extends ConsumerWidget {
+  const _Updates();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final server = ref.read(studioServerProvider);
+    void refresh() => ref.read(crmRefreshProvider.notifier).bump();
+    Future<void> edit([Map<String, dynamic>? item]) async {
+      final saved = await editCrmItem(
+        context,
+        kind: 'change',
+        item: item,
+        areas: const ['update', 'proposal'],
+      );
+      if (saved == null || !context.mounted) return;
+      if (await crmRun(context, () => server.saveCrmItem(saved))) refresh();
+    }
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: edit,
+        icon: const Icon(Icons.add),
+        label: const Text('Wpis'),
+      ),
+      body: crmAsync(ref.watch(crmItemsProvider('change')), (all) {
+        final list = decided(all);
+        final proposals = [
+          for (final c in list)
+            if (c['area'] == 'proposal') c,
+        ];
+        final updates = [
+          for (final c in list)
+            if (c['area'] != 'proposal') c,
+        ];
+        return ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            Text('Propozycje zmian w aplikacji', style: Theme.of(context).textTheme.titleMedium),
+            const Text('Zatwierdzone tu zmiany przekaż Claude do zrobienia (albo dodaj jako zadanie).'),
+            const SizedBox(height: 8),
+            if (proposals.isEmpty) const Text('Brak. Poproś agenta o „Propozycje zmian”.'),
+            for (final c in proposals)
+              CrmCard(
+                item: c,
+                onTap: () => edit(c),
+                actions: [
+                  Chip(label: Text(statusLabels[c['status']] ?? '${c['status']}')),
+                  TextButton.icon(
+                    onPressed: () async {
+                      final ok = await crmRun(
+                        context,
+                        () => server.saveCrmItem({
+                          'kind': 'task',
+                          'area': 'feature',
+                          'title': '${c['title']}',
+                          'body': '${c['body']}',
+                          'owner': 'Claude',
+                          'status': 'todo',
+                          'priority': c['priority'],
+                        }),
+                        done: 'Dodano zadanie dla Claude.',
+                      );
+                      if (ok) refresh();
+                    },
+                    icon: const Icon(Icons.playlist_add),
+                    label: const Text('Jako zadanie'),
+                  ),
+                ],
+              ),
+            const SizedBox(height: 20),
+            Text('Historia aktualizacji', style: Theme.of(context).textTheme.titleMedium),
+            if (updates.isEmpty) const Text('Brak wpisów.'),
+            for (final c in updates) CrmCard(item: c, onTap: () => edit(c)),
+          ],
+        );
+      }),
+    );
+  }
+}
+
+// Ustawienia -----------------------------------------------------------------------------------
+
+class _Settings extends ConsumerStatefulWidget {
+  const _Settings();
+
+  @override
+  ConsumerState<_Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends ConsumerState<_Settings> {
+  Map<String, TextEditingController>? _costs;
+  final _newName = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(studioServerProvider).crmSetting('monthly_costs').then((v) {
+      if (mounted) {
+        setState(
+          () => _costs = {for (final e in v.entries) e.key: TextEditingController(text: '${e.value}')},
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    for (final c in _costs?.values ?? const <TextEditingController>[]) {
+      c.dispose();
+    }
+    _newName.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final costs = _costs;
+    if (costs == null) return const Center(child: CircularProgressIndicator());
+    final total = costs.values.fold(0.0, (s, c) => s + (double.tryParse(c.text.replaceAll(',', '.')) ?? 0));
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        const RhythmSettings(),
+        const Divider(height: 32),
+        const MailTools(),
+        const Divider(height: 32),
+        Text('Koszty miesięczne (zł)', style: Theme.of(context).textTheme.titleMedium),
+        const Text('Odejmowane od przychodu w „Zysk w tym miesiącu”.'),
+        const SizedBox(height: 8),
+        for (final MapEntry(key: name, value: c) in costs.entries)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                SizedBox(width: 220, child: Text(name)),
+                SizedBox(
+                  width: 120,
+                  child: TextField(controller: c, onChanged: (_) => setState(() {})),
+                ),
+                IconButton(
+                  tooltip: 'Usuń',
+                  onPressed: () => setState(() => costs.remove(name)),
+                  icon: const Icon(Icons.delete_outline),
+                ),
+              ],
+            ),
+          ),
+        Row(
+          children: [
+            SizedBox(
+              width: 220,
+              child: TextField(
+                controller: _newName,
+                decoration: const InputDecoration(hintText: 'Nowy koszt'),
+              ),
+            ),
+            TextButton(
+              onPressed: () => setState(() {
+                if (_newName.text.trim().isEmpty) return;
+                costs[_newName.text.trim()] = TextEditingController(text: '0');
+                _newName.clear();
+              }),
+              child: const Text('Dodaj'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text('Razem: ${total.toStringAsFixed(2)} zł miesięcznie'),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: FilledButton(
+            onPressed: () async {
+              final ok = await crmRun(
+                context,
+                () => ref.read(studioServerProvider).saveCrmSetting('monthly_costs', {
+                  for (final MapEntry(key: name, value: c) in costs.entries)
+                    name: double.tryParse(c.text.replaceAll(',', '.')) ?? 0,
+                }),
+                done: 'Zapisano koszty.',
+              );
+              if (ok) ref.read(crmRefreshProvider.notifier).bump();
+            },
+            child: const Text('Zapisz koszty'),
+          ),
+        ),
+      ],
+    );
+  }
+}

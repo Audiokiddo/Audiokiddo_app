@@ -33,10 +33,7 @@ ThemeData buildTheme(Brightness brightness) {
     // one underneath (iOS-style, on both platforms).
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
-        TargetPlatform.iOS: SwipeablePageTransitionsBuilder(
-          canOnlySwipeFromEdge: true,
-          backGestureDetectionWidth: 32,
-        ),
+        TargetPlatform.iOS: SwipeablePageTransitionsBuilder(canOnlySwipeFromEdge: true, backGestureDetectionWidth: 32),
         TargetPlatform.android: SwipeablePageTransitionsBuilder(
           canOnlySwipeFromEdge: true,
           backGestureDetectionWidth: 32,
@@ -47,21 +44,9 @@ ThemeData buildTheme(Brightness brightness) {
     extensions: [p],
     // Apple-style type: big, bold, tightly tracked headlines; calm body text.
     textTheme: text.copyWith(
-      displaySmall: text.displaySmall?.copyWith(
-        fontWeight: FontWeight.w800,
-        letterSpacing: -1.2,
-        height: 1.05,
-      ),
-      headlineLarge: text.headlineLarge?.copyWith(
-        fontWeight: FontWeight.w800,
-        letterSpacing: -1,
-        height: 1.1,
-      ),
-      headlineMedium: text.headlineMedium?.copyWith(
-        fontWeight: FontWeight.w800,
-        letterSpacing: -0.8,
-        height: 1.1,
-      ),
+      displaySmall: text.displaySmall?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -1.2, height: 1.05),
+      headlineLarge: text.headlineLarge?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -1, height: 1.1),
+      headlineMedium: text.headlineMedium?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.8, height: 1.1),
       headlineSmall: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.5),
       titleLarge: text.titleLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.3),
       titleMedium: text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
