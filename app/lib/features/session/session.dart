@@ -250,9 +250,12 @@ class SessionController extends Notifier<SessionState> {
     for (var i = 0; i < steps.length; i++) {
       if (generation != _generation) return;
       final playing = SessionState(kind: kind, steps: steps, index: i, running: true, childId: childId);
+      // The parent tapped "next" during the last step: they chose to move on, so no countdown.
+      final chosen = _skip;
       _skip = false;
-      // After the first recording, each next one waits a moment so a parent can hold it.
-      if (steps[i] is ItemStep && playedItem) {
+      // After the first recording, each next one that comes by itself waits a moment so a
+      // parent can hold it (in the car nobody wants a recording to start unannounced).
+      if (steps[i] is ItemStep && playedItem && !chosen) {
         await _countdown(playing, generation);
         if (generation != _generation) return;
         _skip = false;

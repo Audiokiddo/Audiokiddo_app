@@ -81,82 +81,185 @@ class _Fanfare extends ConsumerWidget {
         children: [
           const Positioned.fill(child: IgnorePointer(child: _Confetti())),
           SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+            child: Column(
               children: [
-                Center(
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: .3, end: 1),
-                    duration: const Duration(milliseconds: 700),
-                    curve: Curves.elasticOut,
-                    builder: (context, v, child) => Transform.scale(scale: v, child: child),
-                    child: const SzopSticker(SzopPose.klaszcze, height: 150),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Ta-da! Witajcie w AudioKiddo',
-                  textAlign: TextAlign.center,
-                  style: text.headlineMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Na dobry początek odbierasz $count darmowe audiozabawy, po jednej z każdego pakietu. '
-                  'Są Wasze na zawsze.',
-                  textAlign: TextAlign.center,
-                  style: text.bodyLarge?.copyWith(color: ink),
-                ),
-                const SizedBox(height: 20),
-                for (final item in gifts)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: .85),
-                        borderRadius: BorderRadius.circular(20),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(24, 32, 24, 16),
+                    children: [
+                      Center(
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween(begin: .3, end: 1),
+                          duration: const Duration(milliseconds: 700),
+                          curve: Curves.elasticOut,
+                          builder: (context, v, child) => Transform.scale(scale: v, child: child),
+                          child: const SzopSticker(SzopPose.klaszcze, height: 150),
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          ContentCover(item: item, pack: catalog!.pack(item.packId ?? ''), size: 56),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(height: 16),
+                      Text(
+                        'Ta-da! Witajcie w AudioKiddo',
+                        textAlign: TextAlign.center,
+                        style: text.headlineMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Na dobry początek odbierasz $count darmowe audiozabawy, po jednej z każdego pakietu. '
+                        'Są Wasze na zawsze.',
+                        textAlign: TextAlign.center,
+                        style: text.bodyLarge?.copyWith(color: ink),
+                      ),
+                      const SizedBox(height: 20),
+                      for (final item in gifts)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: .85),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
                               children: [
-                                Text(
-                                  item.title,
-                                  style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                                ContentCover(item: item, pack: catalog!.pack(item.packId ?? ''), size: 56),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.title,
+                                        style: text.titleMedium?.copyWith(
+                                          color: ink,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Pakiet ${catalog.pack(item.packId ?? '')?.title ?? ''}',
+                                        style: text.bodySmall?.copyWith(color: ink),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  'Pakiet ${catalog.pack(item.packId ?? '')?.title ?? ''}',
-                                  style: text.bodySmall?.copyWith(color: ink),
-                                ),
+                                const Icon(Icons.card_giftcard_rounded, color: AkBrand.orange),
                               ],
                             ),
                           ),
-                          const Icon(Icons.card_giftcard_rounded, color: AkBrand.orange),
-                        ],
-                      ),
-                    ),
+                        ),
+                      const SizedBox(height: 8),
+                      const FreeVsSubscription(ink: ink),
+                      const SizedBox(height: 14),
+                      PolishBrandLine(color: ink, center: true),
+                    ],
                   ),
-                const SizedBox(height: 12),
-                FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: ink,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(56),
-                  ),
-                  onPressed: onNext,
-                  icon: const Icon(Icons.redeem_rounded),
-                  label: const Text('Odbieram!'),
                 ),
-                const SizedBox(height: 14),
-                PolishBrandLine(color: ink, center: true),
+                // Always in reach, however long the list above is.
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: ink,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(56),
+                    ),
+                    onPressed: onNext,
+                    icon: const Icon(Icons.redeem_rounded),
+                    label: const Text('Odbieram!'),
+                  ),
+                ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// What the family has now and what the subscription adds, as three steps on a line (like a
+/// trial timeline): free plays today, everything with the subscription, a new pack each month.
+/// No buy button here: the parent subscribes in the Shop when they want.
+class FreeVsSubscription extends StatelessWidget {
+  const FreeVsSubscription({super.key, required this.ink});
+
+  final Color ink;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    const steps = [
+      (
+        Icons.lock_open_rounded,
+        'Teraz: darmowe zabawy',
+        'Słuchajcie ich do woli. W bibliotece mają znaczek „za darmo”.',
+      ),
+      (
+        Icons.workspace_premium_rounded,
+        'Z abonamentem: wszystkie zabawy',
+        'Cała biblioteka otwiera się od razu.',
+      ),
+      (Icons.auto_awesome_rounded, 'Co miesiąc: nowy pakiet', 'Nowe przygody dochodzą bez dopłat.'),
+    ];
+    return Semantics(
+      container: true,
+      label: [for (final s in steps) '${s.$2}. ${s.$3}'].join(' '),
+      excludeSemantics: true,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 16, 14, 6),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: .85),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            for (final (i, step) in steps.indexed)
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: i == 0 ? AkBrand.tealDeep : ink.withValues(alpha: .08),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(step.$1, size: 20, color: i == 0 ? Colors.white : ink),
+                        ),
+                        if (i < steps.length - 1)
+                          Expanded(child: Container(width: 3, color: ink.withValues(alpha: .12))),
+                      ],
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              step.$2,
+                              style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                            ),
+                            Text(step.$3, style: text.bodySmall?.copyWith(color: ink)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Abonament wykupisz w zakładce Sklep, kiedy zechcesz.',
+                style: text.bodySmall?.copyWith(color: ink.withValues(alpha: .75)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

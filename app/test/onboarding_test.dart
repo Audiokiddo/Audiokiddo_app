@@ -1,3 +1,4 @@
+import 'package:audiokiddo/features/welcome/welcome_screen.dart';
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/core/router.dart';
 import 'package:audiokiddo/features/account/account_service.dart';
@@ -116,6 +117,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Ta-da! Witajcie w AudioKiddo'), findsOneWidget);
     expect(find.textContaining('po jednej z każdego pakietu'), findsOneWidget);
+    // What is free now and what the subscription adds, said right after the first sign-in.
+    expect(find.byType(FreeVsSubscription), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('Co miesiąc: nowy pakiet')), findsOneWidget);
     await tester.ensureVisible(find.text('Odbieram!'));
     await tester.tap(find.text('Odbieram!'));
     await tester.pumpAndSettle();

@@ -180,9 +180,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 }
 
-/// The library before any filter, plays first: search and quick filters on top, then every
-/// pack as a shelf of covers (yours first; a locked one says what is free and the price), then
-/// the kinds of play, and the parent's tools at the end.
+/// The library before any filter, like a catalog: "Moje pakiety" on top (what the family has,
+/// one tap away), search and quick filters, the newest plays, categories as a list with counts,
+/// every pack as a collection (cover, what it is, how many plays, what is free and the price),
+/// then songs and the parent's tools.
 class _Browse extends ConsumerWidget {
   const _Browse({required this.catalog, required this.onFilter, required this.onSearch});
 
@@ -194,41 +195,286 @@ class _Browse extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scopes = ref.watch(activeScopesProvider);
     final summaries = [for (final p in catalog.packs) PackSummary(p, catalog)];
+    final owned = [for (final s in summaries) if (ownsPack(scopes, s.pack.id)) s];
+    final toDiscover = [for (final s in summaries) if (!ownsPack(scopes, s.pack.id)) s];
     final loose = [
       for (final i in catalog.items)
         if (i.packId == null && i.releasedOn?.isAfter(ref.watch(clockProvider)()) != true) i,
     ];
+    final fresh = ref.watch(newItemsProvider);
     final products = ref.watch(storeProductsProvider(productsKey(shopProductIds(catalog))));
     final byId = {for (final p in products.value ?? const <StoreProduct>[]) p.id: p};
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
       children: [
+        MyPacksTile(owned: owned),
+        const SizedBox(height: 14),
         _SearchField(onTap: onSearch),
         const SizedBox(height: 10),
         _QuickChips(onFilter: onFilter),
-        if (summaries.any((s) => ownsPack(scopes, s.pack.id))) const RefSection('Wasze pakiety'),
-        for (final s in summaries)
-          if (ownsPack(scopes, s.pack.id)) _PackShelf(summary: s, owned: true),
-        if (summaries.any((s) => !ownsPack(scopes, s.pack.id)))
-          RefSection(summaries.any((s) => ownsPack(scopes, s.pack.id)) ? 'Do odkrycia' : 'Pakiety'),
-        for (final s in summaries)
-          if (!ownsPack(scopes, s.pack.id))
-            _PackShelf(summary: s, owned: false, product: byId[s.pack.storeProductId]),
+        if (fresh.isNotEmpty) ...[
+          const RefSection('Najnowsze'),
+          _Covers(items: fresh.take(10).toList()),
+        ],
+        const RefSection('Kategorie'),
+        _CategoryList(onFilter: onFilter),
+        if (toDiscover.isNotEmpty) ...[
+          RefSection(owned.isEmpty ? 'Pakiety' : 'Do odkrycia'),
+          for (final s in toDiscover) _CollectionRow(summary: s, product: byId[s.pack.storeProductId]),
+        ],
         if (loose.isNotEmpty) _Shelf(title: 'Piosenki i inne', items: loose),
         const Padding(padding: EdgeInsets.only(top: 8), child: Center(child: RedeemAccessLink())),
-        const RefSection('Rodzaje zabaw'),
-        TwoColumns(
-          children: [
-            for (final c in ref.watch(shownCategoriesProvider))
-              CategoryTile(
-                category: c,
-                onTap: () => onFilter(LibraryFilter(category: c)),
-              ),
-          ],
-        ),
         const RefSection('Dla rodzica'),
         _ParentTools(onFilter: onFilter),
       ],
+    );
+  }
+}
+
+/// "Moje pakiety": the first thing in the library. With packs it shows how many and how far the
+/// child got and opens them; without, it says plainly where packs come from.
+class MyPacksTile extends ConsumerWidget {
+  const MyPacksTile({super.key, required this.owned});
+
+  final List<PackSummary> owned;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = Theme.of(context).textTheme;
+    const ink = Colors.white;
+    final total = owned.fold(0, (n, s) => n + s.items.length);
+    final heard = _heardIn(ref, [for (final s in owned) ...s.items]);
+    final has = owned.isNotEmpty;
+    final subtitle = has
+        ? '${packsCount(owned.length)} · przesłuchane $heard z $total'
+        : 'Tu będą Wasze pakiety. Na razie słuchajcie darmowych zabaw, a abonament otworzy wszystkie.';
+    return Semantics(
+      button: true,
+      label: 'Moje pakiety. $subtitle',
+      excludeSemantics: true,
+      child: Material(
+        borderRadius: BorderRadius.circular(22),
+        clipBehavior: Clip.antiAlias,
+        child: Ink(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AkBrand.tealDeep, Color(0xFF145457)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: InkWell(
+            onTap: () => has ? context.push('/biblioteka/moje-pakiety') : context.go('/sklep'),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  if (has)
+                    SizedBox.square(dimension: 56, child: PackArt(summary: owned.first, radius: 14))
+                  else
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: .15),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(Icons.collections_bookmark_rounded, color: AkBrand.sun, size: 30),
+                    ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Moje pakiety', style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800)),
+                        const SizedBox(height: 2),
+                        Text(subtitle, style: text.bodySmall?.copyWith(color: ink.withValues(alpha: .9))),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right_rounded, color: ink),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Plays of [items] the active child finished.
+int _heardIn(WidgetRef ref, List<ContentItem> items) {
+  final family = ref.watch(familyProvider).value;
+  final child = family?.active;
+  if (child == null) return 0;
+  final ids = {for (final i in items) i.id};
+  return {
+    for (final r in family!.resultsOf(child.id))
+      if (r.completed && ids.contains(r.itemId)) r.itemId,
+  }.length;
+}
+
+/// "1 pakiet", "2 pakiety", "5 pakietów".
+String packsCount(int n) {
+  final word = n == 1
+      ? 'pakiet'
+      : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14))
+      ? 'pakiety'
+      : 'pakietów';
+  return '$n $word';
+}
+
+/// The family's packs, each as a shelf with how far the child got.
+class MyPacksScreen extends ConsumerWidget {
+  const MyPacksScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scopes = ref.watch(activeScopesProvider);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Moje pakiety')),
+      body: CatalogLoader(
+        builder: (context, catalog) {
+          final owned = [
+            for (final p in catalog.packs)
+              if (ownsPack(scopes, p.id)) PackSummary(p, catalog),
+          ];
+          if (owned.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Nie macie jeszcze pakietów. Abonament otwiera wszystkie i co miesiąc dodaje nowy.',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(onPressed: () => context.go('/sklep'), child: const Text('Zobacz abonament')),
+                ],
+              ),
+            );
+          }
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+            children: [for (final s in owned) _PackShelf(summary: s)],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Categories as a list, like a catalog: icon, name, how many plays, chevron.
+class _CategoryList extends ConsumerWidget {
+  const _CategoryList({required this.onFilter});
+
+  final ValueChanged<LibraryFilter> onFilter;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(catalogProvider).value?.items ?? const <ContentItem>[];
+    final text = Theme.of(context).textTheme;
+    final categories = ref.watch(shownCategoriesProvider);
+    return Column(
+      children: [
+        for (final (i, c) in categories.indexed) ...[
+          if (i > 0) Divider(height: 1, indent: 52, color: context.palette.inkMuted.withValues(alpha: .25)),
+          Semantics(
+            button: true,
+            label: '${c.label.replaceAll('\n', ' ')}, ${playsCount(items.where(c.matches).length)}',
+            excludeSemantics: true,
+            child: InkWell(
+              onTap: () => onFilter(LibraryFilter(category: c)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(color: categoryLook[c]!.$1, shape: BoxShape.circle),
+                      child: Icon(categoryLook[c]!.$3, color: categoryLook[c]!.$2, size: 22),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Text(
+                        c.label.replaceAll('\n', ' '),
+                        style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Text(
+                      '${items.where(c.matches).length}',
+                      style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+                    ),
+                    Icon(Icons.chevron_right_rounded, color: context.palette.inkMuted),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// A pack as a collection: its picture, name, what it is about, how many plays, what is free.
+class _CollectionRow extends StatelessWidget {
+  const _CollectionRow({required this.summary, this.product});
+
+  final PackSummary summary;
+  final StoreProduct? product;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final free = summary.freeItems.length;
+    final total = summary.items.length;
+    return Semantics(
+      button: true,
+      label: '${summary.pack.title}, ${playsCount(total)}, $free za darmo${product == null ? '' : ', ${product!.price}'}',
+      excludeSemantics: true,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => openPack(context, summary.pack.id),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox.square(dimension: 92, child: PackArt(summary: summary, radius: 16)),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(summary.pack.title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 2),
+                    Text(
+                      summary.pack.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+                    ),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        _Tag('${playsCount(total)} · ${summary.minutes} min'),
+                        if (free > 0) _Tag(free == 1 ? '1 za darmo' : '$free za darmo', strong: true),
+                        if (product != null) _Tag(product!.price, strong: true),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -263,28 +509,17 @@ class _QuickChips extends ConsumerWidget {
   }
 }
 
-/// A pack as a shelf: a header that opens the pack page (what it gives, price, buying) and its
-/// plays as covers, each straight to its page. Locked plays carry a lock, free ones play.
+/// One of the family's packs as a shelf: a header that opens the pack page, how far the child
+/// got, and its plays as covers, each straight to its page.
 class _PackShelf extends ConsumerWidget {
-  const _PackShelf({required this.summary, required this.owned, this.product});
+  const _PackShelf({required this.summary});
 
   final PackSummary summary;
-  final bool owned;
-  final StoreProduct? product;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = Theme.of(context).textTheme;
-    final free = summary.freeItems.length;
-    final family = ref.watch(familyProvider).value;
-    final child = family?.active;
-    final ids = {for (final i in summary.items) i.id};
-    final heard = child == null
-        ? 0
-        : {
-            for (final r in family!.resultsOf(child.id))
-              if (r.completed && ids.contains(r.itemId)) r.itemId,
-          }.length;
+    final heard = _heardIn(ref, summary.items);
     final total = summary.items.length;
     return Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 12),
@@ -293,9 +528,7 @@ class _PackShelf extends ConsumerWidget {
         children: [
           Semantics(
             button: true,
-            label: owned
-                ? '${summary.pack.title}, ${playsCount(total)}, przesłuchane $heard z $total'
-                : '${summary.pack.title}, ${playsCount(total)}, $free za darmo${product == null ? '' : ', ${product!.price}'}',
+            label: '${summary.pack.title}, ${playsCount(total)}, przesłuchane $heard z $total',
             excludeSemantics: true,
             child: InkWell(
               borderRadius: BorderRadius.circular(14),
@@ -313,16 +546,10 @@ class _PackShelf extends ConsumerWidget {
                         Wrap(
                           spacing: 6,
                           runSpacing: 4,
-                          children: owned
-                              ? [
-                                  _Tag('Wasz pakiet', color: AkBrand.teal.withValues(alpha: .2)),
-                                  _Tag(heard == total && total > 0 ? 'Wszystko przesłuchane' : 'Przesłuchane $heard z $total'),
-                                ]
-                              : [
-                                  _Tag('${playsCount(total)} · ${summary.minutes} min'),
-                                  if (free > 0) _Tag(free == 1 ? '1 za darmo' : '$free za darmo', strong: true),
-                                  if (product != null) _Tag(product!.price, strong: true),
-                                ],
+                          children: [
+                            _Tag('Wasz pakiet', color: AkBrand.teal.withValues(alpha: .2)),
+                            _Tag(heard == total && total > 0 ? 'Wszystko przesłuchane' : 'Przesłuchane $heard z $total'),
+                          ],
                         ),
                       ],
                     ),

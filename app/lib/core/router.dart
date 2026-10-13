@@ -37,6 +37,7 @@ import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
 import '../features/purchases/shop_screen.dart';
+import '../features/purchases/subscription_screen.dart';
 import '../features/referral/referral_screen.dart';
 import '../features/reminders/reminder_offer.dart';
 import '../features/games/speech_check_screen.dart';
@@ -116,6 +117,12 @@ GoRouter buildRouter(
                 backGestureDetectionWidth: 32,
                 builder: (_) => LibraryScreen(filter: LibraryFilter.fromQuery(state.uri.queryParameters)),
               ),
+              routes: [
+                GoRoute(
+                  path: 'moje-pakiety',
+                  pageBuilder: (context, state) => swipePage(state, const MyPacksScreen()),
+                ),
+              ],
             ),
           ],
         ),
@@ -157,6 +164,7 @@ GoRouter buildRouter(
     GoRoute(path: '/rodzina', pageBuilder: (context, state) => swipePage(state, const FamilyScreen())),
     GoRoute(path: '/o-nas', pageBuilder: (context, state) => swipePage(state, const AboutScreen())),
     GoRoute(path: '/dostep', pageBuilder: (context, state) => swipePage(state, const AccessScreen())),
+    GoRoute(path: '/subskrypcja', pageBuilder: (context, state) => swipePage(state, const SubscriptionScreen())),
     GoRoute(path: '/mowa', pageBuilder: (context, state) => swipePage(state, const SpeechCheckScreen())),
     GoRoute(path: '/ikona', pageBuilder: (context, state) => swipePage(state, const AppIconScreen())),
     GoRoute(

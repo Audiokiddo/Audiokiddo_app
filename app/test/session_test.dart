@@ -201,6 +201,23 @@ void main() {
 
     int played() => audio.log.where((l) => l.startsWith('item:')).length;
 
+    test('a parent who taps next mid-play gets the next play at once, no countdown', () async {
+      final slow = slowContainer();
+      final session = slow.read(sessionProvider.notifier);
+      unawaited(session.start(SessionKind.trip, [ItemStep(item), ItemStep(item), ItemStep(item)]));
+      await settle();
+      expect(played(), 1);
+      await session.skip();
+      await settle();
+      expect(slow.read(sessionProvider).countdown, isNull, reason: 'chosen by the parent');
+      expect(played(), 2);
+      // The one after that ends by itself, so the countdown is back.
+      audio.finishItem();
+      await settle();
+      expect(slow.read(sessionProvider).countdown, isNotNull);
+      await session.stop();
+    });
+
     test('the next recording counts down first; the first one starts at once', () async {
       final slow = slowContainer();
       final session = slow.read(sessionProvider.notifier);

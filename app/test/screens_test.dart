@@ -72,6 +72,29 @@ Future<void> goBack(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('library: "Moje pakiety" comes first; with the subscription it lists the packs', (tester) async {
+    await pumpApp(tester);
+    await openLibrary(tester);
+    expect(find.text('Moje pakiety'), findsOneWidget);
+    expect(find.textContaining('Tu będą Wasze pakiety'), findsOneWidget, reason: 'no packs yet');
+    await tester.scrollUntilVisible(find.text('Kategorie'), 200, scrollable: mainScroll);
+    expect(find.text('Kategorie'), findsOneWidget);
+  });
+
+  testWidgets('library: a subscriber opens "Moje pakiety" and sees every pack', (tester) async {
+    await pumpApp(
+      tester,
+      entitlements: const [
+        Entitlement(scope: Scopes.allContent, status: EntitlementStatus.active, source: EntitlementSource.appStore),
+      ],
+    );
+    await openLibrary(tester);
+    expect(find.textContaining('przesłuchane 0 z'), findsOneWidget);
+    await tester.tap(find.text('Moje pakiety'));
+    await tester.pumpAndSettle();
+    expect(find.text('Wasz pakiet'), findsWidgets);
+  });
+
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
     expect(find.text('Co dziś robimy?'), findsOneWidget);

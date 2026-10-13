@@ -640,6 +640,7 @@ String _cancelName(String s) => switch (s) {
   'few_new' => 'Za mało nowych zabaw',
   'technical' => 'Coś nie działało',
   'changing_plan' => 'Tylko zmiana planu',
+  'mistake' => 'Kupione przez pomyłkę',
   _ => 'Inny powód',
 };
 

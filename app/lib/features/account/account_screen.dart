@@ -20,6 +20,7 @@ import '../personal/personal_repository.dart';
 import '../onboarding/onboarding_controller.dart';
 import '../welcome/welcome_controller.dart';
 import 'account_data.dart';
+import '../purchases/manage_subscription.dart';
 
 /// Parent account, laid out like iOS Settings: sign in with Apple, Google or an e-mail code;
 /// see what the account unlocks; sign out; delete the account. Parent zone only — reached
@@ -252,6 +253,14 @@ class _SignedInState extends ConsumerState<_SignedIn> {
               iconColor: const Color(0xFF2F6FDB),
               title: l10n.accountRefresh,
               onTap: _busy ? null : _refresh,
+            ),
+            GroupedRow(
+              icon: Icons.workspace_premium_rounded,
+              iconColor: AkBrand.tealDeep,
+              title: 'Abonament',
+              subtitle: 'Przywróć zakupy, zmień plan albo zrezygnuj',
+              chevron: true,
+              onTap: _busy ? null : () => manageSubscription(context, ref),
             ),
             GroupedRow(
               icon: Icons.redeem_rounded,

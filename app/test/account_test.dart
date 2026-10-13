@@ -522,6 +522,8 @@ void main() {
       expect(find.text('Na tym koncie nie ma jeszcze zakupów.'), findsOneWidget);
 
       await tester.scrollUntilVisible(find.text('Usuń konto'), 200);
+      await tester.ensureVisible(find.text('Usuń konto'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Usuń konto'));
       await tester.pumpAndSettle();
       expect(find.textContaining('nie anuluje subskrypcji'), findsOneWidget);
