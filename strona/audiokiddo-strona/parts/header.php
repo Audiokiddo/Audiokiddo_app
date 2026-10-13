@@ -21,8 +21,7 @@ $pages = $home === '' ? [] : [
     '#pytania' => ak_info_url('pytania'),
     '#o-nas' => ak_info_url('o-nas'),
 ];
-// The packs have their own page from everywhere (the home page no longer lists them).
-$pages['#pakiety'] = ak_info_url('pakiety');
+// On the home page "Pakiety" scrolls to the short packs section (all in the subscription).
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -54,7 +53,7 @@ $pages['#pakiety'] = ak_info_url('pakiety');
         <?php else : ?>
         <a class="ak-btn ak-btn-sun ak-top-cta ak-top-free" href="<?php echo esc_url($home . '#start-aplikacji'); ?>">Darmowe zabawy</a>
         <?php endif; ?>
-        <?php if (ak_has_woo()) : ?>
+        <?php if (ak_has_woo() && $count > 0) : // only the subscription is sold; the cart stays for what is already in it ?>
         <a class="ak-cart" href="<?php echo esc_url(ak_cart_url()); ?>" aria-label="Koszyk">
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
             <span class="ak-cart-count" data-count="<?php echo (int) $count; ?>"><?php echo (int) $count; ?></span>

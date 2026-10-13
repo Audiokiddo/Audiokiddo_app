@@ -43,6 +43,26 @@ function ak_offer(int $id): ?array
     ];
 }
 
+/**
+ * Subscription only (decision 2026-10-13): the packs and bundles stay on the site as pages, but
+ * they can no longer be bought. Families who bought them keep access (orders and the app).
+ */
+function ak_sold_out_ids(): array
+{
+    $ids = [];
+    foreach (ak_packs() as $pack) {
+        $ids[] = (int) $pack['woo'];
+    }
+    foreach (ak_bundles() as $bundle) {
+        $ids[] = (int) $bundle['woo'];
+    }
+    return array_filter($ids);
+}
+
+add_filter('woocommerce_is_purchasable', function ($purchasable, $product) {
+    return $product && in_array((int) $product->get_id(), ak_sold_out_ids(), true) ? false : $purchasable;
+}, 10, 2);
+
 function ak_money(float $amount): string
 {
     return number_format($amount, 2, ',', ' ') . ' zł';

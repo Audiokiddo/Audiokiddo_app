@@ -357,7 +357,7 @@ function ak_landings(): array
                 ['Gdy potrzebujesz 15 minut', 'Audiozabawa z jasnym początkiem i końcem. Dziecko wie, co robić, i nie woła co minutę.', '3–9 lat'],
             ],
             'more' => [
-                ['Czym Audiokiddo różni się od audiobooka', 'Audiobook mówi dziecku, co zrobił bohater. Audiokiddo mówi: „Bohaterem jesteś ty. Rusz tyłek, mamy sprawę.” Dziecko odpowiada na pytania, szuka rzeczy, rusza się i rozwiązuje zagadki. Zabawy nagrywają po polsku Nela i Dawid, a wszystkie są bez reklam.'],
+                ['Czym Audiokiddo różni się od audiobooka', 'Audiobook mówi dziecku, co zrobił bohater. Audiokiddo mówi: „Bohaterem jesteś ty. Rusz tyłek, mamy sprawę.” Dziecko odpowiada na pytania, szuka rzeczy, rusza się i rozwiązuje zagadki. Zabawy piszą i montują po polsku Nela i Dawid, a wszystkie są bez reklam.'],
             ],
             'quote' => null,
             'faq' => [

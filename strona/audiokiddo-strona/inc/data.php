@@ -383,7 +383,7 @@ function ak_facts(): array
         'Czym jest' => 'Audiokiddo to polska aplikacja z interaktywnymi audiozabawami dla dzieci w wieku 3–9 lat. Rodzic włącza zabawę, a głos prowadzi dziecko: zadaje pytania, daje misje, każe szukać, ruszać się i rozwiązywać zagadki. Dziecko nie patrzy w ekran.',
         'Dla kogo' => 'Dla rodziców dzieci w wieku przedszkolnym i wczesnoszkolnym (3–5, 5–7 i 7–9 lat), którzy potrzebują zająć dziecko na kilkanaście minut bez tabletu i bajki: przy gotowaniu, w samochodzie, po przedszkolu, w deszczowy dzień.',
         'Jak działa' => 'Pobierasz aplikację Audiokiddo z App Store albo Google Play, wybierasz wiek i zabawę, naciskasz play. Większość zabaw dziecko robi samodzielnie; telefon może leżeć na stole.',
-        'Ile kosztuje' => 'W aplikacji są darmowe zabawy. Pełna biblioteka w abonamencie kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Pakiety Wyobraźnia oraz Słowa i Wiedza (po 10 zabaw) i Detektyw (5 spraw) można też kupić jednorazowo na audiokiddo.pl.',
+        'Ile kosztuje' => 'W aplikacji są darmowe zabawy. Pełna biblioteka w abonamencie kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Wszystkie pakiety są w abonamencie, a co tydzień dochodzą 2 nowe zabawy.',
         'Kto to robi' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy i świat marki, Dawid buduje technologię; oboje podkładają głosy. Maskotka marki to szop Szop’en.',
         'Bez ekranu i bezpiecznie' => 'Zabawy są tylko do słuchania, bez reklam. Po pobraniu działają bez internetu, także w samochodzie i samolocie. Marka nie publikuje twarzy dzieci.',
         'Co ćwiczy' => 'Uważne słuchanie, mowę i słownictwo, wyobraźnię, logiczne myślenie, koncentrację i ruch. Audiozabawy polecają pedagodzy, logopedzi i fizjoterapeuci dziecięcy.',
@@ -404,11 +404,11 @@ function ak_faq(): array
         ['Czy mogę najpierw sprawdzić za darmo?', 'Tak. Pobierz aplikację, wybierz wiek dziecka i odpal darmowe zabawy. To normalne, pełne audiozabawy, a nie zwiastuny. Abonamentu nie kupujesz w ciemno.'],
         ['Czy działa w samochodzie?', 'Tak. Mamy specjalny tryb samochodowy „W drogę”. Pobrane wcześniej zabawy działają też w trudnych warunkach pt. brak zasięgu albo podróż samolotem.'],
         ['Czy mogę anulować?', 'Tak, w każdej chwili w ustawieniach subskrypcji App Store albo Google Play. Nie wyślemy Ci szopa pod chatę.'],
-        ['Nie lubię subskrypcji. Da się bez niej?', 'Da się. Pakiety Wyobraźnia, Słowa i Wiedza (' . ak_age($packs['wyobraznia']) . ') oraz Detektyw (' . ak_age($packs['detektyw']) . ') kupisz jednorazowo na audiokiddo.pl i masz do nich stały dostęp.'],
+        ['Nie lubię subskrypcji. Da się bez niej?', 'Z każdego pakietu jedną zabawę posłuchasz za darmo, bez abonamentu. Całą bibliotekę i 2 nowe zabawy co tydzień daje abonament, który anulujesz w każdej chwili. Pakiety kupione wcześniej na audiokiddo.pl zostają Twoje.'],
         ['Czy Audiokiddo jest bezpieczne dla dzieci?', 'Tak. Bez reklam i bez treści nieodpowiednich dla dzieci. Zakupy i linki są za bramką dla rodzica, a mikrofon działa tylko po Twojej zgodzie i nic nie jest nagrywane.'],
         ['Czy mogę używać Audiokiddo w przedszkolu lub szkole?', 'Tak. Audiozabawy dobrze sprawdzają się w przedszkolu i w klasach 1–3, gdy słucha cała grupa. Dla placówek przygotowujemy osobną ofertę: napisz do nas.'],
         ['Kupiłem pakiet na stronie. Gdzie go znajdę?', 'Linki do pobrania przychodzą mailem od razu po zakupie (sprawdź też Spam i Oferty). Te same pakiety odblokujesz w aplikacji, logując się tym samym adresem e-mail. Problem? Napisz na ' . ak_opt('contact_email') . '.'],
-        ['Kto nagrywa audiozabawy?', 'Nela i Dawid, para, która stworzyła Audiokiddo. Piszemy i nagrywamy wszystko sami, po polsku.'],
+        ['Kto tworzy audiozabawy?', 'Nela i Dawid, para rodziców, która stworzyła Audiokiddo. Razem piszemy zabawy i je montujemy, a nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami, po polsku.'],
     ];
 }
 
@@ -551,5 +551,24 @@ function ak_gains(): array
             ['run', 'Rusza się i myśli', 'Szuka, skacze, rozwiązuje zagadki.'],
             ['kid', 'Bawi się samo', 'Głos prowadzi je krok po kroku.'],
         ],
+    ];
+}
+
+/** "Co potrafi aplikacja" on /jak-to-dziala/#funkcje: the same list as the app's /funkcje screen. */
+function ak_app_feature_list(): array
+{
+    return [
+        ['Dziecko odpowiada głosem', 'Głos zadaje pytania, a dziecko odpowiada, szuka i się rusza. Mikrofon działa tylko w zabawie, słowa rozpoznaje sam telefon.'],
+        ['Wiek i rodzaje od razu', 'Na starcie aplikacji duże kafelki z zabawami na teraz, a pod nimi wiek 3–4, 5–6, 7–9 i rodzaje zabaw, także darmowe.'],
+        ['W drogę', 'Zabawy na całą trasę z przerwami na okno. Ustawiasz własny czas podróży. Działa z CarPlay i Android Auto.'],
+        ['Dobranoc', 'Wieczorny rytuał jednym przyciskiem: trzy oddechy, spokojna zabawa, kołysanka.'],
+        ['Szop’en mówi po imieniu', 'Jeśli zna imię dziecka, wita je na początku trasy, na dobranoc i przy dyplomie.'],
+        ['Tryb dziecka', 'Telefon pokazuje tylko zabawy. Wyjście tylko dla dorosłego.'],
+        ['Bez internetu', 'Pobierasz zabawy przed wyjazdem i grasz bez zasięgu.'],
+        ['Do druku', 'Akta detektywa, karty i przewodniki do wydrukowania.'],
+        ['Twój głos', 'Nagrywasz własne „dobranoc” albo powitanie, a aplikacja odtworzy je dziecku.'],
+        ['Cała rodzina', 'Profil każdego dziecka z osobnymi postępami. Drugi rodzic na swoim telefonie w tym samym abonamencie.'],
+        ['Naklejki i dyplomy', 'Za ukończone zabawy i całe pakiety, z sekretną nagrodą od Szop’ena.'],
+        ['Co tydzień nowe', 'W abonamencie co tydzień dochodzą 2 nowe zabawy.'],
     ];
 }

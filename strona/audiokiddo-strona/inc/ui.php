@@ -206,7 +206,7 @@ function ak_pack_cards(string $class = '', bool $short = false): void
         );
     }
     echo '<article class="ak-pack ak-pack-next" data-reveal style="--d:.24s"><div class="ak-pack-cover"><span class="ak-pack-q" aria-hidden="true">?</span></div>'
-        . '<p class="ak-chip">co miesiąc</p><h3>Nowy pakiet</h3><p>Co miesiąc do abonamentu dochodzi kolejny pakiet zabaw. Nowa sprawa? Podobno gruba.</p></article>';
+        . '<p class="ak-chip">co tydzień</p><h3>2 nowe zabawy</h3><p>Co tydzień do abonamentu dochodzą 2 nowe zabawy z nowego pakietu. Nowa sprawa? Podobno gruba.</p></article>';
     echo '</div>';
 }
 

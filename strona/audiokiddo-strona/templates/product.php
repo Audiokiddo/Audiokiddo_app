@@ -62,28 +62,15 @@ require AK_DIR . 'parts/header.php';
                 <p class="ak-p3-facts">od <?php echo (int) $age_from; ?> lat · <?php echo (int) $plays; ?> audiozabaw · ok. <?php echo (int) $minutes; ?> min słuchania</p>
                 <p class="ak-p3-lead"><?php echo esc_html($lead); ?></p>
 
-                <?php if ($offer) : ?>
                 <div class="ak-p3-box" id="kup">
-                    <p class="ak-p3-price"><?php echo wp_kses_post($offer['price_html']); ?><?php if ($this_set && $this_set['save'] > 0) : ?> <span class="ak-save-tag">oszczędzasz <?php echo esc_html(ak_money($this_set['save'])); ?></span><?php endif; ?></p>
-                    <?php echo ak_cart_button($offer, 'Dodaj do koszyka', 'ak-btn-wide'); // escaped inside ?>
+                    <p class="ak-p3-price">W abonamencie Audiokiddo</p>
+                    <?php echo ak_app_cta('ak-btn ak-btn-sun ak-btn-wide'); // escaped inside ?>
                     <ul class="ak-p3-trust">
-                        <?php if (ak_app_live()) : ?>
-                        <li>Od razu w aplikacji: zaloguj się e-mailem z zamówienia</li>
-                        <?php else : ?>
-                        <li>Pliki MP3 od razu na maila, a po premierze także w aplikacji</li>
-                        <?php endif; ?>
-                        <li>BLIK, karta, Twisto</li>
+                        <li>Jedna zabawa z tego pakietu za darmo w aplikacji</li>
+                        <li>Wszystkie pakiety i 2 nowe zabawy co tydzień: <?php echo esc_html($price['month']); ?> zł miesięcznie albo <?php echo esc_html($price['year']); ?> zł rocznie</li>
+                        <li>Kupiony wcześniej? Zaloguj się w aplikacji e-mailem z zamówienia</li>
                     </ul>
                 </div>
-                <?php endif; ?>
-
-                <?php if ($upsell && $upsell['save'] > 0) : ?>
-                <div class="ak-p3-upsell">
-                    <img src="<?php echo esc_url(ak_img($upsell['cover'])); ?>" alt="" width="64" height="64" loading="lazy">
-                    <p><strong><?php echo esc_html($upsell['title']); ?></strong> <?php echo esc_html(count($upsell['packs']) . ' pakiety za ' . ak_money($upsell['offer']['price'])); ?><span>oszczędzasz <?php echo esc_html(ak_money($upsell['save'])); ?></span></p>
-                    <?php echo ak_cart_button($upsell['offer'], 'Wolę zestaw', 'ak-btn-small ak-btn-ghost'); // escaped inside ?>
-                </div>
-                <?php endif; ?>
 
                 <?php if ($review) : ?>
                 <figure class="ak-p3-quote">
@@ -93,7 +80,7 @@ require AK_DIR . 'parts/header.php';
                 </figure>
                 <?php endif; ?>
 
-                <p class="ak-p3-sub">Wolisz wszystkie pakiety naraz? <a href="<?php echo esc_url(ak_info_url('abonament')); ?>">Abonament od <?php echo esc_html($price['year_month']); ?> zł/mies.</a>, co miesiąc nowy pakiet.</p>
+                <p class="ak-p3-sub"><a href="<?php echo esc_url(ak_info_url('abonament')); ?>">Abonament od <?php echo esc_html($price['year_month']); ?> zł/mies.</a>: wszystkie pakiety i 2 nowe zabawy co tydzień.</p>
             </div>
         </div>
     </section>

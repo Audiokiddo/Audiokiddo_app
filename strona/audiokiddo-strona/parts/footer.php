@@ -15,7 +15,7 @@ $links = array_filter([
     <div class="ak-wrap ak-foot-in">
         <div class="ak-foot-brand">
             <img src="<?php echo esc_url(ak_asset('img/logo.webp')); ?>" alt="Audiokiddo" width="150" height="31" loading="lazy">
-            <p>Interaktywne audiozabawy dla dzieci 3–9 lat. Robione w Polsce przez Nelę i Dawida: piszemy, nagrywamy i odpisujemy na maile sami.</p>
+            <p>Interaktywne audiozabawy dla dzieci 3–9 lat. Robione w Polsce przez Nelę i Dawida, rodziców: piszemy, montujemy i odpisujemy na maile sami.</p>
             <p class="ak-flag-line"><span class="ak-flag" aria-hidden="true"></span>Polskie audiozabawy, polskie głosy</p>
         </div>
         <nav aria-label="Na skróty">

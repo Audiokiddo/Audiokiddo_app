@@ -47,12 +47,12 @@ function ak_product_meta(): array
     if ($kind['type'] === 'pack') {
         return [
             'title' => 'Pakiet ' . $d['title'] . ': audiozabawy dla dzieci ' . ak_age($d) . ' | Audiokiddo',
-            'desc' => 'Pakiet ' . $d['title'] . ' (' . count($d['plays']) . ' audiozabaw, ' . ak_age($d) . '): ' . $d['lead'] . ' W abonamencie Audiokiddo albo na własność.',
+            'desc' => 'Pakiet ' . $d['title'] . ' (' . count($d['plays']) . ' audiozabaw, ' . ak_age($d) . '): ' . $d['lead'] . ' W abonamencie Audiokiddo, jedna zabawa za darmo.',
         ];
     }
     return [
         'title' => $d['title'] . ': pakiety audiozabaw taniej | Audiokiddo',
-        'desc' => $d['desc'] . ' Pliki od razu po zakupie, odblokowanie w aplikacji Audiokiddo tym samym e-mailem.',
+        'desc' => $d['desc'] . ' Wszystkie pakiety są w abonamencie Audiokiddo.',
     ];
 }
 
@@ -61,10 +61,8 @@ function ak_product_faq(array $kind): array
 {
     $p = ak_pricing();
     $faq = [
-        ['Jak dostanę pakiet po zakupie?', 'Od razu po płatności przychodzi mail z linkami do pobrania (sprawdź też Spam i Oferty). Te same zabawy odblokujesz w aplikacji Audiokiddo, logując się tym samym adresem e-mail.'],
-        ['Czy potrzebuję aplikacji?', 'Nie musisz: pliki MP3 odtworzysz na dowolnym telefonie, głośniku albo w samochodzie. W aplikacji jest wygodniej: zabawy dobrane do wieku, tryb „W drogę” i wieczorny rytuał.'],
-        ['Pakiet czy abonament?', 'Pakiet masz na stałe. Abonament (' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie) daje wszystkie pakiety naraz i nowy pakiet co miesiąc. Jeśli planujesz więcej niż jeden pakiet, abonament zwykle wychodzi korzystniej.'],
-        ['Jak mogę zapłacić?', 'BLIK-iem, kartą przez PayU albo „płacę później” z Twisto.'],
+        ['Jak posłuchać tego pakietu?', 'W aplikacji Audiokiddo. Jedna zabawa z pakietu jest za darmo, a wszystkie pakiety otwiera abonament (' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie), w którym co tydzień dochodzą 2 nowe zabawy.'],
+        ['Kupiłem ten pakiet wcześniej. Co z nim?', 'Zostaje Twój. Zaloguj się w aplikacji adresem e-mail z zamówienia, a pakiet będzie odblokowany.'],
     ];
     if ($kind['type'] === 'pack' && !empty($kind['data']['print'])) {
         $faq[] = ['Co to są akta sprawy?', 'Do każdej sprawy detektywistycznej dostajesz kartę do wydrukowania: podejrzani, poszlaki i miejsce na notatki. Dziecko prowadzi śledztwo jak prawdziwy detektyw.'];

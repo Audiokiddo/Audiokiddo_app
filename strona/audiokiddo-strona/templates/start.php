@@ -29,6 +29,7 @@ $poses = ['dzien-obiad', 'zestresowany', 'dzien-przedszkole', 'dzien-auto', 'zdz
             <div class="ak-hero-btns ak-a-btns">
                 <?php echo ak_app_cta('ak-btn ak-btn-sun', true, 'Pobierz aplikację'); // escaped inside ?>
                 <a class="ak-btn ak-btn-ghost ak-h7-what" href="#co-to">Pokaż mi, co to w ogóle jest</a>
+                <a class="ak-more ak-hero-features" href="<?php echo esc_url(ak_info_url('jak-to-dziala') . '#funkcje'); ?>">Zobacz, co potrafi aplikacja</a>
             </div>
         </div>
         <?php // Szop'en is on the job from the first screen: a child in headphones, his line, a fragment to play. ?>
@@ -235,7 +236,7 @@ $poses = ['dzien-obiad', 'zestresowany', 'dzien-przedszkole', 'dzien-auto', 'zdz
             <ul class="ak-a-plan-list">
                 <li><?php echo ak_icon('star', 22); // static ?>Pełna biblioteka audiozabaw</li>
                 <li><?php echo ak_icon('kid', 22); // static ?>Wszystkie grupy wiekowe 3–9 lat</li>
-                <li><?php echo ak_icon('play', 22); // static ?>Nowe zabawy i pakiety w abonamencie</li>
+                <li><?php echo ak_icon('play', 22); // static ?>Co tydzień 2 nowe zabawy</li>
                 <li><?php echo ak_icon('offline', 22); // static ?>Zabawy do pobrania offline</li>
                 <li><?php echo ak_icon('clock', 22); // static ?>Anulujesz, kiedy chcesz</li>
             </ul>
@@ -244,13 +245,11 @@ $poses = ['dzien-obiad', 'zestresowany', 'dzien-przedszkole', 'dzien-auto', 'zdz
             <p class="ak-small ak-center"><?php echo $live ? 'Subskrypcję wybierzesz w aplikacji. Darmowe zabawy czekają od razu.' : 'Aplikacja startuje wkrótce. Zostaw e-mail wyżej, a damy znać pierwszego dnia.'; ?></p>
         </div>
         </div>
-        <div class="ak-nosub" data-reveal>
-            <div>
-                <h3>Nie lubisz subskrypcji? <span class="ak-hl-word">Spoko.</span></h3>
-                <p>Wybrane pakiety możesz kupić osobno i mieć do nich stały dostęp. To dobra opcja, jeśli interesuje Was konkretny temat albo po prostu nie chcesz dokładać sobie kolejnego abonamentu.</p>
-                <p class="ak-small">„Tak, też mamy ich już za dużo.”</p>
-            </div>
-            <a class="ak-btn ak-btn-ghost" id="pakiety" href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Zobacz pakiety</a>
+        <div class="ak-home-packs" id="pakiety" data-reveal>
+            <h3>Pakiety: <span class="ak-hl-word">wszystkie w abonamencie</span></h3>
+            <p>Każdy pakiet to seria zabaw wokół jednego tematu. W abonamencie masz wszystkie naraz, a co tydzień dochodzą 2 nowe zabawy. Z każdego pakietu jedna zabawa jest za darmo.</p>
+            <?php ak_pack_cards('ak-packs-compact', true); ?>
+            <a class="ak-btn ak-btn-ghost" href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Co jest w pakietach</a>
         </div>
     </div>
 </section>

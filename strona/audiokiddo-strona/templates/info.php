@@ -66,6 +66,20 @@ require AK_DIR . 'parts/header.php';
         </div>
     </section>
 
+    <section class="ak-info-sec ak-features" id="funkcje" aria-labelledby="ak-feat-h">
+        <div class="ak-wrap">
+            <h2 id="ak-feat-h" data-reveal>Co potrafi <span class="ak-hl-word">aplikacja?</span></h2>
+            <ul class="ak-fn-grid">
+                <?php foreach (ak_app_feature_list() as $i => [$title, $text]) : ?>
+                <li class="ak-fn" data-reveal style="--d:<?php echo esc_attr(0.05 * $i); ?>s">
+                    <h3><?php echo esc_html($title); ?></h3>
+                    <p><?php echo esc_html($text); ?></p>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </section>
+
     <section class="ak-info-sec" aria-labelledby="ak-age-h">
         <div class="ak-wrap">
             <h2 id="ak-age-h" data-reveal>Dla dzieci od <span class="ak-hl-word">3 do 9 lat</span></h2>
@@ -116,35 +130,8 @@ require AK_DIR . 'parts/header.php';
     <section class="ak-info-sec" aria-labelledby="ak-in-h">
         <div class="ak-wrap">
             <h2 id="ak-in-h" data-reveal>Co jest <span class="ak-hl-word">w abonamencie?</span></h2>
-            <p class="ak-sub" data-reveal>Wszystkie pakiety naraz, wszystkie grupy wiekowe i nowy pakiet co miesiąc. Do tego tryby na konkretne sytuacje: „W drogę” na podróż i wieczorny rytuał na dobranoc.</p>
+            <p class="ak-sub" data-reveal>Wszystkie pakiety naraz, wszystkie grupy wiekowe, a co tydzień 2 nowe zabawy. Do tego tryby na konkretne sytuacje: „W drogę” na podróż i wieczorny rytuał na dobranoc.</p>
             <?php ak_pack_cards(); ?>
-        </div>
-    </section>
-
-    <section class="ak-info-sec" aria-labelledby="ak-cmp-h">
-        <div class="ak-wrap ak-narrow">
-            <h2 id="ak-cmp-h" data-reveal>Abonament czy <span class="ak-hl-word">pakiet na własność?</span></h2>
-            <div class="ak-table-wrap" data-reveal>
-                <table class="ak-compare">
-                    <thead><tr><th scope="col"></th><th scope="col">Abonament</th><th scope="col">Pakiet na własność</th></tr></thead>
-                    <tbody>
-                        <tr><th scope="row">Zabawy</th><td>cała biblioteka</td><td>jeden pakiet (5–10 zabaw)</td></tr>
-                        <tr><th scope="row">Nowe pakiety</th><td>co miesiąc, w cenie</td><td>kupujesz osobno</td></tr>
-                        <tr><th scope="row">Wszystkie grupy wiekowe</th><td>tak</td><td>wiek pakietu</td></tr>
-                        <tr><th scope="row">Aplikacja</th><td>tak</td><td>tak, po zalogowaniu e-mailem</td></tr>
-                        <tr><th scope="row">Pliki MP3 na maila</th><td>nie</td><td>tak</td></tr>
-                        <tr><th scope="row">Płatność</th><td>co miesiąc albo raz w roku, w aplikacji</td><td>raz, w sklepie na stronie</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="ak-nosub" data-reveal>
-                <div>
-                    <h3>Nie lubisz subskrypcji? Spoko.</h3>
-                    <p>Wybrane pakiety możesz kupić osobno i mieć do nich stały dostęp. To dobra opcja, jeśli interesuje Was konkretny temat albo po prostu nie chcesz dokładać sobie kolejnego abonamentu.</p>
-                    <small>Tak, też mamy ich już za dużo.</small>
-                </div>
-                <a class="ak-btn ak-btn-teal" href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Zobacz pakiety <?php echo $arrow; // static ?></a>
-            </div>
         </div>
     </section>
 
@@ -163,10 +150,10 @@ require AK_DIR . 'parts/header.php';
     <section class="ak-info-sec" aria-label="Pakiety">
         <div class="ak-wrap">
             <div class="ak-in-sub" data-reveal>
-                <p><strong>Wszystkie pakiety są w abonamencie</strong>, a co miesiąc dochodzi nowy. Abonament: <?php echo esc_html($price['month']); ?> zł miesięcznie albo <?php echo esc_html($price['year']); ?> zł rocznie.</p>
+                <p><strong>Wszystkie pakiety są w abonamencie</strong>, a co tydzień dochodzą 2 nowe zabawy. Z każdego pakietu jedna zabawa jest za darmo. Abonament: <?php echo esc_html($price['month']); ?> zł miesięcznie albo <?php echo esc_html($price['year']); ?> zł rocznie.</p>
                 <a class="ak-btn ak-btn-ghost" href="<?php echo esc_url(ak_info_url('abonament')); ?>">Zobacz abonament</a>
             </div>
-            <?php foreach ($packs as $key => $pack) : $offer = ak_offer($pack['woo']); ?>
+            <?php foreach ($packs as $key => $pack) : ?>
             <section class="ak-pack-row ak-c-<?php echo esc_attr($pack['color']); ?>" id="pakiet-<?php echo esc_attr($key); ?>" aria-labelledby="ak-pack-<?php echo esc_attr($key); ?>">
                 <div class="ak-pack-cover" data-tilt data-reveal="left">
                     <img src="<?php echo esc_url(ak_img($pack['cover'])); ?>" alt="Okładka pakietu <?php echo esc_attr($pack['title']); ?>" width="720" height="720" loading="lazy">
@@ -187,48 +174,17 @@ require AK_DIR . 'parts/header.php';
                     </details>
                     <div class="ak-pack-ways">
                         <span class="ak-in-sub-tag">✓ W abonamencie</span>
-                        <?php if ($offer) : ?>
-                        <details class="ak-own">
-                            <summary>Kup na własność</summary>
-                            <div class="ak-buy">
-                                <p class="ak-price"><?php echo wp_kses_post($offer['price_html']); ?></p>
-                                <?php echo ak_cart_button($offer); // escaped inside ?>
-                                <a class="ak-more" href="<?php echo esc_url($offer['url']); ?>">Szczegóły</a>
-                            </div>
-                        </details>
-                        <?php endif; ?>
                     </div>
                 </div>
             </section>
             <?php endforeach; ?>
 
-            <?php $bundles = array_filter(array_map(fn($b) => $b + ['offer' => ak_offer($b['woo'])], ak_bundles()), fn($b) => $b['offer'] !== null); ?>
-            <?php if ($bundles) : ?>
-            <details class="ak-own ak-own-sets" data-reveal>
-                <summary>Kilka pakietów na własność? Zestawy wychodzą taniej</summary>
-                <div class="ak-bundles">
-                    <?php foreach ($bundles as $b) : ?>
-                    <article class="ak-bundle<?php echo !empty($b['best']) ? ' ak-bundle-best' : ''; ?>">
-                        <img src="<?php echo esc_url(ak_img($b['cover'])); ?>" alt="<?php echo esc_attr($b['title']); ?>" width="720" height="720" loading="lazy">
-                        <div>
-                            <h3><?php echo esc_html($b['title']); ?></h3>
-                            <p><?php echo esc_html($b['desc']); ?></p>
-                            <p class="ak-price"><?php echo wp_kses_post($b['offer']['price_html']); ?></p>
-                            <?php echo ak_cart_button($b['offer']); // escaped inside ?>
-                            <a class="ak-more" href="<?php echo esc_url($b['offer']['url']); ?>">Szczegóły</a>
-                        </div>
-                    </article>
-                    <?php endforeach; ?>
-                </div>
-            </details>
-            <?php endif; ?>
-
             <article class="ak-pack-row ak-pack-row-next" data-reveal>
                 <div class="ak-pack-cover"><span class="ak-pack-q" aria-hidden="true">?</span></div>
                 <div>
-                    <p class="ak-chip">co miesiąc</p>
-                    <h2>Nowy pakiet w abonamencie</h2>
-                    <p>Co miesiąc do abonamentu dochodzi kolejny pakiet zabaw. Nie musisz nic robić: pojawia się w aplikacji sam. Nowa sprawa? Podobno gruba.</p>
+                    <p class="ak-chip">co tydzień</p>
+                    <h2>2 nowe zabawy co tydzień</h2>
+                    <p>Co tydzień do abonamentu dochodzą 2 nowe zabawy z nowego pakietu. Nie musisz nic robić: pojawiają się w aplikacji same. Nowa sprawa? Podobno gruba.</p>
                 </div>
             </article>
         </div>
@@ -422,7 +378,7 @@ require AK_DIR . 'parts/header.php';
         $bands = [
             'jak-to-dziala' => ['Pierwsze zabawy sprawdzisz za darmo.', 'Pobierz Audiokiddo, wybierz wiek dziecka i odpal darmową zabawę. Jak się wkręci, pomyślisz o abonamencie.', ak_info_url('abonament'), 'Zobacz abonament'],
             'abonament' => ['Nie musisz płacić, żeby sprawdzić Audiokiddo.', 'Najpierw pobierz aplikację i odpal darmowe zabawy. Abonament wybierzesz w aplikacji, kiedy dzieciak poprosi o więcej.', ak_info_url('pytania'), 'Pytania o płatności'],
-            'pakiety' => ['Wszystkie pakiety w jednym abonamencie.', 'Plus nowy pakiet co miesiąc i darmowe zabawy na start w aplikacji.', ak_info_url('abonament'), 'Zobacz abonament'],
+            'pakiety' => ['Wszystkie pakiety w jednym abonamencie.', 'Plus 2 nowe zabawy co tydzień i darmowe zabawy na start w aplikacji.', ak_info_url('abonament'), 'Zobacz abonament'],
             'pytania' => ['Najszybciej sprawdzisz to w praktyce.', 'Pobierz Audiokiddo i odpal darmową zabawę. Pięć minut i wiesz, czy dziecko się wkręci.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
             'o-nas' => ['Zobacz, co zrobiliśmy.', 'Pobierz Audiokiddo i odpal darmową zabawę. Szop’en już czeka.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
             'zabawy-do-druku' => ['Karty czyta dorosły. Audiokiddo czyta samo.', 'Gdy nie masz siły czytać kart, odpal audiozabawę: głos poprowadzi dziecko przez misję, a Ty odpoczniesz.', ak_info_url('jak-to-dziala'), 'Jak to działa'],

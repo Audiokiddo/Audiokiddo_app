@@ -381,14 +381,15 @@ function ak_product_schema(string $name, string $description, string $image, arr
         'sku' => 'woo-' . $offer['id'],
         'brand' => ['@type' => 'Brand', 'name' => 'Audiokiddo'],
         'audience' => ['@type' => 'PeopleAudience', 'suggestedMinAge' => $age_from],
-        'offers' => [
+        // Packs are no longer sold one by one: no price to show unless a product is buyable again.
+        'offers' => $offer['buyable'] ? [
             '@type' => 'Offer',
             'price' => number_format($offer['price'], 2, '.', ''),
             'priceCurrency' => 'PLN',
-            'availability' => $offer['buyable'] ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            'availability' => 'https://schema.org/InStock',
             'url' => $offer['url'],
             'seller' => ['@id' => ak_org_id()],
-        ],
+        ] : null,
     ];
 }
 
@@ -480,20 +481,11 @@ function ak_llms_txt(): string
     $lines[] = '- Abonament roczny: ' . $price['year'] . ' zł (około ' . $price['year_month'] . ' zł miesięcznie' . ($price['save'] ? ', około ' . round(ak_price_num($price['save'])) . ' zł taniej niż 12 miesięcy' : '') . ').';
     $lines[] = '- Jeden abonament dla całej rodziny, bez limitu profili dzieci; drugi rodzic korzysta bez dopłat. Anulujesz w ustawieniach App Store lub Google Play.';
     $lines[] = '';
-    $lines[] = '## Pakiety na własność (jednorazowo na audiokiddo.pl, bez abonamentu)';
+    $lines[] = '## Pakiety (wszystkie w abonamencie; z każdego jedna zabawa za darmo)';
     foreach (ak_packs() as $pack) {
-        $offer = ak_offer($pack['woo']);
-        $cost = $offer ? ': ' . ak_money($offer['price']) : '';
-        $url = $offer ? ' (' . $offer['url'] . ')' : '';
-        $lines[] = '- **Pakiet ' . $pack['title'] . '**, ' . ak_age($pack) . ', ' . count($pack['plays']) . ' zabaw' . $cost . $url . '. ' . $pack['lead'];
+        $lines[] = '- **Pakiet ' . $pack['title'] . '**, ' . ak_age($pack) . ', ' . count($pack['plays']) . ' zabaw. ' . $pack['lead'];
     }
-    foreach (ak_bundles() as $bundle) {
-        $offer = ak_offer($bundle['woo']);
-        if ($offer) {
-            $lines[] = '- **' . $bundle['title'] . '**: ' . ak_money($offer['price']) . ' (' . $offer['url'] . '). ' . $bundle['desc'];
-        }
-    }
-    $lines[] = '- Po zakupie pliki przychodzą mailem od razu; te same pakiety odblokowuje się w aplikacji, logując się tym samym adresem e-mail.';
+    $lines[] = '- Co tydzień do abonamentu dochodzą 2 nowe zabawy z nowego pakietu. Pakietów nie sprzedajemy osobno.';
     $lines[] = '- Zapis do newslettera: 3 audiozabawy w plikach za darmo (' . home_url('/#start-aplikacji') . ').';
     $lines[] = '';
     $lines[] = '## Prywatność i bezpieczeństwo';

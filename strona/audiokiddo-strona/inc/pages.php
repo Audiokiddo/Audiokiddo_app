@@ -23,16 +23,16 @@ function ak_info_pages(): array
         'abonament' => [
             'anchor' => 'Abonament i cennik',
             'title' => 'Abonament Audiokiddo: cena, co zawiera, jak anulować',
-            'desc' => 'Pełna biblioteka audiozabaw dla dzieci 3–9 lat w abonamencie: miesięcznie albo rocznie, co miesiąc nowy pakiet. Najpierw darmowe zabawy w aplikacji.',
+            'desc' => 'Pełna biblioteka audiozabaw dla dzieci 3–9 lat w abonamencie: miesięcznie albo rocznie, co tydzień 2 nowe zabawy. Najpierw darmowe zabawy w aplikacji.',
             'h1' => 'Abonament Audiokiddo',
             'lead' => 'Pełna biblioteka. Bez liczenia zabaw na sztuki. Najpierw sprawdzasz darmowe zabawy w aplikacji, a jeśli dzieciak chce więcej, wybierasz dostęp miesięczny albo roczny. Co miesiąc do abonamentu dochodzi nowy pakiet.',
         ],
         'pakiety' => [
             'anchor' => 'Pakiety audiozabaw',
             'title' => 'Pakiety audiozabaw dla dzieci: Wyobraźnia, Słowa, Detektyw',
-            'desc' => 'Pakiety audiozabaw Audiokiddo: Wyobraźnia i Słowa i Wiedza od 3 lat, Detektyw od 7 lat. Wszystkie w abonamencie, a pojedyncze pakiety także na własność.',
+            'desc' => 'Pakiety audiozabaw Audiokiddo: Wyobraźnia i Słowa i Wiedza od 3 lat, Detektyw od 7 lat. Wszystkie w abonamencie, a z każdego jedna zabawa za darmo.',
             'h1' => 'Pakiety audiozabaw',
-            'lead' => 'Każdy pakiet to kilka albo kilkanaście audiozabaw wokół jednego tematu: wyobraźnia, słowa i zagadki albo śledztwa. Wszystkie są w abonamencie Audiokiddo, a co miesiąc dochodzi nowy. Wolisz mieć konkretny pakiet na własność? Też się da.',
+            'lead' => 'Każdy pakiet to kilka albo kilkanaście audiozabaw wokół jednego tematu: wyobraźnia, słowa i zagadki albo śledztwa. Wszystkie są w abonamencie Audiokiddo, a co tydzień dochodzą 2 nowe zabawy. Z każdego pakietu jedną zabawę posłuchasz za darmo.',
         ],
         'pytania' => [
             'anchor' => 'Pytania i odpowiedzi',
@@ -44,9 +44,9 @@ function ak_info_pages(): array
         'o-nas' => [
             'anchor' => 'O nas',
             'title' => 'O nas: Nela i Dawid, rodzice, którzy tworzą Audiokiddo',
-            'desc' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Sami piszemy i nagrywamy audiozabawy. Nasze zasady: bez reklam i bez twarzy dzieci.',
+            'desc' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Razem piszemy i montujemy audiozabawy. Nasze zasady: bez reklam i bez twarzy dzieci.',
             'h1' => 'Kto stoi za Audiokiddo',
-            'lead' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy, produkt i cały świat marki, Dawid buduje technologię. Oboje podkładamy głosy. Piszemy, nagrywamy i odpisujemy na maile sami.',
+            'lead' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy, produkt i cały świat marki, Dawid buduje technologię. Nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami: piszemy, montujemy i odpisujemy na maile.',
         ],
         'zabawy-do-druku' => [
             'anchor' => 'Zabawy do druku',
@@ -84,18 +84,18 @@ function ak_faq_groups(): array
     $faq = ak_faq();
     return [
         'Audiokiddo i zabawy' => [$faq[0], $faq[1], $faq[2], $faq[3], $faq[12],
-            ['Czy zabawy są po polsku?', 'Tak. Wszystkie zabawy piszemy i nagrywamy po polsku, polskimi głosami.'],
+            ['Czy zabawy są po polsku?', 'Tak. Wszystkie zabawy piszemy po polsku, z myślą o polskich rodzinach.'],
             ['Czym Audiokiddo różni się od audiobooka?', 'Audiobook mówi dziecku, co zrobił bohater. Audiokiddo mówi: bohaterem jesteś ty. Dziecko odpowiada, szuka, rusza się i podejmuje decyzje, a historia idzie dalej po jego myśli.'],
         ],
         'Abonament i płatności' => [$faq[4], $faq[5],
-            ['Co jest w abonamencie?', 'Pełna biblioteka audiozabaw, wszystkie grupy wiekowe i wszystkie pakiety, także nowe: co miesiąc do abonamentu dochodzi kolejny pakiet. Dostęp trwa tak długo, jak subskrypcja.'],
+            ['Co jest w abonamencie?', 'Pełna biblioteka audiozabaw, wszystkie grupy wiekowe i wszystkie pakiety, także nowe: co tydzień do abonamentu dochodzą 2 nowe zabawy. Dostęp trwa tak długo, jak subskrypcja.'],
             ['Który abonament się bardziej opłaca?', 'Roczny: ' . $p['year'] . ' zł, czyli około ' . $p['year_month'] . ' zł miesięcznie' . ($p['save'] ? ', około ' . round(ak_price_num($p['save'])) . ' zł taniej niż płacenie co miesiąc przez rok' : '') . '. Dostęp jest ten sam.'],
             $faq[7],
             ['Jak anulować abonament na iPhonie?', 'Ustawienia → Twoje imię → Subskrypcje → Audiokiddo → Anuluj subskrypcję. Dostęp zostaje do końca opłaconego okresu.'],
             ['Jak anulować abonament na Androidzie?', 'Sklep Google Play → ikona profilu → Płatności i subskrypcje → Subskrypcje → Audiokiddo → Anuluj. Dostęp zostaje do końca opłaconego okresu.'],
         ],
         'Pakiety ze sklepu' => [$faq[8], $faq[11],
-            ['Czym różni się pakiet na własność od abonamentu?', 'Pakiet kupujesz raz i masz go na stałe: pliki dostajesz mailem, a w aplikacji odblokujesz go tym samym adresem e-mail. Abonament daje całą bibliotekę i nowe pakiety co miesiąc, dopóki trwa.'],
+            ['Kupiłem kiedyś pakiet. Co z nim?', 'Zostaje Twój. Zaloguj się w aplikacji adresem e-mail z zamówienia, a kupione pakiety będą odblokowane. Nowych pakietów nie sprzedajemy już osobno: wszystkie są w abonamencie.'],
             ['Jak zapłacę w sklepie?', 'BLIK-iem, kartą przez PayU albo „płacę później” z Twisto.'],
         ],
         'Bezpieczeństwo i prywatność' => [$faq[9], $faq[6], $faq[10],
@@ -266,7 +266,7 @@ function ak_about_story(): array
 {
     return [
         ['Dwie osoby, jedna aplikacja, potem dziecko', 'Dwie osoby uznały, że dobrym pomysłem będzie zrobienie aplikacji dla dzieci. Potem same zostały rodzicami. Audiokiddo zaczęliśmy tworzyć jeszcze zanim urodził się nasz syn. Dawid budował technologię i użyczał głosu. Nela też użyczała głosu, ale oprócz tego wymyślała zabawy, produkt i cały świat marki.'],
-        ['Problem, który nie jest niszowy', 'Potem sami weszliśmy w rodzicielstwo i odkryliśmy, że „potrzebuję czymś zająć dziecko na 15 minut” nie jest niszowym problemem badawczym. No więc budujemy dalej: każdą zabawę piszemy i nagrywamy sami, po polsku, i słuchamy, co mówią o niej rodzice i specjaliści.'],
+        ['Problem, który nie jest niszowy', 'Potem sami weszliśmy w rodzicielstwo i odkryliśmy, że „potrzebuję czymś zająć dziecko na 15 minut” nie jest niszowym problemem badawczym. No więc budujemy dalej: każdą zabawę razem piszemy i montujemy, po polsku, i słuchamy, co mówią o niej rodzice i specjaliści.'],
         ['Szop’en, pełnoetatowy pracownik', 'Maskotką Audiokiddo jest szop Szop’en. Nie ma osobnej zakładki „poznaj maskotkę”: pojawia się tam, gdzie jest potrzebny, i mówi jedno suche zdanie. W aplikacji prowadzi tryb „W drogę” i mówi dziecku „dobranoc”.'],
     ];
 }
