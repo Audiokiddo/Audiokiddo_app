@@ -231,6 +231,27 @@ class _DetailsContent extends ConsumerWidget {
           ],
         },
         const SizedBox(height: AkSpace.l),
+        // Predictable content builds trust (research 2026-10-12): what the child will hear and do.
+        _Section(
+          title: 'Co usłyszy dziecko',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final line in whatTheChildHears(item))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AkSpace.xs),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.hearing_rounded, size: 20, color: palette.primary),
+                      const SizedBox(width: AkSpace.s),
+                      Expanded(child: Text(line, style: text.bodyMedium)),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
         // Detektyw: the case file right under the play button, with Szop’en saying what is in it.
         if (item.pdf.isNotEmpty && canPlay && pack?.id == 'detektyw') ...[
           CaseFileCard(item: item),
@@ -284,6 +305,19 @@ class _DetailsContent extends ConsumerWidget {
     );
   }
 }
+
+/// Plain lines on what a play is like, only from what the catalog says about it.
+List<String> whatTheChildHears(ContentItem item) => [
+  switch (item.kind) {
+    ContentKind.interactiveGame =>
+      'Głos zadaje pytania, dziecko odpowiada głosem albo klaśnięciem, a historia idzie dalej po jego myśli.',
+    ContentKind.song => 'Piosenka do słuchania i śpiewania razem.',
+    _ => 'Głos prowadzi zabawę i zadaje pytania. Dziecko odpowiada na głos, zgaduje albo się rusza.',
+  },
+  '${(item.durationSec / 60).ceil()} min, dla dzieci od ${item.ageMin} lat.',
+  if (item.requirements.isEmpty) 'Nic nie trzeba szykować.',
+  'Bez reklam. Zabawy piszą Nela i Dawid, para z Polski.',
+];
 
 class _Meta extends StatelessWidget {
   const _Meta({required this.icon, required this.label});

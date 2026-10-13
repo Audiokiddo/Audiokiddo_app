@@ -1,3 +1,4 @@
+import 'package:audiokiddo/features/catalog/details_screen.dart' show whatTheChildHears;
 import 'dart:convert';
 import 'dart:io';
 
@@ -39,6 +40,15 @@ void main() {
     final older = firstPlay(catalog, age: 8)!;
     expect(older.ageMin, greaterThanOrEqualTo(young.ageMin));
     expect(older.ageMin, lessThanOrEqualTo(8));
+  });
+
+  test('"Co usłyszy dziecko" says only what the catalog knows', () {
+    final item = catalog.items.firstWhere((i) => i.kind == ContentKind.audioGame && i.requirements.isEmpty);
+    final lines = whatTheChildHears(item);
+    expect(lines.first, contains('Dziecko odpowiada na głos'));
+    expect(lines, contains('${(item.durationSec / 60).ceil()} min, dla dzieci od ${item.ageMin} lat.'));
+    expect(lines, contains('Nic nie trzeba szykować.'));
+    expect(lines.join(' '), isNot(contains('!')));
   });
 
   test('no placeholder songs; ages as decided', () {
