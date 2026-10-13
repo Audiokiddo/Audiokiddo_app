@@ -61,7 +61,7 @@ class FeaturesScreen extends ConsumerWidget {
       (
         Icons.print_rounded,
         'Do druku',
-        'Akta detektywa, karty i przewodniki do wydrukowania.',
+        'Akta sprawy z pakietu Detektyw do wydrukowania.',
         () => context.push('/biblioteka?do_druku=1'),
       ),
       (

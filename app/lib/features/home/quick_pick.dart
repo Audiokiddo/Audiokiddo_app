@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../purchases/shop.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
@@ -154,7 +155,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
           );
     final total = run.fold(0, (s, i) => s + i.durationSec) ~/ 60;
     // What a subscription would add to the draw (same age and car rules).
-    final lockedMore = catalog == null
+    final lockedMore = catalog == null || ref.watch(hasSubscriptionProvider)
         ? 0
         : pickPlaylist(
             catalog,

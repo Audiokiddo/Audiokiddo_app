@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../purchases/shop.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
@@ -44,6 +45,7 @@ LaunchNews launchNews({
   required Set<String> heard,
   required bool Function(ContentItem) canPlay,
   int? age,
+  bool subscribed = false,
 }) {
   bool fits(ContentItem i) => age == null || (i.ageMin <= age && (i.ageMax == null || age <= i.ageMax!));
   final waiting = [
@@ -55,7 +57,7 @@ LaunchNews launchNews({
     fresh: newItems.where((i) => !heard.contains(i.id) && canPlay(i)).firstOrNull,
     left: waiting.length,
     leftMinutes: waiting.fold(0, (m, i) => m + i.durationSec) ~/ 60,
-    locked: catalog.items.where((i) => fits(i) && !canPlay(i)).length,
+    locked: subscribed ? 0 : catalog.items.where((i) => fits(i) && !canPlay(i)).length,
   );
 }
 
@@ -112,6 +114,8 @@ class _LaunchGreetingState extends ConsumerState<LaunchGreeting> {
       },
       canPlay: (i) => ref.read(canPlayProvider(i)),
       age: family?.active?.age,
+      // Subscribers are not told what the subscription would open (only "Wkrótce" is locked).
+      subscribed: ref.read(hasSubscriptionProvider),
     );
     if (news.isEmpty) return;
     LaunchGreeting.shown = true;

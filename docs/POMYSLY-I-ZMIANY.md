@@ -32,6 +32,25 @@ Statusy: **zrobione**, **w toku**, **pomysł**, **odrzucone**.
 
 ## 2. Dziennik zmian
 
+### 2026-10-14 (gałąź `claude/szop-glos-gry`)
+
+- **Odtwarzacz:** usunięty przełącznik „Słuchamy razem / Dziecko samo” i pytania do rozmowy po zabawie (komplikowały, decyzja Dawida).
+- **Materiały:** usunięte „Filmy i materiały” (linki do YouTube i Google Drive) i pliki PDF spoza Detektywa. Do pobrania zostają tylko akta sprawy z pakietu Detektyw; filtr „Do druku” pokazuje tylko je.
+- **Wygląd:** domyślnie „Auto” (ciemny od 20:00 do 6:00). Wszystkie telefony wracają jednorazowo na Auto (nowy klucz `theme_mode_2`), a przełącznik zostaje w „Więcej”.
+- **Ikona:** Szop'en sam zmienia ikonę co 3 dni, domyślnie włączone. Ręczny wybór ikony wyłącza automat. iPhone pokazuje przy zmianie krótki komunikat systemowy.
+- **Listy od Szop'ena:** naprawione. Zapis zgody robił „upsert”, który ustawiał też `user_id`, a rodzic może zmieniać tylko `weekly`, `missed` i `updated_at`, więc baza zawsze odmawiała. Teraz najpierw aktualizacja, a gdy brak wiersza, wstawienie. Test w `supabase/tests/schema_test.sql`.
+- **Kto teraz słucha?:**
+  - szybsze przełączanie: plan i postępy liczą się tylko dla dziecka, którego dotyczą, a ekran zmienia się przed zapisem;
+  - czytelne imiona w ciemnym trybie: wybrane ciemne na żółtym, reszta w kolorze tekstu.
+- **Pytanie o imię:**
+  - wybór z listy 175 nagranych imion z wyszukiwaniem;
+  - „Nie ma imienia na liście” pozwala wpisać imię, a Szop'en go nie mówi;
+  - w edycji profilu podpowiedź, czy Szop'en zna imię.
+- **Usunięte pytanie** „Ile czasu dziennie na zabawę?” (zostaje dotychczasowa wartość albo 10 min).
+- **„Czy dziecko chce jeszcze?”:** przyciski „Nie dziś” i „Zapytam” widoczne w ciemnym trybie.
+- **Abonenci nie widzą ofert abonamentu:** ani okna po darmowej zabawie, ani „z abonamentem więcej” w losowaniu, ani powitania „w abonamencie czeka…”, ani banerów promocji (`hasSubscriptionProvider`).
+- **Baza (14.10, wgrane):** migracje `20261022000001_bedtime_grace` i `20261023000001_play_minutes` są na serwerze.
+
 ### 2026-10-13 (gałąź `claude/szop-glos-gry`)
 
 **Głos Szop'ena wszędzie:**
@@ -121,7 +140,7 @@ Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
 
 | Pomysł | Status |
 |---|---|
-| Strona: koniec pakietów do kupienia, „co tydzień 2 nowe”, przycisk „Poznaj funkcje” | **w toku** (13.10) |
+| Strona: koniec pakietów do kupienia, „co tydzień 2 nowe”, przycisk „Poznaj funkcje” | **w toku**: 3.26.0 gotowa, ale na serwerze jest 3.25.3 z sesji w chmurze, której kodu nie ma w repo; najpierw połączyć |
 | W dniu premiery prawdziwe przyciski App Store i Google Play, kod QR | pomysł ★★★ |
 | Strony sytuacji pod reklamy: /w-droge/, /po-przedszkolu/, /chore-dziecko/ | pomysł ★★ |
 | 30 s dźwięku z prawdziwej trasy | pomysł ★★★ |
@@ -143,5 +162,4 @@ Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
 
 - App Store Connect i Google Play: **wycofać ze sprzedaży** pakiety i zestawy (nie usuwać, żeby działało przywracanie zakupów).
 - Google Play Console: sprawdzić, że w subskrypcji jest włączona opcja **pauzy**.
-- Supabase: wgrać migrację `20261023000001_play_minutes.sql` (`supabase db push`).
 - Nowa wersja aplikacji w sklepach (testy zamknięte) z tymi zmianami.

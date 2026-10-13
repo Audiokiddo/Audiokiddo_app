@@ -7,7 +7,8 @@ import '../storage/storage_providers.dart';
 /// Light, dark or automatic. Automatic ([ThemeMode.system] here) is the default: light by
 /// day, dark in the evening from [eveningFrom] until [morningFrom], whatever the phone says.
 class Appearance extends AsyncNotifier<ThemeMode> {
-  static const _key = 'theme_mode';
+  // A new key (2026-10-14): every family starts again on Auto once; a later choice sticks.
+  static const _key = 'theme_mode_2';
 
   AppDatabase get _db => ref.read(databaseProvider);
 

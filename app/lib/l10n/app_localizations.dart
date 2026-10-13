@@ -1648,7 +1648,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizSummary.
   ///
   /// In pl, this message translates to:
-  /// **'Gotowe. Plan dla: {name}. Po {minutes} min dziennie, zaczynamy od łatwych zabaw.'**
+  /// **'Gotowe. Plan dla: {name}. Zaczynamy od łatwych zabaw.'**
   String quizSummary(String name, int minutes);
 
   /// No description provided for @quizSummaryAge.

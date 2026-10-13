@@ -852,3 +852,21 @@ begin
   end;
 end $$;
 reset role;
+
+-- Letters from Szop'en: a parent turns them on and off with update-then-insert (the app);
+-- an upsert that also sets user_id is refused, which is why the app does not use one.
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c2', false); end $$;
+do $$
+begin
+  insert into public.parent_letters (user_id, weekly, missed) values ('00000000-0000-0000-0000-0000000000c2', true, true);
+  update public.parent_letters set weekly = false, missed = false, updated_at = now() where user_id = auth.uid();
+  assert (select weekly from public.parent_letters where user_id = auth.uid()) = false;
+  begin
+    insert into public.parent_letters (user_id, weekly) values ('00000000-0000-0000-0000-0000000000c2', true)
+    on conflict (user_id) do update set user_id = excluded.user_id, weekly = excluded.weekly;
+    assert false, 'an upsert setting user_id must be refused';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+reset role;

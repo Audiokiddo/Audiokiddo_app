@@ -29,7 +29,7 @@ void main() {
     GoRouter.of(tester.element(find.byType(Scaffold).first)).go('/profil');
     await tester.pumpAndSettle();
     expect(find.text('Zosia'), findsWidgets);
-    await tester.tap(find.widgetWithText(ChoiceChip, 'Staś'));
+    await tester.tap(find.text('Staś'));
     await tester.pumpAndSettle();
     final container = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     expect(container.read(familyProvider).value!.active!.name, 'Staś');

@@ -29,6 +29,9 @@ List<Pack> bundlePacks(String productId, Catalog catalog) {
   ];
 }
 
+/// Whether the family has the subscription now: no offers to buy it are shown then.
+final hasSubscriptionProvider = Provider<bool>((ref) => ref.watch(activeScopesProvider).contains(Scopes.allContent));
+
 /// Scopes the family can use right now (subscription, packs, single items).
 final activeScopesProvider = Provider<Set<String>>(
   (ref) => ref.watch(accessPolicyProvider).activeScopes(ref.watch(clockProvider)()),

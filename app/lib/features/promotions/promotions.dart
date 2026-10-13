@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../purchases/shop.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
@@ -106,7 +107,8 @@ class PromotionBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final list = ref.watch(promotionsProvider).value ?? const <Promotion>[];
     final promo = list.where((p) => target == null || p.target == null || p.target == target).firstOrNull;
-    if (promo == null) return const SizedBox.shrink();
+    // Promotions sell the subscription: nothing to show to a family that has it.
+    if (promo == null || ref.watch(hasSubscriptionProvider)) return const SizedBox.shrink();
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
     final deadline = promotionDeadline(promo.endsAt, ref.watch(clockProvider)());

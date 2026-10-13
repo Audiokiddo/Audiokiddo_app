@@ -4,7 +4,6 @@ import 'dart:math' as math;
 
 import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/features/catalog/library_filter.dart';
-import 'package:audiokiddo/features/pdf/guide_links.dart';
 import 'package:audiokiddo/features/player/szop_after_play.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -15,20 +14,10 @@ Catalog loadCatalog() =>
 void main() {
   final catalog = loadCatalog();
 
-  test('every pack guide lists a film and a file for each of its plays', () {
-    final raw = jsonDecode(File('assets/guide_links.json').readAsStringSync()) as Map<String, Object?>;
-    for (final pack in catalog.packs.where((p) => p.guide != null)) {
-      final links = parseGuideLinks(raw[pack.id]! as Map<String, Object?>);
-      expect(
-        links.plays.map((p) => p.itemId),
-        catalog.itemsInPack(pack.id).map((i) => i.id),
-        reason: pack.id,
-      );
-      for (final play in links.plays) {
-        expect(play.video?.host, contains('youtube'));
-        expect(play.files, isNotEmpty);
-      }
-    }
+  test('only the Detektyw case files are printables (no films or other files since 2026-10-14)', () {
+    final printable = const LibraryFilter(printable: true).apply(catalog.items);
+    expect(printable, isNotEmpty);
+    expect(printable.every((i) => i.packId == 'detektyw'), isTrue);
   });
 
   test('Szop’en after a play: a fitting tip often, never the same line twice in a row', () {

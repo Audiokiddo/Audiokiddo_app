@@ -2,14 +2,15 @@ import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/audio/kiddo_voice.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/doodles.dart';
 import '../../core/widgets/szop.dart';
 import '../../l10n/app_localizations.dart';
 import 'family.dart';
 
-/// The short parent quiz (about a minute per child): name, age, goals, when you listen,
-/// minutes a day. Kiddo asks in a speech bubble, a progress bar shows how little is left.
+/// The short parent quiz (about a minute per child): name (from the names Szop’en can say),
+/// age, goals, when you listen. Kiddo asks in a speech bubble, a progress bar shows how little is left.
 /// Several children: "Dodaj kolejne dziecko" on the summary starts the quiz again.
 class ChildQuiz extends ConsumerStatefulWidget {
   const ChildQuiz({super.key, required this.onDone, this.editing, this.allowSkip = true});
@@ -26,7 +27,7 @@ class ChildQuiz extends ConsumerStatefulWidget {
   ConsumerState<ChildQuiz> createState() => _ChildQuizState();
 }
 
-enum _Step { hello, name, age, goals, situations, minutes, summary }
+enum _Step { hello, name, age, goals, situations, summary }
 
 class _ChildQuizState extends ConsumerState<ChildQuiz> {
   late _Step _step = widget.editing == null ? _Step.hello : _Step.name;
@@ -35,6 +36,10 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
   final _goals = <DevGoal>{};
   final _situations = <Situation>{};
   int? _minutes;
+
+  /// The parent did not find the child's name among the recorded ones: typed freely, and
+  /// Szop’en does not say it.
+  bool _nameNotListed = false;
   ChildProfile? _saved;
 
   static const ages = [3, 4, 5, 6, 7, 8, 9];
@@ -61,12 +66,11 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
   bool get _canContinue => switch (_step) {
     _Step.age => _age != null,
     _Step.goals => _goals.isNotEmpty,
-    _Step.minutes => _minutes != null,
     _ => true,
   };
 
   Future<void> _next() async {
-    if (_step == _Step.minutes) {
+    if (_step == _Step.situations) {
       final e = widget.editing;
       final child = ChildProfile(
         id: e?.id ?? newChildId(),
@@ -75,7 +79,8 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
         startedOn: e?.startedOn ?? DateTime.now(),
         goals: {..._goals},
         situations: {..._situations},
-        dailyMinutes: _minutes!,
+        // No longer asked (2026-10-14): what the parent had, or ten minutes.
+        dailyMinutes: _minutes ?? 10,
       );
       await ref.read(familyProvider.notifier).saveChild(child, makeActive: e == null);
       if (e != null) {
@@ -103,6 +108,7 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
       _goals.clear();
       _situations.clear();
       _minutes = null;
+      _nameNotListed = false;
       _saved = null;
       _step = _Step.name;
     });
@@ -114,7 +120,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
     _Step.age => SzopPose.zdziwiony,
     _Step.goals => SzopPose.chytry,
     _Step.situations => SzopPose.nasluchuje,
-    _Step.minutes => SzopPose.zmeczony,
     _Step.summary => SzopPose.klaszcze,
   };
 
@@ -124,7 +129,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
     _Step.age => AkBrand.orange,
     _Step.goals => AkBrand.lavender,
     _Step.situations => AkBrand.teal,
-    _Step.minutes => AkBrand.lavenderDeep,
   };
 
   String _who(AppLocalizations l10n) => _name.text.trim().isEmpty ? l10n.quizYourChild : _name.text.trim();
@@ -139,7 +143,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
       _Step.age => l10n.quizAge(_who(l10n)),
       _Step.goals => l10n.quizGoals,
       _Step.situations => l10n.quizSituations,
-      _Step.minutes => l10n.quizMinutes,
       _Step.summary => l10n.quizSummary(_who(l10n), _minutes ?? 10),
     };
     return Scaffold(
@@ -259,7 +262,7 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
                     child: Text(switch (_step) {
                       _Step.hello => l10n.quizStart,
                       _Step.summary => l10n.quizFinish,
-                      _Step.minutes when widget.editing != null => l10n.quizSave,
+                      _Step.situations when widget.editing != null => l10n.quizSave,
                       _ => l10n.quizContinue,
                     }),
                   ),
@@ -310,21 +313,18 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
             ),
         ],
       ),
-      _Step.name => Padding(
-        padding: const EdgeInsets.all(AkSpace.m),
-        child: Column(
-          children: [
-            TextField(
-              controller: _name,
-              textCapitalization: TextCapitalization.words,
-              autofillHints: const [AutofillHints.nickname],
-              decoration: InputDecoration(labelText: l10n.quizNameHint),
-              onSubmitted: (_) => _next(),
-            ),
-            const SizedBox(height: AkSpace.s),
-            Text(l10n.quizNamePrivacy, style: Theme.of(context).textTheme.bodySmall),
-          ],
-        ),
+      _Step.name => _NamePicker(
+        controller: _name,
+        notListed: _nameNotListed,
+        onPick: (name) => setState(() {
+          _name.text = name;
+          _nameNotListed = false;
+        }),
+        onNotListed: () => setState(() {
+          _name.clear();
+          _nameNotListed = true;
+        }),
+        onSubmitted: _next,
       ),
       _Step.age => GridView.count(
         crossAxisCount: 4,
@@ -378,18 +378,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
           Situation.przedSnem => Icons.nightlight_round,
           Situation.wDomu => Icons.house_rounded,
           Situation.czekanie => Icons.hourglass_bottom_rounded,
-        },
-      ),
-      _Step.minutes => options<int>(
-        const [5, 10, 15, 20],
-        (m) => _minutes == m,
-        (m) => _minutes = m,
-        (m) => l10n.quizMinutesOption(m),
-        hint: (m) => switch (m) {
-          5 => l10n.quizMinutes5,
-          10 => l10n.quizMinutes10,
-          15 => l10n.quizMinutes15,
-          _ => l10n.quizMinutes20,
         },
       ),
       _Step.summary => ListView(
@@ -519,6 +507,130 @@ class _Option extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// "Jak ma na imię Twoje dziecko?": the names Szop’en can say, filtered by the first letters.
+/// A name not on the list goes in as typed, with a note that Szop’en will not say it.
+class _NamePicker extends ConsumerStatefulWidget {
+  const _NamePicker({
+    required this.controller,
+    required this.notListed,
+    required this.onPick,
+    required this.onNotListed,
+    required this.onSubmitted,
+  });
+
+  final TextEditingController controller;
+  final bool notListed;
+  final ValueChanged<String> onPick;
+  final VoidCallback onNotListed;
+  final VoidCallback onSubmitted;
+
+  @override
+  ConsumerState<_NamePicker> createState() => _NamePickerState();
+}
+
+class _NamePickerState extends ConsumerState<_NamePicker> {
+  late final _filter = TextEditingController(text: widget.notListed ? '' : widget.controller.text);
+
+  @override
+  void dispose() {
+    _filter.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final palette = context.palette;
+    if (widget.notListed) {
+      return ListView(
+        padding: const EdgeInsets.all(AkSpace.m),
+        children: [
+          TextField(
+            controller: widget.controller,
+            autofocus: true,
+            textCapitalization: TextCapitalization.words,
+            decoration: const InputDecoration(labelText: 'Imię albo przezwisko (opcjonalnie)'),
+            onSubmitted: (_) => widget.onSubmitted(),
+          ),
+          const SizedBox(height: AkSpace.s),
+          Text(
+            'Tego imienia Szop’en nie ma nagranego, więc nie będzie zwracał się do dziecka po imieniu. '
+            'Imię zobaczysz w aplikacji.',
+            style: text.bodySmall,
+          ),
+          TextButton(onPressed: () => widget.onPick(''), child: const Text('Wróć do listy imion')),
+        ],
+      );
+    }
+    final names = ref.watch(recordedNamesProvider).value ?? const <String>[];
+    final query = _filter.text.trim().toLowerCase();
+    final shown = [
+      for (final n in names)
+        if (query.isEmpty || n.toLowerCase().startsWith(query)) n,
+    ];
+    final picked = widget.controller.text;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.m, AkSpace.s),
+          child: TextField(
+            controller: _filter,
+            textCapitalization: TextCapitalization.words,
+            decoration: const InputDecoration(
+              labelText: 'Szukaj imienia',
+              prefixIcon: Icon(Icons.search_rounded),
+            ),
+            onChanged: (_) => setState(() {}),
+          ),
+        ),
+        if (picked.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
+            child: Text('Szop’en powie: „Hej, $picked!”', style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
+          ),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.m, AkSpace.m),
+            children: [
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final n in shown)
+                    ChoiceChip(
+                      label: Text(n),
+                      selected: n == picked,
+                      showCheckmark: false,
+                      selectedColor: AkBrand.sun,
+                      labelStyle: TextStyle(
+                        color: n == picked ? const Color(0xFF211C35) : palette.ink,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      onSelected: (_) => widget.onPick(n == picked ? '' : n),
+                    ),
+                ],
+              ),
+              const SizedBox(height: AkSpace.m),
+              OutlinedButton.icon(
+                onPressed: widget.onNotListed,
+                icon: const Icon(Icons.edit_rounded),
+                label: const Text('Nie ma imienia na liście'),
+              ),
+              const SizedBox(height: AkSpace.xs),
+              Text(
+                'Wtedy wpiszesz je sam, a Szop’en nie będzie mówił imienia. ${l10n.quizNamePrivacy}',
+                style: text.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

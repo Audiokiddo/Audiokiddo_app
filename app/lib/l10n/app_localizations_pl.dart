@@ -894,7 +894,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String quizSummary(String name, int minutes) {
-    return 'Gotowe. Plan dla: $name. Po $minutes min dziennie, zaczynamy od łatwych zabaw.';
+    return 'Gotowe. Plan dla: $name. Zaczynamy od łatwych zabaw.';
   }
 
   @override

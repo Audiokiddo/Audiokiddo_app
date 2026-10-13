@@ -154,12 +154,13 @@ class SupabaseParentCloud implements ParentCloud {
     final user = _client.auth.currentUser;
     if (user == null) throw const FamilyException('Zaloguj się, żeby dostawać listy.');
     // Both kinds together: the weekly letter and the short one after a longer break.
-    await _client.from('parent_letters').upsert({
-      'user_id': user.id,
-      'weekly': on,
-      'missed': on,
-      'updated_at': DateTime.now().toUtc().toIso8601String(),
-    });
+    // Update first, insert when there is no row yet: parents may change only weekly, missed
+    // and updated_at, so an upsert (which also sets user_id) is refused by the database.
+    final changes = {'weekly': on, 'missed': on, 'updated_at': DateTime.now().toUtc().toIso8601String()};
+    final updated = await _client.from('parent_letters').update(changes).eq('user_id', user.id).select('user_id');
+    if (updated.isEmpty) {
+      await _client.from('parent_letters').insert({'user_id': user.id, ...changes});
+    }
   });
 
   @override

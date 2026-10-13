@@ -13,7 +13,6 @@ import '../discovery/reference_widgets.dart';
 import '../downloads/download_providers.dart';
 import '../family/family.dart' hide progressProvider;
 import '../kids_mode/kids_mode_setup.dart';
-import '../pdf/guide_links.dart';
 import '../purchases/shop.dart';
 import '../purchases/purchase_controller.dart';
 import '../purchases/shop_screen.dart';
@@ -168,7 +167,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
             child: Text(pack.title, style: Theme.of(context).textTheme.titleLarge),
           ),
         _FilterChips(filter: f, onChanged: _set),
-        if (f.printable) _Guides(catalog: catalog),
         RefSection(items.length == 1 ? '1 propozycja' : '${items.length} propozycji'),
         if (items.isEmpty)
           const Padding(
@@ -257,7 +255,7 @@ class _PrintBanner extends StatelessWidget {
         onTap: () => onFilter(filter),
         child: Semantics(
           button: true,
-          label: 'Do druku: ${playsLabel(count)} z kartami, aktami i przewodnikami',
+          label: 'Do druku: akta sprawy, ${playsLabel(count)} z pakietu Detektyw',
           excludeSemantics: true,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
@@ -276,7 +274,7 @@ class _PrintBanner extends StatelessWidget {
                     children: [
                       Text('Do druku', style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800)),
                       Text(
-                        'Akta detektywa, karty i przewodniki: ${playsLabel(count)} z czymś do wydrukowania.',
+                        'Akta sprawy z pakietu Detektyw: ${playsLabel(count)} z kartą do wydrukowania.',
                         style: text.bodySmall?.copyWith(color: ink),
                       ),
                     ],
@@ -837,7 +835,7 @@ class _ParentTools extends ConsumerWidget {
       (
         Icons.print_rounded,
         'Do druku',
-        'Akta, karty, przewodniki',
+        'Akta sprawy Detektywa',
         () => onFilter(const LibraryFilter(printable: true)),
       ),
       (Icons.queue_music_rounded, 'Kolejka', 'Ułóż własną listę', () => context.push('/kolejka')),
@@ -949,27 +947,3 @@ class _FilterChips extends ConsumerWidget {
   }
 }
 
-/// Films and printables of every pack, on top of the printable plays.
-class _Guides extends StatelessWidget {
-  const _Guides({required this.catalog});
-
-  final Catalog catalog;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const RefSection('Filmy i materiały do pakietów'),
-      for (final pack in catalog.packs)
-        if (pack.guide != null)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.smart_display_rounded, color: AkBrand.tealDeep),
-            title: Text(pack.title),
-            subtitle: const Text('Filmy do zabaw i pliki do druku'),
-            trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => openPackMaterials(context, pack.id),
-          ),
-    ],
-  );
-}

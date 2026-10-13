@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/format.dart';
 import '../../core/theme/appearance.dart';
+import '../../core/audio/kiddo_voice.dart';
 import '../../core/theme/tokens.dart';
 import '../catalog/catalog_providers.dart';
 import '../downloads/download_providers.dart';
@@ -86,7 +87,7 @@ class MoreScreen extends ConsumerWidget {
             ButtonSegment(value: ThemeMode.system, icon: Icon(Icons.brightness_auto_rounded), label: Text('Auto')),
             ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode_rounded), label: Text('Ciemny')),
           ],
-          selected: {ref.watch(appearanceProvider).value ?? ThemeMode.light},
+          selected: {ref.watch(appearanceProvider).value ?? ThemeMode.system},
           onSelectionChanged: (s) => ref.read(appearanceProvider.notifier).set(s.single),
         ),
         Padding(
@@ -355,19 +356,18 @@ class ProfileScreen extends ConsumerWidget {
               runSpacing: 8,
               children: [
                 for (final (i, c) in family!.children.indexed)
-                  ChoiceChip(
-                    avatar: const Icon(Icons.face_rounded, size: 20),
-                    label: Text(c.name.isEmpty ? 'Dziecko ${i + 1}' : c.name),
-                    labelStyle: const TextStyle(fontWeight: FontWeight.w700),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  _WhoChip(
+                    name: c.name.isEmpty ? 'Dziecko ${i + 1}' : c.name,
                     selected: c.id == child.id,
-                    onSelected: (_) async {
-                      await ref.read(familyProvider.notifier).setActive(c.id);
-                      if (!context.mounted) return;
+                    onTap: () {
+                      ref.read(familyProvider.notifier).setActive(c.id);
                       ScaffoldMessenger.of(context)
                         ..hideCurrentSnackBar()
                         ..showSnackBar(
-                          SnackBar(content: Text('Teraz słucha: ${c.name.isEmpty ? 'Dziecko ${i + 1}' : c.name}')),
+                          SnackBar(
+                            duration: const Duration(seconds: 2),
+                            content: Text('Teraz słucha: ${c.name.isEmpty ? 'Dziecko ${i + 1}' : c.name}'),
+                          ),
                         );
                     },
                   ),
@@ -560,6 +560,20 @@ class _EditProfileState extends ConsumerState<_EditProfile> {
           controller: name,
           maxLength: 40,
           decoration: const InputDecoration(labelText: 'Imię lub pseudonim'),
+          onChanged: (_) => setState(() {}),
+        ),
+        // Whether Szop’en can say this name (the recorded ones, tool/name_voice.py).
+        Builder(
+          builder: (context) {
+            final names = ref.watch(recordedNamesProvider).value ?? const <String>[];
+            final typed = name.text.trim().split(RegExp(r'\s+')).first;
+            if (typed.isEmpty) return const SizedBox.shrink();
+            final known = names.any((n) => n.toLowerCase() == typed.toLowerCase());
+            return Text(
+              known ? 'Szop’en powie: „Hej, $typed!”' : 'Tego imienia Szop’en nie ma nagranego, więc nie będzie go mówił.',
+              style: Theme.of(context).textTheme.bodySmall,
+            );
+          },
         ),
         const SizedBox(height: 20),
         DropdownButtonFormField<int>(
@@ -595,4 +609,48 @@ class _EditProfileState extends ConsumerState<_EditProfile> {
       ],
     ),
   );
+}
+
+/// One child in "Kto teraz słucha?": dark ink on the brand yellow when chosen, the screen's own
+/// ink on its surface otherwise, so the name reads in light and dark mode alike.
+class _WhoChip extends StatelessWidget {
+  const _WhoChip({required this.name, required this.selected, required this.onTap});
+
+  final String name;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    final fg = selected ? const Color(0xFF211C35) : palette.ink;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: name,
+      excludeSemantics: true,
+      child: Material(
+        color: selected ? AkBrand.sun : palette.surface,
+        shape: StadiumBorder(side: BorderSide(color: selected ? AkBrand.sun : palette.inkMuted.withValues(alpha: .35))),
+        child: InkWell(
+          customBorder: const StadiumBorder(),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(selected ? Icons.check_circle_rounded : Icons.face_rounded, size: 20, color: fg),
+                const SizedBox(width: 6),
+                Text(
+                  name,
+                  style: TextStyle(color: fg, fontWeight: FontWeight.w800, fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

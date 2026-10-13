@@ -44,7 +44,6 @@ import '../features/games/speech_check_screen.dart';
 import '../features/personal/app_icon_screen.dart';
 import '../features/pdf/case_file_screen.dart';
 import '../features/stickers/stickers.dart';
-import '../features/pdf/guide_links.dart';
 import '../features/session/session_screens.dart';
 import '../features/about/features_screen.dart';
 
@@ -176,10 +175,6 @@ GoRouter buildRouter(
     GoRoute(
       path: '/pakiet/:id',
       pageBuilder: (context, state) => swipePage(state, PackScreen(packId: state.pathParameters['id']!)),
-    ),
-    GoRoute(
-      path: '/pakiet/:id/materialy',
-      pageBuilder: (context, state) => swipePage(state, PackMaterialsScreen(packId: state.pathParameters['id']!)),
     ),
     GoRoute(
       path: '/dyplom/:id',

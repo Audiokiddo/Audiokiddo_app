@@ -55,7 +55,7 @@ Set<String> heardIds(WidgetRef ref) => {
 
 /// Whether there is anything to say after [item]: another free play, or an offer.
 bool hasAfterFreePlay(WidgetRef ref, ContentItem item) {
-  if (!item.isFree) return false;
+  if (!item.isFree || ref.read(hasSubscriptionProvider)) return false;
   final catalog = ref.read(catalogProvider).value;
   if (catalog == null) return false;
   final age = ref.read(familyProvider).value?.active?.age ?? 6;
@@ -124,7 +124,7 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
   Widget build(BuildContext context) {
     final item = widget.item;
     final catalog = ref.watch(catalogProvider).value;
-    if (!item.isFree || catalog == null) return const SizedBox.shrink();
+    if (!item.isFree || catalog == null || ref.watch(hasSubscriptionProvider)) return const SizedBox.shrink();
     final age = ref.watch(familyProvider).value?.active?.age ?? 6;
     final next = nextFreePlay(catalog, after: item.id, heard: _heard, age: age);
     final pack = item.packId == null ? null : catalog.pack(item.packId!);
@@ -284,12 +284,21 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
           child: const Text('Tak, od razu'),
         ),
         const SizedBox(height: 8),
+        // The card is light in both themes, so its buttons use the card's own dark ink.
         OutlinedButton(
-          style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(48),
+            foregroundColor: ink,
+            side: const BorderSide(color: ink, width: 1.5),
+          ),
           onPressed: () => _answered(WantsMore.notToday),
           child: const Text('Nie dziś'),
         ),
-        TextButton(onPressed: () => _answered(WantsMore.willAsk), child: const Text('Zapytam')),
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: ink),
+          onPressed: () => _answered(WantsMore.willAsk),
+          child: const Text('Zapytam'),
+        ),
       ],
     );
   }

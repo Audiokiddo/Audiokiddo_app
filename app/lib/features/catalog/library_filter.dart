@@ -122,7 +122,7 @@ class LibraryFilter {
             (age == null || (i.ageMin <= age! && (i.ageMax == null || i.ageMax! >= (ageFrom ?? age!)))) &&
             (situation == null || i.situations.contains(situation)) &&
             (!noPrep || i.requirements.isEmpty) &&
-            (!printable || i.pdf.isNotEmpty || i.requirements.contains(Requirement.wydrukPdf)) &&
+            (!printable || (i.packId == 'detektyw' && (i.pdf.isNotEmpty || i.requirements.contains(Requirement.wydrukPdf)))) &&
             (!available || canPlay == null || canPlay(i)) &&
             (!lyingDown || !PlayCategory.movement.matches(i)),
       )

@@ -124,10 +124,12 @@ class FamilyController extends AsyncNotifier<FamilyState> {
     state = AsyncData(FamilyState(children: children, activeId: active, results: results, frozen: frozen));
   }
 
+  /// Switches the child who listens: the screen first, the database after (no waiting).
   Future<void> setActive(String id) async {
     final s = await _current();
-    await _db.writeValue(_activeKey, id);
+    if (s.activeId == id) return;
     state = AsyncData(s.copyWith(activeId: id));
+    await _db.writeValue(_activeKey, id);
   }
 
   /// Credits a finished activity to the child who is listening now (if any profile exists).
@@ -203,23 +205,32 @@ PlanPosition composePosition(
 );
 
 /// The development path of [childId]; prefers what the family can already play.
+// The providers below watch only the part of the family they use (select): switching the
+// child who listens changes activeId alone, so no plan or progress is computed again.
+
 final planProvider = Provider.family<List<PlanDay>, String>((ref, childId) {
   final catalog = ref.watch(catalogProvider).value;
-  final family = ref.watch(familyProvider).value;
-  final child = family?.children.where((c) => c.id == childId).firstOrNull;
+  final (child, frozen) = ref.watch(
+    familyProvider.select(
+      (s) => (s.value?.children.where((c) => c.id == childId).firstOrNull, s.value?.frozen[childId]),
+    ),
+  );
   if (catalog == null || child == null) return const [];
-  return composePlan(catalog, child, family!.frozen[childId], (item) => ref.watch(canPlayProvider(item)));
+  return composePlan(catalog, child, frozen, (item) => ref.watch(canPlayProvider(item)));
 });
 
 final planPositionProvider = Provider.family<PlanPosition?, String>((ref, childId) {
   final plan = ref.watch(planProvider(childId));
-  final family = ref.watch(familyProvider).value;
+  final results = ref.watch(familyProvider.select((s) => s.value?.results));
   final catalog = ref.watch(catalogProvider).value;
-  if (plan.isEmpty || family == null || catalog == null) return null;
+  if (plan.isEmpty || results == null || catalog == null) return null;
   return composePosition(
     catalog,
     plan,
-    family.resultsOf(childId),
+    [
+      for (final r in results)
+        if (r.childId == childId) r,
+    ],
     (item) => ref.watch(canPlayProvider(item)),
     now: ref.watch(clockProvider)(),
   );
@@ -227,9 +238,16 @@ final planPositionProvider = Provider.family<PlanPosition?, String>((ref, childI
 
 final progressProvider = Provider.family<ChildProgress?, String>((ref, childId) {
   final catalog = ref.watch(catalogProvider).value;
-  final family = ref.watch(familyProvider).value;
-  if (catalog == null || family == null) return null;
-  return summarizeProgress(family.resultsOf(childId), catalog, ref.watch(clockProvider)());
+  final results = ref.watch(familyProvider.select((s) => s.value?.results));
+  if (catalog == null || results == null) return null;
+  return summarizeProgress(
+    [
+      for (final r in results)
+        if (r.childId == childId) r,
+    ],
+    catalog,
+    ref.watch(clockProvider)(),
+  );
 });
 
 /// A fresh id for a new child profile (local only).

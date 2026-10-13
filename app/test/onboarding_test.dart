@@ -134,7 +134,12 @@ void main() {
 
     await tester.tap(find.text('Zaczynamy'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'Zosia');
+    // The name comes from the names Szop’en can say: search, then tap.
+    await tester.enterText(find.byType(TextField), 'Zo');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Zosia'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Hej, Zosia!'), findsOneWidget);
     await next();
     expect(find.text('Ile lat ma Zosia?'), findsOneWidget);
     await tester.tap(find.text('6'));
@@ -145,10 +150,7 @@ void main() {
     await next();
     await tester.tap(find.text('W podróży'));
     await tester.pumpAndSettle();
-    await next();
-    await tester.tap(find.text('10 min dziennie'));
-    await tester.pumpAndSettle();
-    await next();
+    await next(); // no question about minutes a day any more
     expect(find.textContaining('Plan dla: Zosia'), findsOneWidget);
     await tester.tap(find.text('Dodaj kolejne dziecko'));
     await tester.pumpAndSettle();
@@ -160,9 +162,6 @@ void main() {
     await tester.tap(find.text('Wyciszenie przed snem'));
     await tester.pumpAndSettle();
     await next();
-    await next();
-    await tester.tap(find.text('5 min dziennie'));
-    await tester.pumpAndSettle();
     await next();
     await tester.tap(find.text('Gotowe'));
     await tester.pumpAndSettle();
@@ -198,7 +197,7 @@ void main() {
     final family = container.read(familyProvider).value!;
     expect(
       [for (final c in family.children) (c.name, c.age, c.dailyMinutes)],
-      [('Zosia', 6, 10), ('', 3, 5)],
+      [('Zosia', 6, 10), ('', 3, 10)],
     );
     expect(kids.settings.age, 6, reason: 'age becomes the kids mode default');
     expect(kids.active, isFalse);

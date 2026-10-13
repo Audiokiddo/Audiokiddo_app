@@ -18,7 +18,6 @@ import '../games/microphone.dart';
 import '../games/speech.dart';
 import '../parental_gate/parental_gate.dart';
 import '../pdf/case_files_card.dart';
-import '../pdf/pdf_screen.dart';
 import '../personal/personal_repository.dart';
 import '../player/playback_controller.dart';
 import 'catalog_providers.dart';
@@ -27,7 +26,6 @@ import '../discovery/discovery_model.dart';
 import '../discovery/queue_controller.dart';
 import '../home/quick_pick.dart' show startItem;
 import 'widgets/labels.dart';
-import '../../core/router.dart';
 import '../insights/events.dart';
 
 class DetailsScreen extends ConsumerStatefulWidget {
@@ -122,14 +120,6 @@ class _DetailsContent extends ConsumerWidget {
   Future<void> _unlock(BuildContext context, WidgetRef ref) async {
     ref.read(eventSinkProvider).track(AppEvent.paywallView, itemId: item.id, props: {'from': 'locked_game'});
     await context.push('/oferta?zabawa=${item.id}');
-  }
-
-  Future<void> _openPdf(BuildContext context, AssetRef asset) async {
-    await Navigator.of(context).push(
-      swipeRoute<void>(
-        builder: (_) => PdfScreen(asset: asset, title: item.title),
-      ),
-    );
   }
 
   @override
@@ -271,15 +261,7 @@ class _DetailsContent extends ConsumerWidget {
             title: AppLocalizations.of(context).micTitle,
             child: _MicrophoneCard(words: scriptListensToWords(script)),
           ),
-        if (item.pdf.isNotEmpty && canPlay && pack?.id != 'detektyw')
-          _Section(
-            title: l10n.pdfSection,
-            child: OutlinedButton.icon(
-              onPressed: () => _openPdf(context, item.pdf.first),
-              icon: const Icon(Icons.print_rounded),
-              label: Text(l10n.pdfOpen),
-            ),
-          ),
+        // Only the Detektyw case files are downloadable (decision 2026-10-14).
         if (item.requirements.isNotEmpty)
           _Section(
             title: l10n.detailsYouNeed,

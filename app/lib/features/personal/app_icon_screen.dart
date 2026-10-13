@@ -28,19 +28,23 @@ const appIcons = <(SzopPose, String)>[
 const _autoKey = 'icon_auto';
 const _autoLastKey = 'icon_auto_last';
 
-/// Whether the parent chose "Szop’en changes his mood by himself" (weekly).
+/// Whether Szop’en changes his mood on the icon by himself, every [iconEveryDays] days. On by
+/// default (2026-10-14); the parent can turn it off on the icon screen.
 final iconAutoProvider = FutureProvider<bool>(
-  (ref) async => await ref.watch(databaseProvider).readValue(_autoKey) == '1',
+  (ref) async => await ref.watch(databaseProvider).readValue(_autoKey) != '0',
 );
 
-/// With the parent's opt-in only: once a week (at most) the icon moves to Szop’en's next mood.
-/// iOS shows a short notice on each change, so it never happens more often.
+/// How often the icon moves to Szop’en's next mood.
+const iconEveryDays = 3;
+
+/// Unless the parent turned it off: every [iconEveryDays] days the icon moves to Szop’en's next
+/// mood. iOS shows a short notice on each change, so it never happens more often.
 Future<void> maybeRotateIcon(AppDatabase db, DateTime now) async {
-  if (!Platform.isIOS || await db.readValue(_autoKey) != '1') return;
+  if (!Platform.isIOS || await db.readValue(_autoKey) == '0') return;
   final last = DateTime.tryParse(await db.readValue(_autoLastKey) ?? '');
-  if (last != null && now.difference(last).inDays < 7) return;
-  final week = now.difference(DateTime(2026)).inDays ~/ 7;
-  final (pose, _) = appIcons[week % appIcons.length];
+  if (last != null && now.difference(last).inDays < iconEveryDays) return;
+  final period = now.difference(DateTime(2026)).inDays ~/ iconEveryDays;
+  final (pose, _) = appIcons[period % appIcons.length];
   try {
     await _channel.invokeMethod<void>('set', {'name': pose == SzopPose.prosi ? null : 'AppIcon-${pose.name}'});
     await db.writeValue(_autoLastKey, now.toIso8601String());
@@ -57,7 +61,7 @@ final _currentIconProvider = FutureProvider.autoDispose<String?>((ref) async {
   }
 });
 
-/// Lets the parent pick Szop’en's mood on the home screen, or let him change it weekly by
+/// Lets the parent pick Szop’en's mood on the home screen, or let him change it every 3 days by
 /// himself (the parent's opt-in; iOS shows a notice on each change).
 class AppIconScreen extends ConsumerWidget {
   const AppIconScreen({super.key});
@@ -66,7 +70,11 @@ class AppIconScreen extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     try {
       await _channel.invokeMethod<void>('set', {'name': pose == SzopPose.prosi ? null : 'AppIcon-${pose.name}'});
-      ref.invalidate(_currentIconProvider);
+      // A mood picked by hand stays: the automatic change goes off.
+      await ref.read(databaseProvider).writeValue(_autoKey, '0');
+      ref
+        ..invalidate(_currentIconProvider)
+        ..invalidate(iconAutoProvider);
     } on Object {
       messenger.showSnackBar(const SnackBar(content: Text('Nie udało się zmienić ikony.')));
     }
@@ -89,8 +97,8 @@ class AppIconScreen extends ConsumerWidget {
                   child: SwitchListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
                     title: const Text('Szop’en sam zmienia humor'),
-                    subtitle: const Text('Raz w tygodniu nowa ikona. iPhone pokaże wtedy krótki komunikat.'),
-                    value: ref.watch(iconAutoProvider).value ?? false,
+                    subtitle: const Text('Co 3 dni nowa ikona. iPhone pokaże wtedy krótki komunikat.'),
+                    value: ref.watch(iconAutoProvider).value ?? true,
                     onChanged: (v) async {
                       final db = ref.read(databaseProvider);
                       await db.writeValue(_autoKey, v ? '1' : '0');

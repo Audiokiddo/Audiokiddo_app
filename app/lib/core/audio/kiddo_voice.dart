@@ -133,3 +133,25 @@ String? nameClip(String? name, Map<String, String> index) {
   if (first == null || first.isEmpty) return null;
   return index[first];
 }
+
+/// The names Szop’en can say, as parents write them ("Zosia", "Łucja"), in Polish alphabetical
+/// order: the list the child quiz offers.
+final recordedNamesProvider = FutureProvider<List<String>>((ref) async {
+  try {
+    final json = jsonDecode(await rootBundle.loadString('assets/audio/names/index.json')) as Map<String, Object?>;
+    String cap(String n) => n.isEmpty ? n : n[0].toUpperCase() + n.substring(1);
+    const order = 'aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż';
+    int rank(String c) => order.indexOf(c);
+    int compare(String a, String b) {
+      for (var i = 0; i < a.length && i < b.length; i++) {
+        final d = rank(a[i]) - rank(b[i]);
+        if (d != 0) return d;
+      }
+      return a.length - b.length;
+    }
+
+    return [for (final n in json.keys.toList()..sort(compare)) cap(n)];
+  } on Exception {
+    return const [];
+  }
+});

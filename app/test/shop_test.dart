@@ -124,23 +124,11 @@ void main() {
       expect(find.textContaining('na zawsze ·'), findsNothing);
     });
 
-    testWidgets('the pack page offers films and materials', (tester) async {
+    testWidgets('the pack page has no films or Drive links any more', (tester) async {
       await pumpApp(tester);
       GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/pakiet/detektyw');
       await tester.pumpAndSettle();
-      final scroll = find
-          .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
-          .last;
-      await tester.scrollUntilVisible(find.text('Filmy i materiały do zabaw'), 200, scrollable: scroll);
-      await Scrollable.ensureVisible(tester.element(find.text('Filmy i materiały do zabaw')), alignment: .4);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Filmy i materiały do zabaw'));
-      await tester.pumpAndSettle();
-      expect(
-        find.byType(ParentalGateScreen),
-        askInParentArea ? findsOneWidget : findsNothing,
-        reason: 'the parent area opens links without the number question',
-      );
+      expect(find.text('Filmy i materiały do zabaw'), findsNothing);
     });
 
     Future<void> showOffer(WidgetTester tester, ContentItem item) async {

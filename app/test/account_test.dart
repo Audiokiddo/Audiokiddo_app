@@ -414,14 +414,14 @@ void main() {
     addTearDown(db.close);
     await db.writeValue('family_children', '[{"id":"z","name":"Zosia"}]');
     await db.writeValue('diplomas_z', '{"detektyw":"2026-10-01"}');
-    await db.writeValue('theme_mode', 'dark');
+    await db.writeValue('theme_mode_2', 'dark');
     expect(await claimFamilyData(db, 'A'), isFalse, reason: 'the first account adopts what is there');
     expect(await db.readValue('family_children'), isNotNull);
     expect(await claimFamilyData(db, 'A'), isFalse, reason: 'the same account keeps everything');
     expect(await claimFamilyData(db, 'B'), isTrue);
     expect(await db.readValue('family_children'), isNull);
     expect(await db.readValue('diplomas_z'), isNull);
-    expect(await db.readValue('theme_mode'), 'dark', reason: 'device settings stay');
+    expect(await db.readValue('theme_mode_2'), 'dark', reason: 'device settings stay');
   });
 
   testWidgets('sign in with a password; a forgotten one leads to the code', (tester) async {

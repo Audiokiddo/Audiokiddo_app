@@ -473,7 +473,7 @@
   "quizMinutes10": "W sam raz. Jeden cykl wirowania pralki.",
   "quizMinutes15": "Ambitnie. Pół odcinka serialu, którego i tak nie obejrzysz.",
   "quizMinutes20": "Z rozmachem. Prawie cały obiad bez „mamo, tato, a wiesz co?”.",
-  "quizSummary": "Gotowe. Plan dla: {name}. Po {minutes} min dziennie, zaczynamy od łatwych zabaw.",
+  "quizSummary": "Gotowe. Plan dla: {name}. Zaczynamy od łatwych zabaw.",
   "@quizSummary": {
     "placeholders": {
       "name": {
