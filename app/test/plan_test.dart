@@ -34,6 +34,14 @@ void main() {
       expect(note.id, greaterThanOrEqualTo(1000), reason: 'not replaced with the daily reminders');
       expect(note.body, contains('Nela i Dawid'));
     });
+
+    test('the weekend road reminder: Friday 15:30, next week once it passed', () {
+      expect(tripReminderSlot(now: DateTime(2026, 10, 14, 9)).at, DateTime(2026, 10, 16, 15, 30));
+      expect(tripReminderSlot(now: DateTime(2026, 10, 16, 10)).at, DateTime(2026, 10, 16, 15, 30));
+      expect(tripReminderSlot(now: DateTime(2026, 10, 16, 16)).at, DateTime(2026, 10, 23, 15, 30));
+      expect(tripReminderSlot(now: DateTime(2026, 10, 18, 9)).at, DateTime(2026, 10, 23, 15, 30));
+      expect(tripReminderSlot(now: DateTime(2026, 10, 14)).id, greaterThanOrEqualTo(1000));
+    });
   });
 
   testWidgets('plan tab: child, stats, levels, today opens the day', (tester) async {

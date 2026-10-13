@@ -147,7 +147,15 @@ class _TripScreenState extends ConsumerState<TripScreen> {
           ),
           if (missing.isNotEmpty) ...[
             const SizedBox(height: AkSpace.m),
-            OutlinedButton.icon(
+            // Before the road: what is not on the phone will not play without internet.
+            Text(
+              missing.length == 1
+                  ? '1 zabawa nie jest jeszcze na telefonie. Bez internetu nie zagra.'
+                  : '${missing.length} zabaw nie jest jeszcze na telefonie. Bez internetu nie zagrają.',
+              style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: AkSpace.s),
+            FilledButton.tonalIcon(
               onPressed: () async {
                 final manager = ref.read(downloadManagerProvider);
                 for (final i in missing) {
@@ -294,6 +302,9 @@ class BedtimeScreen extends ConsumerWidget {
 /// The running session (car trip or bedtime): a simple player with big buttons a parent can
 /// hit without looking twice. Upright: Szop’en and the title on top, buttons below. Sideways
 /// (phone in a car holder): the title on the left, the buttons on the right under the thumb.
+/// The line at the end of a trip, from the real time it took.
+String tripSummary(int minutes) => 'Trasa: $minutes min zabaw. Wpisuję do protokołu.';
+
 class SessionScreen extends ConsumerWidget {
   const SessionScreen({super.key});
 
@@ -356,6 +367,13 @@ class SessionScreen extends ConsumerWidget {
           Text(
             l10n.sessionNext(title(session.next)),
             style: text.titleMedium?.copyWith(color: fg.withValues(alpha: 0.75)),
+            textAlign: TextAlign.center,
+          ),
+        // At the end of a trip: one dry line with real minutes (research 2026-10-12).
+        if (session.finished && session.kind == SessionKind.trip && (session.minutesTaken ?? 0) >= 1)
+          Text(
+            tripSummary(session.minutesTaken!),
+            style: text.titleMedium?.copyWith(color: fg.withValues(alpha: 0.85)),
             textAlign: TextAlign.center,
           ),
         if (!session.finished && session.kind == SessionKind.trip)

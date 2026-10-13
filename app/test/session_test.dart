@@ -7,6 +7,7 @@ import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/features/parent_voice/parent_voice.dart';
 import 'package:audiokiddo/features/session/session.dart';
+import 'package:audiokiddo/features/session/session_screens.dart' show tripSummary;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -169,6 +170,18 @@ void main() {
         const ParentStep(ParentClip.goodnight, fallbackLine: 'goodnight'),
       ], childId: 'z');
       expect(audio.log.last, 'clip:/fake/z_goodnight.m4a');
+    });
+
+    test('a finished trip knows how long it took (the dry summary uses real minutes)', () async {
+      final session = container.read(sessionProvider.notifier);
+      final done = session.start(SessionKind.trip, [ItemStep(item)]);
+      await settle();
+      audio.finishItem();
+      await done;
+      final state = container.read(sessionProvider);
+      expect(state.finished, isTrue);
+      expect(state.minutesTaken, isNotNull);
+      expect(tripSummary(47), 'Trasa: 47 min zabaw. Wpisuję do protokołu.');
     });
 
     test('skip moves on, stop ends everything', () async {

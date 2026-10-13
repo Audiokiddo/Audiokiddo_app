@@ -203,9 +203,10 @@ class RemindersController extends AsyncNotifier<ReminderSettings> {
   Future<void> reschedule({required ReminderTexts texts, bool todayDone = false, DateTime? now}) async {
     final s = state.value ?? await future;
     if (!s.enabled || texts.isEmpty) return;
-    await ref
-        .read(reminderSchedulerProvider)
-        .replaceAll(reminderSlots(s, texts, now: now ?? DateTime.now(), todayDone: todayDone));
+    final at = now ?? DateTime.now();
+    await ref.read(reminderSchedulerProvider).replaceAll(reminderSlots(s, texts, now: at, todayDone: todayDone));
+    // Only for parents who turned reminders on: the weekend road is the moment that sells.
+    await ref.read(reminderSchedulerProvider).schedule(tripReminderSlot(now: at));
   }
 }
 
@@ -221,6 +222,21 @@ ReminderSlot aboutUsSlot({required int hour, required int minute, required DateT
       'AudioKiddo robią Nela i Dawid, para z Polski. Sami piszą zabawy i podkładają głosy. '
       'Więcej o nich: Więcej → O nas.',
 );
+
+const tripReminderId = 1004;
+
+/// Friday 15:30 (this week's, or next if it has passed): a weekend in the car is the moment
+/// families need plays that last (research 2026-10-12, segment "Trasa").
+ReminderSlot tripReminderSlot({required DateTime now}) {
+  var day = DateTime(now.year, now.month, now.day + (DateTime.friday - now.weekday) % 7, 15, 30);
+  if (!day.isAfter(now)) day = DateTime(day.year, day.month, day.day + 7, 15, 30);
+  return ReminderSlot(
+    id: tripReminderId,
+    at: day,
+    title: 'Weekend w aucie?',
+    body: 'Pobierz zabawy na drogę, zanim zniknie zasięg. Start → W podróży.',
+  );
+}
 
 /// The next [RemindersController.days] reminders; texts rotate by date so they vary.
 List<ReminderSlot> reminderSlots(

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/audio/kiddo_voice.dart';
+import '../catalog/catalog_providers.dart' show clockProvider;
 import '../parent_voice/parent_voice.dart';
 import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
@@ -202,6 +203,8 @@ class SessionState {
     this.childId,
     this.countdown,
     this.held = false,
+    this.startedAt,
+    this.endedAt,
   });
 
   final SessionKind? kind;
@@ -215,6 +218,14 @@ class SessionState {
 
   /// The parent held the countdown; [current] waits until they resume.
   final bool held;
+
+  /// When the session began and ended (the trip's dry summary: real minutes only).
+  final DateTime? startedAt;
+  final DateTime? endedAt;
+
+  /// Whole minutes from start to end, once finished.
+  int? get minutesTaken =>
+      startedAt == null || endedAt == null ? null : endedAt!.difference(startedAt!).inMinutes;
 
   SessionStep? get current => index < steps.length ? steps[index] : null;
   SessionStep? get next => index + 1 < steps.length ? steps[index + 1] : null;
@@ -242,6 +253,7 @@ class SessionController extends Notifier<SessionState> {
     final generation = ++_generation;
     _held = false;
     await ref.read(sessionAudioProvider).stop();
+    final startedAt = ref.read(clockProvider)();
     state = SessionState(kind: kind, steps: steps, running: true, childId: childId);
     final clips = childId == null
         ? const <ParentClip, String>{}
@@ -265,7 +277,14 @@ class SessionController extends Notifier<SessionState> {
       await _play(steps[i], clips, generation);
     }
     if (generation == _generation) {
-      state = SessionState(kind: kind, steps: steps, index: steps.length, childId: childId);
+      state = SessionState(
+        kind: kind,
+        steps: steps,
+        index: steps.length,
+        childId: childId,
+        startedAt: startedAt,
+        endedAt: ref.read(clockProvider)(),
+      );
     }
   }
 
