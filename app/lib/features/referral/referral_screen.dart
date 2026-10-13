@@ -90,7 +90,7 @@ class ReferralScreen extends ConsumerWidget {
           _Benefit(
             icon: Icons.account_balance_wallet_rounded,
             title: 'Na co wydać',
-            body: 'Miesiąc całej biblioteki, pakiet albo pojedyncze zabawy. Środki są tylko do użycia w aplikacji.',
+            body: 'Na abonament: miesiąc całej biblioteki. Środki są tylko do użycia w aplikacji.',
           ),
           const SizedBox(height: 18),
           info.when(

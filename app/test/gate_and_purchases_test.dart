@@ -129,17 +129,9 @@ void main() {
       expect(scopesForProduct('unknown', catalog), isEmpty);
     });
 
-    test('offers for a Detektyw game skip the two-pack bundle', () {
+    test('a Detektyw game is offered only the subscription (packs not sold since 2026-10-13)', () {
       final ids = productIdsFor(catalog.item('gadajacy-smietnik'), catalog);
-      expect(
-        ids,
-        containsAll([
-          'pl.audiokiddo.pack.detektyw',
-          ProductIds.bundleThree,
-          'pl.audiokiddo.item.gadajacy_smietnik',
-        ]),
-      );
-      expect(ids, isNot(contains(ProductIds.bundleTwo)));
+      expect(ids, ProductIds.subscriptions);
     });
 
     test('ISO billing periods', () {

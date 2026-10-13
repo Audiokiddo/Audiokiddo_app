@@ -73,10 +73,10 @@ Future<void> goBack(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('"Moje pakiety" on Start and in the library: free plays without a subscription', (tester) async {
+  testWidgets('"Moje pakiety" only in the library (Start sells nothing per pack): free plays', (tester) async {
     await pumpApp(tester);
-    await tester.scrollUntilVisible(find.text('Moje pakiety'), 200, scrollable: mainScroll);
-    expect(find.text('Moje pakiety'), findsOneWidget, reason: 'on Start, under Co robicie?');
+    expect(find.text('Moje pakiety'), findsNothing, reason: 'Start has no pack shelf since 2026-10-13');
+    expect(find.text('Wasze pakiety'), findsNothing);
     await openLibrary(tester);
     expect(find.textContaining('do włączenia od razu · w tym darmowe'), findsOneWidget);
     await tester.tap(find.text('Moje pakiety'));
@@ -115,13 +115,12 @@ void main() {
       expect(find.text(label), findsOneWidget);
     }
     expect(find.text('Kontynuuj słuchanie'), findsNothing, reason: 'nothing to continue yet, so no empty block');
-    // Categories deliberately live below the recommendations, not above practical situations.
-    await tester.scrollUntilVisible(find.text('Kreatywne'), 200, scrollable: mainScroll);
-    await tester.scrollUntilVisible(find.text('Fabularne'), 200, scrollable: mainScroll);
-    for (final label in ['Kreatywne', 'Ruchowe', 'Logiczne', 'Edukacyjne', 'Fabularne']) {
-      expect(find.text(label), findsOneWidget);
+    // Age and kinds of play right under the big tiles (2026-10-13), "Darmowe" first.
+    await tester.scrollUntilVisible(find.text('3–4'), -200, scrollable: mainScroll);
+    for (final label in ['3–4', '5–6', '7–9', 'Darmowe', 'Kreatywne']) {
+      expect(find.text(label), findsOneWidget, reason: label);
     }
-    expect(find.text('Piosenki'), findsNothing, reason: 'no songs in the catalog yet, so no empty tile');
+    expect(find.text('Piosenki'), findsNothing, reason: 'no songs in the catalog yet, so no empty chip');
   });
   testWidgets('search from Start has a visible back action', (tester) async {
     await pumpApp(tester);
@@ -253,13 +252,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(find.text('Wypróbuj 7 dni za darmo'), 200, scrollable: mainScroll);
       expect(find.textContaining('Potem 269,99 zł za rok'), findsOneWidget);
-      // Buying for good is folded under the subscription.
-      await tester.scrollUntilVisible(find.text('Na zawsze, bez subskrypcji'), 200, scrollable: mainScroll);
-      await Scrollable.ensureVisible(tester.element(find.text('Na zawsze, bez subskrypcji')), alignment: .3);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Na zawsze, bez subskrypcji'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('49,99 zł'), findsWidgets);
+      // Only the subscription: nothing for good (2026-10-13).
+      expect(find.text('Na zawsze, bez subskrypcji'), findsNothing);
       await tester.scrollUntilVisible(
         find.textContaining('odnawia się automatycznie'),
         200,

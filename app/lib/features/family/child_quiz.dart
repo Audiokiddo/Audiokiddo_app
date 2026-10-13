@@ -77,7 +77,7 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
         situations: {..._situations},
         dailyMinutes: _minutes!,
       );
-      await ref.read(familyProvider.notifier).saveChild(child);
+      await ref.read(familyProvider.notifier).saveChild(child, makeActive: e == null);
       if (e != null) {
         widget.onDone();
         return;

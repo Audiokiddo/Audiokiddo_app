@@ -198,7 +198,7 @@ class _GreetingSheet extends StatelessWidget {
           icon: Icons.emoji_events_rounded,
           color: AkBrand.orange,
           text:
-              'Przesłuchaliście wszystko, co macie. Szacun! W abonamencie czeka jeszcze ${news.locked} zabaw i nowy pakiet co miesiąc.',
+              'Przesłuchaliście wszystko, co macie. Szacun! W abonamencie czeka jeszcze ${news.locked} zabaw, a co tydzień dochodzą 2 nowe.',
           action: 'Zobacz',
           onTap: () => go(() => host.push('/abonament')),
         ),

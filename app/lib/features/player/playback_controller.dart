@@ -27,6 +27,17 @@ class PlaybackController {
           .map((s) => (s.playing, s.processingState))
           .distinct()
           .listen((s) => unawaited(_save(completed: s.$2 == AudioProcessingState.completed))),
+      // Real listening time: the clock runs only while sound is actually playing.
+      handler.playbackState.map((s) => s.playing).distinct().listen((playing) {
+        final open = _open;
+        if (open == null) return;
+        if (playing) {
+          open.active.start();
+        } else {
+          open.active.stop();
+          _lastActivity = DateTime.now();
+        }
+      }),
       // A looped play went round once: heard to the end, then it starts again.
       handler.loopedToStart.listen((_) => unawaited(_save(completed: true))),
       // The play was left for another one or the session ended: where the family stopped.
@@ -49,10 +60,25 @@ class PlaybackController {
   /// The play now on, until it ends or is left (for play_exit).
   _OpenPlay? _open;
 
+  /// One sitting = plays with less than [sittingGap] between them; its id is when it began
+  /// (seconds since 1970). Lets the CRM add up how long a child really keeps listening.
+  int? _sitting;
+  DateTime? _lastActivity;
+  static const sittingGap = Duration(minutes: 10);
+
+  /// Props every play event carries for the real-minutes measurement.
+  Map<String, Object?> _measure([_OpenPlay? open]) => {
+    'sitting': ?_sitting,
+    'age': ?_ref.read(familyProvider).value?.active?.age,
+    if (open != null) 'active_seconds': open.active.elapsed.inSeconds,
+  };
+
   /// Reports a play left before its end: the second and share heard (the drop-off map).
   void _closeOpen() {
     final open = _open;
     _open = null;
+    open?.active.stop();
+    if (open != null) _lastActivity = DateTime.now();
     if (open == null || open.completed) return;
     final total = open.duration?.inSeconds ?? 0;
     _ref
@@ -64,6 +90,7 @@ class PlaybackController {
             'exit_second': open.position.inSeconds,
             if (total > 0) 'pct': (100 * open.position.inSeconds / total).clamp(0, 100).round(),
             'play_number': open.playNumber,
+            ..._measure(open),
           },
         );
   }
@@ -88,6 +115,12 @@ class PlaybackController {
     final next = last != null && last.$1 != item.id && DateTime.now().difference(last.$2).inMinutes < 10;
     final count = await countPlayStart(_ref.read(databaseProvider), item.id);
     _closeOpen();
+    final now = DateTime.now();
+    final idleSince = _lastActivity;
+    if (_sitting == null || idleSince == null || now.difference(idleSince) > sittingGap) {
+      _sitting = now.millisecondsSinceEpoch ~/ 1000;
+    }
+    _lastActivity = now;
     _ref
         .read(eventSinkProvider)
         .track(
@@ -101,6 +134,7 @@ class PlaybackController {
             if (next) 'next': true,
             if (next) 'previous_item': last.$1,
             ...count.props,
+            ..._measure(),
           },
         );
     _open = _OpenPlay(item.id, count.number);
@@ -131,13 +165,21 @@ class PlaybackController {
     }
     if (completed) {
       _lastCompleted = (media.id, DateTime.now());
-      if (open != null && open.id == media.id) open.completed = true;
+      _lastActivity = DateTime.now();
+      if (open != null && open.id == media.id) {
+        open.completed = true;
+        open.active.stop();
+      }
       _ref
           .read(eventSinkProvider)
           .track(
             AppEvent.playComplete,
             itemId: media.id,
-            props: {'duration_listened': duration.inSeconds, 'play_number': ?open?.playNumber},
+            props: {
+              'duration_listened': duration.inSeconds,
+              'play_number': ?open?.playNumber,
+              ..._measure(open != null && open.id == media.id ? open : null),
+            },
           );
       // Counts towards the listening child's plan and progress.
       unawaited(_ref.read(familyProvider.notifier).record(itemId: media.id, seconds: duration.inSeconds));
@@ -168,6 +210,9 @@ class _OpenPlay {
   Duration position = Duration.zero;
   Duration? duration;
   bool completed = false;
+
+  /// Time the sound was really on (pauses and stops excluded).
+  final active = Stopwatch();
 }
 
 /// Media ids of game sessions start with this, so their segments are not saved as progress.

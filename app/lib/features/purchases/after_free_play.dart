@@ -20,7 +20,7 @@ import 'store_gateway.dart';
 import 'subscription_value.dart';
 
 /// Promised to subscribers: everything now, and one new pack every month.
-const subscriptionPromise = 'Wszystkie zabawy teraz i jeden nowy pakiet co miesiąc';
+const subscriptionPromise = 'Wszystkie zabawy teraz i 2 nowe co tydzień';
 
 /// The next free audio play the family has not heard yet, for the child's [age].
 ContentItem? nextFreePlay(Catalog catalog, {required String after, required Set<String> heard, required int age}) =>
@@ -141,12 +141,10 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
       _tracked = true;
       ref.read(eventSinkProvider).track(AppEvent.paywallView, itemId: item.id, props: {'from': 'after_free_play'});
     }
-    final packIds = {for (final p in catalog.packs) ?p.storeProductId};
-    final ids = {...packIds, ...ProductIds.subscriptions};
-    final products = ref.watch(storeProductsProvider(productsKey(ids))).value ?? const <StoreProduct>[];
+    // Only the subscription is sold (2026-10-13); the pack link shows what is inside.
+    final products =
+        ref.watch(storeProductsProvider(productsKey(ProductIds.subscriptions))).value ?? const <StoreProduct>[];
     final byId = {for (final p in products) p.id: p};
-    final packProduct = byId[pack?.storeProductId];
-    final busy = ref.watch(purchaseControllerProvider).busyProductId;
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
 
@@ -250,19 +248,8 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
             const SizedBox(height: 12),
             TextButton(
               style: TextButton.styleFrom(foregroundColor: AkBrand.tealDeep),
-              onPressed: packProduct == null
-                  ? () => openPack(context, pack.id)
-                  : busy != null
-                  ? null
-                  : () => buyWithGate(context, ref, packProduct),
-              child: busy == packProduct?.id
-                  ? const _Spinner(color: AkBrand.tealDeep)
-                  : Text(
-                      packProduct == null
-                          ? 'albo zobacz sam pakiet ${pack.title}'
-                          : 'albo tylko pakiet ${pack.title} na zawsze · ${packProduct.price}',
-                      textAlign: TextAlign.center,
-                    ),
+              onPressed: () => openPack(context, pack.id),
+              child: Text('albo zobacz, co jest w pakiecie ${pack.title}', textAlign: TextAlign.center),
             ),
           ],
         ],
@@ -306,14 +293,4 @@ class _AfterFreePlayOfferState extends ConsumerState<AfterFreePlayOffer> {
       ],
     );
   }
-}
-
-class _Spinner extends StatelessWidget {
-  const _Spinner({required this.color});
-
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) =>
-      SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2, color: color));
 }

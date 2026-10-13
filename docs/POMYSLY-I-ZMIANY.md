@@ -1,0 +1,147 @@
+# AudioKiddo: pomysły, decyzje i zmiany (jeden plik)
+
+To jest **jedno miejsce** na wszystkie pomysły i wprowadzone zmiany w aplikacji, na stronie i w całym ekosystemie. Nowy czat zaczyna od przeczytania tego pliku. Każda zmiana i każdy nowy pomysł trafia tutaj, z datą.
+
+Szczegółowe analizy (tło do decyzji):
+- `docs/STRATEGIA-5000-DO-MILIONA.md`;
+- `docs/PLAN-USPRAWNIEN.md`;
+- `docs/ANEKS-ANALITYCZNY.md`;
+- raport z 13.10.2026: `Desktop/claude folder/AudioKiddo-analiza/ANALIZA-ROZWOJU-2026-10-13.md`;
+- dwa badania rodziców z 12.10.2026 (PDF-y od Dawida).
+
+Statusy: **zrobione**, **w toku**, **pomysł**, **odrzucone**.
+
+---
+
+## 1. Decyzje właścicieli (obowiązują)
+
+| Data | Decyzja |
+|---|---|
+| 2026-10-08 | Jeden abonament: cała biblioteka, bez limitu dzieci, drugi rodzic w cenie. Bez planów „od liczby dzieci”. |
+| 2026-10-10 | Nie pozycjonujemy się „ekran jest zły”. Maskotka wszędzie: Szop'en. |
+| 2026-10-13 | **Tylko abonament.** Koniec sprzedaży pakietów, zestawów i pojedynczych zabaw na własność, w aplikacji i na stronie. Kilka osób, które kupiły pakiety (Empik, sklep), zachowuje dostęp. |
+| 2026-10-13 | **Treści: co tydzień 2 nowe zabawy z nowego pakietu** (zamiast „nowy pakiet co miesiąc”). Pakiet zostaje jako seria / świat zabaw, nie jako produkt do kupienia. |
+| 2026-10-13 | **Bez 7 dni za darmo całej biblioteki.** Za darmo jest jedna zabawa z każdego pakietu (dziś 3, do premiery 4). Rodzic poznaje po jednej, a reszta czeka za abonamentem. |
+| 2026-10-13 | Premiera aplikacji w okresie **Black Friday** z największą promocją na abonament roczny. |
+| 2026-10-13 | Cena miesięczna zostaje jak teraz (29,99 zł). Roczny: cena dla wcześniej dołączających niższa, z czasem rośnie (szczegóły do ustalenia, patrz 3.1). |
+| 2026-10-13 | Nie konkurujemy ilością treści. Jesteśmy czymś nowym (dziecko odpowiada, nie tylko słucha), więc rodzice będą chcieli spróbować. |
+| 2026-10-13 | Nie piszemy, że korzystamy z AI. Nie piszemy też, że wszystkie zabawy nagrywamy sami (nie wszystkie). Oficjalny opis: „Razem piszemy zabawy i je montujemy. Nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami, i sami jesteśmy rodzicami.” |
+| 2026-10-13 | Wprowadzić uwagi prawne z analizy: bez przekreślonych „starych” cen, uczciwe teksty o koncie i mikrofonie. |
+
+---
+
+## 2. Dziennik zmian
+
+### 2026-10-13 (gałąź `claude/szop-glos-gry`)
+
+**Głos Szop'ena wszędzie:**
+- 20 kwestii Szop'ena w interfejsie głosem „Szop Dawid” (ElevenLabs), głośność −19 LUFS;
+- 5 gier interaktywnych mówiło syntezatorem; teraz prowadzi je Szop'en: Zgadnij dźwięk, Zamrożony taniec, Zamrożone rączki, Echo rytmu, Prawda czy nie. Pliki wgrane na serwer, sprawdzenie plików: 0 błędów;
+- poprawka: just_audio grał starą kopię dźwięku z folderu tymczasowego, która przetrwała aktualizację. Kopie są czyszczone przy każdym starcie (`clearBundledAudioCopies`);
+- tryb podróży: 10 nowych powiedzonek, losowanych przy każdej podróży (6 powitań, 6 przerw na okno, 3 pożegnania);
+- **imiona:** Szop'en mówi „Hej, Zosia!” dla 175 popularnych imion i zdrobnień (`tool/name_voice.py`, `app/assets/audio/names/`). Mówi je na starcie i końcu trasy, przy wyciszeniu, na dobranoc, w trybie dziecka i przy dyplomie. Imienia spoza listy po prostu nie mówi.
+
+**Oferta: tylko abonament:**
+- aplikacja nie pokazuje już pakietów, zestawów ani pojedynczych zabaw do kupienia (`shopProductIds`, `productIdsFor` = tylko subskrypcje);
+- sklep w aplikacji: bez sekcji „Wolisz kupić pakiet na zawsze?”, w cenniku tylko miesięczny i roczny;
+- wszędzie „co tydzień 2 nowe zabawy” zamiast „nowy pakiet co miesiąc”.
+
+**Ekran główny:**
+- zaraz pod dużymi kafelkami wiek **3–4 | 5–6 | 7–9** i rodzaje zabaw jako jeden rząd, z nową kategorią **Darmowe** na początku;
+- usunięte „Wasze pakiety” i „Moje pakiety”;
+- „Jeszcze nie słuchane” → **„Jeszcze niesłuchane”**;
+- nowy przycisk 💡 „Co potrafi aplikacja”.
+
+**Ekran „Co potrafi AudioKiddo”** (`/funkcje`): wszystkie funkcje na jednej liście, każda o jedno dotknięcie, plus „Szop'en, oprowadź mnie”. Wejście ze Startu i z „Więcej”.
+
+**Profil dziecka:**
+- duży wybór „Kto teraz słucha?” na górze i przycisk „Dodaj dziecko”;
+- nowo dodane dziecko od razu staje się aktywne;
+- test przełączania: `test/profile_switch_test.dart`.
+
+**Tryb podróży:** „Własny czas” (godziny i minuty, do 8 h) obok gotowych 15–90 min.
+
+**Biblioteka:** wyraźna karta „Do druku” na górze, zaraz pod szybkimi filtrami.
+
+**Pomiar prawdziwych minut:**
+- każda zabawa wysyła:
+  - sekundy, w których dźwięk naprawdę grał (`active_seconds`);
+  - wiek dziecka;
+  - numer „posiedzenia” (zabawy z mniej niż 10 min przerwy);
+- CRM → Analiza → „Prawdziwe minuty zabawy”: mediana i co czwarte posiedzenie według wieku (`crm_play_minutes`, migracja `20261023000001_play_minutes.sql`). **Te liczby wolno podawać na stronie i w reklamach.**
+
+**Pauza zamiast rezygnacji:**
+- w procesie rezygnacji, po podaniu powodu, propozycja przerwy;
+- Android: „Wstrzymaj na 1–3 miesiące” (Google Play);
+- iOS (App Store nie ma pauzy): informacja, że profile i postępy poczekają.
+
+**Uwagi prawne:**
+- bez przekreślonych cen: rok porównany jako „12 × 29,99 zł = …”;
+- usunięte porównanie z „pakietami osobno”;
+- tekst „Konto: opcjonalnie” poprawiony na prawdziwy (logowanie jest wymagane: Apple, Google albo kod na e-mail);
+- mikrofon: „nic nie jest nagrywane” jest zgodne z kodem (rozpoznawanie tylko w telefonie).
+
+**O nas / zaufanie:**
+- w aplikacji i na stronie zamiast „zabawy nagrywamy sami” jest opis właścicieli (patrz decyzje);
+- FAQ „Kto tworzy audiozabawy?”.
+
+---
+
+## 3. Pomysły (backlog)
+
+Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
+
+### 3.1. Cena i oferta
+
+| Pomysł | Status | Uwagi |
+|---|---|---|
+| Rosnąca cena roczna dla późniejszych (+5 zł co miesiąc), start na Black Friday | **pomysł, do decyzji** | Opinia w raporcie: dobre jako „drabina wczesnych”, ale z górnym limitem, gwarancją ceny dla już płacących i prawdziwą datą kolejnej zmiany. Technicznie: zaplanowane zmiany cen w App Store Connect i Play Console |
+| Prezent: abonament 3 i 12 miesięcy bez odnawiania, kod plus karta PDF lub pocztówka | pomysł ★★★ | Wpisywanie kodu w aplikacji już działa |
+| Kody twórców (np. `SZOP-TATA`) z licznikiem w CRM | pomysł ★★ | |
+| Licencja dla przedszkoli | pomysł ★★ | |
+| Abonament przez stronę (cykliczny BLIK) | pomysł, etap 2 | |
+
+### 3.2. Aplikacja
+
+| Pomysł | Status |
+|---|---|
+| Darmowe zabawy bez zakładania konta (Apple 5.1.1(v), oba badania) | pomysł ★★★, **ryzyko przy recenzji Apple** |
+| Tryb dla rodzeństwa (kolejka „teraz Zosia, teraz Staś”, różne poziomy) | pomysł ★★★ |
+| „Skrzynka pytań Szop'ena”: pytania dzieci od rodziców, Szop'en odpowiada co tydzień | pomysł ★★★ |
+| Raport z trasy do udostępnienia (minuty, zabawy, odpowiedzi) | pomysł ★★ |
+| Start głosem: Siri / skróty Androida („Szop'en w drogę”) | pomysł ★★ |
+| Filtr „Po cichu” (poczekalnia, restauracja, słuchawki) | pomysł ★★ |
+| Zabawy „przy kuchni” (dziecko obok rodzica) | pomysł ★★ (treść) |
+| Automatyczne pobieranie zabaw na weekend przez Wi-Fi | pomysł ★★ |
+| Seria „Przygody Szop'ena” z oczekiwaniem na odcinek | pomysł ★★★ (treść) |
+| Przełącznik „Dziecko samo” → „Dziecko się bawi, ja obok” | pomysł ★ |
+| Prośba o ocenę także po udanej trasie i trzecim „Dobranoc” | pomysł ★★ |
+
+### 3.3. Strona i sklepy
+
+| Pomysł | Status |
+|---|---|
+| Strona: koniec pakietów do kupienia, „co tydzień 2 nowe”, przycisk „Poznaj funkcje” | **w toku** (13.10) |
+| W dniu premiery prawdziwe przyciski App Store i Google Play, kod QR | pomysł ★★★ |
+| Strony sytuacji pod reklamy: /w-droge/, /po-przedszkolu/, /chore-dziecko/ | pomysł ★★ |
+| 30 s dźwięku z prawdziwej trasy | pomysł ★★★ |
+| Podtytuł w sklepach słowami rodziców: „Zabawy w aucie i w domu. Dziecko odpowiada, nie tylko słucha.” | pomysł ★★ |
+| Wydarzenia w App Store i Google Play dla cotygodniowych premier | pomysł ★★ |
+| Odpowiadanie na każdą opinię w 24 h (agent w CRM) | pomysł ★★ |
+
+### 3.4. Badania i dowody
+
+| Pomysł | Status |
+|---|---|
+| Tydzień testowy z dzienniczkiem (8–10 rodzin, w tym testerzy Google Play) | pomysł ★★★ |
+| Rozmowy z rodzicami według scenariusza z badań (min. 3 ojców) | pomysł ★★ |
+| Rozmowa z „W PODSKOKACH” o wspólnej serii ruchowej | pomysł ★ |
+
+---
+
+## 4. Do zrobienia przez Dawida (poza kodem)
+
+- App Store Connect i Google Play: **wycofać ze sprzedaży** pakiety i zestawy (nie usuwać, żeby działało przywracanie zakupów).
+- Google Play Console: sprawdzić, że w subskrypcji jest włączona opcja **pauzy**.
+- Supabase: wgrać migrację `20261023000001_play_minutes.sql` (`supabase db push`).
+- Nowa wersja aplikacji w sklepach (testy zamknięte) z tymi zmianami.

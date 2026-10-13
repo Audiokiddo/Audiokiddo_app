@@ -91,7 +91,7 @@ const tourStops = <TourStop>[
     pose: SzopPose.klaszcze,
     title: 'Sklep',
     body:
-        'Abonament otwiera wszystkie zabawy i co miesiąc dokłada nowy pakiet. Możesz też kupić jeden pakiet.',
+        'Abonament otwiera wszystkie zabawy, a co tydzień dokłada 2 nowe.',
   ),
   (
     branch: 3,

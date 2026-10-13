@@ -28,7 +28,6 @@ import '../purchases/store_gateway.dart';
 import '../downloads/download_providers.dart';
 import 'catalog_providers.dart';
 import 'library_filter.dart';
-import 'library_screen.dart' show MyPacksTile;
 import '../discovery/queue_controller.dart';
 import 'seasonal.dart';
 import 'widgets/item_art.dart';
@@ -58,6 +57,11 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   const Expanded(
                     child: Align(alignment: Alignment.centerLeft, child: AudioKiddoLogo(height: 30)),
+                  ),
+                  IconButton(
+                    tooltip: 'Co potrafi aplikacja',
+                    onPressed: () => context.push('/funkcje'),
+                    icon: const Icon(Icons.lightbulb_outline_rounded),
                   ),
                   IconButton(
                     tooltip: 'Szukaj zabawy',
@@ -91,6 +95,11 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               TourTarget(id: 'hero', child: const HeroShelf()),
+              // Age and kind right under the big tiles, visible as soon as the app opens.
+              const SizedBox(height: 14),
+              const _AgeRow(),
+              const SizedBox(height: 10),
+              const _CategoryChips(),
               const SizedBox(height: 18),
               // The play the child keeps asking for ("mamo, włącz mi…"), one tap away.
               const FavoriteCard(),
@@ -100,23 +109,14 @@ class HomeScreen extends ConsumerWidget {
               const DinnerCard(),
 
               // Plays first, the way parents think: what now, then for which age and kind;
-              // packs, offers and helpers after them.
-              // What the family already has, right under today's picks.
-              _OwnedPacks(catalog: catalog),
+              // offers and helpers after them. No "your packs": only the subscription is sold.
               const RefSection('Co robicie?'),
-              // Everything the family can start now, one tap away (also first in the library).
-              const MyPacksTile(),
-              const SizedBox(height: 12),
               const _QuickNeeds(),
               if (items.isNotEmpty) ...[
                 RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
                 for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
               ],
               const PendingDiplomaCard(),
-              const RefSection('Dla wieku'),
-              const _AgeRow(),
-              const RefSection('Rodzaje zabaw'),
-              const _CategoryGrid(),
               _NextPackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
               const UpcomingShelf(),
@@ -265,7 +265,7 @@ class _AgeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const ages = [(3, 5, AkBrand.sun), (5, 7, Color(0xFFB8E3DF)), (7, 9, Color(0xFFDED0EF))];
+    const ages = [(3, 4, AkBrand.sun), (5, 6, Color(0xFFB8E3DF)), (7, 9, Color(0xFFDED0EF))];
     final text = Theme.of(context).textTheme;
     return Row(
       children: [
@@ -279,7 +279,7 @@ class _AgeRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
                 onTap: () => context.push(LibraryFilter(age: to, ageFrom: from).toLocation()),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Column(
                     children: [
                       Text(
@@ -438,93 +438,6 @@ class _NextPackCard extends ConsumerWidget {
   }
 }
 
-/// The packs the family has: how far the child got and how much is still waiting, so the
-/// next play is one tap away (and an unfinished pack quietly asks to be finished).
-class _OwnedPacks extends ConsumerWidget {
-  const _OwnedPacks({required this.catalog});
-
-  final Catalog catalog;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final scopes = ref.watch(activeScopesProvider);
-    final owned = [
-      for (final p in catalog.packs)
-        if (ownsPack(scopes, p.id)) PackSummary(p, catalog),
-    ];
-    if (owned.isEmpty) return const SizedBox.shrink();
-    final family = ref.watch(familyProvider).value;
-    final child = family?.active;
-    final heardIds = child == null
-        ? const <String>{}
-        : {
-            for (final r in family!.resultsOf(child.id))
-              if (r.completed) r.itemId,
-          };
-    final text = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const RefSection('Wasze pakiety'),
-        SizedBox(
-          height: 128 + MediaQuery.textScalerOf(context).scale(66),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: owned.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
-            itemBuilder: (context, i) {
-              final s = owned[i];
-              final heard = s.items.where((it) => heardIds.contains(it.id)).length;
-              final left = s.items.length - heard;
-              return SizedBox(
-                width: 128,
-                child: Pressable(
-                  onTap: () => openPack(context, s.pack.id),
-                  child: Semantics(
-                    button: true,
-                    label: '${s.pack.title}, przesłuchane $heard z ${s.items.length}',
-                    excludeSemantics: true,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox.square(dimension: 128, child: PackArt(summary: s, radius: 20)),
-                        const SizedBox(height: 6),
-                        Text(
-                          s.pack.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                        const SizedBox(height: 4),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: s.items.isEmpty ? 0 : heard / s.items.length,
-                            minHeight: 5,
-                            color: AkBrand.teal,
-                            backgroundColor: AkBrand.teal.withValues(alpha: .15),
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          left == 0 ? 'Wszystko przesłuchane' : 'Czeka jeszcze ${playsCount(left)}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 /// Packs the family does not have yet, laid out to make the choice easy and honest: what the
 /// child gets (minutes without a screen, what it practises), a free taste before paying, the
 /// price per play next to the pack price, and the bundle when it saves money. Never a timer,
@@ -566,30 +479,26 @@ class _DiscoverPacks extends ConsumerWidget {
         _BundleTeaser(
           title: ownedCount >= 2 ? 'Masz $ownedCount z ${all.length} pakietów' : 'Wszystko w abonamencie',
           line: byId[ProductIds.yearly]?.rawPrice == null
-              ? 'Wszystkie pakiety od razu i nowy pakiet co miesiąc.'
-              : 'Wszystkie pakiety od razu i nowy pakiet co miesiąc, za '
+              ? 'Wszystkie pakiety od razu i 2 nowe zabawy co tydzień.'
+              : 'Wszystkie pakiety od razu i 2 nowe zabawy co tydzień, za '
                     '${formatMoney(byId[ProductIds.yearly]!.rawPrice! / 12, byId[ProductIds.yearly]!.currencyCode)} miesięcznie.',
         ),
-        for (final s in locked) _DiscoverCard(summary: s, product: byId[s.pack.storeProductId]),
+        for (final s in locked) _DiscoverCard(summary: s),
       ],
     );
   }
 }
 
 class _DiscoverCard extends ConsumerWidget {
-  const _DiscoverCard({required this.summary, this.product});
+  const _DiscoverCard({required this.summary});
 
   final PackSummary summary;
-  final StoreProduct? product;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
     final free = summary.freeItems.where((i) => ref.watch(canPlayProvider(i))).firstOrNull;
-    final perPlay = product?.rawPrice == null || summary.items.isEmpty
-        ? null
-        : formatMoney(product!.rawPrice! / summary.items.length, product!.currencyCode);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Pressable(
@@ -673,13 +582,8 @@ class _DiscoverCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        if (product != null)
-                          Text(
-                            product!.price,
-                            style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
-                          ),
                         Text(
-                          perPlay == null ? 'Zobacz pakiet' : 'ok. $perPlay za zabawę',
+                          'Zobacz pakiet',
                           textAlign: TextAlign.end,
                           style: text.labelSmall?.copyWith(color: ink),
                         ),
@@ -740,17 +644,46 @@ class _BundleTeaser extends StatelessWidget {
   }
 }
 
-/// Six kinds of play, each opening the library filtered to it.
-class _CategoryGrid extends ConsumerWidget {
-  const _CategoryGrid();
+/// The kinds of play (with "Darmowe" first) as one row of chips, each opening the library.
+class _CategoryChips extends ConsumerWidget {
+  const _CategoryChips();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => TwoColumns(
-    children: [
-      for (final c in ref.watch(shownCategoriesProvider))
-        CategoryTile(category: c, onTap: () => context.push('/biblioteka?kategoria=${c.name}')),
-    ],
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = Theme.of(context).textTheme;
+    final categories = ref.watch(shownCategoriesProvider);
+    return SizedBox(
+      height: 44 + MediaQuery.textScalerOf(context).scale(4),
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, i) {
+          final c = categories[i];
+          final (bg, fg, icon) = categoryLook[c]!;
+          return Material(
+            color: bg,
+            borderRadius: BorderRadius.circular(22),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(22),
+              onTap: () => context.push('/biblioteka?kategoria=${c.name}'),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(icon, color: fg, size: 20),
+                    const SizedBox(width: 6),
+                    Text(c.label, style: text.labelLarge?.copyWith(color: fg, fontWeight: FontWeight.w800)),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
 /// "Szybko": the situations a parent is usually in, one tap each.
@@ -1113,7 +1046,7 @@ class _HeroCard extends ConsumerWidget {
       child: Semantics(
         button: true,
         label: open
-            ? '${fresh ? 'Nowość' : 'Jeszcze nie słuchane'}: ${item.title}, ${(item.durationSec / 60).ceil()} min'
+            ? '${fresh ? 'Nowość' : 'Jeszcze niesłuchane'}: ${item.title}, ${(item.durationSec / 60).ceil()} min'
             : '${item.title}, ${(item.durationSec / 60).ceil()} min. Zablokowane: dostępne w abonamencie.',
         excludeSemantics: true,
         child: Column(
@@ -1154,7 +1087,7 @@ class _HeroCard extends ConsumerWidget {
                                   ? 'Nowość'
                                   : item.id == _closingPlayId
                                   ? 'Szybka gra'
-                                  : 'Jeszcze nie słuchane',
+                                  : 'Jeszcze niesłuchane',
                               style: text.labelMedium?.copyWith(
                                 color: open ? const Color(0xFF211C35) : Colors.white,
                                 fontWeight: FontWeight.w700,

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/audio/kiddo_voice.dart';
 import '../catalog/catalog_providers.dart' show clockProvider;
+import '../family/family.dart';
 import '../parent_voice/parent_voice.dart';
 import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
@@ -43,6 +44,9 @@ class ParentStep extends SessionStep {
 }
 
 enum SessionKind { trip, bedtime }
+
+/// Lines Szop’en opens with the child's name (when he knows it).
+const namedLines = ['trip_start', 'trip_end', 'bedtime_start', 'goodnight'];
 
 /// Szop'en's lines at the start of a ride; one per trip, so he does not repeat himself.
 const tripStartLines = ['trip_start', 'trip_start_2', 'trip_start_3', 'trip_start_4', 'trip_start_5', 'trip_start_6'];
@@ -180,7 +184,12 @@ class AppSessionAudio implements SessionAudio {
   }
 
   @override
-  Future<void> sayLine(String line) => _ref.read(kiddoVoiceProvider).say(line);
+  Future<void> sayLine(String line) async {
+    final voice = _ref.read(kiddoVoiceProvider);
+    // Szop’en greets the child by name at the start and end of a ride and at bedtime.
+    if (namedLines.any(line.startsWith)) await voice.sayName(_ref.read(familyProvider).value?.active?.name);
+    await voice.say(line);
+  }
 
   @override
   Future<void> playClip(String path) => _ref.read(parentVoiceStoreProvider).play(path);

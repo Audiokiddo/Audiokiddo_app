@@ -341,6 +341,10 @@ class StudioServer {
   Future<List<Map<String, dynamic>>> plays({int days = 30}) async =>
       _rows(await client.rpc('crm_plays', params: {'p_days': days}));
 
+  /// Real minutes per sitting by age group (supabase/migrations/…_play_minutes.sql).
+  Future<List<Map<String, dynamic>>> playMinutes({int days = 30}) async =>
+      _rows(await client.rpc('crm_play_minutes', params: {'p_days': days}));
+
   Future<Map<String, dynamic>> ltv() async => Map<String, dynamic>.from(await client.rpc('crm_ltv') as Map);
 
   Future<List<Map<String, dynamic>>> experiments() async =>

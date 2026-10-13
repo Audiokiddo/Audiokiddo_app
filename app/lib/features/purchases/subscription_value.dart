@@ -63,7 +63,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
             style: text.titleLarge?.copyWith(color: _ink, fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 6),
-          Text('Wszystkie zabawy teraz i jeden nowy pakiet co miesiąc.', style: text.bodyMedium?.copyWith(color: _ink)),
+          Text('Wszystkie zabawy teraz i 2 nowe co tydzień.', style: text.bodyMedium?.copyWith(color: _ink)),
         ],
       );
     }
@@ -76,10 +76,6 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
     final trial = product.freeTrialDays;
     final saving = _saving(plan);
     final lapsed = ref.watch(lapsedSubscriptionProvider);
-
-    // A year of packs bought one by one: today's packs plus a new one every month.
-    final packPrices = [for (final p in widget.catalog.packs) ?widget.byId[p.storeProductId]?.rawPrice];
-    final packsYear = packPrices.isEmpty ? null : packPrices.fold(0.0, (a, b) => a + b) * (1 + 12 / packPrices.length);
 
     final String buttonLabel;
     if (lapsed != null && product.comebackPrice != null) {
@@ -121,7 +117,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
         const SizedBox(height: 6),
         for (final line in [
           'Wszystkie zabawy od razu',
-          'Nowy pakiet co miesiąc, bez dopłat',
+          '2 nowe zabawy co tydzień, bez dopłat',
           if (!widget.compact) 'Każde dziecko ze swoim planem i postępami',
         ])
           Padding(
@@ -153,30 +149,6 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
           percent: _percent(plan),
           money: money,
         ),
-        if (!widget.compact && yearly && packsYear != null && true) ...[
-          const SizedBox(height: 6),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
-            child: Text.rich(
-              TextSpan(
-                style: text.bodyMedium?.copyWith(color: _ink),
-                children: [
-                  const TextSpan(text: 'Pakiety osobno przez rok: '),
-                  TextSpan(
-                    text: 'ok. ${money(packsYear)}',
-                    style: const TextStyle(decoration: TextDecoration.lineThrough, decorationThickness: 2),
-                  ),
-                  const TextSpan(text: '  →  '),
-                  TextSpan(
-                    text: product.price,
-                    style: const TextStyle(fontWeight: FontWeight.w900),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
         const SizedBox(height: 12),
         FilledButton(
           style: FilledButton.styleFrom(
@@ -399,22 +371,18 @@ class _PlanTile extends StatelessWidget {
                           TextSpan(
                             style: text.bodyMedium?.copyWith(color: _ink),
                             children: [
-                              if (m != null) ...[
-                                TextSpan(
-                                  text: money(m * 12),
-                                  style: TextStyle(
-                                    color: _ink.withValues(alpha: .55),
-                                    decoration: TextDecoration.lineThrough,
-                                    decorationThickness: 2,
-                                  ),
-                                ),
-                                const TextSpan(text: '  '),
-                              ],
                               TextSpan(
                                 text: '${yearlyProduct!.price} / rok',
                                 style: const TextStyle(fontWeight: FontWeight.w900),
                               ),
                               if (y != null) TextSpan(text: '\n= ${money(y / 12)} miesięcznie'),
+                              // A comparison, never a crossed-out "old price" (Omnibus: a crossed-out
+                              // price must be the lowest of the last 30 days).
+                              if (m != null)
+                                TextSpan(
+                                  text: '\nPłacąc co miesiąc: 12 × ${money(m)} = ${money(m * 12)}',
+                                  style: TextStyle(color: _ink.withValues(alpha: .7)),
+                                ),
                             ],
                           ),
                         )

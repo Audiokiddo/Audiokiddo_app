@@ -1426,7 +1426,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingAccountBody.
   ///
   /// In pl, this message translates to:
-  /// **'Opcjonalnie. Zaloguj się, jeśli masz już pakiety przypisane do adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.'**
+  /// **'Logujesz się jednym przyciskiem (Apple, Google albo kod na e-mail). Dzięki temu darmowe zabawy, abonament i postępy działają na telefonach obojga rodziców. Nie zbieramy danych o dziecku.'**
   String get onboardingAccountBody;
 
   /// No description provided for @onboardingAccountDone.

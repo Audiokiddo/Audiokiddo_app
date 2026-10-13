@@ -824,3 +824,31 @@ begin
   assert not has_function_privilege('authenticated', 'public.bedtime_grace(uuid)', 'execute'), 'service role only';
 end $$;
 select 'bedtime grace tests passed';
+
+-- Real minutes of play: one sitting of two plays (10 + 6 min 40 s) for a 5-year-old.
+reset role;
+insert into public.app_events (install_id, event, item_id, props) values
+  ('88888888-8888-8888-8888-888888888881', 'play_complete', 'magiczny-sklep', '{"sitting":1700000000,"age":5,"active_seconds":600}'),
+  ('88888888-8888-8888-8888-888888888881', 'play_exit', 'mikstura', '{"sitting":1700000000,"age":5,"active_seconds":400}');
+set role authenticated;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c1', false); end $$;
+do $$
+declare
+  m jsonb;
+  five jsonb;
+begin
+  m := public.crm_play_minutes(30);
+  select x into five from jsonb_array_elements(m) x where x ->> 'age_group' = '5–6';
+  assert (five ->> 'sittings')::int = 1 and (five ->> 'median_minutes')::numeric = 16.7, m::text;
+  assert (five ->> 'avg_plays')::numeric = 2, m::text;
+end $$;
+do $$ begin perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000c2', false); end $$;
+do $$
+begin
+  begin
+    perform public.crm_play_minutes(30);
+    assert false, 'a parent sees no play minutes';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+reset role;

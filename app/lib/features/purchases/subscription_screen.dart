@@ -10,6 +10,7 @@ import '../../core/widgets/grouped_list.dart';
 import '../access/access_controller.dart';
 import '../alerts/alerts.dart' show dayAndMonth;
 import '../catalog/catalog_providers.dart' show clockProvider;
+import '../insights/events.dart';
 import 'manage_subscription.dart';
 import 'purchase_controller.dart';
 import 'shop.dart';
@@ -170,6 +171,11 @@ Future<void> cancelSubscriptionFlow(BuildContext context, WidgetRef ref, Entitle
     );
     if (go != true || !context.mounted) return;
   }
+  // A break instead of goodbye: holidays, a sick month, a child who wants a rest.
+  if (reason != CancelReason.mistake && reason != CancelReason.technical) {
+    final paused = await offerPause(context, ref, reason);
+    if (paused || !context.mounted) return;
+  }
   final until = sub.validUntil!.toLocal();
   final confirmed = await showModalBottomSheet<bool>(
     context: context,
@@ -187,7 +193,7 @@ Future<void> cancelSubscriptionFlow(BuildContext context, WidgetRef ref, Entitle
               const SizedBox(height: 6),
               Text(
                 'Jeśli anulujesz, wszystkie zabawy zostaną otwarte do ${dayAndMonth(until)}. '
-                'Potem zostaną darmowe zabawy i to, co kupiliście na zawsze.',
+                'Potem zostaną darmowe zabawy, a profile i postępy dzieci poczekają na Was.',
                 style: text.bodyMedium,
               ),
               const SizedBox(height: 6),
@@ -213,4 +219,58 @@ Future<void> cancelSubscriptionFlow(BuildContext context, WidgetRef ref, Entitle
     },
   );
   if (confirmed == true) await openExternal(manageSubscriptionsUrl);
+}
+
+/// Google Play lets the family pause the subscription for 1–3 months (and resume early); the
+/// App Store has no pause, so there the sheet says plainly what stays when they cancel and come
+/// back. True when the parent went to pause (the cancellation stops there).
+Future<bool> offerPause(BuildContext context, WidgetRef ref, CancelReason reason) async {
+  final android = Platform.isAndroid;
+  final choice = await showModalBottomSheet<bool>(
+    context: context,
+    showDragHandle: true,
+    builder: (context) {
+      final text = Theme.of(context).textTheme;
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                android ? 'Może przerwa zamiast rezygnacji?' : 'Przerwa? Wszystko na Was poczeka',
+                style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                android
+                    ? 'W Google Play wstrzymasz abonament na 1, 2 albo 3 miesiące. Nic nie płacisz, '
+                          'a potem wszystko wraca samo. Wrócić możesz też wcześniej.'
+                    : 'Profile dzieci, postępy, ulubione i naklejki zostają w aplikacji. '
+                          'Gdy wrócicie, zaczniecie tam, gdzie skończyliście.',
+                style: text.bodyMedium,
+              ),
+              const SizedBox(height: 18),
+              if (android) ...[
+                FilledButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Wstrzymaj na 1–3 miesiące'),
+                ),
+                const SizedBox(height: 8),
+              ],
+              OutlinedButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Dalej do anulowania'),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+  if (choice != true) return false;
+  ref.read(eventSinkProvider).track(AppEvent.cancelReason, props: {'reason': reason.wire, 'choice': 'pause'});
+  await openExternal(Uri.parse('https://play.google.com/store/account/subscriptions?package=pl.audiokiddo.app'));
+  return true;
 }

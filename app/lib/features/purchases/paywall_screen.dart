@@ -88,32 +88,37 @@ class _PaywallContent extends ConsumerWidget {
             const SizedBox(height: AkSpace.m),
             // The subscription is the main offer; buying for good is folded below it.
             SubscriptionOffer(catalog: catalog, byId: byId),
-            Theme(
-              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-              child: ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(l10n.paywallOneTimeHeader, style: text.titleSmall),
-                subtitle: Text(l10n.paywallOneTimeBody),
-                children: [
-                  if (packProduct != null)
-                    tile(
-                      packProduct,
-                      title: packProduct.title,
-                      subtitle: l10n.itemsCount(catalog.itemsInPack(pack!.id).length),
-                    ),
-                  if (byId[ProductIds.bundleTwo] case final p?)
-                    tile(p, title: p.title, subtitle: l10n.paywallBundleTwo),
-                  if (byId[ProductIds.bundleThree] case final p?)
-                    tile(p, title: p.title, subtitle: l10n.paywallBundleThree),
-                  if (byId[item?.storeProductId] case final p?)
-                    tile(
-                      p,
-                      title: l10n.paywallSingle,
-                      subtitle: packProduct == null ? null : l10n.paywallSingleHint(packProduct.price),
-                    ),
-                ],
+            // Packs are no longer sold (2026-10-13); the fold shows only if a store still lists one.
+            if (packProduct != null ||
+                byId[ProductIds.bundleTwo] != null ||
+                byId[ProductIds.bundleThree] != null ||
+                byId[item?.storeProductId] != null)
+              Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  title: Text(l10n.paywallOneTimeHeader, style: text.titleSmall),
+                  subtitle: Text(l10n.paywallOneTimeBody),
+                  children: [
+                    if (packProduct != null)
+                      tile(
+                        packProduct,
+                        title: packProduct.title,
+                        subtitle: l10n.itemsCount(catalog.itemsInPack(pack!.id).length),
+                      ),
+                    if (byId[ProductIds.bundleTwo] case final p?)
+                      tile(p, title: p.title, subtitle: l10n.paywallBundleTwo),
+                    if (byId[ProductIds.bundleThree] case final p?)
+                      tile(p, title: p.title, subtitle: l10n.paywallBundleThree),
+                    if (byId[item?.storeProductId] case final p?)
+                      tile(
+                        p,
+                        title: l10n.paywallSingle,
+                        subtitle: packProduct == null ? null : l10n.paywallSingleHint(packProduct.price),
+                      ),
+                  ],
+                ),
               ),
-            ),
             const SizedBox(height: AkSpace.m),
             Center(
               child: TextButton(

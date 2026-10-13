@@ -16,13 +16,17 @@ enum PlayCategory {
   songs('Piosenki'),
 
   /// Calm, before sleep: used to pick plays (rescue, Szop’en’s tips), not shown as a tile.
-  calm('Spokojne');
+  calm('Spokojne'),
+
+  /// What anyone can play without the subscription. Last in the enum, so a free play's own
+  /// kind still decides its picture ([itemCategory]); first among the tiles.
+  free('Darmowe');
 
   const PlayCategory(this.label);
   final String label;
 
   /// The tiles on Start and in the library, in this order.
-  static const shown = [creative, movement, detective, education, adventure, songs];
+  static const shown = [free, creative, movement, detective, education, adventure, songs];
 
   bool matches(ContentItem i) => switch (this) {
     creative =>
@@ -35,6 +39,7 @@ enum PlayCategory {
       i.packId == 'wyobraznia' || i.skills.any((s) => s.contains('opowiad')) || (i.script != null && i.audio.isEmpty),
     songs => i.kind == ContentKind.song,
     calm => i.situations.contains(Situation.przedSnem),
+    free => i.isFree,
   };
 }
 

@@ -55,6 +55,81 @@ class _TripScreenState extends ConsumerState<TripScreen> {
 
   static const durations = [15, 20, 30, 45, 60, 90];
 
+  /// "2 h 30 min", "45 min".
+  static String _rideLabel(int minutes) {
+    final h = minutes ~/ 60, m = minutes % 60;
+    if (h == 0) return '$m min';
+    return m == 0 ? '$h h' : '$h h $m min';
+  }
+
+  /// The parent's own ride length: hours and minutes, up to 8 hours.
+  Future<void> _pickOwnTime(BuildContext context) async {
+    var hours = _minutes ~/ 60;
+    var minutes = (_minutes % 60) ~/ 5 * 5;
+    final picked = await showModalBottomSheet<int>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheet) => StatefulBuilder(
+        builder: (sheet, setSheet) {
+          final text = Theme.of(sheet).textTheme;
+          Widget stepper(String label, int value, int max, int step, void Function(int) set) => Column(
+            children: [
+              Text(label, style: text.labelLarge),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton.filledTonal(
+                    tooltip: 'Mniej',
+                    onPressed: value - step < 0 ? null : () => setSheet(() => set(value - step)),
+                    icon: const Icon(Icons.remove_rounded),
+                  ),
+                  SizedBox(
+                    width: 56,
+                    child: Text('$value', textAlign: TextAlign.center, style: text.headlineMedium),
+                  ),
+                  IconButton.filledTonal(
+                    tooltip: 'Więcej',
+                    onPressed: value + step > max ? null : () => setSheet(() => set(value + step)),
+                    icon: const Icon(Icons.add_rounded),
+                  ),
+                ],
+              ),
+            ],
+          );
+          final total = hours * 60 + minutes;
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.l),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Ile potrwa podróż?', style: text.titleLarge),
+                  const SizedBox(height: AkSpace.m),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      stepper('godziny', hours, 8, 1, (v) => hours = v),
+                      stepper('minuty', minutes, 55, 5, (v) => minutes = v),
+                    ],
+                  ),
+                  const SizedBox(height: AkSpace.l),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: total < 10 ? null : () => Navigator.pop(sheet, total),
+                      child: Text(total < 10 ? 'Co najmniej 10 min' : 'Gotowe: ${_rideLabel(total)}'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+    if (picked != null && mounted) setState(() => _minutes = picked);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -111,6 +186,15 @@ class _TripScreenState extends ConsumerState<TripScreen> {
                   showCheckmark: false,
                   onSelected: (_) => setState(() => _minutes = m),
                 ),
+              // Any length of ride: "3 h 20 min to grandma's".
+              ChoiceChip(
+                avatar: const Icon(Icons.edit_rounded, size: 18),
+                label: Text(durations.contains(_minutes) ? 'Własny czas' : _rideLabel(_minutes)),
+                selected: !durations.contains(_minutes),
+                labelStyle: selectableChipLabel(context, selected: !durations.contains(_minutes)),
+                showCheckmark: false,
+                onSelected: (_) => _pickOwnTime(context),
+              ),
             ],
           ),
           const SizedBox(height: AkSpace.l),

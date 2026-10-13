@@ -46,6 +46,7 @@ import '../features/pdf/case_file_screen.dart';
 import '../features/stickers/stickers.dart';
 import '../features/pdf/guide_links.dart';
 import '../features/session/session_screens.dart';
+import '../features/about/features_screen.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
 /// until a parent passes the gate (ARCHITECTURE §12).
@@ -163,6 +164,7 @@ GoRouter buildRouter(
     GoRoute(path: '/konto', pageBuilder: (context, state) => swipePage(state, const AccountScreen())),
     GoRoute(path: '/rodzina', pageBuilder: (context, state) => swipePage(state, const FamilyScreen())),
     GoRoute(path: '/o-nas', pageBuilder: (context, state) => swipePage(state, const AboutScreen())),
+    GoRoute(path: '/funkcje', pageBuilder: (context, state) => swipePage(state, const FeaturesScreen())),
     GoRoute(path: '/dostep', pageBuilder: (context, state) => swipePage(state, const AccessScreen())),
     GoRoute(path: '/subskrypcja', pageBuilder: (context, state) => swipePage(state, const SubscriptionScreen())),
     GoRoute(path: '/mowa', pageBuilder: (context, state) => swipePage(state, const SpeechCheckScreen())),

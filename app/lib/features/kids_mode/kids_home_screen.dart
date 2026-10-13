@@ -128,6 +128,8 @@ class _KiddoHelloState extends ConsumerState<_KiddoHello> {
   Future<void> _say() async {
     if (!mounted || _talking) return;
     setState(() => _talking = true);
+    await _voice.sayName(ref.read(familyProvider).value?.active?.name);
+    if (!mounted) return;
     await _voice.say('kids_$_line');
     if (mounted) setState(() => _talking = false);
   }

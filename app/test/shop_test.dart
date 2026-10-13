@@ -57,13 +57,10 @@ void main() {
     expect(formatMoney(9.99, 'PLN'), allOf(contains('9,99'), contains('zł')));
   });
 
-  test('every pack and both bundles are on sale; bundles hold the right packs', () {
-    final ids = shopProductIds(catalog);
-    for (final p in catalog.packs) {
-      expect(ids, contains(p.storeProductId));
-    }
+  test('only the subscription is on sale (2026-10-13); bundle contents still known for old buyers', () {
+    expect(shopProductIds(catalog), ProductIds.subscriptions);
+    expect(productIdsFor(catalog.items.first, catalog), ProductIds.subscriptions);
     expect(bundlePacks(ProductIds.bundleTwo, catalog).map((p) => p.id), unorderedEquals(bundleTwoPacks));
-    expect(bundlePacks(ProductIds.bundleThree, catalog).length, catalog.packs.length);
   });
 
   test('after a free taste the rest of that pack is suggested, unless the family owns it', () {
@@ -87,78 +84,44 @@ void main() {
     setUp(() => debugGateChallengeFactory = () => GateChallenge.fixed(47, [74, 47, 12, 33]));
     tearDown(() => debugGateChallengeFactory = null);
 
-    testWidgets('shows the subscription, packs with a free taste and bundle savings', (tester) async {
+    testWidgets('shows only the subscription: free plays and the plan, no packs for good', (tester) async {
       await pumpApp(tester);
       await tester.tap(find.text('Sklep').last);
       await tester.pumpAndSettle();
-      // The subscription first, said simply: crossed-out monthly price, the yearly per month.
-      // The three ways side by side first: free, a pack for good, the subscription per month.
-      expect(find.bySemanticsLabel(RegExp(r'^Za darmo: .*Pakiet na zawsze: od .*Abonament: ')), findsOneWidget);
+      // The ways side by side: what is free, the subscription per month. No pack for good.
+      expect(find.bySemanticsLabel(RegExp(r'^Za darmo: .*Abonament: ')), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('Pakiet na zawsze')), findsNothing);
       expect(find.text('Abonament AudioKiddo'), findsOneWidget);
       expect(find.text('NAJLEPIEJ SIĘ OPŁACA'), findsOneWidget);
-      // Yearly first, with the cloud saying how much it saves and the year crossed out
-      // against twelve months; one subscription, no plans by the number of children.
+      // Yearly first; the year is compared with twelve months, never crossed out (Omnibus).
       expect(find.text('Rocznie'), findsOneWidget);
       expect(find.textContaining('oszczędzasz 89,89'), findsOneWidget);
-      expect(find.textContaining('359,88'), findsOneWidget, reason: '12 × 29,99 crossed out');
+      expect(find.textContaining('12 × 29,99'), findsOneWidget);
       expect(find.textContaining('22,50'), findsWidgets);
-      expect(find.text('2 dzieci'), findsNothing);
-      expect(find.text('3–5 dzieci'), findsNothing);
-      expect(find.text('Wypróbuj 7 dni za darmo'), findsOneWidget);
+      expect(find.textContaining('co tydzień'), findsWidgets);
       await tester.tap(find.text('Miesięcznie'));
       await tester.pumpAndSettle();
       expect(find.textContaining(RegExp(r'^29,99\s+zł / miesiąc$')), findsOneWidget);
-      // Buying for good is folded below.
-      expect(find.text('Detektyw'), findsNothing);
-      await tester.scrollUntilVisible(
-        find.text('Wolisz kupić pakiet na zawsze?'),
-        200,
-        scrollable: mainScroll,
-      );
-      await tester.tap(find.text('Wolisz kupić pakiet na zawsze?'));
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Detektyw').first, 200, scrollable: mainScroll);
-      expect(find.textContaining('Za darmo:'), findsWidgets);
-      await tester.scrollUntilVisible(find.textContaining('taniej o 9,99'), 200, scrollable: mainScroll);
-      expect(find.textContaining('taniej o 9,98'), findsOneWidget, reason: 'three packs: 169,97 − 159,99');
+      expect(find.text('Wolisz kupić pakiet na zawsze?'), findsNothing);
       await tester.scrollUntilVisible(
         find.text('Masz już dostęp z audiokiddo.pl?'),
         200,
         scrollable: mainScroll,
       );
+      expect(find.textContaining('taniej o'), findsNothing);
     });
 
-    testWidgets('a pack page sells; owned packs say so', (tester) async {
+    testWidgets('a pack page offers the subscription, not the pack', (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('Sklep').last);
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.text('Wolisz kupić pakiet na zawsze?'),
-        200,
-        scrollable: mainScroll,
-      );
-      await tester.tap(find.text('Wolisz kupić pakiet na zawsze?'));
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Wyobraźnia').first, 200, scrollable: mainScroll);
-      await tester.tap(find.text('Wyobraźnia').first);
+      GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/pakiet/wyobraznia');
       await tester.pumpAndSettle();
       final packScroll = find
           .byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down)
           .last;
       await tester.scrollUntilVisible(find.text('Wypróbuj za darmo'), 200, scrollable: packScroll);
       expect(find.text('Wypróbuj za darmo'), findsOneWidget);
-      expect(
-        find.textContaining('Wszystkie pakiety za 22,50'),
-        findsOneWidget,
-        reason: 'the subscription first',
-      );
-      await tester.tap(find.text('albo tylko Wyobraźnia na zawsze · 49,99 zł'));
-      await tester.pumpAndSettle();
-      expect(
-        find.byType(ParentalGateScreen),
-        askInParentArea ? findsOneWidget : findsNothing,
-        reason: 'the parent area buys without the number question',
-      );
+      expect(find.textContaining('Wszystkie pakiety za 22,50'), findsOneWidget);
+      expect(find.textContaining('na zawsze ·'), findsNothing);
     });
 
     testWidgets('the pack page offers films and materials', (tester) async {
@@ -191,7 +154,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('after a free play from a pack: the pack or the subscription', (tester) async {
+    testWidgets('after a free play from a pack: the subscription', (tester) async {
       await pumpApp(tester);
       final free = catalog.items.firstWhere((i) => i.isFree && i.packId == 'wyobraznia');
       await showOffer(tester, free);
@@ -203,8 +166,8 @@ void main() {
       expect(find.text('Jest ciąg dalszy. Tak go otworzycie:'), findsOneWidget);
       expect(find.text('Następna darmowa zabawa'), findsOneWidget, reason: 'another free play first');
       expect(find.text('Abonament AudioKiddo'), findsOneWidget);
-      expect(find.textContaining('Nowy pakiet co miesiąc'), findsOneWidget);
-      expect(find.textContaining('albo tylko pakiet Wyobraźnia na zawsze'), findsOneWidget);
+      expect(find.textContaining('2 nowe zabawy co tydzień'), findsOneWidget);
+      expect(find.textContaining('na zawsze'), findsNothing, reason: 'packs are not sold any more');
       await tester.ensureVisible(find.text('Wypróbuj 7 dni za darmo'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Wypróbuj 7 dni za darmo'));
@@ -258,6 +221,6 @@ void main() {
     expect(find.text('Przywróć zakupy'), findsOneWidget);
     await tester.tap(find.text('Wybierz abonament'));
     await tester.pumpAndSettle();
-    expect(find.text('Abonament i pakiety'), findsOneWidget, reason: 'the plans as a closable page');
+    expect(find.text('Abonament'), findsWidgets, reason: 'the plans as a closable page');
   });
 }

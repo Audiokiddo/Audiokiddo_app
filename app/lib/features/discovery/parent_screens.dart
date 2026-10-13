@@ -24,7 +24,6 @@ import '../family_sharing/grandparents.dart';
 import '../purchases/plan_limit.dart';
 import '../reminders/reminder_offer.dart';
 import '../welcome/szop_tour.dart';
-import '../welcome/welcome_controller.dart';
 import '../../core/router.dart';
 
 class MoreScreen extends ConsumerWidget {
@@ -120,19 +119,16 @@ class MoreScreen extends ConsumerWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.tour_rounded, color: AkBrand.tealDeep),
-          title: const Text('Szop’en pokaże, gdzie co jest'),
-          subtitle: const Text('Krótki samouczek po aplikacji, jeszcze raz'),
-          onTap: () {
-            context.go('/');
-            ref.read(welcomeProvider).startTour();
-          },
+          title: const Text('Co potrafi AudioKiddo'),
+          subtitle: const Text('Wszystkie funkcje w jednym miejscu i samouczek z Szop’enem'),
+          onTap: () => context.push('/funkcje'),
         ),
         const RefSection('Pomóż nam rosnąć'),
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const PolishFlag(width: 24),
           title: const Text('O nas: Nela i Dawid'),
-          subtitle: const Text('Polska rodzinna marka. Sami piszemy i nagrywamy zabawy'),
+          subtitle: const Text('Polska rodzinna marka. Zabawy piszemy i montujemy sami'),
           trailing: const Icon(Icons.chevron_right_rounded),
           onTap: () => context.push('/o-nas'),
         ),
@@ -348,6 +344,41 @@ class ProfileScreen extends ConsumerWidget {
             const SizedBox(height: 18),
             FilledButton(onPressed: () => context.push('/plan/dziecko'), child: const Text('Dodaj dziecko')),
           ] else ...[
+            // Who is listening: big and first, so switching children is obvious.
+            Text(
+              'Kto teraz słucha?',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final (i, c) in family!.children.indexed)
+                  ChoiceChip(
+                    avatar: const Icon(Icons.face_rounded, size: 20),
+                    label: Text(c.name.isEmpty ? 'Dziecko ${i + 1}' : c.name),
+                    labelStyle: const TextStyle(fontWeight: FontWeight.w700),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                    selected: c.id == child.id,
+                    onSelected: (_) async {
+                      await ref.read(familyProvider.notifier).setActive(c.id);
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          SnackBar(content: Text('Teraz słucha: ${c.name.isEmpty ? 'Dziecko ${i + 1}' : c.name}')),
+                        );
+                    },
+                  ),
+                ActionChip(
+                  avatar: const Icon(Icons.add_rounded, size: 20),
+                  label: const Text('Dodaj dziecko'),
+                  onPressed: () => context.push('/plan/dziecko'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(color: referenceMint, borderRadius: BorderRadius.circular(24)),
@@ -382,18 +413,6 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            if (family!.children.length > 1)
-              Wrap(
-                spacing: 8,
-                children: [
-                  for (final c in family.children)
-                    ChoiceChip(
-                      label: Text(c.name.isEmpty ? 'Dziecko ${family.children.indexOf(c) + 1}' : c.name),
-                      selected: c.id == child.id,
-                      onSelected: (_) => ref.read(familyProvider.notifier).setActive(c.id),
-                    ),
-                ],
-              ),
             const SizedBox(height: 18),
             Wrap(
               spacing: 10,

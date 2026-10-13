@@ -119,7 +119,7 @@ void main() {
     expect(find.textContaining('po jednej z każdego pakietu'), findsOneWidget);
     // What is free now and what the subscription adds, said right after the first sign-in.
     expect(find.byType(FreeVsSubscription), findsOneWidget);
-    expect(find.bySemanticsLabel(RegExp('Co miesiąc: nowy pakiet')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('Co tydzień: 2 nowe zabawy')), findsOneWidget);
     await tester.ensureVisible(find.text('Odbieram'));
     await tester.tap(find.text('Odbieram'));
     await tester.pumpAndSettle();

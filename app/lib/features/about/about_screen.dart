@@ -27,7 +27,7 @@ class PolishFlag extends StatelessWidget {
   );
 }
 
-/// "Polska marka · zabawy nagrywają Nela i Dawid": next to the offer and on the welcome.
+/// "Polska marka · zabawy tworzą Nela i Dawid": next to the offer and on the welcome.
 class PolishBrandLine extends StatelessWidget {
   const PolishBrandLine({super.key, this.color, this.center = false});
 
@@ -43,7 +43,7 @@ class PolishBrandLine extends StatelessWidget {
       const SizedBox(width: 8),
       Flexible(
         child: Text(
-          'Polska rodzinna marka · zabawy nagrywają Nela i Dawid',
+          'Polska rodzinna marka · zabawy tworzą Nela i Dawid',
           textAlign: center ? TextAlign.center : TextAlign.start,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.w700),
         ),
@@ -62,7 +62,7 @@ class AboutScreen extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final facts = [
       (Icons.flag_rounded, 'Polska marka', 'Wymyślamy i tworzymy wszystko w Polsce, po polsku, dla polskich rodzin.'),
-      (Icons.mic_rounded, 'Nasze głosy', 'Zabawy nagrywamy sami. Głosy, które słyszy Wasze dziecko, to Nela i Dawid.'),
+      (Icons.mic_rounded, 'Nasze głosy', 'Razem piszemy zabawy i je montujemy. Nasze głosy usłyszycie w zabawach.'),
       (
         Icons.edit_note_rounded,
         'Wszystko robimy sami',
@@ -95,8 +95,9 @@ class AboutScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'AudioKiddo tworzymy we dwoje, jako para z Polski. Sami wymyślamy zabawy, piszemy scenariusze, '
-                  'podkładamy głosy i budujemy aplikację. Nie stoi za nami korporacja ani zagraniczny fundusz: '
+                  'AudioKiddo tworzymy we dwoje, jako para z Polski, i sami jesteśmy rodzicami. Razem piszemy zabawy '
+                  'i je montujemy, a nasze głosy usłyszycie w zabawach. Od pomysłu do realizacji robimy wszystko sami. '
+                  'Nie stoi za nami korporacja ani zagraniczny fundusz: '
                   'jest nasz stół, mikrofon i Szop’en, który pilnuje, żeby było śmiesznie.',
                   textAlign: TextAlign.center,
                   style: text.bodyLarge?.copyWith(color: AkBrand.cocoa, height: 1.4),

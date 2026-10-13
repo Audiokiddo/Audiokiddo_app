@@ -213,6 +213,8 @@ class _Browse extends ConsumerWidget {
         _SearchField(onTap: onSearch),
         const SizedBox(height: 10),
         _QuickChips(onFilter: onFilter),
+        const SizedBox(height: 14),
+        _PrintBanner(catalog: catalog, onFilter: onFilter),
         if (fresh.isNotEmpty) ...[
           const RefSection('Najnowsze'),
           _Covers(items: fresh.take(10).toList()),
@@ -228,6 +230,64 @@ class _Browse extends ConsumerWidget {
         const RefSection('Dla rodzica'),
         _ParentTools(onFilter: onFilter),
       ],
+    );
+  }
+}
+
+/// "Do druku": case files, cards and guides, as a bright card near the top of the library so
+/// parents find the printables without scrolling to the tools.
+class _PrintBanner extends StatelessWidget {
+  const _PrintBanner({required this.catalog, required this.onFilter});
+
+  final Catalog catalog;
+  final ValueChanged<LibraryFilter> onFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    const filter = LibraryFilter(printable: true);
+    final count = filter.apply(catalog.items).length;
+    if (count == 0) return const SizedBox.shrink();
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    return Material(
+      color: AkBrand.sun,
+      borderRadius: BorderRadius.circular(22),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(22),
+        onTap: () => onFilter(filter),
+        child: Semantics(
+          button: true,
+          label: 'Do druku: ${playsLabel(count)} z kartami, aktami i przewodnikami',
+          excludeSemantics: true,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
+            child: Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(color: Colors.white.withValues(alpha: .55), shape: BoxShape.circle),
+                  child: const Icon(Icons.print_rounded, color: ink, size: 30),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Do druku', style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800)),
+                      Text(
+                        'Akta detektywa, karty i przewodniki: ${playsLabel(count)} z czymś do wydrukowania.',
+                        style: text.bodySmall?.copyWith(color: ink),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded, color: ink),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -394,7 +454,7 @@ class MyPacksScreen extends ConsumerWidget {
               if (now.loose.isNotEmpty) _Shelf(title: 'Inne darmowe zabawy', items: now.loose),
               if (now.owned.isEmpty) ...[
                 const SizedBox(height: 18),
-                Text('Abonament otwiera wszystkie pakiety i co miesiąc dodaje nowy.', style: text.bodyMedium),
+                Text('Abonament otwiera wszystkie pakiety, a co tydzień dochodzą 2 nowe zabawy.', style: text.bodyMedium),
                 const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.centerLeft,

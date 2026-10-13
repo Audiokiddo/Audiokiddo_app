@@ -82,7 +82,10 @@ class _DiplomaViewState extends ConsumerState<_DiplomaView> {
       if (!mounted) return;
       setState(() => _day = day);
       _voice.effect('fanfare');
-      _congrats = Timer(const Duration(milliseconds: 1600), () => unawaited(_voice.say('diploma')));
+      _congrats = Timer(const Duration(milliseconds: 1600), () async {
+        await _voice.sayName(widget.child.name);
+        if (mounted) await _voice.say('diploma');
+      });
     });
   }
 

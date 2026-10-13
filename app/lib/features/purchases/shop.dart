@@ -15,14 +15,10 @@ import 'offer_catalog.dart';
 import 'purchase_controller.dart';
 import 'store_gateway.dart';
 
-/// Everything the Shop tab can sell: both subscriptions, every pack, both bundles and single plays.
-Set<String> shopProductIds(Catalog catalog) => {
-  ...ProductIds.subscriptions,
-  for (final p in catalog.packs) ?p.storeProductId,
-  ProductIds.bundleTwo,
-  ProductIds.bundleThree,
-  for (final i in catalog.items) ?i.storeProductId,
-};
+/// Everything the app sells: the subscription, monthly or yearly. Packs, bundles and single
+/// plays are no longer sold (decision 2026-10-13: subscription only); families who bought them
+/// earlier keep them through their access scopes and restore.
+Set<String> shopProductIds(Catalog catalog) => {...ProductIds.subscriptions};
 
 /// Packs of a bundle product, in catalog order.
 List<Pack> bundlePacks(String productId, Catalog catalog) {

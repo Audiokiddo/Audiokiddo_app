@@ -48,14 +48,5 @@ List<String> scopesForProduct(String productId, Catalog catalog) {
   return const [];
 }
 
-/// Products worth offering for [item]: subscriptions, its pack, bundles and the item alone.
-Set<String> productIdsFor(ContentItem? item, Catalog catalog) {
-  final pack = item?.packId == null ? null : catalog.pack(item!.packId!);
-  return {
-    ...ProductIds.subscriptions,
-    ?pack?.storeProductId,
-    if (pack == null || bundleTwoPacks.contains(pack.id)) ProductIds.bundleTwo,
-    ProductIds.bundleThree,
-    ?item?.storeProductId,
-  };
-}
+/// Products worth offering for [item]: only the subscription (packs are no longer sold).
+Set<String> productIdsFor(ContentItem? item, Catalog catalog) => {...ProductIds.subscriptions};

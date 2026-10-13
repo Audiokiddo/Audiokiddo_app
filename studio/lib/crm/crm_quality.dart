@@ -175,6 +175,7 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
   String _sort = 'starts';
   late Future<List<Map<String, dynamic>>> _plays = ref.read(studioServerProvider).plays(days: _days);
   late final Future<Map<String, dynamic>> _ltv = ref.read(studioServerProvider).ltv();
+  late Future<List<Map<String, dynamic>>> _minutes = ref.read(studioServerProvider).playMinutes(days: _days);
   late Future<List<Map<String, dynamic>>> _experiments = ref.read(studioServerProvider).experiments();
 
   static const _sorts = [
@@ -288,6 +289,7 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
                   onSelected: (_) => setState(() {
                     _days = d;
                     _plays = server.plays(days: d);
+                    _minutes = server.playMinutes(days: d);
                   }),
                 ),
               ),
@@ -305,6 +307,43 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
           ],
         ),
         const SizedBox(height: 8),
+        Text('Prawdziwe minuty zabawy', style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+        Text(
+          'Jedno posiedzenie to zabawy z mniej niż 10 minutami przerwy; liczy się tylko czas, gdy dźwięk naprawdę grał. '
+          'Te liczby (mediana) wolno podawać na stronie i w reklamach.',
+          style: text.bodySmall,
+        ),
+        FutureBuilder<List<Map<String, dynamic>>>(
+          future: _minutes,
+          builder: (context, snap) {
+            if (snap.hasError) return Text('${snap.error}');
+            if (!snap.hasData) return const LinearProgressIndicator();
+            if (snap.data!.isEmpty) return const Text('Jeszcze brak danych z nowej wersji aplikacji.');
+            return DataTable(
+              columnSpacing: 22,
+              columns: const [
+                DataColumn(label: Text('Wiek')),
+                DataColumn(label: Text('Posiedzeń'), numeric: true),
+                DataColumn(label: Text('Mediana min'), numeric: true),
+                DataColumn(label: Text('Co czwarte dłużej niż'), numeric: true),
+                DataColumn(label: Text('Zabaw na raz'), numeric: true),
+              ],
+              rows: [
+                for (final r in snap.data!)
+                  DataRow(
+                    cells: [
+                      DataCell(Text('${r['age_group']}')),
+                      DataCell(Text('${r['sittings']}')),
+                      DataCell(Text('${r['median_minutes']}')),
+                      DataCell(Text('${r['p75_minutes']} min')),
+                      DataCell(Text('${r['avg_plays']}')),
+                    ],
+                  ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 16),
         FutureBuilder<List<Map<String, dynamic>>>(
           future: _plays,
           builder: (context, snap) {

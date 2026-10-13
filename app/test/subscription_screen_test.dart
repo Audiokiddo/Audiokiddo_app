@@ -66,6 +66,11 @@ void main() {
 
     await tester.tap(find.text(CancelReason.notUsing.label));
     await tester.pumpAndSettle();
+    // A break first (Google Play: pause; App Store: what stays when they come back).
+    expect(find.text('Dalej do anulowania'), findsOneWidget);
+    expect(find.textContaining('postępy'), findsWidgets);
+    await tester.tap(find.text('Dalej do anulowania'));
+    await tester.pumpAndSettle();
     expect(find.text('Potwierdź anulowanie'), findsOneWidget);
     expect(find.textContaining('wszystkie zabawy zostaną otwarte do'), findsOneWidget);
 

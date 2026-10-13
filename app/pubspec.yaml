@@ -60,6 +60,7 @@ flutter:
     - assets/guide_links.json
     - assets/audio/
     - assets/audio/kiddo/
+    - assets/audio/names/
     - assets/covers/
     - assets/szop/
     - assets/brand/

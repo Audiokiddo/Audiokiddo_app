@@ -198,7 +198,7 @@ class FreeVsSubscription extends StatelessWidget {
         'Z abonamentem: wszystkie zabawy',
         'Cała biblioteka otwiera się od razu.',
       ),
-      (Icons.auto_awesome_rounded, 'Co miesiąc: nowy pakiet', 'Nowe przygody dochodzą bez dopłat.'),
+      (Icons.auto_awesome_rounded, 'Co tydzień: 2 nowe zabawy', 'Nowe przygody dochodzą bez dopłat.'),
     ];
     return Semantics(
       container: true,

@@ -86,7 +86,9 @@ class FamilyController extends AsyncNotifier<FamilyState> {
     if (ref.mounted) state = AsyncData(s.copyWith(frozen: frozen));
   }
 
-  Future<void> saveChild(ChildProfile child) async {
+  /// Saves [child]; [makeActive] switches to them (a newly added child is the one the parent
+  /// wants to see next).
+  Future<void> saveChild(ChildProfile child, {bool makeActive = false}) async {
     final s = await _current();
     final children = [
       for (final c in s.children)
@@ -94,8 +96,9 @@ class FamilyController extends AsyncNotifier<FamilyState> {
       child,
     ];
     await _db.writeValue(_childrenKey, jsonEncode([for (final c in children) c.toJson()]));
-    state = AsyncData(s.copyWith(children: children, activeId: s.activeId ?? child.id));
-    if (s.activeId == null) await _db.writeValue(_activeKey, child.id);
+    final active = makeActive ? child.id : (s.activeId ?? child.id);
+    state = AsyncData(s.copyWith(children: children, activeId: active));
+    if (active != s.activeId) await _db.writeValue(_activeKey, active);
   }
 
   Future<void> removeChild(String id) async {

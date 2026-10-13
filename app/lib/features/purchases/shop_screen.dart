@@ -53,7 +53,7 @@ class ShopScreen extends ConsumerWidget {
 
   Widget _shop(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: standalone ? AppBar(title: const Text('Abonament i pakiety')) : null,
+      appBar: standalone ? AppBar(title: const Text('Abonament')) : null,
       body: SafeArea(
         top: !standalone,
         child: CatalogLoader(
@@ -69,7 +69,7 @@ class ShopScreen extends ConsumerWidget {
                 Text('Sklep', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 4),
                 Text(
-                  'Głos zadaje pytania, dziecko odpowiada. W abonamencie masz wszystkie zabawy i nowy pakiet co miesiąc.',
+                  'Głos zadaje pytania, dziecko odpowiada. W abonamencie masz wszystkie zabawy, a co tydzień dochodzą 2 nowe.',
                   style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
                 ),
                 const PromotionBanner(),
@@ -78,7 +78,7 @@ class ShopScreen extends ConsumerWidget {
                     padding: const EdgeInsets.only(top: 14),
                     child: Text(
                       'Masz ${catalog.packs.where((p) => ownsPack(scopes, p.id)).length} z ${catalog.packs.length} pakietów. '
-                      'W abonamencie masz wszystkie, z grami i każdą nowością, a Twoje pakiety zostają Twoje na zawsze.',
+                      'W abonamencie masz wszystkie, z grami i każdą nowością. Kupione pakiety zostają Wasze.',
                       style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                     ),
                   ),
@@ -97,40 +97,8 @@ class ShopScreen extends ConsumerWidget {
                         : SubscriptionOffer(catalog: catalog, byId: byId),
                   ),
                 if (products.hasValue && byId.isEmpty) const _StoreUnavailable(),
-                // Buying for good is there, but folded: the subscription is the main choice.
-                if (!subscribed)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 14),
-                    child: Theme(
-                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                      child: ExpansionTile(
-                        tilePadding: EdgeInsets.zero,
-                        title: Text(
-                          'Wolisz kupić pakiet na zawsze?',
-                          style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        subtitle: const Text('Pakiety, zestawy i pojedyncze zabawy'),
-                        children: [
-                          for (final pack in catalog.packs)
-                            _PackCard(
-                              summary: PackSummary(pack, catalog),
-                              product: byId[pack.storeProductId],
-                              owned: ownsPack(scopes, pack.id),
-                            ),
-                          for (final id in [ProductIds.bundleTwo, ProductIds.bundleThree])
-                            _BundleCard(
-                              productId: id,
-                              packs: bundlePacks(id, catalog),
-                              product: byId[id],
-                              packProducts: [for (final p in bundlePacks(id, catalog)) byId[p.storeProductId]],
-                              owned: bundlePacks(id, catalog).every((p) => ownsPack(scopes, p.id)),
-                            ),
-                          _SinglePlays(catalog: catalog, byId: byId),
-                        ],
-                      ),
-                    ),
-                  )
-                else ...[
+                // Subscription only (2026-10-13). Packs bought earlier still show as theirs.
+                if (subscribed) ...[
                   const RefSection('Pakiety'),
                   for (final pack in catalog.packs)
                     _PackCard(
@@ -225,20 +193,11 @@ class _PriceList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    final rows = <(String, StoreProduct, String?)>[
+    final rows = <(String, StoreProduct)>[
       for (final plan in SubscriptionPlan.values) ...[
-        if (byId[plan.monthlyId] case final m?) ('Abonament miesięczny', m, null),
-        if (byId[plan.yearlyId] case final y?) ('Abonament roczny', y, null),
+        if (byId[plan.monthlyId] case final m?) ('Abonament miesięczny', m),
+        if (byId[plan.yearlyId] case final y?) ('Abonament roczny', y),
       ],
-      for (final pack in catalog.packs)
-        if (byId[pack.storeProductId] case final p?) ('Pakiet ${pack.title}', p, null),
-      for (final id in [ProductIds.bundleTwo, ProductIds.bundleThree])
-        if (byId[id] case final b?)
-          (
-            'Zestaw ${bundlePacks(id, catalog).length} pakietów',
-            b,
-            _sum([for (final p in bundlePacks(id, catalog)) byId[p.storeProductId]], b.currencyCode),
-          ),
     ];
     final singles = [for (final i in catalog.items) ?byId[i.storeProductId]?.rawPrice];
     if (rows.isEmpty) return const SizedBox.shrink();
@@ -256,22 +215,12 @@ class _PriceList extends StatelessWidget {
           ),
           child: Column(
             children: [
-              for (final (label, product, crossed) in rows)
+              for (final (label, product) in rows)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Row(
                     children: [
                       Expanded(child: Text(label, style: text.bodyMedium)),
-                      if (crossed != null) ...[
-                        Text(
-                          crossed,
-                          style: text.bodySmall?.copyWith(
-                            decoration: TextDecoration.lineThrough,
-                            color: context.palette.inkMuted,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
                       Text(product.price, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
                     ],
                   ),
@@ -296,22 +245,18 @@ class _PriceList extends StatelessWidget {
         Text(
           // The App Store build does not talk about prices elsewhere (guideline 3.1.1).
           BackendConfig.kidsStoreBuild
-              ? 'Pakiety kupujesz raz i zostają na zawsze.'
-              : 'Ceny są takie same jak na audiokiddo.pl. Pakiety kupujesz raz i zostają na zawsze.',
+              ? 'Abonament możesz anulować w każdej chwili w ustawieniach sklepu.'
+              : 'Ceny są takie same jak na audiokiddo.pl. Abonament możesz anulować w każdej chwili.',
           style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
         ),
       ],
     );
   }
 
-  static String? _sum(List<StoreProduct?> products, String? currency) {
-    if (products.isEmpty || products.any((p) => p?.rawPrice == null)) return null;
-    return formatMoney(products.fold(0.0, (a, p) => a + p!.rawPrice!), currency);
-  }
 }
 
-/// The three ways side by side, plainly (research 2026-10-12, finding 12: no surprise with
-/// payments): what is free already, a pack for good, the subscription per month. No stars.
+/// The ways side by side, plainly (research 2026-10-12, finding 12: no surprise with
+/// payments): what is free already and the subscription per month. No stars.
 class _ThreeWays extends ConsumerWidget {
   const _ThreeWays({required this.catalog, required this.byId});
 
@@ -322,19 +267,15 @@ class _ThreeWays extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final text = Theme.of(context).textTheme;
     final free = catalog.items.where((i) => i.isFree).length;
-    final packPrices = [
-      for (final p in catalog.packs) ?byId[p.storeProductId],
-    ].where((p) => p.rawPrice != null).toList()..sort((a, b) => a.rawPrice!.compareTo(b.rawPrice!));
     final monthly = byId[ProductIds.monthly];
     final yearly = byId[ProductIds.yearly];
     final perMonth = yearly?.rawPrice == null ? null : formatMoney(yearly!.rawPrice! / 12, yearly.currencyCode);
     final ways = [
       ('Za darmo', playsCount(free), 'już działa, bez płacenia'),
-      ('Pakiet na zawsze', packPrices.isEmpty ? 'od 49,99 zł' : 'od ${packPrices.first.price}', 'płacisz raz'),
       (
         'Abonament',
         monthly == null ? 'wszystkie zabawy' : '${monthly.price} / mies.',
-        perMonth == null ? 'i nowy pakiet co miesiąc' : 'rocznie $perMonth / mies., nowy pakiet co miesiąc',
+        perMonth == null ? 'i 2 nowe zabawy co tydzień' : 'rocznie $perMonth / mies., 2 nowe zabawy co tydzień',
       ),
     ];
     return Padding(
@@ -683,74 +624,6 @@ class _PackCard extends ConsumerWidget {
   }
 }
 
-class _BundleCard extends ConsumerWidget {
-  const _BundleCard({
-    required this.productId,
-    required this.packs,
-    required this.product,
-    required this.packProducts,
-    required this.owned,
-  });
-
-  final String productId;
-  final List<Pack> packs;
-  final StoreProduct? product;
-  final List<StoreProduct?> packProducts;
-  final bool owned;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = Theme.of(context).textTheme;
-    final busy = ref.watch(purchaseControllerProvider).busyProductId;
-    final saved = product == null ? null : bundleSavings(product!, packProducts);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: referenceLilac.withValues(alpha: .45),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    packs.length == 2 ? 'Zestaw 2 pakietów' : 'Wszystkie ${packs.length} pakiety',
-                    style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-                  ),
-                  Text(packs.map((p) => p.title).join(' + '), style: text.bodySmall),
-                  if (saved != null && !owned)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: _Badge(
-                        'taniej o ${formatMoney(saved, product!.currencyCode)}',
-                        color: AkBrand.sun,
-                        ink: const Color(0xFF211C35),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            if (owned)
-              const _Badge('Masz', color: referenceMint, icon: Icons.check_rounded)
-            else if (product case final p?)
-              FilledButton(
-                onPressed: busy == null ? () => buyWithGate(context, ref, p) : null,
-                child: busy == p.id
-                    ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                    : Text(p.price),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _HelpBlock extends ConsumerWidget {
   const _HelpBlock();
 
@@ -796,16 +669,15 @@ class _HelpBlock extends ConsumerWidget {
 }
 
 class _Badge extends StatelessWidget {
-  const _Badge(this.label, {this.color, this.ink, this.icon});
+  const _Badge(this.label, {this.color, this.icon});
 
   final String label;
   final Color? color;
-  final Color? ink;
   final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
-    final fg = ink ?? const Color(0xFF211C35);
+    const fg = Color(0xFF211C35);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(color: color ?? context.palette.surfaceMuted, borderRadius: BorderRadius.circular(20)),
@@ -989,7 +861,7 @@ class PackScreen extends ConsumerWidget {
                           ),
                         if (byId[ProductIds.yearly] != null)
                           Text(
-                            'Abonament roczny, nowy pakiet co miesiąc',
+                            'Abonament roczny, 2 nowe zabawy co tydzień',
                             style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
                           ),
                         if (product != null)

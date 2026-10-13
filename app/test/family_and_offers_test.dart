@@ -154,7 +154,7 @@ void main() {
     await tester.tap(find.text('Sklep').last);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Polska rodzinna marka · zabawy nagrywają Nela i Dawid'),
+      find.text('Polska rodzinna marka · zabawy tworzą Nela i Dawid'),
       200,
       scrollable: mainScroll,
     );
