@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/open_player.dart';
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
 import '../purchases/preview_player.dart';
@@ -99,7 +100,7 @@ class _DetailsContent extends ConsumerWidget {
   Future<void> _listen(BuildContext context, WidgetRef ref, {bool fromStart = false}) async {
     if (item.kind == ContentKind.interactiveGame) {
       unawaited(ref.read(gameControllerProvider.notifier).start(item, resume: !fromStart));
-      await context.push('/gra');
+      await openPlayer(context, game: true);
       ref.invalidate(gameResumeProvider(item));
       return;
     }
@@ -107,7 +108,7 @@ class _DetailsContent extends ConsumerWidget {
       await ref
           .read(playbackControllerProvider)
           .start(item, album: pack?.title ?? AppLocalizations.of(context).kind(item.kind), fromStart: fromStart);
-      if (context.mounted) await context.push('/odtwarzacz');
+      if (context.mounted) await openPlayer(context);
     } on Exception {
       if (context.mounted) {
         ScaffoldMessenger.of(context)

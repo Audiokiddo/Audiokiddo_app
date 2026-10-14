@@ -5,8 +5,8 @@ import 'package:ak_core/ak_core.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../core/open_player.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/storage/storage_providers.dart';
 import '../discovery/discovery_model.dart';
@@ -139,7 +139,7 @@ class _PlayButton extends ConsumerWidget {
         // Playing: back to it. Otherwise a choice (with "carry on" on top when something waits).
         onTap: () {
           if (media != null && playing) {
-            context.push(media.id.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz');
+            openPlayer(context, game: media.id.startsWith(gameMediaPrefix));
           } else {
             showQuickPick(context);
           }
@@ -283,7 +283,7 @@ class _ResumeCardState extends ConsumerState<_ResumeCard> {
     const ink = Color(0xFF211C35);
     void open() {
       if (resume.loaded) {
-        context.push(resume.mediaId!.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz');
+        openPlayer(context, game: resume.mediaId!.startsWith(gameMediaPrefix));
       } else {
         startItem(context, resume.item!);
       }

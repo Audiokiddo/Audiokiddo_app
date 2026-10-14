@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/open_player.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
@@ -112,14 +113,13 @@ class _NowPlayingPillState extends ConsumerState<NowPlayingPill> {
               key: ValueKey(media.id),
               direction: DismissDirection.endToStart,
               onDismissed: (_) => ref.read(audioHandlerProvider).endSession(),
-              child: _Pill(media: media, open: () => widget.router.push(_route(media))),
+              child: _Pill(media: media, open: () => openPlayerOn(widget.router, game: media.id.startsWith(gameMediaPrefix))),
             ),
           ),
       ],
     );
   }
 
-  static String _route(MediaItem media) => media.id.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz';
 }
 
 class _Pill extends ConsumerWidget {

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../purchases/shop.dart';
+import '../../core/open_player.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
@@ -75,28 +76,15 @@ List<ContentItem> pickPlaylist(
 /// must outlive the sheet that asked for it (the screen that opened the sheet).
 Future<void> startItem(BuildContext context, ContentItem item) async {
   final container = ProviderScope.containerOf(context, listen: false);
-  // Started from the player itself (next play, a play of the pack): the player stays one page,
-  // so no stack of players builds up behind it.
-  final here = GoRouter.of(context).routerDelegate.currentConfiguration.uri.path;
-  final fromPlayer = here == '/odtwarzacz' || here == '/gra';
   if (item.kind == ContentKind.interactiveGame) {
     unawaited(container.read(gameControllerProvider.notifier).start(item));
-    if (here == '/gra') return;
-    if (fromPlayer) {
-      context.pushReplacement('/gra');
-    } else {
-      await context.push('/gra');
-    }
+    if (context.mounted) await openPlayer(context, game: true);
     return;
   }
   try {
     await container.read(playbackControllerProvider).start(item, album: 'AudioKiddo');
-    if (!context.mounted || here == '/odtwarzacz') return;
-    if (fromPlayer) {
-      context.pushReplacement('/odtwarzacz');
-    } else {
-      await context.push('/odtwarzacz');
-    }
+    // One player page however it was started (next play, a play of the pack, the queue).
+    if (context.mounted) await openPlayer(context);
   } on Exception {
     if (context.mounted) {
       ScaffoldMessenger.of(context)
@@ -137,7 +125,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
 
   Future<void> _playAll(List<ContentItem> run) async {
     await ref.read(queueRunnerProvider.notifier).start(run);
-    if (widget.host.mounted) await widget.host.push('/odtwarzacz');
+    if (widget.host.mounted) await openPlayer(widget.host);
   }
 
   @override
@@ -222,7 +210,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
                   trailing: const Icon(Icons.play_circle_fill_rounded, color: ink, size: 34),
                   onTap: () => _go(
                     () => resume.loaded
-                        ? widget.host.push(resume.mediaId!.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz')
+                        ? openPlayer(widget.host, game: resume.mediaId!.startsWith(gameMediaPrefix))
                         : startItem(widget.host, resume.item!),
                   ),
                 ),

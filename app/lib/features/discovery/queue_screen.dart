@@ -1,8 +1,8 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../core/open_player.dart';
 import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/content_cover.dart';
 import 'discovery_model.dart';
@@ -115,7 +115,7 @@ class QueueScreen extends ConsumerWidget {
                         : () async {
                             await ref.read(queueRunnerProvider.notifier).start(items);
                             if (context.mounted && ref.read(queueRunnerProvider).running) {
-                              context.push('/odtwarzacz');
+                              openPlayer(context);
                             }
                           },
                     icon: Icon(run.running ? Icons.stop_rounded : Icons.play_arrow_rounded),

@@ -48,6 +48,8 @@ Statusy: **zrobione**, **w toku**, **pomysł**, **odrzucone**.
   - po zabawie w odtwarzaczu karta „Skrzynia otwarta!” albo „Jeszcze 2 zabawy do skrzyni”;
   - naklejki zostają jak były.
 - **Odtwarzacz nie piętrzy się:** „Następna z pakietu” podmienia bieżący odtwarzacz zamiast otwierać nowy.
+- **Jeden odtwarzacz naprawdę (16.10):** przyczyną była poprzednia poprawka. Po `push` router w `currentConfiguration.uri` dalej podaje stronę pod spodem (np. `/`), więc „jesteśmy w odtwarzaczu?” zawsze wychodziło „nie” i każda „Następna z pakietu” otwierała kolejny. Teraz `lib/core/open_player.dart` czyta prawdziwy stos stron: ten sam odtwarzacz na wierzchu nic nie robi, gra zastępuje odtwarzacz, kolejka otwarta z odtwarzacza wraca do niego. Używają go wszystkie wejścia (detale, kolejka, pasek na dole, mini odtwarzacz, plakietka, powitanie, „Co teraz?”). Test: `test/open_player_test.dart`.
+- **Powitanie Szop'ena bez wyskakiwania (16.10):** okienko „Dokończ / Posłuchaj / Losuj” nie pojawia się już po 1,5 s pod palcem rodzica. Zaraz po starcie zasłania Start krótka „kurtyna” (ok. 1,5 s): konfetti, Szop'en wskakuje, litery „AudioKiddo” spadają jedna po drugiej, podpis „Szop'en odkurza mikrofon…”. W tym czasie liczą się wiadomości, a arkusz wyjeżdża w chwili, gdy kurtyna opada. Dotknięcie pomija animację; przy „ograniczeniu ruchu” jest od razu gotowy obraz; gdy katalog się wlecze (4 s), powitania w tym starcie nie ma wcale. Kod: `LaunchCurtain` w `launch_greeting.dart`, test `test/launch_curtain_test.dart`.
 - **Statystyki bez danych dziecka:** zdarzenia zabaw nie niosą już wieku dziecka (Data safety: „nie zbieramy danych dziecka”).
 - **Google Play, Zawartość aplikacji:**
   - zapisane: polityka prywatności, reklamy (brak), identyfikator reklamowy (nie), instytucje państwowe, funkcje finansowe i zdrowie (nie);
@@ -157,7 +159,7 @@ Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
 | Rosnąca cena roczna dla późniejszych (+5 zł co miesiąc), start na Black Friday | **pomysł, do decyzji** | Opinia (14.10): tak, pod trzema warunkami: (1) gwarancja ceny dla już płacących (w sklepach zmiana tylko dla nowych klientów), (2) prawdziwa data i kwota kolejnej podwyżki, bez przekreślonych cen, (3) górny limit, np. 199,99 zł. Przykład: Black Friday 149,99 → +5 zł co miesiąc → limit 199,99. Strona z podsumowaniem: https://claude.ai/artifact/QexpmdjinESyeWMTjXWCwv |
 | Prezent: abonament 3 i 12 miesięcy bez odnawiania, kod plus karta PDF lub pocztówka | pomysł ★★★ | Wpisywanie kodu w aplikacji już działa |
 | Kody twórców (np. `SZOP-TATA`) z licznikiem w CRM | pomysł ★★ | |
-| Licencja dla przedszkoli | pomysł ★★ | |
+| Oferta dla przedszkoli i placówek | **do zrobienia (decyzja Dawida 16.10)** ★★ | Osobne warunki i osobny cennik, żeby jedna placówka (np. Fikołki) nie kupiła jednego abonamentu rodzinnego dla całego przedszkola. Do ustalenia: licencja na placówkę (liczba grup/dzieci), osobny produkt poza sklepami, regulamin zakazujący użycia komercyjnego w abonamencie rodzinnym, faktura z NIP |
 | Abonament przez stronę (cykliczny BLIK) | pomysł, etap 2 | |
 
 ### 3.2. Aplikacja
@@ -175,6 +177,7 @@ Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
 | Seria „Przygody Szop'ena” z oczekiwaniem na odcinek | pomysł ★★★ (treść) |
 | Przełącznik „Dziecko samo” → „Dziecko się bawi, ja obok” | pomysł ★ |
 | Prośba o ocenę także po udanej trasie i trzecim „Dobranoc” | pomysł ★★ |
+| Logowanie: pod przyciskiem „Zarejestruj się” krótki podpis dla osób, które jeszcze nie mają konta; „Zaloguj” zostaje tylko dla tych, które konto już mają | **do zrobienia (16.10)** ★★ |
 
 ### 3.3. Strona i sklepy
 
@@ -184,7 +187,9 @@ Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
 | W dniu premiery prawdziwe przyciski App Store i Google Play, kod QR | pomysł ★★★ |
 | Strony sytuacji pod reklamy: /w-droge/, /po-przedszkolu/, /chore-dziecko/ | pomysł ★★ |
 | 30 s dźwięku z prawdziwej trasy | pomysł ★★★ |
-| Podtytuł w sklepach słowami rodziców: „Zabawy w aucie i w domu. Dziecko odpowiada, nie tylko słucha.” | pomysł ★★ |
+| Podtytuł w sklepach słowami rodziców: „Zabawy w aucie i w domu. Dziecko odpowiada, nie tylko słucha.” (nazwa „audiozabawa” nie jest znana, więc nie na pierwszym miejscu w sklepie i reklamach) | **do zrobienia (16.10)**: wpisać w App Store i Google Play, zaktualizować `KARTA-DO-WKLEJENIA.md` i `SKLEPY.md` |
+| Mail premierowy do całej listy MailerLite | **do zrobienia (16.10)** ★★★ |
+| Reklamy według STRATEGII (plik ze strategią reklam) | **do zrobienia (16.10)** ★★★ |
 | Wydarzenia w App Store i Google Play dla cotygodniowych premier | pomysł ★★ |
 | Odpowiadanie na każdą opinię w 24 h (agent w CRM) | pomysł ★★ |
 
@@ -194,6 +199,7 @@ Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
 |---|---|
 | Tydzień testowy z dzienniczkiem (8–10 rodzin, w tym testerzy Google Play) | pomysł ★★★ |
 | Rozmowy z rodzicami według scenariusza z badań (min. 3 ojców) | pomysł ★★ |
+| Ankieta: „jak opisałbyś to znajomemu?” (test, czy rodzice w ogóle mówią „audiozabawa”) | **do zrobienia (16.10)** ★★ |
 | Rozmowa z „W PODSKOKACH” o wspólnej serii ruchowej | pomysł ★ |
 
 ---

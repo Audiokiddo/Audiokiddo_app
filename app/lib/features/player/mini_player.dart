@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../core/open_player.dart';
 import '../../core/theme/tokens.dart';
 import '../../l10n/app_localizations.dart';
 import 'playback_controller.dart';
@@ -23,7 +23,7 @@ class MiniPlayer extends ConsumerWidget {
     return Material(
       color: palette.surfaceMuted,
       child: InkWell(
-        onTap: () => context.push(media.id.startsWith(gameMediaPrefix) ? '/gra' : '/odtwarzacz'),
+        onTap: () => openPlayer(context, game: media.id.startsWith(gameMediaPrefix)),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.xs, AkSpace.xs, AkSpace.xs),
           child: Row(

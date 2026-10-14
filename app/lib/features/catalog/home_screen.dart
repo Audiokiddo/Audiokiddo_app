@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/open_player.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
 import '../../core/widgets/szop.dart';
@@ -972,7 +973,7 @@ class DinnerCard extends ConsumerWidget {
                 style: FilledButton.styleFrom(backgroundColor: ink, foregroundColor: Colors.white),
                 onPressed: () async {
                   await ref.read(queueRunnerProvider.notifier).start(picks);
-                  if (context.mounted && ref.read(queueRunnerProvider).running) context.push('/odtwarzacz');
+                  if (context.mounted && ref.read(queueRunnerProvider).running) openPlayer(context);
                 },
                 child: const Text('Włącz'),
               ),

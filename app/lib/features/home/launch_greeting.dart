@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../purchases/shop.dart';
+import '../../core/open_player.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
@@ -67,44 +68,39 @@ final launchGreetingEnabledProvider = Provider<bool>((ref) => true);
 final _random = math.Random();
 T _pick<T>(List<T> options) => options[_random.nextInt(options.length)];
 
-/// Shows Szop’en's welcome once per app start, a moment after Start appears. Not during the
-/// first welcome or the tour, not in kids mode, and never with "Komentarze Szop’ena" off.
+/// Szop’en's welcome, once per app start. A short curtain with his entrance covers Start while
+/// the news is worked out, and the sheet slides up the moment the curtain lifts, so nothing
+/// pops up under a thumb that has already reached for a tile. Not during the first welcome or
+/// the tour, not in kids mode, and never with "Komentarze Szop’ena" off.
 class LaunchGreeting extends ConsumerStatefulWidget {
   const LaunchGreeting({super.key});
 
   /// Once per launch, across rebuilds of Start.
   static bool shown = false;
 
+  /// How long the curtain stays at least (its entrance takes this long), and at most.
+  static const curtainTime = Duration(milliseconds: 1500);
+  static const curtainLimit = Duration(seconds: 4);
+
   @override
   ConsumerState<LaunchGreeting> createState() => _LaunchGreetingState();
 }
 
 class _LaunchGreetingState extends ConsumerState<LaunchGreeting> {
-  Timer? _timer;
-
   @override
   void initState() {
     super.initState();
     if (!LaunchGreeting.shown && ref.read(launchGreetingEnabledProvider)) {
-      _timer = Timer(const Duration(milliseconds: 1500), _maybeShow);
+      WidgetsBinding.instance.addPostFrameCallback((_) => _run());
     }
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  Future<void> _maybeShow() async {
-    if (!mounted || LaunchGreeting.shown) return;
-    final welcome = ref.read(welcomeProvider);
-    if (!welcome.done || welcome.tourPending || ref.read(kidsModeProvider).active) return;
-    final quiet = (await ref.read(discoveryProvider.future)).quiet;
-    final catalog = ref.read(catalogProvider).value;
-    if (quiet || catalog == null || !mounted) return;
+  /// What there is to say, or null (no catalog yet, nothing new).
+  Future<LaunchNews?> _news() async {
+    final catalog = await ref.read(catalogProvider.future);
+    if (!mounted) return null;
     final family = ref.read(familyProvider).value;
-    final news = launchNews(
+    return launchNews(
       catalog: catalog,
       resume: ref.read(resumeCardProvider),
       newItems: ref.read(newItemsProvider),
@@ -117,19 +113,249 @@ class _LaunchGreetingState extends ConsumerState<LaunchGreeting> {
       // Subscribers are not told what the subscription would open (only "Wkrótce" is locked).
       subscribed: ref.read(hasSubscriptionProvider),
     );
-    if (news.isEmpty) return;
+  }
+
+  Future<void> _run() async {
+    if (!mounted || LaunchGreeting.shown) return;
+    final welcome = ref.read(welcomeProvider);
+    if (!welcome.done || welcome.tourPending || ref.read(kidsModeProvider).active) return;
+    final quiet = (await ref.read(discoveryProvider.future)).quiet;
+    if (quiet || !mounted || LaunchGreeting.shown) return;
     LaunchGreeting.shown = true;
+
+    final nav = Navigator.of(context, rootNavigator: true);
+    final skip = Completer<void>();
+    final minimum = Future<void>.delayed(LaunchGreeting.curtainTime);
+    unawaited(
+      showGeneralDialog<void>(
+        context: context,
+        useRootNavigator: true,
+        barrierDismissible: false,
+        barrierColor: Colors.transparent,
+        transitionDuration: const Duration(milliseconds: 260),
+        // In at once (no flash of Start first), out with a fade while the sheet comes up.
+        transitionBuilder: (_, animation, _, child) => AnimatedBuilder(
+          animation: animation,
+          builder: (_, child) => Opacity(
+            opacity: animation.status == AnimationStatus.reverse ? animation.value : 1,
+            child: child,
+          ),
+          child: child,
+        ),
+        pageBuilder: (_, _, _) => PopScope(
+          canPop: false,
+          child: LaunchCurtain(onSkip: () => skip.isCompleted ? null : skip.complete()),
+        ),
+      ),
+    );
+
+    LaunchNews? news;
+    try {
+      news = await _news().timeout(LaunchGreeting.curtainLimit);
+    } on Object {
+      news = null; // slow or broken: no greeting this time rather than one that pops up late
+    }
+    await Future.any([minimum, skip.future]);
+    if (nav.canPop()) nav.pop();
+    if (news == null || news.isEmpty || !mounted) return;
     await showModalBottomSheet<void>(
       context: context,
       useRootNavigator: true,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (_) => _GreetingSheet(news: news, host: context),
+      builder: (_) => _GreetingSheet(news: news!, host: context),
     );
   }
 
   @override
   Widget build(BuildContext context) => const SizedBox.shrink();
+}
+
+/// Szop’en's entrance: a burst of confetti, him bouncing in, the name dropping in letter by
+/// letter. About a second and a half; a tap skips it.
+class LaunchCurtain extends StatefulWidget {
+  const LaunchCurtain({super.key, this.onSkip});
+
+  final VoidCallback? onSkip;
+
+  @override
+  State<LaunchCurtain> createState() => _LaunchCurtainState();
+}
+
+class _LaunchCurtainState extends State<LaunchCurtain> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: LaunchGreeting.curtainTime);
+  bool _started = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    // Reduced motion: the finished picture, no movement.
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _c.value = 1;
+    } else {
+      _c.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  static const _name = 'AudioKiddo';
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    final text = Theme.of(context).textTheme;
+    return Semantics(
+      label: 'AudioKiddo się uruchamia',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onSkip,
+        child: ColoredBox(
+          color: palette.background,
+          child: Center(
+            child: AnimatedBuilder(
+              animation: _c,
+              builder: (context, _) {
+                final t = _c.value;
+                final pop = Curves.elasticOut.transform(const Interval(0.04, 0.55).transform(t));
+                final tilt = (1 - Curves.easeOut.transform(const Interval(0, 0.5).transform(t))) * -.5;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 280,
+                      height: 220,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: _BurstPainter(const Interval(0.08, 0.85).transform(t)),
+                            ),
+                          ),
+                          Transform.translate(
+                            offset: Offset(0, (1 - pop.clamp(0, 1)) * 60),
+                            child: Transform.rotate(
+                              angle: tilt,
+                              child: Transform.scale(
+                                scale: .3 + .7 * pop,
+                                child: const SzopSticker(SzopPose.klaszcze, height: 170),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ExcludeSemantics(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (var i = 0; i < _name.length; i++)
+                                Builder(
+                                  builder: (_) {
+                                    final v = Curves.easeOutBack.transform(
+                                      Interval(
+                                        .32 + i * .035,
+                                        .62 + i * .035,
+                                        curve: Curves.linear,
+                                      ).transform(t),
+                                    );
+                                    return Opacity(
+                                      opacity: v.clamp(0, 1),
+                                      child: Transform.translate(
+                                        offset: Offset(0, (1 - v) * 26),
+                                        child: Text(
+                                          _name[i],
+                                          style: text.displaySmall?.copyWith(
+                                            fontWeight: FontWeight.w900,
+                                            color: i < 5 ? AkBrand.tealDeep : AkBrand.orange,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Opacity(
+                      opacity: const Interval(.7, 1).transform(t),
+                      child: Text(
+                        'Szop’en odkurza mikrofon…',
+                        style: text.bodyMedium?.copyWith(color: palette.inkMuted),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Confetti: dots and little stars flying out from the middle and fading.
+class _BurstPainter extends CustomPainter {
+  const _BurstPainter(this.t);
+
+  final double t;
+
+  static const _colors = [AkBrand.sun, AkBrand.teal, AkBrand.orange, AkBrand.lavender, AkBrand.coral];
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (t <= 0) return;
+    final centre = size.center(Offset.zero);
+    final out = Curves.easeOutCubic.transform(t);
+    const count = 18;
+    for (var i = 0; i < count; i++) {
+      final angle = i * 2 * math.pi / count + (i.isEven ? .12 : -.1);
+      final reach = 70 + (i % 3) * 26.0;
+      final pos = centre + Offset(math.cos(angle), math.sin(angle)) * (reach * out + 20);
+      final size = (i % 2 == 0 ? 9.0 : 13.0) * (1 - t * .7);
+      final paint = Paint()..color = _colors[i % _colors.length].withValues(alpha: (1 - t * t).clamp(0, 1));
+      if (i % 2 == 0) {
+        canvas.drawCircle(pos, size / 2, paint);
+      } else {
+        canvas
+          ..save()
+          ..translate(pos.dx, pos.dy)
+          ..rotate(t * 3 + i)
+          ..drawPath(_star(size), paint)
+          ..restore();
+      }
+    }
+  }
+
+  static Path _star(double r) {
+    final path = Path();
+    for (var k = 0; k < 8; k++) {
+      final radius = k.isEven ? r : r * .4;
+      final a = k * math.pi / 4;
+      final p = Offset(math.cos(a), math.sin(a)) * radius;
+      k == 0 ? path.moveTo(p.dx, p.dy) : path.lineTo(p.dx, p.dy);
+    }
+    return path..close();
+  }
+
+  @override
+  bool shouldRepaint(_BurstPainter old) => old.t != t;
 }
 
 class _GreetingSheet extends StatelessWidget {
@@ -167,7 +393,7 @@ class _GreetingSheet extends StatelessWidget {
           action: 'Dokończ',
           onTap: () => go(() {
             if (resume.loaded) {
-              host.push(resume.mediaId!.startsWith('game:') ? '/gra' : '/odtwarzacz');
+              openPlayer(host, game: resume.mediaId!.startsWith('game:'));
             } else {
               startItem(host, resume.item!);
             }
@@ -240,7 +466,13 @@ class _GreetingSheet extends StatelessWidget {
 }
 
 class _Line extends StatelessWidget {
-  const _Line({required this.icon, required this.color, required this.text, required this.action, required this.onTap});
+  const _Line({
+    required this.icon,
+    required this.color,
+    required this.text,
+    required this.action,
+    required this.onTap,
+  });
 
   final IconData icon;
   final Color color;
