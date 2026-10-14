@@ -105,11 +105,13 @@ def card(situation, color, ico, play, n):
     </div>"""
 
 
-def build_html() -> str:
+def build_html(only=None) -> str:
+    """The whole booklet, or with [only] one set's sheet (the app's reward cards)."""
     font = (ASSETS / "fonts").as_uri()
     szop = (ASSETS / "img" / "szop").as_uri()
     pages = []
-    pages.append(f"""
+    if only is None:
+      pages.append(f"""
   <section class="page cover">
     <p class="kicker">Audiokiddo · do wydrukowania</p>
     <h1>Karty ratunkowe <span>Szop’ena</span></h1>
@@ -129,7 +131,9 @@ def build_html() -> str:
     <p class="foot">audiokiddo.pl · Nela i Dawid, twórcy Audiokiddo</p>
   </section>""")
     n = 0
-    for situation, color, ico, line, plays in SETS:
+    for set_no, (situation, color, ico, line, plays) in enumerate(SETS):
+        if only is not None and set_no != only:
+            continue
         cards = []
         for play in plays:
             n += 1
@@ -139,7 +143,8 @@ def build_html() -> str:
     <header class="sheet-h">{icon(ico)}<h2>{e(situation)}</h2><p class="say"><img src="{szop}/chytry.webp" alt="">{e(line)}</p></header>
     <div class="grid">{''.join(cards)}</div>
   </section>""")
-    pages.append(f"""
+    if only is None:
+      pages.append(f"""
   <section class="page case">
     <p class="kicker">Bonus · mini śledztwo</p>
     <h1>Akta sprawy nr 1: <span>Kto zjadł ostatnie ciastko?</span></h1>
@@ -176,7 +181,8 @@ def build_html() -> str:
     <div class="solution"><p>Rozwiązanie: Szop’en. Ma łapki (odcisk), pisze koślawo (MNIAM) i zbiera skarpetki (skarpetka w paski). Okruszki zostawił, bo się spieszył. Przyznał się. Ciastka nie oddał.</p></div>
     <p class="more">Więcej takich spraw jest w pakiecie Detektyw w aplikacji Audiokiddo.</p>
   </section>""")
-    pages.append(f"""
+    if only is None:
+      pages.append(f"""
   <section class="page outro">
     <img class="outro-szop" src="{szop}/klaszcze.webp" alt="">
     <h1>Nie masz dziś siły czytać kart? <span>Audiokiddo przeczyta za Ciebie.</span></h1>
@@ -273,7 +279,28 @@ td.tc {{ width: 9mm; text-align: right; }}
 <body>{''.join(pages)}</body></html>"""
 
 
+APP_REWARDS = HERE.parent.parent / "app" / "assets" / "rewards"
+
+
+def pdf(html_text: str, target: pathlib.Path):
+    page = HERE / ".tmp-karta.html"
+    page.write_text(html_text, encoding="utf-8")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+                    "--allow-file-access-from-files", f"--print-to-pdf={target}", page.as_uri()],
+                   check=True, capture_output=True)
+    page.unlink()
+
+
 def main():
+    import sys
+    if "--app" in sys.argv:
+        # One sheet per set for the app's Adventure Map (a chest of Szop'en's rewards).
+        for n in range(len(SETS)):
+            target = APP_REWARDS / f"karty-{n + 1}.pdf"
+            pdf(build_html(only=n), target)
+            print(f"{target} ({target.stat().st_size // 1024} KB)")
+        return
     OUT_HTML.write_text(build_html(), encoding="utf-8")
     OUT_PDF.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",

@@ -44,7 +44,7 @@ void main() {
     });
   });
 
-  testWidgets('plan tab: child, stats, levels, today opens the day', (tester) async {
+  testWidgets('Więcej → Mapa przygód: steps, the next chest and an opened one', (tester) async {
     tester.view.physicalSize = const Size(1170, 2532);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -59,35 +59,23 @@ void main() {
       dailyMinutes: 10,
     );
     await db.writeValue('family_children', jsonEncode([zosia.toJson()]));
+    await db.writeValue(
+      'family_results',
+      jsonEncode([
+        for (var i = 0; i < 4; i++)
+          ActivityResult(childId: 'z', itemId: 'magiczny-sklep', at: DateTime(2026, 10, 1 + i), seconds: 300).toJson(),
+      ]),
+    );
     await tester.pumpWidget(ProviderScope(overrides: testOverrides(db), child: const AudioKiddoApp()));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.menu_rounded));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Plan rozwoju'));
+    await tester.tap(find.text('Mapa przygód'));
     await tester.pumpAndSettle();
-    expect(find.text('Dziś dla: Zosia'), findsOneWidget);
-    expect(find.text('DZIEŃ 1 Z 30 · POZNAJEMY SIĘ'), findsOneWidget);
-    expect(find.textContaining('ekranem w dół'), findsOneWidget, reason: 'the tip of day 1 on the card');
-
-    expect(find.text('Tydzień 1'), findsOneWidget);
-    await tester.tap(find.bySemanticsLabel('Dzień 1, dzisiaj. Otwórz zabawy.'));
-    await tester.pumpAndSettle();
-    expect(find.text('Dzień 1'), findsOneWidget);
-    await tester.tapAt(const Offset(20, 40)); // close the sheet
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.bySemanticsLabel('Dzień 2, zablokowany.'));
-    await tester.pump();
-    expect(find.textContaining('Najpierw skończcie dzień 1'), findsOneWidget);
-    await tester.pumpAndSettle();
-
-    expect(find.text('Co dziecko ćwiczy w zabawach'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.insights_rounded).first);
-    await tester.pumpAndSettle();
-    expect(find.text('Postęp: Zosia'), findsOneWidget);
-    expect(find.textContaining('Na razie jest tu cicho'), findsOneWidget);
-    expect(find.text('Wiek, cele i czas'), findsOneWidget);
+    expect(find.textContaining('Zosia: 4 kroki na mapie'), findsOneWidget);
+    expect(find.text('Sekret Szop’ena nr 1'), findsOneWidget, reason: 'chest 1 opened after 3 plays');
+    expect(find.text('Jeszcze 2 zabawy'), findsOneWidget, reason: 'chest 2 at step 6');
   });
 
   test('results are credited to the active child and move the plan on', () async {

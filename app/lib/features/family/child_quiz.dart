@@ -9,8 +9,8 @@ import '../../core/widgets/szop.dart';
 import '../../l10n/app_localizations.dart';
 import 'family.dart';
 
-/// The short parent quiz (about a minute per child): name (from the names Szop’en can say),
-/// age, goals, when you listen. Kiddo asks in a speech bubble, a progress bar shows how little is left.
+/// The short parent quiz (half a minute per child): the name (from the names Szop’en can say)
+/// and the age. Goals and situations are no longer asked (2026-10-15): every goal counts. Kiddo asks in a speech bubble, a progress bar shows how little is left.
 /// Several children: "Dodaj kolejne dziecko" on the summary starts the quiz again.
 class ChildQuiz extends ConsumerStatefulWidget {
   const ChildQuiz({super.key, required this.onDone, this.editing, this.allowSkip = true});
@@ -27,7 +27,7 @@ class ChildQuiz extends ConsumerStatefulWidget {
   ConsumerState<ChildQuiz> createState() => _ChildQuizState();
 }
 
-enum _Step { hello, name, age, goals, situations, summary }
+enum _Step { hello, name, age, summary }
 
 class _ChildQuizState extends ConsumerState<ChildQuiz> {
   late _Step _step = widget.editing == null ? _Step.hello : _Step.name;
@@ -65,19 +65,19 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
 
   bool get _canContinue => switch (_step) {
     _Step.age => _age != null,
-    _Step.goals => _goals.isNotEmpty,
     _ => true,
   };
 
   Future<void> _next() async {
-    if (_step == _Step.situations) {
+    if (_step == _Step.age) {
       final e = widget.editing;
       final child = ChildProfile(
         id: e?.id ?? newChildId(),
         name: _name.text.trim(),
         age: _age!,
         startedOn: e?.startedOn ?? DateTime.now(),
-        goals: {..._goals},
+        // Not asked any more: an edited child keeps theirs, a new one gets every goal.
+        goals: _goals.isEmpty ? DevGoal.values.toSet() : {..._goals},
         situations: {..._situations},
         // No longer asked (2026-10-14): what the parent had, or ten minutes.
         dailyMinutes: _minutes ?? 10,
@@ -118,8 +118,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
     _Step.hello => SzopPose.prosi,
     _Step.name => SzopPose.zadowolony,
     _Step.age => SzopPose.zdziwiony,
-    _Step.goals => SzopPose.chytry,
-    _Step.situations => SzopPose.nasluchuje,
     _Step.summary => SzopPose.klaszcze,
   };
 
@@ -127,8 +125,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
     _Step.hello || _Step.summary => AkBrand.sun,
     _Step.name => AkBrand.teal,
     _Step.age => AkBrand.orange,
-    _Step.goals => AkBrand.lavender,
-    _Step.situations => AkBrand.teal,
   };
 
   String _who(AppLocalizations l10n) => _name.text.trim().isEmpty ? l10n.quizYourChild : _name.text.trim();
@@ -141,8 +137,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
       _Step.hello => l10n.quizHello,
       _Step.name => l10n.quizName,
       _Step.age => l10n.quizAge(_who(l10n)),
-      _Step.goals => l10n.quizGoals,
-      _Step.situations => l10n.quizSituations,
       _Step.summary => l10n.quizSummary(_who(l10n), _minutes ?? 10),
     };
     return Scaffold(
@@ -262,7 +256,7 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
                     child: Text(switch (_step) {
                       _Step.hello => l10n.quizStart,
                       _Step.summary => l10n.quizFinish,
-                      _Step.situations when widget.editing != null => l10n.quizSave,
+                      _Step.age when widget.editing != null => l10n.quizSave,
                       _ => l10n.quizContinue,
                     }),
                   ),
@@ -276,28 +270,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
   }
 
   Widget _answers(BuildContext context, AppLocalizations l10n) {
-    Widget options<T>(
-      List<T> values,
-      bool Function(T) selected,
-      void Function(T) toggle,
-      String Function(T) label, {
-      String? Function(T)? hint,
-      IconData Function(T)? icon,
-    }) => ListView(
-      padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-      children: [
-        for (final (n, v) in values.indexed)
-          _Option(
-            color: _optionColors[n % _optionColors.length],
-            label: label(v),
-            hint: hint?.call(v),
-            icon: icon?.call(v),
-            selected: selected(v),
-            onTap: () => setState(() => toggle(v)),
-          ),
-      ],
-    );
-
     return switch (_step) {
       _Step.hello => ListView(
         padding: const EdgeInsets.all(AkSpace.m),
@@ -341,44 +313,6 @@ class _ChildQuizState extends ConsumerState<ChildQuiz> {
               onTap: () => setState(() => _age = a),
             ),
         ],
-      ),
-      _Step.goals => options<DevGoal>(
-        DevGoal.values,
-        _goals.contains,
-        (g) => _goals.contains(g) ? _goals.remove(g) : _goals.add(g),
-        (g) => switch (g) {
-          DevGoal.imagination => l10n.goalImagination,
-          DevGoal.language => l10n.goalLanguage,
-          DevGoal.logic => l10n.goalLogic,
-          DevGoal.listening => l10n.goalListening,
-          DevGoal.movement => l10n.goalMovement,
-          DevGoal.calm => l10n.goalCalm,
-        },
-        icon: (g) => switch (g) {
-          DevGoal.imagination => Icons.auto_awesome_rounded,
-          DevGoal.language => Icons.record_voice_over_rounded,
-          DevGoal.logic => Icons.extension_rounded,
-          DevGoal.listening => Icons.hearing_rounded,
-          DevGoal.movement => Icons.directions_run_rounded,
-          DevGoal.calm => Icons.bedtime_rounded,
-        },
-      ),
-      _Step.situations => options<Situation>(
-        Situation.values,
-        _situations.contains,
-        (s) => _situations.contains(s) ? _situations.remove(s) : _situations.add(s),
-        (s) => switch (s) {
-          Situation.podroz => l10n.situationPodroz,
-          Situation.przedSnem => l10n.situationPrzedSnem,
-          Situation.wDomu => l10n.situationWDomu,
-          Situation.czekanie => l10n.situationCzekanie,
-        },
-        icon: (s) => switch (s) {
-          Situation.podroz => Icons.directions_car_rounded,
-          Situation.przedSnem => Icons.nightlight_round,
-          Situation.wDomu => Icons.house_rounded,
-          Situation.czekanie => Icons.hourglass_bottom_rounded,
-        },
       ),
       _Step.summary => ListView(
         padding: const EdgeInsets.all(AkSpace.m),
@@ -428,8 +362,6 @@ class _Option extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
-    this.hint,
-    this.icon,
     this.big = false,
     this.color = AkBrand.teal,
   });
@@ -437,8 +369,6 @@ class _Option extends StatelessWidget {
   final Color color;
 
   final String label;
-  final String? hint;
-  final IconData? icon;
   final bool selected;
   final bool big;
   final VoidCallback onTap;
@@ -477,31 +407,7 @@ class _Option extends StatelessWidget {
                     )
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: AkSpace.m, vertical: 14),
-                      child: Row(
-                        children: [
-                          if (icon case final icon?) ...[
-                            ExcludeSemantics(
-                              child: CircleAvatar(
-                                radius: 20,
-                                backgroundColor: color.withValues(alpha: selected ? 1 : .16),
-                                child: Icon(icon, color: selected ? Colors.white : color),
-                              ),
-                            ),
-                            const SizedBox(width: AkSpace.m),
-                          ],
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(label, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-                                if (hint case final hint?)
-                                  Text(hint, style: text.bodySmall?.copyWith(color: palette.inkMuted)),
-                              ],
-                            ),
-                          ),
-                          if (selected) ExcludeSemantics(child: Icon(Icons.check_circle_rounded, color: color)),
-                        ],
-                      ),
+                      child: Text(label, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
                     ),
             ),
           ),
@@ -567,12 +473,8 @@ class _NamePickerState extends ConsumerState<_NamePicker> {
         ],
       );
     }
-    final names = ref.watch(recordedNamesProvider).value ?? const <String>[];
-    final query = _filter.text.trim().toLowerCase();
-    final shown = [
-      for (final n in names)
-        if (query.isEmpty || n.toLowerCase().startsWith(query)) n,
-    ];
+    final recorded = ref.watch(recordedNamesProvider).value;
+    final shown = recorded == null ? const <String>[] : searchNames(_filter.text, recorded);
     final picked = widget.controller.text;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -583,7 +485,7 @@ class _NamePickerState extends ConsumerState<_NamePicker> {
             controller: _filter,
             textCapitalization: TextCapitalization.words,
             decoration: const InputDecoration(
-              labelText: 'Szukaj imienia',
+              labelText: 'Wpisz imię, np. Zosia albo Zofia',
               prefixIcon: Icon(Icons.search_rounded),
             ),
             onChanged: (_) => setState(() {}),
@@ -592,12 +494,23 @@ class _NamePickerState extends ConsumerState<_NamePicker> {
         if (picked.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AkSpace.m),
-            child: Text('Szop’en powie: „Hej, $picked!”', style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
+            child: Text(
+              'Szop’en powie: „Hej, $picked!”',
+              style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
           ),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.m, AkSpace.m),
             children: [
+              if (shown.isEmpty && _filter.text.trim().isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AkSpace.s),
+                  child: Text(
+                    'Nie mamy tego imienia na liście. Wybierz „Nie ma imienia na liście” poniżej.',
+                    style: text.bodyMedium,
+                  ),
+                ),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,

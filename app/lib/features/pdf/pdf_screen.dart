@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:printing/printing.dart';
 
@@ -11,6 +12,8 @@ import '../downloads/download_providers.dart';
 
 /// Printable case file (pakiet Detektyw): the local copy when downloaded, otherwise fetched.
 final pdfBytesProvider = FutureProvider.autoDispose.family<Uint8List, AssetRef>((ref, asset) async {
+  // Bundled with the app (the Adventure Map's printable cards).
+  if (asset.path.startsWith('assets/')) return (await rootBundle.load(asset.path)).buffer.asUint8List();
   final local = await ref.watch(downloadManagerProvider).localFilePath(asset);
   if (local != null) return File(local).readAsBytes();
   final url = await ref.watch(contentUrlResolverProvider).urlFor(asset);

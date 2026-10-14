@@ -28,6 +28,7 @@ import 'player_providers.dart';
 import 'szop_after_play.dart';
 import '../referral/referral_nudge.dart';
 import '../stickers/stickers.dart';
+import '../rewards/adventure_map.dart';
 
 class PlayerScreen extends StatelessWidget {
   const PlayerScreen({super.key});
@@ -101,6 +102,7 @@ class _Player extends ConsumerWidget {
               ] else ...[
                 if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
                 if (item != null && state?.processingState == AudioProcessingState.completed) ...[
+                  const ChestAfterPlayCard(),
                   const NewStickerCard(),
                   _UpNext(after: item),
                   const ReferralNudge(),
@@ -170,6 +172,9 @@ class _Player extends ConsumerWidget {
                     ),
                   ],
                 ),
+                // The next play of the same pack, right under the controls: parents should not
+                // have to scroll down to find out there is more.
+                if (item != null) _NextInPack(item: item, onSeeAll: () => _showAll(context)),
                 const SizedBox(height: 20),
                 // Like music apps: where it plays, and one tap to a Bluetooth or AirPlay speaker.
                 const Center(child: AudioRouteChip()),
@@ -225,6 +230,7 @@ class _Player extends ConsumerWidget {
                 if (item != null) ...[
                   const SizedBox(height: 16),
                   PlaysByPack(
+                    key: _playsKey,
                     item: item,
                     title: state?.processingState == AudioProcessingState.completed
                         ? 'Przygoda skończona. Co dalej?'
@@ -237,6 +243,91 @@ class _Player extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Where "Wszystkie zabawy z pakietu" scrolls to.
+final _playsKey = GlobalKey();
+
+void _showAll(BuildContext context) {
+  final target = _playsKey.currentContext;
+  if (target != null) {
+    unawaited(Scrollable.ensureVisible(target, duration: const Duration(milliseconds: 450), curve: Curves.easeOutCubic));
+  }
+}
+
+/// "Następna z pakietu": the next playable play of [item]'s pack (after it, then from the
+/// start), as a bright row with a play button, and a link down to every play of the pack.
+class _NextInPack extends ConsumerWidget {
+  const _NextInPack({required this.item, required this.onSeeAll});
+
+  final ContentItem item;
+  final VoidCallback onSeeAll;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(catalogProvider).value;
+    final packId = item.packId;
+    if (catalog == null || packId == null) return const SizedBox.shrink();
+    final plays = catalog.itemsInPack(packId);
+    final at = plays.indexWhere((i) => i.id == item.id);
+    final order = [...plays.skip(at + 1), ...plays.take(at < 0 ? 0 : at)];
+    final next = order.where((i) => ref.watch(canPlayProvider(i))).firstOrNull;
+    if (next == null) return const SizedBox.shrink();
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
+    final pack = catalog.pack(packId);
+    return Padding(
+      padding: const EdgeInsets.only(top: 18),
+      child: Column(
+        children: [
+          Material(
+            color: AkBrand.sun,
+            borderRadius: BorderRadius.circular(20),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => startItem(context, next),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 10, 12, 10),
+                child: Row(
+                  children: [
+                    SizedBox.square(
+                      dimension: 52,
+                      child: ClipRRect(borderRadius: BorderRadius.circular(12), child: ItemArt(item: next)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Następna z pakietu${pack == null ? '' : ' ${pack.title}'}',
+                            style: text.labelMedium?.copyWith(color: ink, fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            next.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.play_circle_fill_rounded, size: 38, color: referencePurple),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          TextButton.icon(
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
+            onPressed: onSeeAll,
+            icon: const Icon(Icons.keyboard_double_arrow_down_rounded),
+            label: Text('Wszystkie zabawy z pakietu (${plays.length})'),
+          ),
+        ],
       ),
     );
   }

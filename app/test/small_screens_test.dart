@@ -115,8 +115,8 @@ void main() {
       await tester.scrollUntilVisible(find.text('Odbieram'), 200, scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text('Odbieram'));
       await tester.pumpAndSettle();
-      // The known child is confirmed: name, age, goals, situations.
-      for (var step = 0; step < 4; step++) {
+      // The known child is confirmed: name and age.
+      for (var step = 0; step < 2; step++) {
         expect(tester.takeException(), isNull, reason: 'quiz step ${step + 1} on $name');
         final next = find.byType(FilledButton).last;
         await tester.ensureVisible(next);

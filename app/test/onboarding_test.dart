@@ -144,13 +144,7 @@ void main() {
     expect(find.text('Ile lat ma Zosia?'), findsOneWidget);
     await tester.tap(find.text('6'));
     await tester.pumpAndSettle();
-    await next();
-    await tester.tap(find.text('Słownictwo i mowa'));
-    await tester.pumpAndSettle();
-    await next();
-    await tester.tap(find.text('W podróży'));
-    await tester.pumpAndSettle();
-    await next(); // no question about minutes a day any more
+    await next(); // only the name and the age are asked
     expect(find.textContaining('Plan dla: Zosia'), findsOneWidget);
     await tester.tap(find.text('Dodaj kolejne dziecko'));
     await tester.pumpAndSettle();
@@ -158,10 +152,6 @@ void main() {
     expect(find.text('Ile lat ma Twoje dziecko?'), findsOneWidget);
     await tester.tap(find.text('3'));
     await tester.pumpAndSettle();
-    await next();
-    await tester.tap(find.text('Wyciszenie przed snem'));
-    await tester.pumpAndSettle();
-    await next();
     await next();
     await tester.tap(find.text('Gotowe'));
     await tester.pumpAndSettle();

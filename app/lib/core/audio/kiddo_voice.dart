@@ -18,6 +18,9 @@ abstract interface class KiddoVoice {
   /// does not, so the line that follows simply goes without a name.
   Future<bool> sayName(String? name);
 
+  /// Plays a bundled recording by its full asset path (Szop’en's secrets); completes at its end.
+  Future<void> sayAsset(String asset);
+
   /// Fire-and-forget effect over anything else (pop, chime, whoosh).
   void effect(String sound);
 
@@ -56,23 +59,40 @@ class AssetKiddoVoice implements KiddoVoice {
   }();
 
   @override
+  Future<void> sayAsset(String asset) async {
+    try {
+      await _playToEnd(asset);
+    } on Exception {
+      // decorative
+    }
+  }
+
+  @override
   Future<bool> sayName(String? name) async {
     final file = nameClip(name, await _nameIndex());
     if (file == null) return false;
     try {
-      await _voice.setAsset('assets/audio/names/$file.m4a');
-      await _voice.play();
+      await _playToEnd('assets/audio/names/$file.m4a');
       return true;
     } on Exception {
       return false;
     }
   }
 
+  /// Plays [asset] and completes when it has ended. just_audio's play() returns at once while
+  /// the player still counts as playing (it stays "playing" after the previous clip ended), so
+  /// the player is stopped first; otherwise "Hej, Elena!" followed by a line let the next step
+  /// (a play) start over Szop’en's voice.
+  Future<void> _playToEnd(String asset) async {
+    await _voice.stop();
+    await _voice.setAsset(asset);
+    await _voice.play();
+  }
+
   @override
   Future<void> say(String line) async {
     try {
-      await _voice.setAsset(_asset(line));
-      await _voice.play();
+      await _playToEnd(_asset(line));
     } on Exception {
       // A missing voice must never block the app; the screen carries the same words.
     }
@@ -113,6 +133,9 @@ class SilentKiddoVoice implements KiddoVoice {
   Future<bool> sayName(String? name) async => false;
 
   @override
+  Future<void> sayAsset(String asset) async {}
+
+  @override
   void effect(String sound) {}
 
   @override
@@ -131,27 +154,77 @@ final kiddoVoiceProvider = Provider<KiddoVoice>((ref) {
 String? nameClip(String? name, Map<String, String> index) {
   final first = name?.trim().split(RegExp(r'\s+')).first.toLowerCase();
   if (first == null || first.isEmpty) return null;
-  return index[first];
+  final exact = index[first];
+  if (exact != null) return exact;
+  // "Lucja" typed without Polish letters still finds "łucja".
+  final plain = plainName(first);
+  for (final e in index.entries) {
+    if (plainName(e.key) == plain) return e.value;
+  }
+  return null;
 }
 
 /// The names Szop’en can say, as parents write them ("Zosia", "Łucja"), in Polish alphabetical
-/// order: the list the child quiz offers.
-final recordedNamesProvider = FutureProvider<List<String>>((ref) async {
-  try {
-    final json = jsonDecode(await rootBundle.loadString('assets/audio/names/index.json')) as Map<String, Object?>;
-    String cap(String n) => n.isEmpty ? n : n[0].toUpperCase() + n.substring(1);
-    const order = 'aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż';
-    int rank(String c) => order.indexOf(c);
-    int compare(String a, String b) {
-      for (var i = 0; i < a.length && i < b.length; i++) {
-        final d = rank(a[i]) - rank(b[i]);
-        if (d != 0) return d;
-      }
-      return a.length - b.length;
-    }
+/// order, with the related forms of each ("zofia" → ["zosia"]): the list the child quiz offers.
+typedef RecordedNames = ({List<String> names, Map<String, List<String>> related});
 
-    return [for (final n in json.keys.toList()..sort(compare)) cap(n)];
+final recordedNamesProvider = FutureProvider<RecordedNames>((ref) async {
+  try {
+    final index = jsonDecode(await rootBundle.loadString('assets/audio/names/index.json')) as Map<String, Object?>;
+    var related = const <String, List<String>>{};
+    try {
+      final groups = jsonDecode(await rootBundle.loadString('assets/audio/names/groups.json')) as Map<String, Object?>;
+      related = {for (final e in groups.entries) e.key: (e.value! as List).cast<String>()};
+    } on Exception {
+      // Search works without the related forms.
+    }
+    return (names: [for (final n in index.keys.toList()..sort(comparePolish)) capitalizeName(n)], related: related);
   } on Exception {
-    return const [];
+    return (names: const <String>[], related: const <String, List<String>>{});
   }
 });
+
+String capitalizeName(String n) => n.isEmpty ? n : n[0].toUpperCase() + n.substring(1);
+
+/// Polish alphabetical order (ą after a, ł after l…).
+int comparePolish(String a, String b) {
+  const order = 'aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż';
+  for (var i = 0; i < a.length && i < b.length; i++) {
+    final d = order.indexOf(a[i]) - order.indexOf(b[i]);
+    if (d != 0) return d;
+  }
+  return a.length - b.length;
+}
+
+/// "Łucja" → "lucja": typing without Polish letters still finds the name.
+String plainName(String s) {
+  const from = 'ąćęłńóśźż';
+  const to = 'acelnoszz';
+  final b = StringBuffer();
+  for (final ch in s.toLowerCase().split('')) {
+    final i = from.indexOf(ch);
+    b.write(i < 0 ? ch : to[i]);
+  }
+  return b.toString();
+}
+
+/// The names for what the parent typed: names starting with it first, then the usual short or
+/// full forms of those ("Zofia" brings "Zosia"), then names that merely contain it.
+List<String> searchNames(String query, RecordedNames recorded) {
+  final q = plainName(query.trim());
+  if (q.isEmpty) return recorded.names;
+  final starts = [
+    for (final n in recorded.names)
+      if (plainName(n).startsWith(q)) n,
+  ];
+  final relatedLower = {for (final n in starts) ...?recorded.related[n.toLowerCase()]};
+  final related = [
+    for (final n in recorded.names)
+      if (!starts.contains(n) && relatedLower.contains(n.toLowerCase())) n,
+  ];
+  final contains = [
+    for (final n in recorded.names)
+      if (q.length >= 2 && !starts.contains(n) && !related.contains(n) && plainName(n).contains(q)) n,
+  ];
+  return [...starts, ...related, ...contains];
+}

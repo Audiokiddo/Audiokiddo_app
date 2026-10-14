@@ -1,0 +1,615 @@
+{
+"adam": [
+"adaś"
+],
+"adaś": [
+"adam"
+],
+"aga": [
+"agnieszka"
+],
+"agnieszka": [
+"aga"
+],
+"ala": [
+"alicja"
+],
+"aleks": [
+"aleksander",
+"olek"
+],
+"aleksander": [
+"aleks",
+"olek"
+],
+"aleksandra": [
+"ola"
+],
+"alicja": [
+"ala"
+],
+"amelia": [
+"amelka"
+],
+"amelka": [
+"amelia"
+],
+"andrzej": [
+"andrzejek"
+],
+"andrzejek": [
+"andrzej"
+],
+"ania": [
+"aniela",
+"anielka",
+"anna"
+],
+"aniela": [
+"ania",
+"anielka",
+"anna"
+],
+"anielka": [
+"ania",
+"aniela",
+"anna"
+],
+"anna": [
+"ania",
+"aniela",
+"anielka"
+],
+"antek": [
+"antoni",
+"antoś"
+],
+"antoni": [
+"antek",
+"antoś"
+],
+"antonina": [
+"antosia",
+"tola",
+"tosia"
+],
+"antosia": [
+"antonina",
+"tola",
+"tosia"
+],
+"antoś": [
+"antek",
+"antoni"
+],
+"arek": [
+"arkadiusz"
+],
+"arkadiusz": [
+"arek"
+],
+"asia": [
+"joanna",
+"joasia"
+],
+"barbara": [
+"basia"
+],
+"bartek": [
+"bartosz"
+],
+"bartosz": [
+"bartek"
+],
+"basia": [
+"barbara"
+],
+"bolek": [
+"bolesław"
+],
+"bolesław": [
+"bolek"
+],
+"darek": [
+"dariusz"
+],
+"dariusz": [
+"darek"
+],
+"edek": [
+"edward"
+],
+"edward": [
+"edek"
+],
+"ela": [
+"elżbieta"
+],
+"elżbieta": [
+"ela"
+],
+"emilia": [
+"emilka"
+],
+"emilka": [
+"emilia"
+],
+"franciszek": [
+"franek",
+"franio"
+],
+"franciszka": [
+"frania"
+],
+"franek": [
+"franciszek",
+"franio"
+],
+"frania": [
+"franciszka"
+],
+"franio": [
+"franciszek",
+"franek"
+],
+"gabriela": [
+"gabrysia"
+],
+"gabrysia": [
+"gabriela"
+],
+"gosia": [
+"małgorzata"
+],
+"grzegorz": [
+"grześ"
+],
+"grześ": [
+"grzegorz"
+],
+"hania": [
+"hanka",
+"hanna"
+],
+"hanka": [
+"hania",
+"hanna"
+],
+"hanna": [
+"hania",
+"hanka"
+],
+"hela": [
+"helena",
+"helenka"
+],
+"helena": [
+"hela",
+"helenka"
+],
+"helenka": [
+"hela",
+"helena"
+],
+"henio": [
+"henryk"
+],
+"henryk": [
+"henio"
+],
+"ignacek": [
+"ignacy",
+"ignaś"
+],
+"ignacy": [
+"ignacek",
+"ignaś"
+],
+"ignaś": [
+"ignacek",
+"ignacy"
+],
+"iza": [
+"izabela"
+],
+"izabela": [
+"iza"
+],
+"jadwiga": [
+"jadzia"
+],
+"jadzia": [
+"jadwiga"
+],
+"jakub": [
+"kuba",
+"kubuś"
+],
+"jan": [
+"janek",
+"jaś"
+],
+"janek": [
+"jan",
+"jaś"
+],
+"jaś": [
+"jan",
+"janek"
+],
+"jerzy": [
+"jurek"
+],
+"joanna": [
+"asia",
+"joasia"
+],
+"joasia": [
+"asia",
+"joanna"
+],
+"julia": [
+"julka"
+],
+"julka": [
+"julia"
+],
+"jurek": [
+"jerzy"
+],
+"józef": [
+"józek"
+],
+"józek": [
+"józef"
+],
+"jędrek": [
+"jędrzej"
+],
+"jędrzej": [
+"jędrek"
+],
+"kajetan": [
+"kajtek"
+],
+"kajtek": [
+"kajetan"
+],
+"kasia": [
+"katarzyna"
+],
+"katarzyna": [
+"kasia"
+],
+"kazik": [
+"kazimierz",
+"kazio"
+],
+"kazimierz": [
+"kazik",
+"kazio"
+],
+"kazio": [
+"kazik",
+"kazimierz"
+],
+"konstanty": [
+"kostek"
+],
+"kornelia": [
+"kornelka"
+],
+"kornelka": [
+"kornelia"
+],
+"kostek": [
+"konstanty"
+],
+"krysia": [
+"krystyna"
+],
+"krystyna": [
+"krysia"
+],
+"krzysztof": [
+"krzyś"
+],
+"krzyś": [
+"krzysztof"
+],
+"kuba": [
+"jakub",
+"kubuś"
+],
+"kubuś": [
+"jakub",
+"kuba"
+],
+"lena": [
+"lenka"
+],
+"lenka": [
+"lena"
+],
+"leon": [
+"leoś"
+],
+"leoś": [
+"leon"
+],
+"liliana": [
+"lilianna",
+"lilka"
+],
+"lilianna": [
+"liliana",
+"lilka"
+],
+"lilka": [
+"liliana",
+"lilianna"
+],
+"maciej": [
+"maciek"
+],
+"maciek": [
+"maciej"
+],
+"madzia": [
+"magda",
+"magdalena"
+],
+"magda": [
+"madzia",
+"magdalena"
+],
+"magdalena": [
+"madzia",
+"magda"
+],
+"maja": [
+"majka"
+],
+"majka": [
+"maja"
+],
+"maks": [
+"maksymilian",
+"max"
+],
+"maksymilian": [
+"maks",
+"max"
+],
+"marcelina": [
+"marcelinka"
+],
+"marcelinka": [
+"marcelina"
+],
+"maria": [
+"marianna",
+"marysia"
+],
+"marianna": [
+"maria",
+"marysia"
+],
+"marysia": [
+"maria",
+"marianna"
+],
+"max": [
+"maks",
+"maksymilian"
+],
+"małgorzata": [
+"gosia"
+],
+"michalina": [
+"misia"
+],
+"michał": [
+"michałek"
+],
+"michałek": [
+"michał"
+],
+"mikołaj": [
+"mikołajek"
+],
+"mikołajek": [
+"mikołaj"
+],
+"misia": [
+"michalina"
+],
+"natalia": [
+"natalka"
+],
+"natalka": [
+"natalia"
+],
+"ola": [
+"aleksandra"
+],
+"olek": [
+"aleks",
+"aleksander"
+],
+"oliwia": [
+"oliwka"
+],
+"oliwka": [
+"oliwia"
+],
+"piotr": [
+"piotrek",
+"piotruś"
+],
+"piotrek": [
+"piotr",
+"piotruś"
+],
+"piotruś": [
+"piotr",
+"piotrek"
+],
+"przemek": [],
+"radek": [],
+"rozalia": [
+"rozalka",
+"róża"
+],
+"rozalka": [
+"rozalia",
+"róża"
+],
+"rysio": [
+"ryszard"
+],
+"ryszard": [
+"rysio"
+],
+"róża": [
+"rozalia",
+"rozalka"
+],
+"stanisław": [
+"staszek",
+"staś"
+],
+"stasia": [],
+"staszek": [
+"stanisław",
+"staś"
+],
+"staś": [
+"stanisław",
+"staszek"
+],
+"stefania": [
+"stefcia"
+],
+"stefcia": [
+"stefania"
+],
+"szymek": [
+"szymon"
+],
+"szymon": [
+"szymek"
+],
+"tadek": [
+"tadeusz",
+"tadzio"
+],
+"tadeusz": [
+"tadek",
+"tadzio"
+],
+"tadzio": [
+"tadek",
+"tadeusz"
+],
+"teodor": [
+"teoś"
+],
+"teoś": [
+"teodor"
+],
+"tola": [
+"antonina",
+"antosia",
+"tosia"
+],
+"tomasz": [
+"tomek"
+],
+"tomek": [
+"tomasz"
+],
+"tosia": [
+"antonina",
+"antosia",
+"tola"
+],
+"tymek": [
+"tymon",
+"tymoteusz"
+],
+"tymon": [
+"tymek",
+"tymoteusz"
+],
+"tymoteusz": [
+"tymek",
+"tymon"
+],
+"ula": [
+"urszula"
+],
+"urszula": [
+"ula"
+],
+"wacek": [
+"wacław"
+],
+"wacław": [
+"wacek"
+],
+"wera": [
+"weronika"
+],
+"weronika": [
+"wera"
+],
+"witek": [
+"witold"
+],
+"witold": [
+"witek"
+],
+"wojciech": [
+"wojtek",
+"wojtuś"
+],
+"wojtek": [
+"wojciech",
+"wojtuś"
+],
+"wojtuś": [
+"wojciech",
+"wojtek"
+],
+"władek": [
+"władysław"
+],
+"władysław": [
+"władek"
+],
+"zbigniew": [
+"zbyszek"
+],
+"zbyszek": [
+"zbigniew"
+],
+"zofia": [
+"zosia"
+],
+"zosia": [
+"zofia"
+],
+"zuzanka": [
+"zuzanna",
+"zuzia"
+],
+"zuzanna": [
+"zuzanka",
+"zuzia"
+],
+"zuzia": [
+"zuzanka",
+"zuzanna"
+]
+}

@@ -32,6 +32,35 @@ Statusy: **zrobione**, **w toku**, **pomysł**, **odrzucone**.
 
 ## 2. Dziennik zmian
 
+### 2026-10-15 (gałąź `claude/szop-glos-gry`)
+
+- **Dobranoc i podróż:** głos Szop'ena nie nakłada się już na zabawę. just_audio po zakończeniu klipu dalej uznaje, że gra, więc następne `play()` wracało od razu; teraz odtwarzacz zatrzymuje się przed każdą kwestią (`_playToEnd`).
+- **Imiona:**
+  - 339 nagranych imion (+164 za 1977 znaków), w tym Wacek i Zygmunt;
+  - wyszukiwanie po pierwszych literach, bez polskich znaków i z drugą formą imienia (Zofia i Zosia, Wacek i Wacław; `groups.json`);
+  - Szop'en rozpozna też imię wpisane bez polskich liter.
+- **Pierwsze pytania:** tylko imię i wiek. Pytania „co chcecie rozwijać” i „kiedy słuchacie” usunięte (nowe dziecko dostaje wszystkie cele).
+- **Profil dziecka:** imię i wiek ciemne na miętowej karcie (czytelne w ciemnym trybie).
+- **Odtwarzacz:** zaraz pod przyciskami żółta karta „Następna z pakietu …” (jedno dotknięcie) i „Wszystkie zabawy z pakietu (N)”, która przewija w dół.
+- **Mapa przygód Szop'ena** zamiast planu rozwoju (`/plan`, `lib/features/rewards/adventure_map.dart`):
+  - każda ukończona zabawa to krok, a co 3 kroki skrzynia;
+  - w skrzyniach na zmianę 2 sekrety Szop'ena (18 nagrań: zagadki, sekrety i zadania; `tool/reward_voice.py`, 1350 znaków) i karta do druku (6 arkuszy „Kart ratunkowych”; `strona/druk/karty.py --app`);
+  - po zabawie w odtwarzaczu karta „Skrzynia otwarta!” albo „Jeszcze 2 zabawy do skrzyni”;
+  - naklejki zostają jak były.
+
+### Kolejne kroki zaproponowane 15.10 (do decyzji)
+
+| # | Co | Po co |
+|---|---|---|
+| K1 | **Premiera Google:** dokończ weryfikację numeru telefonu w Play Console, potem aplikacja, test zamknięty 12 osób × 14 dni (tydzień testowy z dzienniczkiem) | Bez tego nie ma Androida na Black Friday |
+| K2 | **Premiera iOS:** konto Apple Developer (99 USD/rok), podpis, TestFlight dla tych samych rodzin | Wersja na 7 dni z darmowego konta wystarcza tylko do testów |
+| K3 | **Seria na premierę:** 4. pakiet + plan „2 nowe zabawy co tydzień” rozpisany na 8 tygodni | Obietnica abonamentu musi mieć pokrycie od pierwszego dnia |
+| K4 | **Skrzynie z nowościami:** co miesiąc nowe sekrety i karty (tanie: głos w ElevenLabs, karty z `karty.py`) | Dziecko ma na co czekać także po przesłuchaniu biblioteki |
+| K5 | **Tryb dla rodzeństwa** (kolejka imion, pytania na dwóch poziomach) | Częsta scena z badań, nikt tego nie rozwiązuje |
+| K6 | **Imię dziecka w zabawach** (nie tylko powitania): Szop'en mówi imię w środku przygody | Najmocniejszy moment „wow” do opinii i poleceń |
+| K7 | **Raport z trasy do udostępnienia** + polecenia (30 zł) | Organiczny wzrost i dowód działania |
+| K8 | **Strona 3.26.0** po połączeniu z 3.25.3 + kod QR do sklepów w dniu premiery | Sprzedaż tylko abonamentu również na www |
+
 ### 2026-10-14 (gałąź `claude/szop-glos-gry`)
 
 - **Odtwarzacz:** usunięty przełącznik „Słuchamy razem / Dziecko samo” i pytania do rozmowy po zabawie (komplikowały, decyzja Dawida).

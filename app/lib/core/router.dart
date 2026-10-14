@@ -8,7 +8,6 @@ import '../features/family_sharing/family_screen.dart';
 import '../features/catalog/details_screen.dart';
 import '../features/family/child_quiz.dart';
 import '../features/family/family.dart';
-import '../features/family/plan_screen.dart';
 import '../features/family/progress_screen.dart';
 import '../features/catalog/home_screen.dart';
 import '../features/catalog/library_filter.dart';
@@ -46,6 +45,7 @@ import '../features/pdf/case_file_screen.dart';
 import '../features/stickers/stickers.dart';
 import '../features/session/session_screens.dart';
 import '../features/about/features_screen.dart';
+import '../features/rewards/adventure_map.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
 /// until a parent passes the gate (ARCHITECTURE §12).
@@ -146,7 +146,8 @@ GoRouter buildRouter(
       path: '/historia',
       pageBuilder: (context, state) => swipePage(state, const CollectionScreen(history: true)),
     ),
-    GoRoute(path: '/plan', pageBuilder: (context, state) => swipePage(state, const PlanScreen())),
+    // The Adventure Map replaced the development plan (2026-10-15); the old plan stays in code.
+    GoRoute(path: '/plan', pageBuilder: (context, state) => swipePage(state, const AdventureMapScreen())),
     GoRoute(path: '/moje/narzedzia', pageBuilder: (context, state) => swipePage(state, const DevToolsScreen())),
     GoRoute(path: '/plan/postep', pageBuilder: (context, state) => swipePage(state, const ProgressScreen())),
     GoRoute(

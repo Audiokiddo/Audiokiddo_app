@@ -29,6 +29,38 @@ Emilia Emilka Liliana Lilka Helena Helenka Jagoda Milena Maria Marysia Michalina
 Ania Martyna Nikola Weronika Barbara Basia Klara Blanka Marcelina Kalina Stefania Stefcia Matylda Rozalia
 Ida Nina Ewa Kinga Emma Gaja Agata Karolina Magdalena Madzia Katarzyna Kasia Paulina Dominika Joanna Asia
 Marta Łucja Mila Lilianna Malwina Jaśmina Aurelia Melania Wiktoria Ksenia Adrianna Daria Elena Lea""".split()
+GIRLS_MORE = """Adela Agnieszka Aga Alina Amanda Anastazja Aniela Anielka Antosia Ariana Aurora Beata Bianka Celina
+Dagmara Dorota Elżbieta Ela Eliza Ewelina Felicja Franciszka Frania Małgorzata Gosia Hela Hanka Ilona Inga
+Irena Iwona Izabela Iza Jadwiga Jadzia Jagna Janina Joasia Józefina Julianna Justyna Kaja Kamila Karina
+Klaudia Kornelka Krystyna Krysia Laila Lara Leonia Liwia Lucyna Ludwika Magda Majka Malina Marcelinka
+Marianna Melisa Mira Monika Nela Olga Patrycja Paula Roksana Rozalka Róża Sara Sandra Sonia Stasia Tamara
+Tola Teresa Urszula Ula Wanda Wera Zoja Zuzanka Lilka Amelka""".split()
+BOYS_MORE = """Adaś Albert Aleksy Ambroży Andrzej Andrzejek Antoś Arkadiusz Arek Artur Beniamin Błażej Bolesław Bolek
+Cezary Damian Dariusz Darek Edward Edek Emil Emilian Ernest Florian Franio Fryderyk Grzegorz Grześ Gustaw
+Hugo Jacek Jerzy Jurek Joachim Jonasz Jędrzej Jędrek Kajtek Kazik Konstanty Kostek Kordian Kubuś Lech Leoś
+Leszek Lucjan Marcin Marek Mariusz Max Michałek Mieszko Nataniel Norbert Oliwer Piotrek Przemek Radek Rafał
+Robert Roman Ryszard Rysio Seweryn Staszek Stefan Szymek Tadek Tobiasz Tytus Wacław Wacek Władysław Władek
+Wojtuś Zbigniew Zbyszek Zygmunt Ziemowit Mikołajek Ignacek Leoś Franek Jaś""".split()
+
+# Typed name -> the forms parents may use instead ("Zofia" finds "Zosia" and back).
+GROUPS = [
+    "Zuzanna Zuzia Zuzanka", "Zofia Zosia", "Hanna Hania Hanka", "Julia Julka", "Oliwia Oliwka", "Alicja Ala",
+    "Lena Lenka", "Amelia Amelka", "Antonina Tosia Tola Antosia", "Aleksandra Ola", "Natalia Natalka",
+    "Gabriela Gabrysia", "Emilia Emilka", "Liliana Lilka Lilianna", "Helena Helenka Hela", "Maria Marysia Marianna",
+    "Michalina Misia", "Kornelia Kornelka", "Anna Ania Aniela Anielka", "Barbara Basia", "Marcelina Marcelinka",
+    "Stefania Stefcia", "Rozalia Rozalka Róża", "Magdalena Madzia Magda", "Katarzyna Kasia", "Joanna Asia Joasia",
+    "Agnieszka Aga", "Elżbieta Ela", "Franciszka Frania", "Małgorzata Gosia", "Izabela Iza", "Jadwiga Jadzia",
+    "Krystyna Krysia", "Urszula Ula", "Weronika Wera", "Stanisława Stasia", "Maja Majka",
+    "Antoni Antek Antoś", "Jan Janek Jaś", "Aleksander Olek Aleks", "Franciszek Franek Franio", "Jakub Kuba Kubuś",
+    "Stanisław Staś Staszek", "Wojciech Wojtek Wojtuś", "Ignacy Ignaś Ignacek", "Michał Michałek", "Tymoteusz Tymek Tymon",
+    "Maksymilian Maks Max", "Piotr Piotruś Piotrek", "Bartosz Bartek", "Kazimierz Kazio Kazik", "Henryk Henio",
+    "Krzysztof Krzyś", "Tomasz Tomek", "Józef Józek", "Witold Witek", "Maciej Maciek", "Teodor Teoś",
+    "Kajetan Kajtek", "Adam Adaś", "Andrzej Andrzejek", "Arkadiusz Arek", "Bolesław Bolek", "Dariusz Darek",
+    "Edward Edek", "Grzegorz Grześ", "Jerzy Jurek", "Jędrzej Jędrek", "Konstanty Kostek", "Leon Leoś",
+    "Ryszard Rysio", "Szymon Szymek", "Tadeusz Tadzio Tadek", "Wacław Wacek", "Władysław Władek",
+    "Zbigniew Zbyszek", "Mikołaj Mikołajek", "Przemysław Przemek", "Radosław Radek",
+]
+
 BOYS = """Antoni Antek Jan Janek Jaś Aleksander Olek Franciszek Franek Nikodem Jakub Kuba Stanisław Staś
 Szymon Filip Mikołaj Wojciech Wojtek Ignacy Ignaś Leon Kacper Michał Adam Tymon Mateusz Marcel Wiktor
 Tymoteusz Tymek Igor Maksymilian Maks Piotr Piotruś Bartosz Bartek Oskar Kazimierz Kazio Henryk Henio
@@ -45,7 +77,7 @@ def slug(name):
 
 def names():
     seen, out = set(), []
-    for n in GIRLS + BOYS:
+    for n in GIRLS + BOYS + GIRLS_MORE + BOYS_MORE:
         if n not in seen:
             seen.add(n)
             out.append(n)
@@ -73,6 +105,13 @@ def main():
         ui_voice.encode(ui_voice.eleven_speech(text, VOICE), target, normalize=True)
         index[name.lower()] = slug(name)
     (OUT / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=0, sort_keys=True) + "\n")
+    # Related forms for the search: only names that are recorded.
+    groups = {}
+    for line in GROUPS:
+        forms = [f.lower() for f in line.split() if f.lower() in index]
+        for f in forms:
+            groups[f] = sorted(set(groups.get(f, [])) | {g for g in forms if g != f})
+    (OUT / "groups.json").write_text(json.dumps(groups, ensure_ascii=False, indent=0, sort_keys=True) + "\n")
     total = sum(p.stat().st_size for p in OUT.glob("*.m4a"))
     print(f"{len(index)} plików, {total / 1024:.0f} KB w {OUT}")
 

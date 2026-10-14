@@ -60,6 +60,8 @@ flutter:
     - assets/audio/
     - assets/audio/kiddo/
     - assets/audio/names/
+    - assets/audio/rewards/
+    - assets/rewards/
     - assets/covers/
     - assets/szop/
     - assets/brand/

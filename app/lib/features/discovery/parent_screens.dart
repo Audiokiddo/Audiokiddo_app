@@ -47,7 +47,7 @@ class MoreScreen extends ConsumerWidget {
           (Icons.queue_music_rounded, 'Kolejka', '/kolejka'),
           (Icons.download_done_rounded, 'Pobrane', '/pobrane'),
           (Icons.history_rounded, 'Historia słuchania', '/historia'),
-          (Icons.route_rounded, 'Plan rozwoju', '/plan'),
+          (Icons.map_rounded, 'Mapa przygód', '/plan'),
         ])
           _tile(
             item.$3,
@@ -395,11 +395,13 @@ class ProfileScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // The mint card is light in both themes: dark ink on it.
                           Text(
                             child.name.isEmpty ? 'Twoje dziecko' : child.name,
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
                           ),
-                          Text('${child.age} lat'),
+                          Text('${child.age} lat', style: const TextStyle(color: Color(0xFF211C35))),
                         ],
                       ),
                     ),
@@ -565,12 +567,14 @@ class _EditProfileState extends ConsumerState<_EditProfile> {
         // Whether Szop’en can say this name (the recorded ones, tool/name_voice.py).
         Builder(
           builder: (context) {
-            final names = ref.watch(recordedNamesProvider).value ?? const <String>[];
+            final names = ref.watch(recordedNamesProvider).value?.names ?? const <String>[];
             final typed = name.text.trim().split(RegExp(r'\s+')).first;
             if (typed.isEmpty) return const SizedBox.shrink();
             final known = names.any((n) => n.toLowerCase() == typed.toLowerCase());
             return Text(
-              known ? 'Szop’en powie: „Hej, $typed!”' : 'Tego imienia Szop’en nie ma nagranego, więc nie będzie go mówił.',
+              known
+                  ? 'Szop’en powie: „Hej, $typed!”'
+                  : 'Tego imienia Szop’en nie ma nagranego, więc nie będzie go mówił.',
               style: Theme.of(context).textTheme.bodySmall,
             );
           },
