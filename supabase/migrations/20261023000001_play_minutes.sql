@@ -1,7 +1,7 @@
 -- Real minutes of play (decision 2026-10-13): how long a child really keeps listening, so the
 -- site and ads say only measured numbers. The app sends with every play event the sitting it
--- belongs to (plays with under 10 minutes between them), the child's age and the seconds the
--- sound was really on. Here they are added up per sitting and summarised by age group.
+-- belongs to (plays with under 10 minutes between them) and the seconds the sound was really on
+-- (no data about the child; the age group column stays for older events and reads 'bez profilu').
 
 create or replace function public.crm_play_minutes(p_days integer default 30)
 returns jsonb language plpgsql stable security definer set search_path = public as $$

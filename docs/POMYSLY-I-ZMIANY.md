@@ -47,6 +47,16 @@ Statusy: **zrobione**, **w toku**, **pomysł**, **odrzucone**.
   - w skrzyniach na zmianę 2 sekrety Szop'ena (18 nagrań: zagadki, sekrety i zadania; `tool/reward_voice.py`, 1350 znaków) i karta do druku (6 arkuszy „Kart ratunkowych”; `strona/druk/karty.py --app`);
   - po zabawie w odtwarzaczu karta „Skrzynia otwarta!” albo „Jeszcze 2 zabawy do skrzyni”;
   - naklejki zostają jak były.
+- **Odtwarzacz nie piętrzy się:** „Następna z pakietu” podmienia bieżący odtwarzacz zamiast otwierać nowy.
+- **Statystyki bez danych dziecka:** zdarzenia zabaw nie niosą już wieku dziecka (Data safety: „nie zbieramy danych dziecka”).
+- **Google Play, Zawartość aplikacji:**
+  - zapisane: polityka prywatności, reklamy (brak), identyfikator reklamowy (nie), instytucje państwowe, funkcje finansowe i zdrowie (nie);
+  - ocena IARC: PEGI 3, ESRB „Dla wszystkich”, Google Play „od 3 lat” (kategoria „inne aplikacje”, treści online, zakupy cyfrowe, produkt edukacyjny);
+  - Bezpieczeństwo danych: wersja robocza wg `SKLEPY.md`:
+    - zbierane są e-mail (funkcje, listy od Szop'ena, konto), identyfikator użytkownika (funkcje, analityka, konto), historia zakupów (funkcje) i interakcje (funkcje, analityka);
+    - nic nie jest udostępniane, dane są szyfrowane, konto usuwa się przez `https://audiokiddo.pl/usuwanie-konta/`;
+    - wysłać można dopiero po grupie docelowej;
+  - czeka na Dawida: dane logowania recenzenta, potem grupa docelowa (5 i mniej, 6–8, 9–12).
 
 ### Kolejne kroki zaproponowane 15.10 (do decyzji)
 
@@ -193,3 +203,7 @@ Z analizy z 13.10 i obu badań. Wpływ: ★★★ duży, ★ mały.
 - App Store Connect i Google Play: **wycofać ze sprzedaży** pakiety i zestawy (nie usuwać, żeby działało przywracanie zakupów).
 - Google Play Console: sprawdzić, że w subskrypcji jest włączona opcja **pauzy**.
 - Nowa wersja aplikacji w sklepach (testy zamknięte) z tymi zmianami.
+- Konto recenzenta Google/Apple:
+  - zaloguj się w aplikacji kodem z maila na osobny adres, a potem ustaw hasło (Więcej → Konto);
+  - uruchom `tool/grant_test_access.sh <adres>`;
+  - w Play Console wpisz adres i hasło w sekcji Zawartość aplikacji → Dane logowania.

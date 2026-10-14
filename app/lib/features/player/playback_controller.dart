@@ -66,10 +66,10 @@ class PlaybackController {
   DateTime? _lastActivity;
   static const sittingGap = Duration(minutes: 10);
 
-  /// Props every play event carries for the real-minutes measurement.
+  /// Props every play event carries for the real-minutes measurement. No data about the child
+  /// (not even the age): the store declarations say the app collects none.
   Map<String, Object?> _measure([_OpenPlay? open]) => {
     'sitting': ?_sitting,
-    'age': ?_ref.read(familyProvider).value?.active?.age,
     if (open != null) 'active_seconds': open.active.elapsed.inSeconds,
   };
 

@@ -77,7 +77,7 @@ Plik `app/ios/Runner/PrivacyInfo.xcprivacy` deklaruje to samo (zaktualizowany 6.
 | Dane osobowe: adres e-mail | Zbierane, **wymagane** (konto rodzica jest obowiązkowe od 10.2026), cel: zarządzanie kontem i działanie aplikacji |
 | Dane osobowe: identyfikatory użytkownika | Zbierane (losowe), cel: działanie aplikacji |
 | Informacje finansowe: historia zakupów | Zbierane, cel: działanie aplikacji |
-| Aktywność w aplikacji: interakcje w aplikacji | Zbierane, cel: analityka (własny serwer). Od 14.10.2026 zdarzenia zabaw niosą też **wiek dziecka w latach** (bez imienia) do pomiaru minut zabawy: zadeklarować jako „Inne informacje” albo usunąć wiek ze zdarzeń przed premierą |
+| Aktywność w aplikacji: interakcje w aplikacji | Zbierane, cel: analityka (własny serwer). Bez danych dziecka (wiek usunięty ze zdarzeń 15.10.2026) |
 | Imię dziecka | **Nie zbierane**: zostaje tylko w telefonie |
 | Dźwięk | **Nie zbierane** (przetwarzanie tylko na urządzeniu) |
 | Szyfrowanie danych w trakcie przesyłania | Tak |
