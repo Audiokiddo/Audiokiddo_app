@@ -112,12 +112,11 @@ class _QuickPickSheet extends ConsumerStatefulWidget {
 
 class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
   int _minutes = 30;
-  bool _car = false;
   int _seed = DateTime.now().millisecondsSinceEpoch;
 
   /// Closes the sheet, then acts from the screen below.
   void _go(Future<Object?> Function() action, {int plays = 1}) {
-    ref.read(eventSinkProvider).track(AppEvent.quickPick, props: {'minutes': _minutes, 'car': _car, 'plays': plays});
+    ref.read(eventSinkProvider).track(AppEvent.quickPick, props: {'minutes': _minutes, 'plays': plays});
     Navigator.of(context).pop();
     unawaited(action());
   }
@@ -147,7 +146,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
             catalog,
             minutes: _minutes,
             age: age,
-            car: _car,
+            car: false,
             heard: heard,
             seed: _seed,
             skip: resume?.item?.id ?? resume?.mediaId,
@@ -161,7 +160,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
             catalog,
             minutes: 100000,
             age: age,
-            car: _car,
+            car: false,
             canPlay: (_) => true,
           ).where((i) => !ref.watch(canPlayProvider(i))).length;
     const ink = Color(0xFF211C35);
@@ -233,13 +232,15 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
               ],
             ),
             const SizedBox(height: AkSpace.s),
-            SwitchListTile(
+            // In the car the trip mode takes over: a run for the whole ride, window breaks, the
+            // car screen (CarPlay / Android Auto) and nothing that needs paper, moving or a mic.
+            ListTile(
               contentPadding: EdgeInsets.zero,
-              secondary: Icon(Icons.directions_car_rounded, color: _car ? AkBrand.orange : palette.inkMuted),
+              leading: const Icon(Icons.directions_car_rounded, color: AkBrand.orange),
               title: const Text('Jedziemy autem'),
-              subtitle: const Text('Bez zabaw z kartką, wydrukiem, ruchem i mikrofonem'),
-              value: _car,
-              onChanged: (v) => setState(() => _car = v),
+              subtitle: const Text('Włącz tryb „W drogę”: zabawy na całą trasę, także na ekranie auta'),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => _go(() async => widget.host.push('/podroz?minuty=$_minutes')),
             ),
             const SizedBox(height: AkSpace.s),
             Row(
@@ -267,7 +268,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
                 ),
               ),
               child: Column(
-                key: ValueKey((_seed, _minutes, _car, run.length)),
+                key: ValueKey((_seed, _minutes, run.length)),
                 children: [
                   if (run.isEmpty)
                     Padding(

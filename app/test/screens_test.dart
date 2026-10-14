@@ -2,6 +2,8 @@ import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/features/catalog/home_screen.dart' show isSickSeason;
+import 'package:audiokiddo/features/home/quick_pick.dart' show showQuickPick;
+import 'package:audiokiddo/features/session/session_screens.dart' show TripScreen;
 import 'package:audiokiddo/features/parental_gate/gate_challenge.dart';
 import 'package:audiokiddo/features/parental_gate/parental_gate.dart';
 import 'package:go_router/go_router.dart';
@@ -122,6 +124,20 @@ void main() {
     }
     expect(find.text('Piosenki'), findsNothing, reason: 'no songs in the catalog yet, so no empty chip');
   });
+  testWidgets('"Co teraz?" → "Jedziemy autem" opens the trip mode with the chosen time', (tester) async {
+    await pumpApp(tester);
+    showQuickPick(tester.element(find.text('Co dziś robimy?')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('45 min'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Jedziemy autem'));
+    await tester.tap(find.text('Jedziemy autem'));
+    await tester.pumpAndSettle();
+    expect(find.byType(TripScreen), findsOneWidget);
+    final chip = tester.widget<ChoiceChip>(find.widgetWithText(ChoiceChip, '45 min'));
+    expect(chip.selected, isTrue);
+  });
+
   testWidgets('search from Start has a visible back action', (tester) async {
     await pumpApp(tester);
     await tester.tap(find.byTooltip('Szukaj zabawy'));

@@ -156,7 +156,11 @@ GoRouter buildRouter(
     ),
     GoRoute(path: '/plan/glos', pageBuilder: (context, state) => swipePage(state, const ParentVoiceScreen())),
     // The home-screen widget opens these through audiokiddo://open/dobranoc and /podroz.
-    GoRoute(path: '/podroz', pageBuilder: (context, state) => swipePage(state, const TripScreen())),
+    GoRoute(
+      path: '/podroz',
+      pageBuilder: (context, state) =>
+          swipePage(state, TripScreen(minutes: int.tryParse(state.uri.queryParameters['minuty'] ?? ''))),
+    ),
     GoRoute(path: '/dobranoc', pageBuilder: (context, state) => swipePage(state, const BedtimeScreen())),
     GoRoute(path: '/sesja', pageBuilder: (context, state) => swipePage(state, const SessionScreen())),
     GoRoute(path: '/polec', pageBuilder: (context, state) => swipePage(state, const ReferralScreen())),

@@ -49,6 +49,7 @@ Statusy: **zrobione**, **w toku**, **pomysł**, **odrzucone**.
 - **Usunięte pytanie** „Ile czasu dziennie na zabawę?” (zostaje dotychczasowa wartość albo 10 min).
 - **„Czy dziecko chce jeszcze?”:** przyciski „Nie dziś” i „Zapytam” widoczne w ciemnym trybie.
 - **Abonenci nie widzą ofert abonamentu:** ani okna po darmowej zabawie, ani „z abonamentem więcej” w losowaniu, ani powitania „w abonamencie czeka…”, ani banerów promocji (`hasSubscriptionProvider`).
+- **„Co teraz?” → „Jedziemy autem”:** zamiast filtra otwiera tryb „W drogę” z wybranym czasem (CarPlay i Android Auto włączają się same po podłączeniu telefonu do auta; aplikacja nie może ich uruchomić).
 - **Baza (14.10, wgrane):** migracje `20261022000001_bedtime_grace` i `20261023000001_play_minutes` są na serwerze.
 
 ### 2026-10-13 (gałąź `claude/szop-glos-gry`)

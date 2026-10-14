@@ -42,14 +42,17 @@ class _CloseToStart extends StatelessWidget {
 
 /// "W drogę": pick how long the ride is, see what Kiddo lined up, download it, go.
 class TripScreen extends ConsumerStatefulWidget {
-  const TripScreen({super.key});
+  const TripScreen({super.key, this.minutes});
+
+  /// The ride length chosen before (e.g. in "Co teraz?"), else 30 minutes.
+  final int? minutes;
 
   @override
   ConsumerState<TripScreen> createState() => _TripScreenState();
 }
 
 class _TripScreenState extends ConsumerState<TripScreen> {
-  int _minutes = 30;
+  late int _minutes = widget.minutes ?? 30;
   // Which of Szop'en's lines this ride gets; fixed while the screen is open.
   final int _variant = Random().nextInt(1 << 16);
 
