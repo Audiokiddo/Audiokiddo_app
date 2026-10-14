@@ -38,6 +38,14 @@ class FakeSessionAudio implements SessionAudio {
   Future<void> playClip(String path) async => log.add('clip:$path');
 
   @override
+  Future<void> skipCurrent() async {
+    log.add('skip');
+    final item = _item;
+    _item = null;
+    if (item != null && !item.isCompleted) item.complete();
+  }
+
+  @override
   Future<void> stop() async {
     final item = _item;
     _item = null;
@@ -237,6 +245,7 @@ void main() {
       await settle();
       expect(slow.read(sessionProvider).countdown, isNull, reason: 'chosen by the parent');
       expect(played(), 2);
+      expect(audio.log, contains('skip'), reason: 'next ends the step, it does not stop the audio service');
       // The one after that ends by itself, so the countdown is back.
       audio.finishItem();
       await settle();

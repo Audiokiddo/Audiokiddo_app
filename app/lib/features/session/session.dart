@@ -161,6 +161,10 @@ abstract interface class SessionAudio {
 
   Future<void> playClip(String path);
 
+  /// Ends only what plays now so the session moves on to its next step. Unlike [stop] it
+  /// leaves the audio service running: the next recording takes over the same player.
+  Future<void> skipCurrent();
+
   Future<void> stop();
 }
 
@@ -169,18 +173,36 @@ class AppSessionAudio implements SessionAudio {
 
   final Ref _ref;
 
+  /// Completed by [skipCurrent] while an item plays.
+  Completer<void>? _skipItem;
+
   @override
   Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero}) async {
     final handler = _ref.read(audioHandlerProvider);
+    final skip = _skipItem = Completer<void>();
     await _ref.read(playbackControllerProvider).start(item, album: 'AudioKiddo', fromStart: true);
     if (fadeOut > Duration.zero) handler.fadeOutAtEnd(fadeOut);
-    // Wait until this item actually runs, then until it is over (or stopped).
-    await handler.playbackState
+    // Wait until this item actually runs, then until it is over (or stopped, or skipped).
+    final over = handler.playbackState
         .firstWhere((s) => s.processingState == AudioProcessingState.ready)
-        .timeout(const Duration(seconds: 30), onTimeout: () => handler.playbackState.value);
-    await handler.playbackState.firstWhere(
-      (s) => s.processingState == AudioProcessingState.completed || s.processingState == AudioProcessingState.idle,
-    );
+        .timeout(const Duration(seconds: 30), onTimeout: () => handler.playbackState.value)
+        .then(
+          (_) => handler.playbackState.firstWhere(
+            (s) => s.processingState == AudioProcessingState.completed || s.processingState == AudioProcessingState.idle,
+          ),
+        );
+    await Future.any<Object?>([over, skip.future]);
+    if (identical(_skipItem, skip)) _skipItem = null;
+    // Paused here, before this call returns, so it can never land on the next recording.
+    if (skip.isCompleted) await handler.pause();
+  }
+
+  @override
+  Future<void> skipCurrent() async {
+    // Both voices are asked to stop before anything else can start (the next step may be a line).
+    await Future.wait([_ref.read(kiddoVoiceProvider).stop(), _ref.read(parentVoiceStoreProvider).stopPlayback()]);
+    final skip = _skipItem;
+    if (skip != null && !skip.isCompleted) skip.complete();
   }
 
   @override
@@ -380,8 +402,9 @@ class SessionController extends Notifier<SessionState> {
   /// Moves on to the next step; during the countdown, starts the next recording now.
   Future<void> skip() async {
     _skip = true;
-    // Stopping what plays ends the current step; the loop then starts the next one.
-    if (state.current != null && state.countdown == null) await ref.read(sessionAudioProvider).stop();
+    // Ending what plays ends the current step; the loop then starts the next one. Not stop():
+    // that shuts the audio service down just as the next recording starts on it.
+    if (state.current != null && state.countdown == null) await ref.read(sessionAudioProvider).skipCurrent();
   }
 
   Future<void> stop() async {
