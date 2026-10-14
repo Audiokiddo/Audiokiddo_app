@@ -15,6 +15,7 @@ import '../family/family.dart';
 import '../personal/personal_repository.dart';
 import '../kids_mode/kids_mode_setup.dart';
 import '../alerts/alerts.dart';
+import '../home/start_cards.dart';
 import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
@@ -105,6 +106,8 @@ class MoreScreen extends ConsumerWidget {
           trailing: const Icon(Icons.chevron_right_rounded),
           onTap: () => context.push('/ikona'),
         ),
+        const RefSection('Karty na Starcie'),
+        const StartCardsSwitches(),
         const RefSection('Powiadomienia'),
         const ReminderTile(),
         const AlertsSwitch(),

@@ -6,6 +6,7 @@ import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/features/parent_voice/parent_voice.dart';
+import 'package:audiokiddo/features/session/plan.dart';
 import 'package:audiokiddo/features/session/session.dart';
 import 'package:audiokiddo/features/session/session_screens.dart' show tripSummary;
 import 'package:flutter/material.dart';
@@ -203,6 +204,32 @@ void main() {
       expect(state.finished, isTrue);
       expect(state.minutesTaken, isNotNull);
       expect(tripSummary(47), 'Trasa: 47 min zabaw. Wpisuję do protokołu.');
+    });
+
+    test('the parent edits the plays ahead while the ride runs, the one playing stays', () async {
+      final session = container.read(sessionProvider.notifier);
+      final other = catalog.items.where((i) => i.audio.isNotEmpty).toList();
+      final a = other[0], b = other[1], c = other[2], d = other[3];
+      unawaited(session.start(SessionKind.trip, [ItemStep(a), ItemStep(b), ItemStep(c), const LineStep('trip_end')]));
+      await settle();
+      expect(container.read(sessionProvider).index, 0);
+      expect(session.editFrom, 1);
+      List<String> ahead() => [for (final i in playsFrom(container.read(sessionProvider).steps, session.editFrom)) i.id];
+      expect(ahead(), [b.id, c.id]);
+      session.replacePlay(0, d);
+      expect(ahead(), [d.id, c.id]);
+      session.reorderPlays(0, 1);
+      expect(ahead(), [c.id, d.id]);
+      session.removePlay(1);
+      expect(ahead(), [c.id]);
+      session.addPlays([b]);
+      expect(ahead(), [c.id, b.id]);
+      // The play now is still the first one; moving on plays what was arranged.
+      expect((container.read(sessionProvider).current as ItemStep).item.id, a.id);
+      await session.skip();
+      await settle();
+      expect(audio.log.where((l) => l.startsWith('item:')).last, 'item:${c.id}');
+      await session.stop();
     });
 
     test('skip moves on, stop ends everything', () async {

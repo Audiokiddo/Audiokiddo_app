@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/storage/storage_providers.dart';
 import '../../core/theme/tokens.dart';
 import '../catalog/catalog_providers.dart';
+import '../home/start_cards.dart';
 import '../catalog/widgets/item_art.dart';
 import '../insights/events.dart';
 import '../reminders/reminders.dart';
@@ -209,7 +210,9 @@ class PremiereCountdown extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final now = ref.watch(clockProvider)();
     final next = ref.watch(upcomingItemsProvider).firstOrNull;
-    if (next == null || next.releasedOn!.difference(now).inDays >= 14) return const SizedBox.shrink();
+    if (next == null || next.releasedOn!.difference(now).inDays >= 14 || startCardClosed(ref, 'premiere')) {
+      return const SizedBox.shrink();
+    }
     final on = ref.watch(alertsOptInProvider).value ?? false;
     final text = Theme.of(context).textTheme;
     return Padding(
@@ -251,6 +254,7 @@ class PremiereCountdown extends ConsumerWidget {
                   },
                   icon: const Icon(Icons.notifications_none_rounded, color: AkBrand.tealDeep),
                 ),
+              const StartCardClose(id: 'premiere'),
             ],
           ),
         ),

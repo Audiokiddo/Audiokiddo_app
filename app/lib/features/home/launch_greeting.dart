@@ -11,6 +11,7 @@ import '../../core/open_player.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
+import '../catalog/home_screen.dart' show AudioKiddoLogo;
 import '../catalog/seasonal.dart';
 import '../discovery/discovery_model.dart';
 import '../family/family.dart' hide progressProvider;
@@ -205,8 +206,6 @@ class _LaunchCurtainState extends State<LaunchCurtain> with SingleTickerProvider
     super.dispose();
   }
 
-  static const _name = 'AudioKiddo';
-
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -253,43 +252,18 @@ class _LaunchCurtainState extends State<LaunchCurtain> with SingleTickerProvider
                       ),
                     ),
                     const SizedBox(height: 8),
-                    ExcludeSemantics(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28),
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              for (var i = 0; i < _name.length; i++)
-                                Builder(
-                                  builder: (_) {
-                                    final v = Curves.easeOutBack.transform(
-                                      Interval(
-                                        .32 + i * .035,
-                                        .62 + i * .035,
-                                        curve: Curves.linear,
-                                      ).transform(t),
-                                    );
-                                    return Opacity(
-                                      opacity: v.clamp(0, 1),
-                                      child: Transform.translate(
-                                        offset: Offset(0, (1 - v) * 26),
-                                        child: Text(
-                                          _name[i],
-                                          style: text.displaySmall?.copyWith(
-                                            fontWeight: FontWeight.w900,
-                                            color: i < 5 ? AkBrand.tealDeep : AkBrand.orange,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                            ],
+                    // The real logo drops in and settles; no lettering of its own.
+                    Builder(
+                      builder: (_) {
+                        final v = Curves.easeOutBack.transform(const Interval(.3, .7).transform(t));
+                        return Opacity(
+                          opacity: v.clamp(0, 1),
+                          child: Transform.translate(
+                            offset: Offset(0, (1 - v) * 24),
+                            child: Transform.scale(scale: .85 + .15 * v, child: const AudioKiddoLogo(height: 64)),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 10),
                     Opacity(

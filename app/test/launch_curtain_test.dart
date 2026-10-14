@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:audiokiddo/core/theme/app_theme.dart';
+import 'package:audiokiddo/features/catalog/home_screen.dart' show AudioKiddoLogo;
 import 'package:audiokiddo/features/home/launch_greeting.dart';
 
 void main() {
@@ -24,7 +25,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 600));
       await tester.pump(LaunchGreeting.curtainTime);
       expect(find.text('Szop’en odkurza mikrofon…'), findsOneWidget);
-      expect(find.text('A'), findsOneWidget);
+      expect(find.byType(AudioKiddoLogo), findsOneWidget, reason: 'the real logo, not lettering');
       expect(tester.takeException(), isNull);
     }
     await tester.binding.setSurfaceSize(null);

@@ -49,7 +49,10 @@ void main() {
     await pump(tester);
     await tester.tap(find.byIcon(Icons.auto_stories_outlined));
     await tester.pumpAndSettle();
-    await expectAccessible(tester);
+    await expectAccessible(tester); // "Wszystkie zabawy", the flat list
+    await tester.tap(find.text('Pakiety').first);
+    await tester.pumpAndSettle();
+    await expectAccessible(tester); // packs and categories
     handle.dispose();
   });
 
@@ -57,6 +60,8 @@ void main() {
     final handle = tester.ensureSemantics();
     await pump(tester);
     await tester.tap(find.byIcon(Icons.auto_stories_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Pakiety').first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('3–5 lat'));
     await tester.pumpAndSettle();
@@ -97,6 +102,8 @@ void main() {
       await pump(tester);
       await expectAccessible(tester);
       await tester.tap(find.byIcon(Icons.auto_stories_outlined));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Pakiety').first);
       await tester.pumpAndSettle();
       // The quick filters on top of the library: an age band opens the list of plays.
       await tester.tap(find.text('3–5 lat'));

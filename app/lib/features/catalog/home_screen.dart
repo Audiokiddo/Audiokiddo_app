@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/open_player.dart';
+import '../home/start_cards.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
 import '../../core/widgets/szop.dart';
@@ -29,7 +29,6 @@ import '../purchases/store_gateway.dart';
 import '../downloads/download_providers.dart';
 import 'catalog_providers.dart';
 import 'library_filter.dart';
-import '../discovery/queue_controller.dart';
 import 'seasonal.dart';
 import 'widgets/item_art.dart';
 import '../home/launch_greeting.dart';
@@ -823,7 +822,7 @@ class FavoriteCard extends ConsumerWidget {
     final catalog = ref.watch(catalogProvider).value;
     final family = ref.watch(familyProvider).value;
     final child = family?.active;
-    if (catalog == null || child == null) return const SizedBox.shrink();
+    if (catalog == null || child == null || startCardClosed(ref, 'favorite')) return const SizedBox.shrink();
     final id = favoritePlayId(family!.results, child.id);
     final item = id == null ? null : catalog.item(id);
     if (item == null || !ref.watch(canPlayProvider(item))) return const SizedBox.shrink();
@@ -864,6 +863,7 @@ class FavoriteCard extends ConsumerWidget {
                     ),
                   ),
                   FilledButton(onPressed: () => startItem(context, item), child: const Text('Jeszcze raz')),
+                  const StartCardClose(id: 'favorite'),
                 ],
               ),
               if (more > 0)
@@ -928,7 +928,7 @@ class DinnerCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final now = ref.watch(clockProvider)();
     final catalog = ref.watch(catalogProvider).value;
-    if (catalog == null || !isDinnerWindow(now)) return const SizedBox.shrink();
+    if (catalog == null || !isDinnerWindow(now) || startCardClosed(ref, 'dinner')) return const SizedBox.shrink();
     final family = ref.watch(familyProvider).value;
     final child = family?.active;
     final picks = dinnerPicks(
@@ -950,34 +950,40 @@ class DinnerCard extends ConsumerWidget {
       child: Material(
         color: const Color(0xFFFFE3C2),
         borderRadius: BorderRadius.circular(22),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-          child: Row(
-            children: [
-              const Icon(Icons.restaurant_rounded, color: ink, size: 30),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Obiad bez wołania', style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800)),
-                    Text(
-                      '${playsCount(picks.length)} bez przygotowań, razem $minutes min. Jedna po drugiej.',
-                      style: text.bodySmall?.copyWith(color: ink),
-                    ),
-                  ],
+        // The whole card opens the plan, not only the button.
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
+          onTap: () => context.push('/obiad'),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 6, 14),
+            child: Row(
+              children: [
+                const Icon(Icons.restaurant_rounded, color: ink, size: 30),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Obiad bez wołania',
+                        style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                      ),
+                      Text(
+                        '${playsCount(picks.length)} bez przygotowań, razem $minutes min. Jedna po drugiej.',
+                        style: text.bodySmall?.copyWith(color: ink),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                style: FilledButton.styleFrom(backgroundColor: ink, foregroundColor: Colors.white),
-                onPressed: () async {
-                  await ref.read(queueRunnerProvider.notifier).start(picks);
-                  if (context.mounted && ref.read(queueRunnerProvider).running) openPlayer(context);
-                },
-                child: const Text('Włącz'),
-              ),
-            ],
+                const SizedBox(width: 8),
+                FilledButton(
+                  style: FilledButton.styleFrom(backgroundColor: ink, foregroundColor: Colors.white),
+                  onPressed: () => context.push('/obiad'),
+                  child: const Text('Plan'),
+                ),
+                const StartCardClose(id: 'dinner', color: ink),
+              ],
+            ),
           ),
         ),
       ),

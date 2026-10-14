@@ -321,18 +321,23 @@ class AudioRow extends ConsumerWidget {
           Expanded(
             child: InkWell(
               onTap: () => context.push('/zabawa/${item.id}'),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item.title, style: Theme.of(context).textTheme.titleSmall),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle ??
-                        '${(item.durationSec / 60).ceil()} min · ${item.ageMin}${item.ageMax == null ? '+' : '–${item.ageMax}'} lat',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  ListenedBar(item: item),
-                ],
+              // As tall as the cover, so the tap area is never under 48.
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 64),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.title, style: Theme.of(context).textTheme.titleSmall),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle ??
+                          '${(item.durationSec / 60).ceil()} min · ${item.ageMin}${item.ageMax == null ? '+' : '–${item.ageMax}'} lat',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    ListenedBar(item: item),
+                  ],
+                ),
               ),
             ),
           ),

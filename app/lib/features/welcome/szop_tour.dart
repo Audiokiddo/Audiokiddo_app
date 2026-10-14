@@ -106,6 +106,16 @@ const tourStops = <TourStop>[
     branch: 0,
     target: null,
     slot: null,
+    pose: SzopPose.chytry,
+    title: 'Gesty',
+    body:
+        'Od lewej krawędzi w prawo: wracasz (z zakładki na Start). Odtwarzacz pociągnij w dół, a się schowa. '
+        'Pasek z grającą zabawą przesuń w bok, a zniknie. Dziecięcy ekran zamkniesz długim przytrzymaniem.',
+  ),
+  (
+    branch: 0,
+    target: null,
+    slot: null,
     pose: SzopPose.klaszcze,
     title: 'Gotowe.',
     body: 'Zacznijcie od darmowej zabawy na Starcie. Ja będę w pobliżu.',

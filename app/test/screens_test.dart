@@ -43,8 +43,11 @@ Future<void> pumpApp(
 Finder get mainScroll =>
     find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first;
 
+/// Opens the library on its pack view ("Wszystkie zabawy", the flat list, is the way in).
 Future<void> openLibrary(WidgetTester tester) async {
   await tester.tap(find.byIcon(Icons.auto_stories_outlined));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Pakiety').first);
   await tester.pumpAndSettle();
 }
 
@@ -87,6 +90,22 @@ void main() {
     expect(find.text('Darmowe zabawy z pakietów'), findsOneWidget);
     expect(find.textContaining('za darmo'), findsWidgets);
     expect(find.text('Wasz pakiet'), findsNothing);
+  });
+
+  testWidgets('library opens on "Wszystkie zabawy": one flat list with a search that finds a play', (tester) async {
+    await pumpApp(tester);
+    await tester.tap(find.byIcon(Icons.auto_stories_outlined));
+    await tester.pumpAndSettle();
+    expect(find.text('Wszystkie zabawy'), findsOneWidget);
+    expect(find.text('Moje pakiety'), findsNothing, reason: 'packs are the other view');
+    expect(find.byType(TextField), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'magiczny');
+    await tester.pumpAndSettle();
+    expect(find.text('Magiczny sklep'), findsOneWidget);
+    expect(find.text('Zaginiony skarb'), findsNothing);
+    await tester.enterText(find.byType(TextField), 'zzzzqq');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Nie znaleźliśmy takiej zabawy'), findsOneWidget);
   });
 
   testWidgets('library: a subscriber opens "Moje pakiety" and sees every pack', (tester) async {
@@ -142,6 +161,7 @@ void main() {
     await pumpApp(tester);
     await tester.tap(find.byTooltip('Szukaj zabawy'));
     await tester.pumpAndSettle();
+    expect(find.text('Wpisz tytuł zabawy lub piosenki'), findsOneWidget, reason: 'the flat list with its search field');
     expect(find.byTooltip('Wróć'), findsOneWidget);
     await tester.tap(find.byTooltip('Wróć'));
     await tester.pumpAndSettle();

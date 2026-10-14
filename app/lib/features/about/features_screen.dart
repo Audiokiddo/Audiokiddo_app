@@ -83,6 +83,14 @@ class FeaturesScreen extends ConsumerWidget {
         () => context.push('/naklejki'),
       ),
       (
+        Icons.swipe_rounded,
+        'Gesty w aplikacji',
+        'Od lewej krawędzi w prawo: cofasz się, a z zakładki wracasz na Start. Odtwarzacz pociągnij w dół, żeby go schować. '
+            'Pasek z grającą zabawą i Szop’ena na Starcie przesuń w bok, żeby je odesłać. Karty na Starcie zamkniesz krzyżykiem. '
+            'Ekran dla dziecka i zabawę głosową zamykasz długim przytrzymaniem.',
+        null,
+      ),
+      (
         Icons.auto_awesome_rounded,
         'Co tydzień nowe',
         'W abonamencie co tydzień dochodzą 2 nowe zabawy. Zapowiedzi widać na Starcie.',

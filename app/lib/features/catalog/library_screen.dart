@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../welcome/szop_tour.dart';
+import '../welcome/welcome_controller.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
@@ -18,6 +19,7 @@ import '../purchases/purchase_controller.dart';
 import '../purchases/shop_screen.dart';
 import '../purchases/store_gateway.dart';
 import '../insights/events.dart';
+import 'all_plays.dart';
 import 'catalog_providers.dart';
 import 'library_filter.dart';
 import 'widgets/catalog_loader.dart';
@@ -38,6 +40,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   String _search = '';
   bool _searching = false;
   Timer? _searchPause;
+
+  /// "Wszystkie zabawy" (a flat list with search) or "Pakiety i kategorie"; the first is the
+  /// way in, because parents come to find one play fast.
+  bool _all = true;
+
+  /// Bumped when the search icon is tapped, so the field of the flat list takes the keyboard.
+  int _focusAll = 0;
 
   @override
   void dispose() {
@@ -76,12 +85,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final f = widget.filter;
-    final searching = _searching || GoRouterState.of(context).uri.queryParameters['szukaj'] == '1';
-    final browsing = f.isEmpty && !searching;
+    final filtered = !f.isEmpty;
+    final wantsSearch = GoRouterState.of(context).uri.queryParameters['szukaj'] == '1';
+    final searching = filtered && (_searching || wantsSearch);
     return Scaffold(
       appBar: AppBar(
-        title: Text(browsing ? 'Biblioteka' : _title(f)),
-        leading: browsing
+        title: Text(filtered ? _title(f) : 'Biblioteka'),
+        // A way back also when the library was opened by the search icon on Start.
+        leading: !filtered && !wantsSearch
             ? null
             : IconButton(
                 tooltip: 'Wróć',
@@ -94,8 +105,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   });
                   if (context.canPop()) {
                     context.pop();
-                  } else {
+                  } else if (filtered) {
                     _set(const LibraryFilter());
+                  } else {
+                    context.go('/');
                   }
                 },
               ),
@@ -103,7 +116,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           if (!searching)
             IconButton(
               tooltip: 'Szukaj',
-              onPressed: () => setState(() => _searching = true),
+              onPressed: () => setState(() {
+                if (filtered) {
+                  _searching = true;
+                } else {
+                  _all = true;
+                  _focusAll++;
+                }
+              }),
               icon: const Icon(Icons.search_rounded),
             ),
           IconButton(
@@ -113,10 +133,39 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           ),
         ],
       ),
-      body: CatalogLoader(
-        builder: (context, catalog) => browsing
-            ? _Browse(catalog: catalog, onFilter: _set, onSearch: () => setState(() => _searching = true))
-            : _results(context, catalog, f, searching),
+      // During Szop’en's tour the library shows the pack view: that is where the tour points.
+      body: ListenableBuilder(
+        listenable: ref.read(welcomeProvider),
+        builder: (context, _) => CatalogLoader(
+        builder: (context, catalog) => filtered
+            ? _results(context, catalog, f, searching)
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                    child: SegmentedButton<bool>(
+                      showSelectedIcon: false,
+                      segments: const [
+                        ButtonSegment(value: true, icon: Icon(Icons.list_rounded), label: Text('Wszystkie zabawy')),
+                        ButtonSegment(value: false, icon: Icon(Icons.collections_bookmark_rounded), label: Text('Pakiety')),
+                      ],
+                      selected: {_all && !ref.read(welcomeProvider).tourPending},
+                      onSelectionChanged: (s) => setState(() => _all = s.single),
+                    ),
+                  ),
+                  Expanded(
+                    child: _all && !ref.read(welcomeProvider).tourPending
+                        ? AllPlaysView(
+                            key: ValueKey('all-$_focusAll'),
+                            catalog: catalog,
+                            autofocus: wantsSearch || _focusAll > 0,
+                            onTyped: (q, n) => _typed(q, (_) => n),
+                          )
+                        : _Browse(catalog: catalog, onFilter: _set, onSearch: () => setState(() => _all = true)),
+                  ),
+                ],
+              ),
+        ),
       ),
     );
   }

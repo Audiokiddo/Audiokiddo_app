@@ -15,12 +15,15 @@ import '../../core/widgets/szop.dart';
 import '../../core/widgets/doodles.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
+import '../catalog/home_screen.dart' show dinnerPicks;
 import '../downloads/download_providers.dart';
 import '../family/family.dart';
 import '../family/plan_texts.dart';
 import '../parent_voice/parent_voice.dart';
 import '../lord/lord_lines.dart';
 import '../lord/lord_widgets.dart';
+import 'plan.dart';
+import 'plan_editor.dart';
 import 'session.dart';
 
 int _ageOf(WidgetRef ref) => ref.watch(familyProvider).value?.active?.age ?? 6;
@@ -56,7 +59,12 @@ class _TripScreenState extends ConsumerState<TripScreen> {
   // Which of Szop'en's lines this ride gets; fixed while the screen is open.
   final int _variant = Random().nextInt(1 << 16);
 
-  static const durations = [15, 20, 30, 45, 60, 90];
+  /// Three suggestions in one row, and "Własny" for the exact length of the ride.
+  static const durations = [15, 30, 60];
+
+  /// The plan the parent sees and may change; made again when the length changes.
+  List<SessionStep>? _plan;
+  int _planFor = -1;
 
   /// "2 h 30 min", "45 min".
   static String _rideLabel(int minutes) {
@@ -140,25 +148,23 @@ class _TripScreenState extends ConsumerState<TripScreen> {
     final catalog = ref.watch(catalogProvider).value;
     final downloaded = {...?ref.watch(downloadSummaryProvider).value?.itemIds};
     final child = ref.watch(familyProvider).value?.active;
-    final steps = catalog == null
-        ? const <SessionStep>[]
-        : buildTrip(
-            catalog,
-            minutes: _minutes,
-            age: _ageOf(ref),
-            canPlay: (i) => ref.watch(canPlayProvider(i)),
-            downloaded: downloaded,
-            variant: _variant,
-          );
-    final items = [
-      for (final s in steps)
-        if (s is ItemStep) s.item,
-    ];
+    if (catalog != null && (_plan == null || _planFor != _minutes)) {
+      _planFor = _minutes;
+      _plan = buildTrip(
+        catalog,
+        minutes: _minutes,
+        age: _ageOf(ref),
+        canPlay: (i) => ref.read(canPlayProvider(i)),
+        downloaded: downloaded,
+        variant: _variant,
+      );
+    }
+    final steps = _plan ?? const <SessionStep>[];
+    final items = playsFrom(steps, 0);
     final missing = [
       for (final i in items)
         if (!downloaded.contains(i.id)) i,
     ];
-    final minutes = items.fold(0, (a, i) => a + i.durationSec) ~/ 60;
 
     return Scaffold(
       appBar: AppBar(leading: const _CloseToStart()),
@@ -177,26 +183,35 @@ class _TripScreenState extends ConsumerState<TripScreen> {
           const SizedBox(height: AkSpace.l),
           Text(l10n.tripHowLong, style: text.titleMedium),
           const SizedBox(height: AkSpace.s),
-          Wrap(
-            spacing: AkSpace.s,
-            runSpacing: AkSpace.s,
+          // Three suggestions and the parent's own time, in one row.
+          Row(
             children: [
               for (final m in durations)
-                ChoiceChip(
-                  label: Text(l10n.tripMinutes(m)),
-                  selected: _minutes == m,
-                  labelStyle: selectableChipLabel(context, selected: _minutes == m),
-                  showCheckmark: false,
-                  onSelected: (_) => setState(() => _minutes = m),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: AkSpace.s),
+                    child: ChoiceChip(
+                      label: SizedBox(width: double.infinity, child: Center(child: Text(l10n.tripMinutes(m)))),
+                      selected: _minutes == m,
+                      labelStyle: selectableChipLabel(context, selected: _minutes == m),
+                      showCheckmark: false,
+                      onSelected: (_) => setState(() => _minutes = m),
+                    ),
+                  ),
                 ),
               // Any length of ride: "3 h 20 min to grandma's".
-              ChoiceChip(
-                avatar: const Icon(Icons.edit_rounded, size: 18),
-                label: Text(durations.contains(_minutes) ? 'Własny czas' : _rideLabel(_minutes)),
-                selected: !durations.contains(_minutes),
-                labelStyle: selectableChipLabel(context, selected: !durations.contains(_minutes)),
-                showCheckmark: false,
-                onSelected: (_) => _pickOwnTime(context),
+              Expanded(
+                child: ChoiceChip(
+                  avatar: const Icon(Icons.edit_rounded, size: 16),
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(durations.contains(_minutes) ? 'Własny' : _rideLabel(_minutes)),
+                  ),
+                  selected: !durations.contains(_minutes),
+                  labelStyle: selectableChipLabel(context, selected: !durations.contains(_minutes)),
+                  showCheckmark: false,
+                  onSelected: (_) => _pickOwnTime(context),
+                ),
               ),
             ],
           ),
@@ -211,28 +226,26 @@ class _TripScreenState extends ConsumerState<TripScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.tripPlanned(items.length, minutes), style: text.titleMedium),
-                const SizedBox(height: AkSpace.xs),
-                Text(l10n.tripBreaks, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
-                const SizedBox(height: AkSpace.s),
-                for (final i in items.take(6))
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3),
-                    child: Row(
-                      children: [
-                        Icon(
-                          i.kind == ContentKind.song ? Icons.music_note_rounded : Icons.headphones_rounded,
-                          size: 18,
-                          color: context.palette.primary,
+                PlanEditor(
+                  heading: 'Plan:',
+                  plays: items,
+                  minutesLeft: (planSecondsLeft(steps, index: 0, started: false) + 59) ~/ 60,
+                  candidates: catalog == null
+                      ? const []
+                      : planCandidates(
+                          catalog,
+                          age: _ageOf(ref),
+                          canPlay: (i) => ref.read(canPlayProvider(i)),
+                          exclude: {for (final i in items) i.id},
+                          downloaded: downloaded,
                         ),
-                        const SizedBox(width: AkSpace.s),
-                        Expanded(child: Text(i.title, maxLines: 1, overflow: TextOverflow.ellipsis)),
-                        if (downloaded.contains(i.id))
-                          Icon(Icons.offline_pin_rounded, size: 18, color: context.palette.inkMuted),
-                      ],
-                    ),
-                  ),
-                if (items.length > 6) Text(l10n.tripMore(items.length - 6), style: text.bodySmall),
+                  onRemove: (pos) => setState(() => _plan = planRemove(steps, pos)),
+                  onReorder: (o, n) => setState(() => _plan = planReorder(steps, o, n)),
+                  onReplace: (pos, item) => setState(() => _plan = planReplace(steps, pos, item)),
+                  onAdd: (add) => setState(() => _plan = planAdd(steps, add)),
+                ),
+                const SizedBox(height: AkSpace.s),
+                Text(l10n.tripBreaks, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
               ],
             ),
           ),
@@ -405,6 +418,7 @@ class SessionScreen extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final session = ref.watch(sessionProvider);
     final night = session.kind == SessionKind.bedtime;
+    final dinner = session.kind == SessionKind.dinner;
     const fg = Color(0xFFFFF3E6);
     String title(SessionStep? s) => switch (s) {
       ItemStep(:final item) => item.title,
@@ -444,7 +458,9 @@ class SessionScreen extends ConsumerWidget {
         Semantics(
           liveRegion: true,
           child: Text(
-            session.finished ? (night ? l10n.sessionSleepWell : l10n.sessionArrived) : title(session.current),
+            session.finished
+                ? (night ? l10n.sessionSleepWell : (dinner ? 'Smacznego! To już wszystko.' : l10n.sessionArrived))
+                : title(session.current),
             style: text.headlineMedium?.copyWith(color: fg, fontWeight: FontWeight.w800),
             textAlign: TextAlign.center,
             maxLines: 3,
@@ -467,12 +483,15 @@ class SessionScreen extends ConsumerWidget {
             style: text.titleMedium?.copyWith(color: fg.withValues(alpha: 0.85)),
             textAlign: TextAlign.center,
           ),
-        if (!session.finished && session.kind == SessionKind.trip)
+        // How long is left, and the plan behind it: change, swap, add time.
+        if (!session.finished && (session.kind == SessionKind.trip || dinner))
           Padding(
             padding: const EdgeInsets.only(top: AkSpace.s),
-            child: Text(
-              l10n.sessionLeft(session.secondsLeft ~/ 60),
-              style: text.titleSmall?.copyWith(color: fg.withValues(alpha: 0.6)),
+            child: TextButton.icon(
+              style: TextButton.styleFrom(foregroundColor: fg),
+              onPressed: () => showPlanSheet(context),
+              icon: const Icon(Icons.queue_music_rounded),
+              label: Text('Zostało ${minutesLabel(ref.watch(planMinutesLeftProvider) * 60)} · plan'),
             ),
           ),
       ],
@@ -531,7 +550,7 @@ class SessionScreen extends ConsumerWidget {
       icon: const Icon(Icons.close_rounded, color: fg),
     );
     final heading = Text(
-      (night ? l10n.bedtimeTitle : l10n.tripTitle).toUpperCase(),
+      (night ? l10n.bedtimeTitle : (dinner ? 'Obiad bez wołania' : l10n.tripTitle)).toUpperCase(),
       style: text.labelLarge?.copyWith(color: fg.withValues(alpha: 0.7), letterSpacing: 1.6),
     );
 
@@ -827,6 +846,184 @@ class _ParentVoiceScreenState extends ConsumerState<ParentVoiceScreen> {
               ),
             ),
           Text(l10n.voicePrivacy, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+        ],
+      ),
+    );
+  }
+}
+
+/// The plan of the running ride or dinner in a sheet: what is ahead, how long is left, and the
+/// means to swap, move, remove or add plays.
+Future<void> showPlanSheet(BuildContext context) => showModalBottomSheet<void>(
+  context: context,
+  showDragHandle: true,
+  isScrollControlled: true,
+  backgroundColor: const Color(0xFF1E1A3A),
+  builder: (_) => const _RunningPlan(),
+);
+
+class _RunningPlan extends ConsumerWidget {
+  const _RunningPlan();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(sessionProvider);
+    final notifier = ref.read(sessionProvider.notifier);
+    final catalog = ref.watch(catalogProvider).value;
+    final minutes = ref.watch(planMinutesLeftProvider);
+    final downloaded = {...?ref.watch(downloadSummaryProvider).value?.itemIds};
+    final ahead = playsFrom(session.steps, notifier.editFrom);
+    final inPlan = {for (final i in playsFrom(session.steps, 0)) i.id};
+    const fg = Color(0xFFFFF3E6);
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .85),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          child: PlanEditor(
+            color: fg,
+            plays: ahead,
+            minutesLeft: minutes,
+            candidates: catalog == null || !session.running
+                ? const []
+                : planCandidates(
+                    catalog,
+                    age: _ageOf(ref),
+                    canPlay: (i) => ref.read(canPlayProvider(i)),
+                    exclude: inPlan,
+                    downloaded: downloaded,
+                    dinner: session.kind == SessionKind.dinner,
+                  ),
+            onRemove: notifier.removePlay,
+            onReorder: notifier.reorderPlays,
+            onReplace: notifier.replacePlay,
+            onAdd: notifier.addPlays,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Obiad bez wołania": the plays one after another while someone cooks, shown as a plan first
+/// (how long it takes, what comes in which order) that the parent can change before it starts.
+class DinnerScreen extends ConsumerStatefulWidget {
+  const DinnerScreen({super.key});
+
+  @override
+  ConsumerState<DinnerScreen> createState() => _DinnerScreenState();
+}
+
+class _DinnerScreenState extends ConsumerState<DinnerScreen> {
+  int _minutes = 25;
+  List<SessionStep>? _plan;
+  int _planFor = -1;
+
+  static const durations = [15, 25, 40];
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final catalog = ref.watch(catalogProvider).value;
+    final family = ref.watch(familyProvider).value;
+    final child = family?.active;
+    final age = child?.age ?? 5;
+    if (catalog != null && (_plan == null || _planFor != _minutes)) {
+      _planFor = _minutes;
+      _plan = buildDinner(
+        dinnerPicks(
+          catalog,
+          age: age,
+          canPlay: (i) => ref.read(canPlayProvider(i)),
+          heard: {
+            if (child != null)
+              for (final r in family!.resultsOf(child.id)) r.itemId,
+          },
+          now: ref.read(clockProvider)(),
+          minutes: _minutes,
+        ),
+      );
+    }
+    final steps = _plan ?? const <SessionStep>[];
+    final items = playsFrom(steps, 0);
+
+    return Scaffold(
+      appBar: AppBar(leading: const _CloseToStart()),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.xl),
+        children: [
+          const Center(child: SzopSticker(SzopPose.zadowolony, height: 110)),
+          const SizedBox(height: AkSpace.m),
+          Text('Obiad bez wołania', style: text.displaySmall, textAlign: TextAlign.center),
+          const SizedBox(height: AkSpace.s),
+          Text(
+            'Dziecko słucha, Wy gotujecie. Zabawy bez przygotowań, jedna po drugiej. Plan możesz zmienić.',
+            style: text.bodyLarge?.copyWith(color: context.palette.inkMuted),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AkSpace.l),
+          Text('Na ile?', style: text.titleMedium),
+          const SizedBox(height: AkSpace.s),
+          Row(
+            children: [
+              for (final m in durations)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: AkSpace.s),
+                    child: ChoiceChip(
+                      label: SizedBox(width: double.infinity, child: Center(child: Text('$m min'))),
+                      selected: _minutes == m,
+                      labelStyle: selectableChipLabel(context, selected: _minutes == m),
+                      showCheckmark: false,
+                      onSelected: (_) => setState(() => _minutes = m),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: AkSpace.l),
+          Container(
+            padding: const EdgeInsets.all(AkSpace.m),
+            decoration: BoxDecoration(
+              color: context.palette.surface,
+              borderRadius: BorderRadius.circular(AkRadius.card),
+              boxShadow: akSoftShadow(context),
+            ),
+            child: PlanEditor(
+              heading: 'Plan:',
+              plays: items,
+              minutesLeft: (planSecondsLeft(steps, index: 0, started: false) + 59) ~/ 60,
+              candidates: catalog == null
+                  ? const []
+                  : planCandidates(
+                      catalog,
+                      age: age,
+                      canPlay: (i) => ref.read(canPlayProvider(i)),
+                      exclude: {for (final i in items) i.id},
+                      dinner: true,
+                    ),
+              onRemove: (pos) => setState(() => _plan = planRemove(steps, pos)),
+              onReorder: (o, n) => setState(() => _plan = planReorder(steps, o, n)),
+              onReplace: (pos, item) => setState(() => _plan = planReplace(steps, pos, item)),
+              onAdd: (add) => setState(() => _plan = planAdd(steps, add)),
+            ),
+          ),
+          const SizedBox(height: AkSpace.m),
+          FilledButton.icon(
+            onPressed: items.isEmpty
+                ? null
+                : () {
+                    ref.read(sessionProvider.notifier).start(SessionKind.dinner, steps, childId: child?.id);
+                    context.pushReplacement('/sesja');
+                  },
+            icon: const Icon(Icons.restaurant_rounded),
+            label: const Text('Włącz'),
+          ),
+          if (items.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: AkSpace.s),
+              child: Text('Nie ma teraz zabaw bez przygotowań dla tego wieku.', textAlign: TextAlign.center),
+            ),
         ],
       ),
     );

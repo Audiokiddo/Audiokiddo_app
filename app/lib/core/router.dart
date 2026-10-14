@@ -162,6 +162,7 @@ GoRouter buildRouter(
       pageBuilder: (context, state) =>
           swipePage(state, TripScreen(minutes: int.tryParse(state.uri.queryParameters['minuty'] ?? ''))),
     ),
+    GoRoute(path: '/obiad', pageBuilder: (context, state) => swipePage(state, const DinnerScreen())),
     GoRoute(path: '/dobranoc', pageBuilder: (context, state) => swipePage(state, const BedtimeScreen())),
     GoRoute(path: '/sesja', pageBuilder: (context, state) => swipePage(state, const SessionScreen())),
     GoRoute(path: '/polec', pageBuilder: (context, state) => swipePage(state, const ReferralScreen())),

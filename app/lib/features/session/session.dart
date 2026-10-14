@@ -11,6 +11,7 @@ import '../family/family.dart';
 import '../parent_voice/parent_voice.dart';
 import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
+import 'plan.dart';
 
 /// One step of a guided session (trip, bedtime).
 sealed class SessionStep {
@@ -43,7 +44,7 @@ class ParentStep extends SessionStep {
   final String? fallbackLine;
 }
 
-enum SessionKind { trip, bedtime }
+enum SessionKind { trip, bedtime, dinner }
 
 /// Lines Szop’en opens with the child's name (when he knows it).
 const namedLines = ['trip_start', 'trip_end', 'bedtime_start', 'goodnight'];
@@ -113,6 +114,24 @@ List<SessionStep> buildTrip(
       total += 50;
       sinceBreak = 0;
     }
+  }
+  // Use the time fully: what is still missing is filled with the play that fits it best.
+  final used = {
+    for (final s in steps)
+      if (s is ItemStep) s.item.id,
+  };
+  var gap = target - total;
+  for (var k = 0; k < 4 && gap > 60; k++) {
+    final pool = [
+      for (final i in [...games, ...songs])
+        if (!used.contains(i.id) && i.durationSec <= gap + 60) i,
+    ];
+    if (pool.isEmpty) break;
+    final best = pool.reduce((a, b) => (gap - a.durationSec).abs() <= (gap - b.durationSec).abs() ? a : b);
+    steps.add(ItemStep(best));
+    used.add(best.id);
+    total += best.durationSec;
+    gap = target - total;
   }
   steps
     ..add(LineStep(tripEndLines[variant % tripEndLines.length]))
@@ -246,6 +265,19 @@ class SessionState {
     this.endedAt,
   });
 
+  /// The same state with another list of steps (the parent edited the plan).
+  SessionState withSteps(List<SessionStep> next) => SessionState(
+    kind: kind,
+    steps: next,
+    index: index,
+    running: running,
+    childId: childId,
+    countdown: countdown,
+    held: held,
+    startedAt: startedAt,
+    endedAt: endedAt,
+  );
+
   final SessionKind? kind;
   final List<SessionStep> steps;
   final int index;
@@ -281,6 +313,10 @@ class SessionController extends Notifier<SessionState> {
   bool _skip = false;
   bool _held = false;
 
+  /// The steps being played. The parent may edit the ones ahead while it runs, so the loop
+  /// reads this list again at every step instead of keeping its own copy.
+  List<SessionStep> _steps = const [];
+
   @override
   SessionState build() {
     ref.onDispose(() => _generation++);
@@ -292,33 +328,37 @@ class SessionController extends Notifier<SessionState> {
     _held = false;
     await ref.read(sessionAudioProvider).stop();
     final startedAt = ref.read(clockProvider)();
-    state = SessionState(kind: kind, steps: steps, running: true, childId: childId);
+    _steps = List.of(steps);
+    state = SessionState(kind: kind, steps: List.of(_steps), running: true, childId: childId);
     final clips = childId == null
         ? const <ParentClip, String>{}
         : await ref.read(parentVoiceStoreProvider).clips(childId);
     var playedItem = false;
-    for (var i = 0; i < steps.length; i++) {
+    for (var i = 0; i < _steps.length; i++) {
       if (generation != _generation) return;
-      final playing = SessionState(kind: kind, steps: steps, index: i, running: true, childId: childId);
+      final playing = SessionState(kind: kind, steps: List.of(_steps), index: i, running: true, childId: childId);
       // The parent tapped "next" during the last step: they chose to move on, so no countdown.
       final chosen = _skip;
       _skip = false;
       // After the first recording, each next one that comes by itself waits a moment so a
       // parent can hold it (in the car nobody wants a recording to start unannounced).
-      if (steps[i] is ItemStep && playedItem && !chosen) {
+      if (_steps[i] is ItemStep && playedItem && !chosen) {
         await _countdown(playing, generation);
         if (generation != _generation) return;
         _skip = false;
+        // The parent may have dropped the waiting play meanwhile; what is now at [i] plays.
+        if (i >= _steps.length) break;
       }
-      state = playing;
-      if (steps[i] is ItemStep) playedItem = true;
-      await _play(steps[i], clips, generation);
+      final step = _steps[i];
+      state = SessionState(kind: kind, steps: List.of(_steps), index: i, running: true, childId: childId);
+      if (step is ItemStep) playedItem = true;
+      await _play(step, clips, generation);
     }
     if (generation == _generation) {
       state = SessionState(
         kind: kind,
-        steps: steps,
-        index: steps.length,
+        steps: List.of(_steps),
+        index: _steps.length,
         childId: childId,
         startedAt: startedAt,
         endedAt: ref.read(clockProvider)(),
@@ -364,7 +404,7 @@ class SessionController extends Notifier<SessionState> {
       if (state.countdown != seconds || state.held != _held || state.index != playing.index) {
         state = SessionState(
           kind: playing.kind,
-          steps: playing.steps,
+          steps: List.of(_steps),
           index: playing.index,
           running: true,
           childId: playing.childId,
@@ -384,7 +424,7 @@ class SessionController extends Notifier<SessionState> {
     _held = true;
     state = SessionState(
       kind: state.kind,
-      steps: state.steps,
+      steps: List.of(_steps),
       index: state.index,
       running: true,
       childId: state.childId,
@@ -407,6 +447,22 @@ class SessionController extends Notifier<SessionState> {
     if (state.current != null && state.countdown == null) await ref.read(sessionAudioProvider).skipCurrent();
   }
 
+  /// First step the parent may still change: the one about to start (while its countdown
+  /// runs) or the one after the one that plays now.
+  int get editFrom => state.countdown != null ? state.index : state.index + 1;
+
+  void _edited(List<SessionStep> next) {
+    if (!state.running) return;
+    _steps = next;
+    state = state.withSteps(List.of(next));
+  }
+
+  /// Plan edits while a ride or dinner runs; positions count the plays still ahead.
+  void removePlay(int pos) => _edited(planRemove(_steps, pos, from: editFrom));
+  void reorderPlays(int oldPos, int newPos) => _edited(planReorder(_steps, oldPos, newPos, from: editFrom));
+  void replacePlay(int pos, ContentItem item) => _edited(planReplace(_steps, pos, item, from: editFrom));
+  void addPlays(List<ContentItem> items) => _edited(planAdd(_steps, items));
+
   Future<void> stop() async {
     _generation++;
     _held = false;
@@ -416,3 +472,6 @@ class SessionController extends Notifier<SessionState> {
 }
 
 final sessionProvider = NotifierProvider<SessionController, SessionState>(SessionController.new);
+
+/// "Obiad bez wołania": [items] one after another, nothing else.
+List<SessionStep> buildDinner(List<ContentItem> items) => [for (final i in items) ItemStep(i)];
