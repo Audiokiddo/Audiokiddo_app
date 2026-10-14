@@ -1,6 +1,6 @@
 # Karty w App Store i Google Play: gotowe do wklejenia
 
-Stan: 8 października 2026, wersja 1.0.0 (build 3). Pola w kolejności formularzy. Zrzuty: `docs/sklepy/zrzuty/`, grafiki: `docs/sklepy/grafiki/`. Uzasadnienia i odpowiedzi do formularzy prywatności: `docs/SKLEPY.md`. Miejsca w nawiasach kwadratowych uzupełniacie sami.
+Stan: 15 października 2026 (opis zaktualizowany: tylko abonament, 2 nowe zabawy co tydzień, bez próby 7 dni i bez pakietów na zawsze), wersja 1.0.0. Pola w kolejności formularzy. Zrzuty: `docs/sklepy/zrzuty/`, grafiki: `docs/sklepy/grafiki/`. Uzasadnienia i odpowiedzi do formularzy prywatności: `docs/SKLEPY.md`. Miejsca w nawiasach kwadratowych uzupełniacie sami.
 
 ## Wspólne
 
@@ -19,28 +19,29 @@ Stan: 8 października 2026, wersja 1.0.0 (build 3). Pola w kolejności formularz
 ## Opis (oba sklepy, do 4000 znaków)
 
 ```
-Włączasz zabawę, kładziesz telefon, a dziecko słucha, szuka i odpowiada na głos. Ty masz chwilę dla siebie.
+Włączasz zabawę, kładziesz telefon, a dziecko słucha, szuka i odpowiada na głos. Audiobook opowiada, a AudioKiddo pyta i czeka na odpowiedź.
 
-AudioKiddo to polska aplikacja tworzona przez parę: Nelę i Dawida. Sami wymyślamy zabawy, piszemy scenariusze, podkładamy głosy i odpowiadamy na Wasze maile. Bez korporacji, bez reklam, z sercem.
+AudioKiddo tworzą Nela i Dawid, para rodziców z Polski. Razem piszemy zabawy i je montujemy, a nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami. Bez reklam i bez śledzenia.
 
-To interaktywne audiozabawy dla dzieci w wieku 3–9 lat. Dziecko nie tylko słucha: odpowiada, szuka, rusza się, wymyśla i decyduje. Jest bohaterem przygody.
+Interaktywne audiozabawy dla dzieci w wieku 3–9 lat. Dziecko nie tylko słucha: odpowiada, szuka, rusza się, wymyśla i decyduje. Prowadzi je Szop’en, który wita dziecko po imieniu.
 
 CO ZNAJDZIESZ W APLIKACJI
-• Pakiet Wyobraźnia (3–9 lat): magiczny sklep, podróż na inną planetę, mistrz kuchni i inne zabawy, w których dziecko tworzy własne historie
-• Pakiet Słowa i Wiedza (3–9 lat): zagadki, skojarzenia, synonimy i zabawy słowne
-• Pakiet Detektyw (7+): sprawy Maxa i Mili z aktami sprawy do rozwiązania w telefonie albo na papierze
-• Gry, w których dziecko odpowiada głosem (rozpoznawanie mowy działa w telefonie, nic nie jest nagrywane ani wysyłane)
-• Album naklejek Szop’ena: naklejka za każdą ukończoną przygodę
+• Pakiet Wyobraźnia: magiczny sklep, podróż na inną planetę, mistrz kuchni i inne zabawy, w których dziecko tworzy własne historie
+• Pakiet Słowa i Wiedza: zagadki, skojarzenia, synonimy i zabawy słowne
+• Pakiet Detektyw (7+): sprawy Maxa i Mili z aktami sprawy do wydrukowania
+• Gry, w których dziecko odpowiada głosem albo klaśnięciem (rozpoznawanie mowy działa w telefonie, nic nie jest nagrywane ani wysyłane)
+• Mapa przygód: co trzy zabawy skrzynia z sekretem Szop’ena albo kartami do wydrukowania
+• Naklejki i dyplomy za ukończone zabawy
 
 DLA RODZICÓW
-• Dobór zabawy do sytuacji: mamy 20 minut, jedziemy autem, pora na dobranoc, bez przygotowań
-• Tryb dziecka: duże okładki, bez zakupów, linków i ustawień
-• Pobrane zabawy działają bez internetu: w aucie, samolocie i na działce
-• Tryb podróży z przerwami na wyglądanie przez okno
-• Timer snu, kolejka i ulubione
+• W drogę: zabawy na całą trasę z przerwami na okno, z własnym czasem podróży, także w CarPlay i Android Auto
+• Dobranoc: wieczorny rytuał jednym przyciskiem
+• Tryb dziecka: tylko zabawy, bez zakupów, linków i ustawień
+• Pobrane zabawy działają bez internetu
+• Profil dla każdego dziecka, drugi rodzic na swoim telefonie w tym samym abonamencie
 • Bez reklam i bez śledzenia
 
-Część zabaw jest za darmo. Pozostałe odblokujesz abonamentem: wszystkie zabawy teraz i nowy pakiet co miesiąc, miesięcznie albo rocznie, z 7 dniami za darmo dla nowych subskrybentów. Możesz też kupić wybrane pakiety na zawsze.
+Z każdego pakietu jedna zabawa jest za darmo. Wszystkie zabawy odblokujesz abonamentem, miesięcznym albo rocznym, a co tydzień dochodzą 2 nowe zabawy. Abonament anulujesz w każdej chwili w ustawieniach sklepu.
 
 Pytania i pomysły: kontakt@audiokiddo.pl
 ```
@@ -50,7 +51,7 @@ Pytania i pomysły: kontakt@audiokiddo.pl
 | Pole | Limit | Wartość |
 |---|---|---|
 | Podtytuł | 30 | Audiozabawy bez ekranu 3–9 lat |
-| Tekst promocyjny | 170 | Włącz zabawę, połóż telefon, a dziecko słucha, szuka i odpowiada na głos. Nowość: akta sprawy Detektywa i album naklejek z Szop’enem. |
+| Tekst promocyjny | 170 | Włącz zabawę, połóż telefon, a dziecko słucha, szuka i odpowiada na głos. Szop’en wita dziecko po imieniu, a co trzy zabawy otwiera skrzynię z nagrodą. |
 | Słowa kluczowe | 100 | `bajki,zagadki,przedszkolak,słuchowisko,dobranoc,logopedia,maluch,podróż,auto,rodzina,mowa,nauka` |
 | Prawa autorskie | | 2026 Nela Mariak |
 | Kategoria Kids | | 6–8 lat (decyzja do potwierdzenia, potem trudno zmienić) |
@@ -99,7 +100,7 @@ Obrazki bez napisów (Apple nakłada nazwę wydarzenia sam): `grafiki/wydarzenie
 |---|---|
 | Opis wersji beta | Audiozabawy dla dzieci 3–9 lat. Dziecko słucha i odpowiada na głos, rodzic kładzie telefon. |
 | E-mail do opinii | kontakt@audiokiddo.pl |
-| Co testować | Załóż konto (e-mail i kod), przejdź powitanie, włącz darmową zabawę i zablokuj ekran: dźwięk ma grać dalej. Kup abonament próbny (konto sandbox, nic nie płacisz), potem „Przywróć zakupy”. Włącz tryb dziecka i wyjdź z niego. Pobierz zabawę i włącz ją bez internetu. |
+| Co testować | Załóż konto (e-mail i kod), przejdź powitanie, włącz darmową zabawę i zablokuj ekran: dźwięk ma grać dalej. Kup abonament testowo (konto sandbox, nic nie płacisz), potem „Przywróć zakupy”. Włącz tryb dziecka i wyjdź z niego. Pobierz zabawę i włącz ją bez internetu. |
 
 **Google Play → test wewnętrzny i zamknięty → informacje o wersji**
 

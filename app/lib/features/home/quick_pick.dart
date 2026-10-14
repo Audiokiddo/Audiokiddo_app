@@ -75,14 +75,28 @@ List<ContentItem> pickPlaylist(
 /// must outlive the sheet that asked for it (the screen that opened the sheet).
 Future<void> startItem(BuildContext context, ContentItem item) async {
   final container = ProviderScope.containerOf(context, listen: false);
+  // Started from the player itself (next play, a play of the pack): the player stays one page,
+  // so no stack of players builds up behind it.
+  final here = GoRouter.of(context).routerDelegate.currentConfiguration.uri.path;
+  final fromPlayer = here == '/odtwarzacz' || here == '/gra';
   if (item.kind == ContentKind.interactiveGame) {
     unawaited(container.read(gameControllerProvider.notifier).start(item));
-    await context.push('/gra');
+    if (here == '/gra') return;
+    if (fromPlayer) {
+      context.pushReplacement('/gra');
+    } else {
+      await context.push('/gra');
+    }
     return;
   }
   try {
     await container.read(playbackControllerProvider).start(item, album: 'AudioKiddo');
-    if (context.mounted) await context.push('/odtwarzacz');
+    if (!context.mounted || here == '/odtwarzacz') return;
+    if (fromPlayer) {
+      context.pushReplacement('/odtwarzacz');
+    } else {
+      await context.push('/odtwarzacz');
+    }
   } on Exception {
     if (context.mounted) {
       ScaffoldMessenger.of(context)

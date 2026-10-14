@@ -74,10 +74,11 @@ Plik `app/ios/Runner/PrivacyInfo.xcprivacy` deklaruje to samo (zaktualizowany 6.
 | Pytanie | Odpowiedź |
 |---|---|
 | Czy aplikacja zbiera lub udostępnia dane? | Zbiera; **nie udostępnia** stronom trzecim (Supabase i LH.pl to podmioty przetwarzające) |
-| Dane osobowe: adres e-mail | Zbierane, opcjonalne, cel: zarządzanie kontem i działanie aplikacji |
+| Dane osobowe: adres e-mail | Zbierane, **wymagane** (konto rodzica jest obowiązkowe od 10.2026), cel: zarządzanie kontem i działanie aplikacji |
 | Dane osobowe: identyfikatory użytkownika | Zbierane (losowe), cel: działanie aplikacji |
 | Informacje finansowe: historia zakupów | Zbierane, cel: działanie aplikacji |
-| Aktywność w aplikacji: interakcje w aplikacji | Zbierane, cel: analityka (własny serwer, bez danych dziecka) |
+| Aktywność w aplikacji: interakcje w aplikacji | Zbierane, cel: analityka (własny serwer). Od 14.10.2026 zdarzenia zabaw niosą też **wiek dziecka w latach** (bez imienia) do pomiaru minut zabawy: zadeklarować jako „Inne informacje” albo usunąć wiek ze zdarzeń przed premierą |
+| Imię dziecka | **Nie zbierane**: zostaje tylko w telefonie |
 | Dźwięk | **Nie zbierane** (przetwarzanie tylko na urządzeniu) |
 | Szyfrowanie danych w trakcie przesyłania | Tak |
 | Możliwość usunięcia danych | Tak: w aplikacji i na `https://audiokiddo.pl/usuwanie-konta/` |
@@ -104,7 +105,7 @@ Uwaga: pole „Mam kod” (kody prezentowe i polecenia) może być przez Apple u
 
 **Google Play:**
 
-> Aplikacja dla dzieci 3–9 lat (program Families). Bez reklam i bez SDK firm trzecich zbierających dane. Statystyki tylko na własnym serwerze, bez danych dziecka. Bramka rodzica chroni zakupy, linki poza aplikację, wysyłanie plików, mikrofon i wyjście z trybu dziecka. Konto rodzica jest opcjonalne.
+> Aplikacja dla dzieci 3–9 lat (program Families). Bez reklam i bez SDK firm trzecich zbierających dane. Statystyki tylko na własnym serwerze, bez danych dziecka. Bramka rodzica chroni zakupy, linki poza aplikację, wysyłanie plików, mikrofon i wyjście z trybu dziecka. Konto rodzica jest wymagane (logowanie Apple, Google albo kodem z e-maila).
 
 ## Zrzuty ekranu
 
