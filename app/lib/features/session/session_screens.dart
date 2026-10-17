@@ -949,18 +949,34 @@ class _RunningPlan extends ConsumerWidget {
 /// "Obiad bez wołania": the plays one after another while someone cooks, shown as a plan first
 /// (how long it takes, what comes in which order) that the parent can change before it starts.
 class DinnerScreen extends ConsumerStatefulWidget {
-  const DinnerScreen({super.key});
+  const DinnerScreen({super.key, this.variant, this.minutes});
+
+  /// The moment of the day it is for (Mój dzień): rano, po, dom, chory, kolacja; null = obiad.
+  final String? variant;
+
+  /// The length to start with.
+  final int? minutes;
 
   @override
   ConsumerState<DinnerScreen> createState() => _DinnerScreenState();
 }
 
 class _DinnerScreenState extends ConsumerState<DinnerScreen> {
-  int _minutes = 25;
+  late int _minutes = widget.minutes ?? (widget.variant == 'rano' ? 15 : 25);
   List<SessionStep>? _plan;
   int _planFor = -1;
 
-  static const durations = [15, 25, 40];
+  List<int> get durations => widget.variant == 'rano' ? const [10, 15, 20, 30] : const [15, 25, 40];
+
+  /// Title and line for the moment of the day.
+  (String, String) get _words => switch (widget.variant) {
+    'rano' => ('Poranek bez pośpiechu', 'Zabawy na rozruch, zanim trzeba wyjść. Ty wybierasz, ile mają trwać.'),
+    'po' => ('Po przedszkolu', 'Kwadrans spokoju: dziecko odpowiada i wymyśla, a Ty odzyskujesz oddech.'),
+    'dom' => ('Dzień w domu', 'Dłuższy blok zabaw na środek dnia, kiedy pomysły się kończą.'),
+    'chory' => ('Zabawy w łóżku', 'Spokojne zabawy na leżąco. Dziecko słucha i odpowiada, Ty masz chwilę.'),
+    'kolacja' => ('Kolacja bez wołania', 'Dziecko słucha, Wy gotujecie. Zabawy bez przygotowań, jedna po drugiej.'),
+    _ => ('Obiad bez wołania', 'Dziecko słucha, Wy gotujecie. Zabawy bez przygotowań, jedna po drugiej. Plan możesz zmienić.'),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -995,10 +1011,10 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
         children: [
           const Center(child: SzopSticker(SzopPose.zadowolony, height: 110)),
           const SizedBox(height: AkSpace.m),
-          Text('Obiad bez wołania', style: text.displaySmall, textAlign: TextAlign.center),
+          Text(_words.$1, style: text.displaySmall, textAlign: TextAlign.center),
           const SizedBox(height: AkSpace.s),
           Text(
-            'Dziecko słucha, Wy gotujecie. Zabawy bez przygotowań, jedna po drugiej. Plan możesz zmienić.',
+            _words.$2,
             style: text.bodyLarge?.copyWith(color: context.palette.inkMuted),
             textAlign: TextAlign.center,
           ),

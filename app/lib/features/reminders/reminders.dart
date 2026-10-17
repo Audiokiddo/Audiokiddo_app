@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -15,12 +16,15 @@ import '../../core/storage/storage_providers.dart';
 
 /// One reminder to show at [at] (local time).
 class ReminderSlot {
-  const ReminderSlot({required this.id, required this.at, required this.title, required this.body});
+  const ReminderSlot({required this.id, required this.at, required this.title, required this.body, this.route});
 
   final int id;
   final DateTime at;
   final String title;
   final String body;
+
+  /// The screen a tap opens (e.g. /podroz?minuty=20); null opens the app as it was.
+  final String? route;
 }
 
 /// Shows the parent's daily reminders. Local only: nothing is sent from a server.
@@ -37,11 +41,36 @@ abstract interface class ReminderScheduler {
   Future<void> cancel(int id);
 
   Future<void> cancelAll();
+
+  /// Screens asked for by tapped notifications while the app runs.
+  Stream<String> get taps;
+
+  /// The screen of the notification that started the app, once.
+  Future<String?> launchRoute();
 }
 
 class LocalReminderScheduler implements ReminderScheduler {
   final _plugin = FlutterLocalNotificationsPlugin();
   bool _ready = false;
+  final _taps = StreamController<String>.broadcast();
+  bool _launchTaken = false;
+
+  @override
+  Stream<String> get taps => _taps.stream;
+
+  @override
+  Future<String?> launchRoute() async {
+    if (_launchTaken) return null;
+    _launchTaken = true;
+    try {
+      await _init();
+      final details = await _plugin.getNotificationAppLaunchDetails();
+      final route = details?.notificationResponse?.payload;
+      return (details?.didNotificationLaunchApp ?? false) && route != null && route.startsWith('/') ? route : null;
+    } on Object {
+      return null;
+    }
+  }
 
   Future<void> _init() async {
     if (_ready) return;
@@ -62,6 +91,10 @@ class LocalReminderScheduler implements ReminderScheduler {
           requestSoundPermission: false,
         ),
       ),
+      onDidReceiveNotificationResponse: (response) {
+        final route = response.payload;
+        if (route != null && route.startsWith('/')) _taps.add(route);
+      },
     );
     _ready = true;
   }
@@ -149,15 +182,24 @@ class LocalReminderScheduler implements ReminderScheduler {
     await _plugin.zonedSchedule(
       id: slot.id,
       scheduledDate: tz.TZDateTime.from(slot.at, tz.local),
-      notificationDetails: await _details(
-        slot.id,
-        channel: 'access_news',
-        name: 'Dostęp i nowości',
-        description: 'Koniec dostępu i nowe zabawy, tylko gdy je włączysz',
-      ),
+      // Mój dzień's moments open a screen and have a channel of their own.
+      notificationDetails: slot.route != null && slot.id >= 2000
+          ? await _details(
+              slot.id,
+              channel: 'day_moments',
+              name: 'Podpowiedzi na porę dnia',
+              description: 'Zabawy na wyjazd, po przedszkolu, kolację i dobranoc (Mój dzień)',
+            )
+          : await _details(
+              slot.id,
+              channel: 'access_news',
+              name: 'Dostęp i nowości',
+              description: 'Koniec dostępu i nowe zabawy, tylko gdy je włączysz',
+            ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       title: slot.title,
       body: slot.body,
+      payload: slot.route,
     );
   }
 

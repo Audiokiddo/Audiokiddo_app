@@ -19,6 +19,7 @@ import 'features/onboarding/onboarding_controller.dart';
 import 'features/player/now_playing_pill.dart';
 import 'features/welcome/welcome_controller.dart';
 import 'l10n/app_localizations.dart';
+import 'features/reminders/reminders.dart';
 
 class AudioKiddoApp extends ConsumerStatefulWidget {
   const AudioKiddoApp({super.key, this.router});
@@ -75,15 +76,24 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
       (_, data) => ref.read(homeWidgetSinkProvider).push(data),
       fireImmediately: true,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // A tapped Mój dzień notification opens its screen (while the app runs, or started it).
+    _taps = ref.read(reminderSchedulerProvider).taps.listen((route) {
+      if (mounted) _router.push(route);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final fromNotification = await ref.read(reminderSchedulerProvider).launchRoute();
+      if (fromNotification != null && mounted) _router.push(fromNotification);
       _openLaunchRoute();
       // Szop’en's weekly mood on the home screen, only if the parent chose it.
       unawaited(maybeRotateIcon(ref.read(databaseProvider), DateTime.now()));
     });
   }
 
+  StreamSubscription<String>? _taps;
+
   @override
   void dispose() {
+    unawaited(_taps?.cancel());
     _lifecycle.dispose();
     _appearanceTimer?.cancel();
     super.dispose();

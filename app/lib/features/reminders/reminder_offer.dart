@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,6 +11,7 @@ import '../../core/widgets/ambient_motion.dart';
 import '../../core/widgets/szop.dart';
 import '../../l10n/app_localizations.dart';
 import 'reminders.dart';
+import '../day/day_notifications.dart';
 
 /// The reminder texts, in turn, day by day.
 ReminderTexts reminderTexts(AppLocalizations l10n) => [
@@ -332,6 +335,8 @@ class _RemindersKeeperState extends ConsumerState<RemindersKeeper> {
     _scheduledFor = done;
     final texts = reminderTexts(AppLocalizations.of(context));
     ref.read(remindersProvider.notifier).reschedule(texts: texts, todayDone: done);
+    // Mój dzień: the next week of moments (only the kinds the parent switched on).
+    unawaited(rescheduleDayMoments(ref));
   }
 
   @override

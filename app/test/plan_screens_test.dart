@@ -49,9 +49,9 @@ void main() {
 
   GoRouter router(WidgetTester tester) => GoRouter.of(tester.element(find.byType(Scaffold).first));
 
-  testWidgets('the whole dinner card opens the plan, not only its button', (tester) async {
+  testWidgets('the whole Teraz card (after kindergarten at 17:00) opens the plan, not only its button', (tester) async {
     await pump(tester);
-    final card = find.text('Obiad bez wołania');
+    final card = find.text('Po przedszkolu');
     await bringUp(tester, card);
     // The title, outside the button.
     await tester.tap(card);
@@ -123,7 +123,7 @@ void main() {
 
   testWidgets('a card on Start closes with a cross, stays closed and comes back from Więcej', (tester) async {
     await pump(tester);
-    final card = find.text('Obiad bez wołania');
+    final card = find.text('Po przedszkolu');
     await bringUp(tester, card);
     expect(card, findsOneWidget);
     final cross = find.descendant(
@@ -132,13 +132,13 @@ void main() {
     );
     await tester.tap(cross);
     await tester.pumpAndSettle();
-    expect(find.text('Obiad bez wołania'), findsNothing);
-    expect(find.textContaining('Ukryto: Obiad bez wołania'), findsOneWidget);
+    expect(find.text('Po przedszkolu'), findsNothing);
+    expect(find.textContaining('Ukryto: Teraz'), findsOneWidget);
 
     // Back in Więcej → Karty na Starcie.
     await tester.tap(find.byIcon(Icons.menu_rounded).last);
     await tester.pumpAndSettle();
-    final sw = find.widgetWithText(SwitchListTile, 'Obiad bez wołania');
+    final sw = find.widgetWithText(SwitchListTile, 'Teraz: podpowiedź na tę porę dnia');
     await bringUp(tester, sw);
     expect(find.text('Karty na Starcie'), findsOneWidget);
     expect(tester.widget<SwitchListTile>(sw).value, isFalse);
@@ -149,10 +149,10 @@ void main() {
     await tester.tap(startTab);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Obiad bez wołania'),
+      find.text('Po przedszkolu'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('Obiad bez wołania'), findsOneWidget);
+    expect(find.text('Po przedszkolu'), findsOneWidget);
   });
 }

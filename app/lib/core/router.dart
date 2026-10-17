@@ -46,6 +46,7 @@ import '../features/stickers/stickers.dart';
 import '../features/session/session_screens.dart';
 import '../features/about/features_screen.dart';
 import '../features/rewards/adventure_map.dart';
+import '../features/day/day_screen.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
 /// until a parent passes the gate (ARCHITECTURE §12).
@@ -139,6 +140,7 @@ GoRouter buildRouter(
     GoRoute(path: '/ulubione', pageBuilder: (context, state) => swipePage(state, const CollectionScreen())),
     GoRoute(path: '/ratunku', pageBuilder: (context, state) => swipePage(state, const RescueScreen())),
     GoRoute(path: '/rutyny', pageBuilder: (context, state) => swipePage(state, const RoutinesScreen())),
+    GoRoute(path: '/moj-dzien', pageBuilder: (context, state) => swipePage(state, const DayScreen())),
     GoRoute(path: '/kolejka', pageBuilder: (context, state) => swipePage(state, const QueueScreen())),
     GoRoute(path: '/profil', pageBuilder: (context, state) => swipePage(state, const ProfileScreen())),
     GoRoute(path: '/pobrane', pageBuilder: (context, state) => swipePage(state, const DownloadsScreen())),
@@ -162,7 +164,17 @@ GoRouter buildRouter(
       pageBuilder: (context, state) =>
           swipePage(state, TripScreen(minutes: int.tryParse(state.uri.queryParameters['minuty'] ?? ''))),
     ),
-    GoRoute(path: '/obiad', pageBuilder: (context, state) => swipePage(state, const DinnerScreen())),
+    // Also the moments of Mój dzień: /obiad?pora=rano&minuty=15 (rano, po, dom, chory, kolacja).
+    GoRoute(
+      path: '/obiad',
+      pageBuilder: (context, state) => swipePage(
+        state,
+        DinnerScreen(
+          variant: state.uri.queryParameters['pora'],
+          minutes: int.tryParse(state.uri.queryParameters['minuty'] ?? ''),
+        ),
+      ),
+    ),
     GoRoute(path: '/dobranoc', pageBuilder: (context, state) => swipePage(state, const BedtimeScreen())),
     GoRoute(path: '/sesja', pageBuilder: (context, state) => swipePage(state, const SessionScreen())),
     GoRoute(path: '/polec', pageBuilder: (context, state) => swipePage(state, const ReferralScreen())),

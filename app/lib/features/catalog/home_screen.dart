@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../day/moment_card.dart';
 import '../home/start_cards.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/motion.dart';
@@ -87,6 +88,8 @@ class HomeScreen extends ConsumerWidget {
               const AccessEndingBanner(),
               const WinBackCard(),
               const PromotionBanner(),
+              // What fits now, from the hour, the family's routine and the calendar (Mój dzień).
+              const MomentCard(),
               const SizedBox(height: 10),
               FittedBox(
                 fit: BoxFit.scaleDown,
@@ -105,8 +108,6 @@ class HomeScreen extends ConsumerWidget {
               const FavoriteCard(),
               // A new play within two weeks: the countdown children ask about.
               const PremiereCountdown(),
-              // 16:30–19:30: the after-work window (research 2026-10-12), one tap for dinner.
-              const DinnerCard(),
 
               // Plays first, the way parents think: what now, then for which age and kind;
               // offers and helpers after them. No "your packs": only the subscription is sold.
