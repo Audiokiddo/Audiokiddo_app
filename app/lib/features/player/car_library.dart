@@ -157,10 +157,16 @@ class CarLibrary {
 
   final ProviderContainer _container;
 
+  /// In the car the plays are for everyone: with siblings, the youngest child's age.
+  int? _youngest() {
+    final children = _container.read(familyProvider).value?.children ?? const [];
+    return children.isEmpty ? null : children.map((c) => c.age).reduce((a, b) => a < b ? a : b);
+  }
+
   Future<Map<CarShelf, List<ContentItem>>> _shelves() async {
     final catalog = await _container.read(catalogProvider.future);
     final downloaded = {...?_container.read(downloadSummaryProvider).value?.itemIds};
-    final age = _container.read(familyProvider).value?.active?.age;
+    final age = _youngest();
     return carShelves(catalog, canPlay: (i) => _container.read(canPlayProvider(i)), downloaded: downloaded, age: age);
   }
 
@@ -192,7 +198,7 @@ class CarLibrary {
   Future<Map<String, Object?>> carPlayLibrary() async {
     final catalog = await _container.read(catalogProvider.future);
     final downloaded = {...?_container.read(downloadSummaryProvider).value?.itemIds};
-    final age = _container.read(familyProvider).value?.active?.age;
+    final age = _youngest();
     final recent = await _container.read(recentProvider.future).catchError((Object _) => const <String>[]);
     final repo = _container.read(personalRepositoryProvider);
     final progress = {

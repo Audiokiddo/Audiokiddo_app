@@ -17,6 +17,36 @@ class FeaturesScreen extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final features = <(IconData, String, String, VoidCallback?)>[
       (
+        Icons.wb_sunny_rounded,
+        'Mój dzień i kafelek „Teraz”',
+        'Zaznaczasz dni przedszkola, jazdy autem i godziny dnia. Na górze Startu podpowiadam, co pasuje teraz: '
+            'rano, przed wyjazdem, po przedszkolu, przy kolacji i na dobranoc. Święta liczę sam, a gdy dziecko '
+            'choruje, zaznaczasz to jednym przyciskiem.',
+        () => context.push('/moj-dzien'),
+      ),
+      (
+        Icons.event_note_rounded,
+        'Plany na każdą porę',
+        'Poranek, auto, po przedszkolu, dzień w domu, chorowanie, kolejka u lekarza, kolacja i dobranoc: gotowe '
+            'plany w jednym miejscu. Wybierasz, ile mają trwać, i zmieniasz zabawy. Przy rodzeństwie dobieram '
+            'zabawy dla najmłodszego, żeby wszyscy mogli się bawić.',
+        () => context.push('/plany'),
+      ),
+      (
+        Icons.notifications_active_rounded,
+        'Podpowiedzi w powiadomieniach',
+        'W Mój dzień włączasz pory, o których mam przypominać, np. 15 minut przed wyjazdem. Dotknięcie otwiera '
+            'gotowy plan.',
+        () => context.push('/moj-dzien'),
+      ),
+      (
+        Icons.timer_rounded,
+        'Licznik do końca i minuty spokoju',
+        'W odtwarzaczu widzisz, ile zostało do końca zabawy i o której się skończy. W niedzielę wieczorem pokazuję, '
+            'ile minut spokoju dał Ci tydzień.',
+        null,
+      ),
+      (
         Icons.touch_app_rounded,
         'Co dziś robimy?',
         'Na Starcie duże kafelki z zabawami na teraz, pod nimi wiek (3–4, 5–6, 7–9) i rodzaje zabaw, także darmowe.',

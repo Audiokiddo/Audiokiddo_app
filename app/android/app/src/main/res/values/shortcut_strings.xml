@@ -4,6 +4,8 @@
     <string name="shortcut_bedtime_long">Dobranoc z Szop’enem</string>
     <string name="shortcut_trip">W drogę</string>
     <string name="shortcut_trip_long">W drogę z Szop’enem</string>
+    <string name="shortcut_plans">Teraz</string>
+    <string name="shortcut_plans_long">Plan na teraz</string>
     <!-- What parents may say to Google Assistant for each feature. -->
     <string-array name="shortcut_bedtime_synonyms">
         <item>dobranoc</item>
@@ -18,5 +20,11 @@
         <item>tryb podróży</item>
         <item>do samochodu</item>
         <item>na drogę</item>
+    </string-array>
+    <string-array name="shortcut_plans_synonyms">
+        <item>plany</item>
+        <item>teraz</item>
+        <item>mój dzień</item>
+        <item>co teraz</item>
     </string-array>
 </resources>

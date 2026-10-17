@@ -1,8 +1,11 @@
+import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/core/storage/storage_providers.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/features/day/day_notifications.dart';
 import 'package:audiokiddo/features/day/day_routine.dart';
 import 'package:audiokiddo/features/day/day_screen.dart';
+import 'package:audiokiddo/features/day/peace_week.dart';
+import 'package:audiokiddo/features/home/home_widget_sync.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -84,5 +87,37 @@ void main() {
     expect(find.text('7:45'), findsOneWidget);
     expect(find.textContaining('Wszystkich Świętych'), findsOneWidget);
     expect(find.text('Za chwilę wyjazd'), findsOneWidget);
+  });
+
+  test('the app learns the real hour of leaving from three close morning drives', () {
+    final set = r.copyWith(leave: 7 * 60 + 45);
+    final drives = [DateTime(2026, 10, 12, 7, 18), DateTime(2026, 10, 13, 7, 22), DateTime(2026, 10, 14, 7, 20)];
+    expect(learnedLeave(drives, set), 7 * 60 + 20);
+    expect(learnedLeave(drives.take(2).toList(), set), isNull, reason: 'two drives are not a habit');
+    expect(learnedLeave([...drives.take(2), DateTime(2026, 10, 15, 8, 30)], set), isNull, reason: 'too far apart');
+    expect(learnedLeave(drives, set.copyWith(leave: 7 * 60 + 25)), isNull, reason: 'already about right');
+  });
+
+  test('a week of quiet is counted by moment, siblings together once', () {
+    final now = DateTime(2026, 10, 18, 18); // Sunday evening
+    final results = [
+      ActivityResult(childId: 'a', itemId: 'x', at: DateTime(2026, 10, 16, 7, 40), seconds: 600),
+      ActivityResult(childId: 'b', itemId: 'x', at: DateTime(2026, 10, 16, 7, 40), seconds: 600),
+      ActivityResult(childId: 'a', itemId: 'y', at: DateTime(2026, 10, 16, 19, 45), seconds: 900),
+      ActivityResult(childId: 'a', itemId: 'z', at: DateTime(2026, 10, 1, 19, 45), seconds: 900),
+    ];
+    final minutes = peaceMinutes(results, r, now);
+    expect(minutes[DayMomentKind.car], 10);
+    expect(minutes[DayMomentKind.bedtime], 15);
+    expect(minutes.values.fold(0, (a, b) => a + b), 25);
+  });
+
+  test('the widgets get today and tomorrow as lines they can read without the app', () {
+    final lines = widgetMoments(r, DateTime(2026, 10, 16)).split('\n');
+    expect(lines.length, greaterThan(8));
+    final first = lines.first.split('\t');
+    expect(first, hasLength(4));
+    expect(int.parse(first[0]), DateTime(2026, 10, 16, 7).millisecondsSinceEpoch ~/ 1000);
+    expect(first[3], startsWith('/'));
   });
 }

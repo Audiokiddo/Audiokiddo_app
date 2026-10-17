@@ -42,6 +42,7 @@ class MoreScreen extends ConsumerWidget {
       children: [
         for (final item in [
           (Icons.wb_sunny_rounded, 'Mój dzień', '/moj-dzien'),
+          (Icons.event_note_rounded, 'Plany na każdą porę', '/plany'),
           (Icons.favorite_rounded, 'Ulubione', '/ulubione'),
           (Icons.face_rounded, 'Profil dziecka', '/profil'),
           (Icons.collections_rounded, 'Album naklejek', '/naklejki'),

@@ -104,6 +104,16 @@
 			<key>UIApplicationShortcutItemType</key>
 			<string>/podroz</string>
 		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>sun.max.fill</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Plan na tę porę dnia</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Teraz</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>/plany</string>
+		</dict>
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>

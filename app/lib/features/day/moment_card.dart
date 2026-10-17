@@ -106,3 +106,48 @@ class MomentCard extends ConsumerWidget {
     );
   }
 }
+
+/// "Wyjeżdżacie zwykle o 7:40. Ustawić?": the hour learned from the car plans started.
+class LeaveHint extends ConsumerWidget {
+  const LeaveHint({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hour = ref.watch(leaveHintProvider).value;
+    final routine = ref.watch(dayRoutineProvider).value;
+    if (hour == null || routine == null) return const SizedBox.shrink();
+    final clock = '${hour ~/ 60}:${(hour % 60).toString().padLeft(2, '0')}';
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 10, 8, 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Zwykle wyjeżdżacie o $clock', style: Theme.of(context).textTheme.titleSmall),
+            const Text('Ustawić tę godzinę w Moim dniu? Podpowiedź do auta przyjdzie wtedy na czas.'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    await ref.read(tripLogProvider.notifier).dismiss(hour);
+                    ref.invalidate(leaveHintProvider);
+                  },
+                  child: const Text('Nie, dziękuję'),
+                ),
+                FilledButton(
+                  onPressed: () async {
+                    await ref.read(dayRoutineProvider.notifier).save(routine.copyWith(leave: hour));
+                    ref.invalidate(leaveHintProvider);
+                  },
+                  child: Text('Ustaw $clock'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

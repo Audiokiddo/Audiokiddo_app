@@ -135,6 +135,11 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Nie teraz'));
       await tester.pumpAndSettle();
+      // Mój dzień in three questions: optional (Pomiń in the bar).
+      expect(tester.takeException(), isNull, reason: 'day questions on $name');
+      expect(find.text('Jak wygląda Wasz dzień?'), findsOneWidget);
+      await tester.tap(find.text('Pomiń'));
+      await tester.pumpAndSettle();
       // Where the family heard of us: optional.
       expect(tester.takeException(), isNull, reason: 'source question on $name');
       await tester.scrollUntilVisible(find.text('Pomiń'), 200, scrollable: find.byType(Scrollable).first);

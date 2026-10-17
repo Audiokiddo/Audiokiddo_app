@@ -166,10 +166,40 @@ enum LordJoke {
   }
 }
 
+/// Mój dzień: the family's moments for today and tomorrow, written by the app
+/// (lib/features/home/home_widget_sync.dart, "moments": "start\ttitle\taction\tpath" lines).
+enum DayMoments {
+  struct Moment {
+    let start: Date
+    let link: PlayLink
+  }
+
+  static func load() -> [Moment] {
+    let raw = UserDefaults(suiteName: ChildWeek.appGroup)?.string(forKey: "moments") ?? ""
+    return raw.split(separator: "\n").compactMap { line in
+      let parts = line.split(separator: "\t", omittingEmptySubsequences: false).map(String.init)
+      guard parts.count >= 4, let seconds = Double(parts[0]),
+        let encoded = parts[3].addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+        let url = URL(string: "audiokiddo://open\(encoded)")
+      else { return nil }
+      return Moment(start: Date(timeIntervalSince1970: seconds), link: PlayLink(title: parts[1], detail: parts[2], url: url))
+    }
+  }
+
+  /// The latest moment begun by [date], for at most three hours (none late at night).
+  static func current(_ moments: [Moment], at date: Date) -> PlayLink? {
+    guard let begun = moments.filter({ $0.start <= date }).max(by: { $0.start < $1.start }),
+      date.timeIntervalSince(begun.start) <= 3 * 3600
+    else { return nil }
+    return begun.link
+  }
+}
+
 struct PartEntry: TimelineEntry {
   let date: Date
   let part: DayPart
   var week: ChildWeek? = nil
+  var moment: PlayLink? = nil
   var joke: String { LordJoke.load(part) ?? part.subtitle }
 }
 
@@ -177,7 +207,8 @@ struct PartProvider: TimelineProvider {
   func placeholder(in context: Context) -> PartEntry { PartEntry(date: Date(), part: .evening) }
 
   func getSnapshot(in context: Context, completion: @escaping (PartEntry) -> Void) {
-    completion(PartEntry(date: Date(), part: DayPart.of(Date()), week: ChildWeek.load()))
+    let now = Date()
+    completion(PartEntry(date: now, part: DayPart.of(now), week: ChildWeek.load(), moment: DayMoments.current(DayMoments.load(), at: now)))
   }
 
   /// One entry now and one at each change of the part of the day for the next 24 hours. The
@@ -186,7 +217,8 @@ struct PartProvider: TimelineProvider {
     let now = Date()
     let calendar = Calendar.current
     let week = ChildWeek.load()
-    var entries = [PartEntry(date: now, part: DayPart.of(now), week: week)]
+    let moments = DayMoments.load()
+    var entries = [PartEntry(date: now, part: DayPart.of(now), week: week, moment: DayMoments.current(moments, at: now))]
     for dayOffset in 0...1 {
       guard let day = calendar.date(byAdding: .day, value: dayOffset, to: calendar.startOfDay(for: now)) else { continue }
       for hour in DayPart.startHours {
@@ -196,9 +228,18 @@ struct PartProvider: TimelineProvider {
         // After midnight "today's note" and today's play are new ones; the app refreshes them
         // when opened. The play to finish stays.
         let sameDay = calendar.isDate(date, inSameDayAs: now)
-        entries.append(PartEntry(date: date, part: DayPart.of(date), week: sameDay ? week : week?.resumeOnly))
+        entries.append(
+          PartEntry(date: date, part: DayPart.of(date), week: sameDay ? week : week?.resumeOnly,
+            moment: DayMoments.current(moments, at: date)))
       }
     }
+    // And at each Mój dzień moment of the next 24 hours.
+    for m in moments where m.start > now && m.start.timeIntervalSince(now) <= 24 * 3600 {
+      let sameDay = calendar.isDate(m.start, inSameDayAs: now)
+      entries.append(
+        PartEntry(date: m.start, part: DayPart.of(m.start), week: sameDay ? week : week?.resumeOnly, moment: m.link))
+    }
+    entries.sort { $0.date < $1.date }
     completion(Timeline(entries: entries, policy: .atEnd))
   }
 }
@@ -251,6 +292,7 @@ struct PartView: View {
   /// The play the small widget and the lock screen open: the unfinished one, else today's.
   private var main: (label: String, link: PlayLink)? {
     if let resume = entry.week?.resume { return ("Dokończ", resume) }
+    if let moment = entry.moment { return ("Teraz", moment) }
     if let next = entry.week?.next { return ("Na dziś", next) }
     return nil
   }
@@ -354,6 +396,7 @@ struct PartView: View {
   private func medium(part: DayPart, ink: Color) -> some View {
     var rows: [(String, String, String, URL)] = []
     if let resume = entry.week?.resume { rows.append(("play.fill", "Dokończ", resume.title, resume.url)) }
+    if let moment = entry.moment { rows.append(("sun.max.fill", "Teraz · \(moment.detail)", moment.title, moment.url)) }
     if let next = entry.week?.next {
       rows.append(("star.fill", next.detail.isEmpty ? "Na dziś" : "Na dziś · \(next.detail)", next.title, next.url))
     }

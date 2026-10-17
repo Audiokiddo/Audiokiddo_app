@@ -25,8 +25,15 @@ import '../lord/lord_widgets.dart';
 import 'plan.dart';
 import 'plan_editor.dart';
 import 'session.dart';
+import '../day/day_routine.dart';
 
-int _ageOf(WidgetRef ref) => ref.watch(familyProvider).value?.active?.age ?? 6;
+/// The age plans are made for: with siblings the youngest, so everyone in the car or at the
+/// table can join in (Mój dzień, 2026-10-17).
+int _ageOf(WidgetRef ref) {
+  final children = ref.watch(familyProvider).value?.children ?? const [];
+  if (children.isEmpty) return 6;
+  return children.map((c) => c.age).reduce((a, b) => a < b ? a : b);
+}
 
 /// Back when there is somewhere to go back to; a close button to Start when the screen was
 /// opened from the home-screen widget (a deep link replaces the stack).
@@ -283,6 +290,8 @@ class _TripScreenState extends ConsumerState<TripScreen> {
                 ? null
                 : () {
                     ref.read(sessionProvider.notifier).start(SessionKind.trip, steps, childId: child?.id);
+                    // Mój dzień learns the real hour of leaving from the car plans started.
+                    unawaited(ref.read(tripLogProvider.notifier).record(ref.read(clockProvider)()));
                     context.pushReplacement('/sesja');
                   },
             icon: const Icon(Icons.directions_car_rounded),
@@ -966,7 +975,11 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
   List<SessionStep>? _plan;
   int _planFor = -1;
 
-  List<int> get durations => widget.variant == 'rano' ? const [10, 15, 20, 30] : const [15, 25, 40];
+  List<int> get durations => switch (widget.variant) {
+    'rano' => const [10, 15, 20, 30],
+    'czekamy' => const [5, 10, 15],
+    _ => const [15, 25, 40],
+  };
 
   /// Title and line for the moment of the day.
   (String, String) get _words => switch (widget.variant) {
@@ -974,6 +987,7 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
     'po' => ('Po przedszkolu', 'Kwadrans spokoju: dziecko odpowiada i wymyśla, a Ty odzyskujesz oddech.'),
     'dom' => ('Dzień w domu', 'Dłuższy blok zabaw na środek dnia, kiedy pomysły się kończą.'),
     'chory' => ('Zabawy w łóżku', 'Spokojne zabawy na leżąco. Dziecko słucha i odpowiada, Ty masz chwilę.'),
+    'czekamy' => ('Czekamy', 'Poczekalnia, kolejka, restauracja: kilka minut zabaw w słuchawkach, bez biegania.'),
     'kolacja' => ('Kolacja bez wołania', 'Dziecko słucha, Wy gotujecie. Zabawy bez przygotowań, jedna po drugiej.'),
     _ => ('Obiad bez wołania', 'Dziecko słucha, Wy gotujecie. Zabawy bez przygotowań, jedna po drugiej. Plan możesz zmienić.'),
   };
@@ -984,7 +998,7 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
     final catalog = ref.watch(catalogProvider).value;
     final family = ref.watch(familyProvider).value;
     final child = family?.active;
-    final age = child?.age ?? 5;
+    final age = family == null || family.children.isEmpty ? 5 : _ageOf(ref);
     if (catalog != null && (_plan == null || _planFor != _minutes)) {
       _planFor = _minutes;
       _plan = buildDinner(

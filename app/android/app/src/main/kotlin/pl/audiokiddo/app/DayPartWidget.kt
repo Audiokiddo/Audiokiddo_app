@@ -57,7 +57,10 @@ class DayPartWidget : AppWidgetProvider() {
             // The play to start with one tap: the one stopped halfway, else today's from the plan.
             val resume = link(data, "resume")
             val next = link(data, "next")
+            // Mój dzień: the moment that has begun (written by the app for today and tomorrow).
+            val moment = currentMoment(data)
             val main = resume?.let { Triple(context.getString(R.string.widget_resume), it.first, it) }
+                ?: moment?.let { Triple("Teraz · " + it.second, it.first, it) }
                 ?: next?.let { Triple(context.getString(R.string.widget_today) + " · " + it.second, it.first, it) }
             // Szop’en's line of the day (written by the app); the built-in one until the app has run.
             val joke = data.getString("joke_${part.name.lowercase()}", null).orEmpty()
@@ -93,6 +96,24 @@ class DayPartWidget : AppWidgetProvider() {
             }
             setOnClickPendingIntent(R.id.widget_root, open(context, main?.third?.third ?: part.url, part.ordinal))
         }
+    }
+
+    /** Mój dzień's moments: (start, title, action, path), from the app's "moments" lines. */
+    private fun moments(data: android.content.SharedPreferences): List<Moment> =
+        data.getString("moments", null).orEmpty().lines().mapNotNull { line ->
+            val parts = line.split('\t')
+            val start = parts.getOrNull(0)?.toLongOrNull() ?: return@mapNotNull null
+            if (parts.size < 4) null else Moment(start * 1000, parts[1], parts[2], parts[3])
+        }
+
+    private data class Moment(val start: Long, val title: String, val action: String, val path: String)
+
+    /** The latest moment that has begun today, as (title, action, url); none after bedtime. */
+    private fun currentMoment(data: android.content.SharedPreferences): Triple<String, String, String>? {
+        val now = System.currentTimeMillis()
+        val begun = moments(data).filter { it.start <= now }.maxByOrNull { it.start } ?: return null
+        if (now - begun.start > 3 * 60 * 60 * 1000L) return null
+        return Triple(begun.title, begun.action, "audiokiddo://open" + begun.path)
     }
 
     /** A play the app wrote: (title, detail, audiokiddo:// url), or null. */
@@ -135,7 +156,11 @@ class DayPartWidget : AppWidgetProvider() {
             context, 0, update,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-        context.getSystemService(AlarmManager::class.java)?.set(AlarmManager.RTC, next.timeInMillis, pending)
+        // Or earlier, when the next Mój dzień moment begins.
+        val now = System.currentTimeMillis()
+        val moment = moments(HomeWidgetPlugin.getData(context)).map { it.start }.filter { it > now }.minOrNull()
+        val at = if (moment != null && moment < next.timeInMillis) moment else next.timeInMillis
+        context.getSystemService(AlarmManager::class.java)?.set(AlarmManager.RTC, at, pending)
     }
 
     private companion object {

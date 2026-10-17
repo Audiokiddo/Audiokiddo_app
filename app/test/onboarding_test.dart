@@ -170,6 +170,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Nie teraz'));
     await tester.pumpAndSettle();
+    // Mój dzień in three questions; it can be skipped.
+    expect(find.text('Jak wygląda Wasz dzień?'), findsOneWidget);
+    await tester.tap(find.text('Pomiń'));
+    await tester.pumpAndSettle();
     // Where they heard of us: one optional tap (the attribution, no tracking SDK).
     expect(find.text('Skąd o nas wiecie?'), findsOneWidget);
     await tester.tap(find.text('TikTok'));

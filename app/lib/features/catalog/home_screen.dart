@@ -35,6 +35,7 @@ import 'widgets/item_art.dart';
 import '../home/launch_greeting.dart';
 import '../welcome/szop_tour.dart';
 import 'widgets/catalog_loader.dart';
+import '../day/peace_week.dart';
 
 final screenFreeMinutesProvider = Provider<int>((ref) {
   final family = ref.watch(familyProvider).value;
@@ -87,9 +88,14 @@ class HomeScreen extends ConsumerWidget {
               const FirstPlayCard(),
               const AccessEndingBanner(),
               const WinBackCard(),
-              const PromotionBanner(),
-              // What fits now, from the hour, the family's routine and the calendar (Mój dzień).
+              // Start in order of what a parent needs (Mój dzień, 2026-10-17): what fits now, the
+              // play they were in the middle of, then plays; offers and extras further down.
               const MomentCard(),
+              const LeaveHint(),
+              if (items.isNotEmpty) ...[
+                RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
+                AudioRow(item: items.first, subtitle: _remaining(ref, items.first)),
+              ],
               const SizedBox(height: 10),
               FittedBox(
                 fit: BoxFit.scaleDown,
@@ -113,10 +119,16 @@ class HomeScreen extends ConsumerWidget {
               // offers and helpers after them. No "your packs": only the subscription is sold.
               const RefSection('Co robicie?'),
               const _QuickNeeds(),
-              if (items.isNotEmpty) ...[
-                RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
-                for (final item in items.take(2)) AudioRow(item: item, subtitle: _remaining(ref, item)),
-              ],
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () => context.push('/plany'),
+                  icon: const Icon(Icons.event_note_rounded),
+                  label: const Text('Wszystkie plany: poranek, auto, po przedszkolu, kolacja…'),
+                ),
+              ),
+              const PeaceWeekCard(),
+              const PromotionBanner(),
               const PendingDiplomaCard(),
               _NextPackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
@@ -702,8 +714,8 @@ class _QuickNeeds extends StatelessWidget {
       (Icons.directions_car_rounded, 'W podróży', 'Telefon leży, dziecko gra', '/podroz'),
       (Icons.bedtime_rounded, 'Na dobranoc', 'Wyciszenie przed snem', '/dobranoc'),
       sickSeason
-          ? (Icons.weekend_rounded, 'Na leżąco', 'Dziecko chore, zabawy bez ruchu', const LibraryFilter(lyingDown: true).toLocation())
-          : (Icons.bolt_rounded, 'Bez przygotowań', 'Nic nie trzeba szykować', const LibraryFilter(noPrep: true).toLocation()),
+          ? (Icons.weekend_rounded, 'Na leżąco', 'Dziecko chore, zabawy bez ruchu', '/obiad?pora=chory&minuty=20')
+          : (Icons.hourglass_bottom_rounded, 'Czekamy', 'Poczekalnia, kolejka: kilka minut', '/obiad?pora=czekamy&minuty=10'),
     ];
     const colors = [AkBrand.sun, Color(0xFFB8E3DF), Color(0xFFDED0EF), Color(0xFFE5DCEF)];
     return Column(

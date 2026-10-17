@@ -17,6 +17,7 @@ import '../reminders/reminder_offer.dart';
 import '../about/about_screen.dart';
 import 'microphone_offer.dart';
 import 'welcome_controller.dart';
+import '../day/day_welcome.dart';
 
 /// The free plays a family gets at the start: one from each pack.
 List<ContentItem> welcomeGifts(Catalog catalog) => [
@@ -33,7 +34,7 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-enum _Stage { fanfare, quiz, microphone, reminders, source }
+enum _Stage { fanfare, quiz, microphone, reminders, day, source }
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   _Stage _stage = _Stage.fanfare;
@@ -57,7 +58,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         onDone: () => setState(() => _stage = _Stage.microphone),
       ),
       _Stage.microphone => MicrophoneOffer(onDone: () => setState(() => _stage = _Stage.reminders)),
-      _Stage.reminders => ReminderOffer(onDone: () => setState(() => _stage = _Stage.source)),
+      _Stage.reminders => ReminderOffer(onDone: () => setState(() => _stage = _Stage.day)),
+      _Stage.day => DayWelcome(onDone: () => setState(() => _stage = _Stage.source)),
       _Stage.source => SourceQuestion(onDone: _complete),
     },
   );

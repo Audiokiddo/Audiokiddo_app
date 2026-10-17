@@ -130,7 +130,7 @@ void main() {
       'Mam 20 minut',
       'W podróży',
       'Na dobranoc',
-      isSickSeason(DateTime.now()) ? 'Na leżąco' : 'Bez przygotowań',
+      isSickSeason(DateTime.now()) ? 'Na leżąco' : 'Czekamy',
     ]) {
       await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
       expect(find.text(label), findsOneWidget);

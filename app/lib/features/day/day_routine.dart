@@ -324,3 +324,57 @@ class DayRoutineController extends AsyncNotifier<DayRoutine> {
 }
 
 final dayRoutineProvider = AsyncNotifierProvider<DayRoutineController, DayRoutine>(DayRoutineController.new);
+
+/// When the family started plays for the car (the last ten), so the app can notice the real
+/// hour of leaving and offer to set it in Mój dzień. Kept on the phone only.
+class TripLog extends AsyncNotifier<List<DateTime>> {
+  static const key = 'trip_starts';
+  static const dismissedKey = 'trip_hint_dismissed';
+
+  @override
+  Future<List<DateTime>> build() async {
+    final raw = await ref.watch(databaseProvider).readValue(key) ?? '';
+    return [for (final s in raw.split(',')) ?DateTime.tryParse(s)];
+  }
+
+  Future<void> record(DateTime at) async {
+    try {
+      final list = [...await future, at];
+      final last = list.length > 10 ? list.sublist(list.length - 10) : list;
+      state = AsyncData(last);
+      await ref.read(databaseProvider).writeValue(key, last.map((d) => d.toIso8601String()).join(','));
+    } on Object {
+      // Learning the hour is a nicety: a ride never fails because of it.
+    }
+  }
+
+  /// "Nie, dziękuję": the hint for this hour does not come back.
+  Future<void> dismiss(int minutes) => ref.read(databaseProvider).writeValue(dismissedKey, '$minutes');
+}
+
+final tripLogProvider = AsyncNotifierProvider<TripLog, List<DateTime>>(TripLog.new);
+
+/// The leaving hour the family really keeps (minutes after midnight, to 5 minutes), or null:
+/// at least three morning drives on weekdays, close together (within 20 minutes), and more than
+/// 10 minutes from what Mój dzień says.
+int? learnedLeave(List<DateTime> starts, DayRoutine r) {
+  final mornings = [
+    for (final s in starts)
+      if (s.weekday <= 5 && s.hour >= 5 && s.hour < 10) s.hour * 60 + s.minute,
+  ];
+  if (mornings.length < 3) return null;
+  final recent = mornings.sublist(mornings.length - 3)..sort();
+  if (recent.last - recent.first > 20) return null;
+  final median = (recent[1] / 5).round() * 5;
+  return (median - r.leave).abs() > 10 ? median : null;
+}
+
+/// The learned leaving hour worth suggesting now (not dismissed for that hour), or null.
+final leaveHintProvider = FutureProvider<int?>((ref) async {
+  final starts = await ref.watch(tripLogProvider.future);
+  final routine = await ref.watch(dayRoutineProvider.future);
+  final hour = learnedLeave(starts, routine);
+  if (hour == null) return null;
+  final dismissed = await ref.watch(databaseProvider).readValue(TripLog.dismissedKey);
+  return dismissed == '$hour' ? null : hour;
+});

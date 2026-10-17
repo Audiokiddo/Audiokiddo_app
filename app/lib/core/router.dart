@@ -47,6 +47,7 @@ import '../features/session/session_screens.dart';
 import '../features/about/features_screen.dart';
 import '../features/rewards/adventure_map.dart';
 import '../features/day/day_screen.dart';
+import '../features/day/plans_screen.dart';
 
 /// Kids mode locks navigation to `/dziecko…`: back, deep links and a restart all land there
 /// until a parent passes the gate (ARCHITECTURE §12).
@@ -141,6 +142,7 @@ GoRouter buildRouter(
     GoRoute(path: '/ratunku', pageBuilder: (context, state) => swipePage(state, const RescueScreen())),
     GoRoute(path: '/rutyny', pageBuilder: (context, state) => swipePage(state, const RoutinesScreen())),
     GoRoute(path: '/moj-dzien', pageBuilder: (context, state) => swipePage(state, const DayScreen())),
+    GoRoute(path: '/plany', pageBuilder: (context, state) => swipePage(state, const PlansScreen())),
     GoRoute(path: '/kolejka', pageBuilder: (context, state) => swipePage(state, const QueueScreen())),
     GoRoute(path: '/profil', pageBuilder: (context, state) => swipePage(state, const ProfileScreen())),
     GoRoute(path: '/pobrane', pageBuilder: (context, state) => swipePage(state, const DownloadsScreen())),

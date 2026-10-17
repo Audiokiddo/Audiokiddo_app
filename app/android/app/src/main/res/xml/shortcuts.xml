@@ -49,4 +49,23 @@
                 android:value="@array/shortcut_trip_synonyms" />
         </capability-binding>
     </shortcut>
+
+    <!-- Mój dzień: what fits now (the "Teraz" card and all the plans). -->
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_plans"
+        android:shortcutId="plany"
+        android:shortcutLongLabel="@string/shortcut_plans_long"
+        android:shortcutShortLabel="@string/shortcut_plans">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="audiokiddo://open/plany"
+            android:targetClass="pl.audiokiddo.app.MainActivity"
+            android:targetPackage="pl.audiokiddo.app" />
+        <capability-binding android:key="actions.intent.OPEN_APP_FEATURE">
+            <parameter-binding
+                android:key="feature"
+                android:value="@array/shortcut_plans_synonyms" />
+        </capability-binding>
+    </shortcut>
 </shortcuts>

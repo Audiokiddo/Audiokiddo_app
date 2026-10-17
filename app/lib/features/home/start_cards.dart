@@ -9,6 +9,7 @@ import '../../core/storage/storage_providers.dart';
 /// The cards on Start that a parent can close for good when they do not use them.
 const startCardLabels = <String, String>{
   'moment': 'Teraz: podpowiedź na tę porę dnia',
+  'peace': 'Twój tydzień: minuty spokoju',
   'favorite': 'Ulubiona zabawa dziecka',
   'dinner': 'Obiad bez wołania',
   'premiere': 'Odliczanie do nowej zabawy',

@@ -11,12 +11,24 @@ import '../family/family.dart';
 import '../player/bottom_dock.dart' show ResumeCard, resumeCardProvider;
 import '../family/plan_texts.dart';
 import '../lord/lord_lines.dart';
+import '../day/day_routine.dart';
 
 /// What the home-screen widget shows: the active child's week, today's play from the plan
 /// (one tap starts it) and the unfinished play to pick up.
 @immutable
 class HomeWidgetData {
-  const HomeWidgetData({this.line = '', this.notes = 0, this.todayDone = false, this.next, this.resume});
+  const HomeWidgetData({
+    this.line = '',
+    this.notes = 0,
+    this.todayDone = false,
+    this.next,
+    this.resume,
+    this.moments = '',
+  });
+
+  /// Mój dzień for today and tomorrow, one moment a line: "start seconds\ttitle\taction\tpath".
+  /// The widgets pick the one that has begun, so it changes without the app open.
+  final String moments;
 
   /// "Zosia · dzień 3 · 2 z 7 nut" or "Zosia: dzisiejsza nuta zebrana"; empty without a child.
   final String line;
@@ -38,10 +50,11 @@ class HomeWidgetData {
       other.notes == notes &&
       other.todayDone == todayDone &&
       other.next == next &&
-      other.resume == resume;
+      other.resume == resume &&
+      other.moments == moments;
 
   @override
-  int get hashCode => Object.hash(line, notes, todayDone, next, resume);
+  int get hashCode => Object.hash(line, notes, todayDone, next, resume, moments);
 }
 
 /// A play on the widget: its title, a short detail ("6 min") and the app path it opens.
@@ -84,10 +97,12 @@ final homeWidgetDataProvider = Provider<HomeWidgetData?>((ref) {
     ResumeCard(:final item?) => WidgetLink(title: item.title, detail: 'dokończ', path: widgetPlayPath(item)),
     _ => null,
   };
+  final routine = ref.watch(dayRoutineProvider).value;
+  final moments = routine == null || !routine.configured ? '' : widgetMoments(routine, ref.watch(calendarDayProvider));
   final child = family?.active;
   final position = child == null ? null : ref.watch(planPositionProvider(child.id));
   if (family == null || child == null || position == null) {
-    return resume == null ? null : HomeWidgetData(resume: resume);
+    return resume == null && moments.isEmpty ? null : HomeWidgetData(resume: resume, moments: moments);
   }
   WidgetLink? next;
   if (!position.todayDone && catalog != null) {
@@ -109,8 +124,16 @@ final homeWidgetDataProvider = Provider<HomeWidgetData?>((ref) {
     todayDone: position.todayDone,
     next: next,
     resume: resume,
+    moments: moments,
   );
 });
+
+/// Today's and tomorrow's moments for the widgets (see [HomeWidgetData.moments]).
+String widgetMoments(DayRoutine r, DateTime day) => [
+  for (final d in [day, day.add(const Duration(days: 1))])
+    for (final m in momentsOf(r, d))
+      [m.startsAt.millisecondsSinceEpoch ~/ 1000, m.title, m.action, m.route].join('\t'),
+].join('\n');
 
 /// Szop’en's widget line for each part of the day, a different one every day.
 Map<String, String> widgetJokes(DateTime day) {
@@ -148,6 +171,7 @@ class PlatformHomeWidgetSink implements HomeWidgetSink {
         await HomeWidget.saveWidgetData<String>('${key}_detail', link?.detail ?? '');
         await HomeWidget.saveWidgetData<String>('${key}_path', link?.path ?? '');
       }
+      await HomeWidget.saveWidgetData<String>('moments', data?.moments ?? '');
       for (final MapEntry(:key, :value) in widgetJokes(DateTime.now()).entries) {
         await HomeWidget.saveWidgetData<String>(key, value);
       }
