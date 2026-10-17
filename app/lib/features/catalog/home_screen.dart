@@ -36,6 +36,7 @@ import '../home/launch_greeting.dart';
 import '../welcome/szop_tour.dart';
 import 'widgets/catalog_loader.dart';
 import '../day/peace_week.dart';
+import 'news_month.dart';
 
 final screenFreeMinutesProvider = Provider<int>((ref) {
   final family = ref.watch(familyProvider).value;
@@ -92,18 +93,22 @@ class HomeScreen extends ConsumerWidget {
               // play they were in the middle of, then plays; offers and extras further down.
               const MomentCard(),
               const LeaveHint(),
-              if (items.isNotEmpty) ...[
+              if (items.isNotEmpty && ref.watch(closedContinueProvider).value != items.first.id) ...[
                 RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
-                AudioRow(item: items.first, subtitle: _remaining(ref, items.first)),
+                Row(
+                  children: [
+                    Expanded(child: AudioRow(item: items.first, subtitle: _remaining(ref, items.first))),
+                    IconButton(
+                      tooltip: 'Zamknij',
+                      onPressed: () => ref.read(closedContinueProvider.notifier).close(items.first.id),
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  ],
+                ),
               ],
               const SizedBox(height: 10),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text('Co dziś robimy?', maxLines: 1, style: Theme.of(context).textTheme.headlineLarge),
-              ),
-              const SizedBox(height: 16),
-              TourTarget(id: 'hero', child: const HeroShelf()),
+              // This month's premieres (Dawid, 2026-10-17): out ones in colour, coming ones face down.
+              TourTarget(id: 'hero', child: const NewsMonth()),
               // Age and kind right under the big tiles, visible as soon as the app opens.
               const SizedBox(height: 14),
               const _AgeRow(),

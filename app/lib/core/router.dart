@@ -143,6 +143,7 @@ GoRouter buildRouter(
     GoRoute(path: '/rutyny', pageBuilder: (context, state) => swipePage(state, const RoutinesScreen())),
     GoRoute(path: '/moj-dzien', pageBuilder: (context, state) => swipePage(state, const DayScreen())),
     GoRoute(path: '/plany', pageBuilder: (context, state) => swipePage(state, const PlansScreen())),
+    GoRoute(path: '/ustawienia', pageBuilder: (context, state) => swipePage(state, const SettingsScreen())),
     GoRoute(path: '/kolejka', pageBuilder: (context, state) => swipePage(state, const QueueScreen())),
     GoRoute(path: '/profil', pageBuilder: (context, state) => swipePage(state, const ProfileScreen())),
     GoRoute(path: '/pobrane', pageBuilder: (context, state) => swipePage(state, const DownloadsScreen())),

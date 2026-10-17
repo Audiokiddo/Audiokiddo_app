@@ -20,7 +20,6 @@ import '../diploma/diploma.dart';
 import '../rating/rating.dart';
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
-import '../about/about_screen.dart';
 import '../family_sharing/family_screen.dart';
 import '../family_sharing/grandparents.dart';
 import '../purchases/plan_limit.dart';
@@ -34,55 +33,98 @@ class MoreScreen extends ConsumerWidget {
   /// Szop’en's tour lights up the downloads.
   static Widget _tile(String route, Widget child) =>
       route == '/pobrane' ? TourTarget(id: 'downloads', child: child) : child;
+  static Widget _link(BuildContext context, IconData icon, String title, String route, {String? subtitle}) => _tile(
+    route,
+    ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(icon, color: AkBrand.tealDeep),
+      title: Text(title),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: () => context.push(route),
+    ),
+  );
+
+  /// Grouped by what a parent comes for (2026-10-17: simpler, shorter): the day, the child,
+  /// the account, settings in a screen of their own, help, and helping us grow.
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
     appBar: AppBar(title: const Text('Więcej')),
     body: ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
-        for (final item in [
-          (Icons.wb_sunny_rounded, 'Mój dzień', '/moj-dzien'),
-          (Icons.event_note_rounded, 'Plany na każdą porę', '/plany'),
-          (Icons.favorite_rounded, 'Ulubione', '/ulubione'),
-          (Icons.face_rounded, 'Profil dziecka', '/profil'),
-          (Icons.collections_rounded, 'Album naklejek', '/naklejki'),
-          (Icons.auto_awesome_rounded, 'Tryby i rutyny', '/rutyny'),
-          (Icons.queue_music_rounded, 'Kolejka', '/kolejka'),
-          (Icons.download_done_rounded, 'Pobrane', '/pobrane'),
-          (Icons.history_rounded, 'Historia słuchania', '/historia'),
-          (Icons.map_rounded, 'Mapa przygód', '/plan'),
-        ])
-          _tile(
-            item.$3,
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(item.$1, color: AkBrand.tealDeep),
-              title: Text(item.$2),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => context.push(item.$3),
-            ),
-          ),
+        const RefSection('Na co dzień'),
+        _link(context, Icons.wb_sunny_rounded, 'Mój dzień', '/moj-dzien', subtitle: 'Rutyna, święta, choroba, podpowiedzi'),
+        _link(context, Icons.event_note_rounded, 'Plany na każdą porę', '/plany', subtitle: 'Poranek, auto, kolacja, dobranoc i więcej'),
+        _link(context, Icons.favorite_rounded, 'Ulubione', '/ulubione'),
+        _link(context, Icons.download_done_rounded, 'Pobrane', '/pobrane', subtitle: 'Zabawy bez internetu'),
+        _link(context, Icons.queue_music_rounded, 'Kolejka', '/kolejka'),
+        _link(context, Icons.history_rounded, 'Historia słuchania', '/historia'),
+        const RefSection('Dziecko'),
+        _link(context, Icons.face_rounded, 'Profil dziecka', '/profil'),
+        _link(context, Icons.collections_rounded, 'Album naklejek', '/naklejki'),
+        _link(context, Icons.map_rounded, 'Mapa przygód', '/plan'),
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.child_care_rounded),
+          leading: const Icon(Icons.child_care_rounded, color: AkBrand.tealDeep),
           title: const Text('Tryb dziecka'),
+          subtitle: const Text('Duże okładki, bez zakupów i ustawień'),
           onTap: () => showKidsModeSetup(context, ref),
         ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.account_circle_outlined),
-          title: const Text('Konto i zakupy'),
-          onTap: () => context.push('/konto'),
-        ),
+        const RefSection('Konto'),
+        _link(context, Icons.account_circle_outlined, 'Konto i zakupy', '/konto'),
         const ManageSubscriptionTile(),
+        _link(context, Icons.family_restroom_rounded, 'Drugi rodzic', '/rodzina', subtitle: 'Ten sam abonament na drugim telefonie'),
+        _link(
+          context,
+          Icons.tune_rounded,
+          'Ustawienia i zgody',
+          '/ustawienia',
+          subtitle: 'Wygląd, powiadomienia, karty na Starcie, Szop’en',
+        ),
+        const RefSection('Pomoc'),
+        _link(context, Icons.tour_rounded, 'Co potrafi AudioKiddo', '/funkcje', subtitle: 'Wszystkie funkcje i samouczek z Szop’enem'),
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.family_restroom_rounded, color: AkBrand.tealDeep),
-          title: const Text('Drugi rodzic'),
-          subtitle: const Text('Ten sam abonament na drugim telefonie'),
-          trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: () => context.push('/rodzina'),
+          leading: const Icon(Icons.mail_outline_rounded, color: AkBrand.tealDeep),
+          title: const Text('Napisz do nas'),
+          subtitle: const Text(feedbackEmail),
+          onTap: () => sendFeedback(context),
         ),
+        _link(context, Icons.flag_rounded, 'O nas: Nela i Dawid', '/o-nas', subtitle: 'Polska rodzinna marka'),
+        const RefSection('Pomóż nam rosnąć'),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.elderly_woman_rounded, color: AkBrand.tealDeep),
+          title: const Text('Dla dziadków'),
+          subtitle: const Text('Wyślij babci i dziadkowi, jak włączyć ulubione zabawy'),
+          trailing: const Icon(Icons.ios_share_rounded),
+          onTap: () => shareWithGrandparents(context, ref),
+        ),
+        _link(context, Icons.card_giftcard_rounded, 'Poleć znajomym', '/polec', subtitle: 'Ty i znajomy: po 30 zł na zabawy'),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.star_rounded, color: AkBrand.tealDeep),
+          title: const Text('Oceń AudioKiddo'),
+          subtitle: const Text('Kilka gwiazdek pomaga innym rodzicom nas znaleźć'),
+          onTap: () => rateApp(context, fromList: true),
+        ),
+        const SizedBox(height: 24),
+      ],
+    ),
+  );
+}
+
+/// Więcej → Ustawienia i zgody: the switches that used to make Więcej long.
+class SettingsScreen extends ConsumerWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Scaffold(
+    appBar: AppBar(title: const Text('Ustawienia i zgody')),
+    body: ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      children: [
         const RefSection('Wygląd aplikacji'),
         SegmentedButton<ThemeMode>(
           segments: const [
@@ -108,12 +150,20 @@ class MoreScreen extends ConsumerWidget {
           trailing: const Icon(Icons.chevron_right_rounded),
           onTap: () => context.push('/ikona'),
         ),
-        const RefSection('Karty na Starcie'),
-        const StartCardsSwitches(),
         const RefSection('Powiadomienia'),
         const ReminderTile(),
         const AlertsSwitch(),
         const LettersSwitch(),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.wb_sunny_rounded, color: AkBrand.tealDeep),
+          title: const Text('Podpowiedzi na porę dnia'),
+          subtitle: const Text('Ustawiasz je w Moim dniu'),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push('/moj-dzien'),
+        ),
+        const RefSection('Karty na Starcie'),
+        const StartCardsSwitches(),
         const RefSection('Szop’en — kolega na dyżurze'),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
@@ -121,52 +171,6 @@ class MoreScreen extends ConsumerWidget {
           subtitle: const Text('Przy powrocie i osiągnięciach. Krótko, bez dźwięku.'),
           value: !(ref.watch(discoveryProvider).value?.quiet ?? false),
           onChanged: (v) => ref.read(discoveryProvider.notifier).quiet(!v),
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.tour_rounded, color: AkBrand.tealDeep),
-          title: const Text('Co potrafi AudioKiddo'),
-          subtitle: const Text('Wszystkie funkcje w jednym miejscu i samouczek z Szop’enem'),
-          onTap: () => context.push('/funkcje'),
-        ),
-        const RefSection('Pomóż nam rosnąć'),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const PolishFlag(width: 24),
-          title: const Text('O nas: Nela i Dawid'),
-          subtitle: const Text('Polska rodzinna marka. Zabawy piszemy i montujemy sami'),
-          trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: () => context.push('/o-nas'),
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.elderly_woman_rounded, color: AkBrand.tealDeep),
-          title: const Text('Dla dziadków'),
-          subtitle: const Text('Wyślij babci i dziadkowi, jak włączyć ulubione zabawy'),
-          trailing: const Icon(Icons.ios_share_rounded),
-          onTap: () => shareWithGrandparents(context, ref),
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.card_giftcard_rounded, color: AkBrand.tealDeep),
-          title: const Text('Poleć znajomym'),
-          subtitle: const Text('Ty i znajomy: po 30 zł na zabawy'),
-          trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: () => context.push('/polec'),
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.star_rounded, color: AkBrand.tealDeep),
-          title: const Text('Oceń AudioKiddo'),
-          subtitle: const Text('Kilka gwiazdek pomaga innym rodzicom nas znaleźć'),
-          onTap: () => rateApp(context, fromList: true),
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.mail_outline_rounded, color: AkBrand.tealDeep),
-          title: const Text('Napisz do nas'),
-          subtitle: const Text(feedbackEmail),
-          onTap: () => sendFeedback(context),
         ),
         const SizedBox(height: 24),
       ],

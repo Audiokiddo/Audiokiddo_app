@@ -39,8 +39,9 @@ const tourStops = <TourStop>[
     target: 'hero',
     slot: null,
     pose: SzopPose.zadowolony,
-    title: 'Co dziś robimy',
-    body: 'Na Starcie czekają zabawy dobrane do wieku dziecka. Przesuń palcem w bok, żeby zobaczyć kolejne.',
+    title: 'Nowości',
+    body: 'Premiery tego miesiąca: odkryte są w kolorze, a te, które dopiero przyjdą, czekają zakryte z datą. '
+        'Obok podejrzysz kolejny miesiąc.',
   ),
   (
     branch: 0,

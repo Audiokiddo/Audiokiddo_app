@@ -186,8 +186,8 @@ void main() {
     await tester.tap(find.text('Pomiń'));
     await tester.pumpAndSettle();
     expect(find.text('Cześć, jestem Szop’en.'), findsNothing);
-    expect(find.text('Co dziś robimy?'), findsOneWidget);
-    final container = ProviderScope.containerOf(tester.element(find.text('Co dziś robimy?')));
+    expect(find.text('Nowości'), findsOneWidget);
+    final container = ProviderScope.containerOf(tester.element(find.text('Nowości')));
     final family = container.read(familyProvider).value!;
     expect(
       [for (final c in family.children) (c.name, c.age, c.dailyMinutes)],

@@ -1032,6 +1032,20 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
             style: text.bodyLarge?.copyWith(color: context.palette.inkMuted),
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: AkSpace.s),
+          // Szop’en's aside for this moment (parents' research, his office voice).
+          Text(
+            '„${lordLine(switch (widget.variant) {
+              'rano' => LordPool.momentMorning,
+              'po' => LordPool.momentAfterDaycare,
+              'dom' => LordPool.momentHomeDay,
+              'chory' => LordPool.momentSick,
+              'czekamy' => LordPool.momentWaiting,
+              _ => LordPool.momentMeal,
+            }, DateTime.now().difference(DateTime(DateTime.now().year)).inDays)}”',
+            style: text.bodySmall?.copyWith(color: context.palette.inkMuted, fontStyle: FontStyle.italic),
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: AkSpace.l),
           Text('Na ile?', style: text.titleMedium),
           const SizedBox(height: AkSpace.s),

@@ -66,7 +66,7 @@ class StartCardClose extends ConsumerWidget {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: Text('Ukryto: ${startCardLabels[id]}. Przywrócisz ją w Więcej → Karty na Starcie.'),
+            content: Text('Ukryto: ${startCardLabels[id]}. Przywrócisz ją w Więcej → Ustawienia i zgody.'),
             action: SnackBarAction(
               label: 'Cofnij',
               onPressed: () => unawaited(notifier.set(id, hidden: false)),
@@ -98,3 +98,19 @@ class StartCardsSwitches extends ConsumerWidget {
     );
   }
 }
+
+/// "Kontynuuj słuchanie" closed with its cross: the play it showed (it comes back with the
+/// next unfinished play).
+class ClosedContinue extends AsyncNotifier<String?> {
+  static const _key = 'start_continue_closed';
+
+  @override
+  Future<String?> build() => ref.read(databaseProvider).readValue(_key);
+
+  Future<void> close(String itemId) async {
+    state = AsyncData(itemId);
+    await ref.read(databaseProvider).writeValue(_key, itemId);
+  }
+}
+
+final closedContinueProvider = AsyncNotifierProvider<ClosedContinue, String?>(ClosedContinue.new);

@@ -6,6 +6,7 @@ import '../../core/widgets/szop.dart';
 import '../catalog/catalog_providers.dart';
 import '../home/start_cards.dart';
 import 'day_routine.dart';
+import '../lord/lord_lines.dart';
 
 /// The top of Start: what fits the family right now (Mój dzień), from the hour, the routine
 /// and the calendar. Mornings a warm-up of the length the parent picked, before leaving the
@@ -32,6 +33,16 @@ class MomentCard extends ConsumerWidget {
     if (moment == null) return const SizedBox.shrink();
     final (color, pose, icon) = _colors[moment.kind]!;
     final home = homeReason(routine, now);
+    final pool = switch (moment.kind) {
+      DayMomentKind.morning => LordPool.momentMorning,
+      DayMomentKind.car => LordPool.momentCar,
+      DayMomentKind.afterDaycare => LordPool.momentAfterDaycare,
+      DayMomentKind.homeDay => home == 'Dziecko choruje' ? LordPool.momentSick : LordPool.momentHomeDay,
+      DayMomentKind.meal => LordPool.momentMeal,
+      DayMomentKind.bedtime => LordPool.momentBedtime,
+    };
+    // A different line from Szop’en every day.
+    final aside = lordLine(pool, now.difference(DateTime(now.year)).inDays);
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
     return Padding(
@@ -71,6 +82,11 @@ class MomentCard extends ConsumerWidget {
                           Text(moment.title, style: text.titleLarge?.copyWith(color: ink, fontWeight: FontWeight.w800)),
                           const SizedBox(height: 2),
                           Text(moment.line, style: text.bodyMedium?.copyWith(color: ink)),
+                          const SizedBox(height: 4),
+                          Text(
+                            '„$aside”',
+                            style: text.bodySmall?.copyWith(color: ink.withValues(alpha: .75), fontStyle: FontStyle.italic),
+                          ),
                           const SizedBox(height: 10),
                           Wrap(
                             spacing: 8,

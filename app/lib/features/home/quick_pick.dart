@@ -99,14 +99,26 @@ Future<void> showQuickPick(BuildContext context) => showModalBottomSheet<void>(
   useRootNavigator: true,
   isScrollControlled: true,
   showDragHandle: true,
-  builder: (_) => _QuickPickSheet(host: context),
+  // Pulled down from anywhere at the top of the list it closes (a plain scroll view kept the
+  // drag for itself, 2026-10-17); the cross in the corner closes it too.
+  builder: (_) => DraggableScrollableSheet(
+    expand: false,
+    initialChildSize: .9,
+    maxChildSize: .95,
+    minChildSize: .4,
+    snap: true,
+    builder: (_, controller) => _QuickPickSheet(host: context, controller: controller),
+  ),
 );
 
 class _QuickPickSheet extends ConsumerStatefulWidget {
-  const _QuickPickSheet({required this.host});
+  const _QuickPickSheet({required this.host, this.controller});
 
   /// The screen under the sheet: it starts playback after the sheet is gone.
   final BuildContext host;
+
+  /// The sheet's own scroll, so a pull down at the top closes it.
+  final ScrollController? controller;
 
   @override
   ConsumerState<_QuickPickSheet> createState() => _QuickPickSheetState();
@@ -169,6 +181,7 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
 
     return SafeArea(
       child: SingleChildScrollView(
+        controller: widget.controller,
         padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.l),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -190,6 +203,11 @@ class _QuickPickSheetState extends ConsumerState<_QuickPickSheet> {
                       ),
                     ],
                   ),
+                ),
+                IconButton(
+                  tooltip: 'Zamknij',
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close_rounded),
                 ),
               ],
             ),

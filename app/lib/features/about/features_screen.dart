@@ -48,8 +48,9 @@ class FeaturesScreen extends ConsumerWidget {
       ),
       (
         Icons.touch_app_rounded,
-        'Co dziś robimy?',
-        'Na Starcie duże kafelki z zabawami na teraz, pod nimi wiek (3–4, 5–6, 7–9) i rodzaje zabaw, także darmowe.',
+        'Nowości miesiąca',
+        'Na Starcie premiery tego miesiąca: odkryte w kolorze, nadchodzące zakryte z datą. Pod nimi wiek '
+            '(3–4, 5–6, 7–9) i rodzaje zabaw, także darmowe.',
         () => context.go('/'),
       ),
       (

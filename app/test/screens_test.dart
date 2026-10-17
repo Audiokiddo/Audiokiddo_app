@@ -125,7 +125,7 @@ void main() {
 
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
-    expect(find.text('Co dziś robimy?'), findsOneWidget);
+    expect(find.text('Nowości'), findsOneWidget);
     for (final label in [
       'Mam 20 minut',
       'W podróży',
@@ -145,7 +145,7 @@ void main() {
   });
   testWidgets('"Co teraz?" → "Jedziemy autem" opens the trip mode with the chosen time', (tester) async {
     await pumpApp(tester);
-    showQuickPick(tester.element(find.text('Co dziś robimy?')));
+    showQuickPick(tester.element(find.text('Nowości')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('45 min'));
     await tester.pumpAndSettle();
@@ -165,7 +165,7 @@ void main() {
     expect(find.byTooltip('Wróć'), findsOneWidget);
     await tester.tap(find.byTooltip('Wróć'));
     await tester.pumpAndSettle();
-    expect(find.text('Co dziś robimy?'), findsOneWidget);
+    expect(find.text('Nowości'), findsOneWidget);
   });
 
   testWidgets('rescue flow has time, mood and material selection', (tester) async {
@@ -302,7 +302,7 @@ void main() {
       await pumpApp(tester);
       await tester.tap(find.byIcon(Icons.menu_rounded));
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Tryb dziecka'));
+      await tester.scrollUntilVisible(find.text('Konto i zakupy'), 200, scrollable: find.byWidget(tester.widget(find.ancestor(of: find.text('Na co dzień'), matching: find.byType(Scrollable)).first)));
       await tester.tap(find.text('Tryb dziecka'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Włącz tryb dziecka'));
@@ -334,7 +334,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('47'));
       await tester.pumpAndSettle();
-      expect(find.text('Co dziś robimy?'), findsOneWidget);
+      expect(find.text('Nowości'), findsOneWidget);
     });
   });
 }

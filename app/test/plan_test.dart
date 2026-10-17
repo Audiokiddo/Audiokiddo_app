@@ -71,6 +71,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.menu_rounded));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Konto i zakupy'), 200, scrollable: find.byWidget(tester.widget(find.ancestor(of: find.text('Na co dzień'), matching: find.byType(Scrollable)).first)));
     await tester.tap(find.text('Mapa przygód'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Zosia: 4 kroki na mapie'), findsOneWidget);

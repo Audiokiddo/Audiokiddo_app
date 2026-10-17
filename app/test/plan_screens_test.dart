@@ -135,14 +135,19 @@ void main() {
     expect(find.text('Po przedszkolu'), findsNothing);
     expect(find.textContaining('Ukryto: Teraz'), findsOneWidget);
 
-    // Back in Więcej → Karty na Starcie.
+    // Back in Więcej → Ustawienia i zgody → Karty na Starcie.
     await tester.tap(find.byIcon(Icons.menu_rounded).last);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Co potrafi AudioKiddo'), 200, scrollable: find.byWidget(tester.widget(find.ancestor(of: find.text('Na co dzień'), matching: find.byType(Scrollable)).first)));
+    await tester.tap(find.text('Ustawienia i zgody'));
     await tester.pumpAndSettle();
     final sw = find.widgetWithText(SwitchListTile, 'Teraz: podpowiedź na tę porę dnia');
     await bringUp(tester, sw);
     expect(find.text('Karty na Starcie'), findsOneWidget);
     expect(tester.widget<SwitchListTile>(sw).value, isFalse);
     await tester.tap(sw);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(BackButton));
     await tester.pumpAndSettle();
     final startTab = find.byIcon(Icons.home_outlined).hitTestable();
     expect(startTab, findsOneWidget);

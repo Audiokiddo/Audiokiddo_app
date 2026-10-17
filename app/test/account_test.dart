@@ -359,7 +359,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Co dziś robimy?'), findsOneWidget);
+    expect(find.text('Nowości'), findsOneWidget);
     GoRouter.of(tester.element(find.byType(Scaffold).first)).push('/konto');
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Wyloguj się'), 200);
@@ -406,7 +406,7 @@ void main() {
     await tester.enterText(find.byType(TextField).first, '123456');
     await tester.tap(find.widgetWithText(FilledButton, AppLocalizationsPl().accountVerify));
     await tester.pumpAndSettle();
-    expect(find.text('Co dziś robimy?'), findsOneWidget, reason: 'signed in: the app opens');
+    expect(find.text('Nowości'), findsOneWidget, reason: 'signed in: the app opens');
   });
 
   test('another account on the phone does not see the previous family', () async {
@@ -466,7 +466,7 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'tajnehaslo1');
     await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj'));
     await tester.pumpAndSettle();
-    expect(find.text('Co dziś robimy?'), findsOneWidget);
+    expect(find.text('Nowości'), findsOneWidget);
   });
 
   group('account screen', () {

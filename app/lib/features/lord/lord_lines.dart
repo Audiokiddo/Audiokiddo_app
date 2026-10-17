@@ -22,6 +22,16 @@ enum LordPool {
   widgetMidday,
   widgetAfternoon,
   widgetEvening,
+  // Mój dzień: one line per moment on the "Teraz" card, from what parents wrote (parents'
+  // research 2026-10-12, reworked in Szop'en's office voice, never quoted).
+  momentMorning,
+  momentCar,
+  momentAfterDaycare,
+  momentHomeDay,
+  momentSick,
+  momentMeal,
+  momentBedtime,
+  momentWaiting,
 }
 
 const lordLines = <LordPool, List<String>>{
@@ -188,6 +198,54 @@ const lordLines = <LordPool, List<String>>{
     'Moje KPI? Kawa Przed Interakcją. Wyniki są obiecujące.',
   ],
   // Home-screen widget: lighter lines a parent can recognise themselves in.
+  LordPool.momentMorning: [
+    'Pobudka o 5:00 mimo weekendu. Bank snu nie przyjmuje wpłat.',
+    'Kasztan na dziś? Pani mówiła. W niedzielę o 20.',
+    'Skarpetki, buty, kurtka. Protokół wyjścia otwarty.',
+    'Poranek po cichu. Reszta domu śpi, ja pracuję.',
+  ],
+  LordPool.momentCar: [
+    'Kierownica-zabawka działa do pierwszego skrzyżowania. Ja dłużej.',
+    'Trasa ma 4 godziny. Zabawka 4 minuty. Mam coś pomiędzy.',
+    'Nie musisz co 5 minut włączać od nowa. Gram jedna po drugiej.',
+    'Kierowca patrzy na drogę. Zagadki przejmuję ja.',
+  ],
+  LordPool.momentAfterDaycare: [
+    'Przedszkole to był luzik. Tak mówią ci, co mają już szkołę.',
+    'Ty po pracy, dziecko po przedszkolu. Energię ma tylko jedno.',
+    'Kostium na jutro z krzywymi kropkami? Komisja przyjmuje.',
+    'Grupę rodziców możesz wyciszyć. Mnie nie trzeba, mówię mało.',
+  ],
+  LordPool.momentHomeDay: [
+    'Przedszkole zamknięte w piątek po święcie. Odnotowano.',
+    'Dzień w domu. Pomysły skończyły się o 9:40. Mam zapas.',
+    'Pada. Plac zabaw odwołany, zebranie w salonie.',
+    'Babcia pyta o bajki? Wysyłam instrukcję. Więcej, Dla dziadków.',
+  ],
+  LordPool.momentSick: [
+    'Grupa dziś: Anginki, Kaszelki i Bostonki. Tryb kanapowy.',
+    'Zwolnienie na dziecko. Dziecko leży, zagadki pracują.',
+    'Termometr w normie. Cierpliwość do sprawdzenia.',
+    'Ciche zabawy na leżąco. Bez biegania, zgodnie z zaleceniem.',
+  ],
+  LordPool.momentMeal: [
+    'Obiad sam się nie zrobi. Zagadki zadadzą się same.',
+    'Cebula na patelni, „co mam robić?” w kuchni. Przejmuję.',
+    'Dwadzieścia minut bez wołania. Złóż wniosek, zatwierdzam.',
+    'Kolacja na czas. Czas pozostaje do ustalenia.',
+  ],
+  LordPool.momentBedtime: [
+    'Rytuał, który sam się kończy. Bez negocjacji o jeszcze jedną.',
+    'Trzecia szklanka wody? Wniosek odrzucony. Kołysanka przyjęta.',
+    'Dobranoc. Twój wieczór zaczyna się zaraz po moim.',
+    'Gasimy światło. Bajka nie pyta, czy już śpisz.',
+  ],
+  LordPool.momentWaiting: [
+    'Poczekalnia. Numerek 47, wołają 12. Mam zabawy.',
+    'U mnie nic nie wyskakuje znienacka. Najwyżej zagadka.',
+    'Kolejka się nie rusza. My tak, ale po cichu.',
+    'Słuchawki i dziesięć minut. Reszta poczekalni dziękuje.',
+  ],
   LordPool.widgetMorning: [
     'Ty ogarnij kawę. Ja ogarnę zagadki.',
     'Drugi but się znajdzie. Zwykle pod kanapą.',
