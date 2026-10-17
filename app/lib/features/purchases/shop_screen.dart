@@ -204,9 +204,7 @@ class _PriceList extends StatelessWidget {
           ),
       ],
     ];
-    final singles = [for (final i in catalog.items) ?byId[i.storeProductId]?.rawPrice];
     if (rows.isEmpty) return const SizedBox.shrink();
-    final from = singles.isEmpty ? null : singles.reduce((a, b) => a < b ? a : b);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -227,19 +225,6 @@ class _PriceList extends StatelessWidget {
                     children: [
                       Expanded(child: Text(label, style: text.bodyMedium)),
                       Text(product.price, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
-                    ],
-                  ),
-                ),
-              if (from != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    children: [
-                      Expanded(child: Text('Pojedyncza zabawa', style: text.bodyMedium)),
-                      Text(
-                        'od ${formatMoney(from, byId.values.first.currencyCode)}',
-                        style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-                      ),
                     ],
                   ),
                 ),
@@ -742,7 +727,6 @@ class PackScreen extends ConsumerWidget {
           final owned = ownsPack(scopes, pack.id);
           final products = ref.watch(storeProductsProvider(productsKey(shopProductIds(catalog))));
           final byId = {for (final p in products.value ?? const <StoreProduct>[]) p.id: p};
-          final product = byId[pack.storeProductId];
           final text = Theme.of(context).textTheme;
           final child = ref.watch(familyProvider).value?.active;
           final done = child == null
@@ -866,13 +850,6 @@ class PackScreen extends ConsumerWidget {
                               _ => 'Wszystkie pakiety i 2 nowe zabawy co tydzień',
                             },
                             style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
-                          ),
-                        if (product != null)
-                          TextButton(
-                            onPressed: busy != null ? null : () => buyWithGate(context, ref, product),
-                            child: busy == product.id
-                                ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                                : Text('albo tylko ${pack.title} na zawsze · ${product.price}'),
                           ),
                       ],
                     ),

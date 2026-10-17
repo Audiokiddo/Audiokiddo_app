@@ -618,3 +618,104 @@ class MailTools extends ConsumerWidget {
     );
   }
 }
+
+/// The closed-test testers (Google wants 12 for 14 days): paste their e-mails and see who has
+/// an account, when the app was last opened, and how much they really listened.
+class TesterList extends ConsumerStatefulWidget {
+  const TesterList({super.key});
+
+  @override
+  ConsumerState<TesterList> createState() => _TesterListState();
+}
+
+class _TesterListState extends ConsumerState<TesterList> {
+  final _emails = TextEditingController();
+  List<Map<String, dynamic>>? _rows;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _emails.dispose();
+    super.dispose();
+  }
+
+  Future<void> _check() async {
+    final emails = RegExp(r'[^\s,;<>]+@[^\s,;<>]+').allMatches(_emails.text).map((m) => m[0]!).toList();
+    if (emails.isEmpty) return;
+    setState(() => _busy = true);
+    await crmRun(context, () async {
+      final rows = await ref.read(studioServerProvider).crmTesters(emails);
+      if (mounted) setState(() => _rows = rows);
+    });
+    if (mounted) setState(() => _busy = false);
+  }
+
+  static String _day(Object? iso) {
+    final d = DateTime.tryParse('${iso ?? ''}')?.toLocal();
+    return d == null ? '–' : '${d.day}.${d.month.toString().padLeft(2, '0')} ${d.hour}:${d.minute.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final rows = _rows;
+    final active = rows?.where((r) => r['last_seen'] != null).length ?? 0;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Testerzy', style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+            const Text(
+              'Wklej e-maile testerów (z listy do Google Play). Zobaczysz, kto założył konto i otworzył '
+              'aplikację. Kto nie zaloguje się w aplikacji, tego tu nie widać.',
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _emails,
+              minLines: 3,
+              maxLines: 8,
+              decoration: const InputDecoration(labelText: 'E-maile testerów', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 10),
+            FilledButton(onPressed: _busy ? null : _check, child: const Text('Sprawdź testerów')),
+            if (rows != null) ...[
+              const SizedBox(height: 12),
+              Text('Aktywnych: $active z ${rows.length}', style: text.titleSmall),
+              const SizedBox(height: 6),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: const [
+                    DataColumn(label: Text('E-mail')),
+                    DataColumn(label: Text('Konto')),
+                    DataColumn(label: Text('Ostatnio')),
+                    DataColumn(label: Text('Dni'), numeric: true),
+                    DataColumn(label: Text('Zabawy'), numeric: true),
+                    DataColumn(label: Text('Minuty'), numeric: true),
+                    DataColumn(label: Text('Telefon')),
+                  ],
+                  rows: [
+                    for (final r in rows)
+                      DataRow(
+                        cells: [
+                          DataCell(Text('${r['email']}')),
+                          DataCell(Text(r['account'] == true ? 'tak' : 'brak')),
+                          DataCell(Text(_day(r['last_seen']))),
+                          DataCell(Text('${r['days'] ?? 0}')),
+                          DataCell(Text('${r['plays'] ?? 0}')),
+                          DataCell(Text('${r['minutes'] ?? 0}')),
+                          DataCell(Text([r['platform'], r['app_version']].whereType<Object>().join(' '))),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1280,6 +1280,7 @@ class _Users extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       children: [
         const CustomerLookup(),
+        const TesterList(),
         const SizedBox(height: 20),
         Wrap(
           spacing: 12,

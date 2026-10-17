@@ -300,6 +300,12 @@ class StudioServer {
   // Klienci i trendy ----------------------------------------------------------------------
 
   /// A customer by e-mail: account, purchases, 30 days of activity; null when there is none.
+  /// The closed-test testers by e-mail: account, last opened, plays and real minutes.
+  Future<List<Map<String, dynamic>>> crmTesters(List<String> emails) async => [
+    for (final t in (await client.rpc('crm_testers', params: {'p_emails': emails}) as List? ?? const []))
+      Map<String, dynamic>.from(t as Map),
+  ];
+
   Future<Map<String, dynamic>?> crmCustomer(String email) async {
     final data = await client.rpc('crm_customer', params: {'p_email': email.trim()});
     return data == null ? null : Map<String, dynamic>.from(data as Map);
