@@ -108,6 +108,9 @@ ThemeData buildTheme(Brightness brightness) {
       backgroundColor: p.surface,
       selectedColor: p.primary,
       labelStyle: _ChipLabelStyle(color: p.inkMuted, selectedColor: p.onPrimary),
+      // Selected chips everywhere: dark text on the light teal of the dark theme, white on the
+      // deep teal of the light one (2026-10-17: labels on selected chips were unreadable).
+      secondaryLabelStyle: TextStyle(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.w500, color: p.onPrimary),
       checkmarkColor: p.onPrimary,
       side: BorderSide(color: p.surfaceMuted),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

@@ -1,5 +1,6 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/core/storage/storage_providers.dart';
+import 'package:audiokiddo/core/theme/app_theme.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/features/day/day_notifications.dart';
 import 'package:audiokiddo/features/day/day_routine.dart';
@@ -78,14 +79,27 @@ void main() {
           databaseProvider.overrideWithValue(db),
           clockProvider.overrideWithValue(() => DateTime(2026, 10, 16, 7, 35)),
         ],
-        child: const MaterialApp(home: DayScreen()),
+        child: MaterialApp(theme: buildTheme(Brightness.dark), home: const DayScreen()),
       ),
     );
     await tester.pumpAndSettle();
+    // The first time: four short steps.
+    expect(find.text('Mój dzień · krok 1 z 4'), findsOneWidget);
+    expect(find.text('W które dni przedszkole albo szkoła?'), findsOneWidget);
+    await tester.tap(find.text('Dalej'));
+    await tester.pumpAndSettle();
+    expect(find.text('7:45'), findsOneWidget, reason: 'the hours are buttons');
+    await tester.tap(find.text('Dalej'));
+    await tester.pumpAndSettle();
     expect(find.text('Dziecko się rozchorowało'), findsOneWidget);
-    expect(find.text('Przedszkole albo szkoła'), findsOneWidget);
-    expect(find.text('7:45'), findsOneWidget);
     expect(find.textContaining('Wszystkich Świętych'), findsOneWidget);
+    await tester.tap(find.text('Dalej'));
+    await tester.pumpAndSettle();
+    expect(find.text('Dobranoc'), findsOneWidget);
+    await tester.tap(find.text('Gotowe'));
+    await tester.pumpAndSettle();
+    // Then the summary with each step one tap away, and today.
+    expect(find.text('Godziny'), findsOneWidget);
     expect(find.text('Za chwilę wyjazd'), findsOneWidget);
   });
 

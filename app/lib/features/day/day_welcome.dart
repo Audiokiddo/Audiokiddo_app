@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/app_theme.dart';
 import '../../core/widgets/szop.dart';
 import 'day_routine.dart';
 import 'day_screen.dart' show clockOf;
@@ -74,6 +75,7 @@ class _DayWelcomeState extends ConsumerState<DayWelcome> {
                   FilterChip(
                     label: Text(_weekdays[d - 1]),
                     selected: _days.contains(d),
+                    labelStyle: selectableChipLabel(context, selected: _days.contains(d)),
                     showCheckmark: false,
                     onSelected: (on) => setState(() => _days = on ? {..._days, d} : ({..._days}..remove(d))),
                   ),
@@ -83,20 +85,26 @@ class _DayWelcomeState extends ConsumerState<DayWelcome> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('O której wychodzicie z domu?'),
-              trailing: Text(clockOf(_leave), style: text.titleMedium),
-              onTap: () async {
-                final v = await _pick('O której wychodzicie?', _leave);
-                if (v != null) setState(() => _leave = v);
-              },
+              trailing: OutlinedButton.icon(
+                onPressed: () async {
+                  final v = await _pick('O której wychodzicie?', _leave);
+                  if (v != null) setState(() => _leave = v);
+                },
+                icon: const Icon(Icons.schedule_rounded),
+                label: Text(clockOf(_leave), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+              ),
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('O której dziecko idzie spać?'),
-              trailing: Text(clockOf(_bedtime), style: text.titleMedium),
-              onTap: () async {
-                final v = await _pick('O której sen?', _bedtime);
-                if (v != null) setState(() => _bedtime = v);
-              },
+              trailing: OutlinedButton.icon(
+                onPressed: () async {
+                  final v = await _pick('O której sen?', _bedtime);
+                  if (v != null) setState(() => _bedtime = v);
+                },
+                icon: const Icon(Icons.schedule_rounded),
+                label: Text(clockOf(_bedtime), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+              ),
             ),
             const SizedBox(height: 24),
             FilledButton(onPressed: _save, child: const Text('Gotowe')),
