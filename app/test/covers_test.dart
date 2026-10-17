@@ -43,7 +43,11 @@ void main() {
 
   testWidgets('a play with a cover shows the picture, one without shows the drawn scene', (tester) async {
     final withCover = catalog.item('znikajace-dzwonki')!;
-    final without = catalog.item('prawda-czy-nie')!;
+    // Every play on sale has a cover now; a hidden one still shows the drawn scene.
+    final without = parseCatalog(
+      jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
+      includeHidden: true,
+    ).catalog.item('echo-rytmu')!;
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
@@ -69,7 +73,11 @@ void main() {
 
   test('cover art for the lock screen never breaks playback: no cover means no art, no error', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    final without = catalog.item('prawda-czy-nie')!;
+    // Every play on sale has a cover now; a hidden one still shows the drawn scene.
+    final without = parseCatalog(
+      jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
+      includeHidden: true,
+    ).catalog.item('echo-rytmu')!;
     expect(await coverArtUri(without), isNull);
     // With a cover the platform may be unable to write a file (tests): still no exception.
     await coverArtUri(catalog.item('znikajace-dzwonki')!);

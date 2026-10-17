@@ -115,4 +115,31 @@ void main() {
       }
     });
   });
+
+  test('a clap ringing in the room is not a spoken "nie"; a short voiced "nie" is', () {
+    // Broadband noise held for 200 ms: a clap with echo, a rustle.
+    final r = math.Random(5);
+    final ringing = List.generate((rate * 0.2).round(), (i) => 0.4 * (r.nextDouble() * 2 - 1));
+    SoundDetector strict() => SoundDetector(
+      sampleRate: rate,
+      voiceMinDuration: const Duration(milliseconds: 120),
+      voiceMaxZeroCrossing: 0.25,
+    );
+    final echo = strict()..add(silence(0.5))..add(ringing)..add(silence(0.5));
+    expect(echo.voiceDetected, isFalse);
+    final nie = strict()..add(silence(0.5))..add(voice(0.15))..add(silence(0.5));
+    expect(nie.voiceDetected, isTrue);
+    expect(nie.claps, 0);
+    final hands = strict()..add(silence(0.5))..add(clap())..add(silence(0.5));
+    expect(hands.claps, 1);
+  });
+
+  test('the controller\'s detector settings still hear the narrator as voice', () {
+    for (final name in ['speech_intro', 'speech_intro2']) {
+      final bytes = File('test/fixtures/audio/$name.f32').readAsBytesSync();
+      final d = SoundDetector(sampleRate: rate, voiceMinDuration: const Duration(milliseconds: 120), voiceMaxZeroCrossing: 0.25)
+        ..add(Float32List.view(bytes.buffer, 0, bytes.length ~/ 4));
+      expect(d.voiceDetected, isTrue, reason: name);
+    }
+  });
 }

@@ -1461,6 +1461,7 @@
   },
   {
    "id": "echo-rytmu",
+   "hidden": true,
    "kind": "interactive_game",
    "title": "Echo rytmu",
    "parent_description": "Aplikacja klaszcze rytm, dziecko go powtarza. Z mikrofonem (opcjonalnie) aplikacja słyszy klaskanie, ale nie ocenia, czy rytm był dokładny. Bez mikrofonu daje czas i przypomina rytm.",
@@ -1813,7 +1814,7 @@
      },
      "answer_krowa": {
       "type": "choice",
-      "window_ms": 7000,
+      "window_ms": 10000,
       "options": {
        "clap": "right_krowa",
        "voice_activity": "wrong_krowa"
@@ -1868,7 +1869,7 @@
      },
      "answer_ryby": {
       "type": "choice",
-      "window_ms": 7000,
+      "window_ms": 10000,
       "options": {
        "clap": "wrong_ryby",
        "voice_activity": "right_ryby"
@@ -1923,7 +1924,7 @@
      },
      "answer_snieg": {
       "type": "choice",
-      "window_ms": 7000,
+      "window_ms": 10000,
       "options": {
        "clap": "right_snieg",
        "voice_activity": "wrong_snieg"
@@ -1978,7 +1979,7 @@
      },
      "answer_slon": {
       "type": "choice",
-      "window_ms": 7000,
+      "window_ms": 10000,
       "options": {
        "clap": "wrong_slon",
        "voice_activity": "right_slon"
@@ -2033,7 +2034,7 @@
      },
      "answer_lato": {
       "type": "choice",
-      "window_ms": 7000,
+      "window_ms": 10000,
       "options": {
        "clap": "right_lato",
        "voice_activity": "wrong_lato"
@@ -2088,7 +2089,7 @@
      },
      "answer_auta": {
       "type": "choice",
-      "window_ms": 7000,
+      "window_ms": 10000,
       "options": {
        "clap": "wrong_auta",
        "voice_activity": "right_auta"

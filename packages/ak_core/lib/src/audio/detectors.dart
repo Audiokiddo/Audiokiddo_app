@@ -17,6 +17,7 @@ class SoundDetector {
     this.voiceMinDuration = const Duration(milliseconds: 200),
     this.clapMinZeroCrossing = 0.2,
     this.clapMinAttack = 3,
+    this.voiceMaxZeroCrossing,
   }) : _hopSamples = (sampleRate * hop.inMicroseconds / 1e6).round();
 
   final int sampleRate;
@@ -43,6 +44,10 @@ class SoundDetector {
   /// fricatives like "s" or "sz" build up more slowly.
   final double clapMinAttack;
 
+  /// When set, sustained sound counts as voice only if it is voiced (few zero crossings on
+  /// average): a ringing clap or a rustle is noise-like and is not taken for a spoken "nie".
+  final double? voiceMaxZeroCrossing;
+
   final int _hopSamples;
   double _sumSquares = 0;
   int _count = 0;
@@ -57,6 +62,7 @@ class SoundDetector {
   int _lastClapFrame = -1000000;
   double _previousRms = 0;
   int _loudFrames = 0;
+  double _loudCrossings = 0;
 
   int claps = 0;
   bool voiceDetected = false;
@@ -85,6 +91,7 @@ class SoundDetector {
     voiceDetected = false;
     _onsetFrame = null;
     _loudFrames = 0;
+    _loudCrossings = 0;
   }
 
   void _onFrame(double rms, double zeroCrossingRate) {
@@ -94,7 +101,9 @@ class SoundDetector {
 
     // Voice: sustained energy (claps are too short to reach this).
     _loudFrames = loud ? _loudFrames + 1 : 0;
-    if (_loudFrames >= _voiceFrames) voiceDetected = true;
+    _loudCrossings = loud ? _loudCrossings + zeroCrossingRate : 0;
+    final voiced = voiceMaxZeroCrossing == null || _loudCrossings / math.max(_loudFrames, 1) <= voiceMaxZeroCrossing!;
+    if (_loudFrames >= _voiceFrames && voiced) voiceDetected = true;
 
     final onset = _onsetFrame;
     final previousRms = _previousRms;

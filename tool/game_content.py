@@ -320,7 +320,8 @@ def prawda_czy_nie():
         steps[f"q_{name}"] = {"type": "play", "asset": f"q_{name}", "next": f"answer_{name}"}
         right, wrong = f"right_{name}", f"wrong_{name}"
         steps[f"answer_{name}"] = {
-            "type": "choice", "window_ms": 7000,
+            # 10 s: four- and five-year-olds think before they clap (Dawid, 2026-10-17).
+            "type": "choice", "window_ms": 10000,
             "options": {"clap": right if true else wrong, "voice_activity": wrong if true else right},
             "on_timeout": f"missed_{name}",
             "fallback": {

@@ -462,7 +462,13 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     if (!enabled) return;
     try {
       final samples = await ref.read(microphoneInputProvider).start();
-      _detector = SoundDetector(sampleRate: micSampleRate, voiceMinDuration: const Duration(milliseconds: 120));
+      // Voice must be voiced: a clap that rings in the room is not a spoken "nie" (Prawda czy
+      // nie mixed them up, 2026-10-17).
+      _detector = SoundDetector(
+        sampleRate: micSampleRate,
+        voiceMinDuration: const Duration(milliseconds: 120),
+        voiceMaxZeroCrossing: 0.25,
+      );
       _mic = samples.listen(_onSamples, onError: (Object _) => _onMicrophoneLost());
     } on Exception catch (e) {
       debugPrint('microphone unavailable: $e');
