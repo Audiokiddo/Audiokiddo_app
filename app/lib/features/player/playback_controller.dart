@@ -12,8 +12,13 @@ import 'audio_handler.dart';
 import '../insights/events.dart';
 import 'player_providers.dart';
 import '../family/family.dart';
+import '../catalog/catalog_providers.dart';
 
 /// Thrown when an item is neither downloaded nor reachable.
+class PlaybackAccessUnavailable implements Exception {
+  const PlaybackAccessUnavailable();
+}
+
 class PlaybackSourceUnavailable implements Exception {
   const PlaybackSourceUnavailable();
 }
@@ -98,6 +103,7 @@ class PlaybackController {
   AkAudioHandler get _handler => _ref.read(audioHandlerProvider);
 
   Future<void> start(ContentItem item, {required String album, bool fromStart = false}) async {
+    _checkAccess(item);
     await _save(); // keep progress of whatever was playing before
     final local = await _ref.read(downloadManagerProvider).localAudioPath(item);
     final Uri source;
@@ -137,6 +143,7 @@ class PlaybackController {
             ..._measure(),
           },
         );
+    _checkAccess(item); // Resolving the source may have crossed the access deadline.
     _open = _OpenPlay(item.id, count.number);
     await _handler.playItem(
       MediaItem(
@@ -149,6 +156,12 @@ class PlaybackController {
       source,
       start: fromStart ? Duration.zero : resumePosition(progress),
     );
+  }
+
+  void _checkAccess(ContentItem item) {
+    _ref.invalidate(currentTimeProvider);
+    _ref.invalidate(leaseStateProvider);
+    if (!_ref.read(canPlayProvider(item))) throw const PlaybackAccessUnavailable();
   }
 
   Future<void> _save({bool completed = false}) async {

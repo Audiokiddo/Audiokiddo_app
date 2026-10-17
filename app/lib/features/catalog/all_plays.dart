@@ -111,108 +111,126 @@ class _AllPlaysViewState extends ConsumerState<AllPlaysView> {
 
   @override
   Widget build(BuildContext context) {
-    final now = ref.watch(clockProvider)();
+    final now = ref.watch(calendarDayProvider);
     final items = allPlays(widget.catalog, now: now, query: _query, sort: _sort, kind: _kind);
     final text = Theme.of(context).textTheme;
     final letters = _sort == AllSort.alphabet;
-    String? lastLetter;
-    return ListView(
+    return ListView.builder(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
-      children: [
-        TextField(
-          controller: _field,
-          autofocus: widget.autofocus,
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            hintText: 'Wpisz tytuł zabawy lub piosenki',
-            prefixIcon: const Icon(Icons.search_rounded),
-            suffixIcon: _query.isEmpty
-                ? null
-                : IconButton(
-                    tooltip: 'Wyczyść',
-                    icon: const Icon(Icons.close_rounded),
-                    onPressed: () {
-                      _field.clear();
-                      setState(() => _query = '');
-                    },
-                  ),
-            border: const OutlineInputBorder(),
-          ),
-          onChanged: (q) {
-            setState(() => _query = q);
-            widget.onTyped?.call(
-              q,
-              allPlays(widget.catalog, now: now, query: q, sort: _sort, kind: _kind).length,
-            );
-          },
-        ),
-        const SizedBox(height: 10),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
+      itemCount: items.length + 1,
+      itemBuilder: (context, index) {
+        if (index > 0) {
+          final item = items[index - 1];
+          final heading =
+              letters && _query.isEmpty && (index == 1 || _letter(item) != _letter(items[index - 2]));
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final k in AllKind.values)
+              if (heading)
                 Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text(_kindLabels[k]!),
-                    selected: _kind == k,
-                    labelStyle: selectableChipLabel(context, selected: _kind == k),
-                    showCheckmark: false,
-                    onSelected: (_) => setState(() => _kind = k),
+                  padding: const EdgeInsets.only(top: 14, bottom: 2),
+                  child: Text(
+                    _letter(item),
+                    style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: AkBrand.tealDeep),
                   ),
                 ),
+              AudioRow(item: item),
             ],
-          ),
-        ),
-        const SizedBox(height: 4),
-        const SizedBox(height: 2),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Text('Kolejność:', style: text.labelLarge?.copyWith(color: context.palette.inkMuted)),
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _field,
+              autofocus: widget.autofocus,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: 'Wpisz tytuł zabawy lub piosenki',
+                prefixIcon: const Icon(Icons.search_rounded),
+                suffixIcon: _query.isEmpty
+                    ? null
+                    : IconButton(
+                        tooltip: 'Wyczyść',
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: () {
+                          _field.clear();
+                          setState(() => _query = '');
+                        },
+                      ),
+                border: const OutlineInputBorder(),
               ),
-              for (final s in AllSort.values)
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text(_sortLabels[s]!),
-                    selected: _sort == s,
-                    labelStyle: selectableChipLabel(context, selected: _sort == s),
-                    showCheckmark: false,
-                    onSelected: (_) => setState(() => _sort = s),
-                  ),
-                ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 6),
-          child: Text(
-            items.length == 1 ? '1 zabawa' : '${items.length} zabaw',
-            style: text.labelLarge?.copyWith(color: context.palette.inkMuted),
-          ),
-        ),
-        if (items.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Text('Nie znaleźliśmy takiej zabawy. Sprawdź pisownię albo wpisz tylko początek tytułu.'),
-          ),
-        for (final item in items) ...[
-          if (letters && _query.isEmpty && _letter(item) != lastLetter)
-            Padding(
-              padding: const EdgeInsets.only(top: 14, bottom: 2),
-              child: Text(
-                lastLetter = _letter(item),
-                style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: AkBrand.tealDeep),
+              onChanged: (q) {
+                setState(() => _query = q);
+                widget.onTyped?.call(
+                  q,
+                  allPlays(widget.catalog, now: now, query: q, sort: _sort, kind: _kind).length,
+                );
+              },
+            ),
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (final k in AllKind.values)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(_kindLabels[k]!),
+                        selected: _kind == k,
+                        labelStyle: selectableChipLabel(context, selected: _kind == k),
+                        showCheckmark: false,
+                        onSelected: (_) => setState(() => _kind = k),
+                      ),
+                    ),
+                ],
               ),
             ),
-          AudioRow(item: item),
-        ],
-      ],
+            const SizedBox(height: 4),
+            const SizedBox(height: 2),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Text(
+                      'Kolejność:',
+                      style: text.labelLarge?.copyWith(color: context.palette.inkMuted),
+                    ),
+                  ),
+                  for (final s in AllSort.values)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(_sortLabels[s]!),
+                        selected: _sort == s,
+                        labelStyle: selectableChipLabel(context, selected: _sort == s),
+                        showCheckmark: false,
+                        onSelected: (_) => setState(() => _sort = s),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                items.length == 1 ? '1 zabawa' : '${items.length} zabaw',
+                style: text.labelLarge?.copyWith(color: context.palette.inkMuted),
+              ),
+            ),
+            if (items.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Text(
+                  'Nie znaleźliśmy takiej zabawy. Sprawdź pisownię albo wpisz tylko początek tytułu.',
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 

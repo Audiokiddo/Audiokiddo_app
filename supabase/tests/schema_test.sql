@@ -870,3 +870,50 @@ begin
   end;
 end $$;
 reset role;
+
+-- Audit regression: bedtime grace also reaches a linked parent, without opening the library.
+reset role;
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-0000000000b3', 'bedtime-member@example.com');
+insert into public.family_links (owner_id, member_id) values
+  ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-0000000000b3');
+do $$ begin
+  assert public.bedtime_grace('00000000-0000-0000-0000-0000000000b3'), 'member gets bedtime grace';
+  assert not ('all_content' = any(public.access_scopes('00000000-0000-0000-0000-0000000000b3'))), 'not full-library access';
+  assert public.can_download('00000000-0000-0000-0000-0000000000b3', 'audio/wyobraznia/zaginiony-skarb.m4a'), 'member bedtime download';
+  assert not public.can_download('00000000-0000-0000-0000-0000000000b3', 'audio/detektyw/znikajace-dzwonki.m4a'), 'other plays stay locked';
+end $$;
+set role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000b3', false);
+do $$ begin
+  assert (select count(*) from public.my_entitlements() where shared and scope = 'all_content' and status = 'expired') = 1,
+    'app receives expired shared row, without reviving it';
+end $$;
+reset role;
+update public.entitlements set status = 'revoked' where store_original_tx_id = 'grace-today';
+do $$ begin
+  assert not public.bedtime_grace('00000000-0000-0000-0000-0000000000b3'), 'revoked access has no grace';
+end $$;
+set role authenticated;
+do $$ begin
+  assert (select count(*) from public.my_entitlements()) = 0, 'revoked owner row not shared';
+end $$;
+reset role;
+update public.entitlements set status = 'expired' where store_original_tx_id = 'grace-today';
+update public.family_links set owner_id = '00000000-0000-0000-0000-0000000000b2'
+where member_id = '00000000-0000-0000-0000-0000000000b3';
+do $$ begin
+  assert not public.bedtime_grace('00000000-0000-0000-0000-0000000000b3'), 'yesterday gives member no grace';
+end $$;
+set role authenticated;
+do $$ begin
+  assert (select count(*) from public.my_entitlements()) = 0, 'old expired row not shared';
+end $$;
+reset role;
+update public.family_links set owner_id = '00000000-0000-0000-0000-0000000000b1'
+where member_id = '00000000-0000-0000-0000-0000000000b3';
+delete from public.family_links where member_id = '00000000-0000-0000-0000-0000000000b3';
+do $$ begin
+  assert not public.bedtime_grace('00000000-0000-0000-0000-0000000000b3'), 'leaving family removes grace';
+end $$;
+select 'shared bedtime grace regression tests passed';

@@ -1,0 +1,148 @@
+Check _shared/ads_growth_test.ts
+Check _shared/ads_test.ts
+Check _shared/apple_jws_test.ts
+Check _shared/claim_order_guard_test.ts
+Check _shared/claude_test.ts
+Check _shared/codes_test.ts
+Check _shared/coo_test.ts
+Check _shared/cors_test.ts
+Check _shared/factory_test.ts
+Check _shared/gifts_test.ts
+Check _shared/google_play_test.ts
+Check _shared/letters_test.ts
+Check _shared/mail_html_test.ts
+Check _shared/purchases_test.ts
+Check _shared/reviews_test.ts
+Check _shared/shared_test.ts
+Check _shared/signed_url_test.ts
+Check _shared/woo_get_test.ts
+running 11 tests from ./_shared/ads_growth_test.ts
+chanceBetter: equal rates are a coin toss, clear differences are near certain ... ok (576µs)
+creativeVerdicts: winner, loser, too little data, alone ... ok (1ms)
+creativeVerdicts: older days are left out ... ok (70µs)
+search terms add up per campaign; wasted ones are found ... ok (308µs)
+Google ads: texts and daily numbers ... ok (216µs)
+keyword ideas: request for Poland in Polish, parsed metrics, relevance ... ok (624µs)
+Ad Library: parsed, running days, digest per advertiser ... ok (290µs)
+the Polish year: Easter and what is coming ... ok (10ms)
+creatives: Google limits enforced, Meta kept with warnings, RSA body ... ok (400µs)
+research answer: negatives only from the wasted list and known campaigns ... ok (635µs)
+research settings: defaults and only https competitor sites ... ok (177µs)
+running 7 tests from ./_shared/ads_test.ts
+Meta insights: one purchase counted once, budgets from grosze ... ok (709µs)
+Google Ads rows give campaigns with budgets and daily numbers ... ok (149µs)
+GA4 rows become sources per day ... ok (164µs)
+every change passes the limits ... ok (233µs)
+settings are clamped and default sensibly ... ok (92µs)
+the agent's answer: wrapped JSON, unknown actions dropped, names from the sync ... ok (428µs)
+the summary compares this week with the last ... ok (266µs)
+running 6 tests from ./_shared/apple_jws_test.ts
+apple jws: valid chain and signature decode the payload ... ok (69ms)
+apple jws: someone else's root is rejected (default is Apple's G3) ... ok (11ms)
+apple jws: tampered payload fails the signature ... ok (11ms)
+apple jws: chain without App Store OIDs is rejected ... ok (8ms)
+apple jws: signed outside the certificates' validity is rejected ... ok (9ms)
+apple jws: a leaf signed by a stranger is rejected ... ok (16ms)
+running 3 tests from ./_shared/claim_order_guard_test.ts
+claim-order: limiter failure never queries the shop ...
+------- post-test output -------
+claim-order: rate limit unavailable
+----- post-test output end -----
+claim-order: limiter failure never queries the shop ... ok (18ms)
+claim-order: missing limiter result never queries the shop ...
+------- post-test output -------
+claim-order: rate limit unavailable
+----- post-test output end -----
+claim-order: missing limiter result never queries the shop ... ok (1ms)
+claim-order: limit reached never queries the shop ... ok (711µs)
+running 6 tests from ./_shared/claude_test.ts
+Claude failures become advice: key, credit, model, busy ... ok (391µs)
+an answer cut at the token limit is reported, not parsed ... ok (374µs)
+providers: Claude first unless AI_PROVIDER says Gemini; only those with a key ... ok (183µs)
+Gemini failures and answers ... ok (159µs)
+a wrong Claude key falls through to Gemini ...
+------- post-test output -------
+claude: model 401 {"type":"error","error":{"type":"authentication_error"}}
+gemini: gemini-flash-latest style 0 answered in 0 ms
+----- post-test output end -----
+a wrong Claude key falls through to Gemini ... ok (5ms)
+Gemini: an 'invalid argument' answer is asked again with plainer settings ...
+------- post-test output -------
+gemini: gemini-flash-latest style 0 400 {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}}
+gemini: gemini-flash-latest style 1 400 {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}}
+gemini: gemini-flash-latest style 2 answered in 0 ms
+----- post-test output end -----
+Gemini: an 'invalid argument' answer is asked again with plainer settings ... ok (289µs)
+running 5 tests from ./_shared/codes_test.ts
+codes are read the way people type them ... ok (508µs)
+text that cannot be a code is refused before the server is asked ... ok (86µs)
+generated codes use the alphabet, normalise to themselves and differ ... ok (771µs)
+the hash is the SHA-256 of the normalised code (pinned against openssl) ... ok (352µs)
+referral codes are read the way people type them and refused otherwise ... ok (139µs)
+running 8 tests from ./_shared/coo_test.ts
+the answer becomes clean proposals, wrapped or not ... ok (964µs)
+every proposal waits for Dawid's decision ... ok (121µs)
+the prompt carries the business state and the approved idea ... ok (121µs)
+the morning rhythm: report daily, ads on Monday, newsletter every other Thursday ... ok (11ms)
+proposals keep only real dates and storable text ... ok (163µs)
+areas: known ones stay, common synonyms map, the rest is 'other' ... ok (65µs)
+each proposal can carry a prompt for an AI chat and the suggested tool ... ok (93µs)
+owners: Dawid, Nela or Razem; Claude's work goes to Dawid ... ok (56µs)
+running 2 tests from ./_shared/cors_test.ts
+only our site and localhost may call from a browser ... ok (579µs)
+preflight is answered, responses carry the origin ... ok (5ms)
+running 4 tests from ./_shared/factory_test.ts
+steps follow each other; a script per play ... ok (522µs)
+the article prompt carries the topic and the remarks ... ok (199µs)
+article HTML: only safe tags, https links, the FAQ kept for the schema ... ok (843µs)
+a script becomes speakable text in pieces for the voice ... ok (347µs)
+running 2 tests from ./_shared/gifts_test.ts
+a gift code is the same for a retry and different per order line ... ok (1ms)
+the note tells the buyer the code and how to use it ... ok (147µs)
+running 3 tests from ./_shared/google_play_test.ts
+google: service-account token request is a signed JWT for androidpublisher, cached ... ok (71ms)
+google: Pub/Sub push token must match audience and service account ... ok (102ms)
+google: Pub/Sub push body decodes the developer notification ... ok (70µs)
+running 4 tests from ./_shared/letters_test.ts
+the weekly letter: a question per play, next plays the family can play, an idea, a tip ... ok (737µs)
+a quiet week gets an encouraging letter, not empty numbers ... ok (132µs)
+we miss you: one play to come back with ... ok (137µs)
+the morning digest leads with what is urgent ... ok (167µs)
+running 1 test from ./_shared/mail_html_test.ts
+markdown newsletter becomes safe e-mail html with an unsubscribe link ... ok (822µs)
+running 14 tests from ./_shared/purchases_test.ts
+apple purchase: verified yearly subscription is granted to the caller ... ok (32ms)
+apple purchase: another app's bundle, unknown product and bad signature are rejected ... ok (18ms)
+apple purchase: a guest's purchase moves to the parent's account after sign-in ... ok (14ms)
+apple purchase: the account Apple names may reclaim its purchase ... ok (13ms)
+audit P1-1: an old valid transaction does not reactivate a refunded purchase ... ok (20ms)
+audit P1-2: Sandbox grants nothing unless configured ... ok (19ms)
+audit P1-3: a replayed old notification changes nothing ... ok (23ms)
+audit P1-4: another account cannot take over a purchase held by a parent ... ok (13ms)
+apple notification: refund revokes, redelivery is a duplicate, unknown purchase is ignored ... ok (29ms)
+apple notification: grace period keeps access after the renewal failed ... ok (23ms)
+apple notification: Sandbox events are ignored in production ... ok (11ms)
+google purchase: subscription and one-time pack; pending grants nothing ... ok (315µs)
+google purchase: a token held by a parent cannot be taken by another account ... ok (95µs)
+google notifications: renewal, upgrade replaces the old token, voided purchase is refunded ... ok (213µs)
+running 3 tests from ./_shared/reviews_test.ts
+reviews from both stores, with replies already given ... ok (743µs)
+replies fit Google's 350 characters at a sentence ... ok (152µs)
+the App Store token is an ES256 JWT ... ok (11ms)
+running 7 tests from ./_shared/shared_test.ts
+woo signature: valid, tampered body, wrong secret, missing header ... ok (788µs)
+woo order parsing ... ok (369µs)
+payload hash is stable ... ok (154µs)
+apple: one-time, active, grace, billing retry, expired, refund, family revoke ... ok (101µs)
+google subscriptions: states and cancelled-but-paid ... ok (146µs)
+google one-time purchases ... ok (38µs)
+woo ping: unsigned creation check is accepted, anything else is not ... ok (80µs)
+running 2 tests from ./_shared/signed_url_test.ts
+signed url: stable HMAC over path and expiry, matching get.php ... ok (1ms)
+signed url: only catalog paths are accepted ... ok (100µs)
+running 2 tests from ./_shared/woo_get_test.ts
+wooGet sends the key as Basic auth and retries with query keys when the host drops the header ... ok (5ms)
+a buyer who ticked the consent goes to the buyers' group with what they bought ... ok (233µs)
+
+ok | 90 passed | 0 failed (1s)
+

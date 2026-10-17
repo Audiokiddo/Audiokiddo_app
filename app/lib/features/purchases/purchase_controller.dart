@@ -46,7 +46,11 @@ class ServerPurchaseVerifier implements PurchaseVerifier {
         .verifyStorePurchase(
           ios
               ? {'platform': 'ios', 'signedTransaction': purchase.verificationData}
-              : {'platform': 'android', 'productId': purchase.productId, 'purchaseToken': purchase.verificationData},
+              : {
+                  'platform': 'android',
+                  'productId': purchase.productId,
+                  'purchaseToken': purchase.verificationData,
+                },
         );
     return switch (verdict) {
       ServerVerdict.verified => VerificationResult.verified,
@@ -75,7 +79,10 @@ class DevPurchaseVerifier implements PurchaseVerifier {
         : ProductIds.subscriptions.contains(purchase.productId)
         ? 30
         : null;
-    await backend.addPurchase(scopes, validUntil: days == null ? null : DateTime.now().add(Duration(days: days)));
+    await backend.addPurchase(
+      scopes,
+      validUntil: days == null ? null : DateTime.now().add(Duration(days: days)),
+    );
     return VerificationResult.verified;
   }
 }
@@ -128,7 +135,7 @@ class PreviewStoreGateway implements StoreGateway {
   }
 
   @override
-  Future<void> restore() => _store.restore();
+  Future<void> restore() => _store.restore().timeout(timeout * 5);
 
   @override
   Future<void> complete(StorePurchase purchase) => _store.complete(purchase);
@@ -172,7 +179,18 @@ class PurchaseController extends Notifier<PurchaseUiState> {
 
   @override
   PurchaseUiState build() {
-    _subscription = ref.watch(storeGatewayProvider).purchases.listen(_onPurchases);
+    _subscription = ref
+        .watch(storeGatewayProvider)
+        .purchases
+        .listen(
+          _onPurchases,
+          onError: (Object error) {
+            if (!ref.mounted) return;
+            _restoring = false;
+            _watchdog?.cancel();
+            state = const PurchaseUiState(message: PurchaseMessage.storeError);
+          },
+        );
     ref.onDispose(() {
       _subscription?.cancel();
       _watchdog?.cancel();
@@ -192,16 +210,20 @@ class PurchaseController extends Notifier<PurchaseUiState> {
       // Ties the purchase to our server user (appAccountToken / obfuscatedAccountId), so
       // store notifications find the right account.
       final account = await ref.read(accountServiceProvider).purchaseAccountId();
+      if (!ref.mounted) return;
       await ref.read(storeGatewayProvider).buy(product, accountToken: account);
     } on StoreNotReady {
+      if (!ref.mounted) return;
       _failed(product.id, 'store_not_ready');
       state = const PurchaseUiState(message: PurchaseMessage.storeNotReady);
       return;
     } on Object {
+      if (!ref.mounted) return;
       _failed(product.id, 'store_error');
       state = const PurchaseUiState(message: PurchaseMessage.storeError);
       return;
     }
+    if (!ref.mounted) return;
     // The store answers on the purchase stream; if it never does, the button comes back.
     _watchdog?.cancel();
     _watchdog = Timer(const Duration(minutes: 3), () {
@@ -213,13 +235,20 @@ class PurchaseController extends Notifier<PurchaseUiState> {
 
   Timer? _watchdog;
 
-  void _failed(String product, String error) =>
-      ref.read(eventSinkProvider).track(AppEvent.checkoutFailed, props: {'product': product, 'error_type': error});
+  void _failed(String product, String error) => ref
+      .read(eventSinkProvider)
+      .track(AppEvent.checkoutFailed, props: {'product': product, 'error_type': error});
 
   Future<void> restore() async {
     _restoring = true;
     state = const PurchaseUiState(busyProductId: 'restore');
-    await ref.read(storeGatewayProvider).restore();
+    try {
+      await ref.read(storeGatewayProvider).restore();
+    } on Object {
+      _restoring = false;
+      if (ref.mounted) state = const PurchaseUiState(message: PurchaseMessage.storeError);
+      return;
+    }
     // The store answers through the purchase stream; with nothing owned it stays silent.
     await Future<void>.delayed(const Duration(seconds: 2));
     if (_restoring && ref.mounted) {
@@ -230,45 +259,69 @@ class PurchaseController extends Notifier<PurchaseUiState> {
 
   /// After the parent signs in: the store redelivers its purchases and verify-purchase moves
   /// them from the anonymous holder to the parent's account. No messages on the paywall.
-  Future<void> restoreQuietly() => ref.read(storeGatewayProvider).restore();
+  Future<void> restoreQuietly() async {
+    try {
+      await ref.read(storeGatewayProvider).restore();
+    } on Object {
+      // Sign-in must succeed even when the store is temporarily unavailable.
+    }
+  }
 
   void clearMessage() => state = const PurchaseUiState();
 
   Future<void> _onPurchases(List<StorePurchase> purchases) async {
     _watchdog?.cancel();
     for (final p in purchases) {
-      switch (p.status) {
-        case PurchaseStatus.pending:
-          state = const PurchaseUiState(message: PurchaseMessage.pendingApproval);
-        case PurchaseStatus.canceled:
-          _failed(p.productId, 'canceled');
-          state = const PurchaseUiState(message: PurchaseMessage.canceled);
-        case PurchaseStatus.error:
-          _failed(p.productId, 'store_error');
-          state = const PurchaseUiState(message: PurchaseMessage.storeError);
-        case PurchaseStatus.purchased || PurchaseStatus.restored:
-          _restoring = false;
-          final result = await ref.read(purchaseVerifierProvider).verify(p);
-          if (!ref.mounted) return;
-          if (result == VerificationResult.verified) {
-            // Acknowledge only after the entitlement is recorded, so the store redelivers
-            // anything we failed to process.
-            if (p.needsCompletion) await ref.read(storeGatewayProvider).complete(p);
-            await ref.read(accessProvider.notifier).refresh();
-            if (p.status == PurchaseStatus.purchased) {
-              ref.read(eventSinkProvider).track(AppEvent.purchaseDone, props: {'product': p.productId});
-            }
-            if (ref.mounted) state = const PurchaseUiState(message: PurchaseMessage.success);
-          } else {
-            _failed(p.productId, 'verify_failed');
-            state = const PurchaseUiState(message: PurchaseMessage.verifyLater);
-          }
+      if (!ref.mounted) return;
+      try {
+        await _processPurchase(p);
+      } on Object {
+        // Network/store failures must not escape an async stream listener. Leave
+        // the transaction unfinished so a later store delivery can retry it.
+        if (!ref.mounted) return;
+        _restoring = false;
+        _failed(p.productId, 'processing_failed');
+        state = const PurchaseUiState(message: PurchaseMessage.verifyLater);
       }
+    }
+  }
+
+  Future<void> _processPurchase(StorePurchase p) async {
+    switch (p.status) {
+      case PurchaseStatus.pending:
+        state = const PurchaseUiState(message: PurchaseMessage.pendingApproval);
+      case PurchaseStatus.canceled:
+        _failed(p.productId, 'canceled');
+        state = const PurchaseUiState(message: PurchaseMessage.canceled);
+      case PurchaseStatus.error:
+        _failed(p.productId, 'store_error');
+        state = const PurchaseUiState(message: PurchaseMessage.storeError);
+      case PurchaseStatus.purchased || PurchaseStatus.restored:
+        _restoring = false;
+        final result = await ref.read(purchaseVerifierProvider).verify(p);
+        if (!ref.mounted) return;
+        if (result == VerificationResult.verified) {
+          // Acknowledge only after the entitlement is recorded, so the store redelivers
+          // anything we failed to process.
+          if (p.needsCompletion) await ref.read(storeGatewayProvider).complete(p);
+          if (!ref.mounted) return;
+          await ref.read(accessProvider.notifier).refresh();
+          if (!ref.mounted) return;
+          if (p.status == PurchaseStatus.purchased) {
+            ref.read(eventSinkProvider).track(AppEvent.purchaseDone, props: {'product': p.productId});
+          }
+          if (ref.mounted) state = const PurchaseUiState(message: PurchaseMessage.success);
+        } else {
+          _failed(p.productId, 'verify_failed');
+          state = const PurchaseUiState(message: PurchaseMessage.verifyLater);
+        }
     }
   }
 }
 
-final purchaseControllerProvider = NotifierProvider<PurchaseController, PurchaseUiState>(PurchaseController.new);
+final purchaseControllerProvider = NotifierProvider<PurchaseController, PurchaseUiState>(
+  PurchaseController.new,
+);
 
 /// Store products for the paywall, prices from the store. Key: sorted ids joined by ','
 /// (a Set would not compare by value and would refetch on every build).

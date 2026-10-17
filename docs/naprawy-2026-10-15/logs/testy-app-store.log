@@ -1,0 +1,437 @@
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 108.0.0 (109.0.0 available)
+  analyzer 14.4.0 (14.5.0 available)
+  app_links 7.2.1 (7.2.2 available)
+  app_links_linux 1.0.3 (1.0.4 available)
+  app_links_web 1.0.4 (1.0.5 available)
+  archive 4.3.0 (4.5.2 available)
+  background_downloader 9.6.3 (9.6.4 available)
+  build_runner 2.16.1 (2.16.2 available)
+  built_collection 5.1.1 (5.1.2 available)
+  cli_util 0.5.2 (0.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  connectivity_plus 7.3.1 (7.3.2 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.1 (1.1.2 available)
+  dbus 0.7.15 (0.8.0 available)
+  drift 2.35.0 (2.35.2 available)
+  drift_dev 2.35.0 (2.35.1 available)
+  equatable 2.1.0 (3.0.0 available)
+  flutter_local_notifications 22.3.1 (22.3.2 available)
+  flutter_local_notifications_linux 8.0.1 (8.0.2 available)
+  flutter_timezone 5.1.0 (5.1.1 available)
+  go_router 18.0.1 (18.0.2 available)
+  google_sign_in_ios 6.3.5 (6.3.6 available)
+  gotrue 2.27.2 (2.27.3 available)
+  hooks 2.0.2 (2.2.0 available)
+  image 4.10.1 (4.12.0 available)
+  in_app_purchase_storekit 0.4.13 (0.4.13+1 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4+1 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.4.0 (1.6.0 available)
+  meta 1.18.3 (1.19.0 available)
+  native_toolchain_c 0.19.2 (0.19.5 available)
+  nm 0.5.0 (0.6.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.0 available)
+  realtime_client 2.13.0 (2.13.2 available)
+  record 7.1.1 (7.1.2 available)
+  record_linux 2.1.2 (2.1.3 available)
+  record_use 0.6.0 (1.1.1 available)
+  share_plus 13.3.0 (13.3.1 available)
+  shared_preferences 2.5.5 (2.5.6 available)
+  sqflite 2.4.4 (2.4.4+1 available)
+  sqflite_common 2.5.13 (2.5.13+1 available)
+  sqlite3 3.5.2 (3.7.0 available)
+  storage_client 2.8.0 (2.8.1 available)
+  supabase 2.16.1 (2.16.5 available)
+  supabase_flutter 2.17.2 (2.18.3 available)
+  test_api 0.7.12 (0.7.15 available)
+  timezone 0.11.1 (0.11.2 available)
+  url_launcher 6.3.2 (6.3.3 available)
+  vector_math 2.4.0 (2.4.3 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+54 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart
+00:00 +0: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +1: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +4: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +4 ~1: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +4 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +5 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +6 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +7 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +8 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +9 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +10 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +11 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +12 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +13 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +14 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +15 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +16 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +17 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +18 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +19 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +20 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +21 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +22 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +23 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +24 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +25 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +26 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +27 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +28 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +29 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +30 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +31 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +32 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +33 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +34 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +35 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +36 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +37 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +38 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +39 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +40 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +41 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +42 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +43 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:00 +44 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:01 +45 ~2: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen offline shows the usual message and keeps what was typed
+00:01 +45 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_test.dart: access screen the iOS store build has no code field, the order stays
+00:01 +46 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/referral_credit_test.dart: zloty amounts read the Polish way
+00:01 +47 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/back_to_start_test.dart: a swipe from the left edge of a tab goes to Start
+00:01 +48 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/back_to_start_test.dart: a swipe from the left edge of a tab goes to Start
+00:01 +49 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/back_to_start_test.dart: a swipe from the left edge of a tab goes to Start
+00:02 +50 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/back_to_start_test.dart: a swipe from the left edge of a tab goes to Start
+00:02 +51 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/back_to_start_test.dart: a swipe from the left edge of a tab goes to Start
+00:02 +52 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/back_to_start_test.dart: a swipe from the left edge of a tab goes to Start
+00:02 +53 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/back_to_start_test.dart: a swipe from the left edge of a tab goes to Start
+00:02 +54 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/back_to_start_test.dart: a swipe from the left edge of a tab goes to Start
+00:02 +55 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/referral_credit_test.dart: credit buys a play after a confirmation and the balance goes down
+00:02 +56 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/referral_credit_test.dart: credit buys a play after a confirmation and the balance goes down
+00:02 +57 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/referral_credit_test.dart: credit buys a play after a confirmation and the balance goes down
+00:02 +58 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/referral_credit_test.dart: credit buys a play after a confirmation and the balance goes down
+00:02 +59 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/referral_credit_test.dart: credit buys a play after a confirmation and the balance goes down
+00:02 +60 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/referral_credit_test.dart: credit buys a play after a confirmation and the balance goes down
+00:03 +61 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +62 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +63 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +64 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +65 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +66 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +67 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +68 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:04 +69 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +70 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +71 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +72 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +73 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +74 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +75 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +76 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +77 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +78 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +79 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +80 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +81 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +82 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +83 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +84 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +85 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:04 +86 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +87 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +88 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +89 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +90 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +91 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +92 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +93 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +94 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +95 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +96 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +97 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +98 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +99 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +100 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +101 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +102 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +103 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +104 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +105 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +106 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +107 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +108 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +109 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +110 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +111 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +112 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +113 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +114 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +115 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +116 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +117 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +118 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +119 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +120 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +121 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +122 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +123 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +124 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +125 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +126 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +127 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +128 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +129 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +130 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +131 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +132 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +133 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +134 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +135 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +136 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +137 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +138 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +139 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +140 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +141 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +142 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +143 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +144 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +145 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +146 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +147 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +148 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +149 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +150 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +151 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +152 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +153 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +154 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +155 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +156 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +157 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +158 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +159 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +160 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +161 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +162 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +163 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +164 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +165 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +166 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +167 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +168 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +169 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +170 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +171 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +172 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +173 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +174 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +175 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +176 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +177 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +178 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +179 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +180 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +180 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/game_controller_test.dart: leaving mid-game stops everything
+game zamrozony-taniec failed: Cannot use the Ref of NotifierProvider<GameController, GameUiState>#9dc4e after it has been disposed. This typically happens if:
+- A provider rebuilt, but the previous "build" was still pending and is still performing operations.
+  You should therefore either use `ref.onDispose` to cancel pending work, or
+  check `ref.mounted` after async gaps or anything that could invalidate the provider.
+- You tried to use Ref inside `onDispose` or other life-cycles.
+  This is not supported, as the provider is already being disposed.
+
+00:13 +181 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +182 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +183 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +184 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +185 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +186 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +187 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +188 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +189 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +190 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +191 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +192 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +193 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:16 +194 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:16 +195 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:16 +196 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:16 +197 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:17 +198 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:18 +199 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:18 +200 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:18 +201 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:19 +202 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:19 +203 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:19 +204 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:20 +205 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:20 +206 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:20 +207 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:21 +208 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:21 +209 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:22 +210 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +211 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +212 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +213 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +214 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +215 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +216 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +217 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +218 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +219 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +220 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +221 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +222 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +223 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +224 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +225 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +226 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +227 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +228 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +229 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +230 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +231 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +232 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +233 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +234 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +235 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +236 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+Shell: [ERROR:flutter/runtime/dart_isolate.cc(1403)] Callbacks into the Dart VM are currently prohibited. Either there are outstanding pointers from Dart_TypedDataAcquireData that have not been released with Dart_TypedDataReleaseData, or a finalizer is running.
+00:26 +237 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:26 +238 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:26 +239 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:26 +240 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +241 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +242 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +243 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +244 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +245 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:28 +246 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:28 +247 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:28 +248 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:28 +249 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:28 +250 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:28 +251 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:29 +252 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:30 +253 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:30 +254 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:30 +255 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +256 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +257 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +257 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/offer_and_theme_test.dart: a store that never answers shows the reference prices and refuses to hang
+store: products unavailable (TimeoutException after 0:00:00.050000: Future not completed)
+00:31 +258 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +259 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +260 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:33 +261 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:33 +262 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:33 +263 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:33 +264 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +265 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +266 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +267 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +267 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_and_progress_test.dart: access with the dev backend without purchases paid content is locked
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+00:34 +268 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +268 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_and_progress_test.dart: access with the dev backend pack purchase unlocks only its pack and grants an offline lease
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+00:34 +269 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +269 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_and_progress_test.dart: access with the dev backend expired lease asks for a refresh, refresh restores access
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+00:34 +270 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +270 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/access_and_progress_test.dart: access with the dev backend access state survives an app restart
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+00:34 +271 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +272 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +273 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +274 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:35 +275 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:35 +276 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:36 +277 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:36 +278 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:36 +279 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +280 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +281 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +282 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +283 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +284 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +285 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +286 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +287 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +288 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +289 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +290 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +290 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/account_test.dart: access from the account shop pack unlocks after sign-in and locks again after sign-out
+access: downloads not pruned (Bad state: No element)
+00:37 +291 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+Shell: [ERROR:flutter/runtime/dart_isolate.cc(1403)] Callbacks into the Dart VM are currently prohibited. Either there are outstanding pointers from Dart_TypedDataAcquireData that have not been released with Dart_TypedDataReleaseData, or a finalizer is running.
+00:37 +292 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:39 +293 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:39 +294 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:39 +295 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:39 +296 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:39 +297 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:40 +298 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:40 +299 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:40 +300 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:40 +301 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:47 +302 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:49 +303 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/small_screens_test.dart: iPhone SE 3rd gen, text 135%, dark: main screens fit
+00:50 +304 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/small_screens_test.dart: iPhone SE 3rd gen, text 135%, dark: main screens fit
+00:55 +305 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/small_screens_test.dart: iPhone SE 3rd gen, text 135%, dark: welcome pages fit
+01:01 +306 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/small_screens_test.dart: iPhone SE 3rd gen, text 135%, dark: family welcome and Szop’en’s tour fit
+01:11 +307 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/small_screens_test.dart: iPad, text 100%: main screens fit
+01:19 +308 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/small_screens_test.dart: iPad, text 100%: welcome pages fit
+01:25 +309 ~3: /Users/dawidkubiak/Desktop/claude folder/audiokiddo-glos/app/test/small_screens_test.dart: iPad, text 100%: family welcome and Szop’en’s tour fit
+01:36 +310 ~3: All tests passed!

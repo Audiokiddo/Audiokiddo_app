@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/features/player/player_providers.dart';
@@ -97,7 +96,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Dodaj czas'), findsOneWidget);
     expect(find.text('+5 min'), findsOneWidget);
-    await tester.tap(find.byTooltip('Zakończ'), warnIfMissed: false);
+    Navigator.of(tester.element(find.text('Dodaj czas'))).pop();
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Zakończ').hitTestable(), findsOneWidget);
+    await tester.tap(find.byTooltip('Zakończ'));
     await tester.pumpAndSettle();
   });
 
@@ -142,7 +144,9 @@ void main() {
     expect(tester.widget<SwitchListTile>(sw).value, isFalse);
     await tester.tap(sw);
     await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.home_rounded).first);
+    final startTab = find.byIcon(Icons.home_outlined).hitTestable();
+    expect(startTab, findsOneWidget);
+    await tester.tap(startTab);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Obiad bez wołania'),

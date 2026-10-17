@@ -142,10 +142,15 @@ void main() {
       await tester.pumpAndSettle();
       for (var stop = 0; stop < tourStops.length; stop++) {
         expect(tester.takeException(), isNull, reason: 'tour stop ${stop + 1} on $name');
-        await tester.tap(find.byType(FilledButton).last);
+        expect(find.text(tourStops[stop].title), findsWidgets);
+        final next = find.byType(FilledButton).last;
+        await tester.ensureVisible(next);
+        await tester.pumpAndSettle();
+        expect(next.hitTestable(), findsOneWidget, reason: 'tour action reachable on $name');
+        await tester.tap(next);
         await tester.pumpAndSettle();
       }
-      expect(find.text('Gotowe.'), findsNothing);
+      expect(find.byType(SzopTour), findsNothing, reason: 'the complete tour was actually dismissed');
     });
   }
 }

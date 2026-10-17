@@ -58,24 +58,38 @@ class DownloadManager {
     required this._transfer,
     required this._urls,
     this._storage = const DeviceStorage(),
+    this.requestTimeout = const Duration(seconds: 15),
   });
 
   final AppDatabase _db;
   final FileTransfer _transfer;
   final ContentUrlResolver _urls;
   final DeviceStorage _storage;
+  final Duration requestTimeout;
 
   final _progress = <String, double>{}; // by asset path
   final _progressChanged = StreamController<void>.broadcast();
   StreamSubscription<TransferEvent>? _subscription;
   Future<void>? _started;
+  Future<void> _operations = Future<void>.value();
 
-  Future<void> start() => _started ??= _start();
+  // Download requests and platform callbacks touch the same rows/files.
+  // Keep them ordered, including requests started by different screens.
+  Future<T> _serial<T>(Future<T> Function() action) {
+    final result = _operations.then((_) => action());
+    _operations = result.then<void>((_) {}, onError: (Object _, StackTrace _) {});
+    return result;
+  }
+
+  Future<void> start() => _started ??= _start().catchError((Object error, StackTrace stack) {
+    _started = null; // A temporary platform failure must allow a later retry.
+    Error.throwWithStackTrace(error, stack);
+  });
 
   Future<void> _start() async {
-    _subscription = _transfer.events.listen(_onEvent);
-    await _transfer.start();
-    await _reconcile();
+    _subscription ??= _transfer.events.listen((event) => unawaited(_serial(() => _onEvent(event))));
+    await _transfer.start().timeout(requestTimeout);
+    await _serial(_reconcile);
   }
 
   /// Fixes state left behind by a crash or a deleted file.
@@ -96,10 +110,19 @@ class DownloadManager {
 
   Future<DownloadRequest> download(ContentItem item) async {
     await start();
+    return _serial(() => _download(item));
+  }
+
+  Future<DownloadRequest> _download(ContentItem item) async {
+    final dir = await _transfer.directory();
     final existing = {for (final r in await _rowsFor(item.id)) r.assetPath: r};
     final missing = [
       for (final asset in _assetsOf(item))
-        if (existing[asset.path]?.state != DownloadState.ready) asset,
+        if (!_matches(existing[asset.path], asset) ||
+            existing[asset.path]?.state == DownloadState.failed ||
+            (existing[asset.path]?.state == DownloadState.ready &&
+                !await File(p.join(dir, existing[asset.path]!.fileName)).exists()))
+          asset,
     ];
     if (missing.isEmpty) return const DownloadStarted();
 
@@ -124,33 +147,62 @@ class DownloadManager {
               updatedAt: DateTime.now(),
             ),
           );
-      final Uri url;
-      try {
-        url = await _urls.urlFor(asset);
-      } on ContentUnavailable {
-        await _setState(asset.path, DownloadState.failed, error: 'url');
+      // Identical content may belong to several items. Reuse the existing
+      // transfer/file instead of enqueueing a second task with the same id.
+      final shared = await (_db.select(
+        _db.downloads,
+      )..where((t) => t.sha256.equals(asset.sha256) & t.assetPath.equals(asset.path).not())).get();
+      if (shared.any(
+        (r) =>
+            r.state == DownloadState.queued ||
+            r.state == DownloadState.running ||
+            r.state == DownloadState.verifying,
+      )) {
         continue;
       }
-      final queued = await _transfer.enqueue(taskId: _taskId(asset), url: url, fileName: fileName);
-      if (!queued) await _setState(asset.path, DownloadState.failed, error: 'enqueue');
+      final ready = shared.where((r) => r.state == DownloadState.ready && r.fileName == fileName).firstOrNull;
+      if (ready != null && await File(p.join(await _transfer.directory(), fileName)).exists()) {
+        await _setState(asset.path, DownloadState.ready);
+        continue;
+      }
+      try {
+        final url = await _urls.urlFor(asset).timeout(requestTimeout);
+        final queued = await _transfer
+            .enqueue(taskId: _taskId(asset), url: url, fileName: fileName)
+            .timeout(requestTimeout);
+        if (!queued) await _setState(asset.path, DownloadState.failed, error: 'enqueue');
+      } on ContentUnavailable {
+        await _setState(asset.path, DownloadState.failed, error: 'url');
+      } on TimeoutException {
+        await _setState(asset.path, DownloadState.failed, error: 'timeout');
+      } on Exception {
+        await _setState(asset.path, DownloadState.failed, error: 'transfer');
+      }
     }
     return const DownloadStarted();
   }
 
   /// Cancels running transfers and removes the item's files.
-  Future<void> remove(ContentItem item) async {
+  Future<void> remove(ContentItem item) => _serial(() => _remove(item));
+
+  Future<void> _remove(ContentItem item) async {
     final rows = await _rowsFor(item.id);
-    await _transfer.cancel(rows.map((r) => _taskIdFor(r.sha256)));
+    final others = await (_db.select(_db.downloads)..where((t) => t.itemId.equals(item.id).not())).get();
+    await _transfer.cancel(
+      rows.where((r) => !others.any((o) => o.sha256 == r.sha256)).map((r) => _taskIdFor(r.sha256)),
+    );
     final dir = await _transfer.directory();
     for (final row in rows) {
-      await _deleteFile(p.join(dir, row.fileName));
+      if (!others.any((o) => o.fileName == row.fileName)) await _deleteFile(p.join(dir, row.fileName));
       _progress.remove(row.assetPath);
     }
     await _deleteRows(rows.map((r) => r.assetPath));
     _progressChanged.add(null);
   }
 
-  Future<void> removeAll() async {
+  Future<void> removeAll() => _serial(_removeAll);
+
+  Future<void> _removeAll() async {
     final rows = await _db.select(_db.downloads).get();
     await _transfer.cancel(rows.map((r) => _taskIdFor(r.sha256)));
     final dir = await _transfer.directory();
@@ -163,18 +215,22 @@ class DownloadManager {
   }
 
   /// Local file of a plain-audio item when it is downloaded and verified, otherwise null.
-  Future<String?> localAudioPath(ContentItem item) async => item.audio.isEmpty ? null : localFilePath(item.audio.first);
+  Future<String?> localAudioPath(ContentItem item) async =>
+      item.audio.isEmpty ? null : localFilePath(item.audio.first);
 
   /// Local copy of any verified asset (audio, PDF, game segment), otherwise null.
   Future<String?> localFilePath(AssetRef asset) async {
-    final row = await (_db.select(_db.downloads)..where((t) => t.assetPath.equals(asset.path))).getSingleOrNull();
-    if (row == null || row.state != DownloadState.ready) return null;
+    final row = await (_db.select(
+      _db.downloads,
+    )..where((t) => t.assetPath.equals(asset.path))).getSingleOrNull();
+    if (!_matches(row, asset) || row!.state != DownloadState.ready) return null;
     final path = p.join(await _transfer.directory(), row.fileName);
     return await File(path).exists() ? path : null;
   }
 
   Stream<ItemDownloadStatus> watch(ContentItem item) {
-    final expected = _assetsOf(item).length;
+    final assets = {for (final a in _assetsOf(item)) a.path: a};
+    final expected = assets.length;
     late StreamController<ItemDownloadStatus> controller;
     StreamSubscription<List<Download>>? rowsSub;
     StreamSubscription<void>? progressSub;
@@ -183,7 +239,9 @@ class DownloadManager {
     controller = StreamController<ItemDownloadStatus>(
       onListen: () {
         rowsSub = (_db.select(_db.downloads)..where((t) => t.itemId.equals(item.id))).watch().listen((r) {
-          rows = r;
+          rows = r
+              .where((row) => assets[row.assetPath] != null && _matches(row, assets[row.assetPath]!))
+              .toList();
           emit();
         });
         progressSub = _progressChanged.stream.listen((_) => emit());
@@ -202,7 +260,10 @@ class DownloadManager {
       ..where((t) => t.state.equalsValue(DownloadState.ready))
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
     return query.watch().map(
-      (rows) => (bytes: rows.fold(0, (sum, r) => sum + r.bytes), itemIds: {for (final r in rows) r.itemId}.toList()),
+      (rows) => (
+        bytes: {for (final r in rows) r.fileName: r.bytes}.values.fold(0, (sum, bytes) => sum + bytes),
+        itemIds: {for (final r in rows) r.itemId}.toList(),
+      ),
     );
   }
 
@@ -232,10 +293,15 @@ class DownloadManager {
   }
 
   Future<void> _onEvent(TransferEvent event) async {
-    final row = await (_db.select(
+    final rows = await (_db.select(
       _db.downloads,
-    )..where((t) => t.sha256.equals(_shaFromTaskId(event.taskId)))).getSingleOrNull();
-    if (row == null) return;
+    )..where((t) => t.sha256.equals(_shaFromTaskId(event.taskId)))).get();
+    for (final row in rows) {
+      await _applyEvent(row, event);
+    }
+  }
+
+  Future<void> _applyEvent(Download row, TransferEvent event) async {
     switch (event.kind) {
       case TransferEventKind.progress:
         _progress[row.assetPath] = event.progress;
@@ -252,6 +318,7 @@ class DownloadManager {
         await _setState(row.assetPath, DownloadState.failed, error: event.kind.name);
       case TransferEventKind.canceled:
         _progress.remove(row.assetPath);
+        await _setState(row.assetPath, DownloadState.failed, error: 'canceled');
         _progressChanged.add(null);
     }
   }
@@ -286,7 +353,14 @@ class DownloadManager {
   }
 
   /// Everything needed offline: recordings, game segments and printable case files.
-  static List<AssetRef> _assetsOf(ContentItem item) => [...item.audio, ...item.pdf, ...?item.script?.assets.values];
+  static List<AssetRef> _assetsOf(ContentItem item) => [
+    ...item.audio,
+    ...item.pdf,
+    ...?item.script?.assets.values,
+  ];
+
+  static bool _matches(Download? row, AssetRef asset) =>
+      row != null && row.sha256 == asset.sha256 && row.bytes == asset.bytes;
 
   static String _fileName(AssetRef asset) => '${asset.sha256}${p.extension(asset.path)}';
   static String _taskId(AssetRef asset) => _taskIdFor(asset.sha256);
@@ -295,6 +369,7 @@ class DownloadManager {
 
   Future<void> dispose() async {
     await _subscription?.cancel();
+    await _operations;
     await _progressChanged.close();
   }
 }

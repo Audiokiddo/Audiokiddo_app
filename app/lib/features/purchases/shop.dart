@@ -30,16 +30,18 @@ List<Pack> bundlePacks(String productId, Catalog catalog) {
 }
 
 /// Whether the family has the subscription now: no offers to buy it are shown then.
-final hasSubscriptionProvider = Provider<bool>((ref) => ref.watch(activeScopesProvider).contains(Scopes.allContent));
+final hasSubscriptionProvider = Provider<bool>(
+  (ref) => ref.watch(activeScopesProvider).contains(Scopes.allContent),
+);
 
 /// Scopes the family can use right now (subscription, packs, single items).
 final activeScopesProvider = Provider<Set<String>>(
-  (ref) => ref.watch(accessPolicyProvider).activeScopes(ref.watch(clockProvider)()),
+  (ref) => ref.watch(accessPolicyProvider).activeScopes(ref.watch(accessTimeProvider)),
 );
 
 /// When the family's subscription ended (and none is active now): a "come back" moment.
 final lapsedSubscriptionProvider = Provider<DateTime?>((ref) {
-  final now = ref.watch(clockProvider)();
+  final now = ref.watch(accessTimeProvider);
   final subs = [
     for (final e in ref.watch(entitlementsProvider))
       if (e.scope == Scopes.allContent && e.source != EntitlementSource.manual) e,

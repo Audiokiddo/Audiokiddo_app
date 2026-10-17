@@ -47,7 +47,7 @@ class PlanEditor extends StatelessWidget {
   final List<ContentItem> candidates;
   final void Function(int pos) onRemove;
   final void Function(int oldPos, int newPos) onReorder;
-  final void Function(int pos, ContentItem item) onReplace;
+  final void Function(String itemId, ContentItem item) onReplace;
   final void Function(List<ContentItem> items) onAdd;
 
   /// Text colour (the running screen is dark).
@@ -134,7 +134,7 @@ class PlanEditor extends StatelessWidget {
                           ? null
                           : () async {
                               final picked = await choose('Zamień na…');
-                              if (picked != null) onReplace(pos, picked);
+                              if (picked != null && context.mounted) onReplace(item.id, picked);
                             },
                       icon: Icon(Icons.swap_horiz_rounded, color: fg),
                     ),
@@ -175,7 +175,7 @@ class PlanEditor extends StatelessWidget {
                   ? null
                   : () async {
                       final picked = await choose('Dodaj zabawę');
-                      if (picked != null) onAdd([picked]);
+                      if (picked != null && context.mounted) onAdd([picked]);
                     },
             ),
           ],

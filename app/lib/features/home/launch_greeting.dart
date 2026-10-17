@@ -127,38 +127,43 @@ class _LaunchGreetingState extends ConsumerState<LaunchGreeting> {
     final nav = Navigator.of(context, rootNavigator: true);
     final skip = Completer<void>();
     final minimum = Future<void>.delayed(LaunchGreeting.curtainTime);
-    unawaited(
-      showGeneralDialog<void>(
-        context: context,
-        useRootNavigator: true,
-        barrierDismissible: false,
-        barrierColor: Colors.transparent,
-        transitionDuration: const Duration(milliseconds: 260),
-        // In at once (no flash of Start first), out with a fade while the sheet comes up.
-        transitionBuilder: (_, animation, _, child) => AnimatedBuilder(
-          animation: animation,
-          builder: (_, child) => Opacity(
-            opacity: animation.status == AnimationStatus.reverse ? animation.value : 1,
-            child: child,
-          ),
-          child: child,
-        ),
-        pageBuilder: (_, _, _) => PopScope(
-          canPop: false,
-          child: LaunchCurtain(onSkip: () => skip.isCompleted ? null : skip.complete()),
-        ),
+    final curtain = RawDialogRoute<void>(
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      transitionDuration: const Duration(milliseconds: 260),
+      // In at once (no flash of Start first), out with a fade while the sheet comes up.
+      transitionBuilder: (_, animation, _, child) => AnimatedBuilder(
+        animation: animation,
+        builder: (_, child) =>
+            Opacity(opacity: animation.status == AnimationStatus.reverse ? animation.value : 1, child: child),
+        child: child,
+      ),
+      pageBuilder: (_, _, _) => PopScope(
+        canPop: false,
+        child: LaunchCurtain(onSkip: () => skip.isCompleted ? null : skip.complete()),
       ),
     );
+    unawaited(nav.push<void>(curtain));
 
     LaunchNews? news;
     try {
-      news = await _news().timeout(LaunchGreeting.curtainLimit);
+      news = await Future.any<LaunchNews?>([
+        _news().timeout(LaunchGreeting.curtainLimit),
+        skip.future.then((_) => null),
+      ]);
     } on Object {
       news = null; // slow or broken: no greeting this time rather than one that pops up late
     }
     await Future.any([minimum, skip.future]);
-    if (nav.canPop()) nav.pop();
-    if (news == null || news.isEmpty || !mounted) return;
+    final stillOnTop = curtain.isCurrent;
+    if (curtain.isActive) {
+      if (stillOnTop) {
+        nav.pop();
+      } else {
+        nav.removeRoute(curtain);
+      }
+    }
+    if (!stillOnTop || news == null || news.isEmpty || !mounted) return;
     await showModalBottomSheet<void>(
       context: context,
       useRootNavigator: true,
@@ -260,7 +265,10 @@ class _LaunchCurtainState extends State<LaunchCurtain> with SingleTickerProvider
                           opacity: v.clamp(0, 1),
                           child: Transform.translate(
                             offset: Offset(0, (1 - v) * 24),
-                            child: Transform.scale(scale: .85 + .15 * v, child: const AudioKiddoLogo(height: 64)),
+                            child: Transform.scale(
+                              scale: .85 + .15 * v,
+                              child: const AudioKiddoLogo(height: 64),
+                            ),
                           ),
                         );
                       },

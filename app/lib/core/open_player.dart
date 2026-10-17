@@ -21,20 +21,19 @@ List<String> routeStack(GoRouter router) {
 }
 
 /// Opens the player (or the game screen) so there is only ever one of them on the stack:
-/// already on top: nothing; the other one on top: replaced; the player right below the page
-/// that asks (the queue opened from it): back to it; otherwise a new page.
+/// already present: pop the pages above it and reuse or replace it; otherwise a new page.
 Future<void> openPlayerOn(GoRouter router, {bool game = false}) async {
   final target = game ? '/gra' : '/odtwarzacz';
   final stack = routeStack(router);
-  final top = stack.isEmpty ? '/' : stack.last;
-  if (top == target) return;
-  if (top == '/odtwarzacz' || top == '/gra') {
-    await router.pushReplacement<void>(target);
-  } else if (stack.length >= 2 && stack[stack.length - 2] == target && router.canPop()) {
-    router.pop();
-  } else {
-    await router.push<void>(target);
+  final playbackIndex = stack.lastIndexWhere((p) => p == '/odtwarzacz' || p == '/gra');
+  if (playbackIndex >= 0) {
+    for (var above = stack.length - playbackIndex - 1; above > 0 && router.canPop(); above--) {
+      router.pop();
+    }
+    if (stack[playbackIndex] != target) await router.pushReplacement<void>(target);
+    return;
   }
+  await router.push<void>(target);
 }
 
 Future<void> openPlayer(BuildContext context, {bool game = false}) =>

@@ -50,7 +50,14 @@ enum SessionKind { trip, bedtime, dinner }
 const namedLines = ['trip_start', 'trip_end', 'bedtime_start', 'goodnight'];
 
 /// Szop'en's lines at the start of a ride; one per trip, so he does not repeat himself.
-const tripStartLines = ['trip_start', 'trip_start_2', 'trip_start_3', 'trip_start_4', 'trip_start_5', 'trip_start_6'];
+const tripStartLines = [
+  'trip_start',
+  'trip_start_2',
+  'trip_start_3',
+  'trip_start_4',
+  'trip_start_5',
+  'trip_start_6',
+];
 
 /// Kiddo lines between trip activities, in turn.
 const windowLines = ['window_1', 'window_2', 'window_3', 'window_4', 'window_5', 'window_6'];
@@ -110,7 +117,9 @@ List<SessionStep> buildTrip(
     total += item.durationSec;
     sinceBreak += item.durationSec;
     if (sinceBreak >= 15 * 60 && total < target - 300) {
-      steps.add(LineStep(windowLines[breaks++ % windowLines.length], pauseAfter: const Duration(seconds: 40)));
+      steps.add(
+        LineStep(windowLines[breaks++ % windowLines.length], pauseAfter: const Duration(seconds: 40)),
+      );
       total += 50;
       sinceBreak = 0;
     }
@@ -144,7 +153,11 @@ const bedtimeFade = Duration(seconds: 25);
 
 /// The evening ritual behind one "Dobranoc" button: three calm breaths, one quiet
 /// activity, one lullaby, goodnight in the parent's voice (or Kiddo's).
-List<SessionStep> buildBedtime(Catalog catalog, {required int age, required bool Function(ContentItem) canPlay}) {
+List<SessionStep> buildBedtime(
+  Catalog catalog, {
+  required int age,
+  required bool Function(ContentItem) canPlay,
+}) {
   final playable = [
     for (final i in catalog.items)
       if (i.ageMin <= age && canPlay(i) && i.audio.isNotEmpty && i.kind != ContentKind.interactiveGame) i,
@@ -207,7 +220,9 @@ class AppSessionAudio implements SessionAudio {
         .timeout(const Duration(seconds: 30), onTimeout: () => handler.playbackState.value)
         .then(
           (_) => handler.playbackState.firstWhere(
-            (s) => s.processingState == AudioProcessingState.completed || s.processingState == AudioProcessingState.idle,
+            (s) =>
+                s.processingState == AudioProcessingState.completed ||
+                s.processingState == AudioProcessingState.idle,
           ),
         );
     await Future.any<Object?>([over, skip.future]);
@@ -219,7 +234,10 @@ class AppSessionAudio implements SessionAudio {
   @override
   Future<void> skipCurrent() async {
     // Both voices are asked to stop before anything else can start (the next step may be a line).
-    await Future.wait([_ref.read(kiddoVoiceProvider).stop(), _ref.read(parentVoiceStoreProvider).stopPlayback()]);
+    await Future.wait([
+      _ref.read(kiddoVoiceProvider).stop(),
+      _ref.read(parentVoiceStoreProvider).stopPlayback(),
+    ]);
     final skip = _skipItem;
     if (skip != null && !skip.isCompleted) skip.complete();
   }
@@ -263,6 +281,7 @@ class SessionState {
     this.held = false,
     this.startedAt,
     this.endedAt,
+    this.error,
   });
 
   /// The same state with another list of steps (the parent edited the plan).
@@ -276,6 +295,7 @@ class SessionState {
     held: held,
     startedAt: startedAt,
     endedAt: endedAt,
+    error: error,
   );
 
   final SessionKind? kind;
@@ -293,9 +313,11 @@ class SessionState {
   /// When the session began and ended (the trip's dry summary: real minutes only).
   final DateTime? startedAt;
   final DateTime? endedAt;
+  final String? error;
 
   /// Whole minutes from start to end, once finished.
-  int? get minutesTaken => startedAt == null || endedAt == null ? null : endedAt!.difference(startedAt!).inMinutes;
+  int? get minutesTaken =>
+      startedAt == null || endedAt == null ? null : endedAt!.difference(startedAt!).inMinutes;
 
   SessionStep? get current => index < steps.length ? steps[index] : null;
   SessionStep? get next => index + 1 < steps.length ? steps[index + 1] : null;
@@ -336,7 +358,13 @@ class SessionController extends Notifier<SessionState> {
     var playedItem = false;
     for (var i = 0; i < _steps.length; i++) {
       if (generation != _generation) return;
-      final playing = SessionState(kind: kind, steps: List.of(_steps), index: i, running: true, childId: childId);
+      final playing = SessionState(
+        kind: kind,
+        steps: List.of(_steps),
+        index: i,
+        running: true,
+        childId: childId,
+      );
       // The parent tapped "next" during the last step: they chose to move on, so no countdown.
       final chosen = _skip;
       _skip = false;
@@ -352,7 +380,22 @@ class SessionController extends Notifier<SessionState> {
       final step = _steps[i];
       state = SessionState(kind: kind, steps: List.of(_steps), index: i, running: true, childId: childId);
       if (step is ItemStep) playedItem = true;
-      await _play(step, clips, generation);
+      try {
+        await _play(step, clips, generation);
+      } on Exception {
+        if (generation != _generation || !ref.mounted) return;
+        // A network/access failure ends the run visibly, never as an unhandled future
+        // with a screen that still claims to be playing.
+        state = SessionState(
+          kind: kind,
+          steps: List.of(_steps),
+          index: i,
+          childId: childId,
+          error:
+              'Nie udało się odtworzyć zabawy. Sprawdź połączenie i dostęp, a potem uruchom plan ponownie.',
+        );
+        return;
+      }
     }
     if (generation == _generation) {
       state = SessionState(
@@ -460,8 +503,24 @@ class SessionController extends Notifier<SessionState> {
   /// Plan edits while a ride or dinner runs; positions count the plays still ahead.
   void removePlay(int pos) => _edited(planRemove(_steps, pos, from: editFrom));
   void reorderPlays(int oldPos, int newPos) => _edited(planReorder(_steps, oldPos, newPos, from: editFrom));
-  void replacePlay(int pos, ContentItem item) => _edited(planReplace(_steps, pos, item, from: editFrom));
-  void addPlays(List<ContentItem> items) => _edited(planAdd(_steps, items));
+
+  /// Resolve the original play after the chooser closes; playback may have advanced.
+  bool replacePlay(String itemId, ContentItem item) {
+    if (!state.running) return false;
+    final pos = playsFrom(_steps, editFrom).indexWhere((i) => i.id == itemId);
+    if (pos < 0) return false;
+    _edited(planReplace(_steps, pos, item, from: editFrom));
+    return true;
+  }
+
+  void addPlays(List<ContentItem> items) {
+    if (!state.running || items.isEmpty) return;
+    // During a closing line the last play is behind the cursor. Insert ahead of
+    // that cursor, otherwise the added audio is skipped and the line repeats.
+    final last = _steps.lastIndexWhere((s) => s is ItemStep);
+    final at = (last + 1).clamp(editFrom, _steps.length);
+    _edited([..._steps]..insertAll(at, [for (final i in items) ItemStep(i)]));
+  }
 
   Future<void> stop() async {
     _generation++;

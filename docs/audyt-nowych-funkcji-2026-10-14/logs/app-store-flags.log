@@ -1,0 +1,696 @@
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 108.0.0 (109.0.0 available)
+  analyzer 14.4.0 (14.5.0 available)
+  app_links 7.2.1 (7.2.2 available)
+  app_links_linux 1.0.3 (1.0.4 available)
+  app_links_web 1.0.4 (1.0.5 available)
+  archive 4.3.0 (4.5.2 available)
+  background_downloader 9.6.3 (9.6.4 available)
+  build_runner 2.16.1 (2.16.2 available)
+  built_collection 5.1.1 (5.1.2 available)
+  cli_util 0.5.2 (0.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  connectivity_plus 7.3.1 (7.3.2 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.1 (1.1.2 available)
+  dbus 0.7.15 (0.8.0 available)
+  drift 2.35.0 (2.35.2 available)
+  drift_dev 2.35.0 (2.35.1 available)
+  equatable 2.1.0 (3.0.0 available)
+  flutter_local_notifications 22.3.1 (22.3.2 available)
+  flutter_local_notifications_linux 8.0.1 (8.0.2 available)
+  flutter_timezone 5.1.0 (5.1.1 available)
+  go_router 18.0.1 (18.0.2 available)
+  google_sign_in_ios 6.3.5 (6.3.6 available)
+  gotrue 2.27.2 (2.27.3 available)
+  hooks 2.0.2 (2.2.0 available)
+  image 4.10.1 (4.12.0 available)
+  in_app_purchase_storekit 0.4.13 (0.4.13+1 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4+1 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.4.0 (1.6.0 available)
+  meta 1.18.3 (1.19.0 available)
+  native_toolchain_c 0.19.2 (0.19.5 available)
+  nm 0.5.0 (0.6.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.0 available)
+  realtime_client 2.13.0 (2.13.2 available)
+  record 7.1.1 (7.1.2 available)
+  record_linux 2.1.2 (2.1.3 available)
+  record_use 0.6.0 (1.1.1 available)
+  share_plus 13.3.0 (13.3.1 available)
+  shared_preferences 2.5.5 (2.5.6 available)
+  sqflite 2.4.4 (2.4.4+1 available)
+  sqflite_common 2.5.13 (2.5.13+1 available)
+  sqlite3 3.5.2 (3.7.0 available)
+  storage_client 2.8.0 (2.8.1 available)
+  supabase 2.16.1 (2.16.5 available)
+  supabase_flutter 2.17.2 (2.18.3 available)
+  test_api 0.7.12 (0.7.15 available)
+  timezone 0.11.1 (0.11.2 available)
+  url_launcher 6.3.2 (6.3.3 available)
+  vector_math 2.4.0 (2.4.3 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+54 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading /private/tmp/ak-latest-audit/app/test/access_test.dart
+00:00 +0: /private/tmp/ak-latest-audit/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +1: /private/tmp/ak-latest-audit/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +2: /private/tmp/ak-latest-audit/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +3: /private/tmp/ak-latest-audit/app/test/download_manager_test.dart: download is queued with the dev URL and a content-addressed file name
+00:00 +4: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +5: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +6: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +7: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +7 ~1: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +7 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +8 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +9 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +10 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +11 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +12 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +13 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +14 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +15 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +16 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +17 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +18 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +19 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +20 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +21 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +22 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +23 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +24 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +25 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +26 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +27 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +28 ~2: /private/tmp/ak-latest-audit/app/test/lord_test.dart: Start note and parent aside render with Szop’en in his coat
+00:00 +29 ~2: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:01 +30 ~2: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:01 +31 ~2: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:01 +32 ~2: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:01 +33 ~2: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:01 +34 ~2: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:01 +35 ~2: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen an order needs its number and e-mail; a wrong pair never says which is wrong
+00:01 +36 ~2: /private/tmp/ak-latest-audit/app/test/referral_credit_test.dart: credit buys a play after a confirmation and the balance goes down
+00:01 +37 ~2: /private/tmp/ak-latest-audit/app/test/referral_nudge_test.dart: the referral nudge waits for the second finished play
+00:01 +37 ~3: /private/tmp/ak-latest-audit/app/test/referral_nudge_test.dart: the referral nudge waits for the second finished play
+00:01 +38 ~3: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen the iOS store build has no code field, the order stays
+00:01 +39 ~3: /private/tmp/ak-latest-audit/app/test/access_test.dart: access screen the iOS store build has no code field, the order stays
+00:02 +40 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:02 +41 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:02 +42 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:02 +43 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +44 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +45 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +46 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +47 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +48 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +49 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +50 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +51 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +52 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +53 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:03 +54 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:04 +55 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:04 +56 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:04 +57 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:04 +58 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: the whole dinner card opens the plan, not only its button
+00:04 +59 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +60 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +61 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +62 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +63 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +64 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +65 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +66 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +67 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +68 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:05 +69 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +70 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +71 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +72 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +73 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +74 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +75 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +76 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +77 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +78 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +79 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +80 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +81 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +82 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:06 +83 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +84 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +85 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +86 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +87 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +87 ~3: /private/tmp/ak-latest-audit/app/test/plan_screens_test.dart: a card on Start closes with a cross, stays closed and comes back from Więcej
+
+Warning: A call to tap() with finder "Found 1 widget with icon "IconData(U+0F7F5)" (ignoring all but first): [
+  Icon(IconData(U+0F7F5), size: 32.0, color: Color(alpha: 1.0000, red: 0.1137, green: 0.4549, blue: 0.4706, colorSpace: ColorSpace.sRGB), dependencies: [Directionality, IconTheme]),
+]" derived an Offset (Offset(0.0, 338.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#2f95f relayoutBoundary=up4 NEEDS-PAINT
+The hit test result at that offset is: HitTestResult(RenderPointerListener#a5240@Offset(0.0, 338.0), RenderSemanticsGestureHandler#fbafa@Offset(0.0, 338.0), RenderPointerListener#4dd9e@Offset(0.0, 338.0), RenderSemanticsGestureHandler#656bc@Offset(0.0, 338.0), RenderPointerListener#f4fdc@Offset(0.0, 282.0), RenderSemanticsGestureHandler#68da0@Offset(0.0, 282.0), RenderPointerListener#96d04@Offset(0.0, 282.0), _RenderScrollSemantics#64054@Offset(0.0, 282.0), RenderClipRect#362a0@Offset(0.0, 282.0), RenderCustomMultiChildLayoutBox#3e16f@Offset(0.0, 338.0), _RenderInkFeatures#f4b56@Offset(0.0, 338.0), RenderPhysicalModel#5cac1@Offset(0.0, 338.0), RenderSemanticsAnnotations#e22a3@Offset(0.0, 338.0), RenderRepaintBoundary#004d1@Offset(0.0, 338.0), RenderIgnorePointer#0c4d8@Offset(0.0, 338.0), RenderStack#e06de@Offset(0.0, 338.0), RenderDecoratedBox#20af6@Offset(0.0, 338.0), RenderRepaintBoundary#d0e07@Offset(0.0, 338.0), RenderSemanticsAnnotations#65abd@Offset(0.0, 338.0), RenderOffstage#6275d@Offset(0.0, 338.0), RenderSemanticsAnnotations#39346@Offset(0.0, 338.0), _RenderTheater#a4235@Offset(0.0, 338.0), RenderAbsorbPointer#09cd1@Offset(0.0, 338.0), RenderPointerListener#462d6@Offset(0.0, 338.0), RenderOffstage#818dc@Offset(0.0, 338.0), RenderIndexedStack#284eb@Offset(0.0, 338.0), RenderDecoratedBox#8f06c@Offset(0.0, 338.0), RenderStack#f70ed@Offset(0.0, 338.0), _RenderLayoutBuilder#da344@Offset(0.0, 338.0), RenderCustomMultiChildLayoutBox#e44b3@Offset(0.0, 338.0), _RenderInkFeatures#fd497@Offset(0.0, 338.0), RenderPhysicalModel#5b418@Offset(0.0, 338.0), RenderStack#aef45@Offset(0.0, 338.0), RenderSemanticsAnnotations#4eb7b@Offset(0.0, 338.0), RenderRepaintBoundary#aca7d@Offset(0.0, 338.0), RenderIgnorePointer#cd874@Offset(0.0, 338.0), RenderRepaintBoundary#95691@Offset(0.0, 338.0), RenderSemanticsAnnotations#8702e@Offset(0.0, 338.0), RenderOffstage#94b4b@Offset(0.0, 338.0), RenderSemanticsAnnotations#acd58@Offset(0.0, 338.0), _RenderTheater#85422@Offset(0.0, 338.0), RenderAbsorbPointer#e5ceb@Offset(0.0, 338.0), RenderPointerListener#aacb0@Offset(0.0, 338.0), RenderStack#e7271@Offset(0.0, 338.0), RenderAnnotatedRegion<SystemUiOverlayStyle>#c2717@Offset(0.0, 338.0), RenderSemanticsAnnotations#57385@Offset(0.0, 338.0), RenderSemanticsAnnotations#36cbf@Offset(0.0, 338.0), RenderSemanticsAnnotations#af074@Offset(0.0, 338.0), RenderTapRegionSurface#982cc@Offset(0.0, 338.0), RenderSemanticsAnnotations#e9569@Offset(0.0, 338.0), RenderSemanticsAnnotations#6573c@Offset(0.0, 338.0), HitTestEntry<HitTestTarget>#5ddad(_ReusableRenderView#6b127), HitTestEntry<HitTestTarget>#469be(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/plan_screens_test.dart:145:18)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+00:07 +88 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +89 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +90 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +91 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +92 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:07 +93 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +94 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +95 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:08 +96 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +97 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +98 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +99 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +100 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +101 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +102 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +103 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +104 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +105 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +106 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +107 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +108 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +109 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +110 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +111 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +112 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:09 +113 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +114 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +115 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +116 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +117 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +118 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:10 +119 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +120 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +121 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +122 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +123 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +124 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +125 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +126 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +127 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +128 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +129 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:11 +130 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +131 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +132 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +133 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:12 +134 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +135 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:13 +136 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +137 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +138 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +139 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +140 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +141 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +142 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +142 ~3: /private/tmp/ak-latest-audit/app/test/session_test.dart: evening hero offers "Dobranoc", which runs the ritual
+
+Warning: A call to tap() with finder "Found 1 widget with widget matching predicate: [
+  RawTooltip-[LabeledGlobalKey<RawTooltipState>#c3013]("Zakończ", hover delay: 0:00:00.000000, touch delay: 0:00:01.500000, dismiss delay: 0:00:00.100000, triggerMode: TooltipTriggerMode.longPress, enableFeedback: true, positionDelegate: Closure: (TooltipPositionContext) => Offset from Function '_getDefaultPositionDelegate@3054220820':., state: RawTooltipState#92823),
+]" derived an Offset (Offset(647.0, 40.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(647.0, 40.0) is outside the bounds of the root of the render tree, Size(390.0, 844.0).
+The finder corresponds to this RenderBox: _RenderLayoutSurrogateProxyBox#a619d relayoutBoundary=up11
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#0b8fc(_ReusableRenderView#ca65a), HitTestEntry<HitTestTarget>#3d522(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/session_test.dart:374:18)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+00:14 +143 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +143 ~3: /private/tmp/ak-latest-audit/app/test/game_controller_test.dart: leaving mid-game stops everything
+game zamrozony-taniec failed: Cannot use the Ref of NotifierProvider<GameController, GameUiState>#487cb after it has been disposed. This typically happens if:
+- A provider rebuilt, but the previous "build" was still pending and is still performing operations.
+  You should therefore either use `ref.onDispose` to cancel pending work, or
+  check `ref.mounted` after async gaps or anything that could invalidate the provider.
+- You tried to use Ref inside `onDispose` or other life-cycles.
+  This is not supported, as the provider is already being disposed.
+
+00:14 +144 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +145 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +146 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +147 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +148 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +149 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +150 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +151 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +152 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +153 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +154 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +155 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +156 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +157 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:14 +158 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +159 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +160 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +161 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +162 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +163 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +164 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +165 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:15 +166 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:16 +167 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:16 +168 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:17 +169 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:17 +170 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:17 +171 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:17 +172 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:18 +173 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:18 +174 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:18 +175 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:19 +176 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:19 +177 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:20 +178 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:20 +179 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:21 +180 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:21 +181 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:22 +182 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:23 +183 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +184 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +185 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:24 +186 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +187 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +188 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +189 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:25 +190 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:26 +191 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +192 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +193 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +194 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:27 +195 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:28 +196 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:28 +197 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:29 +198 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:29 +199 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:29 +200 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:29 +201 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:29 +202 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:29 +203 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:29 +204 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +205 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +206 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +207 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +208 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +209 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +210 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +211 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +212 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +213 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:31 +214 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+Shell: [ERROR:flutter/runtime/dart_isolate.cc(1403)] Callbacks into the Dart VM are currently prohibited. Either there are outstanding pointers from Dart_TypedDataAcquireData that have not been released with Dart_TypedDataReleaseData, or a finalizer is running.
+00:31 +215 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:32 +216 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:32 +217 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:32 +218 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:33 +219 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:33 +220 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:33 +221 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:33 +222 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +223 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +224 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +225 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:34 +226 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:35 +227 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:36 +228 ~3: /private/tmp/ak-latest-audit/app/test/rewards_test.dart: finishing a pack: Start offers the diploma, which is handed over once
+00:37 +229 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +230 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +231 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:37 +232 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:38 +232 ~3: /private/tmp/ak-latest-audit/app/test/offer_and_theme_test.dart: a store that never answers shows the reference prices and refuses to hang
+store: products unavailable (TimeoutException after 0:00:00.050000: Future not completed)
+00:38 +233 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:38 +234 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:38 +235 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:39 +236 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +237 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +238 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +239 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +239 ~3: /private/tmp/ak-latest-audit/app/test/access_and_progress_test.dart: access with the dev backend without purchases paid content is locked
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+00:40 +240 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +240 ~3: /private/tmp/ak-latest-audit/app/test/access_and_progress_test.dart: access with the dev backend pack purchase unlocks only its pack and grants an offline lease
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+00:40 +241 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +241 ~3: /private/tmp/ak-latest-audit/app/test/access_and_progress_test.dart: access with the dev backend expired lease asks for a refresh, refresh restores access
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+00:40 +242 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +242 ~3: /private/tmp/ak-latest-audit/app/test/access_and_progress_test.dart: access with the dev backend access state survives an app restart
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+access: downloads not pruned (Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.)
+00:40 +243 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +244 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +245 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +246 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +247 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:40 +248 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:41 +249 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:42 +250 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:42 +251 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:42 +252 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:42 +253 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:42 +254 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:42 +255 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:42 +256 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:42 +257 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:43 +258 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:43 +259 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:43 +260 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:43 +260 ~3: /private/tmp/ak-latest-audit/app/test/account_test.dart: access from the account shop pack unlocks after sign-in and locks again after sign-out
+access: downloads not pruned (Bad state: No element)
+00:43 +261 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+Shell: [ERROR:flutter/runtime/dart_isolate.cc(1403)] Callbacks into the Dart VM are currently prohibited. Either there are outstanding pointers from Dart_TypedDataAcquireData that have not been released with Dart_TypedDataReleaseData, or a finalizer is running.
+00:43 +262 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:44 +263 ~3: /private/tmp/ak-latest-audit/app/test/profile_switch_test.dart: Profil dziecka: a tap on another child makes them the active one
+00:44 +264 ~3: /private/tmp/ak-latest-audit/app/test/onboarding_test.dart: first run: hello, sign-in, then fanfare, the child, reminders, the source and the tour
+00:46 +265 ~3: /private/tmp/ak-latest-audit/app/test/onboarding_test.dart: first run: hello, sign-in, then fanfare, the child, reminders, the source and the tour
+00:46 +266 ~3: /private/tmp/ak-latest-audit/app/test/onboarding_test.dart: first run: hello, sign-in, then fanfare, the child, reminders, the source and the tour
+00:46 +267 ~3: /private/tmp/ak-latest-audit/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:46 +268 ~3: /private/tmp/ak-latest-audit/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:46 +269 ~3: /private/tmp/ak-latest-audit/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:46 +270 ~3: /private/tmp/ak-latest-audit/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:46 +271 ~3: /private/tmp/ak-latest-audit/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:47 +272 ~3: /private/tmp/ak-latest-audit/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:47 +273 ~3: /private/tmp/ak-latest-audit/app/test/plan_test.dart: Więcej → Mapa przygód: steps, the next chest and an opened one
+00:49 +273 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPhone SE 1st gen, text 100%: family welcome and Szop’en’s tour fit
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#0b8c3]], state: _ButtonStyleState#6fe8c),
+]" derived an Offset (Offset(229.0, 567.2)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#85d47 relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(RenderCustomPaint#dc2dd@Offset(229.0, 567.2), RenderStack#feca2@Offset(229.0, 567.2), RenderPointerListener#d5aca@Offset(229.0, 567.2), RenderSemanticsGestureHandler#a9d8b@Offset(229.0, 567.2), _RenderInkFeatures#a70a1@Offset(229.0, 567.2), RenderCustomPaint#646c9@Offset(229.0, 567.2), RenderClipPath#09bbe@Offset(229.0, 567.2), RenderStack#dcf46@Offset(229.0, 567.2), RenderSemanticsAnnotations#65cfe@Offset(229.0, 567.2), RenderRepaintBoundary#8bc19@Offset(229.0, 567.2), RenderIgnorePointer#2ce21@Offset(229.0, 567.2), RenderRepaintBoundary#196fd@Offset(229.0, 567.2), RenderSemanticsAnnotations#b4768@Offset(229.0, 567.2), RenderOffstage#a6469@Offset(229.0, 567.2), RenderSemanticsAnnotations#1ae2b@Offset(229.0, 567.2), _RenderTheater#274ef@Offset(229.0, 567.2), RenderAbsorbPointer#d89a6@Offset(229.0, 567.2), RenderPointerListener#fea86@Offset(229.0, 567.2), RenderStack#efb2a@Offset(229.0, 567.2), RenderAnnotatedRegion<SystemUiOverlayStyle>#3b850@Offset(229.0, 567.2), RenderSemanticsAnnotations#f8e5a@Offset(229.0, 567.2), RenderSemanticsAnnotations#5bb57@Offset(229.0, 567.2), RenderSemanticsAnnotations#cc4b6@Offset(229.0, 567.2), RenderTapRegionSurface#d38e0@Offset(229.0, 567.2), RenderSemanticsAnnotations#2fffb@Offset(229.0, 567.2), RenderSemanticsAnnotations#2ddbe@Offset(229.0, 567.2), HitTestEntry<HitTestTarget>#fd9af(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#87741(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+00:54 +274 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPhone SE 1st gen, text 100%: family welcome and Szop’en’s tour fit
+00:55 +275 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPhone SE 1st gen, text 100%: family welcome and Szop’en’s tour fit
+00:55 +276 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPhone SE 3rd gen, text 135%, dark: main screens fit
+01:03 +277 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPhone SE 3rd gen, text 135%, dark: welcome pages fit
+01:09 +278 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPhone SE 3rd gen, text 135%, dark: family welcome and Szop’en’s tour fit
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#ad585(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#97feb(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#7559d(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#b9d61(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#190c1(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#6afd2(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#0f757(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#d7774(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#ff7d9(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#014f4(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#b92e2(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#524f3(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#26885(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#afd85(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#a9de1(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#1560f(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#5f802(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#3fc09(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with type "FilledButton" (ignoring all but last): [
+  FilledButton(style: ButtonStyle#c6dee(textStyle: WidgetStatePropertyAll(null), minimumSize: WidgetStatePropertyAll(Size(80.0, 44.0)), mouseCursor: WidgetStateMapper<MouseCursor?>({WidgetState.disabled: null, WidgetState.any: null})), dependencies: [IconTheme, InheritedCupertinoTheme, MediaQuery, _InheritedTheme, _LocalizationsScope-[GlobalKey#eba9f]], state: _ButtonStyleState#0577b),
+]" derived an Offset (Offset(276.0, 706.1)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+Indeed, Offset(276.0, 706.1) is outside the bounds of the root of the render tree, Size(375.0, 667.0).
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#ffbbd relayoutBoundary=up15
+The hit test result at that offset is: HitTestResult(HitTestEntry<HitTestTarget>#f05e5(_ReusableRenderView#d5364), HitTestEntry<HitTestTarget>#51d78(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///private/tmp/ak-latest-audit/app/test/small_screens_test.dart:145:22)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+01:19 +279 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPad, text 100%: main screens fit
+01:26 +280 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPad, text 100%: welcome pages fit
+01:33 +281 ~3: /private/tmp/ak-latest-audit/app/test/small_screens_test.dart: iPad, text 100%: family welcome and Szop’en’s tour fit
+01:43 +282 ~3: All tests passed!

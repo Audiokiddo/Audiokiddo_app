@@ -24,7 +24,12 @@ Deno.serve(async (req) => {
     return json({ status: "format" });
   }
 
-  const { data: limited } = await admin.rpc("claim_rate_limited", { p_user_id: user.id });
+  const { data: limited, error: limitError } = await admin.rpc("claim_rate_limited", { p_user_id: user.id });
+  // A failed limiter must never turn into unlimited order lookups.
+  if (limitError || typeof limited !== "boolean") {
+    console.error("claim-order: rate limit unavailable");
+    return json({ error: "retry" }, 503);
+  }
   if (limited === true) return json({ status: "rate_limited" });
 
   const response = await wooGet(env("WOO_URL"), env("WOO_CONSUMER_KEY"), env("WOO_CONSUMER_SECRET"), `/wp-json/wc/v3/orders/${orderId}`);

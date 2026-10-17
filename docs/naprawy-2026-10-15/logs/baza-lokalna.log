@@ -1,0 +1,125 @@
+       result        
+---------------------
+ schema tests passed
+(1 row)
+
+      ?column?      
+--------------------
+ grant tests passed
+(1 row)
+
+         ?column?          
+---------------------------
+ shop product tests passed
+(1 row)
+
+          ?column?          
+----------------------------
+ store product tests passed
+(1 row)
+
+         ?column?         
+--------------------------
+ store order tests passed
+(1 row)
+
+       ?column?        
+-----------------------
+ download tests passed
+(1 row)
+
+         ?column?         
+--------------------------
+ access code tests passed
+(1 row)
+
+     ?column?     
+------------------
+ crm tests passed
+(1 row)
+
+         ?column?         
+--------------------------
+ crm support tests passed
+(1 row)
+
+       ?column?       
+----------------------
+ quality tests passed
+(1 row)
+
+            ?column?             
+---------------------------------
+ family and letters tests passed
+(1 row)
+
+            ?column?             
+---------------------------------
+ ltv and experiment tests passed
+(1 row)
+
+        ?column?         
+-------------------------
+ ads growth tests passed
+(1 row)
+
+           ?column?           
+------------------------------
+ analytics annex tests passed
+(1 row)
+
+     ?column?      
+-------------------
+ gift tests passed
+(1 row)
+
+       ?column?        
+-----------------------
+ ad spend tests passed
+(1 row)
+
+       ?column?       
+----------------------
+ signals tests passed
+(1 row)
+
+         ?column?         
+--------------------------
+ launch plan tests passed
+(1 row)
+
+            ?column?            
+--------------------------------
+ launch plan hours tests passed
+(1 row)
+
+         ?column?         
+--------------------------
+ faster plan tests passed
+(1 row)
+
+            ?column?             
+---------------------------------
+ christmas episodes tests passed
+(1 row)
+
+          ?column?           
+-----------------------------
+ social content tests passed
+(1 row)
+
+          ?column?          
+----------------------------
+ bedtime grace tests passed
+(1 row)
+
+              set_config              
+--------------------------------------
+ 00000000-0000-0000-0000-0000000000b3
+(1 row)
+
+                   ?column?                   
+----------------------------------------------
+ shared bedtime grace regression tests passed
+(1 row)
+

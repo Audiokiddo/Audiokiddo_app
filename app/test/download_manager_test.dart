@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/core/storage/database.dart';
@@ -38,10 +39,15 @@ void main() {
   late FakeTransfer transfer;
   late DownloadManager manager;
 
-  DownloadManager build({int? free}) => DownloadManager(
+  DownloadManager build({
+    int? free,
+    ContentUrlResolver urls = const BaseUrlResolver('http://dev'),
+    Duration timeout = const Duration(seconds: 15),
+  }) => DownloadManager(
     db: db,
     transfer: transfer,
-    urls: const BaseUrlResolver('http://dev'),
+    urls: urls,
+    requestTimeout: timeout,
     storage: FakeStorage(free),
   );
 
@@ -152,6 +158,119 @@ void main() {
     expect(summary.itemIds, ['magiczny-sklep']);
   });
 
+  test('catalog update does not play the previous file and queues the new version', () async {
+    await manager.download(itemWith());
+    await complete(content);
+    final updated = itemWith(sha: 'ab' * 32);
+    expect(await manager.localAudioPath(updated), isNull);
+    expect(await phase(updated), DownloadPhase.none);
+    await manager.download(updated);
+    expect(transfer.enqueued, contains('ak-${'ab' * 32}'));
+  });
+
+  ContentItem sharedItem() => ContentItem(
+    id: 'second',
+    kind: ContentKind.audioGame,
+    title: 'Second',
+    parentDescription: '',
+    ageMin: 3,
+    durationSec: 360,
+    access: ContentAccess.free,
+    audio: [AssetRef(path: 'audio/second.m4a', bytes: content.length, sha256: contentSha)],
+  );
+
+  test('identical files at different paths both finish downloading', () async {
+    await manager.download(itemWith());
+    await manager.download(sharedItem());
+    await complete(content);
+    await manager.watch(sharedItem()).firstWhere((s) => s.phase == DownloadPhase.ready);
+    expect(await phase(itemWith()), DownloadPhase.ready);
+    expect(await manager.localAudioPath(sharedItem()), isNotNull);
+  });
+
+  test('concurrent requests sharing a file complete together', () async {
+    await Future.wait([manager.download(itemWith()), manager.download(sharedItem())]);
+    await complete(content);
+    await manager.watch(sharedItem()).firstWhere((s) => s.phase == DownloadPhase.ready);
+    expect(await manager.localAudioPath(itemWith()), isNotNull);
+    expect(await manager.localAudioPath(sharedItem()), isNotNull);
+  });
+
+  test('a file deleted after startup can be downloaded again', () async {
+    await manager.download(itemWith());
+    await complete(content);
+    await File(p.join(dir.path, '$contentSha.m4a')).delete();
+    await manager.download(itemWith());
+    expect(await phase(itemWith()), DownloadPhase.queued);
+    await complete(content);
+    expect(await manager.localAudioPath(itemWith()), isNotNull);
+  });
+
+  test('removing one item preserves the shared file of another', () async {
+    await manager.download(itemWith());
+    await complete(content);
+    await manager.download(sharedItem());
+    await manager.remove(itemWith());
+    expect(await manager.localAudioPath(sharedItem()), isNotNull);
+    expect(await phase(sharedItem()), DownloadPhase.ready);
+    expect(transfer.canceled, isEmpty);
+  });
+
+  test('shared downloads are counted once in occupied disk space', () async {
+    await manager.download(itemWith());
+    await complete(content);
+    await manager.download(sharedItem());
+    final summary = await manager.watchSummary().first;
+    expect(summary.bytes, content.length);
+    expect(summary.itemIds, containsAll(['magiczny-sklep', 'second']));
+  });
+
+  test('platform cancellation leaves a retryable download', () async {
+    await manager.download(itemWith());
+    transfer.emit(TransferEvent('ak-$contentSha', TransferEventKind.canceled));
+    await manager.watch(itemWith()).firstWhere((s) => s.phase == DownloadPhase.failed);
+    await manager.download(itemWith());
+    expect(await phase(itemWith()), DownloadPhase.queued);
+    await complete(content);
+    expect(await phase(itemWith()), DownloadPhase.ready);
+  });
+
+  test('enqueue exception marks failed and a second attempt succeeds', () async {
+    await manager.dispose();
+    transfer = _UnreliableTransfer(dir)..enqueueFailures = 1;
+    manager = build();
+    await manager.download(itemWith());
+    expect(await phase(itemWith()), DownloadPhase.failed);
+    await manager.download(itemWith());
+    await complete(content);
+    expect(await phase(itemWith()), DownloadPhase.ready);
+  });
+
+  test('startup can retry after a transient platform failure', () async {
+    await manager.dispose();
+    final unreliable = _UnreliableTransfer(dir)..startFailures = 1;
+    transfer = unreliable;
+    manager = build();
+    await expectLater(manager.start(), throwsException);
+    await manager.start();
+    expect(unreliable.starts, 2);
+    await manager.download(itemWith());
+    await complete(content);
+    expect(await phase(itemWith()), DownloadPhase.ready);
+  });
+
+  test('a stalled URL lookup times out and does not block the next download', () async {
+    await manager.dispose();
+    final resolver = _StalledResolver();
+    manager = build(urls: resolver, timeout: const Duration(milliseconds: 25));
+    await manager.download(itemWith());
+    expect(await phase(itemWith()), DownloadPhase.failed);
+    resolver.stalled = false;
+    await manager.download(itemWith());
+    await complete(content);
+    expect(await phase(itemWith()), DownloadPhase.ready);
+  });
+
   test('verifyFile checks size and hash', () async {
     final file = File(p.join(dir.path, 'x.bin'))..writeAsBytesSync(content);
     expect(await verifyFile(file.path, bytes: content.length, sha256Hex: contentSha), isTrue);
@@ -167,4 +286,29 @@ void main() {
     expect(rows.single.fileName, '$contentSha.m4a');
     expect(await (db.select(db.downloads)..where((t) => t.itemId.equals('x'))).get(), isEmpty);
   });
+}
+
+class _UnreliableTransfer extends FakeTransfer {
+  _UnreliableTransfer(super.dir);
+  int enqueueFailures = 0;
+  int startFailures = 0;
+  int starts = 0;
+  @override
+  Future<void> start() async {
+    starts++;
+    if (startFailures-- > 0) throw Exception('platform temporarily unavailable');
+  }
+
+  @override
+  Future<bool> enqueue({required String taskId, required Uri url, required String fileName}) async {
+    if (enqueueFailures-- > 0) throw Exception('enqueue failed');
+    return super.enqueue(taskId: taskId, url: url, fileName: fileName);
+  }
+}
+
+class _StalledResolver implements ContentUrlResolver {
+  bool stalled = true;
+  @override
+  Future<Uri> urlFor(AssetRef asset) =>
+      stalled ? Completer<Uri>().future : Future.value(Uri.parse('http://dev/${asset.path}'));
 }

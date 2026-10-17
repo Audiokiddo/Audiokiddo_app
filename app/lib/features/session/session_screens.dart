@@ -191,7 +191,10 @@ class _TripScreenState extends ConsumerState<TripScreen> {
                   child: Padding(
                     padding: const EdgeInsets.only(right: AkSpace.s),
                     child: ChoiceChip(
-                      label: SizedBox(width: double.infinity, child: Center(child: Text(l10n.tripMinutes(m)))),
+                      label: SizedBox(
+                        width: double.infinity,
+                        child: Center(child: Text(l10n.tripMinutes(m))),
+                      ),
                       selected: _minutes == m,
                       labelStyle: selectableChipLabel(context, selected: _minutes == m),
                       showCheckmark: false,
@@ -241,7 +244,11 @@ class _TripScreenState extends ConsumerState<TripScreen> {
                         ),
                   onRemove: (pos) => setState(() => _plan = planRemove(steps, pos)),
                   onReorder: (o, n) => setState(() => _plan = planReorder(steps, o, n)),
-                  onReplace: (pos, item) => setState(() => _plan = planReplace(steps, pos, item)),
+                  onReplace: (id, item) => setState(() {
+                    final current = _plan ?? const <SessionStep>[];
+                    final pos = playsFrom(current, 0).indexWhere((i) => i.id == id);
+                    _plan = planReplace(current, pos, item);
+                  }),
                   onAdd: (add) => setState(() => _plan = planAdd(steps, add)),
                 ),
                 const SizedBox(height: AkSpace.s),
@@ -311,14 +318,19 @@ class BedtimeScreen extends ConsumerWidget {
       LineStep() => l10n.bedtimeBreaths,
       ItemStep(:final item) =>
         item.kind == ContentKind.song ? l10n.bedtimeSong(item.title) : l10n.bedtimeQuiet(item.title),
-      ParentStep() => clips?[ParentClip.goodnight] != null ? l10n.bedtimeParentGoodnight : l10n.bedtimeKiddoGoodnight,
+      ParentStep() =>
+        clips?[ParentClip.goodnight] != null ? l10n.bedtimeParentGoodnight : l10n.bedtimeKiddoGoodnight,
     };
     const fg = Color(0xFFFFF3E6);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: const Color(0xFF1E1A3A),
-        appBar: AppBar(backgroundColor: Colors.transparent, foregroundColor: fg, leading: const _CloseToStart()),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          foregroundColor: fg,
+          leading: const _CloseToStart(),
+        ),
         extendBodyBehindAppBar: true,
         body: Container(
           decoration: const BoxDecoration(
@@ -382,7 +394,9 @@ class BedtimeScreen extends ConsumerWidget {
                     const SizedBox(height: AkSpace.l),
                     FilledButton.icon(
                       onPressed: () {
-                        ref.read(sessionProvider.notifier).start(SessionKind.bedtime, steps, childId: child?.id);
+                        ref
+                            .read(sessionProvider.notifier)
+                            .start(SessionKind.bedtime, steps, childId: child?.id);
                         context.pushReplacement('/sesja');
                       },
                       style: FilledButton.styleFrom(
@@ -458,8 +472,12 @@ class SessionScreen extends ConsumerWidget {
         Semantics(
           liveRegion: true,
           child: Text(
-            session.finished
-                ? (night ? l10n.sessionSleepWell : (dinner ? 'Smacznego! To już wszystko.' : l10n.sessionArrived))
+            session.error != null
+                ? 'Odtwarzanie zatrzymane'
+                : session.finished
+                ? (night
+                      ? l10n.sessionSleepWell
+                      : (dinner ? 'Smacznego! To już wszystko.' : l10n.sessionArrived))
                 : title(session.current),
             style: text.headlineMedium?.copyWith(color: fg, fontWeight: FontWeight.w800),
             textAlign: TextAlign.center,
@@ -468,7 +486,13 @@ class SessionScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AkSpace.s),
-        if (waiting)
+        if (session.error != null)
+          Text(
+            session.error!,
+            style: text.bodyLarge?.copyWith(color: fg),
+            textAlign: TextAlign.center,
+          )
+        else if (waiting)
           _Countdown(seconds: session.countdown!, held: session.held, color: fg)
         else if (!session.finished && session.next != null)
           Text(
@@ -484,7 +508,7 @@ class SessionScreen extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
         // How long is left, and the plan behind it: change, swap, add time.
-        if (!session.finished && (session.kind == SessionKind.trip || dinner))
+        if (session.running && (session.kind == SessionKind.trip || dinner))
           Padding(
             padding: const EdgeInsets.only(top: AkSpace.s),
             child: TextButton.icon(
@@ -498,7 +522,7 @@ class SessionScreen extends ConsumerWidget {
     );
 
     // Big round buttons: from the start, play/pause (or hold the countdown), next.
-    final controls = session.finished
+    final controls = session.finished || session.error != null
         ? FilledButton(
             style: FilledButton.styleFrom(minimumSize: const Size(220, 72), textStyle: text.titleLarge),
             onPressed: close,
@@ -521,7 +545,9 @@ class SessionScreen extends ConsumerWidget {
                 icon: waiting
                     ? (session.held ? Icons.play_arrow_rounded : Icons.pause_rounded)
                     : (playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
-                label: waiting ? (session.held ? l10n.sessionResume : l10n.sessionHold) : (playing ? 'Pauza' : 'Graj'),
+                label: waiting
+                    ? (session.held ? l10n.sessionResume : l10n.sessionHold)
+                    : (playing ? 'Pauza' : 'Graj'),
                 size: 112,
                 color: AkBrand.sun,
                 filled: true,
@@ -651,7 +677,10 @@ class _BigButton extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            Text(label, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: const Color(0xFFFFF3E6))),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: const Color(0xFFFFF3E6)),
+            ),
           ],
         ),
       ),
@@ -815,7 +844,9 @@ class _ParentVoiceScreenState extends ConsumerState<ParentVoiceScreen> {
                     Row(
                       children: [
                         FilledButton.icon(
-                          onPressed: _recording != null && _recording != clip ? null : () => _toggle(child.id, clip),
+                          onPressed: _recording != null && _recording != clip
+                              ? null
+                              : () => _toggle(child.id, clip),
                           icon: Icon(_recording == clip ? Icons.stop_rounded : Icons.mic_rounded),
                           label: Text(
                             _recording == clip
@@ -896,7 +927,17 @@ class _RunningPlan extends ConsumerWidget {
                   ),
             onRemove: notifier.removePlay,
             onReorder: notifier.reorderPlays,
-            onReplace: notifier.replacePlay,
+            onReplace: (id, item) {
+              if (!notifier.replacePlay(id, item) && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Ta zabawa już się rozpoczęła albo została usunięta. Wybierz inną z planu.',
+                    ),
+                  ),
+                );
+              }
+            },
             onAdd: notifier.addPlays,
           ),
         ),
@@ -971,7 +1012,10 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
                   child: Padding(
                     padding: const EdgeInsets.only(right: AkSpace.s),
                     child: ChoiceChip(
-                      label: SizedBox(width: double.infinity, child: Center(child: Text('$m min'))),
+                      label: SizedBox(
+                        width: double.infinity,
+                        child: Center(child: Text('$m min')),
+                      ),
                       selected: _minutes == m,
                       labelStyle: selectableChipLabel(context, selected: _minutes == m),
                       showCheckmark: false,
@@ -1004,7 +1048,11 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
                     ),
               onRemove: (pos) => setState(() => _plan = planRemove(steps, pos)),
               onReorder: (o, n) => setState(() => _plan = planReorder(steps, o, n)),
-              onReplace: (pos, item) => setState(() => _plan = planReplace(steps, pos, item)),
+              onReplace: (id, item) => setState(() {
+                final current = _plan ?? const <SessionStep>[];
+                final pos = playsFrom(current, 0).indexWhere((i) => i.id == id);
+                _plan = planReplace(current, pos, item);
+              }),
               onAdd: (add) => setState(() => _plan = planAdd(steps, add)),
             ),
           ),

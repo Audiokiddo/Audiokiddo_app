@@ -11,6 +11,7 @@ import 'core/theme/app_theme.dart';
 import 'core/storage/storage_providers.dart';
 import 'core/theme/appearance.dart';
 import 'features/account/session_gate.dart';
+import 'features/catalog/catalog_providers.dart';
 import 'features/home/home_widget_sync.dart';
 import 'features/personal/app_icon_screen.dart';
 import 'features/kids_mode/kids_mode_controller.dart';
@@ -43,6 +44,7 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
 
   late final AppLifecycleListener _lifecycle = AppLifecycleListener(
     onResume: () {
+      ref.invalidate(currentTimeProvider);
       _openLaunchRoute();
       _scheduleAppearance();
     },
@@ -120,7 +122,9 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
       // Default status bar for the theme; dark scenes (intro, night screens) set their own.
       // Without it, the last dark scene's white icons stay on after it is gone.
       builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: Theme.of(context).brightness == Brightness.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        value: Theme.of(context).brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         child: NowPlayingPill(router: _router, child: child!),
       ),
     );

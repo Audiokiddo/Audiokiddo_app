@@ -210,13 +210,17 @@ void main() {
       final session = container.read(sessionProvider.notifier);
       final other = catalog.items.where((i) => i.audio.isNotEmpty).toList();
       final a = other[0], b = other[1], c = other[2], d = other[3];
-      unawaited(session.start(SessionKind.trip, [ItemStep(a), ItemStep(b), ItemStep(c), const LineStep('trip_end')]));
+      unawaited(
+        session.start(SessionKind.trip, [ItemStep(a), ItemStep(b), ItemStep(c), const LineStep('trip_end')]),
+      );
       await settle();
       expect(container.read(sessionProvider).index, 0);
       expect(session.editFrom, 1);
-      List<String> ahead() => [for (final i in playsFrom(container.read(sessionProvider).steps, session.editFrom)) i.id];
+      List<String> ahead() => [
+        for (final i in playsFrom(container.read(sessionProvider).steps, session.editFrom)) i.id,
+      ];
       expect(ahead(), [b.id, c.id]);
-      session.replacePlay(0, d);
+      session.replacePlay(b.id, d);
       expect(ahead(), [d.id, c.id]);
       session.reorderPlays(0, 1);
       expect(ahead(), [c.id, d.id]);
@@ -371,7 +375,10 @@ void main() {
     expect(find.text('DOBRANOC'), findsOneWidget);
     expect(audio.log.first, 'line:bedtime_start');
 
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Zakończ').hitTestable(), findsOneWidget);
     await tester.tap(find.byTooltip('Zakończ'));
     await tester.pumpAndSettle();
+    expect(find.text('DOBRANOC'), findsNothing);
   });
 }

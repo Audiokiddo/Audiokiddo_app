@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:ak_core/ak_core.dart';
@@ -43,8 +44,7 @@ final fullCatalogProvider = FutureProvider<Catalog>((ref) async {
 /// [upcomingItemsProvider] until that day.
 final catalogProvider = FutureProvider<Catalog>((ref) async {
   final full = await ref.watch(fullCatalogProvider.future);
-  final now = ref.watch(clockProvider)();
-  final today = DateTime(now.year, now.month, now.day);
+  final today = ref.watch(calendarDayProvider);
   final released = [
     for (final i in full.items)
       if (i.releasedOn == null || !i.releasedOn!.isAfter(today)) i,
@@ -56,8 +56,7 @@ final catalogProvider = FutureProvider<Catalog>((ref) async {
 /// Plays announced with a future release date, soonest first ("Wkrótce").
 final upcomingItemsProvider = Provider<List<ContentItem>>((ref) {
   final full = ref.watch(fullCatalogProvider).value;
-  final now = ref.watch(clockProvider)();
-  final today = DateTime(now.year, now.month, now.day);
+  final today = ref.watch(calendarDayProvider);
   if (full == null) return const [];
   return [
     for (final i in full.items)
@@ -72,16 +71,54 @@ final entitlementsProvider = Provider<List<Entitlement>>(
 
 final clockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
 
+/// Invalidate cached time decisions at expiry/midnight and notice wall-clock changes.
+/// Resume and playback explicitly refresh this too: background timers can be suspended.
+final currentTimeProvider = Provider<DateTime>((ref) {
+  final now = ref.watch(clockProvider)();
+  var next = now.add(const Duration(minutes: 1));
+  final midnight = DateTime(now.year, now.month, now.day + 1);
+  if (midnight.isBefore(next)) next = midnight;
+  final timer = Timer(next.difference(now), ref.invalidateSelf);
+  ref.onDispose(timer.cancel);
+  return now;
+});
+
+/// Access expiry is separate from the catalog clock: loading access may itself read
+/// the catalog while pruning downloads. Keeping that dependency out avoids a cycle.
+final accessTimeProvider = Provider<DateTime>((ref) {
+  ref.watch(currentTimeProvider);
+  final now = ref.watch(clockProvider)();
+  DateTime? next;
+  for (final e in ref.watch(entitlementsProvider)) {
+    final end = e.validUntil;
+    if (end != null && end.isAfter(now) && (next == null || end.isBefore(next))) next = end;
+  }
+  if (next != null) {
+    final timer = Timer(next.difference(now), ref.invalidateSelf);
+    ref.onDispose(timer.cancel);
+  }
+  return now;
+});
+
+/// Catalog filtering rebuilds only when the calendar date changes.
+final calendarDayProvider = Provider<DateTime>((ref) {
+  final now = ref.watch(currentTimeProvider);
+  return DateTime(now.year, now.month, now.day);
+});
+
 final accessPolicyProvider = Provider<AccessPolicy>((ref) => AccessPolicy(ref.watch(entitlementsProvider)));
 
 /// Offline lease for paid content (ARCHITECTURE §8).
 final leaseStateProvider = Provider<LeaseState>((ref) {
   final access = ref.watch(accessProvider).value;
-  return evaluateLease(
-    now: ref.watch(clockProvider)(),
-    validUntil: access?.leaseValidUntil,
-    lastSeenAt: access?.lastSeenAt,
-  );
+  ref.watch(currentTimeProvider);
+  final now = ref.watch(clockProvider)();
+  final until = access?.leaseValidUntil;
+  if (until != null && until.isAfter(now)) {
+    final timer = Timer(until.difference(now), ref.invalidateSelf);
+    ref.onDispose(timer.cancel);
+  }
+  return evaluateLease(now: now, validUntil: access?.leaseValidUntil, lastSeenAt: access?.lastSeenAt);
 });
 
 enum ItemAccess { playable, locked, needsRefresh }
@@ -99,14 +136,18 @@ bool bedtimeGrace(List<Entitlement> entitlements, ContentItem item, DateTime now
         until.year == now.year &&
         until.month == now.month &&
         until.day == now.day &&
-        const {EntitlementStatus.active, EntitlementStatus.grace, EntitlementStatus.expired}.contains(e.status);
+        const {
+          EntitlementStatus.active,
+          EntitlementStatus.grace,
+          EntitlementStatus.expired,
+        }.contains(e.status);
   });
 }
 
 /// Free content always plays; paid content needs an entitlement and a valid lease.
 final itemAccessProvider = Provider.family<ItemAccess, ContentItem>((ref, item) {
   if (item.isFree) return ItemAccess.playable;
-  final now = ref.watch(clockProvider)();
+  final now = ref.watch(accessTimeProvider);
   if (!ref.watch(accessPolicyProvider).canPlay(item, now)) {
     return bedtimeGrace(ref.watch(entitlementsProvider), item, now) ? ItemAccess.playable : ItemAccess.locked;
   }
@@ -121,5 +162,9 @@ final canPlayProvider = Provider.family<bool, ContentItem>(
 /// (research 2026-10-12, finding 12). Subscribers have everything, so no label for them.
 final showFreeBadgeProvider = Provider.family<bool, ContentItem>(
   (ref, item) =>
-      item.isFree && !ref.watch(accessPolicyProvider).activeScopes(ref.watch(clockProvider)()).contains(Scopes.allContent),
+      item.isFree &&
+      !ref
+          .watch(accessPolicyProvider)
+          .activeScopes(ref.watch(accessTimeProvider))
+          .contains(Scopes.allContent),
 );

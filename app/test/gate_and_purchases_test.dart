@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async';
 
 import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/core/storage/database.dart';
@@ -20,6 +21,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'helpers.dart';
 
 void main() {
+  test('real-store wrapper bounds a stalled restore request', () async {
+    final stalled = _StalledStore();
+    addTearDown(stalled.dispose);
+    final wrapper = PreviewStoreGateway(stalled, timeout: const Duration(milliseconds: 5));
+    await expectLater(wrapper.restore(), throwsA(isA<TimeoutException>()));
+  });
+
   group('parental gate', () {
     test('Polish number words', () {
       expect(polishNumberWords(21), 'dwadzieścia jeden');
@@ -211,6 +219,54 @@ void main() {
       expect(scopes(), isEmpty);
     });
 
+    test('restore failure releases the button and shows an error', () async {
+      await store.dispose();
+      store = _FailingStore(failRestore: true);
+      container = build();
+      await container.read(purchaseControllerProvider.notifier).restore();
+      final state = container.read(purchaseControllerProvider);
+      expect(state.busyProductId, isNull);
+      expect(state.message, PurchaseMessage.storeError);
+    });
+
+    test('quiet restore failure does not break sign-in or display a purchase error', () async {
+      await store.dispose();
+      store = _FailingStore(failRestore: true);
+      container = build();
+      await container.read(purchaseControllerProvider.notifier).restoreQuietly();
+      expect(container.read(purchaseControllerProvider).message, PurchaseMessage.none);
+    });
+
+    test('completion failure remains retryable without an uncaught stream error', () async {
+      await store.dispose();
+      store = _FailingStore();
+      container = build();
+      await container.read(accessProvider.future);
+      await buy('pl.audiokiddo.pack.detektyw');
+      expect(container.read(purchaseControllerProvider).message, PurchaseMessage.verifyLater);
+      expect(store.completed, isEmpty);
+    });
+
+    test('verifier exception remains retryable', () async {
+      container = build(verifier: _ThrowingVerifier());
+      await container.read(accessProvider.future);
+      await buy('pl.audiokiddo.pack.detektyw');
+      expect(container.read(purchaseControllerProvider).message, PurchaseMessage.verifyLater);
+      expect(store.completed, isEmpty);
+    });
+
+    test('purchase stream errors release the UI instead of escaping', () async {
+      await store.dispose();
+      final errors = _ErrorStreamStore();
+      store = errors;
+      container = build();
+      container.read(purchaseControllerProvider);
+      errors.events.addError(Exception('store disconnected'));
+      await pumpEventQueue();
+      expect(container.read(purchaseControllerProvider).message, PurchaseMessage.storeError);
+      expect(container.read(purchaseControllerProvider).busyProductId, isNull);
+    });
+
     test('trial is offered once and disappears after subscribing', () async {
       container = build();
       expect((await store.products({ProductIds.yearly})).single.freeTrialDays, 7);
@@ -218,4 +274,39 @@ void main() {
       expect((await store.products({ProductIds.yearly})).single.freeTrialDays, isNull);
     });
   });
+}
+
+class _FailingStore extends FakeStoreGateway {
+  _FailingStore({this.failRestore = false});
+  final bool failRestore;
+  @override
+  Future<void> restore() async {
+    if (failRestore) throw Exception('store unavailable');
+    await super.restore();
+  }
+
+  @override
+  Future<void> complete(StorePurchase purchase) async => throw Exception('acknowledgement failed');
+}
+
+class _ThrowingVerifier implements PurchaseVerifier {
+  @override
+  Future<VerificationResult> verify(StorePurchase purchase) async =>
+      throw Exception('verification unavailable');
+}
+
+class _ErrorStreamStore extends FakeStoreGateway {
+  final events = StreamController<List<StorePurchase>>.broadcast();
+  @override
+  Stream<List<StorePurchase>> get purchases => events.stream;
+  @override
+  Future<void> dispose() async {
+    await events.close();
+    await super.dispose();
+  }
+}
+
+class _StalledStore extends FakeStoreGateway {
+  @override
+  Future<void> restore() => Completer<void>().future;
 }

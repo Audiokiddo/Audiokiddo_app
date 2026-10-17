@@ -68,4 +68,14 @@ void main() {
     expect(routeStack(router).where((p) => p == '/odtwarzacz'), hasLength(1));
     expect(routeStack(router), isNot(contains('/kolejka')));
   });
+  testWidgets('switching playback type with an intervening route replaces existing player', (tester) async {
+    await boot(tester);
+    unawaited(openPlayerOn(router));
+    await tester.pumpAndSettle();
+    unawaited(router.push<void>('/kolejka'));
+    await tester.pumpAndSettle();
+    unawaited(openPlayerOn(router, game: true));
+    await tester.pumpAndSettle();
+    expect(routeStack(router).where((p) => p == '/odtwarzacz' || p == '/gra'), ['/gra']);
+  });
 }

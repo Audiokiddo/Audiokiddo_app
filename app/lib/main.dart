@@ -39,7 +39,10 @@ Future<void> main() async {
   await clearBundledAudioCopies();
   final audioHandler = await initAudio();
   // Works offline: the saved session is read from the device, nothing waits for the network.
-  final supabase = await Supabase.initialize(url: BackendConfig.url, publishableKey: BackendConfig.publishableKey);
+  final supabase = await Supabase.initialize(
+    url: BackendConfig.url,
+    publishableKey: BackendConfig.publishableKey,
+  );
   final database = AppDatabase();
   final catalogSource = RemoteCatalogSource(supabase.client, database);
   final events = SupabaseEventSink(
@@ -103,8 +106,7 @@ Future<void> main() async {
   await container.read(kidsModeProvider).load();
   await container.read(onboardingProvider).load();
   await container.read(welcomeProvider).load();
-  // Resume interrupted downloads and start recording listening progress.
-  await container.read(downloadManagerProvider).start();
+  // Start recording listening progress; download recovery runs after the first frame.
   container.read(playbackControllerProvider);
   // Android Auto shows the family's listening library on the car screen.
   final car = CarLibrary(container);
@@ -128,4 +130,15 @@ Future<void> main() async {
   });
   watchCarPlayChanges(container, () => carPlay.invokeMethod<void>('reload').catchError((Object _) {}));
   runApp(UncontrolledProviderScope(container: container, child: const AudioKiddoApp()));
+  // File checks and downloader recovery may take time. Show the first frame first;
+  // a platform failure must not leave the family stuck on the launch screen.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    unawaited(
+      container.read(downloadManagerProvider).start().catchError((Object error, StackTrace stack) {
+        FlutterError.reportError(
+          FlutterErrorDetails(exception: error, stack: stack, library: 'download startup'),
+        );
+      }),
+    );
+  });
 }
