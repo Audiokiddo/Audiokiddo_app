@@ -7,6 +7,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../insights/sitting.dart';
 import '../insights/events.dart';
 
 import '../../core/storage/database.dart';
@@ -135,6 +136,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final played = ref.read(familyProvider).value?.results.any((r) => r.itemId == item.id) ?? false;
     final count = await countPlayStart(ref.read(databaseProvider), item.id);
     _playing = (item.id, startedAt, count.number);
+    final sitting = ref.read(sittingClockProvider).begin();
     ref.track(
       AppEvent.playStart,
       itemId: item.id,
@@ -144,6 +146,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         'game': true,
         'duration_total': item.durationSec,
         if (played) 'replay': true,
+        'sitting': sitting,
         ...count.props,
       },
     );
@@ -163,6 +166,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         if (command is Finish) {
           await _stopMicrophone();
           _playing = null;
+          ref.read(sittingClockProvider).touch();
           ref.track(
             AppEvent.playComplete,
             itemId: item.id,
@@ -170,6 +174,9 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
               'game': true,
               'duration_listened': DateTime.now().difference(startedAt).inSeconds,
               'play_number': count.number,
+              // A game is on the whole time it runs (questions, answers, waiting).
+              'sitting': sitting,
+              'active_seconds': DateTime.now().difference(startedAt).inSeconds,
             },
           );
           // Games that keep a `score` variable report correct answers to the parent.
@@ -219,8 +226,15 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       ref.track(
         AppEvent.playExit,
         itemId: id,
-        props: {'game': true, 'exit_second': DateTime.now().difference(at).inSeconds, 'play_number': number},
+        props: {
+          'game': true,
+          'exit_second': DateTime.now().difference(at).inSeconds,
+          'play_number': number,
+          'sitting': ?ref.read(sittingClockProvider).id,
+          'active_seconds': DateTime.now().difference(at).inSeconds,
+        },
       );
+      ref.read(sittingClockProvider).touch();
     }
     await ref.read(parentVoiceStoreProvider).stopPlayback();
     _input?.complete(const InputTimedOut());

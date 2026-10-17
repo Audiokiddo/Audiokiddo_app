@@ -113,6 +113,10 @@ $linked = [];
 
         <?php ak_guide_pack_box($slug); ?>
 
+        <?php if (!empty($g['signup'])) : ?>
+        <?php ak_road_signup(); ?>
+        <?php endif; ?>
+
         <?php if ($quote) : ?>
         <figure class="ak-guide-quote">
             <blockquote><p><?php echo ak_bold($quote['text']); // escaped in ak_bold ?></p></blockquote>

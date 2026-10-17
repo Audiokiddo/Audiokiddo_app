@@ -18,7 +18,8 @@ $heard = $packs['detektyw'];
 $arrow = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>';
 // Szop'en's drawing for each of the ten moments (assets/img/szop).
-$poses = ['dzien-obiad', 'zestresowany', 'dzien-przedszkole', 'dzien-auto', 'zdziwiony', 'dzien-nuda', 'dzien-sen', 'znudzony', 'dzien-zero-mocy', 'nasluchuje'];
+// Same order as ak_situations().
+$poses = ['dzien-auto', 'dzien-obiad', 'dzien-przedszkole', 'zestresowany', 'dzien-sen', 'dzien-nuda', 'zdziwiony', 'znudzony', 'dzien-zero-mocy', 'nasluchuje'];
 ?>
 
 <section class="ak-slide ak-hero ak-a-hero ak-x-hero ak-h5 ak-h6" id="start" data-slide="Start" aria-labelledby="ak-h1">
@@ -84,7 +85,7 @@ $poses = ['dzien-obiad', 'zestresowany', 'dzien-przedszkole', 'dzien-auto', 'zdz
 <section class="ak-slide ak-a-sec ak-when3" id="kiedy" data-slide="Kiedy" aria-labelledby="ak-when-h">
     <div class="ak-wrap">
         <h2 id="ak-when-h" class="ak-center" data-reveal>Kiedy odpalić <span class="ak-hl-word">Audiokiddo?</span></h2>
-        <p class="ak-a-lead ak-center" data-reveal>Szop ma kilka typów.</p>
+        <p class="ak-a-lead ak-center" data-reveal><?php echo esc_html((string) (ak_opt('when_lead') ?: 'Szop ma kilka typów.')); ?></p>
         <div class="ak-when3-in" data-reveal>
             <div class="ak-a-times ak-when3-tabs" role="tablist" aria-label="Kiedy odpalić Audiokiddo">
                 <?php foreach (ak_situations() as $i => [, , $short]) : ?>

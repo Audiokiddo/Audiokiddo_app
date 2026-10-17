@@ -480,8 +480,8 @@ class _DiscoverPacks extends ConsumerWidget {
           title: ownedCount >= 2 ? 'Masz $ownedCount z ${all.length} pakietów' : 'Wszystko w abonamencie',
           line: byId[ProductIds.yearly]?.rawPrice == null
               ? 'Wszystkie pakiety od razu i 2 nowe zabawy co tydzień.'
-              : 'Wszystkie pakiety od razu i 2 nowe zabawy co tydzień, za '
-                    '${formatMoney(byId[ProductIds.yearly]!.rawPrice! / 12, byId[ProductIds.yearly]!.currencyCode)} miesięcznie.',
+              : 'Wszystkie pakiety od razu i 2 nowe zabawy co tydzień: ${byId[ProductIds.yearly]!.price} za rok, '
+                    'czyli ok. ${formatMoney(byId[ProductIds.yearly]!.rawPrice! / 12, byId[ProductIds.yearly]!.currencyCode)} miesięcznie.',
         ),
         for (final s in locked) _DiscoverCard(summary: s),
       ],

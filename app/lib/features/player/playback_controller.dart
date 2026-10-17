@@ -4,6 +4,10 @@ import 'package:ak_core/ak_core.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../session/session.dart';
+import '../discovery/queue_controller.dart';
+import '../../core/audio/kiddo_voice.dart';
+import '../insights/sitting.dart';
 import '../catalog/widgets/item_art.dart';
 import '../../core/storage/storage_providers.dart';
 import '../downloads/download_providers.dart';
@@ -40,7 +44,7 @@ class PlaybackController {
           open.active.start();
         } else {
           open.active.stop();
-          _lastActivity = DateTime.now();
+          _ref.read(sittingClockProvider).touch();
         }
       }),
       // A looped play went round once: heard to the end, then it starts again.
@@ -65,16 +69,13 @@ class PlaybackController {
   /// The play now on, until it ends or is left (for play_exit).
   _OpenPlay? _open;
 
-  /// One sitting = plays with less than [sittingGap] between them; its id is when it began
-  /// (seconds since 1970). Lets the CRM add up how long a child really keeps listening.
-  int? _sitting;
-  DateTime? _lastActivity;
-  static const sittingGap = Duration(minutes: 10);
+  /// One sitting = plays and games close together (see [SittingClock]).
+  static const sittingGap = SittingClock.gap;
 
   /// Props every play event carries for the real-minutes measurement. No data about the child
   /// (not even the age): the store declarations say the app collects none.
   Map<String, Object?> _measure([_OpenPlay? open]) => {
-    'sitting': ?_sitting,
+    'sitting': ?_ref.read(sittingClockProvider).id,
     if (open != null) 'active_seconds': open.active.elapsed.inSeconds,
   };
 
@@ -83,7 +84,7 @@ class PlaybackController {
     final open = _open;
     _open = null;
     open?.active.stop();
-    if (open != null) _lastActivity = DateTime.now();
+    if (open != null) _ref.read(sittingClockProvider).touch();
     if (open == null || open.completed) return;
     final total = open.duration?.inSeconds ?? 0;
     _ref
@@ -121,12 +122,7 @@ class PlaybackController {
     final next = last != null && last.$1 != item.id && DateTime.now().difference(last.$2).inMinutes < 10;
     final count = await countPlayStart(_ref.read(databaseProvider), item.id);
     _closeOpen();
-    final now = DateTime.now();
-    final idleSince = _lastActivity;
-    if (_sitting == null || idleSince == null || now.difference(idleSince) > sittingGap) {
-      _sitting = now.millisecondsSinceEpoch ~/ 1000;
-    }
-    _lastActivity = now;
+    _ref.read(sittingClockProvider).begin();
     _ref
         .read(eventSinkProvider)
         .track(
@@ -178,7 +174,7 @@ class PlaybackController {
     }
     if (completed) {
       _lastCompleted = (media.id, DateTime.now());
-      _lastActivity = DateTime.now();
+      _ref.read(sittingClockProvider).touch();
       if (open != null && open.id == media.id) {
         open.completed = true;
         open.active.stop();
@@ -196,6 +192,11 @@ class PlaybackController {
           );
       // Counts towards the listening child's plan and progress.
       unawaited(_ref.read(familyProvider.notifier).record(itemId: media.id, seconds: duration.inSeconds));
+      // The play ends so everyone hears it (report 2026-10-17: a play that ends by itself):
+      // a short chime, unless a queue or a trip or bedtime plan carries on, or it loops.
+      if (!_handler.looping && !_ref.read(queueRunnerProvider).running && !_ref.read(sessionProvider).running) {
+        _ref.read(kiddoVoiceProvider).effect('chime');
+      }
     }
     await _ref
         .read(personalRepositoryProvider)

@@ -1,3 +1,4 @@
+import '../player/countdown.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -70,6 +71,11 @@ class GameScreen extends ConsumerWidget {
                   style: text.titleMedium?.copyWith(color: _foreground),
                   textAlign: TextAlign.center,
                 ),
+                if (game.phase != GamePhase.finished && game.phase != GamePhase.failed && game.phase != GamePhase.idle)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AkSpace.s),
+                    child: GameCountdown(key: ValueKey(game.itemId), itemId: game.itemId, color: _foreground),
+                  ),
                 Expanded(
                   child: Semantics(
                     button: true,

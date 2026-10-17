@@ -1600,7 +1600,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizGoals.
   ///
   /// In pl, this message translates to:
-  /// **'Co chcecie rozwijać? Możesz wybrać kilka.'**
+  /// **'Na czym Wam zależy? Możesz wybrać kilka.'**
   String get quizGoals;
 
   /// No description provided for @quizSituations.

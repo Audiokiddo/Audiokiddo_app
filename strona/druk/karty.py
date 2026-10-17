@@ -5,12 +5,16 @@ Builds karty-ratunkowe-szopena.html next to this file and, with Google Chrome, t
 site plugin (assets/druk/), where the sign-up page hands it out:
 
     python3 strona/druk/karty.py
+    python3 strona/druk/karty.py --droga   # "5 zabaw na drogę" for the car guide
 """
 import html
 import pathlib
 import subprocess
 
 HERE = pathlib.Path(__file__).resolve().parent
+# The car set: its first five plays make "5 zabaw na drogę".
+ROAD_SET = 1
+OUT_ROAD = HERE.parent / "audiokiddo-strona" / "assets" / "druk" / "5-zabaw-na-droge.pdf"
 PLUGIN = HERE.parent / "audiokiddo-strona"
 ASSETS = PLUGIN / "assets"
 OUT_HTML = HERE / "karty-ratunkowe-szopena.html"
@@ -105,11 +109,31 @@ def card(situation, color, ico, play, n):
     </div>"""
 
 
-def build_html(only=None) -> str:
-    """The whole booklet, or with [only] one set's sheet (the app's reward cards)."""
+def build_html(only=None, road=False) -> str:
+    """The whole booklet, or with [only] one set's sheet (the app's reward cards), or with [road]
+    "5 zabaw na drogę" (the car guide's sign-up, Instagram report 2026-10-17)."""
     font = (ASSETS / "fonts").as_uri()
     szop = (ASSETS / "img" / "szop").as_uri()
     pages = []
+    if road:
+        only = ROAD_SET
+        pages.append(f"""
+  <section class="page cover">
+    <p class="kicker">Audiokiddo · do auta</p>
+    <h1>5 zabaw <span>na drogę</span></h1>
+    <p class="lead">Zabawy głosem na trasę z przedszkolakiem: bez tabletu, bez przygotowań, dla dzieci 3–9 lat.</p>
+    <div class="cover-szop"><img src="{szop}/zadowolony.webp" alt=""><p class="bubble">„Daleko jeszcze?” Jeszcze pięć zabaw.</p></div>
+    <div class="how">
+      <h2>Jak tego używać</h2>
+      <ol>
+        <li><b>Wydrukuj</b> kartkę z zabawami i włóż ją do schowka w aucie.</li>
+        <li>Planuj <b>krótkie bloki po 10–15 minut</b> z przerwą na wyglądanie przez okno.</li>
+        <li>Czyta pasażer, <b>kierowca patrzy na drogę</b>.</li>
+        <li>Na dłuższą trasę <b>pobierz audiozabawy przed wyjazdem</b>: w Audiokiddo działają bez zasięgu, a tryb „W drogę” układa je z przerwami na całą podróż.</li>
+      </ol>
+    </div>
+    <p class="foot">audiokiddo.pl · Nela i Dawid, twórcy Audiokiddo</p>
+  </section>""")
     if only is None:
       pages.append(f"""
   <section class="page cover">
@@ -135,7 +159,7 @@ def build_html(only=None) -> str:
         if only is not None and set_no != only:
             continue
         cards = []
-        for play in plays:
+        for play in plays[:5] if road else plays:
             n += 1
             cards.append(card(situation, color, ico, play, n))
         pages.append(f"""
@@ -294,6 +318,10 @@ def pdf(html_text: str, target: pathlib.Path):
 
 def main():
     import sys
+    if "--droga" in sys.argv:
+        pdf(build_html(road=True), OUT_ROAD)
+        print(f"{OUT_ROAD} ({OUT_ROAD.stat().st_size // 1024} KB)")
+        return
     if "--app" in sys.argv:
         # One sheet per set for the app's Adventure Map (a chest of Szop'en's rewards).
         for n in range(len(SETS)):

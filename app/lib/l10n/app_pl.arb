@@ -458,7 +458,7 @@
       }
     }
   },
-  "quizGoals": "Co chcecie rozwijać? Możesz wybrać kilka.",
+  "quizGoals": "Na czym Wam zależy? Możesz wybrać kilka.",
   "quizSituations": "Kiedy najczęściej słuchacie? (opcjonalnie)",
   "quizMinutes": "Ile czasu dziennie na zabawę?",
   "quizMinutesOption": "{minutes} min dziennie",

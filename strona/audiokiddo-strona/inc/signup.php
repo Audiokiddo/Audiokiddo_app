@@ -11,10 +11,14 @@ if (!defined('ABSPATH')) {
 
 const AK_PRINTABLE = 'karty-ratunkowe-szopena.pdf';
 
+/** What a sign-up hands out: the cards (everywhere) or "5 zabaw na drogę" (the car guide). */
+const AK_PRINTABLES = ['karty' => AK_PRINTABLE, 'droga' => '5-zabaw-na-droge.pdf'];
+
 /** A link to the printable, valid for this and the next month (so an old e-mail still works). */
-function ak_printable_url(): string
+function ak_printable_url(string $material = 'karty'): string
 {
-    return home_url('/do-druku/' . AK_PRINTABLE . '?t=' . ak_printable_token(gmdate('Y-m')));
+    $file = AK_PRINTABLES[$material] ?? AK_PRINTABLE;
+    return home_url('/do-druku/' . $file . '?t=' . ak_printable_token(gmdate('Y-m')));
 }
 
 function ak_printable_token(string $month): string
@@ -26,7 +30,8 @@ function ak_printable_token(string $month): string
 add_action('init', function () {
     $path = (string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
     $home = rtrim((string) parse_url(home_url('/'), PHP_URL_PATH), '/');
-    if ($path !== $home . '/do-druku/' . AK_PRINTABLE) {
+    $name = basename($path);
+    if (dirname($path) !== $home . '/do-druku' || !in_array($name, AK_PRINTABLES, true)) {
         return;
     }
     $token = (string) ($_GET['t'] ?? '');
@@ -39,10 +44,10 @@ add_action('init', function () {
         wp_safe_redirect(ak_info_url('zabawy-do-druku') . '#zapis', 302);
         exit;
     }
-    $file = AK_DIR . 'assets/druk/' . AK_PRINTABLE;
+    $file = AK_DIR . 'assets/druk/' . $name;
     nocache_headers();
     header('Content-Type: application/pdf');
-    header('Content-Disposition: inline; filename="' . AK_PRINTABLE . '"');
+    header('Content-Disposition: inline; filename="' . $name . '"');
     header('Content-Length: ' . filesize($file));
     header('X-Robots-Tag: noindex, nofollow');
     readfile($file);
@@ -63,6 +68,7 @@ function ak_signup_ajax(): void
         'email' => wp_unslash($_POST['email'] ?? ''),
         'zgoda' => !empty($_POST['zgoda']),
         'strona' => wp_unslash($_POST['strona'] ?? ''),
+        'material' => sanitize_key(wp_unslash($_POST['material'] ?? 'karty')),
     ]);
     wp_send_json($result['body'], $result['status']);
 }
@@ -110,7 +116,7 @@ function ak_signup_handle(array $in): array
         error_log('Audiokiddo zapis: MailerLite ' . $code . ' ' . substr((string) wp_remote_retrieve_body($response), 0, 300));
         return ['status' => 502, 'body' => ['ok' => false, 'message' => 'Coś się wysypało po drodze. Spróbuj jeszcze raz za chwilę albo napisz: ' . ak_opt('contact_email')]];
     }
-    return ['status' => 200, 'body' => ['ok' => true, 'download' => ak_printable_url()]];
+    return ['status' => 200, 'body' => ['ok' => true, 'download' => ak_printable_url((string) ($in['material'] ?? 'karty'))]];
 }
 
 /**
@@ -120,6 +126,7 @@ function ak_signup_handle(array $in): array
 function ak_signup_form(string $source = 'druk', string $button = 'Wyślij mi karty'): void
 {
     $id = 'ak-zapis-' . $source;
+    $road = $source === 'droga';
     ?>
     <form class="ak-signup" id="<?php echo esc_attr($id); ?>" data-endpoint="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" novalidate>
         <div class="ak-signup-row">
@@ -128,6 +135,7 @@ function ak_signup_form(string $source = 'druk', string $button = 'Wyślij mi ka
             <button class="ak-btn ak-btn-sun" type="submit"><?php echo esc_html($button); ?></button>
         </div>
         <label class="ak-signup-hp" aria-hidden="true">Strona <input type="text" name="strona" tabindex="-1" autocomplete="off"></label>
+        <input type="hidden" name="material" value="<?php echo $road ? 'droga' : 'karty'; ?>">
         <label class="ak-signup-ok">
             <input type="checkbox" name="zgoda" value="1" required>
             <span>Chcę dostawać newsletter Audiokiddo: nowości o aplikacji, darmowe zabawy i przydatne rzeczy dla rodziców. Wypiszesz się jednym kliknięciem. <a href="<?php echo esc_url((string) ak_opt('privacy_url')); ?>">Polityka prywatności</a>.</span>
@@ -135,8 +143,13 @@ function ak_signup_form(string $source = 'druk', string $button = 'Wyślij mi ka
         <p class="ak-signup-msg" role="status" aria-live="polite"></p>
         <div class="ak-signup-done" hidden>
             <p class="ak-signup-done-h">Gotowe. Szop już niesie.</p>
+            <?php if ($road) : ?>
+            <p>Zabawy na drogę pobierzesz od razu. Wydrukuj je przed wyjazdem i włóż do schowka w aucie.</p>
+            <a class="ak-btn ak-btn-teal ak-signup-dl" href="#" target="_blank" rel="noopener">Pobierz 5 zabaw na drogę (PDF)</a>
+            <?php else : ?>
             <p>Karty są do pobrania od razu. Na maila wyślemy też 3 audiozabawy na start (zajrzyj do Ofert i Spamu, Szop bywa nieśmiały).</p>
             <a class="ak-btn ak-btn-teal ak-signup-dl" href="#" target="_blank" rel="noopener">Pobierz karty (PDF)</a>
+            <?php endif; ?>
         </div>
     </form>
     <?php
@@ -153,4 +166,17 @@ function ak_printable_faq(): array
         ['Czy mogę wydrukować karty w przedszkolu albo w szkole?', 'Tak, do użytku z dziećmi w domu, w przedszkolu i w szkole. Prosimy tylko, żeby ich nie sprzedawać ani nie udostępniać pliku publicznie.'],
         ['Mail nie przyszedł. Co robić?', 'Karty pobierasz od razu na stronie, mail to dodatek. Jeśli go nie ma, zajrzyj do Ofert i Spamu albo napisz do nas: ' . ak_opt('contact_email') . '.'],
     ];
+}
+
+/** "5 zabaw na drogę" for an e-mail, on the car guide: where the first ads lead (report 2026-10-17). */
+function ak_road_signup(): void
+{
+    ?>
+    <aside class="ak-guide-cta ak-road-signup" id="zapis">
+        <img src="<?php echo esc_url(ak_asset('druk/podglad-droga.webp')); ?>" alt="Okładka: 5 zabaw na drogę" width="606" height="858" loading="lazy" style="width:min(180px,40%);height:auto;float:right;margin:0 0 12px 16px;border-radius:12px">
+        <p class="ak-guide-cta-h">5 zabaw na drogę za darmo</p>
+        <p>Pięć zabaw głosem na trasę z przedszkolakiem: bez tabletu i bez przygotowań. Wpisz e-mail, a PDF pobierzesz od razu.</p>
+        <?php ak_signup_form('droga', 'Wyślij mi 5 zabaw'); ?>
+    </aside>
+    <?php
 }

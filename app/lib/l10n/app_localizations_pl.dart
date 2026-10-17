@@ -867,7 +867,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get quizGoals => 'Co chcecie rozwijać? Możesz wybrać kilka.';
+  String get quizGoals => 'Na czym Wam zależy? Możesz wybrać kilka.';
 
   @override
   String get quizSituations => 'Kiedy najczęściej słuchacie? (opcjonalnie)';

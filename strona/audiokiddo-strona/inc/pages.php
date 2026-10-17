@@ -83,7 +83,7 @@ function ak_faq_groups(): array
     $p = ak_pricing();
     $faq = ak_faq();
     return [
-        'Audiokiddo i zabawy' => [$faq[0], $faq[1], $faq[2], $faq[3], $faq[12],
+        'Audiokiddo i zabawy' => [$faq[0], $faq[1], $faq[2], $faq[3], $faq[13], $faq[12],
             ['Czy zabawy są po polsku?', 'Tak. Wszystkie zabawy piszemy po polsku, z myślą o polskich rodzinach.'],
             ['Czym Audiokiddo różni się od audiobooka?', 'Audiobook mówi dziecku, co zrobił bohater. Audiokiddo mówi: bohaterem jesteś ty. Dziecko odpowiada, szuka, rusza się i podejmuje decyzje, a historia idzie dalej po jego myśli.'],
         ],

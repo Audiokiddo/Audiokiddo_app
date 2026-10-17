@@ -195,7 +195,13 @@ class _PriceList extends StatelessWidget {
     final rows = <(String, StoreProduct)>[
       for (final plan in SubscriptionPlan.values) ...[
         if (byId[plan.monthlyId] case final m?) ('Abonament miesięczny', m),
-        if (byId[plan.yearlyId] case final y?) ('Abonament roczny', y),
+        if (byId[plan.yearlyId] case final y?)
+          (
+            y.rawPrice == null
+                ? 'Abonament roczny'
+                : 'Abonament roczny (ok. ${formatMoney(y.rawPrice! / 12, y.currencyCode)} / mies.)',
+            y,
+          ),
       ],
     ];
     final singles = [for (final i in catalog.items) ?byId[i.storeProductId]?.rawPrice];
@@ -274,7 +280,9 @@ class _ThreeWays extends ConsumerWidget {
       (
         'Abonament',
         monthly == null ? 'wszystkie zabawy' : '${monthly.price} / mies.',
-        perMonth == null ? 'i 2 nowe zabawy co tydzień' : 'rocznie $perMonth / mies., 2 nowe zabawy co tydzień',
+        perMonth == null
+            ? 'i 2 nowe zabawy co tydzień'
+            : 'albo ${yearly!.price} za rok (ok. $perMonth / mies.), 2 nowe zabawy co tydzień',
       ),
     ];
     return Padding(
@@ -844,15 +852,19 @@ class PackScreen extends ConsumerWidget {
                                       child: CircularProgressIndicator(strokeWidth: 2),
                                     )
                                   : Text(
-                                      yearly.rawPrice == null
-                                          ? 'Abonament: wszystkie pakiety'
-                                          : 'Wszystkie pakiety za ${formatMoney(yearly.rawPrice! / 12, yearly.currencyCode)} / mies.',
+                                      // The amount billed comes first (App Store 3.1.2), the month after it.
+                                      'Abonament roczny: ${yearly.price}',
                                     ),
                             ),
                           ),
                         if (byId[ProductIds.yearly] != null)
                           Text(
-                            'Abonament roczny, 2 nowe zabawy co tydzień',
+                            switch (byId[ProductIds.yearly]) {
+                              StoreProduct(:final rawPrice?, :final currencyCode) =>
+                                'czyli ok. ${formatMoney(rawPrice / 12, currencyCode)} / mies. '
+                                    'Wszystkie pakiety i 2 nowe zabawy co tydzień.',
+                              _ => 'Wszystkie pakiety i 2 nowe zabawy co tydzień',
+                            },
                             style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
                           ),
                         if (product != null)

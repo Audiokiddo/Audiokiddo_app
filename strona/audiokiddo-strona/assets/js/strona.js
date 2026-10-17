@@ -550,7 +550,7 @@
       var label = btn.textContent;
       btn.disabled = true;
       btn.textContent = 'Szop coś grzebie…';
-      var body = new URLSearchParams({ action: 'ak_zapis', email: email, zgoda: '1', strona: form.strona.value });
+      var body = new URLSearchParams({ action: 'ak_zapis', email: email, zgoda: '1', strona: form.strona.value, material: form.material ? form.material.value : 'karty' });
       fetch(form.getAttribute('data-endpoint'), { method: 'POST', body: body, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (data) {
         if (!data || !data.ok) throw new Error(data && data.message ? data.message : '');
         $('.ak-signup-row', form).hidden = true;

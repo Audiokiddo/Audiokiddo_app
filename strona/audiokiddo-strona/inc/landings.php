@@ -107,6 +107,8 @@ function ak_landings(): array
             'title' => 'Jak zająć dziecko w samochodzie? Zabawy na podróż',
             'desc' => 'Zabawy w samochodzie dla dzieci bez tabletu: gry słowne, zagadki i audiozabawy na długą trasę. Także do pociągu i samolotu.',
             'h1' => 'Jak zająć dziecko w samochodzie (i w pociągu, i w samolocie)',
+            // "5 zabaw na drogę" for an e-mail (templates/guide.php).
+            'signup' => 'droga',
             'lead' => 'W samochodzie dziecko nie może biegać ani rysować, więc najlepiej sprawdzają się zabawy głosem: zagadki, gry słowne, wypatrywanie rzeczy za oknem i audiozabawy, w których dziecko odpowiada na pytania. Planuj krótkie bloki po 10–20 minut z przerwą na wyglądanie przez okno.',
             'tldr' => [
                 'Zabawy słowne nie wymagają niczego poza głosem.',

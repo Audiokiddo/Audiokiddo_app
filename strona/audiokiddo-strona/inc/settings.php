@@ -43,6 +43,9 @@ function ak_settings_fields(): array
             'ml_account' => ['MailerLite: numer konta', 'text', 'Z kodu formularza: ml(\'account\', \'…\'). Zapis na stronie idzie przez serwer, bez skryptu MailerLite.'],
             'ml_form_id' => ['MailerLite: numer formularza', 'text', 'Z adresu formularza w MailerLite: /forms/<numer>/overview. Zapisani trafiają do jego grup i automatyzacji.'],
         ],
+        'Teksty na stronie głównej' => [
+            'when_lead' => ['Linia pod „Kiedy odpalić Audiokiddo?”', 'text', 'Puste: „Szop ma kilka typów.” Propozycja z raportu (czeka na zgodę Neli): „Najlepiej działa w aucie, przy kolacji i na kanapie po przedszkolu.”'],
+        ],
         'Opinie rodziców' => [
             'testimonials_url' => ['Adres opinii (JSON)', 'url', 'Opinie zatwierdzone w Studio. Puste: sekcja się nie pokazuje.'],
         ],

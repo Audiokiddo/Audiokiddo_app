@@ -1,3 +1,4 @@
+import 'countdown.dart';
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -100,7 +101,16 @@ class _Player extends ConsumerWidget {
                 const SizedBox(height: 24),
                 FilledButton(onPressed: () => context.go('/biblioteka'), child: const Text('Otwórz bibliotekę')),
               ] else ...[
-                if (state?.processingState == AudioProcessingState.completed) SzopAfterPlayCard(item: item),
+                if (state?.processingState == AudioProcessingState.completed) ...[
+                  // A clear end: the child knows the play is over, the parent knows it is time.
+                  Text(
+                    'Koniec przygody!',
+                    textAlign: TextAlign.center,
+                    style: text.headlineMedium?.copyWith(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 12),
+                  SzopAfterPlayCard(item: item),
+                ],
                 if (item != null && state?.processingState == AudioProcessingState.completed) ...[
                   const ChestAfterPlayCard(),
                   const NewStickerCard(),
@@ -128,6 +138,13 @@ class _Player extends ConsumerWidget {
                         seed: media.id.length,
                       ),
                 SzopWhilePlaying(playing: playing),
+                if (state?.processingState != AudioProcessingState.completed && duration > Duration.zero) ...[
+                  const SizedBox(height: 16),
+                  PlayCountdown(
+                    remaining: duration - position > Duration.zero ? duration - position : Duration.zero,
+                    showEnd: playing,
+                  ),
+                ],
                 const SizedBox(height: 22),
                 Text(media.title, style: text.headlineSmall),
                 const SizedBox(height: 8),

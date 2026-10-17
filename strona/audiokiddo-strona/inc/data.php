@@ -200,18 +200,19 @@ function ak_pricing(): array
 
 /**
  * "Kiedy odpalić Audiokiddo?" Szop's types: the moment, his line, a short label for the picker on
- * the home page and the guide with more ideas for that moment (inc/landings.php).
+ * the home page and the guide with more ideas for that moment (inc/landings.php). Order from the
+ * Instagram report (2026-10-17): the car, dinner and after kindergarten first.
  */
 function ak_situations(): array
 {
     return [
-        ['Kiedy robisz obiad', 'Po raz piąty słyszysz: „co mam robić?”. Ty masz nóż w ręce i cebulę na patelni. To nie jest moment na wymyślanie zabawy. Odpal Audiokiddo.', 'Robisz obiad', 'jak-zajac-dziecko-gdy-pracujesz'],
-        ['Kiedy musisz zrobić jedną rzecz do końca', 'Mail. Telefon. Prysznic. Cokolwiek. Młody wyczuje ten moment z dokładnością urządzenia wojskowego. Audiokiddo. Zanim podejdzie.', 'Musisz coś skończyć', 'jak-zajac-dziecko-gdy-pracujesz'],
-        ['Kiedy wracacie z przedszkola', 'Ty po całym dniu. Ono po całym dniu. Tylko jedno z Was nadal ma energię, żeby biegać po mieszkaniu z plastikowym dinozaurem. Odpal Audiokiddo.', 'Po przedszkolu', 'zabawy-ruchowe-dla-dzieci-w-domu'],
         ['Kiedy jedziecie samochodem', 'Pierwsze „daleko jeszcze?” padło, zanim zdążyliście wyjechać z miasta. Nie będę oceniał. Mamy zabawy na drogę.', 'W samochodzie', 'jak-zajac-dziecko-w-samochodzie'],
-        ['Kiedy pada', 'Plac zabaw odpada. 48 zabawek w pokoju też najwyraźniej. Klasyka. Odpal Audiokiddo.', 'Pada deszcz', 'zabawy-dla-dzieci-w-domu'],
-        ['Kiedy słyszysz „nudzi mi się”', 'Dzieciak się nudzi? W końcu problem, na który mamy gotową odpowiedź.', '„Nudzi mi się”', 'dziecko-sie-nudzi'],
+        ['Kiedy robisz obiad', 'Po raz piąty słyszysz: „co mam robić?”. Ty masz nóż w ręce i cebulę na patelni. To nie jest moment na wymyślanie zabawy. Odpal Audiokiddo.', 'Robisz obiad', 'jak-zajac-dziecko-gdy-pracujesz'],
+        ['Kiedy wracacie z przedszkola', 'Ty po całym dniu. Ono po całym dniu. Tylko jedno z Was nadal ma energię, żeby biegać po mieszkaniu z plastikowym dinozaurem. Odpal Audiokiddo.', 'Po przedszkolu', 'zabawy-ruchowe-dla-dzieci-w-domu'],
+        ['Kiedy musisz zrobić jedną rzecz do końca', 'Mail. Telefon. Prysznic. Cokolwiek. Młody wyczuje ten moment z dokładnością urządzenia wojskowego. Audiokiddo. Zanim podejdzie.', 'Musisz coś skończyć', 'jak-zajac-dziecko-gdy-pracujesz'],
         ['Kiedy potrzebujesz 15 minut spokoju', 'Nie musisz w tym czasie rozwijać firmy, ćwiczyć ani gotować obiadu na trzy dni. Możesz po prostu usiąść. Audiokiddo zajmie się resztą.', '15 minut spokoju', 'samodzielna-zabawa-dziecka'],
+        ['Kiedy słyszysz „nudzi mi się”', 'Dzieciak się nudzi? W końcu problem, na który mamy gotową odpowiedź.', '„Nudzi mi się”', 'dziecko-sie-nudzi'],
+        ['Kiedy pada', 'Plac zabaw odpada. 48 zabawek w pokoju też najwyraźniej. Klasyka. Odpal Audiokiddo.', 'Pada deszcz', 'zabawy-dla-dzieci-w-domu'],
         ['Kiedy skończyły Ci się pomysły', 'Kredki były. Klocki były. „Pobaw się zabawkami” też było. Dobra. Odpal Audiokiddo.', 'Brak pomysłów', 'zabawy-bez-ekranu'],
         ['Kiedy dziś naprawdę nie masz mocy na wspólną zabawę', 'Kochasz go. To nie znaczy, że o 18:37 masz ochotę po raz czwarty być smokiem. Odpal Audiokiddo.', 'Zero mocy na zabawę', 'samodzielna-zabawa-dziecka'],
         ['Kiedy robi się podejrzanie cicho', 'Krąży bez celu. Zajrzał za kanapę. Mamy może trzy minuty, zanim zacznie kombinować.', 'Podejrzanie cicho', 'zagadki-dla-dzieci'],
@@ -266,7 +267,9 @@ function ak_free_plays(): array
 function ak_home_faq(): array
 {
     $faq = ak_faq();
-    return [$faq[0], $faq[1], $faq[2], $faq[6], $faq[7]];
+    // The four questions parents ask first (Instagram report 2026-10-17): age, what is free and
+    // what the rest costs, whether it is another screen, headphones. Then cancelling.
+    return [$faq[3], $faq[4], $faq[2], $faq[13], $faq[7]];
 }
 
 /** What the child does during a play (the list under step 3). */
@@ -409,6 +412,7 @@ function ak_faq(): array
         ['Czy mogę używać Audiokiddo w przedszkolu lub szkole?', 'Tak. Audiozabawy dobrze sprawdzają się w przedszkolu i w klasach 1–3, gdy słucha cała grupa. Dla placówek przygotowujemy osobną ofertę: napisz do nas.'],
         ['Kupiłem pakiet na stronie. Gdzie go znajdę?', 'Linki do pobrania przychodzą mailem od razu po zakupie (sprawdź też Spam i Oferty). Te same pakiety odblokujesz w aplikacji, logując się tym samym adresem e-mail. Problem? Napisz na ' . ak_opt('contact_email') . '.'],
         ['Kto tworzy audiozabawy?', 'Nela i Dawid, para rodziców, która stworzyła Audiokiddo. Razem piszemy zabawy i je montujemy, a nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami, po polsku.'],
+        ['Czy działa w słuchawkach?', 'Tak, w słuchawkach i na głośniku Bluetooth. W zabawach, w których dziecko odpowiada głosem, telefon musi je słyszeć, więc najlepiej leży blisko dziecka. Gdy go nie usłyszy, zabawa nie stoi: głos po chwili sam prowadzi dalej.'],
     ];
 }
 

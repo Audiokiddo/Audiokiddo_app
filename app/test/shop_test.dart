@@ -120,7 +120,9 @@ void main() {
           .last;
       await tester.scrollUntilVisible(find.text('Wypróbuj za darmo'), 200, scrollable: packScroll);
       expect(find.text('Wypróbuj za darmo'), findsOneWidget);
-      expect(find.textContaining('Wszystkie pakiety za 22,50'), findsOneWidget);
+      // The amount billed first, the month beside it (App Store 3.1.2).
+      expect(find.textContaining('Abonament roczny: 269,99'), findsOneWidget);
+      expect(find.textContaining('ok. 22,50'), findsOneWidget);
       expect(find.textContaining('na zawsze ·'), findsNothing);
     });
 
