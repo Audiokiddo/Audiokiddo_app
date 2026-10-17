@@ -58,8 +58,12 @@ int _distance(String a, String b) {
 /// Finds which of the game's words a transcript contains.
 class WordMatcher {
   /// [vocabulary]: every word or phrase the game accepts (any spelling, they are normalised).
-  WordMatcher(Iterable<String> vocabulary)
-    : _words = {for (final w in vocabulary) normalizeSpoken(w): w}..remove('');
+  /// [answers]: which answer each word gives, when several words mean the same answer.
+  WordMatcher(Iterable<String> vocabulary, {Map<String, String> answers = const {}})
+    : _words = {for (final w in vocabulary) normalizeSpoken(w): w}..remove(''),
+      _answers = answers;
+
+  final Map<String, String> _answers;
 
   /// normalised word or phrase → the word as the script wrote it.
   final Map<String, String> _words;
@@ -84,6 +88,8 @@ class WordMatcher {
       ),
     );
     if (found.length == 1) return found.single;
+    // "Zaśpiewajmy kołysankę": two words, one answer. Only different answers are unclear.
+    if (found.length > 1 && found.map((w) => _answers[w] ?? w).toSet().length == 1) return found.first;
     if (found.length > 1) return null;
     // No exact hit: allow one wrong letter in longer words, if exactly one word is that close.
     final close = <String>{};

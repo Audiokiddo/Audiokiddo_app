@@ -134,6 +134,7 @@ class _DetailsContent extends ConsumerWidget {
     final gameSaved = isGame && (ref.watch(gameResumeProvider(item)).value ?? false);
     final resumeAt = resumePosition(ref.watch(progressProvider(item.id)).value);
     final players = l10n.playerCount(item);
+    final listensToWords = item.script != null && scriptListensToWords(item.script!);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(AkSpace.m, 0, AkSpace.m, AkSpace.xl),
@@ -145,7 +146,7 @@ class _DetailsContent extends ConsumerWidget {
         if (item.subtitle != null) Text(item.subtitle!, style: text.titleMedium),
         const SizedBox(height: AkSpace.m),
         MetaStrip(item: item),
-        if (players != null || item.isFree) ...[
+        if (players != null || item.isFree || listensToWords) ...[
           const SizedBox(height: AkSpace.s),
           Wrap(
             spacing: AkSpace.s,
@@ -153,6 +154,7 @@ class _DetailsContent extends ConsumerWidget {
             children: [
               if (players != null) _Meta(icon: Icons.group_rounded, label: players),
               if (item.isFree) _Meta(icon: Icons.card_giftcard_rounded, label: l10n.free),
+              if (listensToWords) const _Meta(icon: Icons.record_voice_over_rounded, label: 'Słucha dziecka'),
             ],
           ),
         ],
@@ -297,6 +299,8 @@ List<String> whatTheChildHears(ContentItem item) => [
     ContentKind.song => 'Piosenka do słuchania i śpiewania razem.',
     _ => 'Głos prowadzi zabawę i zadaje pytania. Dziecko odpowiada na głos, zgaduje albo się rusza.',
   },
+  if (item.script case final script? when scriptListensToWords(script))
+    'Ta zabawa słucha dziecka: to, co powie, zmienia dalszy ciąg i zakończenie historii.',
   '${(item.durationSec / 60).ceil()} min, dla dzieci od ${item.ageMin} lat.',
   if (item.requirements.isEmpty) 'Nic nie trzeba szykować.',
   'Bez reklam. Zabawy piszą Nela i Dawid, para z Polski.',

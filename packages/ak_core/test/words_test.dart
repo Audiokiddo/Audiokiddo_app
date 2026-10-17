@@ -51,6 +51,15 @@ void main() {
       expect(matcher.match('nie ma'), 'nie');
     });
 
+    test('two words of the same answer in one sentence give that answer', () {
+      final song = WordMatcher(
+        ['kołysanka', 'zaśpiewajmy', 'budzimy'],
+        answers: {'kołysanka': 'lullaby', 'zaśpiewajmy': 'lullaby', 'budzimy': 'wake'},
+      );
+      expect(song.match('zaśpiewajmy kołysanka'), isIn(['kołysanka', 'zaśpiewajmy']));
+      expect(song.match('budzimy kołysanka'), isNull, reason: 'two different answers');
+    });
+
     test('nothing heard, nothing matched', () {
       expect(matcher.match(''), isNull);
       expect(matcher.match('mamo patrz'), isNull);

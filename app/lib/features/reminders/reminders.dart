@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/widgets.dart' show Color;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -50,7 +54,7 @@ class LocalReminderScheduler implements ReminderScheduler {
     }
     await _plugin.initialize(
       settings: const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings('ic_stat_szop'),
         // No prompt at start-up: permission is asked only when the parent turns reminders on.
         iOS: DarwinInitializationSettings(
           requestAlertPermission: false,
@@ -60,6 +64,43 @@ class LocalReminderScheduler implements ReminderScheduler {
       ),
     );
     _ready = true;
+  }
+
+  /// Szop’en in a different pose for each notification: beside the text on Android, as the
+  /// picture on iOS. The status-bar icon is his white outline (Android draws it single-colour).
+  Future<NotificationDetails> _details(
+    int id, {
+    required String channel,
+    required String name,
+    required String description,
+  }) async {
+    final pose = szopPoseFor(id);
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        channel,
+        name,
+        channelDescription: description,
+        importance: Importance.defaultImportance,
+        icon: 'ic_stat_szop',
+        color: const Color(0xFF3AAFB0),
+        largeIcon: DrawableResourceAndroidBitmap('notif_szop_$pose'),
+      ),
+      iOS: DarwinNotificationDetails(attachments: [?await _iosPicture(id, pose)]),
+    );
+  }
+
+  /// iOS moves an attachment into its own store, so each notification gets a fresh copy.
+  Future<DarwinNotificationAttachment?> _iosPicture(int id, String pose) async {
+    if (!Platform.isIOS) return null;
+    try {
+      final data = await rootBundle.load('assets/szop/$pose.png');
+      final file = File(p.join((await getTemporaryDirectory()).path, 'szop_note_${id}_$pose.png'));
+      await file.writeAsBytes(data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes), flush: true);
+      return DarwinNotificationAttachment(file.path);
+    } on Object {
+      // A reminder without the picture is still a reminder.
+      return null;
+    }
   }
 
   @override
@@ -83,20 +124,16 @@ class LocalReminderScheduler implements ReminderScheduler {
     for (final pending in await _plugin.pendingNotificationRequests()) {
       if (pending.id < 1000) await _plugin.cancel(id: pending.id);
     }
-    const details = NotificationDetails(
-      android: AndroidNotificationDetails(
-        'daily_play',
-        'Codzienna zabawa',
-        channelDescription: 'Przypomnienie o dzisiejszej porcji zabaw',
-        importance: Importance.defaultImportance,
-      ),
-      iOS: DarwinNotificationDetails(),
-    );
     for (final slot in slots) {
       await _plugin.zonedSchedule(
         id: slot.id,
         scheduledDate: tz.TZDateTime.from(slot.at, tz.local),
-        notificationDetails: details,
+        notificationDetails: await _details(
+          slot.id,
+          channel: 'daily_play',
+          name: 'Codzienna zabawa',
+          description: 'Przypomnienie o dzisiejszej porcji zabaw',
+        ),
         // Inexact is fine for a friendly nudge and needs no special alarm permission.
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         title: slot.title,
@@ -112,14 +149,11 @@ class LocalReminderScheduler implements ReminderScheduler {
     await _plugin.zonedSchedule(
       id: slot.id,
       scheduledDate: tz.TZDateTime.from(slot.at, tz.local),
-      notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'access_news',
-          'Dostęp i nowości',
-          channelDescription: 'Koniec dostępu i nowe zabawy, tylko gdy je włączysz',
-          importance: Importance.defaultImportance,
-        ),
-        iOS: DarwinNotificationDetails(),
+      notificationDetails: await _details(
+        slot.id,
+        channel: 'access_news',
+        name: 'Dostęp i nowości',
+        description: 'Koniec dostępu i nowe zabawy, tylko gdy je włączysz',
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       title: slot.title,
@@ -139,6 +173,12 @@ class LocalReminderScheduler implements ReminderScheduler {
     await _plugin.cancelAll();
   }
 }
+
+/// Szop’en poses for notifications (`assets/szop/<pose>.png`, Android drawable `notif_szop_<pose>`).
+const szopNotificationPoses = ['zadowolony', 'klaszcze', 'zdziwiony', 'chytry', 'prosi', 'nasluchuje'];
+
+/// The pose for notification [id]: consecutive reminders show different poses.
+String szopPoseFor(int id) => szopNotificationPoses[id % szopNotificationPoses.length];
 
 final reminderSchedulerProvider = Provider<ReminderScheduler>((ref) => LocalReminderScheduler());
 

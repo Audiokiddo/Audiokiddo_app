@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notification icons are named from Dart (flutter_local_notifications, audio_service), so the
+     resource shrinker cannot see them in code. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_szop,@drawable/notif_szop_*" />

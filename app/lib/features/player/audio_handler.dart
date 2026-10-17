@@ -20,6 +20,7 @@ Future<AkAudioHandler> initAudio() async {
     config: const AudioServiceConfig(
       androidNotificationChannelId: 'pl.audiokiddo.playback',
       androidNotificationChannelName: 'Odtwarzanie',
+      androidNotificationIcon: 'drawable/ic_stat_szop',
       androidNotificationOngoing: true,
       androidStopForegroundOnPause: true,
       fastForwardInterval: _skipInterval,

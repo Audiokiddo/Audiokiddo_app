@@ -1004,6 +1004,7 @@
   },
   {
    "id": "zgadnij-dzwiek",
+   "hidden": true,
    "kind": "interactive_game",
    "title": "Zgadnij dźwięk",
    "parent_description": "Dziecko słucha odgłosów i mówi, co to. Aplikacja nie ocenia odpowiedzi: po chwili podaje rozwiązanie. Z mikrofonem (opcjonalnie) zauważa, że dziecko coś powiedziało, i szybciej przechodzi dalej.",
@@ -1194,6 +1195,7 @@
   },
   {
    "id": "zamrozony-taniec",
+   "hidden": true,
    "kind": "interactive_game",
    "title": "Zamrożony taniec",
    "parent_description": "Gdy gra muzyka, dziecko tańczy; na „stop” zamienia się w posąg. Telefon leży, aplikacja niczego nie mierzy.",
@@ -1327,6 +1329,7 @@
   },
   {
    "id": "zamrozone-raczki",
+   "hidden": true,
    "kind": "interactive_game",
    "title": "Zamrożone rączki (w podróży)",
    "parent_description": "Wersja do samochodu: tańczą tylko rączki i minki, bez wstawania z fotelika.",
@@ -2482,14 +2485,24 @@
         "las",
         "do lasu",
         "lasek",
-        "lasu"
+        "lasu",
+        "w lesie",
+        "lesie",
+        "lasku",
+        "do lasku",
+        "przez las"
        ],
        "river": [
         "rzeka",
         "nad rzekę",
         "rzekę",
         "rzeczka",
-        "rzeki"
+        "rzeki",
+        "rzeczkę",
+        "rzece",
+        "rzeką",
+        "nad rzeką",
+        "do rzeki"
        ]
       },
       "on_timeout": "cross_retry",
@@ -2562,7 +2575,12 @@
         "piesek",
         "psiak",
         "pieska",
-        "psa"
+        "psa",
+        "pieski",
+        "psy",
+        "psem",
+        "piesku",
+        "psiaczek"
        ],
        "riddle_wrong": [
         "kot",
@@ -2636,13 +2654,22 @@
         "na górę",
         "górę",
         "góry",
-        "górka"
+        "górka",
+        "górkę",
+        "na górkę",
+        "w górę",
+        "pod górę",
+        "górze"
        ],
        "hollow": [
         "dziupla",
         "dziuplę",
         "do dziupli",
-        "dziupli"
+        "dziupli",
+        "w dziupli",
+        "dziupelka",
+        "dziupelki",
+        "dziupelkę"
        ]
       },
       "on_timeout": "owl_retry",
@@ -2752,14 +2779,24 @@
         "obudzić",
         "budzić",
         "pobudka",
-        "budzimy ją"
+        "budzimy ją",
+        "obudzimy",
+        "obudźmy",
+        "budźmy",
+        "wstawaj",
+        "zbudzić"
        ],
        "lullaby": [
         "kołysanka",
         "kołysankę",
         "śpiewamy",
         "śpiewać",
-        "lulu"
+        "lulu",
+        "zaśpiewamy",
+        "zaśpiewajmy",
+        "śpiewajmy",
+        "zaśpiewać",
+        "kołysankę śpiewamy"
        ]
       },
       "on_timeout": "hollow_retry",
@@ -2855,14 +2892,24 @@
         "po kamieniach",
         "kamień",
         "skaczemy",
-        "skakać"
+        "skakać",
+        "kamieniach",
+        "kamyki",
+        "kamyczki",
+        "po kamykach",
+        "skaczę"
        ],
        "boat": [
         "łódka",
         "łódką",
         "łódź",
         "łódkę",
-        "płyniemy"
+        "płyniemy",
+        "łódeczka",
+        "łódeczką",
+        "łódeczkę",
+        "łódce",
+        "płynąć"
        ]
       },
       "on_timeout": "frog_retry",

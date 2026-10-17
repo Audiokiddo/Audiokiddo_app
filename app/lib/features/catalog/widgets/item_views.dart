@@ -7,6 +7,7 @@ import '../../../core/theme/tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../downloads/download_manager.dart';
 import '../../downloads/download_providers.dart';
+import '../../games/microphone.dart';
 import '../catalog_providers.dart';
 import 'content_cover.dart';
 import 'labels.dart';
@@ -126,6 +127,7 @@ class ItemTile extends ConsumerWidget {
                         l10n.duration(item.durationSec),
                         l10n.ageFrom(item.ageMin),
                         if (item.isFree) l10n.free,
+                        if (item.script case final script? when scriptListensToWords(script)) 'słucha dziecka',
                       ].join(' · '),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(color: palette.inkMuted),
                     ),

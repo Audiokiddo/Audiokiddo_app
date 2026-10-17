@@ -165,7 +165,7 @@ final validationProvider = Provider<StudioValidation>((ref) {
   final state = ref.watch(studioProvider);
   final CatalogParseResult result;
   try {
-    result = parseCatalog(state.catalog);
+    result = parseCatalog(state.catalog, includeHidden: true);
   } on FormatError catch (e) {
     return StudioValidation(fatal: e.toString());
   }

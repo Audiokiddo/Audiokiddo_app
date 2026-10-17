@@ -295,9 +295,9 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
             (generation == _generation ? await _listen({InputKind.voiceActivity}, window, generation, media) : null);
       case Listen(:final input, :final window, :final minCount):
         return _listen({input}, window, generation, media, minClaps: minCount ?? 1);
-      case ListenForChoice(:final inputs, :final window, :final vocabulary)
+      case ListenForChoice(:final inputs, :final window, :final vocabulary, :final answers)
           when inputs.contains(InputKind.speechKeywords):
-        return _listenForWords(window, vocabulary, generation);
+        return _listenForWords(window, vocabulary, generation, answers: answers);
       case ListenForChoice(:final inputs, :final window):
         return _listen(inputs, window, generation, media);
       case Finish(:final asset):
@@ -339,6 +339,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     List<String> vocabulary,
     int generation, {
     bool anySpeech = false,
+    Map<String, String> answers = const {},
   }) async {
     if (!_speechUsable) return InputFailed(_whyUnusable(const {InputKind.speechKeywords}));
     final speech = ref.read(speechInputProvider);
@@ -347,7 +348,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final completer = _input = Completer<EngineEvent>();
     _listening = const {InputKind.speechKeywords};
     _set(GamePhase.listening, listening: _listening);
-    final matcher = WordMatcher(vocabulary);
+    final matcher = WordMatcher(vocabulary, answers: answers);
     var gaveUp = false;
     final scaled = window * ref.read(gameTimeScaleProvider);
     unawaited(

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:ak_core/ak_core.dart';
@@ -106,7 +108,13 @@ void main() {
     addTearDown(container.dispose);
   });
 
-  Future<ContentItem> game(String id) async => (await container.read(catalogProvider.future)).item(id)!;
+  // Hidden plays (switched off in the catalog for now) keep their engine tests.
+  Future<ContentItem> game(String id) async =>
+      (await container.read(catalogProvider.future)).item(id) ??
+      parseCatalog(
+        jsonDecode(File('assets/mock/catalog.json').readAsStringSync()) as Map<String, Object?>,
+        includeHidden: true,
+      ).catalog.item(id)!;
 
   test('Zgadnij dźwięk runs to the end on its no-microphone variant', () async {
     final item = await game('zgadnij-dzwiek');

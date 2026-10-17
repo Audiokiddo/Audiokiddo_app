@@ -33,7 +33,7 @@ class Listen extends EngineCommand {
 /// Listen for any of [inputs] (a choice); report [InputDetected] with its `kind`, or
 /// [InputTimedOut] / [InputFailed].
 class ListenForChoice extends EngineCommand {
-  const ListenForChoice(this.inputs, this.window, {this.vocabulary = const []});
+  const ListenForChoice(this.inputs, this.window, {this.vocabulary = const [], this.answers = const {}});
 
   final Set<InputKind> inputs;
   final Duration window;
@@ -41,6 +41,9 @@ class ListenForChoice extends EngineCommand {
   /// With [InputKind.speechKeywords]: the words the child may say. Report the one heard, as
   /// written here, in [InputDetected.word].
   final List<String> vocabulary;
+
+  /// Which answer each vocabulary word gives: "las" and "do lasu" in one sentence are one answer.
+  final Map<String, String> answers;
 }
 
 /// The session is over; play [asset] if given, then close.
@@ -318,6 +321,10 @@ class ScriptRunner {
       _available(step).toSet(),
       Duration(milliseconds: windowMs),
       vocabulary: _available(step).contains(InputKind.speechKeywords) ? vocabulary : const [],
+      answers: {
+        for (final MapEntry(key: target, value: words) in step.words.entries)
+          for (final word in words) word: target,
+      },
     ),
     EndStep(:final asset) => _finish(Finish(asset: asset)),
     _ => throw StateError('not an audible step: ${step.id}'),

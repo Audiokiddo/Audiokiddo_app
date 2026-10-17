@@ -100,7 +100,14 @@ class CatalogParseResult {
 /// A broken manifest as a whole (wrong schema, missing lists) throws [FormatError] so the
 /// caller keeps the last good catalog. A single broken or too-new item is skipped and
 /// reported; the rest of the library keeps working.
-CatalogParseResult parseCatalog(Map<String, Object?> json, {int engine = engineVersion}) {
+///
+/// An item with `"hidden": true` stays in the manifest but is left out (switched off for now,
+/// e.g. a play being reworked); [includeHidden] keeps it, for tests and Studio.
+CatalogParseResult parseCatalog(
+  Map<String, Object?> json, {
+  int engine = engineVersion,
+  bool includeHidden = false,
+}) {
   final root = JsonReader(json);
   final schema = root.integer('schema_version');
   if (schema != catalogSchemaVersion) {
@@ -132,6 +139,10 @@ CatalogParseResult parseCatalog(Map<String, Object?> json, {int engine = engineV
     final path =
         r'$.items'
         '[$i]';
+    if (!includeHidden && raw is Map && raw['hidden'] == true) {
+      skipped.add(SkippedItem('$path (${raw['id']})', 'hidden'));
+      continue;
+    }
     try {
       final item = ContentItem.fromJson(JsonReader.of(raw, path));
       final problem = _itemProblem(item, packs, seenIds, engine);
