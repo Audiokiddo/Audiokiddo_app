@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,11 +82,12 @@ Future<void> main() async {
       kidsModeProvider.overrideWith((ref) => KidsModeController(ref.watch(databaseProvider))),
       onboardingProvider.overrideWith((ref) => OnboardingController(ref.watch(databaseProvider))),
       sessionGateProvider.overrideWith((ref) {
-        // Debug builds for screen previews on a simulator may skip signing in
-        // (--dart-define=PREVIEW_NO_SIGN_IN=true); release builds always require it.
+        // Free plays need no account (App Store 5.1.1, Dawid's decision 2026-10-17): a family
+        // signs in from Więcej → Konto when it wants to; purchases wait on an anonymous holder
+        // until then. A build that must ask first: --dart-define=REQUIRE_SIGN_IN=true.
         final gate = SessionGate(
           ref.watch(accountServiceProvider),
-          required: !(kDebugMode && const bool.fromEnvironment('PREVIEW_NO_SIGN_IN')),
+          required: const bool.fromEnvironment('REQUIRE_SIGN_IN'),
         );
         ref.onDispose(gate.dispose);
         return gate;
