@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ak_core/ak_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +14,9 @@ import '../family/family.dart';
 import '../parental_gate/parental_gate.dart';
 
 const feedbackEmail = 'kontakt@audiokiddo.pl';
+
+/// Version and build number, set by tool/release_build.sh (`--dart-define=APP_BUILD`).
+const appBuild = String.fromEnvironment('APP_BUILD', defaultValue: 'wersja testowa');
 const _askedKey = 'rating_asked_at';
 const _happyKey = 'rating_happy_at';
 
@@ -88,7 +93,13 @@ Future<void> rateApp(BuildContext context, {bool fromList = false}) async {
 /// A message to the team instead of a low rating: an e-mail draft, behind the parental gate.
 Future<void> sendFeedback(BuildContext context) async {
   if (!await showParentalGate(context) || !context.mounted) return;
-  final uri = Uri(scheme: 'mailto', path: feedbackEmail, query: 'subject=${Uri.encodeComponent('AudioKiddo: uwagi')}');
+  // The version and system in the draft: testers' notes say which build they are about.
+  final body = '\n\n---\nAudioKiddo $appBuild, ${Platform.isIOS ? 'iOS' : 'Android'} ${Platform.operatingSystemVersion}';
+  final uri = Uri(
+    scheme: 'mailto',
+    path: feedbackEmail,
+    query: 'subject=${Uri.encodeComponent('AudioKiddo: uwagi')}&body=${Uri.encodeComponent(body)}',
+  );
   if (!await launchUrl(uri) && context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Napisz do nas: $feedbackEmail')));
   }

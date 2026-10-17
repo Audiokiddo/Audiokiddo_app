@@ -7,6 +7,7 @@ import android.media.MediaRouter2
 import android.os.Build
 import android.os.StatFs
 import android.provider.Settings
+import android.speech.SpeechRecognizer
 import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -32,6 +33,18 @@ class MainActivity : AudioServiceActivity() {
                 when (call.method) {
                     "current" -> result.success(currentRoute())
                     "pick" -> result.success(showOutputSwitcher())
+                    else -> result.notImplemented()
+                }
+            }
+        // Whether words can be recognised strictly on the phone (`pl.audiokiddo/speech`). With
+        // this, speech_to_text's onDevice option creates the on-device recogniser; without it,
+        // it would fall back to one that may send audio to a server, so games ask for claps.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "pl.audiokiddo/speech")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "onDeviceOnly" -> result.success(
+                        Build.VERSION.SDK_INT >= 33 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this),
+                    )
                     else -> result.notImplemented()
                 }
             }

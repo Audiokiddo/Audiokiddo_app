@@ -445,7 +445,9 @@ def zgubiona_gwiazdka():
         g, steps, assets, "cross",
         "Na trawie świecą dwa ślady Gwiazdki. Jeden prowadzi do Szumiącego Lasu, a drugi nad Srebrną Rzekę. "
         "Dokąd idziemy? Powiedz: las albo rzeka.",
-        {"forest": ["las", "do lasu", "lasek", "lasu"], "river": ["rzeka", "nad rzekę", "rzekę", "rzeczka", "rzeki"]},
+        {"forest": ["las", "do lasu", "lasek", "lasu", "w lesie", "lesie", "lasku", "do lasku", "przez las"],
+         "river": ["rzeka", "nad rzekę", "rzekę", "rzeczka", "rzeki", "rzeczkę", "rzece", "rzeką", "nad rzeką",
+                   "do rzeki"]},
         "Nie usłyszałam. Powiedz głośno: las! Albo: rzeka!",
         "Dobrze, to ja wybiorę. Ślad przy lesie świeci mocniej. Idziemy do lasu!", "forest",
         "Jeśli chcesz iść do lasu, klaśnij raz. Jeśli nad rzekę, powiedz głośno: rzeka!", ["forest", "river"])
@@ -456,7 +458,7 @@ def zgubiona_gwiazdka():
         "Kto robi: hau, hau?", next_step="riddle")
     steps["riddle"] = {
         "type": "choice", "window_ms": 8000,
-        "words": {"riddle_right": ["pies", "piesek", "psiak", "pieska", "psa"],
+        "words": {"riddle_right": ["pies", "piesek", "psiak", "pieska", "psa", "pieski", "psy", "psem", "piesku", "psiaczek"],
                   "riddle_wrong": ["kot", "kotek", "krowa", "kaczka", "kura", "żaba", "koń", "owca"]},
         "on_timeout": "riddle_hint",
         "fallback": {"no_microphone": {"type": "wait", "duration_ms": 4000, "next": "riddle_tell"},
@@ -475,8 +477,8 @@ def zgubiona_gwiazdka():
         g, steps, assets, "owl",
         "Hu, hu! Widziałam Gwiazdkę, mówi sowa. Poleciała na Wysoką Górę albo schowała się w Starej Dziupli. "
         "Gdzie jej szukamy? Powiedz: góra albo dziupla.",
-        {"mountain": ["góra", "na górę", "górę", "góry", "górka"],
-         "hollow": ["dziupla", "dziuplę", "do dziupli", "dziupli"]},
+        {"mountain": ["góra", "na górę", "górę", "góry", "górka", "górkę", "na górkę", "w górę", "pod górę", "górze"],
+         "hollow": ["dziupla", "dziuplę", "do dziupli", "dziupli", "w dziupli", "dziupelka", "dziupelki", "dziupelkę"]},
         "Nie usłyszałam. Powiedz głośno: góra! Albo: dziupla!",
         "To ja wybiorę: zajrzymy do dziupli!", "hollow",
         "Jeśli na górę, klaśnij raz. Jeśli do dziupli, powiedz głośno: dziupla!", ["mountain", "hollow"])
@@ -496,8 +498,10 @@ def zgubiona_gwiazdka():
         g, steps, assets, "hollow",
         "Zaglądamy do Starej Dziupli. Ciii… W środku śpi Wiewiórka Ruda, a obok niej, zwinięta w kłębek, świeci "
         "Gwiazdka. Też zasnęła! Co robimy? Budzimy ją czy śpiewamy kołysankę? Powiedz: budzimy albo kołysanka.",
-        {"wake": ["budzimy", "obudź", "obudzić", "budzić", "pobudka", "budzimy ją"],
-         "lullaby": ["kołysanka", "kołysankę", "śpiewamy", "śpiewać", "lulu"]},
+        {"wake": ["budzimy", "obudź", "obudzić", "budzić", "pobudka", "budzimy ją", "obudzimy", "obudźmy", "budźmy",
+                  "wstawaj", "zbudzić"],
+         "lullaby": ["kołysanka", "kołysankę", "śpiewamy", "śpiewać", "lulu", "zaśpiewamy", "zaśpiewajmy", "śpiewajmy",
+                     "zaśpiewać", "kołysankę śpiewamy"]},
         "Nie usłyszałam. Powiedz cichutko: kołysanka. Albo głośno: budzimy!",
         "To ja wybiorę: zaśpiewamy kołysankę.", "lullaby",
         "Jeśli budzimy Gwiazdkę, klaśnij raz. Jeśli śpiewamy kołysankę, powiedz: kołysanka.", ["wake", "lullaby"])
@@ -518,8 +522,9 @@ def zgubiona_gwiazdka():
     word_decision(
         g, steps, assets, "frog",
         "Jak się tam dostaniemy? Skaczemy po kamieniach czy płyniemy łódką? Powiedz: kamienie albo łódka.",
-        {"stones": ["kamienie", "po kamieniach", "kamień", "skaczemy", "skakać"],
-         "boat": ["łódka", "łódką", "łódź", "łódkę", "płyniemy"]},
+        {"stones": ["kamienie", "po kamieniach", "kamień", "skaczemy", "skakać", "kamieniach", "kamyki", "kamyczki",
+                    "po kamykach", "skaczę"],
+         "boat": ["łódka", "łódką", "łódź", "łódkę", "płyniemy", "łódeczka", "łódeczką", "łódeczkę", "łódce", "płynąć"]},
         "Nie usłyszałam. Powiedz głośno: kamienie! Albo: łódka!",
         "To ja wybiorę: płyniemy łódką!", "boat",
         "Jeśli skaczemy po kamieniach, klaśnij raz. Jeśli płyniemy łódką, powiedz głośno: łódka!",

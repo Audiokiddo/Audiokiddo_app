@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Modify this file to customize your launch splash screen -->
+<!-- Start screen: Szop'en on the app's light background, like on iOS. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/white" />
-
-    <!-- You can insert your own image assets here -->
-    <!-- <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@mipmap/launch_image" />
-    </item> -->
+    <item>
+        <color android:color="#FFFFFBF2" />
+    </item>
+    <item android:width="168dp" android:height="185dp" android:gravity="center">
+        <bitmap android:gravity="fill" android:src="@drawable/launch_szop" />
+    </item>
 </layer-list>

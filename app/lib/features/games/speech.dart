@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -93,16 +94,30 @@ class DeviceSpeech implements SpeechInput {
 
   /// Android's recogniser falls back to Google's servers when offline Polish is missing
   /// (speech_to_text 7.5 below Android 13 and without an on-device model), which a kids' app
-  /// must not do. Until a strictly on-device check is tested on real phones, Android games
-  /// ask for claps instead of words.
-  static bool get platformAllowed => Platform.isIOS;
+  /// must not do. So Android answers with words only on Android 13+ with an on-device
+  /// recogniser ([_onDeviceOnly]); its language list then holds on-device languages only, so
+  /// a phone without offline Polish still asks for claps.
+  static bool get platformAllowed => Platform.isIOS || Platform.isAndroid;
+
+  static const _channel = MethodChannel('pl.audiokiddo/speech');
+
+  bool? _strictlyOnDevice;
+
+  Future<bool> _onDeviceOnly() async {
+    if (!Platform.isAndroid) return true;
+    try {
+      return _strictlyOnDevice ??= await _channel.invokeMethod<bool>('onDeviceOnly') ?? false;
+    } on Object {
+      return _strictlyOnDevice = false;
+    }
+  }
 
   @override
   bool get supported => platformAllowed;
 
   @override
   Future<bool> ready() async {
-    if (!platformAllowed || !await _speech.hasPermission) return false;
+    if (!platformAllowed || !await _onDeviceOnly() || !await _speech.hasPermission) return false;
     try {
       return await _init();
     } on Object catch (e) {
@@ -113,7 +128,7 @@ class DeviceSpeech implements SpeechInput {
 
   @override
   Future<bool> requestPermission() async {
-    if (!platformAllowed) return false;
+    if (!platformAllowed || !await _onDeviceOnly()) return false;
     try {
       return await _init();
     } on Object {

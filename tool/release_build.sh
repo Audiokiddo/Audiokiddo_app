@@ -22,6 +22,8 @@ fi
 
 cd app
 flutter pub get >/dev/null
+# The version in feedback e-mails (lib/features/rating/rating.dart).
+defines+=("--dart-define=APP_BUILD=$(sed -n 's/^version: //p' pubspec.yaml)")
 if [[ $platform == ios ]]; then
   flutter build ipa --release ${defines[@]+"${defines[@]}"} \
     --dart-define=PARENT_GATE_EVERYWHERE=true --dart-define=REDEEM_CODES=false

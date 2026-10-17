@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'item_art.dart';
 
-/// A play's square cover with its badges (lock, "NOWE", "ZA DARMO"); the drawn scene stands in until the
+/// A play's square cover with its badges (lock, "NOWE", "ZA DARMO", listens to the child); the drawn scene stands in until the
 /// cover image arrives (assets/covers, tool/import_covers.py).
 class ContentCover extends StatelessWidget {
   const ContentCover({
@@ -68,6 +68,17 @@ class ContentCover extends StatelessWidget {
                       letterSpacing: .5,
                     ),
                   ),
+                ),
+              ),
+            // Answered with words ("las" or "rzeka"): the play listens to the child.
+            if (item.script?.steps.values.any((s) => s is ChoiceStep && s.words.isNotEmpty) ?? false)
+              Positioned(
+                right: locked ? 34 : 6,
+                top: 6,
+                child: const CircleAvatar(
+                  radius: 12,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.record_voice_over_rounded, size: 15, color: Color(0xFF1D7478)),
                 ),
               ),
             if (locked)
