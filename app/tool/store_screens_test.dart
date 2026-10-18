@@ -1,5 +1,5 @@
 // Raw screens of the real app for the store screenshots (docs/sklepy/zrzuty). A sample family:
-// Zosia, 5, some plays finished (stickers in the album) and the Detektyw pack bought.
+// Zosia, 5, some plays finished (stickers in the album) and the subscription.
 //   cd app && flutter test tool/store_screens_test.dart
 //   python3 ../tool/store_frames.py        # adds the captions and the store sizes
 import 'dart:convert';
@@ -112,10 +112,12 @@ void main() {
               positionProvider.overrideWith((ref) => Stream.value(const Duration(minutes: 6, seconds: 12))),
               sleepTimerProvider.overrideWith((ref) => Stream<SleepTimer?>.value(null)),
               entitlementsProvider.overrideWithValue([
+                // Only the subscription is sold (13.10): a subscribed family, the whole library open.
                 Entitlement(
-                  scope: Scopes.pack('detektyw'),
+                  scope: Scopes.allContent,
                   status: EntitlementStatus.active,
-                  source: EntitlementSource.woocommerce,
+                  source: EntitlementSource.appStore,
+                  validUntil: now.add(const Duration(days: 300)),
                 ),
               ]),
               leaseStateProvider.overrideWithValue(LeaseState.valid),
