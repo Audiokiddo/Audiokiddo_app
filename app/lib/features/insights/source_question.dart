@@ -29,7 +29,7 @@ class SourceQuestion extends ConsumerWidget {
             Text('Skąd o nas wiecie?', style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
             const SizedBox(height: 8),
             Text(
-              'Jedno dotknięcie. Dzięki temu wiemy, gdzie mówić o AudioKiddo innym rodzicom.',
+              'Jedno dotknięcie. Dzięki temu wiemy, gdzie mówić o audiokiddo innym rodzicom.',
               style: text.bodyMedium,
             ),
             const SizedBox(height: 20),

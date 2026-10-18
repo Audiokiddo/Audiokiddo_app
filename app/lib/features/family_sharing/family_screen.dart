@@ -55,7 +55,7 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
     await SharePlus.instance.share(
       ShareParams(
         text:
-            'Dołącz do naszej rodziny w AudioKiddo: zainstaluj aplikację, zaloguj się swoim e-mailem '
+            'Dołącz do naszej rodziny w audiokiddo: zainstaluj aplikację, zaloguj się swoim e-mailem '
             'i w Więcej → Drugi rodzic wpisz kod $code (ważny 7 dni).',
       ),
     );

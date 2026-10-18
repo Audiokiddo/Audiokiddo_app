@@ -53,7 +53,7 @@ class _MicrophoneOfferState extends ConsumerState<MicrophoneOffer> {
       messenger.showSnackBar(
         const SnackBar(
           content: Text(
-            'Bez mikrofonu też zagracie. Włączysz go później w Ustawieniach telefonu → AudioKiddo.',
+            'Bez mikrofonu też zagracie. Włączysz go później w Ustawieniach telefonu → audiokiddo.',
           ),
         ),
       );
@@ -80,8 +80,8 @@ class _MicrophoneOfferState extends ConsumerState<MicrophoneOffer> {
         Icons.lock_rounded,
         'Bez nagrywania',
         Platform.isIOS
-            ? 'Słowa rozpoznaje sam telefon. AudioKiddo nie zapisuje i nie wysyła głosu dziecka.'
-            : 'AudioKiddo nie zapisuje głosu dziecka. Mikrofon działa tylko w trakcie zabawy.',
+            ? 'Słowa rozpoznaje sam telefon. audiokiddo nie zapisuje i nie wysyła głosu dziecka.'
+            : 'audiokiddo nie zapisuje głosu dziecka. Mikrofon działa tylko w trakcie zabawy.',
       ),
     ];
     return Scaffold(

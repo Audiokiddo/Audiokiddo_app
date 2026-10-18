@@ -94,11 +94,11 @@ Future<void> rateApp(BuildContext context, {bool fromList = false}) async {
 Future<void> sendFeedback(BuildContext context) async {
   if (!await showParentalGate(context) || !context.mounted) return;
   // The version and system in the draft: testers' notes say which build they are about.
-  final body = '\n\n---\nAudioKiddo $appBuild, ${Platform.isIOS ? 'iOS' : 'Android'} ${Platform.operatingSystemVersion}';
+  final body = '\n\n---\naudiokiddo $appBuild, ${Platform.isIOS ? 'iOS' : 'Android'} ${Platform.operatingSystemVersion}';
   final uri = Uri(
     scheme: 'mailto',
     path: feedbackEmail,
-    query: 'subject=${Uri.encodeComponent('AudioKiddo: uwagi')}&body=${Uri.encodeComponent(body)}',
+    query: 'subject=${Uri.encodeComponent('audiokiddo: uwagi')}&body=${Uri.encodeComponent(body)}',
   );
   if (!await launchUrl(uri) && context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Napisz do nas: $feedbackEmail')));
@@ -145,7 +145,7 @@ class RatingCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Podoba się AudioKiddo?',
+                    'Podoba się audiokiddo?',
                     style: text.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w800),
                   ),
                   Text(

@@ -155,7 +155,7 @@ class _CaseFilesBulkButtonsState extends ConsumerState<CaseFilesBulkButtons> {
       ShareParams(
         files: saved,
         subject: 'Akta sprawy: ${widget.packTitle}',
-        text: 'Wszystkie akta sprawy z pakietu ${widget.packTitle} (AudioKiddo).',
+        text: 'Wszystkie akta sprawy z pakietu ${widget.packTitle} (audiokiddo).',
         sharePositionOrigin: origin == null ? null : origin.localToGlobal(Offset.zero) & origin.size,
       ),
     );
@@ -200,7 +200,7 @@ class _CaseFilesBulkButtonsState extends ConsumerState<CaseFilesBulkButtons> {
 
 /// One printable document from several PDFs: each page drawn at print resolution, in order.
 Future<Uint8List> mergeForPrint(List<(ContentItem, Uint8List)> files, {double dpi = 150}) async {
-  final doc = pw.Document(title: 'Akta sprawy', author: 'AudioKiddo');
+  final doc = pw.Document(title: 'Akta sprawy', author: 'audiokiddo');
   for (final (_, bytes) in files) {
     await for (final page in Printing.raster(bytes, dpi: dpi)) {
       final image = pw.MemoryImage(await page.toPng());

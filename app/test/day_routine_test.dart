@@ -1,11 +1,9 @@
-import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/core/storage/storage_providers.dart';
 import 'package:audiokiddo/core/theme/app_theme.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
 import 'package:audiokiddo/features/day/day_notifications.dart';
 import 'package:audiokiddo/features/day/day_routine.dart';
 import 'package:audiokiddo/features/day/day_screen.dart';
-import 'package:audiokiddo/features/day/peace_week.dart';
 import 'package:audiokiddo/features/home/home_widget_sync.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,20 +108,6 @@ void main() {
     expect(learnedLeave(drives.take(2).toList(), set), isNull, reason: 'two drives are not a habit');
     expect(learnedLeave([...drives.take(2), DateTime(2026, 10, 15, 8, 30)], set), isNull, reason: 'too far apart');
     expect(learnedLeave(drives, set.copyWith(leave: 7 * 60 + 25)), isNull, reason: 'already about right');
-  });
-
-  test('a week of quiet is counted by moment, siblings together once', () {
-    final now = DateTime(2026, 10, 18, 18); // Sunday evening
-    final results = [
-      ActivityResult(childId: 'a', itemId: 'x', at: DateTime(2026, 10, 16, 7, 40), seconds: 600),
-      ActivityResult(childId: 'b', itemId: 'x', at: DateTime(2026, 10, 16, 7, 40), seconds: 600),
-      ActivityResult(childId: 'a', itemId: 'y', at: DateTime(2026, 10, 16, 19, 45), seconds: 900),
-      ActivityResult(childId: 'a', itemId: 'z', at: DateTime(2026, 10, 1, 19, 45), seconds: 900),
-    ];
-    final minutes = peaceMinutes(results, r, now);
-    expect(minutes[DayMomentKind.car], 10);
-    expect(minutes[DayMomentKind.bedtime], 15);
-    expect(minutes.values.fold(0, (a, b) => a + b), 25);
   });
 
   test('the widgets get today and tomorrow as lines they can read without the app', () {

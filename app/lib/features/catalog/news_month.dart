@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/theme/app_theme.dart';
 import '../../core/audio/kiddo_voice.dart';
 import '../../core/storage/storage_providers.dart';
 import '../alerts/alerts.dart';
@@ -15,8 +14,18 @@ import 'widgets/item_art.dart';
 import 'widgets/item_views.dart';
 
 const monthNames = [
-  'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
-  'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień',
+  'Styczeń',
+  'Luty',
+  'Marzec',
+  'Kwiecień',
+  'Maj',
+  'Czerwiec',
+  'Lipiec',
+  'Sierpień',
+  'Wrzesień',
+  'Październik',
+  'Listopad',
+  'Grudzień',
 ];
 
 /// The plays of [month] with a release date in it, in order: those out already and those
@@ -37,73 +46,30 @@ class NewsMonth extends ConsumerStatefulWidget {
 }
 
 class _NewsMonthState extends ConsumerState<NewsMonth> {
-  int _offset = 0;
-
   @override
   Widget build(BuildContext context) {
     final full = ref.watch(fullCatalogProvider).value;
     final today = ref.watch(calendarDayProvider);
     if (full == null) return const SizedBox.shrink();
     final text = Theme.of(context).textTheme;
-    final month = DateTime(today.year, today.month + _offset);
-    final plays = premieresOf(full, month);
-    final waiting = plays.where((i) => i.releasedOn!.isAfter(today) || !isReady(i)).length;
-    final alertsOn = ref.watch(alertsOptInProvider).value ?? false;
+    // This month and the next in one row, no month tabs and no counts (Nela, 2026-10-18).
+    final plays = [...premieresOf(full, today), ...premieresOf(full, DateTime(today.year, today.month + 1))];
+    if (plays.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Nowości', style: text.headlineLarge),
-        const SizedBox(height: 6),
-        Wrap(
-          spacing: 6,
-          children: [
-            for (final offset in [0, 1])
-              Padding(
-                padding: EdgeInsets.zero,
-                child: ChoiceChip(
-                  label: Text(monthNames[DateTime(today.year, today.month + offset).month - 1]),
-                  selected: _offset == offset,
-                  labelStyle: selectableChipLabel(context, selected: _offset == offset),
-                  showCheckmark: false,
-                  onSelected: (_) => setState(() => _offset = offset),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(
-          plays.isEmpty
-              ? 'Premiery na ${monthNames[month.month - 1].toLowerCase()} pokażemy tutaj, gdy tylko będą gotowe.'
-              : waiting == 0
-              ? '${plays.length == 1 ? 'Nowa zabawa' : 'Nowe zabawy'} w tym miesiącu: wszystkie już odkryte.'
-              : 'Odkryte: ${plays.length - waiting}, czeka na premierę: $waiting. Karty odwracają się w dniu premiery.',
-          style: text.bodyMedium,
-        ),
         const SizedBox(height: 12),
-        if (plays.isNotEmpty)
-          SizedBox(
-            // The cover plus title and date, which grow with the phone's text size.
-            height: 186 + 84 * MediaQuery.textScalerOf(context).scale(1),
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: plays.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 12),
-              itemBuilder: (context, i) => _PremiereCard(item: plays[i], today: today),
-            ),
+        SizedBox(
+          // The cover plus title and date, which grow with the phone's text size.
+          height: 190 + 104 * MediaQuery.textScalerOf(context).scale(1),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: plays.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            itemBuilder: (context, i) => _PremiereCard(item: plays[i], today: today),
           ),
-        if (waiting > 0 && !alertsOn)
-          TextButton.icon(
-            onPressed: () async {
-              final ok = await ref.read(alertsOptInProvider.notifier).set(true);
-              if (!ok && context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Powiadomienia są wyłączone w ustawieniach telefonu.')),
-                );
-              }
-            },
-            icon: const Icon(Icons.notifications_active_outlined),
-            label: const Text('Powiadom mnie o premierach'),
-          ),
+        ),
       ],
     );
   }
@@ -114,8 +80,9 @@ class UncoveredController extends AsyncNotifier<Set<String>> {
   static const _key = 'uncovered_premieres';
 
   @override
-  Future<Set<String>> build() async =>
-      {...?(await ref.read(databaseProvider).readValue(_key))?.split(',').where((s) => s.isNotEmpty)};
+  Future<Set<String>> build() async => {
+    ...?(await ref.read(databaseProvider).readValue(_key))?.split(',').where((s) => s.isNotEmpty),
+  };
 
   Future<void> uncover(String id) async {
     final next = {...?state.value, id};
@@ -162,7 +129,8 @@ class _PremiereCardState extends ConsumerState<_PremiereCard> with SingleTickerP
     final out = (!item.releasedOn!.isAfter(today) && isReady(item)) || gift;
     final uncovered = ref.watch(uncoveredProvider).value;
     // Waits for a finger: out within the last two weeks (or the birthday gift), not yet turned.
-    final toUncover = out &&
+    final toUncover =
+        out &&
         uncovered != null &&
         !uncovered.contains(item.id) &&
         (gift || today.difference(item.releasedOn!).inDays < 14);
@@ -179,10 +147,26 @@ class _PremiereCardState extends ConsumerState<_PremiereCard> with SingleTickerP
         children: [
           ColorFiltered(
             colorFilter: const ColorFilter.matrix([
-              0.2126, 0.7152, 0.0722, 0, 0,
-              0.2126, 0.7152, 0.0722, 0, 0,
-              0.2126, 0.7152, 0.0722, 0, 0,
-              0, 0, 0, 1, 0,
+              0.2126,
+              0.7152,
+              0.0722,
+              0,
+              0,
+              0.2126,
+              0.7152,
+              0.0722,
+              0,
+              0,
+              0.2126,
+              0.7152,
+              0.0722,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
             ]),
             child: cover,
           ),
@@ -216,17 +200,22 @@ class _PremiereCardState extends ConsumerState<_PremiereCard> with SingleTickerP
           end: Alignment.bottomRight,
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.auto_awesome_rounded, color: Color(0xFF211C35), size: 44),
-          const SizedBox(height: 6),
-          Text(
-            gift ? 'Prezent!' : 'Odkryj!',
-            style: text.headlineSmall?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w900),
-          ),
-          Text('Dotknij karty', style: text.bodySmall?.copyWith(color: const Color(0xFF211C35))),
-        ],
+      padding: const EdgeInsets.all(10),
+      // Shrinks with very large text instead of overflowing the card.
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.auto_awesome_rounded, color: Color(0xFF211C35), size: 44),
+            const SizedBox(height: 6),
+            Text(
+              gift ? 'Prezent!' : 'Odkryj!',
+              style: text.headlineSmall?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w900),
+            ),
+            Text('Dotknij karty', style: text.bodySmall?.copyWith(color: const Color(0xFF211C35))),
+          ],
+        ),
       ),
     );
     // Turning over: the back for the first half, then the cover.
@@ -261,11 +250,7 @@ class _PremiereCardState extends ConsumerState<_PremiereCard> with SingleTickerP
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Semantics(
-              button: true,
-              label: toUncover ? 'Odkryj nową zabawę: ${item.title}' : null,
-              child: card,
-            ),
+            Semantics(button: true, label: toUncover ? 'Odkryj nową zabawę: ${item.title}' : null, child: card),
             const SizedBox(height: 8),
             Text(
               item.title,

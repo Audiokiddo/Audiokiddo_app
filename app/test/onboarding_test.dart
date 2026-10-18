@@ -109,13 +109,13 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Nie teraz'));
     await tester.pumpAndSettle();
-    expect(find.text('Cześć, tu AudioKiddo.'), findsOneWidget);
+    expect(find.text('Cześć, tu audiokiddo.'), findsOneWidget);
     await tester.tap(find.text('Dalej'));
     await tester.pumpAndSettle();
     expect(find.text('Jak to działa'), findsOneWidget);
     await tester.tap(find.text('Zaczynamy'));
     await tester.pumpAndSettle();
-    expect(find.text('Ta-da! Witajcie w AudioKiddo'), findsOneWidget);
+    expect(find.text('Ta-da! Witajcie w audiokiddo'), findsOneWidget);
     expect(find.textContaining('po jednej z każdego pakietu'), findsOneWidget);
     // What is free now and what the subscription adds, said right after the first sign-in.
     expect(find.byType(FreeVsSubscription), findsOneWidget);

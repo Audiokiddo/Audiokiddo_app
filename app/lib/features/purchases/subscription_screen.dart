@@ -71,7 +71,7 @@ class SubscriptionScreen extends ConsumerWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              'Abonament AudioKiddo',
+                              'Abonament audiokiddo',
                               style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                             ),
                           ),

@@ -94,7 +94,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In pl, this message translates to:
-  /// **'AudioKiddo'**
+  /// **'audiokiddo'**
   String get appTitle;
 
   /// No description provided for @navHome.
@@ -994,7 +994,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingHelloTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Cześć, tu AudioKiddo.'**
+  /// **'Cześć, tu audiokiddo.'**
   String get onboardingHelloTitle;
 
   /// No description provided for @onboardingHelloBody.
@@ -1306,7 +1306,7 @@ abstract class AppLocalizations {
   /// No description provided for @micDenied.
   ///
   /// In pl, this message translates to:
-  /// **'Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → AudioKiddo. Do tego czasu zabawy działają bez mikrofonu.'**
+  /// **'Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → audiokiddo. Do tego czasu zabawy działają bez mikrofonu.'**
   String get micDenied;
 
   /// No description provided for @micWithout.
@@ -1888,7 +1888,7 @@ abstract class AppLocalizations {
   /// No description provided for @remindersPreviewApp.
   ///
   /// In pl, this message translates to:
-  /// **'AudioKiddo'**
+  /// **'audiokiddo'**
   String get remindersPreviewApp;
 
   /// No description provided for @remindersPreviewTime.
@@ -2812,7 +2812,7 @@ abstract class AppLocalizations {
   /// No description provided for @weekCardKicker.
   ///
   /// In pl, this message translates to:
-  /// **'AudioKiddo · ostatnie 7 dni'**
+  /// **'audiokiddo · ostatnie 7 dni'**
   String get weekCardKicker;
 
   /// No description provided for @weekCardTitle.
@@ -2872,7 +2872,7 @@ abstract class AppLocalizations {
   /// No description provided for @weekCardShareText.
   ///
   /// In pl, this message translates to:
-  /// **'Tydzień z AudioKiddo: {name}'**
+  /// **'Tydzień z audiokiddo: {name}'**
   String weekCardShareText(String name);
 
   /// No description provided for @weekCardSheetTitle.
@@ -3070,13 +3070,13 @@ abstract class AppLocalizations {
   /// No description provided for @widgetHowToIos.
   ///
   /// In pl, this message translates to:
-  /// **'1. Przytrzymaj palcem ikonę AudioKiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → AudioKiddo.'**
+  /// **'1. Przytrzymaj palcem ikonę audiokiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → audiokiddo.'**
   String get widgetHowToIos;
 
   /// No description provided for @widgetHowToAndroid.
   ///
   /// In pl, this message translates to:
-  /// **'1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź AudioKiddo i dotknij „Dodaj”.'**
+  /// **'1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź audiokiddo i dotknij „Dodaj”.'**
   String get widgetHowToAndroid;
 
   /// No description provided for @pickTitle.

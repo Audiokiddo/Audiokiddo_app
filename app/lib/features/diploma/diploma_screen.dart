@@ -122,7 +122,7 @@ class _DiplomaViewState extends ConsumerState<_DiplomaView> {
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(file.path, mimeType: 'image/png')],
-          text: 'Dyplom AudioKiddo: pakiet ${widget.pack.title} ukończony.',
+          text: 'Dyplom audiokiddo: pakiet ${widget.pack.title} ukończony.',
           sharePositionOrigin: origin == null ? null : origin.localToGlobal(Offset.zero) & origin.size,
         ),
       );

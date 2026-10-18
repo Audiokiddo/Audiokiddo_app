@@ -28,7 +28,7 @@ void main() {
       expect(reminderSlots(s, texts, now: DateTime(2026, 9, 28, 20)).first.at.day, 29);
     });
 
-    test('a few days in, once: who makes AudioKiddo (no thank-you screen at the start)', () {
+    test('a few days in, once: who makes audiokiddo (no thank-you screen at the start)', () {
       final note = aboutUsSlot(hour: 18, minute: 30, now: DateTime(2026, 9, 28, 10));
       expect(note.at, DateTime(2026, 10, 2, 18, 30));
       expect(note.id, greaterThanOrEqualTo(1000), reason: 'not replaced with the daily reminders');

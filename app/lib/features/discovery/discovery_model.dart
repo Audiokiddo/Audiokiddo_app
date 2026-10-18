@@ -20,13 +20,16 @@ enum PlayCategory {
 
   /// What anyone can play without the subscription. Last in the enum, so a free play's own
   /// kind still decides its picture ([itemCategory]); first among the tiles.
-  free('Darmowe');
+  free('Darmowe'),
+
+  /// The detective packs (Nela, 2026-10-18). Last, so it never changes a play's own kind.
+  sleuth('Detektywistyczne');
 
   const PlayCategory(this.label);
   final String label;
 
   /// The tiles on Start and in the library, in this order.
-  static const shown = [free, creative, movement, detective, education, adventure, songs];
+  static const shown = [free, creative, movement, detective, education, adventure, sleuth, songs];
 
   bool matches(ContentItem i) => switch (this) {
     creative =>
@@ -40,6 +43,7 @@ enum PlayCategory {
     songs => i.kind == ContentKind.song,
     calm => i.situations.contains(Situation.przedSnem),
     free => i.isFree,
+    sleuth => i.packId == 'detektyw',
   };
 }
 

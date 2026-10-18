@@ -13,7 +13,7 @@ import '../parental_gate/parental_gate.dart';
 String grandparentsMessage({String? childName, List<String> favorites = const []}) {
   final who = childName ?? 'dziecko';
   return [
-    'AudioKiddo, czyli zabawy na głos dla ${childName ?? 'dziecka'}: https://audiokiddo.pl',
+    'audiokiddo, czyli zabawy na głos dla ${childName ?? 'dziecka'}: https://audiokiddo.pl',
     if (favorites.isNotEmpty) 'Najbardziej lubi: ${favorites.map((t) => '„$t”').join(', ')}.',
     'Jak to działa: włączasz zabawę i kładziesz telefon ekranem w dół. Głos zadaje pytania, $who odpowiada na głos.',
     'Darmowe zabawy działają od razu. Wszystkie zabawy: poproś nas o kod rodziny i wpisz go w Więcej → Drugi rodzic.',
@@ -41,7 +41,7 @@ Future<void> shareWithGrandparents(BuildContext context, WidgetRef ref) async {
   await SharePlus.instance.share(
     ShareParams(
       text: grandparentsMessage(childName: child?.name, favorites: favorites),
-      subject: 'AudioKiddo dla dziadków',
+      subject: 'audiokiddo dla dziadków',
       sharePositionOrigin: origin == null ? null : origin.localToGlobal(Offset.zero) & origin.size,
     ),
   );

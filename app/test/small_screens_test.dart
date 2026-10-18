@@ -110,7 +110,7 @@ void main() {
 
     testWidgets('$name: family welcome and Szop’en’s tour fit', (tester) async {
       await pumpDevice(tester, device, welcomeDone: false);
-      expect(find.text('Ta-da! Witajcie w AudioKiddo'), findsOneWidget);
+      expect(find.text('Ta-da! Witajcie w audiokiddo'), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'fanfare on $name');
       await tester.scrollUntilVisible(find.text('Odbieram'), 200, scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text('Odbieram'));

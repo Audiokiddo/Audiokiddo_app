@@ -222,7 +222,7 @@ class AppSessionAudio implements SessionAudio {
     final skip = _skipItem = Completer<void>();
     await _ref
         .read(playbackControllerProvider)
-        .start(item, album: album ?? 'AudioKiddo', fromStart: true, greet: false);
+        .start(item, album: album ?? 'audiokiddo', fromStart: true, greet: false);
     if (fadeOut > Duration.zero) handler.fadeOutAtEnd(fadeOut);
     // Wait until this item actually runs, then until it is over (or stopped, or skipped).
     final over = handler.playbackState

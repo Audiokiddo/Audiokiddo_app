@@ -185,7 +185,7 @@ class CarLibrary {
         MediaItem(
           id: item.id,
           title: item.title,
-          album: 'AudioKiddo',
+          album: 'audiokiddo',
           artUri: await coverArtUri(item),
           duration: Duration(seconds: item.durationSec),
           playable: true,
@@ -255,7 +255,7 @@ class CarLibrary {
     final catalog = await _container.read(catalogProvider.future);
     final item = catalog.item(itemId);
     if (item == null || !_container.read(canPlayProvider(item))) return;
-    await _container.read(playbackControllerProvider).start(item, album: 'AudioKiddo');
+    await _container.read(playbackControllerProvider).start(item, album: 'audiokiddo');
   }
 }
 

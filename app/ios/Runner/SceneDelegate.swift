@@ -132,7 +132,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
   ) {
     interface = interfaceController
     CarPlaySceneDelegate.current = self
-    interfaceController.setRootTemplate(CPListTemplate(title: "AudioKiddo", sections: []), animated: false, completion: nil)
+    interfaceController.setRootTemplate(CPListTemplate(title: "audiokiddo", sections: []), animated: false, completion: nil)
     updateLoopButton()
     reload()
   }
@@ -148,13 +148,13 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
 
   func reload() {
     guard let channel = CarPlayBridge.channel else {
-      return message("Otwórz AudioKiddo na telefonie, żeby wczytać zabawy.")
+      return message("Otwórz audiokiddo na telefonie, żeby wczytać zabawy.")
     }
     channel.invokeMethod("library", arguments: nil) { [weak self] result in
       guard let self else { return }
       guard let library = result as? [String: Any], let tabs = library["tabs"] as? [[String: Any]], !tabs.isEmpty
       else {
-        return self.message("Otwórz AudioKiddo na telefonie, żeby wczytać zabawy.")
+        return self.message("Otwórz audiokiddo na telefonie, żeby wczytać zabawy.")
       }
       let playing = library["playing"] as? String
       self.looping = library["looping"] as? Bool ?? false
@@ -170,7 +170,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
         return
       }
       let templates: [CPTemplate] = shown.map { tab in
-        let title = tab["title"] as? String ?? "AudioKiddo"
+        let title = tab["title"] as? String ?? "audiokiddo"
         let list = CPListTemplate(title: title, sections: self.sections(tab["sections"], playing: playing))
         list.tabTitle = title
         if let symbol = tab["symbol"] as? String { list.tabImage = UIImage(systemName: symbol) }
@@ -240,7 +240,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
     }
     tabBar = nil
     interface?.setRootTemplate(
-      CPListTemplate(title: "AudioKiddo", sections: [CPListSection(items: [item])]), animated: false, completion: nil)
+      CPListTemplate(title: "audiokiddo", sections: [CPListSection(items: [item])]), animated: false, completion: nil)
   }
 }
 

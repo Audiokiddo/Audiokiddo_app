@@ -35,16 +35,9 @@ import 'widgets/item_art.dart';
 import '../home/launch_greeting.dart';
 import '../welcome/szop_tour.dart';
 import 'widgets/catalog_loader.dart';
-import '../day/peace_week.dart';
 import 'news_month.dart';
 import '../lord/szop_quota.dart';
 import '../family/birthday.dart';
-
-final screenFreeMinutesProvider = Provider<int>((ref) {
-  final family = ref.watch(familyProvider).value;
-  final since = ref.watch(clockProvider)().subtract(const Duration(days: 7));
-  return ((family?.results.where((r) => r.at.isAfter(since)).fold<int>(0, (s, r) => s + r.seconds) ?? 0) + 59) ~/ 60;
-});
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -85,16 +78,9 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              const _SzopBubble(),
-              const LaunchGreeting(),
-              const AlertsKeeper(),
-              const FirstPlayCard(),
-              const AccessEndingBanner(),
-              // Start in order of what a parent needs (Mój dzień, 2026-10-17): what fits now, the
-              // play they were in the middle of, then plays; offers and extras further down.
-              const BirthdayBanner(),
-              const MomentCard(),
-              const LeaveHint(),
+              // Nowości first, then the play in progress (Nela, 2026-10-18).
+              const SizedBox(height: 6),
+              TourTarget(id: 'hero', child: const NewsMonth()),
               if (items.isNotEmpty && ref.watch(closedContinueProvider).value != items.first.id) ...[
                 RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
                 Row(
@@ -108,15 +94,20 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
               ],
-              const SizedBox(height: 10),
-              // This month's premieres (Dawid, 2026-10-17): out ones in colour, coming ones face down.
-              TourTarget(id: 'hero', child: const NewsMonth()),
-              // Up to the first scroll only what fits now, the play in progress and the news
-              // (parent review, 2026-10-18); everything else below.
+              const _SzopBubble(),
+              const LaunchGreeting(),
+              const AlertsKeeper(),
+              const FirstPlayCard(),
+              const AccessEndingBanner(),
+              // Start in order of what a parent needs (Mój dzień, 2026-10-17): what fits now, the
+              // play they were in the middle of, then plays; offers and extras further down.
+              const BirthdayBanner(),
+              const MomentCard(),
+              const LeaveHint(),
               const WinBackCard(),
               // Age and kind right under the big tiles, visible as soon as the app opens.
               const SizedBox(height: 14),
-              const _AgeRow(),
+              const AgeTiles(),
               const SizedBox(height: 10),
               const _CategoryChips(),
               const SizedBox(height: 18),
@@ -126,7 +117,7 @@ class HomeScreen extends ConsumerWidget {
               // Plays first, the way parents think: what now, then for which age and kind;
               // offers and helpers after them. No "your packs": only the subscription is sold.
               const RefSection('Co robicie?'),
-              const _QuickNeeds(),
+              const ModeTiles(),
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton.icon(
@@ -135,7 +126,6 @@ class HomeScreen extends ConsumerWidget {
                   label: const Text('Wszystkie plany: poranek, auto, po przedszkolu, kolacja…'),
                 ),
               ),
-              const PeaceWeekCard(),
               const PromotionBanner(),
               const PendingDiplomaCard(),
               _NextPackCard(catalog: catalog),
@@ -286,35 +276,33 @@ class _SzopBubbleState extends ConsumerState<_SzopBubble> {
   }
 }
 
-/// Ages as three big chips, each opening the library for that age.
-class _AgeRow extends StatelessWidget {
-  const _AgeRow();
+/// Ages as three picture tiles drawn by Nela (2026-10-18), each opening the library for that
+/// age (Start and the library).
+class AgeTiles extends StatelessWidget {
+  const AgeTiles({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const ages = [(3, 4, AkBrand.sun), (5, 6, Color(0xFFB8E3DF)), (7, 9, Color(0xFFDED0EF))];
-    final text = Theme.of(context).textTheme;
+    const ages = [(3, 4, 'age_3_4', 'lata'), (5, 6, 'age_5_6', 'lat'), (7, 9, 'age_7_9', 'lat')];
     return Row(
       children: [
-        for (final (i, (from, to, color)) in ages.indexed) ...[
+        for (final (i, (from, to, image, years)) in ages.indexed) ...[
           if (i > 0) const SizedBox(width: 10),
           Expanded(
-            child: Material(
-              color: color,
-              borderRadius: BorderRadius.circular(18),
-              child: InkWell(
+            child: Semantics(
+              button: true,
+              label: '$from–$to $years',
+              excludeSemantics: true,
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(18),
-                onTap: () => context.push(LibraryFilter(age: to, ageFrom: from).toLocation()),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    children: [
-                      Text(
-                        '$from–$to',
-                        style: text.titleLarge?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
-                      ),
-                      Text('lat', style: text.bodySmall?.copyWith(color: const Color(0xFF211C35))),
-                    ],
+                child: Material(
+                  child: Ink.image(
+                    image: AssetImage('assets/tiles/$image.jpg'),
+                    fit: BoxFit.cover,
+                    child: InkWell(
+                      onTap: () => context.push(LibraryFilter(age: to, ageFrom: from).toLocation()),
+                      child: const AspectRatio(aspectRatio: 1),
+                    ),
                   ),
                 ),
               ),
@@ -324,6 +312,41 @@ class _AgeRow extends StatelessWidget {
       ],
     );
   }
+}
+
+/// The two modes as Nela's picture tiles (the words are in the pictures): a ride and "Muszę
+/// coś zrobić". On Start ("Co robicie?") and in the library's "Dla rodzica".
+class ModeTiles extends StatelessWidget {
+  const ModeTiles({super.key});
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      for (final (i, (_, title, line, route, image)) in parentModes.indexed) ...[
+        if (i > 0) const SizedBox(width: 10),
+        Expanded(
+          child: Semantics(
+            button: true,
+            label: '$title. $line',
+            excludeSemantics: true,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Material(
+                child: Ink.image(
+                  image: AssetImage('assets/tiles/$image.jpg'),
+                  fit: BoxFit.cover,
+                  child: InkWell(
+                    onTap: () => context.push(route),
+                    child: const AspectRatio(aspectRatio: 1448 / 1086),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ],
+  );
 }
 
 /// Plays work without the internet once downloaded: said plainly on Start.
@@ -382,7 +405,7 @@ class AudioKiddoLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-    label: 'AudioKiddo',
+    label: 'audiokiddo',
     image: true,
     excludeSemantics: true,
     child: Image.asset(
@@ -712,75 +735,12 @@ class _CategoryChips extends ConsumerWidget {
   }
 }
 
-/// "Szybko": the situations a parent is usually in, one tap each.
-class _QuickNeeds extends StatelessWidget {
-  const _QuickNeeds();
 
-  @override
-  Widget build(BuildContext context) {
-    // The parent's situation, not a menu: offline and routines live in Więcej and below.
-    // November to March, the season of colds: a sick day on the sofa replaces "no preparation"
-    // (research 2026-10-12, segment "Dzień w domu").
-    final sickSeason = isSickSeason(DateTime.now());
-    final needs = [
-      (Icons.schedule_rounded, 'Mam 20 minut', 'Dobierzemy zabawy', '/ratunku'),
-      (Icons.directions_car_rounded, 'W podróży', 'Telefon leży, dziecko gra', '/podroz'),
-      (Icons.bedtime_rounded, 'Na dobranoc', 'Wyciszenie przed snem', '/dobranoc'),
-      sickSeason
-          ? (Icons.weekend_rounded, 'Na leżąco', 'Dziecko chore, zabawy bez ruchu', '/obiad?pora=chory&minuty=20')
-          : (Icons.hourglass_bottom_rounded, 'Czekamy', 'Poczekalnia, kolejka: kilka minut', '/obiad?pora=czekamy&minuty=10'),
-    ];
-    const colors = [AkBrand.sun, Color(0xFFB8E3DF), Color(0xFFDED0EF), Color(0xFFE5DCEF)];
-    return Column(
-      children: [
-        for (var row = 0; row < 2; row++)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (var col = 0; col < 2; col++) ...[
-                    if (col > 0) const SizedBox(width: 10),
-                    Expanded(
-                      child: Material(
-                        color: colors[row * 2 + col],
-                        borderRadius: BorderRadius.circular(22),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(22),
-                          onTap: () => context.push(needs[row * 2 + col].$4),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(needs[row * 2 + col].$1, size: 30, color: Color(0xFF211C35)),
-                                const SizedBox(height: 12),
-                                Text(
-                                  needs[row * 2 + col].$2,
-                                  style: Theme.of(context).textTheme.titleSmall
-                                      ?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
-                                ),
-                                Text(
-                                  needs[row * 2 + col].$3,
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(color: const Color(0xFF211C35)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
+/// The two modes on Start and in the library's "Dla rodzica".
+const parentModes = [
+  (Icons.directions_car_rounded, 'Tryb podróży', 'Powiedz, ile potrwa Wasza podróż. Ułożymy Wam playlistę!', '/podroz', 'mode_trip'),
+  (Icons.schedule_rounded, 'Muszę coś zrobić', 'Powiedz, ile czasu potrzebujesz, a my zajmiemy się resztą.', '/ratunku', 'mode_busy'),
+];
 
 /// Plays worth starting now: what is new, then what this child has not heard yet.
 final heroItemsProvider = Provider<List<ContentItem>>((ref) {

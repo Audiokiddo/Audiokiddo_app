@@ -1,7 +1,6 @@
 import 'package:ak_core/ak_core.dart';
 import 'package:audiokiddo/app.dart';
 import 'package:audiokiddo/features/catalog/catalog_providers.dart';
-import 'package:audiokiddo/features/catalog/home_screen.dart' show isSickSeason;
 import 'package:audiokiddo/features/home/quick_pick.dart' show showQuickPick;
 import 'package:audiokiddo/features/session/session_screens.dart' show TripScreen;
 import 'package:audiokiddo/features/parental_gate/gate_challenge.dart';
@@ -43,11 +42,9 @@ Future<void> pumpApp(
 Finder get mainScroll =>
     find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first;
 
-/// Opens the library on its pack view ("Wszystkie zabawy", the flat list, is the way in).
+/// Opens the library on its category view (the way in since 2026-10-18).
 Future<void> openLibrary(WidgetTester tester) async {
   await tester.tap(find.byIcon(Icons.auto_stories_outlined));
-  await tester.pumpAndSettle();
-  await tester.tap(find.text('Pakiety').first);
   await tester.pumpAndSettle();
 }
 
@@ -83,6 +80,8 @@ void main() {
     expect(find.text('Moje pakiety'), findsNothing, reason: 'Start has no pack shelf since 2026-10-13');
     expect(find.text('Wasze pakiety'), findsNothing);
     await openLibrary(tester);
+    // Lower in the categories view since 2026-10-18.
+    await tester.scrollUntilVisible(find.text('Moje pakiety'), 200, scrollable: mainScroll);
     expect(find.textContaining('do włączenia od razu · w tym darmowe'), findsOneWidget);
     await tester.tap(find.text('Moje pakiety'));
     await tester.pumpAndSettle();
@@ -92,11 +91,14 @@ void main() {
     expect(find.text('Wasz pakiet'), findsNothing);
   });
 
-  testWidgets('library opens on "Wszystkie zabawy": one flat list with a search that finds a play', (tester) async {
+  testWidgets('library opens on "Kategorie"; "Wszystkie zabawy" is one flat list with a search', (tester) async {
     await pumpApp(tester);
     await tester.tap(find.byIcon(Icons.auto_stories_outlined));
     await tester.pumpAndSettle();
-    expect(find.text('Wszystkie zabawy'), findsOneWidget);
+    expect(find.text('Szukaj zabawy lub piosenki'), findsOneWidget, reason: 'search on top of the categories');
+    expect(find.bySemanticsLabel('3–4 lata'), findsOneWidget, reason: 'age tiles under the search');
+    await tester.tap(find.text('Wszystkie zabawy'));
+    await tester.pumpAndSettle();
     expect(find.text('Moje pakiety'), findsNothing, reason: 'packs are the other view');
     expect(find.byType(TextField), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'magiczny');
@@ -116,6 +118,7 @@ void main() {
       ],
     );
     await openLibrary(tester);
+    await tester.scrollUntilVisible(find.text('Moje pakiety'), 200, scrollable: mainScroll);
     expect(find.textContaining('do włączenia od razu · 3 pakiety'), findsOneWidget);
     await tester.tap(find.text('Moje pakiety'));
     await tester.pumpAndSettle();
@@ -128,19 +131,18 @@ void main() {
     // The Teraz card can come first (it depends on the hour and the day).
     await tester.scrollUntilVisible(find.text('Nowości'), 200, scrollable: mainScroll);
     expect(find.text('Nowości'), findsOneWidget);
-    for (final label in [
-      'Mam 20 minut',
-      'W podróży',
-      'Na dobranoc',
-      isSickSeason(DateTime.now()) ? 'Na leżąco' : 'Czekamy',
-    ]) {
-      await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
-      expect(find.text(label), findsOneWidget);
+    // Nela's two picture tiles (the words are in the pictures).
+    for (final label in [RegExp('^Tryb podróży'), RegExp('^Muszę coś zrobić')]) {
+      await tester.scrollUntilVisible(find.bySemanticsLabel(label), 200, scrollable: mainScroll);
+      expect(find.bySemanticsLabel(label), findsOneWidget);
     }
     expect(find.text('Kontynuuj słuchanie'), findsNothing, reason: 'nothing to continue yet, so no empty block');
     // Age and kinds of play right under the big tiles (2026-10-13), "Darmowe" first.
-    await tester.scrollUntilVisible(find.text('3–4'), -200, scrollable: mainScroll);
-    for (final label in ['3–4', '5–6', '7–9', 'Darmowe', 'Kreatywne']) {
+    await tester.scrollUntilVisible(find.bySemanticsLabel('3–4 lata'), -200, scrollable: mainScroll);
+    for (final label in ['3–4 lata', '5–6 lat', '7–9 lat']) {
+      expect(find.bySemanticsLabel(label), findsOneWidget, reason: label);
+    }
+    for (final label in ['Darmowe', 'Kreatywne']) {
       expect(find.text(label), findsOneWidget, reason: label);
     }
     expect(find.text('Piosenki'), findsNothing, reason: 'no songs in the catalog yet, so no empty chip');
@@ -172,7 +174,12 @@ void main() {
 
   testWidgets('rescue flow has time, mood and material selection', (tester) async {
     await pumpApp(tester);
-    await tapOnStart(tester, 'Mam 20 minut');
+    final busy = find.bySemanticsLabel(RegExp('^Muszę coś zrobić'));
+    await tester.scrollUntilVisible(busy, 100, scrollable: mainScroll);
+    await tester.ensureVisible(busy);
+    await tester.pumpAndSettle();
+    await tester.tap(busy);
+    await tester.pumpAndSettle();
     expect(find.text('Ile masz czasu?'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Pokaż propozycje'), 200, scrollable: mainScroll);
     await tester.tap(find.text('Pokaż propozycje'));

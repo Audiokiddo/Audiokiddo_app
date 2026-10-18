@@ -300,7 +300,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
 
   Future<EngineEvent?> _execute(EngineCommand command, int generation) async {
     final item = _item!;
-    final media = MediaItem(id: '$gameMediaPrefix${item.id}', title: item.title, album: 'AudioKiddo');
+    final media = MediaItem(id: '$gameMediaPrefix${item.id}', title: item.title, album: 'audiokiddo');
     switch (command) {
       case PlaySegment(:final asset):
         _lastPrompt = asset;

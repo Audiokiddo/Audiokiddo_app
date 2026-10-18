@@ -88,10 +88,9 @@ void main() {
       await pumpApp(tester);
       await tester.tap(find.text('Abonament').last);
       await tester.pumpAndSettle();
-      // The ways side by side: what is free, the subscription per month. No pack for good.
-      expect(find.bySemanticsLabel(RegExp(r'^Za darmo: .*Abonament: ')), findsOneWidget);
+      // Simpler since 2026-10-18: the offer itself, no list of ways. No pack for good.
       expect(find.bySemanticsLabel(RegExp('Pakiet na zawsze')), findsNothing);
-      expect(find.text('Abonament AudioKiddo'), findsOneWidget);
+      expect(find.text('Abonament audiokiddo'), findsOneWidget);
       expect(find.text('NAJLEPIEJ SIĘ OPŁACA'), findsOneWidget);
       // Yearly first; the year is compared with twelve months, never crossed out (Omnibus).
       expect(find.text('Rocznie'), findsOneWidget);
@@ -150,12 +149,12 @@ void main() {
       await showOffer(tester, free);
       // First the question; "Tak, od razu" opens the offer.
       expect(find.text('Czy dziecko chce jeszcze?'), findsOneWidget);
-      expect(find.text('Abonament AudioKiddo'), findsNothing);
+      expect(find.text('Abonament audiokiddo'), findsNothing);
       await tester.tap(find.text('Tak, od razu'));
       await tester.pumpAndSettle();
       expect(find.text('Jest ciąg dalszy. Tak go otworzycie:'), findsOneWidget);
       expect(find.text('Następna darmowa zabawa'), findsOneWidget, reason: 'another free play first');
-      expect(find.text('Abonament AudioKiddo'), findsOneWidget);
+      expect(find.text('Abonament audiokiddo'), findsOneWidget);
       expect(find.textContaining('2 nowe zabawy co tydzień'), findsOneWidget);
       expect(find.textContaining('na zawsze'), findsNothing, reason: 'packs are not sold any more');
       await tester.ensureVisible(find.text('Wypróbuj 7 dni za darmo'));
@@ -176,7 +175,7 @@ void main() {
       await tester.tap(find.text('Nie dziś'));
       await tester.pumpAndSettle();
       expect(find.text('Następna darmowa zabawa'), findsOneWidget);
-      expect(find.text('Abonament AudioKiddo'), findsNothing);
+      expect(find.text('Abonament audiokiddo'), findsNothing);
     });
 
     testWidgets('with the subscription everything is unlocked', (tester) async {
@@ -196,8 +195,7 @@ void main() {
       await tester.tap(find.text('Twój abonament'));
       await tester.pumpAndSettle();
       expect(find.text('Masz pełny dostęp'), findsOneWidget);
-      expect(find.text('Abonament AudioKiddo'), findsNothing);
-      await tester.scrollUntilVisible(find.text('Masz ten pakiet').first, 200, scrollable: mainScroll);
+      expect(find.text('Abonament audiokiddo'), findsNothing);
       expect(find.byType(FilledButton), findsNothing, reason: 'nothing left to buy');
     });
   });

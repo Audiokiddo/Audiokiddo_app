@@ -246,7 +246,7 @@ class _KidsTile extends ConsumerWidget {
       return;
     }
     try {
-      await ref.read(playbackControllerProvider).start(item, album: pack?.title ?? 'AudioKiddo');
+      await ref.read(playbackControllerProvider).start(item, album: pack?.title ?? 'audiokiddo');
       if (context.mounted) await context.push('/dziecko/graj');
     } on Exception {
       if (context.mounted) {

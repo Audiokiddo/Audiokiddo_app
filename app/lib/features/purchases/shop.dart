@@ -156,7 +156,7 @@ void listenPurchaseMessages(BuildContext context, WidgetRef ref, {VoidCallback? 
       PurchaseMessage.pendingApproval => l10n.purchasePending,
       PurchaseMessage.storeError => l10n.purchaseStoreError,
       PurchaseMessage.storeNotReady =>
-        'Zakupy w aplikacji ruszą, gdy AudioKiddo pojawi się w App Store. Ceny są już takie, jak widzisz.',
+        'Zakupy w aplikacji ruszą, gdy audiokiddo pojawi się w App Store. Ceny są już takie, jak widzisz.',
       PurchaseMessage.verifyLater => l10n.purchaseVerifyLater,
       PurchaseMessage.nothingToRestore => l10n.purchaseNothingToRestore,
       PurchaseMessage.canceled || PurchaseMessage.none => null,

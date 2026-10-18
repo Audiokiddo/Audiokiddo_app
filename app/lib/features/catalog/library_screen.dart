@@ -20,6 +20,7 @@ import '../purchases/shop_screen.dart';
 import '../purchases/store_gateway.dart';
 import '../insights/events.dart';
 import 'all_plays.dart';
+import 'home_screen.dart' show AgeTiles, ModeTiles;
 import 'catalog_providers.dart';
 import 'library_filter.dart';
 import 'widgets/catalog_loader.dart';
@@ -41,12 +42,18 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   bool _searching = false;
   Timer? _searchPause;
 
-  /// "Wszystkie zabawy" (a flat list with search) or "Pakiety i kategorie"; the first is the
-  /// way in, because parents come to find one play fast.
-  bool _all = true;
+  /// "Kategorie" (the way in, Nela 2026-10-18) or "Wszystkie zabawy" (a flat list).
+  bool _all = false;
 
   /// Bumped when the search icon is tapped, so the field of the flat list takes the keyboard.
   int _focusAll = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // The search icon on Start opens the flat list with its search field.
+    if (GoRouterState.of(context).uri.queryParameters['szukaj'] == '1') _all = true;
+  }
 
   @override
   void dispose() {
@@ -146,8 +153,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     child: SegmentedButton<bool>(
                       showSelectedIcon: false,
                       segments: const [
+                        ButtonSegment(value: false, icon: Icon(Icons.category_rounded), label: Text('Kategorie')),
                         ButtonSegment(value: true, icon: Icon(Icons.list_rounded), label: Text('Wszystkie zabawy')),
-                        ButtonSegment(value: false, icon: Icon(Icons.collections_bookmark_rounded), label: Text('Pakiety')),
                       ],
                       selected: {_all && !ref.read(welcomeProvider).tourPending},
                       onSelectionChanged: (s) => setState(() => _all = s.single),
@@ -254,28 +261,34 @@ class _Browse extends ConsumerWidget {
     final byId = {for (final p in products.value ?? const <StoreProduct>[]) p.id: p};
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
+      // Search and age first, then kinds of play; packs, printables and tools further down,
+      // the code to redeem at the very bottom (Nela, 2026-10-18).
       children: [
-        const MyPacksTile(),
-        const SizedBox(height: 14),
         _SearchField(onTap: onSearch),
+        const SizedBox(height: 14),
+        const AgeTiles(),
         const SizedBox(height: 10),
         _QuickChips(onFilter: onFilter),
-        const SizedBox(height: 14),
-        _PrintBanner(catalog: catalog, onFilter: onFilter),
         if (fresh.isNotEmpty) ...[
           const RefSection('Najnowsze'),
           _Covers(items: fresh.take(10).toList()),
         ],
         const RefSection('Kategorie'),
         _CategoryList(onFilter: onFilter),
+        const SizedBox(height: 18),
+        const MyPacksTile(),
         if (toDiscover.isNotEmpty) ...[
           RefSection(owned.isEmpty ? 'Pakiety' : 'Do odkrycia'),
           for (final s in toDiscover) _CollectionRow(summary: s, product: byId[s.pack.storeProductId]),
         ],
         if (loose.isNotEmpty) _Shelf(title: 'Piosenki i inne', items: loose),
-        const Padding(padding: EdgeInsets.only(top: 8), child: Center(child: RedeemAccessLink())),
+        const SizedBox(height: 14),
+        _PrintBanner(catalog: catalog),
         const RefSection('Dla rodzica'),
+        const ModeTiles(),
+        const SizedBox(height: 10),
         _ParentTools(onFilter: onFilter),
+        const Padding(padding: EdgeInsets.only(top: 18), child: Center(child: RedeemAccessLink())),
       ],
     );
   }
@@ -284,15 +297,14 @@ class _Browse extends ConsumerWidget {
 /// "Do druku": case files, cards and guides, as a bright card near the top of the library so
 /// parents find the printables without scrolling to the tools.
 class _PrintBanner extends StatelessWidget {
-  const _PrintBanner({required this.catalog, required this.onFilter});
+  const _PrintBanner({required this.catalog});
 
   final Catalog catalog;
-  final ValueChanged<LibraryFilter> onFilter;
 
   @override
   Widget build(BuildContext context) {
-    const filter = LibraryFilter(printable: true);
-    final count = filter.apply(catalog.items).length;
+    final count =
+        catalog.items.fold<int>(0, (n, i) => n + i.pdf.length) + catalog.packs.where((p) => p.guide != null).length;
     if (count == 0) return const SizedBox.shrink();
     final text = Theme.of(context).textTheme;
     const ink = Color(0xFF211C35);
@@ -301,10 +313,10 @@ class _PrintBanner extends StatelessWidget {
       borderRadius: BorderRadius.circular(22),
       child: InkWell(
         borderRadius: BorderRadius.circular(22),
-        onTap: () => onFilter(filter),
+        onTap: () => context.push('/do-druku'),
         child: Semantics(
           button: true,
-          label: 'Do druku: akta sprawy, ${playsLabel(count)} z pakietu Detektyw',
+          label: 'Do druku: $count plików do pobrania i wydrukowania',
           excludeSemantics: true,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
@@ -323,7 +335,7 @@ class _PrintBanner extends StatelessWidget {
                     children: [
                       Text('Do druku', style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800)),
                       Text(
-                        'Akta sprawy z pakietu Detektyw: ${playsLabel(count)} z kartą do wydrukowania.',
+                        'Pliki do pobrania i wydrukowania: przewodniki, karty, dyplomy.',
                         style: text.bodySmall?.copyWith(color: ink),
                       ),
                     ],
@@ -873,8 +885,6 @@ class _ParentTools extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final downloaded = ref.watch(downloadSummaryProvider).value?.itemIds.length ?? 0;
     final tools = <(IconData, String, String, VoidCallback)>[
-      (Icons.schedule_rounded, 'Mam 20 minut', 'Dobierzemy zabawy', () => context.push('/ratunku')),
-      (Icons.directions_car_rounded, 'Do auta', 'Cykl na całą drogę', () => context.push('/podroz')),
       (
         Icons.offline_pin_rounded,
         'Bez internetu',
@@ -884,8 +894,8 @@ class _ParentTools extends ConsumerWidget {
       (
         Icons.print_rounded,
         'Do druku',
-        'Akta sprawy Detektywa',
-        () => onFilter(const LibraryFilter(printable: true)),
+        'Pliki do wydrukowania',
+        () => context.push('/do-druku'),
       ),
       (Icons.queue_music_rounded, 'Kolejka', 'Ułóż własną listę', () => context.push('/kolejka')),
       (Icons.child_care_rounded, 'Tryb dziecka', 'Telefon tylko z zabawami', () => showKidsModeSetup(context, ref)),

@@ -778,7 +778,7 @@ class _UpNext extends ConsumerWidget {
               // Recordings start right here in the player; a game opens its own screen.
               onPressed: () => next.kind == ContentKind.interactiveGame
                   ? startItem(context, next)
-                  : ref.read(playbackControllerProvider).start(next, album: 'AudioKiddo'),
+                  : ref.read(playbackControllerProvider).start(next, album: 'audiokiddo'),
               icon: const Icon(Icons.play_arrow_rounded),
             ),
           ],

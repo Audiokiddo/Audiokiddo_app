@@ -1,6 +1,6 @@
 {
   "@@locale": "pl",
-  "appTitle": "AudioKiddo",
+  "appTitle": "audiokiddo",
   "navHome": "Start",
   "navLibrary": "Biblioteka",
   "homeGreeting": "Czas na zabawę",
@@ -312,7 +312,7 @@
   "gameTapNow": "Dotknij ekranu!",
   "gameFinished": "Koniec zabawy",
   "gameFailed": "Nie udało się uruchomić zabawy.",
-  "onboardingHelloTitle": "Cześć, tu AudioKiddo.",
+  "onboardingHelloTitle": "Cześć, tu audiokiddo.",
   "onboardingHelloBody": "Zanim zaczniemy: podgłośnij telefon do wygodnego poziomu. Tak, żeby było dobrze słychać, ale bez ogłuszania. Uszy są nam jeszcze potrzebne.",
   "onboardingHowTitle": "Jak to działa",
   "onboardingHowListen": "Włączasz zabawę i odkładasz telefon. Dziecko słucha, odpowiada i wykonuje zadania.",
@@ -402,7 +402,7 @@
   "micOnBody": "Włączone. Zabawy słuchają klaśnięć i głosu dziecka tylko wtedy, gdy czekają na odpowiedź. Nic nie jest nagrywane ani wysyłane.",
   "micEnable": "Włącz mikrofon",
   "micDisable": "Wyłącz",
-  "micDenied": "Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → AudioKiddo. Do tego czasu zabawy działają bez mikrofonu.",
+  "micDenied": "Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → audiokiddo. Do tego czasu zabawy działają bez mikrofonu.",
   "micWithout": "Bez mikrofonu zabawa podpowiada, kiedy odpowiedzieć, i czeka chwilę na odpowiedź.",
   "signInApple": "Kontynuuj z Apple",
   "signInGoogle": "Kontynuuj z Google",
@@ -530,7 +530,7 @@
   "remindersLater": "Nie teraz",
   "remindersDenied": "Telefon nie pozwolił na powiadomienia. Możesz to zmienić w Ustawieniach telefonu.",
   "remindersNote": "Zmienisz to w każdej chwili w zakładce Plan.",
-  "remindersPreviewApp": "AudioKiddo",
+  "remindersPreviewApp": "audiokiddo",
   "remindersPreviewTime": "teraz",
   "navPlan": "Plan",
   "childNumber": "Dziecko {n}",
@@ -993,7 +993,7 @@
       }
     }
   },
-  "weekCardKicker": "AudioKiddo · ostatnie 7 dni",
+  "weekCardKicker": "audiokiddo · ostatnie 7 dni",
   "weekCardTitle": "{name} w tym tygodniu",
   "@weekCardTitle": {
     "placeholders": {
@@ -1052,7 +1052,7 @@
     }
   },
   "weekCardAskGeneric": "Zapytajcie, w co grało z Szop’enem. Opowie Wam wszystko.",
-  "weekCardShareText": "Tydzień z AudioKiddo: {name}",
+  "weekCardShareText": "Tydzień z audiokiddo: {name}",
   "@weekCardShareText": {
     "placeholders": {
       "name": {
@@ -1126,8 +1126,8 @@
   "stepRemindersHint": "Raz dziennie, z humorem",
   "stepWidget": "Dodaj widżet na ekran",
   "stepWidgetHint": "Właściwa zabawa o każdej porze dnia",
-  "widgetHowToIos": "1. Przytrzymaj palcem ikonę AudioKiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → AudioKiddo.",
-  "widgetHowToAndroid": "1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź AudioKiddo i dotknij „Dodaj”.",
+  "widgetHowToIos": "1. Przytrzymaj palcem ikonę audiokiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → audiokiddo.",
+  "widgetHowToAndroid": "1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź audiokiddo i dotknij „Dodaj”.",
   "pickTitle": "Co teraz?",
   "pickWhere": "Gdzie jesteście?",
   "pickHome": "W domu",

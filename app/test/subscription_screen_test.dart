@@ -53,7 +53,7 @@ void main() {
 
   testWidgets('cancelling asks why first, then confirms with the end date; staying is one tap', (tester) async {
     await _pump(tester, [_sub(EntitlementSource.appStore)]);
-    expect(find.text('Abonament AudioKiddo'), findsOneWidget);
+    expect(find.text('Abonament audiokiddo'), findsOneWidget);
     expect(find.text('Aktywny'), findsOneWidget);
     expect(find.text('Przywróć poprzednie zakupy'), findsOneWidget);
 
@@ -77,7 +77,7 @@ void main() {
     await tester.tap(find.text('Zostaw subskrypcję'));
     await tester.pumpAndSettle();
     expect(find.text('Potwierdź anulowanie'), findsNothing);
-    expect(find.text('Abonament AudioKiddo'), findsOneWidget);
+    expect(find.text('Abonament audiokiddo'), findsOneWidget);
   });
 
   testWidgets('a reason we can fix gets an answer before the confirmation', (tester) async {

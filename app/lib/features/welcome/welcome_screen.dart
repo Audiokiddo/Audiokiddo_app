@@ -100,7 +100,7 @@ class _Fanfare extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Ta-da! Witajcie w AudioKiddo',
+                        'Ta-da! Witajcie w audiokiddo',
                         textAlign: TextAlign.center,
                         style: text.headlineMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
                       ),

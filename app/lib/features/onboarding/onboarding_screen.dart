@@ -110,7 +110,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('AudioKiddo', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                  Text('audiokiddo', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                   const SizedBox(height: 40),
                   Text('Więcej\nniż\nsłuchanie.', style: text.displaySmall?.copyWith(fontSize: 44, height: 1.12)),
                   const SizedBox(height: 18),

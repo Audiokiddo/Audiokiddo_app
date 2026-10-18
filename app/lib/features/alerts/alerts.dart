@@ -101,7 +101,7 @@ class _AlertsKeeperState extends ConsumerState<AlertsKeeper> {
             id: _accessWeekId,
             at: _evening(ending.subtract(const Duration(days: 7))),
             title: 'Za tydzień koniec dostępu',
-            body: 'Cała biblioteka AudioKiddo $when. Przedłuż, żeby zabawy grały dalej.',
+            body: 'Cała biblioteka audiokiddo $when. Przedłuż, żeby zabawy grały dalej.',
           ),
         );
         await scheduler.schedule(
@@ -119,7 +119,7 @@ class _AlertsKeeperState extends ConsumerState<AlertsKeeper> {
             id: _newsFirstId + n,
             at: DateTime(item.releasedOn!.year, item.releasedOn!.month, item.releasedOn!.day, 17),
             title: 'Nowa zabawa: ${item.title}',
-            body: 'Właśnie się pojawiła w AudioKiddo. Szop’en już sprawdził, działa.',
+            body: 'Właśnie się pojawiła w audiokiddo. Szop’en już sprawdził, działa.',
           ),
         );
       }
@@ -235,7 +235,7 @@ class PremiereCountdown extends ConsumerWidget {
                       style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
                     ),
                     Text(
-                      on ? 'Damy znać w dniu premiery.' : 'Nowa zabawa w AudioKiddo, ${dayAndMonth(next.releasedOn!)}.',
+                      on ? 'Damy znać w dniu premiery.' : 'Nowa zabawa w audiokiddo, ${dayAndMonth(next.releasedOn!)}.',
                       style: text.bodySmall,
                     ),
                   ],
@@ -277,7 +277,7 @@ class UpcomingShelf extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 22, bottom: 10),
-          child: Text('Wkrótce w AudioKiddo', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+          child: Text('Wkrótce w audiokiddo', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
         ),
         for (final item in upcoming.take(4))
           Padding(

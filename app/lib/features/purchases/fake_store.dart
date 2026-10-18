@@ -30,8 +30,8 @@ class FakeStoreGateway implements StoreGateway {
   };
 
   static const _titles = {
-    'pl.audiokiddo.sub.monthly': 'AudioKiddo miesięcznie',
-    'pl.audiokiddo.sub.yearly': 'AudioKiddo rocznie',
+    'pl.audiokiddo.sub.monthly': 'audiokiddo miesięcznie',
+    'pl.audiokiddo.sub.yearly': 'audiokiddo rocznie',
     'pl.audiokiddo.pack.wyobraznia': 'Pakiet Wyobraźnia',
     'pl.audiokiddo.pack.slowa_i_wiedza': 'Pakiet Słowa i Wiedza',
     'pl.audiokiddo.pack.detektyw': 'Pakiet Detektyw',

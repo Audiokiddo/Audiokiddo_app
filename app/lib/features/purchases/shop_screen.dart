@@ -8,9 +8,7 @@ import '../welcome/szop_tour.dart';
 
 import 'package:go_router/go_router.dart';
 
-import '../../core/backend/backend_config.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/motion.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/catalog_providers.dart';
 import '../catalog/widgets/catalog_loader.dart';
@@ -75,24 +73,11 @@ class ShopScreen extends ConsumerWidget {
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               children: [
+                // Simpler and clearer (Nela, 2026-10-18): the title, the offer, help. No pack
+                // counts, no list of what is included, no description of how plays work.
                 Text('Abonament', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 4),
-                Text(
-                  'Głos zadaje pytania, dziecko odpowiada. W abonamencie masz wszystkie zabawy, a co tydzień dochodzą 2 nowe.',
-                  style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
-                ),
                 const PromotionBanner(),
-                if (!subscribed && catalog.packs.where((p) => ownsPack(scopes, p.id)).length >= 2)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 14),
-                    child: Text(
-                      'Masz ${catalog.packs.where((p) => ownsPack(scopes, p.id)).length} z ${catalog.packs.length} pakietów. '
-                      'W abonamencie masz wszystkie, z grami i każdą nowością. Kupione pakiety zostają Wasze.',
-                      style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                if (!subscribed) _ThreeWays(catalog: catalog, byId: byId),
-                const SizedBox(height: 18),
+                const SizedBox(height: 14),
                 if (!subscribed) const WinBackCard(withButton: false),
                 if (subscribed)
                   const _FullAccessCard()
@@ -106,18 +91,7 @@ class ShopScreen extends ConsumerWidget {
                         : SubscriptionOffer(catalog: catalog, byId: byId),
                   ),
                 if (products.hasValue && byId.isEmpty) const _StoreUnavailable(),
-                // Subscription only (2026-10-13). Packs bought earlier still show as theirs.
-                if (subscribed) ...[
-                  const RefSection('Pakiety'),
-                  for (final pack in catalog.packs)
-                    _PackCard(
-                      summary: PackSummary(pack, catalog),
-                      product: byId[pack.storeProductId],
-                      owned: ownsPack(scopes, pack.id),
-                    ),
-                ],
-                _PriceList(catalog: catalog, byId: byId),
-                const SizedBox(height: 12),
+                const SizedBox(height: 18),
                 const _HelpBlock(),
               ],
             );
@@ -187,134 +161,6 @@ class _SinglePlaysState extends ConsumerState<_SinglePlays> {
               ),
         ],
       ],
-    );
-  }
-}
-
-/// Every price in one place, the same as on audiokiddo.pl. Bundles show the packs' total
-/// crossed out, because that is what they really save.
-class _PriceList extends StatelessWidget {
-  const _PriceList({required this.catalog, required this.byId});
-
-  final Catalog catalog;
-  final Map<String, StoreProduct> byId;
-
-  @override
-  Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    final rows = <(String, StoreProduct)>[
-      for (final plan in SubscriptionPlan.values) ...[
-        if (byId[plan.monthlyId] case final m?) ('Abonament miesięczny', m),
-        if (byId[plan.yearlyId] case final y?)
-          (
-            y.rawPrice == null
-                ? 'Abonament roczny'
-                : 'Abonament roczny (ok. ${formatMoney(y.rawPrice! / 12, y.currencyCode)} / mies.)',
-            y,
-          ),
-      ],
-    ];
-    if (rows.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const RefSection('Cennik'),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-          decoration: BoxDecoration(
-            color: context.palette.surface,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: akSoftShadow(context),
-          ),
-          child: Column(
-            children: [
-              for (final (label, product) in rows)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    children: [
-                      Expanded(child: Text(label, style: text.bodyMedium)),
-                      Text(product.price, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          // The App Store build does not talk about prices elsewhere (guideline 3.1.1).
-          BackendConfig.kidsStoreBuild
-              ? 'Abonament możesz anulować w każdej chwili w ustawieniach sklepu.'
-              : 'Ceny są takie same jak na audiokiddo.pl. Abonament możesz anulować w każdej chwili.',
-          style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
-        ),
-      ],
-    );
-  }
-
-}
-
-/// The ways side by side, plainly (research 2026-10-12, finding 12: no surprise with
-/// payments): what is free already and the subscription per month. No stars.
-class _ThreeWays extends ConsumerWidget {
-  const _ThreeWays({required this.catalog, required this.byId});
-
-  final Catalog catalog;
-  final Map<String, StoreProduct> byId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = Theme.of(context).textTheme;
-    final free = catalog.items.where((i) => i.isFree).length;
-    final monthly = byId[ProductIds.monthly];
-    final yearly = byId[ProductIds.yearly];
-    final perMonth = yearly?.rawPrice == null ? null : formatMoney(yearly!.rawPrice! / 12, yearly.currencyCode);
-    final ways = [
-      ('Za darmo', playsCount(free), 'już działa, bez płacenia'),
-      (
-        'Abonament',
-        monthly == null ? 'wszystkie zabawy' : '${monthly.price} / mies.',
-        perMonth == null
-            ? 'i 2 nowe zabawy co tydzień'
-            : 'albo ${yearly!.price} za rok (ok. $perMonth / mies.), 2 nowe zabawy co tydzień',
-      ),
-    ];
-    return Padding(
-      padding: const EdgeInsets.only(top: 14),
-      child: Semantics(
-        container: true,
-        label: [for (final w in ways) '${w.$1}: ${w.$2}, ${w.$3}'].join('. '),
-        excludeSemantics: true,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final (i, w) in ways.indexed) ...[
-              if (i > 0) const SizedBox(width: 8),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: context.palette.surface,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: context.palette.inkMuted.withValues(alpha: .25)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(w.$1, style: text.labelLarge?.copyWith(fontWeight: FontWeight.w800)),
-                      const SizedBox(height: 4),
-                      Text(w.$2, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                      const SizedBox(height: 2),
-                      Text(w.$3, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
     );
   }
 }
@@ -536,91 +382,6 @@ class _PackStartButton extends ConsumerWidget {
         owned ? '${first ? 'Zacznij' : 'Graj dalej'}: ${next.title}' : 'Posłuchaj za darmo: ${next.title}',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-}
-
-class _PackCard extends ConsumerWidget {
-  const _PackCard({required this.summary, required this.product, required this.owned});
-
-  final PackSummary summary;
-  final StoreProduct? product;
-  final bool owned;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = Theme.of(context).textTheme;
-    final pack = summary.pack;
-    final free = summary.freeItems.firstOrNull;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Pressable(
-        onTap: () => openPack(context, pack.id),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: context.palette.surface,
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: akSoftShadow(context),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  SizedBox.square(dimension: 84, child: PackArt(summary: summary)),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(pack.title, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
-                            ),
-                            if (isNewAt(pack.releasedOn, ref.watch(clockProvider)())) ...[
-                              const SizedBox(width: 6),
-                              const _Badge('Nowy', color: AkBrand.sun),
-                            ],
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '${playsCount(summary.items.length)} · ${summary.minutes} min · od ${pack.ageMin} lat',
-                          style: text.bodySmall,
-                        ),
-                        const SizedBox(height: 6),
-                        Wrap(spacing: 6, runSpacing: 6, children: [for (final s in summary.skills.take(2)) _Badge(s)]),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  if (owned)
-                    const _Badge('Masz ten pakiet', color: referenceMint, icon: Icons.check_rounded)
-                  else if (free != null)
-                    Expanded(
-                      child: TextButton.icon(
-                        style: TextButton.styleFrom(padding: EdgeInsets.zero, visualDensity: VisualDensity.compact),
-                        onPressed: () => context.push('/zabawa/${free.id}'),
-                        icon: const Icon(Icons.play_circle_outline_rounded, size: 18),
-                        label: Text('Za darmo: ${free.title}', overflow: TextOverflow.ellipsis),
-                      ),
-                    ),
-                  if (owned || free == null) const Spacer(),
-                  if (!owned) Text(product?.price ?? '', style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
-                  const SizedBox(width: 4),
-                  const Icon(Icons.chevron_right_rounded),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -852,15 +613,12 @@ class PackScreen extends ConsumerWidget {
                             ),
                           ),
                         if (byId[ProductIds.yearly] != null)
-                          Text(
-                            switch (byId[ProductIds.yearly]) {
-                              StoreProduct(:final rawPrice?, :final currencyCode) =>
-                                'czyli ok. ${formatMoney(rawPrice / 12, currencyCode)} / mies. '
-                                    'Wszystkie pakiety i 2 nowe zabawy co tydzień.',
-                              _ => 'Wszystkie pakiety i 2 nowe zabawy co tydzień',
-                            },
-                            style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
-                          ),
+                          Text(switch (byId[ProductIds.yearly]) {
+                            StoreProduct(:final rawPrice?, :final currencyCode) =>
+                              'czyli ok. ${formatMoney(rawPrice / 12, currencyCode)} / mies. '
+                                  'Wszystkie pakiety i 2 nowe zabawy co tydzień.',
+                            _ => 'Wszystkie pakiety i 2 nowe zabawy co tydzień',
+                          }, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
                       ],
                     ),
                   ),

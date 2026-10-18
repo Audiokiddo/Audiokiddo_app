@@ -375,7 +375,7 @@ class _HelloScene extends StatelessWidget {
 
   final bool talking;
 
-  static const _letters = 'AUDIOKIDDO';
+  static const _letters = 'audiokiddo';
   static const _colors = [AkBrand.cocoa, AkBrand.terracotta];
 
   @override
@@ -394,7 +394,7 @@ class _HelloScene extends StatelessWidget {
         ),
         const SizedBox(height: AkSpace.l),
         Semantics(
-          label: 'AudioKiddo',
+          label: 'audiokiddo',
           excludeSemantics: true,
           child: Row(
             mainAxisSize: MainAxisSize.min,

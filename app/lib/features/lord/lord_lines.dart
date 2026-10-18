@@ -182,7 +182,7 @@ const lordLines = <LordPool, List<String>>{
   LordPool.hello: [
     'Mam plan. Prosty, skuteczny i opracowany przez kogoś, kto też nie ma siły.',
     'Dziecko pyta „dlaczego”. Ty pytasz „ile jeszcze”. Obsługuję oba działy.',
-    'AudioKiddo płaci mi za pomysły. Na szczęście nie za entuzjazm.',
+    'audiokiddo płaci mi za pomysły. Na szczęście nie za entuzjazm.',
     '„Ubierz buty” to nie polecenie. To początek negocjacji międzynarodowych.',
     'Cisza w pokoju dziecięcym? Nie gratuluj sobie jeszcze. Zrób rekonesans.',
     'Mam otwarte 14 spraw. Głównie szafek. Szukam ciastek.',
@@ -220,7 +220,6 @@ const lordLines = <LordPool, List<String>>{
     'Przedszkole zamknięte w piątek po święcie. Odnotowano.',
     'Dzień w domu. Pomysły skończyły się o 9:40. Mam zapas.',
     'Pada. Plac zabaw odwołany, zebranie w salonie.',
-    'Babcia pyta o bajki? Wysyłam instrukcję. Więcej, Dla dziadków.',
   ],
   LordPool.momentSick: [
     'Grupa dziś: Anginki, Kaszelki i Bostonki. Tryb kanapowy.',

@@ -218,7 +218,7 @@ class _LaunchCurtainState extends State<LaunchCurtain> with SingleTickerProvider
     final palette = context.palette;
     final text = Theme.of(context).textTheme;
     return Semantics(
-      label: 'AudioKiddo się uruchamia',
+      label: 'audiokiddo się uruchamia',
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onSkip,

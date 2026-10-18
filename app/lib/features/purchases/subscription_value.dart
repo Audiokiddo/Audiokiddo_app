@@ -59,7 +59,7 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
       return _Card(
         children: [
           Text(
-            'Abonament AudioKiddo',
+            'Abonament audiokiddo',
             style: text.titleLarge?.copyWith(color: _ink, fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 6),
@@ -111,15 +111,11 @@ class _SubscriptionOfferState extends ConsumerState<SubscriptionOffer> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Abonament AudioKiddo',
+          'Abonament audiokiddo',
           style: text.titleLarge?.copyWith(color: _ink, fontWeight: FontWeight.w900),
         ),
         const SizedBox(height: 6),
-        for (final line in [
-          'Wszystkie zabawy od razu',
-          '2 nowe zabawy co tydzień, bez dopłat',
-          if (!widget.compact) 'Każde dziecko ze swoim planem i postępami',
-        ])
+        for (final line in ['2 nowe zabawy co tydzień, bez dopłat'])
           Padding(
             padding: const EdgeInsets.only(bottom: 3),
             child: Row(

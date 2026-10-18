@@ -82,7 +82,7 @@ Future<void> startItem(BuildContext context, ContentItem item) async {
     if (context.mounted) await openPlayer(context, game: true);
     return;
   }
-  await startAndOpenPlayer(context, container, item, album: 'AudioKiddo');
+  await startAndOpenPlayer(context, container, item, album: 'audiokiddo');
 }
 
 /// Opens the player at once, showing [item] while its sound gets ready, then starts it. A

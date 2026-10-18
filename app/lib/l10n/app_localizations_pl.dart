@@ -10,7 +10,7 @@ class AppLocalizationsPl extends AppLocalizations {
   AppLocalizationsPl([String locale = 'pl']) : super(locale);
 
   @override
-  String get appTitle => 'AudioKiddo';
+  String get appTitle => 'audiokiddo';
 
   @override
   String get navHome => 'Start';
@@ -535,7 +535,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get gameFailed => 'Nie udało się uruchomić zabawy.';
 
   @override
-  String get onboardingHelloTitle => 'Cześć, tu AudioKiddo.';
+  String get onboardingHelloTitle => 'Cześć, tu audiokiddo.';
 
   @override
   String get onboardingHelloBody =>
@@ -712,7 +712,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get micDenied =>
-      'Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → AudioKiddo. Do tego czasu zabawy działają bez mikrofonu.';
+      'Telefon nie pozwolił na mikrofon. Możesz to zmienić w Ustawieniach telefonu → audiokiddo. Do tego czasu zabawy działają bez mikrofonu.';
 
   @override
   String get micWithout =>
@@ -1032,7 +1032,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get remindersNote => 'Zmienisz to w każdej chwili w zakładce Plan.';
 
   @override
-  String get remindersPreviewApp => 'AudioKiddo';
+  String get remindersPreviewApp => 'audiokiddo';
 
   @override
   String get remindersPreviewTime => 'teraz';
@@ -1611,7 +1611,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get weekCardKicker => 'AudioKiddo · ostatnie 7 dni';
+  String get weekCardKicker => 'audiokiddo · ostatnie 7 dni';
 
   @override
   String weekCardTitle(String name) {
@@ -1680,7 +1680,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String weekCardShareText(String name) {
-    return 'Tydzień z AudioKiddo: $name';
+    return 'Tydzień z audiokiddo: $name';
   }
 
   @override
@@ -1798,11 +1798,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get widgetHowToIos =>
-      '1. Przytrzymaj palcem ikonę AudioKiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → AudioKiddo.';
+      '1. Przytrzymaj palcem ikonę audiokiddo na ekranie telefonu.\n2. Wybierz rozmiar widżetu z górnego paska menu.\n\nAlbo: przytrzymaj puste miejsce na ekranie → Edytuj → Dodaj widżet → audiokiddo.';
 
   @override
   String get widgetHowToAndroid =>
-      '1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź AudioKiddo i dotknij „Dodaj”.';
+      '1. Przytrzymaj palcem puste miejsce na ekranie telefonu.\n2. Wybierz „Widżety”.\n3. Znajdź audiokiddo i dotknij „Dodaj”.';
 
   @override
   String get pickTitle => 'Co teraz?';

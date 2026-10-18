@@ -138,7 +138,7 @@ void main() {
     // Back in Więcej → Ustawienia i zgody → Karty na Starcie.
     await tester.tap(find.byIcon(Icons.menu_rounded).last);
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Co potrafi AudioKiddo'), 200, scrollable: find.byWidget(tester.widget(find.ancestor(of: find.text('Na co dzień'), matching: find.byType(Scrollable)).first)));
+    await tester.scrollUntilVisible(find.text('Co potrafi audiokiddo'), 200, scrollable: find.byWidget(tester.widget(find.ancestor(of: find.text('Na co dzień'), matching: find.byType(Scrollable)).first)));
     await tester.tap(find.text('Ustawienia i zgody'));
     await tester.pumpAndSettle();
     final sw = find.widgetWithText(SwitchListTile, 'Teraz: podpowiedź na tę porę dnia');

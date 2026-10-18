@@ -7,7 +7,7 @@ import '../../core/widgets/szop.dart';
 import '../kids_mode/kids_mode_setup.dart';
 import '../welcome/welcome_controller.dart';
 
-/// "Co potrafi AudioKiddo": every feature in one short list, each one tap away, and Szop’en's
+/// "Co potrafi audiokiddo": every feature in one short list, each one tap away, and Szop’en's
 /// tour for those who prefer to be shown. Opened from Start and from Więcej.
 class FeaturesScreen extends ConsumerWidget {
   const FeaturesScreen({super.key});
@@ -41,9 +41,8 @@ class FeaturesScreen extends ConsumerWidget {
       ),
       (
         Icons.timer_rounded,
-        'Licznik do końca i minuty spokoju',
-        'W odtwarzaczu widzisz, ile zostało do końca zabawy i o której się skończy. W niedzielę wieczorem pokazuję, '
-            'ile minut spokoju dał Ci tydzień.',
+        'Licznik do końca',
+        'W odtwarzaczu i na ekranie blokady widzisz, ile zostało do końca zabawy i o której się skończy.',
         null,
       ),
       (
@@ -129,7 +128,7 @@ class FeaturesScreen extends ConsumerWidget {
       ),
     ];
     return Scaffold(
-      appBar: AppBar(title: const Text('Co potrafi AudioKiddo')),
+      appBar: AppBar(title: const Text('Co potrafi audiokiddo')),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
         children: [

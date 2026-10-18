@@ -29,7 +29,7 @@ class ReferralScreen extends ConsumerWidget {
   const ReferralScreen({super.key});
 
   String _message(String code) =>
-      'Mam dla Ciebie $referralGift AudioKiddo: audiozabawy, w których dziecko jest bohaterem. '
+      'Mam dla Ciebie $referralGift audiokiddo: audiozabawy, w których dziecko jest bohaterem. '
       'Pobierz aplikację, załóż konto i wpisz kod $code (Sklep → Odbierz dostęp → Mam kod). '
       'https://audiokiddo.pl';
 
@@ -40,7 +40,7 @@ class ReferralScreen extends ConsumerWidget {
     final result = await SharePlus.instance.share(
       ShareParams(
         text: _message(code),
-        subject: 'Prezent od AudioKiddo',
+        subject: 'Prezent od audiokiddo',
         sharePositionOrigin: origin == null ? null : origin.localToGlobal(Offset.zero) & origin.size,
       ),
     );
@@ -80,7 +80,7 @@ class ReferralScreen extends ConsumerWidget {
           _Benefit(
             icon: Icons.card_giftcard_rounded,
             title: 'Znajomy dostaje',
-            body: '$referralGift, gdy pobierze AudioKiddo, założy konto i wpisze Twój kod.',
+            body: '$referralGift, gdy pobierze audiokiddo, założy konto i wpisze Twój kod.',
           ),
           _Benefit(
             icon: Icons.celebration_rounded,

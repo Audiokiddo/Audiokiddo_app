@@ -301,7 +301,7 @@ ReminderSlot aboutUsSlot({required int hour, required int minute, required DateT
   at: DateTime(now.year, now.month, now.day + aboutUsAfterDays, hour, minute),
   title: 'Ciekawostka od Szop’ena',
   body:
-      'AudioKiddo robią Nela i Dawid, para z Polski. Sami piszą zabawy i podkładają głosy. '
+      'audiokiddo robią Nela i Dawid, para z Polski. Sami piszą zabawy i podkładają głosy. '
       'Więcej o nich: Więcej → O nas.',
 );
 

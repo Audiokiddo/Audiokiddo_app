@@ -19,10 +19,11 @@ import '../alerts/alerts.dart';
 import '../home/start_cards.dart';
 import '../diploma/diploma.dart';
 import '../rating/rating.dart';
+import '../catalog/widgets/item_art.dart';
+import '../purchases/shop.dart' show playsCount;
 import 'discovery_model.dart';
 import 'reference_widgets.dart';
 import '../family_sharing/family_screen.dart';
-import '../family_sharing/grandparents.dart';
 import '../purchases/plan_limit.dart';
 import '../reminders/reminder_offer.dart';
 import '../welcome/szop_tour.dart';
@@ -83,7 +84,7 @@ class MoreScreen extends ConsumerWidget {
           subtitle: 'Wygląd, powiadomienia, karty na Starcie, Szop’en',
         ),
         const RefSection('Pomoc'),
-        _link(context, Icons.tour_rounded, 'Co potrafi AudioKiddo', '/funkcje', subtitle: 'Wszystkie funkcje i samouczek z Szop’enem'),
+        _link(context, Icons.tour_rounded, 'Co potrafi audiokiddo', '/funkcje', subtitle: 'Wszystkie funkcje i samouczek z Szop’enem'),
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.mail_outline_rounded, color: AkBrand.tealDeep),
@@ -93,19 +94,11 @@ class MoreScreen extends ConsumerWidget {
         ),
         _link(context, Icons.flag_rounded, 'O nas: Nela i Dawid', '/o-nas', subtitle: 'Polska rodzinna marka'),
         const RefSection('Pomóż nam rosnąć'),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.elderly_woman_rounded, color: AkBrand.tealDeep),
-          title: const Text('Dla dziadków'),
-          subtitle: const Text('Wyślij babci i dziadkowi, jak włączyć ulubione zabawy'),
-          trailing: const Icon(Icons.ios_share_rounded),
-          onTap: () => shareWithGrandparents(context, ref),
-        ),
         _link(context, Icons.card_giftcard_rounded, 'Poleć znajomym', '/polec', subtitle: 'Ty i znajomy: po 30 zł na zabawy'),
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.star_rounded, color: AkBrand.tealDeep),
-          title: const Text('Oceń AudioKiddo'),
+          title: const Text('Oceń audiokiddo'),
           subtitle: const Text('Kilka gwiazdek pomaga innym rodzicom nas znaleźć'),
           onTap: () => rateApp(context, fromList: true),
         ),
@@ -231,15 +224,54 @@ class SettingsScreen extends ConsumerWidget {
 class CollectionScreen extends ConsumerWidget {
   const CollectionScreen({super.key, this.history = false});
   final bool history;
+
+  /// Ulubione and Historia as big covers in two columns under a short header (Nela,
+  /// 2026-10-18: clearer and nicer than a plain list).
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final catalog = ref.watch(catalogProvider);
     final ids = ref.watch(history ? recentProvider : favoritesOrderedProvider);
+    final items = [for (final id in ids.value ?? <String>[]) ?catalog.value?.item(id)];
+    final text = Theme.of(context).textTheme;
+    const ink = Color(0xFF211C35);
     return Scaffold(
-      appBar: AppBar(title: Text(history ? 'Ostatnio słuchane' : 'Ulubione')),
+      appBar: AppBar(title: Text(history ? 'Historia' : 'Ulubione')),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
         children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: history ? referenceMint : const Color(0xFFFFD9E2),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Row(
+              children: [
+                Icon(history ? Icons.history_rounded : Icons.favorite_rounded, size: 36, color: ink),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        history ? 'Co już słuchaliście' : 'Te, do których wracacie',
+                        style: text.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w800),
+                      ),
+                      Text(
+                        items.isEmpty
+                            ? (history
+                                  ? 'Tutaj wrócicie do rozpoczętych przygód.'
+                                  : 'Dotknij serduszka przy zabawie, żeby mieć ją zawsze pod ręką.')
+                            : (history ? 'Ostatnio słuchane na górze.' : playsCount(items.length)),
+                        style: text.bodySmall?.copyWith(color: ink),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
           if (catalog.isLoading || ids.isLoading) const LinearProgressIndicator(),
           if (catalog.hasError || ids.hasError)
             TextButton(
@@ -249,14 +281,42 @@ class CollectionScreen extends ConsumerWidget {
               },
               child: const Text('Spróbuj ponownie'),
             ),
-          if (ids.value?.isEmpty ?? false)
-            Text(
-              history
-                  ? 'Tutaj wrócicie do rozpoczętych przygód.'
-                  : 'Dotknij serduszka przy zabawie, żeby mieć ją zawsze pod ręką.',
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: items.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 14,
+              crossAxisSpacing: 12,
+              // The cover plus two lines that grow with the phone's text size.
+              childAspectRatio: 1 / (1 + 0.42 * MediaQuery.textScalerOf(context).scale(1)),
             ),
-          for (final id in ids.value ?? <String>[])
-            if (catalog.value?.item(id) case final item?) AudioRow(item: item),
+            itemBuilder: (context, i) {
+              final item = items[i];
+              return InkWell(
+                borderRadius: BorderRadius.circular(18),
+                onTap: () => context.push('/zabawa/${item.id}'),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1,
+                      child: ClipRRect(borderRadius: BorderRadius.circular(18), child: ItemArt(item: item)),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      item.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                    Text('${(item.durationSec / 60).ceil()} min', style: text.bodySmall),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

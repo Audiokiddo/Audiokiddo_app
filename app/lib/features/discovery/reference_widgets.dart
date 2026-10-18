@@ -30,6 +30,7 @@ Color categoryColor(PlayCategory c) => switch (c) {
   PlayCategory.education => AkBrand.sun,
   PlayCategory.calm => referencePurple,
   PlayCategory.free => AkBrand.sun,
+  PlayCategory.sleuth => referenceLilac,
 };
 IconData categoryIcon(PlayCategory c) => switch (c) {
   PlayCategory.adventure => Icons.flag_rounded,
@@ -40,6 +41,7 @@ IconData categoryIcon(PlayCategory c) => switch (c) {
   PlayCategory.education => Icons.menu_book_rounded,
   PlayCategory.calm => Icons.bedtime_rounded,
   PlayCategory.free => Icons.card_giftcard_rounded,
+  PlayCategory.sleuth => Icons.search_rounded,
 };
 PlayCategory itemCategory(ContentItem i) =>
     PlayCategory.values.where((c) => c.matches(i)).firstOrNull ?? PlayCategory.adventure;
@@ -183,6 +185,7 @@ const categoryLook = <PlayCategory, (Color, Color, IconData)>{
   PlayCategory.songs: (Color(0xFFFFD3C2), Color(0xFF211C35), Icons.music_note_rounded),
   PlayCategory.calm: (referencePurple, Colors.white, Icons.nightlight_round),
   PlayCategory.free: (Color(0xFFFFE08A), Color(0xFF211C35), Icons.card_giftcard_rounded),
+  PlayCategory.sleuth: (Color(0xFF3F3260), Colors.white, Icons.search_rounded),
 };
 
 /// A kind of play as a colour tile: icon, name and how many plays it holds.

@@ -95,7 +95,7 @@ class AboutScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'AudioKiddo tworzymy we dwoje, jako para z Polski, i sami jesteśmy rodzicami. Razem piszemy zabawy '
+                  'audiokiddo tworzymy we dwoje, jako para z Polski, i sami jesteśmy rodzicami. Razem piszemy zabawy '
                   'i je montujemy, a nasze głosy usłyszycie w zabawach. Od pomysłu do realizacji robimy wszystko sami. '
                   'Nie stoi za nami korporacja ani zagraniczny fundusz: '
                   'jest nasz stół, mikrofon i Szop’en, który pilnuje, żeby było śmiesznie.',

@@ -25,7 +25,7 @@ enum CancelReason {
 String? cancelReasonReply(CancelReason reason) => switch (reason) {
   CancelReason.price => 'Plan roczny wychodzi 22,50 zł miesięcznie. Zmienisz go w tych samych ustawieniach.',
   CancelReason.tooFewNew =>
-    'Co tydzień dochodzą 2 nowe zabawy, a zapowiedzi widać na Starcie w „Wkrótce w AudioKiddo”.',
+    'Co tydzień dochodzą 2 nowe zabawy, a zapowiedzi widać na Starcie w „Wkrótce w audiokiddo”.',
   CancelReason.technical => 'Przykro nam. Napisz na kontakt@audiokiddo.pl, naprawimy to jak najszybciej.',
   _ => null,
 };

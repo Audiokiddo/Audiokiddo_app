@@ -322,7 +322,7 @@ struct PartView: View {
       .accessibilityLabel(main.map { "\($0.label): \($0.link.title)" } ?? part.action)
     default:
       VStack(alignment: .leading, spacing: 1) {
-        Text(main?.label ?? "AudioKiddo").font(.system(size: 12, weight: .semibold))
+        Text(main?.label ?? "audiokiddo").font(.system(size: 12, weight: .semibold))
         Text(main?.link.title ?? part.title).font(.system(size: 15, weight: .bold)).lineLimit(1)
         Text(main?.link.detail ?? part.action).font(.system(size: 12)).lineLimit(1)
       }
@@ -356,7 +356,7 @@ struct PartView: View {
       if let week = entry.week, week.hasChild {
         NotesRow(notes: week.notes, color: ink)
       } else {
-        Text("AudioKiddo").font(.system(size: 11, weight: .bold))
+        Text("audiokiddo").font(.system(size: 11, weight: .bold))
       }
     }
   }
