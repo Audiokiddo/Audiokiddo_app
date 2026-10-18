@@ -72,7 +72,7 @@ $ak_skills = [
 <section class="ak-slide ak-a-sec ak-nb-sec ak-nb4" id="co-to" data-slide="Co to jest" aria-labelledby="ak-nb-h">
     <div class="ak-wrap">
         <h2 id="ak-nb-h" class="ak-center" data-reveal>Tu dziecko gra <span class="ak-hl-word">główną rolę.</span></h2>
-        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal>Audiobook się słucha. W Audiokiddo głos mówi do dziecka, a dziecko odpowiada, rusza się i wymyśla. Zobacz jedną minutę zabawy:</p>
+        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal>Głos mówi do dziecka, a dziecko działa. Zobacz minutę zabawy:</p>
         <div class="ak-nb4-in">
             <div class="ak-nb4-scene" data-reveal data-ak-scene>
                 <div class="ak-nb4-top">
@@ -99,21 +99,18 @@ $ak_skills = [
                 </div>
             </div>
             <div class="ak-nb4-side">
-                <p class="ak-nb4-side-h" data-reveal>W jednej zabawie dziecko:</p>
                 <ul class="ak-nb4-skills">
                     <?php foreach ($ak_skills as $i => [$key, $icon, $title, $line]) : ?>
                     <li data-reveal style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
                         <button type="button" data-skill-tile="<?php echo esc_attr($key); ?>" aria-label="<?php echo esc_attr($title . ': pokaż w scence'); ?>">
-                            <span class="ak-nb4-ico"><?php echo ak_icon($icon, 28); // static ?></span>
+                            <span class="ak-nb4-ico"><?php echo ak_icon($icon, 34); // static ?></span>
                             <strong><?php echo esc_html($title); ?></strong>
-                            <span><?php echo esc_html($line); ?></span>
                         </button>
                     </li>
                     <?php endforeach; ?>
                 </ul>
             </div>
         </div>
-        <p class="ak-nb4-vs" data-reveal><span>Audiobook: dziecko słucha.</span> <strong>Audiokiddo: dziecko działa.</strong></p>
     </div>
 </section>
 
