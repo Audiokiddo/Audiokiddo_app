@@ -49,7 +49,11 @@ class GameUiState {
     this.listening = const {},
     this.answers = 0,
     this.heard,
+    this.secondsLeft,
   });
+
+  /// About how long the game still lasts on its shortest way to an end, from the step it is on.
+  final int? secondsLeft;
 
   /// What the game just heard, shown big for a moment ("Słyszę klaśnięcie!"), so the parent
   /// sees that it works (parent review, 2026-10-18).
@@ -542,6 +546,10 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     listening: listening,
     answers: _answers,
     heard: _heard,
+    secondsLeft: switch ((_runner, _item?.script)) {
+      (final runner?, final script?) => estimatedSecondsLeft(script, runner.currentStepId),
+      _ => null,
+    },
   );
 
   /// Counts only while audio plays, so pausing from the lock screen pauses the game too.

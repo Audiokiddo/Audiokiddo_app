@@ -55,9 +55,12 @@ class PlayCountdown extends StatelessWidget {
 /// A game's countdown: its catalog length from the moment it started, ticking each second.
 /// Games wait for answers, so the end is an estimate ("ok. 6 min").
 class GameCountdown extends ConsumerStatefulWidget {
-  const GameCountdown({super.key, required this.itemId, this.color});
+  const GameCountdown({super.key, required this.itemId, this.color, this.secondsLeft});
 
   final String? itemId;
+
+  /// The game's own estimate from where it is now.
+  final int? secondsLeft;
   final Color? color;
 
   @override
@@ -84,7 +87,11 @@ class _GameCountdownState extends ConsumerState<GameCountdown> {
   Widget build(BuildContext context) {
     final item = ref.watch(catalogProvider).value?.item(widget.itemId ?? '');
     if (item == null || item.durationSec <= 0) return const SizedBox.shrink();
-    final left = Duration(seconds: item.durationSec) - DateTime.now().difference(_started);
+    // From the story's own path when known (endings differ in length), else the catalog length.
+    final estimate = widget.secondsLeft;
+    final left = estimate != null
+        ? Duration(seconds: estimate)
+        : Duration(seconds: item.durationSec) - DateTime.now().difference(_started);
     return PlayCountdown(
       remaining: left.isNegative ? Duration.zero : left,
       color: widget.color,

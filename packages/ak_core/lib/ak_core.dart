@@ -8,6 +8,7 @@ export 'src/content.dart';
 export 'src/development.dart';
 export 'src/json.dart' show FormatError, wireName;
 export 'src/lease.dart';
+export 'src/script/estimate.dart';
 export 'src/script/model.dart';
 export 'src/script/runner.dart';
 export 'src/script/validator.dart';
