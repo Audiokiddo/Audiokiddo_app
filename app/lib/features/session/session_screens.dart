@@ -172,10 +172,12 @@ class _TripScreenState extends ConsumerState<TripScreen> {
     }
     final steps = _plan ?? const <SessionStep>[];
     final items = playsFrom(steps, 0);
-    final missing = [
+    final missing = {
       for (final i in items)
-        if (!downloaded.contains(i.id)) i,
-    ];
+        if (!downloaded.contains(i.id)) i.id: i,
+    }.values.toList();
+    // Too few plays for the whole ride: some come again (buildTrip), and the parent is told so.
+    final repeats = items.length > {for (final i in items) i.id}.length;
 
     return Scaffold(
       appBar: AppBar(leading: const _CloseToStart()),
@@ -255,14 +257,22 @@ class _TripScreenState extends ConsumerState<TripScreen> {
                         ),
                   onRemove: (pos) => setState(() => _plan = planRemove(steps, pos)),
                   onReorder: (o, n) => setState(() => _plan = planReorder(steps, o, n)),
-                  onReplace: (id, item) => setState(() {
+                  onReplace: (id, item, {nth = 0}) => setState(() {
                     final current = _plan ?? const <SessionStep>[];
-                    final pos = playsFrom(current, 0).indexWhere((i) => i.id == id);
+                    final pos = nthPlayPos(playsFrom(current, 0), id, nth);
                     _plan = planReplace(current, pos, item);
                   }),
                   onAdd: (add) => setState(() => _plan = planAdd(steps, add)),
                 ),
                 const SizedBox(height: AkSpace.s),
+                if (repeats) ...[
+                  Text(
+                    'Na całą trasę zabaw jest za mało, więc kilka zagra jeszcze raz, '
+                    'z przerwą na okno pomiędzy. Dzieci lubią powtórki.',
+                    style: text.bodySmall?.copyWith(color: context.palette.inkMuted),
+                  ),
+                  const SizedBox(height: AkSpace.xs),
+                ],
                 Text(l10n.tripBreaks, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
               ],
             ),
@@ -273,7 +283,9 @@ class _TripScreenState extends ConsumerState<TripScreen> {
             Text(
               missing.length == 1
                   ? '1 zabawa nie jest jeszcze na telefonie. Bez internetu nie zagra.'
-                  : '${missing.length} zabaw nie jest jeszcze na telefonie. Bez internetu nie zagrają.',
+                  : playsLabel(missing.length).endsWith('zabawy')
+                  ? '${playsLabel(missing.length)} nie są jeszcze na telefonie. Bez internetu nie zagrają.'
+                  : '${playsLabel(missing.length)} nie jest jeszcze na telefonie. Bez internetu nie zagrają.',
               style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AkSpace.s),
@@ -963,8 +975,8 @@ class _RunningPlan extends ConsumerWidget {
                   ),
             onRemove: notifier.removePlay,
             onReorder: notifier.reorderPlays,
-            onReplace: (id, item) {
-              if (!notifier.replacePlay(id, item) && context.mounted) {
+            onReplace: (id, item, {nth = 0}) {
+              if (!notifier.replacePlay(id, item, nth: nth) && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text(
@@ -1152,9 +1164,9 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
                     ),
               onRemove: (pos) => setState(() => _plan = planRemove(steps, pos)),
               onReorder: (o, n) => setState(() => _plan = planReorder(steps, o, n)),
-              onReplace: (id, item) => setState(() {
+              onReplace: (id, item, {nth = 0}) => setState(() {
                 final current = _plan ?? const <SessionStep>[];
-                final pos = playsFrom(current, 0).indexWhere((i) => i.id == id);
+                final pos = nthPlayPos(playsFrom(current, 0), id, nth);
                 _plan = planReplace(current, pos, item);
               }),
               onAdd: (add) => setState(() => _plan = planAdd(steps, add)),

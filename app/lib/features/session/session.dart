@@ -149,6 +149,23 @@ List<SessionStep> buildTrip(
     total += best.durationSec;
     gap = target - total;
   }
+  // Too few plays for the whole ride (a family without the subscription): the ones already in
+  // the plan play again, each after a window break, at most twice more. Children like "jeszcze raz".
+  final firstPass = [
+    for (final s in steps)
+      if (s is ItemStep) s.item,
+  ];
+  for (var round = 0; round < 2 && gap > 5 * 60 && firstPass.isNotEmpty; round++) {
+    for (final item in firstPass) {
+      if (gap <= 120) break;
+      if (item.durationSec > gap + 180) continue;
+      steps
+        ..add(LineStep(windowLines[breaks++ % windowLines.length], pauseAfter: const Duration(seconds: 40)))
+        ..add(ItemStep(item));
+      total += 50 + item.durationSec;
+      gap = target - total;
+    }
+  }
   steps
     ..add(LineStep(tripEndLines[variant % tripEndLines.length]))
     ..add(const ParentStep(ParentClip.praise));
@@ -535,9 +552,10 @@ class SessionController extends Notifier<SessionState> {
   void reorderPlays(int oldPos, int newPos) => _edited(planReorder(_steps, oldPos, newPos, from: editFrom));
 
   /// Resolve the original play after the chooser closes; playback may have advanced.
-  bool replacePlay(String itemId, ContentItem item) {
+  /// [nth] tells apart a play that comes again later in a ride (0 = its first time ahead).
+  bool replacePlay(String itemId, ContentItem item, {int nth = 0}) {
     if (!state.running) return false;
-    final pos = playsFrom(_steps, editFrom).indexWhere((i) => i.id == itemId);
+    final pos = nthPlayPos(playsFrom(_steps, editFrom), itemId, nth);
     if (pos < 0) return false;
     _edited(planReplace(_steps, pos, item, from: editFrom));
     return true;

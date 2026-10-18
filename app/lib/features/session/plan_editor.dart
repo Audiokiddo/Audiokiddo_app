@@ -47,7 +47,8 @@ class PlanEditor extends StatelessWidget {
   final List<ContentItem> candidates;
   final void Function(int pos) onRemove;
   final void Function(int oldPos, int newPos) onReorder;
-  final void Function(String itemId, ContentItem item) onReplace;
+  /// [nth] tells apart a play that comes again later in the plan (0 = its first time).
+  final void Function(String itemId, ContentItem item, {int nth}) onReplace;
   final void Function(List<ContentItem> items) onAdd;
 
   /// Text colour (the running screen is dark).
@@ -79,7 +80,7 @@ class PlanEditor extends StatelessWidget {
               ),
             ),
             Text(
-              plays.length == 1 ? '1 zabawa' : '${plays.length} zabaw',
+              playsLabel(plays.length),
               style: text.labelLarge?.copyWith(color: muted),
             ),
           ],
@@ -99,8 +100,10 @@ class PlanEditor extends StatelessWidget {
             onReorderItem: onReorder,
             itemBuilder: (context, pos) {
               final item = plays[pos];
+              // A ride may play the same one again later: its key and swap say which time.
+              final nth = playOccurrence(plays, pos);
               return Padding(
-                key: ValueKey('plan-${item.id}'),
+                key: ValueKey('plan-${item.id}-$nth'),
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Row(
                   children: [
@@ -134,7 +137,7 @@ class PlanEditor extends StatelessWidget {
                           ? null
                           : () async {
                               final picked = await choose('Zamień na…');
-                              if (picked != null && context.mounted) onReplace(item.id, picked);
+                              if (picked != null && context.mounted) onReplace(item.id, picked, nth: nth);
                             },
                       icon: Icon(Icons.swap_horiz_rounded, color: fg),
                     ),

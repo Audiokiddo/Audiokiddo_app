@@ -11,7 +11,7 @@ import '../welcome/welcome_controller.dart';
 
 /// Which release's news the cards below describe. Bump it with every version that brings
 /// something worth showing: the cards then open once by themselves after the update.
-const whatsNewRelease = 'w22';
+const whatsNewRelease = 'w23';
 
 /// One card of "Co nowego": a headline in colours (like the iPhone's "Nowości"), a picture,
 /// what it is and one button straight to it.
@@ -60,6 +60,17 @@ const whatsNew = <WhatsNew>[
     tint: Color(0xFFE8DDF4),
     route: '/ratunku',
     action: 'Wybierz czas',
+  ),
+  (
+    headline: [('Nagrody', Color(0xFFF2A007))],
+    title: 'Nagrody dla dziecka na Starcie',
+    body: 'Naklejki za skończone zabawy, mapa przygód z sekretami Szop’ena i prezenty do druku: dyplomy i karty. '
+        'Wszystko jednym dotknięciem z kafelka na Starcie.',
+    image: 'assets/tiles/rewards.jpg',
+    pose: SzopPose.zadowolony,
+    tint: Color(0xFFFFF0C2),
+    route: '/dla-dziecka',
+    action: 'Zobacz nagrody',
   ),
   (
     headline: [('Odkryj!', Color(0xFFFF8A5B))],

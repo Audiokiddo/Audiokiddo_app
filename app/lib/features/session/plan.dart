@@ -17,6 +17,33 @@ List<ContentItem> playsFrom(List<SessionStep> steps, int from) => [
   for (final i in playSlots(steps, from)) (steps[i] as ItemStep).item,
 ];
 
+/// Position in [plays] of the [nth] time (from 0) that the play [id] comes; -1 when it does not.
+int nthPlayPos(List<ContentItem> plays, String id, int nth) {
+  var seen = 0;
+  for (var pos = 0; pos < plays.length; pos++) {
+    if (plays[pos].id != id) continue;
+    if (seen++ == nth) return pos;
+  }
+  return -1;
+}
+
+/// How many times the play at [pos] came before it in [plays] (0 = its first time).
+int playOccurrence(List<ContentItem> plays, int pos) {
+  var n = 0;
+  for (var k = 0; k < pos; k++) {
+    if (plays[k].id == plays[pos].id) n++;
+  }
+  return n;
+}
+
+/// "1 zabawa", "3 zabawy", "5 zabaw", "22 zabawy".
+String playsLabel(int n) {
+  final tens = n % 100, ones = n % 10;
+  if (n == 1) return '1 zabawa';
+  if (ones >= 2 && ones <= 4 && (tens < 12 || tens > 14)) return '$n zabawy';
+  return '$n zabaw';
+}
+
 /// Drops the play at [pos] (among the plays ahead).
 List<SessionStep> planRemove(List<SessionStep> steps, int pos, {int from = 0}) {
   final slots = playSlots(steps, from);

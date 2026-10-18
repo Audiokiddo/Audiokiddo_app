@@ -82,6 +82,15 @@ const tourStops = <TourStop>[
   ),
   (
     branch: 0,
+    target: 'rewards',
+    slot: null,
+    pose: SzopPose.zadowolony,
+    title: 'Nagrody',
+    body: 'Za skończone zabawy dziecko zbiera naklejki i odkrywa sekrety na mapie przygód. Tu są też prezenty do '
+        'druku: dyplomy i karty.',
+  ),
+  (
+    branch: 0,
     target: null,
     slot: 2,
     pose: SzopPose.klaszcze,
@@ -164,8 +173,8 @@ const tourStops = <TourStop>[
     target: 'forchild',
     slot: null,
     pose: SzopPose.zadowolony,
-    title: 'Dla dziecka',
-    body: 'Album naklejek za skończone zabawy i mapa przygód z sekretami Szop’ena.',
+    title: 'Nagrody dla dziecka',
+    body: 'Te same nagrody co na Starcie: album naklejek, mapa przygód i prezenty do druku.',
   ),
   (
     branch: 3,

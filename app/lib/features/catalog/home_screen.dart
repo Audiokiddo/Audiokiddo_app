@@ -136,6 +136,9 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              // The child's rewards, one tap from Start (2026-10-18): stickers, the map with
+              // Szop’en's secrets, diplomas and gifts to print.
+              const StartSection(tourId: 'rewards', title: 'Dla dziecka', child: RewardsTile()),
               const PromotionBanner(),
               const PendingDiplomaCard(),
               _NextPackCard(catalog: catalog),
@@ -327,6 +330,31 @@ class StartSection extends StatelessWidget {
     );
     return tourId == null ? card : TourTarget(id: tourId!, child: card);
   }
+}
+
+/// "Nagrody": Nela-style picture tile opening the child's rewards.
+class RewardsTile extends StatelessWidget {
+  const RewardsTile({super.key});
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: 'Nagrody. Naklejki, dyplomy i prezenty. Odblokuj sekrety Szop’ena!',
+    excludeSemantics: true,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Material(
+        child: Ink.image(
+          image: const AssetImage('assets/tiles/rewards.jpg'),
+          fit: BoxFit.cover,
+          child: InkWell(
+            onTap: () => context.push('/dla-dziecka'),
+            child: const AspectRatio(aspectRatio: 2336 / 1744),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 /// Ages as three picture tiles drawn by Nela (2026-10-18), each opening the library for that

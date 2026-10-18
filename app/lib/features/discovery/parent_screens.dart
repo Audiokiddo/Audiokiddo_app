@@ -71,7 +71,7 @@ class MoreScreen extends ConsumerWidget {
         _link(context, Icons.history_rounded, 'Historia słuchania', '/historia'),
         const RefSection('Dziecko'),
         _link(context, Icons.face_rounded, 'Profil dziecka', '/profil'),
-        _link(context, Icons.collections_rounded, 'Dla dziecka', '/dla-dziecka', subtitle: 'Album naklejek i mapa przygód'),
+        _link(context, Icons.card_giftcard_rounded, 'Nagrody dla dziecka', '/dla-dziecka', subtitle: 'Naklejki, mapa przygód, prezenty do druku'),
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.child_care_rounded, color: AkBrand.tealDeep),
@@ -123,7 +123,7 @@ class ForChildScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     Widget tile(IconData icon, Color color, String title, String line, String route) => Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Material(
         color: color,
         borderRadius: BorderRadius.circular(22),
@@ -131,16 +131,19 @@ class ForChildScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           onTap: () => context.push(route),
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Icon(icon, size: 44, color: const Color(0xFF211C35)),
+                Icon(icon, size: 40, color: const Color(0xFF211C35)),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: text.titleLarge?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800)),
+                      Text(
+                        title,
+                        style: text.titleMedium?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
+                      ),
                       Text(line, style: text.bodyMedium?.copyWith(color: const Color(0xFF211C35))),
                     ],
                   ),
@@ -153,12 +156,18 @@ class ForChildScreen extends StatelessWidget {
       ),
     );
     return Scaffold(
-      appBar: AppBar(title: const Text('Dla dziecka')),
+      appBar: AppBar(title: const Text('Nagrody')),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
         children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(22),
+            child: Image.asset('assets/tiles/rewards.jpg', fit: BoxFit.cover),
+          ),
+          const SizedBox(height: 16),
           tile(Icons.collections_rounded, AkBrand.sun, 'Album naklejek', 'Naklejka za każdą skończoną zabawę', '/naklejki'),
-          tile(Icons.map_rounded, const Color(0xFFCDEDEA), 'Mapa przygód', 'Kolejne przystanki i dyplomy', '/plan'),
+          tile(Icons.map_rounded, const Color(0xFFCDEDEA), 'Mapa przygód', 'Przystanki, skrzynie i sekrety Szop’ena', '/plan'),
+          tile(Icons.print_rounded, const Color(0xFFE8DDF4), 'Prezenty do druku', 'Dyplomy, karty i akta do wydrukowania', '/do-druku'),
         ],
       ),
     );
