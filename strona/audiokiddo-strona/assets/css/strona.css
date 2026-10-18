@@ -2883,47 +2883,71 @@ ul.ak-try3 li > div { padding: 16px 18px 20px; }
 @media (max-width: 900px) { .ak-fn-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .ak-fn-grid { grid-template-columns: 1fr; } }
 
-/* 3.28: "not an audiobook" shown as one minute of a play: a conversation that plays by itself,
-   the four things the child did light up beside it. */
-.ak-nb4-in { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(24px, 4vw, 56px); align-items: center; max-width: 1080px; margin: clamp(26px, 4vw, 44px) auto 0; }
-.ak-nb4-scene { position: relative; padding: clamp(18px, 2.4vw, 28px); border-radius: 34px; background: var(--paper); box-shadow: var(--shadow); min-height: 520px; }
-.ak-nb4-chat { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.ak-nb4-msg { display: flex; align-items: flex-end; gap: 10px; }
-.ak-nb4-msg p { margin: 0; padding: 12px 16px; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.4; max-width: 78%; }
-.ak-nb4-szop img { width: 44px; height: 44px; border-radius: 50%; background: var(--sun-soft); flex: none; object-fit: contain; }
-.ak-nb4-szop p { background: var(--teal-light); color: var(--ink); border-radius: 22px 22px 22px 6px; }
-.ak-nb4-kid { justify-content: flex-end; }
-.ak-nb4-msg.ak-nb4-kid { flex-direction: row; }
-.ak-nb4-kid p { background: var(--lav-deep); color: #fff; font-weight: 700; border-radius: 22px 22px 6px 22px; }
+/* 3.28: "not an audiobook" shown as one minute of a play: a small chat window that plays by itself
+   (the newest lines at the bottom, like a messenger), a progress bar, and the four things the
+   child did beside it; a tile jumps to its moment. */
+.ak-nb4-in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(22px, 4vw, 52px); align-items: center; max-width: 1060px; margin: clamp(24px, 4vw, 40px) auto 0; }
+.ak-nb4-scene { display: grid; grid-template-rows: auto 1fr auto; border-radius: 32px; background: var(--paper); box-shadow: var(--shadow-big); overflow: hidden; }
+.ak-nb4-top { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--lav-deep); color: #fff; }
+.ak-nb4-top img { width: 48px; height: 48px; border-radius: 50%; background: var(--sun-soft); object-fit: contain; flex: none; }
+.ak-nb4-top p { margin: 0; flex: 1; display: grid; line-height: 1.25; }
+.ak-nb4-top strong { font-size: 16px; }
+.ak-nb4-top small { font-size: 13px; opacity: .85; }
+.ak-nb4-top .ak-play { flex: none; }
+.ak-nb4-view { height: 360px; overflow-y: auto; scroll-behavior: smooth; padding: 16px; background: linear-gradient(180deg, var(--cream), var(--paper)); scrollbar-width: none; }
+.ak-nb4-view::-webkit-scrollbar { display: none; }
+.ak-nb4-chat { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; min-height: 100%; justify-content: flex-end; }
+.ak-nb4-msg { display: flex; }
+.ak-nb4-msg p { margin: 0; padding: 11px 15px; font-size: clamp(15px, 1.45vw, 16.5px); line-height: 1.4; max-width: 82%; }
+.ak-nb4-szop p { background: var(--teal-light); color: var(--ink); border-radius: 20px 20px 20px 6px; }
+.ak-nb4-msg.ak-nb4-kid { justify-content: flex-end; }
+.ak-nb4-kid p { background: var(--lav-deep); color: #fff; font-weight: 700; border-radius: 20px 20px 6px 20px; }
 .ak-nb4-kid p.ak-nb4-act { display: inline-flex; align-items: center; gap: 6px; background: var(--sun-soft); color: var(--ink); font-style: italic; font-weight: 600; box-shadow: inset 0 0 0 2px var(--sun); }
 .ak-nb4-kid p.ak-nb4-act svg { flex: none; }
-span.ak-nb4-kid { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--sun); color: var(--ink); flex: none; }
-.ak-nb4-again { position: absolute; right: 18px; bottom: 14px; border: 0; border-radius: 999px; padding: 8px 14px; background: var(--sun-soft); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
-.ak-nb4-again:hover { background: var(--sun); }
-/* While it plays: messages wait hidden and come in one by one (strona.js adds .is-on). */
-.ak-js .ak-nb4-scene.is-playing .ak-nb4-msg { opacity: 0; transform: translateY(14px) scale(.98); transition: opacity .45s var(--ease), transform .45s var(--ease); }
-.ak-js .ak-nb4-scene.is-playing .ak-nb4-msg.is-on { opacity: 1; transform: none; }
-.ak-nb4-msg.is-typing p { color: transparent; position: relative; min-width: 64px; }
-.ak-nb4-msg.is-typing p::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -15px; border-radius: 50%; background: currentColor; color: var(--ink); box-shadow: 12px 0 0 var(--ink), 24px 0 0 var(--ink); animation: ak-nb4-dots 1s infinite ease-in-out; }
-.ak-nb4-kid.is-typing p::after { color: #fff; box-shadow: 12px 0 0 #fff, 24px 0 0 #fff; }
+.ak-nb4-msg.is-now p { box-shadow: 0 0 0 3px var(--sun); }
+.ak-js .ak-nb4-scene.is-playing .ak-nb4-msg { display: none; }
+.ak-js .ak-nb4-scene.is-playing .ak-nb4-msg.is-on { display: flex; animation: ak-nb4-in .4s var(--ease) both; }
+@keyframes ak-nb4-in { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+.ak-nb4-msg.is-typing p { color: transparent; position: relative; min-width: 62px; }
+.ak-nb4-msg.is-typing p svg { visibility: hidden; }
+.ak-nb4-msg.is-typing p::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -15px; border-radius: 50%; background: var(--ink); box-shadow: 12px 0 0 var(--ink), 24px 0 0 var(--ink); animation: ak-nb4-dots 1s infinite ease-in-out; }
+.ak-nb4-kid.is-typing p::after { background: #fff; box-shadow: 12px 0 0 #fff, 24px 0 0 #fff; }
+.ak-nb4-kid.is-typing p.ak-nb4-act::after { background: var(--ink); box-shadow: 12px 0 0 var(--ink), 24px 0 0 var(--ink); }
 @keyframes ak-nb4-dots { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+.ak-nb4-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line, #ece8f2); }
+.ak-nb4-steps { flex: 1; display: flex; gap: 4px; }
+.ak-nb4-steps i { flex: 1; height: 5px; border-radius: 3px; background: var(--lav-soft); transition: background .3s var(--ease); }
+.ak-nb4-steps i.is-on { background: var(--lav-deep); }
+.ak-nb4-again { border: 0; border-radius: 999px; padding: 8px 16px; background: var(--sun); color: var(--ink); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+.ak-nb4-again:hover { background: var(--sun-deep); color: #fff; }
 .ak-site .ak-nb4-side-h { margin: 0 0 12px; font-weight: 700; color: var(--lav-deep); }
 .ak-nb4-skills { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.ak-nb4-skills li { display: grid; gap: 4px; padding: 16px; border-radius: 24px; background: var(--paper); box-shadow: var(--shadow); transition: background .35s var(--ease), transform .35s var(--ease), box-shadow .35s var(--ease); }
+.ak-nb4-skills button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: grid; gap: 4px; padding: 16px; border-radius: 24px; background: var(--paper); box-shadow: var(--shadow); transition: background .35s var(--ease), transform .35s var(--ease), box-shadow .35s var(--ease); }
+.ak-nb4-skills button:hover { transform: translateY(-2px); }
+.ak-nb4-skills button:focus-visible { outline: 3px solid var(--lav-deep); outline-offset: 3px; }
 .ak-nb4-skills strong { font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-size: 20px; font-weight: 800; }
-.ak-nb4-skills span:last-child { font-size: 14px; line-height: 1.35; color: var(--ink-soft, #5b5370); }
-.ak-nb4-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 16px; background: var(--lav-soft); color: var(--lav-deep); transition: background .35s var(--ease), color .35s var(--ease); }
-.ak-nb4-skills li.is-lit { background: var(--sun); transform: translateY(-4px) rotate(-1deg); box-shadow: 0 16px 30px rgba(242, 160, 7, .28); }
-.ak-nb4-skills li.is-lit .ak-nb4-ico { background: var(--ink); color: var(--sun); }
-.ak-nb4-vs { margin: 18px 0 0 !important; display: flex; flex-wrap: wrap; gap: 8px; font-size: 15px; }
+.ak-nb4-skills button > span:last-child { font-size: 14px; line-height: 1.35; color: var(--ink-soft, #5b5370); }
+.ak-nb4-ico { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 16px; background: var(--lav-soft); color: var(--lav-deep); transition: background .35s var(--ease), color .35s var(--ease); }
+.ak-nb4-skills button.is-lit { background: var(--sun); box-shadow: 0 14px 28px rgba(242, 160, 7, .28); }
+.ak-nb4-skills button.is-lit .ak-nb4-ico { background: var(--ink); color: var(--sun); }
+.ak-nb4-skills button.is-now { transform: translateY(-4px) rotate(-1deg); }
+.ak-nb4-vs { margin: clamp(20px, 3vw, 32px) 0 0 !important; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; font-size: 15px; }
 .ak-nb4-vs span, .ak-nb4-vs strong { padding: 8px 14px; border-radius: 999px; }
 .ak-nb4-vs span { background: var(--lav-soft); color: var(--ink); text-decoration: line-through; text-decoration-color: rgba(36, 27, 58, .35); }
 .ak-nb4-vs strong { background: var(--teal-light); color: var(--ink); }
 @media (max-width: 860px) {
   .ak-nb4-in { grid-template-columns: minmax(0, 1fr); }
-  .ak-nb4-scene { min-height: 0; padding-bottom: 54px; }
-  .ak-nb4-msg p { max-width: 86%; }
+  .ak-nb4-side { order: -1; }
+  .ak-nb4-side-h { text-align: center; }
+  .ak-nb4-skills { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .ak-nb4-skills button { padding: 10px 4px; justify-items: center; text-align: center; border-radius: 18px; }
+  .ak-nb4-skills strong { font-size: 14px; }
+  .ak-nb4-skills button > span:last-child { display: none; }
+  .ak-nb4-ico { width: 38px; height: 38px; border-radius: 13px; }
+  .ak-nb4-view { height: 300px; }
+  .ak-nb4-vs { justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ak-nb4-skills li, .ak-nb4-ico { transition: none; }
+  .ak-nb4-skills button, .ak-nb4-ico, .ak-nb4-steps i { transition: none; }
+  .ak-nb4-view { scroll-behavior: auto; }
 }

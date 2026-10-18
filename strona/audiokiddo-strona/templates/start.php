@@ -72,38 +72,48 @@ $ak_skills = [
 <section class="ak-slide ak-a-sec ak-nb-sec ak-nb4" id="co-to" data-slide="Co to jest" aria-labelledby="ak-nb-h">
     <div class="ak-wrap">
         <h2 id="ak-nb-h" class="ak-center" data-reveal>Tu dziecko gra <span class="ak-hl-word">główną rolę.</span></h2>
-        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal>Audiobook się słucha. W Audiokiddo głos mówi do dziecka, a dziecko odpowiada, rusza się i wymyśla. Tak wygląda jedna minuta zabawy:</p>
+        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal>Audiobook się słucha. W Audiokiddo głos mówi do dziecka, a dziecko odpowiada, rusza się i wymyśla. Zobacz jedną minutę zabawy:</p>
         <div class="ak-nb4-in">
-            <div class="ak-nb4-scene" data-reveal data-ak-scene aria-label="Przykładowa minuta zabawy: rozmowa Szop’ena z dzieckiem">
-                <ol class="ak-nb4-chat">
-                    <?php foreach ($ak_scene as $i => [$who, $line, $skill]) : ?>
-                    <li class="ak-nb4-msg ak-nb4-<?php echo esc_attr($who); ?>"<?php echo $skill ? ' data-skill="' . esc_attr($skill) . '"' : ''; ?> style="--i:<?php echo (int) $i; ?>">
-                        <?php if ($who === 'szop') : ?>
-                        <img src="<?php echo esc_url(ak_asset('img/szop/nasluchuje.webp')); ?>" alt="" width="44" height="44" loading="lazy" decoding="async">
-                        <p><span class="ak-sr">Szop’en: </span><?php echo esc_html($line); ?></p>
-                        <?php else : ?>
-                        <p<?php echo $skill === 'rusza' ? ' class="ak-nb4-act"' : ''; ?>><span class="ak-sr">Dziecko: </span><?php echo $skill === 'rusza' ? ak_icon('run', 18) . ' ' . esc_html($line) : esc_html($line); // static icon ?></p>
-                        <span class="ak-nb4-kid" aria-hidden="true"><?php echo ak_icon('kid', 22); // static ?></span>
-                        <?php endif; ?>
-                    </li>
-                    <?php endforeach; ?>
-                </ol>
-                <button type="button" class="ak-nb4-again" hidden>Jeszcze raz</button>
+            <div class="ak-nb4-scene" data-reveal data-ak-scene>
+                <div class="ak-nb4-top">
+                    <img src="<?php echo esc_url(ak_asset('img/szop/nasluchuje.webp')); ?>" alt="" width="48" height="48" loading="lazy" decoding="async">
+                    <p><strong>Znikające dzwonki rowerowe</strong><small>Pakiet Detektyw · fragment zabawy</small></p>
+                    <?php echo ak_sample_button(ak_upload($packs['detektyw']['sample']), 'Posłuchaj prawdziwego fragmentu tej zabawy', 'ak-play-small'); // escaped inside ?>
+                </div>
+                <div class="ak-nb4-view" aria-label="Przykładowa minuta zabawy: rozmowa Szop’ena z dzieckiem">
+                    <ol class="ak-nb4-chat">
+                        <?php foreach ($ak_scene as $i => [$who, $line, $skill]) : ?>
+                        <li class="ak-nb4-msg ak-nb4-<?php echo esc_attr($who); ?>"<?php echo $skill ? ' data-skill="' . esc_attr($skill) . '"' : ''; ?>>
+                            <?php if ($who === 'szop') : ?>
+                            <p><span class="ak-sr">Szop’en: </span><?php echo esc_html($line); ?></p>
+                            <?php else : ?>
+                            <p<?php echo $skill === 'rusza' ? ' class="ak-nb4-act"' : ''; ?>><span class="ak-sr">Dziecko: </span><?php echo $skill === 'rusza' ? ak_icon('run', 18) . ' ' . esc_html($line) : esc_html($line); // static icon ?></p>
+                            <?php endif; ?>
+                        </li>
+                        <?php endforeach; ?>
+                    </ol>
+                </div>
+                <div class="ak-nb4-bar">
+                    <span class="ak-nb4-steps" aria-hidden="true"><?php foreach ($ak_scene as $i => $m) : ?><i></i><?php endforeach; ?></span>
+                    <button type="button" class="ak-nb4-again" data-ak-again>Odtwórz</button>
+                </div>
             </div>
             <div class="ak-nb4-side">
                 <p class="ak-nb4-side-h" data-reveal>W jednej zabawie dziecko:</p>
                 <ul class="ak-nb4-skills">
                     <?php foreach ($ak_skills as $i => [$key, $icon, $title, $line]) : ?>
-                    <li data-reveal data-skill-tile="<?php echo esc_attr($key); ?>" style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
-                        <span class="ak-nb4-ico"><?php echo ak_icon($icon, 30); // static ?></span>
-                        <strong><?php echo esc_html($title); ?></strong>
-                        <span><?php echo esc_html($line); ?></span>
+                    <li data-reveal style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
+                        <button type="button" data-skill-tile="<?php echo esc_attr($key); ?>" aria-label="<?php echo esc_attr($title . ': pokaż w scence'); ?>">
+                            <span class="ak-nb4-ico"><?php echo ak_icon($icon, 28); // static ?></span>
+                            <strong><?php echo esc_html($title); ?></strong>
+                            <span><?php echo esc_html($line); ?></span>
+                        </button>
                     </li>
                     <?php endforeach; ?>
                 </ul>
-                <p class="ak-nb4-vs" data-reveal><span>Audiobook: dziecko słucha.</span> <strong>Audiokiddo: dziecko działa.</strong></p>
             </div>
         </div>
+        <p class="ak-nb4-vs" data-reveal><span>Audiobook: dziecko słucha.</span> <strong>Audiokiddo: dziecko działa.</strong></p>
     </div>
 </section>
 

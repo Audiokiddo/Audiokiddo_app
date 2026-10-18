@@ -873,51 +873,76 @@
 })();
 
 // 3.28: the minute of a play on the home page plays itself once it is in view: Szop'en speaks,
-// the child "types" and answers, and what the child did lights up beside the conversation.
+// the child "types" and answers, the newest line stays in sight like in a messenger, the bar
+// under it fills, and what the child did lights up beside it. A tile jumps to its moment.
 (function () {
   var scene = document.querySelector('[data-ak-scene]');
   if (!scene) return;
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var view = scene.querySelector('.ak-nb4-view');
   var msgs = Array.prototype.slice.call(scene.querySelectorAll('.ak-nb4-msg'));
+  var steps = Array.prototype.slice.call(scene.querySelectorAll('.ak-nb4-steps i'));
   var tiles = Array.prototype.slice.call(document.querySelectorAll('[data-skill-tile]'));
-  var again = scene.querySelector('.ak-nb4-again');
+  var again = scene.querySelector('[data-ak-again]');
   var timers = [];
-  function light(skill) {
-    tiles.forEach(function (t) { if (t.getAttribute('data-skill-tile') === skill) t.classList.add('is-lit'); });
-  }
-  function reset() {
-    timers.forEach(clearTimeout); timers = [];
-    msgs.forEach(function (m) { m.classList.remove('is-on', 'is-typing'); });
-    tiles.forEach(function (t) { t.classList.remove('is-lit'); });
-  }
-  function play() {
-    reset();
-    scene.classList.add('is-playing');
-    if (again) again.hidden = true;
-    var t = 300;
-    msgs.forEach(function (m) {
-      var kid = m.classList.contains('ak-nb4-kid');
-      var typing = kid ? 900 : 650;
-      timers.push(setTimeout(function () { m.classList.add('is-on', 'is-typing'); }, t));
-      t += typing;
-      timers.push(setTimeout(function () {
-        m.classList.remove('is-typing');
-        var skill = m.getAttribute('data-skill');
-        if (skill) light(skill);
-      }, t));
-      t += kid ? 700 : 1100;
+  function follow() { view.scrollTop = view.scrollHeight; }
+  function lightUpTo(n) {
+    var seen = {};
+    msgs.forEach(function (m, i) { var s = m.getAttribute('data-skill'); if (s && i <= n) seen[s] = true; });
+    tiles.forEach(function (t) {
+      var k = t.getAttribute('data-skill-tile');
+      t.classList.toggle('is-lit', !!seen[k]);
+      t.classList.toggle('is-now', n >= 0 && msgs[n] && msgs[n].getAttribute('data-skill') === k);
     });
-    timers.push(setTimeout(function () { if (again) again.hidden = false; }, t));
   }
+  function show(n, typing) {
+    msgs.forEach(function (m, i) {
+      m.classList.toggle('is-on', i <= n);
+      m.classList.toggle('is-typing', i === n && !!typing);
+      m.classList.toggle('is-now', i === n && !typing && m.classList.contains('ak-nb4-kid'));
+    });
+    steps.forEach(function (s, i) { s.classList.toggle('is-on', i <= n); });
+    lightUpTo(typing ? n - 1 : n);
+    follow();
+  }
+  function stop() { timers.forEach(clearTimeout); timers = []; }
+  function play(from) {
+    stop();
+    scene.classList.add('is-playing');
+    if (again) again.textContent = 'Od początku';
+    var t = 250;
+    for (var i = from; i < msgs.length; i++) {
+      (function (i) {
+        var kid = msgs[i].classList.contains('ak-nb4-kid');
+        timers.push(setTimeout(function () { show(i, true); }, t));
+        t += kid ? 700 : 500;
+        timers.push(setTimeout(function () { show(i, false); }, t));
+        t += kid ? 650 : 1500;
+      })(i);
+    }
+  }
+  function jump(skill) {
+    var n = -1;
+    msgs.forEach(function (m, i) { if (n < 0 && m.getAttribute('data-skill') === skill) n = i; });
+    if (n < 0) return;
+    stop();
+    scene.classList.add('is-playing');
+    show(n, false);
+    if (!still) timers.push(setTimeout(function () { play(n + 1); }, 2200));
+  }
+  tiles.forEach(function (t) { t.addEventListener('click', function () { jump(t.getAttribute('data-skill-tile')); }); });
+  if (again) again.addEventListener('click', function () { play(0); });
   if (still || !('IntersectionObserver' in window)) {
-    msgs.forEach(function (m) { var s = m.getAttribute('data-skill'); if (s) light(s); });
+    show(msgs.length - 1, false);
+    if (again) again.hidden = true;
     return;
   }
+  scene.classList.add('is-playing');
+  show(-1, false);
   var started = false;
   new IntersectionObserver(function (entries, obs) {
     entries.forEach(function (e) {
-      if (e.isIntersecting && !started) { started = true; play(); obs.disconnect(); }
+      if (e.isIntersecting && !started) { started = true; play(0); obs.disconnect(); }
     });
-  }, { threshold: 0.35 }).observe(scene);
-  if (again) again.addEventListener('click', play);
+  }, { threshold: 0.4 }).observe(scene);
 })();
