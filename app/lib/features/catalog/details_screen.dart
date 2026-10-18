@@ -20,7 +20,7 @@ import '../games/speech.dart';
 import '../parental_gate/parental_gate.dart';
 import '../pdf/case_files_card.dart';
 import '../personal/personal_repository.dart';
-import '../player/playback_controller.dart';
+import '../home/quick_pick.dart' show startAndOpenPlayer;
 import 'catalog_providers.dart';
 import 'widgets/catalog_loader.dart';
 import '../discovery/discovery_model.dart';
@@ -104,17 +104,13 @@ class _DetailsContent extends ConsumerWidget {
       ref.invalidate(gameResumeProvider(item));
       return;
     }
-    try {
-      await ref
-          .read(playbackControllerProvider)
-          .start(item, album: pack?.title ?? AppLocalizations.of(context).kind(item.kind), fromStart: fromStart);
-      if (context.mounted) await openPlayer(context);
-    } on Exception {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).playbackUnavailable)));
-      }
-    }
+    await startAndOpenPlayer(
+      context,
+      ProviderScope.containerOf(context, listen: false),
+      item,
+      album: pack?.title ?? AppLocalizations.of(context).kind(item.kind),
+      fromStart: fromStart,
+    );
   }
 
   // The offer itself asks for an adult before any purchase (buyWithGate).

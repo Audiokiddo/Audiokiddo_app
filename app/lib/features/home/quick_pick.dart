@@ -22,6 +22,7 @@ import '../insights/events.dart';
 import '../personal/personal_repository.dart';
 import '../player/bottom_dock.dart' show resumeCardProvider;
 import '../player/playback_controller.dart';
+import '../player/player_providers.dart' show startingItemProvider;
 
 /// "Co teraz?": how much time you have, and Szop’en draws a run of plays that fits it.
 const pickMinutes = [15, 30, 45, 60];
@@ -81,15 +82,31 @@ Future<void> startItem(BuildContext context, ContentItem item) async {
     if (context.mounted) await openPlayer(context, game: true);
     return;
   }
+  await startAndOpenPlayer(context, container, item, album: 'AudioKiddo');
+}
+
+/// Opens the player at once, showing [item] while its sound gets ready, then starts it. A
+/// failure closes the player again and says so.
+Future<void> startAndOpenPlayer(
+  BuildContext context,
+  ProviderContainer container,
+  ContentItem item, {
+  required String album,
+  bool fromStart = false,
+}) async {
+  final router = GoRouter.of(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final message = AppLocalizations.of(context).playbackUnavailable;
+  container.read(startingItemProvider.notifier).set(item.id);
+  // One player page however it was started (next play, a play of the pack, the queue).
+  unawaited(openPlayerOn(router));
   try {
-    await container.read(playbackControllerProvider).start(item, album: 'AudioKiddo');
-    // One player page however it was started (next play, a play of the pack, the queue).
-    if (context.mounted) await openPlayer(context);
+    await container.read(playbackControllerProvider).start(item, album: album, fromStart: fromStart);
   } on Exception {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).playbackUnavailable)));
-    }
+    if (routeStack(router).lastOrNull == '/odtwarzacz' && router.canPop()) router.pop();
+    messenger.showSnackBar(SnackBar(content: Text(message)));
+  } finally {
+    container.read(startingItemProvider.notifier).set(null);
   }
 }
 

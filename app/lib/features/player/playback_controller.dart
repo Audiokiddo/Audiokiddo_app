@@ -124,7 +124,8 @@ class PlaybackController {
   /// [greet]: Szop’en's hello before the first play of the day (plans greet on their own).
   Future<void> start(ContentItem item, {required String album, bool fromStart = false, bool greet = true}) async {
     _checkAccess(item);
-    if (greet) await greetBeforeFirstPlay(_ref);
+    // Szop’en's hello runs while the file and its address get ready; the play waits for it.
+    final hello = greet ? greetBeforeFirstPlay(_ref) : Future<void>.value();
     await _save(); // keep progress of whatever was playing before
     final local = await _ref.read(downloadManagerProvider).localAudioPath(item);
     final Uri source;
@@ -161,6 +162,7 @@ class PlaybackController {
         );
     _checkAccess(item); // Resolving the source may have crossed the access deadline.
     _open = _OpenPlay(item.id, count.number);
+    await hello;
     await _handler.playItem(
       MediaItem(
         id: item.id,

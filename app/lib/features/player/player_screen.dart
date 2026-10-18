@@ -49,6 +49,11 @@ class _Player extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final media = ref.watch(currentMediaProvider).value;
+    final starting = ref.watch(startingItemProvider);
+    if (starting != null && media?.id != starting) {
+      final next = ref.watch(catalogProvider).value?.item(starting);
+      if (next != null) return _Starting(item: next);
+    }
     final handler = ref.watch(audioHandlerProvider);
     final state = ref.watch(playbackStateProvider).value;
     final item = ref.watch(catalogProvider).value?.item(media?.id ?? '');
@@ -801,6 +806,47 @@ class _GoodnightOffer extends ConsumerWidget {
         onPressed: () => context.push('/dobranoc'),
         icon: const Icon(Icons.bedtime_rounded),
         label: const Text('Pora snu: włącz Dobranoc'),
+      ),
+    );
+  }
+}
+
+/// The moment between the tap and the sound: the play's cover and title at once, so nobody
+/// thinks the app froze while the file and Szop’en's hello get ready.
+class _Starting extends StatelessWidget {
+  const _Starting({required this.item});
+
+  final ContentItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          tooltip: 'Zwiń odtwarzacz',
+          onPressed: () => context.canPop() ? context.pop() : context.go('/'),
+          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+        ),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
+          children: [
+            Center(
+              child: SizedBox.square(
+                dimension: 240,
+                child: ClipRRect(borderRadius: BorderRadius.circular(28), child: ItemArt(item: item)),
+              ),
+            ),
+            const SizedBox(height: 28),
+            Text(item.title, style: text.headlineSmall, textAlign: TextAlign.center),
+            const SizedBox(height: 18),
+            const Center(child: CircularProgressIndicator()),
+            const SizedBox(height: 12),
+            Text('Za chwilę zaczynamy…', style: text.bodyLarge, textAlign: TextAlign.center),
+          ],
+        ),
       ),
     );
   }
