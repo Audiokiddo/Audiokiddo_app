@@ -15,6 +15,7 @@ import '../personal/personal_repository.dart';
 import 'audio_handler.dart';
 import '../insights/events.dart';
 import 'player_providers.dart';
+import '../family/birthday.dart';
 import '../family/family.dart';
 import '../catalog/catalog_providers.dart';
 
@@ -117,8 +118,10 @@ class PlaybackController {
 
   AkAudioHandler get _handler => _ref.read(audioHandlerProvider);
 
-  Future<void> start(ContentItem item, {required String album, bool fromStart = false}) async {
+  /// [greet]: Szop’en's hello before the first play of the day (plans greet on their own).
+  Future<void> start(ContentItem item, {required String album, bool fromStart = false, bool greet = true}) async {
     _checkAccess(item);
+    if (greet) await greetBeforeFirstPlay(_ref);
     await _save(); // keep progress of whatever was playing before
     final local = await _ref.read(downloadManagerProvider).localAudioPath(item);
     final Uri source;

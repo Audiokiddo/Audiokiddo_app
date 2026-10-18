@@ -10,6 +10,7 @@ import 'core/router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/storage/storage_providers.dart';
 import 'core/theme/appearance.dart';
+import 'features/day/day_routine.dart';
 import 'features/account/session_gate.dart';
 import 'features/catalog/catalog_providers.dart';
 import 'features/home/home_widget_sync.dart';
@@ -54,10 +55,16 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
   /// Automatic appearance turns dark at 20:00 and light at 6:00, also with the app open.
   Timer? _appearanceTimer;
 
+  /// The evening starts half an hour before the bedtime set in Mój dzień.
+  int _evening() {
+    final routine = ref.read(dayRoutineProvider).value;
+    return eveningFor(routine != null && routine.configured ? routine.bedtime : null);
+  }
+
   void _scheduleAppearance() {
     _appearanceTimer?.cancel();
     final now = DateTime.now();
-    _appearanceTimer = Timer(nextAppearanceChange(now).difference(now) + const Duration(seconds: 1), () {
+    _appearanceTimer = Timer(nextAppearanceChange(now, evening: _evening()).difference(now) + const Duration(seconds: 1), () {
       if (!mounted) return;
       setState(() {});
       _scheduleAppearance();
@@ -114,12 +121,18 @@ class _AudioKiddoAppState extends ConsumerState<AudioKiddoApp> {
 
   @override
   Widget build(BuildContext context) {
+    // A new bedtime moves the evening: the timer is set again.
+    ref.listen(dayRoutineProvider, (_, _) => Future.microtask(_scheduleAppearance));
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
       theme: buildTheme(Brightness.light),
       darkTheme: buildTheme(Brightness.dark),
-      themeMode: effectiveThemeMode(ref.watch(appearanceProvider).value ?? ThemeMode.light, DateTime.now()),
+      themeMode: effectiveThemeMode(
+        ref.watch(appearanceProvider).value ?? ThemeMode.light,
+        DateTime.now(),
+        evening: _evening(),
+      ),
       locale: const Locale('pl'),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [

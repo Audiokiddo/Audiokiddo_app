@@ -35,6 +35,7 @@ import 'widgets/back_to_start.dart';
 import '../features/player/no_look_screen.dart';
 import '../features/player/player_screen.dart';
 import '../features/purchases/paywall_screen.dart';
+import '../features/purchases/shop.dart' show hasSubscriptionProvider;
 import '../features/purchases/shop_screen.dart';
 import '../features/purchases/subscription_screen.dart';
 import '../features/referral/referral_screen.dart';
@@ -129,7 +130,7 @@ GoRouter buildRouter(
           ],
         ),
         StatefulShellBranch(
-          routes: [GoRoute(path: '/sklep', pageBuilder: (context, state) => swipePage(state, const ShopScreen()))],
+          routes: [GoRoute(path: '/sklep', pageBuilder: (context, state) => swipePage(state, const SubscriptionTab()))],
         ),
         StatefulShellBranch(
           routes: [GoRoute(path: '/moje', pageBuilder: (context, state) => swipePage(state, const MoreScreen()))],
@@ -146,6 +147,7 @@ GoRouter buildRouter(
     GoRoute(path: '/ustawienia', pageBuilder: (context, state) => swipePage(state, const SettingsScreen())),
     GoRoute(path: '/kolejka', pageBuilder: (context, state) => swipePage(state, const QueueScreen())),
     GoRoute(path: '/profil', pageBuilder: (context, state) => swipePage(state, const ProfileScreen())),
+    GoRoute(path: '/dla-dziecka', pageBuilder: (context, state) => swipePage(state, const ForChildScreen())),
     GoRoute(path: '/pobrane', pageBuilder: (context, state) => swipePage(state, const DownloadsScreen())),
     GoRoute(
       path: '/historia',
@@ -245,7 +247,7 @@ class _ParentShell extends ConsumerWidget {
 
   final StatefulNavigationShell shell;
 
-  /// On Biblioteka, Sklep or Więcej itself (not a page opened inside them).
+  /// On Biblioteka, Abonament (Pobrane) or Więcej itself (not a page opened inside them).
   final bool atTabRoot;
 
   @override
@@ -273,10 +275,14 @@ class _ParentShell extends ConsumerWidget {
         bottomNavigationBar: BottomDock(
           current: shell.currentIndex,
           onTab: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
-          tabs: const [
+          tabs: [
             (icon: Icons.home_outlined, selected: Icons.home_rounded, label: 'Start'),
             (icon: Icons.auto_stories_outlined, selected: Icons.auto_stories_rounded, label: 'Biblioteka'),
-            (icon: Icons.shopping_bag_outlined, selected: Icons.shopping_bag_rounded, label: 'Sklep'),
+            // Only the subscription is sold; once it is paid for, the tab holds the downloads
+            // for the car instead (parent review, 2026-10-18).
+            ref.watch(hasSubscriptionProvider)
+                ? (icon: Icons.download_for_offline_outlined, selected: Icons.download_for_offline_rounded, label: 'Pobrane')
+                : (icon: Icons.workspace_premium_outlined, selected: Icons.workspace_premium_rounded, label: 'Abonament'),
             (icon: Icons.menu_rounded, selected: Icons.menu_rounded, label: 'Więcej'),
           ],
         ),

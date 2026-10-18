@@ -212,7 +212,7 @@ class AppSessionAudio implements SessionAudio {
   Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero}) async {
     final handler = _ref.read(audioHandlerProvider);
     final skip = _skipItem = Completer<void>();
-    await _ref.read(playbackControllerProvider).start(item, album: 'AudioKiddo', fromStart: true);
+    await _ref.read(playbackControllerProvider).start(item, album: 'AudioKiddo', fromStart: true, greet: false);
     if (fadeOut > Duration.zero) handler.fadeOutAtEnd(fadeOut);
     // Wait until this item actually runs, then until it is over (or stopped, or skipped).
     final over = handler.playbackState

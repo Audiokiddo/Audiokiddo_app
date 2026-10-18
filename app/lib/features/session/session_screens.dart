@@ -22,18 +22,15 @@ import '../family/plan_texts.dart';
 import '../parent_voice/parent_voice.dart';
 import '../lord/lord_lines.dart';
 import '../lord/lord_widgets.dart';
+import '../family/listeners.dart';
 import 'plan.dart';
 import 'plan_editor.dart';
 import 'session.dart';
 import '../day/day_routine.dart';
 
-/// The age plans are made for: with siblings the youngest, so everyone in the car or at the
-/// table can join in (Mój dzień, 2026-10-17).
-int _ageOf(WidgetRef ref) {
-  final children = ref.watch(familyProvider).value?.children ?? const [];
-  if (children.isEmpty) return 6;
-  return children.map((c) => c.age).reduce((a, b) => a < b ? a : b);
-}
+/// The age plans are made for: with siblings the youngest of those listening, so everyone in
+/// the car or at the table can join in (Mój dzień, 2026-10-17; who listens: the Teraz card).
+int _ageOf(WidgetRef ref) => ref.watch(listeningAgeProvider);
 
 /// Back when there is somewhere to go back to; a close button to Start when the screen was
 /// opened from the home-screen widget (a deep link replaces the stack).

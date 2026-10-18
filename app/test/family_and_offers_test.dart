@@ -123,7 +123,7 @@ void main() {
     await pumpWith(tester, [
       experimentsProvider.overrideWithValue(const {'paywall_cta': 'oszczednosc'}),
     ]);
-    await tester.tap(find.text('Sklep').last);
+    await tester.tap(find.text('Abonament').last);
     await tester.pumpAndSettle();
     expect(find.textContaining('Zacznij za darmo i oszczędzaj 89,89'), findsOneWidget);
   });
@@ -151,7 +151,7 @@ void main() {
 
   testWidgets('O nas: a Polish brand made by Nela and Dawid, shown next to the offer too', (tester) async {
     await pumpWith(tester, const []);
-    await tester.tap(find.text('Sklep').last);
+    await tester.tap(find.text('Abonament').last);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Polska rodzinna marka · zabawy tworzą Nela i Dawid'),

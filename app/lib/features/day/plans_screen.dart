@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../home/quick_pick.dart';
 import 'day_routine.dart';
 import 'moment_card.dart';
 
@@ -28,12 +29,21 @@ class PlansScreen extends ConsumerWidget {
       (Icons.queue_music_rounded, 'Moje rutyny', 'Zapisane kolejki zabaw', '/rutyny'),
     ];
     return Scaffold(
-      appBar: AppBar(title: const Text('Plany')),
+      appBar: AppBar(title: const Text('Co teraz?')),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
         children: [
           // What fits right now first; the rest in the order of a day.
           const MomentCard(),
+          // The quick pick that used to sit under the big button: a few plays chosen for you.
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 4),
+            child: FilledButton.tonalIcon(
+              onPressed: () => showQuickPick(context),
+              icon: const Icon(Icons.casino_rounded),
+              label: const Text('Wylosuj mi zabawy'),
+            ),
+          ),
           for (final (icon, title, line, route) in plans)
             ListTile(
               contentPadding: EdgeInsets.zero,

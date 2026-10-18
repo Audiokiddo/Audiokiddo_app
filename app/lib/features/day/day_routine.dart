@@ -49,6 +49,10 @@ class DayRoutine {
   /// Which moments may send a notification (only when reminders are allowed).
   final Set<DayMomentKind> notify;
 
+  /// Some days the family leaves home (kindergarten or a drive): only then leaving and pick-up
+  /// hours mean anything.
+  bool get goesOut => daycareDays.isNotEmpty || driveDays.isNotEmpty;
+
   /// The parent saved the routine at least once (until then the defaults guess a usual week).
   final bool configured;
 

@@ -21,7 +21,7 @@ const _askedKey = 'rating_asked_at';
 const _happyKey = 'rating_happy_at';
 
 /// Plays a family must have finished before Szop’en asks how they like the app.
-const ratingAfterPlays = 3;
+const ratingAfterPlays = 5;
 
 /// When the parent last answered or closed the question; asked again after 60 days at most.
 final ratingAskedProvider = FutureProvider<DateTime?>((ref) async {

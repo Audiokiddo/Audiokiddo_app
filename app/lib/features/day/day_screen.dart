@@ -76,8 +76,12 @@ class _DayScreenState extends ConsumerState<DayScreen> {
     final text = Theme.of(context).textTheme;
     final summaries = {
       DayStep.week: 'Przedszkole: ${daysLabel(r.daycareDays)} · auto: ${daysLabel(r.driveDays)}, ${r.drive} min',
-      DayStep.hours: 'Pobudka ${clockOf(r.wake)}, wyjście ${clockOf(r.leave)}, odbiór ${clockOf(r.back)}, '
-          'kolacja ${clockOf(r.dinner)}, sen ${clockOf(r.bedtime)}',
+      DayStep.hours: [
+        'Pobudka ${clockOf(r.wake)}',
+        if (r.goesOut) ...['wyjście ${clockOf(r.leave)}', 'odbiór ${clockOf(r.back)}'],
+        'kolacja ${clockOf(r.dinner)}',
+        'sen ${clockOf(r.bedtime)}',
+      ].join(', '),
       DayStep.calendar: r.homeDates.isEmpty ? 'Święta liczę sam' : 'Święta i ${r.homeDates.length} dni w domu',
       DayStep.notify: r.notify.isEmpty
           ? 'Wyłączone'
@@ -402,13 +406,25 @@ class _HoursStep extends StatelessWidget {
         Text('Dotknij godziny, żeby ją zmienić.', style: text.bodyMedium),
         const SizedBox(height: 12),
         _Hour(label: 'Pobudka', help: 'O której wstajecie?', value: r.wake, apply: (v) => r.copyWith(wake: v)),
-        _Hour(label: 'Wyjście z domu', help: 'O której wychodzicie?', value: r.leave, apply: (v) => r.copyWith(leave: v)),
-        _Hour(
-          label: 'Odbiór z przedszkola',
-          help: 'O której odbierasz dziecko?',
-          value: r.back,
-          apply: (v) => r.copyWith(back: v),
-        ),
+        // Leaving and pick-up only matter on kindergarten or car days (parent review,
+        // 2026-10-18): without such days they are not asked at all.
+        if (r.goesOut) ...[
+          _Hour(label: 'Wyjście z domu', help: 'O której wychodzicie?', value: r.leave, apply: (v) => r.copyWith(leave: v)),
+          _Hour(
+            label: 'Odbiór z przedszkola',
+            help: 'O której odbierasz dziecko?',
+            value: r.back,
+            apply: (v) => r.copyWith(back: v),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              'Wyjście i odbiór liczą się tylko w dni: ${daysLabel({...r.daycareDays, ...r.driveDays})}. '
+              'W weekend i w dni w domu ich nie ma.',
+              style: text.bodySmall,
+            ),
+          ),
+        ],
         _Hour(label: 'Kolacja', help: 'O której kolacja?', value: r.dinner, apply: (v) => r.copyWith(dinner: v)),
         _Hour(label: 'Pora snu', help: 'O której sen?', value: r.bedtime, apply: (v) => r.copyWith(bedtime: v)),
         const SizedBox(height: 12),

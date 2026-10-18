@@ -45,15 +45,30 @@ final fullCatalogProvider = FutureProvider<Catalog>((ref) async {
 final catalogProvider = FutureProvider<Catalog>((ref) async {
   final full = await ref.watch(fullCatalogProvider.future);
   final today = ref.watch(calendarDayProvider);
+  // A child's birthday opens the next recorded premiere early.
+  final gift = ref.watch(earlyPremiereProvider);
   final released = [
     for (final i in full.items)
       // A planned premiere (no recording or script yet) is never playable, even after its
       // date: it stays a face-down card in Nowości until the play is published for real.
-      if ((i.releasedOn == null || !i.releasedOn!.isAfter(today)) && isReady(i)) i,
+      if ((i.releasedOn == null || !i.releasedOn!.isAfter(today) || i.id == gift) && isReady(i)) i,
   ];
   if (released.length == full.items.length) return full;
   return Catalog(version: full.version, packs: full.packs, items: released, shelves: full.shelves);
 });
+
+/// A premiere opened before its date (the birthday gift, set from Start). Kept apart from the
+/// family's data so the catalog does not depend on it.
+class EarlyPremiere extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  void set(String? id) {
+    if (state != id) state = id;
+  }
+}
+
+final earlyPremiereProvider = NotifierProvider<EarlyPremiere, String?>(EarlyPremiere.new);
 
 /// A play that can be played: it has a recording or a game script (not a planned premiere).
 bool isReady(ContentItem i) => i.audio.isNotEmpty || i.script != null;

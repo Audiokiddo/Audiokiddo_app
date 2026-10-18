@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:ak_core/ak_core.dart';
+
+import '../purchases/shop.dart' show playsCount;
+import '../../core/theme/app_theme.dart';
 import '../../core/widgets/szop.dart';
+import '../downloads/download_providers.dart';
+import '../family/family.dart';
+import '../family/listeners.dart';
 import '../catalog/catalog_providers.dart';
 import '../home/start_cards.dart';
 import 'day_routine.dart';
@@ -87,6 +94,10 @@ class MomentCard extends ConsumerWidget {
                             '„$aside”',
                             style: text.bodySmall?.copyWith(color: ink.withValues(alpha: .75), fontStyle: FontStyle.italic),
                           ),
+                          if (moment.kind == DayMomentKind.car ||
+                              (moment.kind == DayMomentKind.bedtime && routine.configured))
+                            _ReadyOffline(ink: ink, tomorrow: moment.kind == DayMomentKind.bedtime),
+                          const _Listeners(ink: ink),
                           const SizedBox(height: 10),
                           Wrap(
                             spacing: 8,
@@ -118,6 +129,88 @@ class MomentCard extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Before the car (and the evening before): what is on the phone for a ride without the
+/// internet, or one button to get it (parent review, 2026-10-18).
+class _ReadyOffline extends ConsumerWidget {
+  const _ReadyOffline({required this.ink, required this.tomorrow});
+
+  final Color ink;
+
+  /// The evening before: "na jutro".
+  final bool tomorrow;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ids = ref.watch(downloadSummaryProvider).value?.itemIds ?? const <String>[];
+    final catalog = ref.watch(catalogProvider).value;
+    final ready = [for (final id in ids) ?catalog?.item(id)];
+    final minutes = (ready.fold<int>(0, (s, i) => s + i.durationSec) / 60).round();
+    final text = Theme.of(context).textTheme;
+    if (ready.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(foregroundColor: ink, side: BorderSide(color: ink.withValues(alpha: .4))),
+          onPressed: () => context.push('/pobrane'),
+          icon: const Icon(Icons.download_rounded),
+          label: Text(tomorrow ? 'Pobierz na jutrzejszą drogę' : 'Pobierz na drogę'),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        children: [
+          Icon(Icons.offline_pin_rounded, size: 18, color: ink),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              'Gotowe bez internetu: ${playsCount(ready.length)}, $minutes min',
+              style: text.bodySmall?.copyWith(color: ink, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "Słuchają: Zosia, Staś": with siblings, who is listening now; plans take the youngest of
+/// them. Tapping a name leaves that child out (or back in).
+class _Listeners extends ConsumerWidget {
+  const _Listeners({required this.ink});
+
+  final Color ink;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final children = ref.watch(familyProvider).value?.children ?? const <ChildProfile>[];
+    if (children.length < 2) return const SizedBox.shrink();
+    final on = {...listening(children, ref.watch(listenersProvider).value ?? const {}).map((c) => c.id)};
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Wrap(
+        spacing: 6,
+        runSpacing: 2,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(on.length > 1 ? 'Słuchają razem:' : 'Słucha:', style: text.bodySmall?.copyWith(color: ink)),
+          for (final c in children)
+            FilterChip(
+              label: Text(c.name.isEmpty ? '${c.age} lat' : c.name),
+              selected: on.contains(c.id),
+              labelStyle: selectableChipLabel(context, selected: on.contains(c.id)),
+              showCheckmark: false,
+              visualDensity: VisualDensity.compact,
+              onSelected: (_) => ref.read(listenersProvider.notifier).toggle(c.id, children),
+            ),
+        ],
       ),
     );
   }

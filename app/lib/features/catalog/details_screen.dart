@@ -145,8 +145,9 @@ class _DetailsContent extends ConsumerWidget {
         Text(item.title, style: text.headlineMedium),
         if (item.subtitle != null) Text(item.subtitle!, style: text.titleMedium),
         const SizedBox(height: AkSpace.m),
-        MetaStrip(item: item),
-        if (players != null || item.isFree || listensToWords) ...[
+        // Time, age and "listens to the child" in one row (parent review, 2026-10-18).
+        MetaStrip(item: item, listens: listensToWords),
+        if (players != null || item.isFree) ...[
           const SizedBox(height: AkSpace.s),
           Wrap(
             spacing: AkSpace.s,
@@ -154,12 +155,11 @@ class _DetailsContent extends ConsumerWidget {
             children: [
               if (players != null) _Meta(icon: Icons.group_rounded, label: players),
               if (item.isFree) _Meta(icon: Icons.card_giftcard_rounded, label: l10n.free),
-              if (listensToWords) const _Meta(icon: Icons.record_voice_over_rounded, label: 'Słucha dziecka'),
             ],
           ),
         ],
         const SizedBox(height: AkSpace.m),
-        Text(item.parentDescription, style: text.bodyMedium),
+        ShortDescription(text: item.parentDescription),
         const SizedBox(height: AkSpace.l),
         ...switch (access) {
           ItemAccess.playable => [
@@ -305,6 +305,45 @@ List<String> whatTheChildHears(ContentItem item) => [
   if (item.requirements.isEmpty) 'Nic nie trzeba szykować.',
   'Bez reklam. Zabawy piszą Nela i Dawid, para z Polski.',
 ];
+
+/// The description in two sentences, the rest behind "więcej".
+class ShortDescription extends StatefulWidget {
+  const ShortDescription({super.key, required this.text});
+
+  final String text;
+
+  @override
+  State<ShortDescription> createState() => _ShortDescriptionState();
+}
+
+/// The first two sentences of [text], or null when there is nothing more after them.
+String? firstSentences(String text, [int count = 2]) {
+  final ends = RegExp(r'[.!?…](\s|$)').allMatches(text).toList();
+  if (ends.length <= count) return null;
+  return text.substring(0, ends[count - 1].start + 1);
+}
+
+class _ShortDescriptionState extends State<ShortDescription> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyMedium;
+    final short = firstSentences(widget.text);
+    if (short == null || _open) return Text(widget.text, style: style);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(short, style: style),
+        TextButton(
+          style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(48, 40)),
+          onPressed: () => setState(() => _open = true),
+          child: const Text('więcej'),
+        ),
+      ],
+    );
+  }
+}
 
 class _Meta extends StatelessWidget {
   const _Meta({required this.icon, required this.label});

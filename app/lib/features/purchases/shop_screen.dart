@@ -27,9 +27,19 @@ import 'purchase_controller.dart';
 import '../insights/events.dart';
 import 'manage_subscription.dart';
 import 'shop.dart';
+import '../discovery/parent_screens.dart' show DownloadsScreen;
 import 'store_gateway.dart';
 import 'subscription_value.dart';
 import 'winback.dart';
+
+/// The third tab: the subscription offer, or the downloads once the family has it.
+class SubscriptionTab extends ConsumerWidget {
+  const SubscriptionTab({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) =>
+      ref.watch(hasSubscriptionProvider) ? const DownloadsScreen(inTab: true) : const ShopScreen();
+}
 
 /// Shop tab: the subscription, every pack with a free taste, bundles and how to restore.
 /// Parent area; every purchase and link out passes the parental gate.
@@ -65,7 +75,7 @@ class ShopScreen extends ConsumerWidget {
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               children: [
-                Text('Sklep', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                Text('Abonament', style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 4),
                 Text(
                   'Głos zadaje pytania, dziecko odpowiada. W abonamencie masz wszystkie zabawy, a co tydzień dochodzą 2 nowe.',
@@ -713,7 +723,7 @@ class PackScreen extends ConsumerWidget {
         leading: context.canPop()
             ? null
             : IconButton(
-                tooltip: 'Sklep',
+                tooltip: 'Abonament',
                 onPressed: () => context.push('/abonament'),
                 icon: const Icon(Icons.arrow_back_rounded),
               ),

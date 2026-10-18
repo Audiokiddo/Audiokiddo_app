@@ -86,7 +86,7 @@ void main() {
 
     testWidgets('shows only the subscription: free plays and the plan, no packs for good', (tester) async {
       await pumpApp(tester);
-      await tester.tap(find.text('Sklep').last);
+      await tester.tap(find.text('Abonament').last);
       await tester.pumpAndSettle();
       // The ways side by side: what is free, the subscription per month. No pack for good.
       expect(find.bySemanticsLabel(RegExp(r'^Za darmo: .*Abonament: ')), findsOneWidget);
@@ -190,7 +190,10 @@ void main() {
           ),
         ],
       );
-      await tester.tap(find.text('Sklep').last);
+      // With the subscription the tab holds the downloads; the subscription is one tap away.
+      await tester.tap(find.text('Pobrane').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Twój abonament'));
       await tester.pumpAndSettle();
       expect(find.text('Masz pełny dostęp'), findsOneWidget);
       expect(find.text('Abonament AudioKiddo'), findsNothing);

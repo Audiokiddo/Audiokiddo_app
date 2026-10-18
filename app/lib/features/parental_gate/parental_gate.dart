@@ -26,15 +26,28 @@ const askInParentArea = bool.fromEnvironment('PARENT_GATE_EVERYWHERE');
 /// purchases, links, sharing and settings; ARCHITECTURE §12). This is NOT age verification
 /// or parental consent.
 Future<bool> showParentalGate(BuildContext context) async {
-  if (!askInParentArea && !ProviderScope.containerOf(context, listen: false).read(kidsModeProvider).active) {
-    return true;
-  }
+  final kids = ProviderScope.containerOf(context, listen: false).read(kidsModeProvider).active;
+  if (!askInParentArea && !kids) return true;
+  // In the parent area one right answer is enough for a while (parent review, 2026-10-18):
+  // the question came back at every link and purchase. Leaving kids mode always asks.
+  final passedAt = _passedAt;
+  if (!kids && passedAt != null && DateTime.now().difference(passedAt) < gateGrace) return true;
   final passed = await Navigator.of(
     context,
     rootNavigator: true,
   ).push<bool>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => const ParentalGateScreen()));
+  if (passed ?? false) _passedAt = DateTime.now();
   return passed ?? false;
 }
+
+/// How long the parent area stays open after a right answer.
+const gateGrace = Duration(minutes: 10);
+
+DateTime? _passedAt;
+
+/// Tests: every gate asks again.
+@visibleForTesting
+void resetGateGrace() => _passedAt = null;
 
 class ParentalGateScreen extends StatefulWidget {
   const ParentalGateScreen({super.key, this.challengeFactory});

@@ -59,6 +59,10 @@ LINES = {
     "bedtime_start": "Czas na wyciszenie. Zróbmy razem trzy spokojne oddechy. Wdech. I wydech. Wdech. I wydech. Wdech. I wydech.",
     "goodnight": "Dobranoc. Nos pod koc, uszy na poduszkę. Resztę przygód zostawimy na jutro.",
     # Diploma after a whole pack (app/lib/features/diploma): congratulations and a secret reward.
+    # The first play of the day, after "Hej, Zosia!" (parent review, 2026-10-18).
+    "good_day": "Jak dobrze cię słyszeć! Zaczynamy dzisiejszą przygodę.",
+    # The child's birthday (day and month, with the parent's consent).
+    "birthday": "Sto lat, sto lat, niech żyje, żyje nam! Wszystkiego najlepszego z okazji urodzin! Mój ogon aż tańczy z radości.",
     "diploma": "Brawo! Cały pakiet ukończony. Oto twój dyplom. Jestem z ciebie bardzo dumny!",
     "bonus_wyobraznia": "Sekretna wiadomość od Szop'ena. Dziś w nocy twoje łóżko zamieni się w statek. Dokąd popłyniesz? Opowiedz o tym rodzicom przy śniadaniu!",
     "bonus_slowa-i-wiedza": "Sekretna zagadka od Szop'ena. Ma cztery nogi, ale nie chodzi. Stoi w kuchni i czeka na obiad. Co to? To stół!",

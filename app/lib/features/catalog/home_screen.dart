@@ -37,6 +37,8 @@ import '../welcome/szop_tour.dart';
 import 'widgets/catalog_loader.dart';
 import '../day/peace_week.dart';
 import 'news_month.dart';
+import '../lord/szop_quota.dart';
+import '../family/birthday.dart';
 
 final screenFreeMinutesProvider = Provider<int>((ref) {
   final family = ref.watch(familyProvider).value;
@@ -88,9 +90,9 @@ class HomeScreen extends ConsumerWidget {
               const AlertsKeeper(),
               const FirstPlayCard(),
               const AccessEndingBanner(),
-              const WinBackCard(),
               // Start in order of what a parent needs (Mój dzień, 2026-10-17): what fits now, the
               // play they were in the middle of, then plays; offers and extras further down.
+              const BirthdayBanner(),
               const MomentCard(),
               const LeaveHint(),
               if (items.isNotEmpty && ref.watch(closedContinueProvider).value != items.first.id) ...[
@@ -109,6 +111,9 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 10),
               // This month's premieres (Dawid, 2026-10-17): out ones in colour, coming ones face down.
               TourTarget(id: 'hero', child: const NewsMonth()),
+              // Up to the first scroll only what fits now, the play in progress and the news
+              // (parent review, 2026-10-18); everything else below.
+              const WinBackCard(),
               // Age and kind right under the big tiles, visible as soon as the app opens.
               const SizedBox(height: 14),
               const _AgeRow(),
@@ -117,8 +122,6 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 18),
               // The play the child keeps asking for ("mamo, włącz mi…"), one tap away.
               const FavoriteCard(),
-              // A new play within two weeks: the countdown children ask about.
-              const PremiereCountdown(),
 
               // Plays first, the way parents think: what now, then for which age and kind;
               // offers and helpers after them. No "your packs": only the subscription is sold.
@@ -137,16 +140,19 @@ class HomeScreen extends ConsumerWidget {
               const PendingDiplomaCard(),
               _NextPackCard(catalog: catalog),
               _DiscoverPacks(catalog: catalog),
-              const UpcomingShelf(),
+              // Premiere dates live in Nowości; asks only once the family knows the app.
               const RatingCard(),
-              const ReferralCard(),
-              const _OfflineCard(),
+              if (_finishedPlays(ref) >= 5) const ReferralCard(),
+              if (_finishedPlays(ref) >= 2) const _OfflineCard(),
             ],
           );
         },
       ),
     ),
   );
+  int _finishedPlays(WidgetRef ref) =>
+      ref.watch(familyProvider).value?.results.where((r) => r.completed).length ?? 0;
+
   String _remaining(WidgetRef ref, ContentItem item) {
     final p = ref.watch(progressProvider(item.id)).value;
     if (p == null || p.completed) return '${(item.durationSec / 60).ceil()} min';
@@ -177,6 +183,8 @@ class StartSzop extends Notifier<(SzopPose, String)?> {
       for (var i = 0; i < tips.length; i++) ...[tips[i], if (i % 2 == 1) szopNudges[(now.day + i) % szopNudges.length]],
     ];
   }
+
+  bool get greeted => _greeted;
 
   /// Once per app start, a moment after Start shows.
   void greet() {
@@ -214,10 +222,11 @@ class _SzopBubbleState extends ConsumerState<_SzopBubble> {
   @override
   void initState() {
     super.initState();
-    _greet = Timer(const Duration(seconds: 2), () {
-      if (mounted && !(ref.read(discoveryProvider).value?.quiet ?? false)) {
-        ref.read(startSzopProvider.notifier).greet();
-      }
+    _greet = Timer(const Duration(seconds: 2), () async {
+      if (!mounted || (ref.read(discoveryProvider).value?.quiet ?? false)) return;
+      if (ref.read(startSzopProvider.notifier).greeted) return;
+      // Within his two lines a day; a tap on him still answers.
+      if (await ref.read(szopQuotaProvider).take() && mounted) ref.read(startSzopProvider.notifier).greet();
     });
   }
 
@@ -324,6 +333,7 @@ class _OfflineCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final count = ref.watch(downloadSummaryProvider).value?.itemIds.length ?? 0;
+    if (count > 0) return const SizedBox.shrink();
     final text = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.only(top: 14),
@@ -348,9 +358,7 @@ class _OfflineCard extends ConsumerWidget {
                         style: text.titleSmall?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
                       ),
                       Text(
-                        count == 0
-                            ? 'Pobierz je przed drogą do auta, samolotu czy na działkę.'
-                            : 'Pobrane: ${playsCount(count)}. Dobierz kolejne, całe pakiety jednym przyciskiem.',
+                        'Pobierz je przed drogą do auta, samolotu czy na działkę.',
                         style: text.bodySmall?.copyWith(color: const Color(0xFF211C35)),
                       ),
                     ],

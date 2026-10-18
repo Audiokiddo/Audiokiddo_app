@@ -437,9 +437,13 @@ class LightSurface extends StatelessWidget {
 /// The three facts a parent decides by, as in the mockup: how long, for what age, what is
 /// needed (or that nothing is).
 class MetaStrip extends StatelessWidget {
-  const MetaStrip({super.key, required this.item});
+  const MetaStrip({super.key, required this.item, this.listens = false});
 
   final ContentItem item;
+
+  /// The play listens to the child: said in the same row as time and age (what needs
+  /// preparing is listed further down the details).
+  final bool listens;
 
   @override
   Widget build(BuildContext context) {
@@ -478,12 +482,15 @@ class MetaStrip extends StatelessWidget {
         children: [
           cell(Icons.schedule_rounded, referenceMint, '$minutes', minutes == 1 ? 'minuta' : 'minut'),
           cell(Icons.groups_rounded, referenceLilac, age, 'wiek'),
-          cell(
-            needs.isEmpty ? Icons.check_rounded : Icons.content_cut_rounded,
-            AkBrand.sun,
-            needs.isEmpty ? 'Nic' : needs.join(' + '),
-            'potrzebne',
-          ),
+          if (listens)
+            cell(Icons.record_voice_over_rounded, AkBrand.sun, 'Słucha', 'dziecka')
+          else
+            cell(
+              needs.isEmpty ? Icons.check_rounded : Icons.content_cut_rounded,
+              AkBrand.sun,
+              needs.isEmpty ? 'Nic' : needs.join(' + '),
+              'potrzebne',
+            ),
         ],
       ),
     );

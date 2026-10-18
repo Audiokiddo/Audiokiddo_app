@@ -230,6 +230,22 @@ class _GameKiddoState extends State<_GameKiddo> {
               child: Icon(Icons.play_circle_fill_rounded, size: 56, color: AkBrand.sun),
             ),
           if (_confetti > 0) Positioned.fill(child: ConfettiBurst(key: ValueKey(_confetti), pieces: 40)),
+          if (_cheering && game.heard != null)
+            Positioned(
+              top: 0,
+              child: Semantics(
+                liveRegion: true,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(22)),
+                  child: Text(
+                    game.heard!,
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

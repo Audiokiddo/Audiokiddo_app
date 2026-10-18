@@ -9,6 +9,7 @@ import '../../core/audio/kiddo_voice.dart';
 import '../../core/theme/tokens.dart';
 import '../catalog/catalog_providers.dart';
 import '../downloads/download_providers.dart';
+import '../family/birthday.dart';
 import '../downloads/download_manager.dart';
 import '../downloads/pack_download.dart';
 import '../family/family.dart';
@@ -62,8 +63,7 @@ class MoreScreen extends ConsumerWidget {
         _link(context, Icons.history_rounded, 'Historia słuchania', '/historia'),
         const RefSection('Dziecko'),
         _link(context, Icons.face_rounded, 'Profil dziecka', '/profil'),
-        _link(context, Icons.collections_rounded, 'Album naklejek', '/naklejki'),
-        _link(context, Icons.map_rounded, 'Mapa przygód', '/plan'),
+        _link(context, Icons.collections_rounded, 'Dla dziecka', '/dla-dziecka', subtitle: 'Album naklejek i mapa przygód'),
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.child_care_rounded, color: AkBrand.tealDeep),
@@ -113,6 +113,56 @@ class MoreScreen extends ConsumerWidget {
       ],
     ),
   );
+}
+
+/// Więcej → Dla dziecka: what the child collects, in one place (parent review, 2026-10-18).
+class ForChildScreen extends StatelessWidget {
+  const ForChildScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    Widget tile(IconData icon, Color color, String title, String line, String route) => Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Material(
+        color: color,
+        borderRadius: BorderRadius.circular(22),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
+          onTap: () => context.push(route),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Row(
+              children: [
+                Icon(icon, size: 44, color: const Color(0xFF211C35)),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: text.titleLarge?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800)),
+                      Text(line, style: text.bodyMedium?.copyWith(color: const Color(0xFF211C35))),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded, color: Color(0xFF211C35)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    return Scaffold(
+      appBar: AppBar(title: const Text('Dla dziecka')),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          tile(Icons.collections_rounded, AkBrand.sun, 'Album naklejek', 'Naklejka za każdą skończoną zabawę', '/naklejki'),
+          tile(Icons.map_rounded, const Color(0xFFCDEDEA), 'Mapa przygód', 'Kolejne przystanki i dyplomy', '/plan'),
+        ],
+      ),
+    );
+  }
 }
 
 /// Więcej → Ustawienia i zgody: the switches that used to make Więcej long.
@@ -216,7 +266,10 @@ class CollectionScreen extends ConsumerWidget {
 /// Downloads: the family's plays by pack, each with its own button and a "whole pack" one, then
 /// what is on the phone and what is still coming.
 class DownloadsScreen extends ConsumerStatefulWidget {
-  const DownloadsScreen({super.key});
+  const DownloadsScreen({super.key, this.inTab = false});
+
+  /// The tab of a family with the subscription: the way to the subscription itself on top.
+  final bool inTab;
   @override
   ConsumerState<DownloadsScreen> createState() => _DownloadsScreenState();
 }
@@ -266,6 +319,15 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
               'Pobrane zabawy działają bez internetu: w aucie, samolocie i na działce.',
               style: text.bodyMedium?.copyWith(color: context.palette.inkMuted),
             ),
+            if (widget.inTab)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () => context.push('/abonament'),
+                  icon: const Icon(Icons.workspace_premium_rounded),
+                  label: const Text('Twój abonament'),
+                ),
+              ),
             const SizedBox(height: 14),
             SegmentedButton<_DownloadsTab>(
               segments: const [
@@ -424,7 +486,8 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 18),
+            BirthdayTile(child: child),
+            const SizedBox(height: 8),
             Wrap(
               spacing: 10,
               runSpacing: 10,

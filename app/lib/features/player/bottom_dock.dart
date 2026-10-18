@@ -5,6 +5,7 @@ import 'package:ak_core/ak_core.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/open_player.dart';
 import '../../core/theme/tokens.dart';
@@ -133,15 +134,16 @@ class _PlayButton extends ConsumerWidget {
     final active = media != null && playing;
     return Semantics(
       button: true,
-      label: active ? 'Otwórz odtwarzacz: ${media.title}' : 'Co teraz? Szybki wybór zabawy',
+      label: active ? 'Otwórz odtwarzacz: ${media.title}' : 'Co teraz? Plany na tę chwilę',
       excludeSemantics: true,
       child: GestureDetector(
-        // Playing: back to it. Otherwise a choice (with "carry on" on top when something waits).
+        // Playing: back to it. Otherwise the plans with what fits now on top; the old quick
+        // pick is there as "Wylosuj mi" (one road to "what now", parent review 2026-10-18).
         onTap: () {
           if (media != null && playing) {
             openPlayer(context, game: media.id.startsWith(gameMediaPrefix));
           } else {
-            showQuickPick(context);
+            GoRouter.of(context).push('/plany');
           }
         },
         // Raised above the bar, warm and round, with a word under it: the one obvious button.

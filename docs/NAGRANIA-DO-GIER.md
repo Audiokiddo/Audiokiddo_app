@@ -48,11 +48,12 @@ Nagrania zastępcze czyta głos systemowy. Lektor nagrywa poniższe kwestie (mon
 
 | Segment | Tekst |
 |---|---|
-| `intro` | Cześć, tu Szop'en! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, klaśnij raz! Jeśli to nieprawda, powiedz głośno: nie! Gotowi? Zaczynamy. |
+| `intro_words` | Cześć, tu Szop'en! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, powiedz głośno: prawda! Jeśli to nieprawda, powiedz: nie! Gotowi? Zaczynamy. |
 | `correct` | Tak jest, brawo! |
 | `oops` | Hmm, posłuchaj. |
 | `not_heard` | Nie usłyszałem odpowiedzi, ale nic nie szkodzi. |
 | `think` | Pomyśl chwilę. Prawda czy nie? |
+| `clap_rule` | Mam dziś słabszy słuch do słów. Zróbmy tak: jeśli to prawda, klaśnij raz! Jeśli nie, powiedz głośno: nie! |
 | `outro_great` | Wow, prawie wszystko dobrze! Jesteś mistrzem prawdy. To koniec zabawy. |
 | `outro_good` | Świetnie się bawiliśmy! Następnym razem zagramy znowu. To koniec zabawy. |
 | `q_krowa` | Uwaga! Krowa mówi muuu. |

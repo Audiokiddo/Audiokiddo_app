@@ -104,6 +104,24 @@ class _KidsSetupSheetState extends State<_KidsSetupSheet> {
             Text(l10n.kidsEnterTitle, style: text.headlineSmall),
             const SizedBox(height: AkSpace.s),
             Text(l10n.kidsSetupHint, style: text.bodyMedium),
+            const SizedBox(height: 10),
+            // Parents forgot how to get out (parent review, 2026-10-18): said before going in.
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: AkBrand.sun, borderRadius: BorderRadius.circular(16)),
+              child: Row(
+                children: [
+                  const Icon(Icons.lock_person_rounded, color: Color(0xFF211C35)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Jak wyjść: stuknij kłódkę w prawym górnym rogu i odpowiedz na pytanie dla dorosłych.',
+                      style: text.bodyMedium?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: AkSpace.l),
             Text(l10n.kidsSetupAge, style: text.titleMedium),
             const SizedBox(height: AkSpace.s),

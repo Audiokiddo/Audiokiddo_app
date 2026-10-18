@@ -12,6 +12,7 @@ import '../../core/format.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../catalog/catalog_providers.dart';
+import '../day/day_routine.dart';
 import '../catalog/widgets/item_art.dart';
 import '../personal/personal_repository.dart';
 import '../downloads/download_button.dart';
@@ -192,6 +193,7 @@ class _Player extends ConsumerWidget {
                 // The next play of the same pack, right under the controls: parents should not
                 // have to scroll down to find out there is more.
                 if (item != null) _NextInPack(item: item, onSeeAll: () => _showAll(context)),
+                if (item != null) _GoodnightOffer(item: item),
                 const SizedBox(height: 20),
                 // Like music apps: where it plays, and one tap to a Bluetooth or AirPlay speaker.
                 const Center(child: AudioRouteChip()),
@@ -776,6 +778,29 @@ class _UpNext extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// From bedtime in Mój dzień the player suggests winding down (parent review, 2026-10-18),
+/// unless what plays is already a bedtime play.
+class _GoodnightOffer extends ConsumerWidget {
+  const _GoodnightOffer({required this.item});
+
+  final ContentItem item;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final routine = ref.watch(dayRoutineProvider).value;
+    if (routine == null || item.situations.contains(Situation.przedSnem)) return const SizedBox.shrink();
+    if (momentAt(routine, ref.watch(currentTimeProvider))?.kind != DayMomentKind.bedtime) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: FilledButton.tonalIcon(
+        onPressed: () => context.push('/dobranoc'),
+        icon: const Icon(Icons.bedtime_rounded),
+        label: const Text('Pora snu: włącz Dobranoc'),
       ),
     );
   }

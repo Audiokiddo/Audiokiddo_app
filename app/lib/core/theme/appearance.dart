@@ -34,18 +34,24 @@ final appearanceDefaultProvider = Provider<ThemeMode>((ref) => ThemeMode.system)
 const eveningFrom = 20;
 const morningFrom = 6;
 
-/// Automatic mode is dark from 20:00 to 6:00.
-bool isEvening(DateTime now) => now.hour >= eveningFrom || now.hour < morningFrom;
+/// Automatic mode is dark from [evening] (minutes after midnight, 20:00 unless Mój dzień
+/// says when bedtime is) to 6:00.
+bool isEvening(DateTime now, {int evening = eveningFrom * 60}) =>
+    now.hour * 60 + now.minute >= evening || now.hour < morningFrom;
+
+/// The evening of a family whose bedtime is known: half an hour before it, between 18:00 and
+/// 21:00 (parent review, 2026-10-18: the screen dims by itself before sleep).
+int eveningFor(int? bedtime) => bedtime == null ? eveningFrom * 60 : (bedtime - 30).clamp(18 * 60, 21 * 60);
 
 /// The mode the app shows now for the stored [mode].
-ThemeMode effectiveThemeMode(ThemeMode mode, DateTime now) =>
-    mode == ThemeMode.system ? (isEvening(now) ? ThemeMode.dark : ThemeMode.light) : mode;
+ThemeMode effectiveThemeMode(ThemeMode mode, DateTime now, {int evening = eveningFrom * 60}) =>
+    mode == ThemeMode.system ? (isEvening(now, evening: evening) ? ThemeMode.dark : ThemeMode.light) : mode;
 
-/// When automatic mode changes next (20:00 or 6:00).
-DateTime nextAppearanceChange(DateTime now) {
-  final evening = DateTime(now.year, now.month, now.day, eveningFrom);
+/// When automatic mode changes next (the evening or 6:00).
+DateTime nextAppearanceChange(DateTime now, {int evening = eveningFrom * 60}) {
+  final evening0 = DateTime(now.year, now.month, now.day, evening ~/ 60, evening % 60);
   final morning = DateTime(now.year, now.month, now.day, morningFrom);
   if (now.isBefore(morning)) return morning;
-  if (now.isBefore(evening)) return evening;
+  if (now.isBefore(evening0)) return evening0;
   return morning.add(const Duration(days: 1));
 }

@@ -90,7 +90,7 @@ const tourStops = <TourStop>[
     target: 'subscription',
     slot: 3,
     pose: SzopPose.klaszcze,
-    title: 'Sklep',
+    title: 'Abonament',
     body:
         'Abonament otwiera wszystkie zabawy, a co tydzień dokłada 2 nowe.',
   ),

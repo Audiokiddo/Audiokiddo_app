@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "version": 3,
+ "version": 4,
  "_comment": "Katalog przykładowy (Etap 1). Pliki, okładki, sumy kontrolne i skład próbki są tymczasowe.",
  "packs": [
   {
@@ -1673,7 +1673,7 @@
    "id": "prawda-czy-nie",
    "kind": "interactive_game",
    "title": "Prawda czy nie?",
-   "parent_description": "Dziecko słucha zdań i odpowiada bez dotykania telefonu: klaśnięcie to „prawda”, głośne „nie” to nieprawda. Z mikrofonem (opcjonalnie) aplikacja reaguje na odpowiedź i liczy punkty; bez mikrofonu daje czas do namysłu i podaje rozwiązanie.",
+   "parent_description": "Dziecko słucha zdań i odpowiada na głos bez dotykania telefonu: „prawda” albo „nie”. Słowa rozpoznaje sam telefon, bez internetu i bez nagrywania; gdy nie rozpoznaje słów, klaśnięcie znaczy „prawda”. Bez mikrofonu aplikacja daje czas do namysłu i podaje rozwiązanie.",
    "age_min": 3,
    "duration_sec": 240,
    "situations": [
@@ -1693,13 +1693,13 @@
     "schema_version": 1,
     "id": "prawda-czy-nie",
     "version": 1,
-    "min_engine_version": 2,
+    "min_engine_version": 3,
     "timing_sensitive": false,
     "assets": {
      "intro": {
-      "path": "games/prawda-czy-nie/intro.m4a",
-      "bytes": 101702,
-      "sha256": "925db5a0ef97072d3877d58579523d19391031ee1dd9912fa6163adb5adc81ac"
+      "path": "games/prawda-czy-nie/intro_words.m4a",
+      "bytes": 108603,
+      "sha256": "0b2edbf4883cd1f79a42e01f9b1779fbd343e36889d3cae4e684aebe30622af9"
      },
      "correct": {
       "path": "games/prawda-czy-nie/correct.m4a",
@@ -1725,6 +1725,11 @@
       "path": "games/prawda-czy-nie/thinking.m4a",
       "bytes": 9474,
       "sha256": "eb1162f40fb09496880472956f99ec9b6f59e87bfd014ae4cb121806d2a87573"
+     },
+     "clap_rule": {
+      "path": "games/prawda-czy-nie/clap_rule.m4a",
+      "bytes": 72723,
+      "sha256": "358e9168c9f163c2c2a3ba374d3d0c1744fabb301cfbcd1c740346bb8c7ec967"
      },
      "outro_great": {
       "path": "games/prawda-czy-nie/outro_great.m4a",
@@ -1798,7 +1803,8 @@
      }
     },
     "variables": {
-     "score": 0
+     "score": 0,
+     "told": 0
     },
     "start": "intro",
     "steps": {
@@ -1813,6 +1819,60 @@
       "next": "answer_krowa"
      },
      "answer_krowa": {
+      "type": "choice",
+      "window_ms": 10000,
+      "words": {
+       "right_krowa": [
+        "prawda",
+        "tak",
+        "prawdziwe",
+        "to prawda",
+        "zgadza się"
+       ],
+       "wrong_krowa": [
+        "nie",
+        "nieprawda",
+        "nie prawda",
+        "fałsz",
+        "bzdura"
+       ]
+      },
+      "on_timeout": "missed_krowa",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_krowa"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "claps_krowa"
+       }
+      }
+     },
+     "claps_krowa": {
+      "type": "branch",
+      "if": {
+       "var": "told",
+       "gt": 0
+      },
+      "then": "clap_answer_krowa",
+      "else": "tell_krowa"
+     },
+     "tell_krowa": {
+      "type": "set",
+      "var": "told",
+      "op": "inc",
+      "next": "rule_krowa"
+     },
+     "rule_krowa": {
+      "type": "play",
+      "asset": "clap_rule",
+      "next": "clap_answer_krowa"
+     },
+     "clap_answer_krowa": {
       "type": "choice",
       "window_ms": 10000,
       "options": {
@@ -1870,6 +1930,60 @@
      "answer_ryby": {
       "type": "choice",
       "window_ms": 10000,
+      "words": {
+       "wrong_ryby": [
+        "prawda",
+        "tak",
+        "prawdziwe",
+        "to prawda",
+        "zgadza się"
+       ],
+       "right_ryby": [
+        "nie",
+        "nieprawda",
+        "nie prawda",
+        "fałsz",
+        "bzdura"
+       ]
+      },
+      "on_timeout": "missed_ryby",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_ryby"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "claps_ryby"
+       }
+      }
+     },
+     "claps_ryby": {
+      "type": "branch",
+      "if": {
+       "var": "told",
+       "gt": 0
+      },
+      "then": "clap_answer_ryby",
+      "else": "tell_ryby"
+     },
+     "tell_ryby": {
+      "type": "set",
+      "var": "told",
+      "op": "inc",
+      "next": "rule_ryby"
+     },
+     "rule_ryby": {
+      "type": "play",
+      "asset": "clap_rule",
+      "next": "clap_answer_ryby"
+     },
+     "clap_answer_ryby": {
+      "type": "choice",
+      "window_ms": 10000,
       "options": {
        "clap": "wrong_ryby",
        "voice_activity": "right_ryby"
@@ -1923,6 +2037,60 @@
       "next": "answer_snieg"
      },
      "answer_snieg": {
+      "type": "choice",
+      "window_ms": 10000,
+      "words": {
+       "right_snieg": [
+        "prawda",
+        "tak",
+        "prawdziwe",
+        "to prawda",
+        "zgadza się"
+       ],
+       "wrong_snieg": [
+        "nie",
+        "nieprawda",
+        "nie prawda",
+        "fałsz",
+        "bzdura"
+       ]
+      },
+      "on_timeout": "missed_snieg",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_snieg"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "claps_snieg"
+       }
+      }
+     },
+     "claps_snieg": {
+      "type": "branch",
+      "if": {
+       "var": "told",
+       "gt": 0
+      },
+      "then": "clap_answer_snieg",
+      "else": "tell_snieg"
+     },
+     "tell_snieg": {
+      "type": "set",
+      "var": "told",
+      "op": "inc",
+      "next": "rule_snieg"
+     },
+     "rule_snieg": {
+      "type": "play",
+      "asset": "clap_rule",
+      "next": "clap_answer_snieg"
+     },
+     "clap_answer_snieg": {
       "type": "choice",
       "window_ms": 10000,
       "options": {
@@ -1980,6 +2148,60 @@
      "answer_slon": {
       "type": "choice",
       "window_ms": 10000,
+      "words": {
+       "wrong_slon": [
+        "prawda",
+        "tak",
+        "prawdziwe",
+        "to prawda",
+        "zgadza się"
+       ],
+       "right_slon": [
+        "nie",
+        "nieprawda",
+        "nie prawda",
+        "fałsz",
+        "bzdura"
+       ]
+      },
+      "on_timeout": "missed_slon",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_slon"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "claps_slon"
+       }
+      }
+     },
+     "claps_slon": {
+      "type": "branch",
+      "if": {
+       "var": "told",
+       "gt": 0
+      },
+      "then": "clap_answer_slon",
+      "else": "tell_slon"
+     },
+     "tell_slon": {
+      "type": "set",
+      "var": "told",
+      "op": "inc",
+      "next": "rule_slon"
+     },
+     "rule_slon": {
+      "type": "play",
+      "asset": "clap_rule",
+      "next": "clap_answer_slon"
+     },
+     "clap_answer_slon": {
+      "type": "choice",
+      "window_ms": 10000,
       "options": {
        "clap": "wrong_slon",
        "voice_activity": "right_slon"
@@ -2035,6 +2257,60 @@
      "answer_lato": {
       "type": "choice",
       "window_ms": 10000,
+      "words": {
+       "right_lato": [
+        "prawda",
+        "tak",
+        "prawdziwe",
+        "to prawda",
+        "zgadza się"
+       ],
+       "wrong_lato": [
+        "nie",
+        "nieprawda",
+        "nie prawda",
+        "fałsz",
+        "bzdura"
+       ]
+      },
+      "on_timeout": "missed_lato",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_lato"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "claps_lato"
+       }
+      }
+     },
+     "claps_lato": {
+      "type": "branch",
+      "if": {
+       "var": "told",
+       "gt": 0
+      },
+      "then": "clap_answer_lato",
+      "else": "tell_lato"
+     },
+     "tell_lato": {
+      "type": "set",
+      "var": "told",
+      "op": "inc",
+      "next": "rule_lato"
+     },
+     "rule_lato": {
+      "type": "play",
+      "asset": "clap_rule",
+      "next": "clap_answer_lato"
+     },
+     "clap_answer_lato": {
+      "type": "choice",
+      "window_ms": 10000,
       "options": {
        "clap": "right_lato",
        "voice_activity": "wrong_lato"
@@ -2088,6 +2364,60 @@
       "next": "answer_auta"
      },
      "answer_auta": {
+      "type": "choice",
+      "window_ms": 10000,
+      "words": {
+       "wrong_auta": [
+        "prawda",
+        "tak",
+        "prawdziwe",
+        "to prawda",
+        "zgadza się"
+       ],
+       "right_auta": [
+        "nie",
+        "nieprawda",
+        "nie prawda",
+        "fałsz",
+        "bzdura"
+       ]
+      },
+      "on_timeout": "missed_auta",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_auta"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "claps_auta"
+       }
+      }
+     },
+     "claps_auta": {
+      "type": "branch",
+      "if": {
+       "var": "told",
+       "gt": 0
+      },
+      "then": "clap_answer_auta",
+      "else": "tell_auta"
+     },
+     "tell_auta": {
+      "type": "set",
+      "var": "told",
+      "op": "inc",
+      "next": "rule_auta"
+     },
+     "rule_auta": {
+      "type": "play",
+      "asset": "clap_rule",
+      "next": "clap_answer_auta"
+     },
+     "clap_answer_auta": {
       "type": "choice",
       "window_ms": 10000,
       "options": {

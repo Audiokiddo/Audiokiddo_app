@@ -290,7 +290,9 @@ def echo_rytmu():
 
 
 def prawda_czy_nie():
-    """Engine 2: the child answers each statement: clap = true, say "nie" = false."""
+    """Engine 3: the child answers each statement aloud: "prawda" (or "tak") or "nie". A phone
+    that cannot recognise words falls back to a clap for true and any word for false (told
+    once); without a microphone there is time to think, then the answer."""
     g = "prawda-czy-nie"
     statements = [
         ("krowa", True, "Krowa mówi muuu.", "To prawda! Krowa mówi muuu."),
@@ -300,15 +302,23 @@ def prawda_czy_nie():
         ("lato", True, "Latem jest cieplej niż zimą.", "To prawda! Latem świeci ciepłe słońce."),
         ("auta", False, "Samochody jeżdżą po chmurach.", "Nie! Samochody jeżdżą po drogach."),
     ]
+    # "tak" counted as "nie" in the clap version (parent review, 2026-10-18): now the words
+    # themselves are recognised.
+    true_words = ["prawda", "tak", "prawdziwe", "to prawda", "zgadza się"]
+    false_words = ["nie", "nieprawda", "nie prawda", "fałsz", "bzdura"]
     assets = {
-        "intro": segment(g, "intro",
-                         "Cześć, tu Szop'en! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, klaśnij raz! "
-                         "Jeśli to nieprawda, powiedz głośno: nie! Gotowi? Zaczynamy."),
+        # A new file name: phones with the clap version keep their own intro on the server.
+        "intro": segment(g, "intro_words",
+                         "Cześć, tu Szop'en! Zagramy w Prawda czy nie. Powiem ci jedno zdanie. Jeśli to prawda, powiedz "
+                         "głośno: prawda! Jeśli to nieprawda, powiedz: nie! Gotowi? Zaczynamy."),
         "correct": segment(g, "correct", "Tak jest, brawo!"),
         "oops": segment(g, "oops", "Hmm, posłuchaj."),
         "not_heard": segment(g, "not_heard", "Nie usłyszałem odpowiedzi, ale nic nie szkodzi."),
         "think": segment(g, "think", "Pomyśl chwilę. Prawda czy nie?"),
         "thinking": segment(g, "thinking", sound=tone(220, 1.0, 0.03)),
+        "clap_rule": segment(g, "clap_rule",
+                             "Mam dziś słabszy słuch do słów. Zróbmy tak: jeśli to prawda, klaśnij raz! Jeśli nie, "
+                             "powiedz głośno: nie!"),
         "outro_great": segment(g, "outro_great", "Wow, prawie wszystko dobrze! Jesteś mistrzem prawdy. To koniec zabawy."),
         "outro_good": segment(g, "outro_good", "Świetnie się bawiliśmy! Następnym razem zagramy znowu. To koniec zabawy."),
     }
@@ -319,16 +329,30 @@ def prawda_czy_nie():
         assets[f"a_{name}"] = segment(g, f"a_{name}", answer)
         steps[f"q_{name}"] = {"type": "play", "asset": f"q_{name}", "next": f"answer_{name}"}
         right, wrong = f"right_{name}", f"wrong_{name}"
+        no_mic = {"type": "play", "asset": "think", "next": f"pause_{name}"}
         steps[f"answer_{name}"] = {
-            # 10 s: four- and five-year-olds think before they clap (Dawid, 2026-10-17).
+            # 10 s: four- and five-year-olds think before they answer (Dawid, 2026-10-17).
+            "type": "choice", "window_ms": 10000,
+            "words": {right if true else wrong: true_words, wrong if true else right: false_words},
+            "on_timeout": f"missed_{name}",
+            "fallback": {
+                "no_microphone": no_mic,
+                "screen_locked": "same_as_no_microphone",
+                "input_error": "same_as_no_microphone",
+                "no_speech": {"type": "goto", "target": f"claps_{name}"},
+            },
+        }
+        # Without word recognition: the clap rule once, then clap = true, a word = false.
+        steps[f"claps_{name}"] = {"type": "branch", "if": {"var": "told", "gt": 0},
+                                  "then": f"clap_answer_{name}", "else": f"tell_{name}"}
+        steps[f"tell_{name}"] = {"type": "set", "var": "told", "op": "inc", "next": f"rule_{name}"}
+        steps[f"rule_{name}"] = {"type": "play", "asset": "clap_rule", "next": f"clap_answer_{name}"}
+        steps[f"clap_answer_{name}"] = {
             "type": "choice", "window_ms": 10000,
             "options": {"clap": right if true else wrong, "voice_activity": wrong if true else right},
             "on_timeout": f"missed_{name}",
-            "fallback": {
-                "no_microphone": {"type": "play", "asset": "think", "next": f"pause_{name}"},
-                "screen_locked": "same_as_no_microphone",
-                "input_error": "same_as_no_microphone",
-            },
+            "fallback": {"no_microphone": no_mic, "screen_locked": "same_as_no_microphone",
+                         "input_error": "same_as_no_microphone"},
         }
         steps[f"pause_{name}"] = {"type": "wait", "duration_ms": 4000, "loop_asset": "thinking", "next": f"a_{name}"}
         steps[right] = {"type": "set", "var": "score", "op": "inc", "next": f"praise_{name}"}
@@ -339,7 +363,7 @@ def prawda_czy_nie():
     steps["score"] = {"type": "branch", "if": {"var": "score", "gt": 4}, "then": "end_great", "else": "end_good"}
     steps["end_great"] = {"type": "end", "asset": "outro_great"}
     steps["end_good"] = {"type": "end", "asset": "outro_good"}
-    return game(g, steps, assets, variables={"score": 0}, engine=2)
+    return game(g, steps, assets, variables={"score": 0, "told": 0}, engine=3)
 
 
 def wind(seconds):
@@ -607,9 +631,9 @@ def main():
              "czy rytm był dokładny. Bez mikrofonu daje czas i przypomina rytm.",
              echo_rytmu(), ["w_domu"], ["mikrofon"], 2),
         item("prawda-czy-nie", "Prawda czy nie?",
-             "Dziecko słucha zdań i odpowiada bez dotykania telefonu: klaśnięcie to „prawda”, głośne „nie” to nieprawda. "
-             "Z mikrofonem (opcjonalnie) aplikacja reaguje na odpowiedź i liczy punkty; bez mikrofonu daje czas do namysłu "
-             "i podaje rozwiązanie.",
+             "Dziecko słucha zdań i odpowiada na głos bez dotykania telefonu: „prawda” albo „nie”. Słowa rozpoznaje sam "
+             "telefon, bez internetu i bez nagrywania; gdy nie rozpoznaje słów, klaśnięcie znaczy „prawda”. Bez mikrofonu "
+             "aplikacja daje czas do namysłu i podaje rozwiązanie.",
              prawda_czy_nie(), ["podroz", "w_domu", "czekanie"], ["mikrofon"], 4, access="free"),
         item("zgubiona-gwiazdka", "Zgubiona Gwiazdka",
              "Bajka, w której dziecko wybiera drogę: mówi „las” albo „rzeka”, „góra” albo „dziupla”, rozwiązuje "

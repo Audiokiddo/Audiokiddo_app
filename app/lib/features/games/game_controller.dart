@@ -17,6 +17,7 @@ import '../player/playback_controller.dart';
 import '../player/player_providers.dart';
 import 'microphone.dart';
 import 'speech.dart';
+import '../family/birthday.dart';
 import '../family/family.dart';
 import '../parent_voice/parent_voice.dart';
 
@@ -47,7 +48,12 @@ class GameUiState {
     this.title,
     this.listening = const {},
     this.answers = 0,
+    this.heard,
   });
+
+  /// What the game just heard, shown big for a moment ("Słyszę klaśnięcie!"), so the parent
+  /// sees that it works (parent review, 2026-10-18).
+  final String? heard;
 
   final GamePhase phase;
 
@@ -118,6 +124,9 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final script = item.script;
     if (script == null) return;
     final generation = ++_generation;
+    // Before the microphone opens, so it does not hear Szop’en's hello.
+    await greetBeforeFirstPlay(ref);
+    if (generation != _generation) return;
     _item = item;
     _answers = 0;
     _repeatRequested = false;
@@ -511,12 +520,20 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       input.complete(event);
       if (event is InputDetected) {
         _answers++;
+        _heard = switch (event) {
+          InputDetected(kind: InputKind.clap, count: > 1) => 'Słyszę klaśnięcia!',
+          InputDetected(kind: InputKind.clap) => 'Słyszę klaśnięcie!',
+          InputDetected(kind: InputKind.speechKeywords, :final word?) => 'Słyszę: „$word”',
+          InputDetected(kind: InputKind.tapAnywhere) => 'Jest!',
+          _ => 'Słyszę!',
+        };
         _set(state.phase);
       }
     }
   }
 
   int _answers = 0;
+  String? _heard;
 
   void _set(GamePhase phase, {Set<InputKind> listening = const {}}) => state = GameUiState(
     phase: phase,
@@ -524,6 +541,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     title: _item?.title,
     listening: listening,
     answers: _answers,
+    heard: _heard,
   );
 
   /// Counts only while audio plays, so pausing from the lock screen pauses the game too.

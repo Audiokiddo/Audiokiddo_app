@@ -19,6 +19,7 @@ import '../kids_mode/kids_mode_controller.dart';
 import '../personal/personal_repository.dart';
 import '../player/bottom_dock.dart' show ResumeCard, resumeCardProvider;
 import '../welcome/welcome_controller.dart';
+import '../lord/szop_quota.dart';
 import 'quick_pick.dart';
 
 /// What Szop’en has to say when the app opens: the unfinished play, something new, and how
@@ -123,6 +124,7 @@ class _LaunchGreetingState extends ConsumerState<LaunchGreeting> {
     final quiet = (await ref.read(discoveryProvider.future)).quiet;
     if (quiet || !mounted || LaunchGreeting.shown) return;
     LaunchGreeting.shown = true;
+    if (!await ref.read(szopQuotaProvider).take() || !mounted) return;
 
     final nav = Navigator.of(context, rootNavigator: true);
     final skip = Completer<void>();
