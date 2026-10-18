@@ -923,6 +923,7 @@ List<ContentItem> dinnerPicks(
   required Set<String> heard,
   required DateTime now,
   int minutes = 25,
+  String? moment,
 }) {
   final fits = catalog.items.where(
     (i) =>
@@ -934,7 +935,14 @@ List<ContentItem> dinnerPicks(
         (i.ageMax == null || i.ageMax! >= age) &&
         canPlay(i),
   );
-  final ordered = [...fits.where((i) => !heard.contains(i.id)), ...fits.where((i) => heard.contains(i.id))];
+  // The plays made for this moment of the day first (unheard before heard), then the rest.
+  bool suits(ContentItem i) => moment != null && i.moments.contains(moment);
+  final ordered = [
+    ...fits.where((i) => suits(i) && !heard.contains(i.id)),
+    ...fits.where((i) => suits(i) && heard.contains(i.id)),
+    ...fits.where((i) => !suits(i) && !heard.contains(i.id)),
+    ...fits.where((i) => !suits(i) && heard.contains(i.id)),
+  ];
   final picks = <ContentItem>[];
   var seconds = 0;
   for (final i in ordered) {

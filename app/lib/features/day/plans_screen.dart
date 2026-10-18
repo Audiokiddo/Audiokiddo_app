@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../home/quick_pick.dart';
 import 'day_routine.dart';
+import 'play_moments.dart';
 import 'moment_card.dart';
 
 /// All the ready plans in one place, in the order of a day (report 2026-10-17: parents buy
@@ -47,7 +48,12 @@ class PlansScreen extends ConsumerWidget {
           for (final (icon, title, line, route) in plans)
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(child: Icon(icon)),
+              // The colour of the moment, the same as on its plan and the Teraz card.
+              leading: CircleAvatar(
+                backgroundColor: _colorOf(route),
+                foregroundColor: const Color(0xFF211C35),
+                child: Icon(icon),
+              ),
               title: Text(title, style: text.titleMedium),
               subtitle: Text(line),
               trailing: const Icon(Icons.chevron_right_rounded),
@@ -63,4 +69,12 @@ class PlansScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+Color? _colorOf(String route) {
+  if (route.startsWith('/podroz')) return PlayMoment.auto.color;
+  final pora = Uri.parse(route).queryParameters['pora'];
+  if (route.startsWith('/obiad')) return PlayMoment.of(pora).color;
+  if (route.startsWith('/dobranoc')) return const Color(0xFFDAD6F0);
+  return null;
 }

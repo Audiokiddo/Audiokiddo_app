@@ -23,7 +23,7 @@ const play = ContentItem(
 
 class FailingSessionAudio extends FakeSessionAudio {
   @override
-  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero}) async {
+  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero, String? album}) async {
     throw const PlaybackAccessUnavailable();
   }
 }

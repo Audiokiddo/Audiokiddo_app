@@ -89,6 +89,7 @@ List<ContentItem> planCandidates(
   Set<String> exclude = const {},
   Set<String> downloaded = const {},
   bool dinner = false,
+  String? moment,
 }) {
   bool ok(ContentItem i) =>
       !exclude.contains(i.id) &&
@@ -99,6 +100,7 @@ List<ContentItem> planCandidates(
           ? i.kind == ContentKind.audioGame && i.requirements.isEmpty
           : i.kind != ContentKind.interactiveGame);
   double score(ContentItem i) =>
+      (i.moments.contains(moment ?? (dinner ? 'kolacja' : 'auto')) ? 6 : 0) +
       (i.situations.contains(Situation.podroz) ? 4 : 0) +
       (downloaded.contains(i.id) ? 3 : 0) +
       (i.durationSec <= 10 * 60 ? 1 : 0);

@@ -69,7 +69,10 @@ class PlaybackController {
     final duration = _handler.duration;
     if (media == null || duration == null || media.id.startsWith(gameMediaPrefix)) return;
     final minutes = ((duration - _handler.position).inSeconds / 60).ceil().clamp(0, 999);
-    final line = minutes <= 1 ? 'Zaraz koniec' : 'Do końca $minutes min';
+    var line = minutes <= 1 ? 'Zaraz koniec' : 'Do końca $minutes min';
+    // Part of a plan: "Poranek z Szop’enem · 2 z 4 · do końca 6 min".
+    final album = media.album;
+    if (album != null && album.contains(' z Szop’enem')) line = '$album · ${line[0].toLowerCase()}${line.substring(1)}';
     if (media.artist == line) return;
     _handler.mediaItem.add(media.copyWith(artist: line));
   }

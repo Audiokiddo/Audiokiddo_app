@@ -83,6 +83,7 @@ class ContentItem {
     this.playersMin,
     this.playersMax,
     this.situations = const [],
+    this.moments = const [],
     this.skills = const [],
     this.requirements = const [],
     this.cover,
@@ -118,6 +119,7 @@ class ContentItem {
       situations: [
         for (final s in r.strings('situations')) _parseEnum(s, Situation.values, '${r.path}.situations'),
       ],
+      moments: r.strings('moments'),
       skills: r.strings('skills'),
       requirements: [
         for (final s in r.strings('requirements'))
@@ -157,6 +159,10 @@ class ContentItem {
   final int? playersMin;
   final int? playersMax;
   final List<Situation> situations;
+
+  /// Moments of the day the play suits (Mój dzień plans): rano, auto, po, dom, chory, czekamy,
+  /// kolacja. Each plan picks from its own plays first, so the morning differs from the ride.
+  final List<String> moments;
   final List<String> skills;
   final List<Requirement> requirements;
   final ContentAccess access;

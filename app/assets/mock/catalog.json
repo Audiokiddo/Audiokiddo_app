@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "version": 4,
+ "version": 5,
  "_comment": "Katalog przykładowy (Etap 1). Pliki, okładki, sumy kontrolne i skład próbki są tymczasowe.",
  "packs": [
   {
@@ -74,7 +74,11 @@
    ],
    "store_product_id": "pl.audiokiddo.item.magiczny_sklep",
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "po",
+    "chory"
+   ]
   },
   {
    "id": "zaginiony-skarb",
@@ -108,7 +112,11 @@
     "sha256": "ebf4d17b0e93ae66d6d68eda2c601f49d431601dae4d1e99e343288f1a071103"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "auto",
+    "dom"
+   ]
   },
   {
    "id": "podroz-na-inna-planete",
@@ -142,7 +150,12 @@
     "sha256": "6daeb114af750f317b4cc46c7376cb4cc98b3ce83cf29ff82d5213d41d6f8e1f"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "auto",
+    "chory",
+    "czekamy"
+   ]
   },
   {
    "id": "wymysl-znaczenie",
@@ -176,7 +189,11 @@
     "sha256": "20127e28a15bbd9d769644556230b2b3ae63cea7dfa7998b8887399aad2ad994"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "po",
+    "kolacja"
+   ]
   },
   {
    "id": "mikstura",
@@ -210,7 +227,11 @@
     "sha256": "06fbbc6ab98bc58ea5e91d54e615c3ed3870a683da0355d1f10d3d0bbff66d3f"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "dom",
+    "chory"
+   ]
   },
   {
    "id": "moj-superbohater",
@@ -244,7 +265,11 @@
     "sha256": "53e277b2b51ae986b3f6429833f474ff172978886098123543ce92f6dc4d0ba2"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "po",
+    "dom"
+   ]
   },
   {
    "id": "dokoncz-historie",
@@ -278,7 +303,11 @@
     "sha256": "939d336e808443b220d3267b2fb04baf96bb2bc25544028812e2ce646d83813a"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "auto",
+    "chory"
+   ]
   },
   {
    "id": "mistrz-kuchni",
@@ -312,7 +341,12 @@
     "sha256": "9e868712349101c6a93a4549740831777ccf0abd49a3bf4d746b2bcf2e516d06"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "rano",
+    "po",
+    "kolacja"
+   ]
   },
   {
    "id": "magiczny-teatr",
@@ -346,7 +380,11 @@
     "sha256": "89ac0ed2863ec94009be898e285bc076887cb25256bccbc353c5df25ac91cbb9"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "po",
+    "dom"
+   ]
   },
   {
    "id": "co-oni-odpowiedzieli",
@@ -380,7 +418,11 @@
     "sha256": "fd2c750b1eff2fa5f7259e847c471f93e3fc9f1ef267f1d7eaffc5da9d215182"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "po",
+    "kolacja"
+   ]
   },
   {
    "id": "co-to-za-przedmiot",
@@ -421,7 +463,12 @@
     "sha256": "65fb1b0a17ec1645467eb37dc0371cbf676dd7c012340052b105a17dc33fde4c"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "auto",
+    "czekamy",
+    "kolacja"
+   ]
   },
   {
    "id": "co-to-za-dzwiek",
@@ -457,7 +504,12 @@
     }
    ],
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "rano",
+    "auto",
+    "chory"
+   ]
   },
   {
    "id": "szybkie-skojarzenia",
@@ -498,7 +550,12 @@
     "sha256": "11df91fa1e5c8a654980d0c208208efcbbb314a5e637e425e7c91ee6f535d578"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "rano",
+    "auto",
+    "czekamy"
+   ]
   },
   {
    "id": "co-tu-nie-pasuje",
@@ -539,7 +596,11 @@
     "sha256": "ad15cd473d4011fcb4238bb36a2180b42e322e74a93c00c5edbd2cb7f502feda"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "rano",
+    "czekamy"
+   ]
   },
   {
    "id": "wymien-trzy",
@@ -580,7 +641,12 @@
     "sha256": "5e57721d729fa8e9feee929d3eedf647763516735b88ccecba36b42cfb47ad2b"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "rano",
+    "auto",
+    "kolacja"
+   ]
   },
   {
    "id": "znajdz-przeciwienstwo",
@@ -621,7 +687,11 @@
     "sha256": "75e04732246547f2c87a27c45ac139d0a7b0cccd4bf36b31ce1a3a69ca9d4a9e"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "rano",
+    "kolacja"
+   ]
   },
   {
    "id": "znajdz-synonimy",
@@ -662,7 +732,11 @@
     "sha256": "198c57ba3ae7715cec096fde5069f36838dfe417a422036f1094e2e290b3f6ed"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "rano",
+    "czekamy"
+   ]
   },
   {
    "id": "uloz-zdanie",
@@ -703,7 +777,10 @@
     "sha256": "e3b087dd5da46795513817ecc1c370965923758e89c1c48c08acbc4c06cd606b"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "auto"
+   ]
   },
   {
    "id": "dokoncz-zgodnie-z-prawda",
@@ -744,7 +821,11 @@
     "sha256": "e9987766ca5150b42db7235d2a9c94e56310e3fbaba7a735f1aeaa2cd66a5de2"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "auto",
+    "po"
+   ]
   },
   {
    "id": "kto-to-powiedzial",
@@ -785,7 +866,11 @@
     "sha256": "6e20a2804f795b36906a808646f636c42850b9bbe14ec1a71824d7d535a4a29e"
    },
    "released": "2026-09-01",
-   "age_max": 9
+   "age_max": 9,
+   "moments": [
+    "auto",
+    "kolacja"
+   ]
   },
   {
    "id": "zlodziej-naszyjnika",
@@ -824,7 +909,10 @@
     }
    ],
    "store_product_id": "pl.audiokiddo.item.zlodziej_naszyjnika",
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "moments": [
+    "dom"
+   ]
   },
   {
    "id": "znikajace-dzwonki",
@@ -868,7 +956,10 @@
     "bytes": 372975,
     "sha256": "ae80767dcd411f1e2bac2b88b0b4886d88f58314073637d3f7fc9bc3394ab785"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "moments": [
+    "dom"
+   ]
   },
   {
    "id": "na-ratunek-budce-z-lodami",
@@ -912,7 +1003,10 @@
     "bytes": 373679,
     "sha256": "85b6ac359f743e27056bcc06de527bbf79beb245516c87639d42d04ba8c14d60"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "moments": [
+    "dom"
+   ]
   },
   {
    "id": "tajemnicze-znaki",
@@ -956,7 +1050,10 @@
     "bytes": 372272,
     "sha256": "9357b7329777a10e6ca8af43e24433a4f9d711afa569216a22dbfc8e5027769b"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "moments": [
+    "dom"
+   ]
   },
   {
    "id": "gadajacy-smietnik",
@@ -1000,7 +1097,10 @@
     "bytes": 373330,
     "sha256": "f0e387485407888c37a11920ad75858155401373bf990e68bc11bf6397f3a421"
    },
-   "released": "2026-09-01"
+   "released": "2026-09-01",
+   "moments": [
+    "dom"
+   ]
   },
   {
    "id": "zgadnij-dzwiek",
@@ -2487,7 +2587,11 @@
     }
    },
    "timing_sensitive": false,
-   "released": "2026-10-10"
+   "released": "2026-10-10",
+   "moments": [
+    "rano",
+    "czekamy"
+   ]
   },
   {
    "id": "zgubiona-gwiazdka",
@@ -3456,7 +3560,11 @@
     }
    },
    "timing_sensitive": false,
-   "released": "2026-10-03"
+   "released": "2026-10-03",
+   "moments": [
+    "dom",
+    "chory"
+   ]
   },
   {
    "id": "kasztanowe-ludziki",

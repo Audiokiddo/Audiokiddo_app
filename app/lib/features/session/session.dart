@@ -49,6 +49,10 @@ enum SessionKind { trip, bedtime, dinner }
 /// Lines Szop’en opens with the child's name (when he knows it).
 const namedLines = ['trip_start', 'trip_end', 'bedtime_start', 'goodnight'];
 
+/// His hello opening a moment of the day (Mój dzień plans), with the child's name.
+bool isMomentHello(String line) =>
+    line.contains('_start_') || (line.startsWith('c_') && !line.startsWith('c_rano_buty'));
+
 /// Szop'en's lines at the start of a ride; one per trip, so he does not repeat himself.
 const tripStartLines = [
   'trip_start',
@@ -77,14 +81,17 @@ List<SessionStep> buildTrip(
   required bool Function(ContentItem) canPlay,
   Set<String> downloaded = const {},
   int variant = 0,
+  String? startLine,
 }) {
   final candidates = [
     for (final i in catalog.items)
       if (i.kind != ContentKind.interactiveGame && i.ageMin <= age && canPlay(i) && i.audio.isNotEmpty) i,
   ];
   double score(ContentItem i) =>
+      // On the road what is on the phone comes first (tunnels), then plays made for the car.
+      (downloaded.contains(i.id) ? 7 : 0) +
+      (i.moments.contains('auto') ? 6 : 0) +
       (i.situations.contains(Situation.podroz) ? 4 : 0) +
-      (downloaded.contains(i.id) ? 3 : 0) +
       (i.durationSec <= 10 * 60 ? 1 : 0);
   final games = [
     for (final i in candidates)
@@ -95,7 +102,7 @@ List<SessionStep> buildTrip(
       if (i.kind == ContentKind.song) i,
   ]..sort((a, b) => score(b).compareTo(score(a)));
 
-  final steps = <SessionStep>[LineStep(tripStartLines[variant % tripStartLines.length])];
+  final steps = <SessionStep>[LineStep(startLine ?? tripStartLines[variant % tripStartLines.length])];
   final target = minutes * 60;
   var total = 0;
   var sinceBreak = 0;
@@ -187,7 +194,8 @@ List<SessionStep> buildBedtime(
 abstract interface class SessionAudio {
   /// Plays [item] from the start, fading out over its last [fadeOut]; completes when it
   /// ends or is stopped.
-  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero});
+  /// [album]: what the lock screen says it is part of ("Poranek z Szop’enem · 2 z 4").
+  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero, String? album});
 
   Future<void> sayLine(String line);
 
@@ -209,10 +217,12 @@ class AppSessionAudio implements SessionAudio {
   Completer<void>? _skipItem;
 
   @override
-  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero}) async {
+  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero, String? album}) async {
     final handler = _ref.read(audioHandlerProvider);
     final skip = _skipItem = Completer<void>();
-    await _ref.read(playbackControllerProvider).start(item, album: 'AudioKiddo', fromStart: true, greet: false);
+    await _ref
+        .read(playbackControllerProvider)
+        .start(item, album: album ?? 'AudioKiddo', fromStart: true, greet: false);
     if (fadeOut > Duration.zero) handler.fadeOutAtEnd(fadeOut);
     // Wait until this item actually runs, then until it is over (or stopped, or skipped).
     final over = handler.playbackState
@@ -245,8 +255,11 @@ class AppSessionAudio implements SessionAudio {
   @override
   Future<void> sayLine(String line) async {
     final voice = _ref.read(kiddoVoiceProvider);
-    // Szop’en greets the child by name at the start and end of a ride and at bedtime.
-    if (namedLines.any(line.startsWith)) await voice.sayName(_ref.read(familyProvider).value?.active?.name);
+    // Szop’en greets the child by name at the start and end of a ride, at bedtime and when he
+    // opens a moment of the day.
+    if (namedLines.any(line.startsWith) || isMomentHello(line)) {
+      await voice.sayName(_ref.read(familyProvider).value?.active?.name);
+    }
     await voice.say(line);
   }
 
@@ -282,7 +295,11 @@ class SessionState {
     this.startedAt,
     this.endedAt,
     this.error,
+    this.label,
   });
+
+  /// The moment it is for ("Poranek z Szop’enem"), on the screen and the lock screen.
+  final String? label;
 
   /// The same state with another list of steps (the parent edited the plan).
   SessionState withSteps(List<SessionStep> next) => SessionState(
@@ -296,6 +313,7 @@ class SessionState {
     startedAt: startedAt,
     endedAt: endedAt,
     error: error,
+    label: label,
   );
 
   final SessionKind? kind;
@@ -335,6 +353,8 @@ class SessionController extends Notifier<SessionState> {
   bool _skip = false;
   bool _held = false;
 
+  String? _label;
+
   /// The steps being played. The parent may edit the ones ahead while it runs, so the loop
   /// reads this list again at every step instead of keeping its own copy.
   List<SessionStep> _steps = const [];
@@ -345,13 +365,14 @@ class SessionController extends Notifier<SessionState> {
     return const SessionState();
   }
 
-  Future<void> start(SessionKind kind, List<SessionStep> steps, {String? childId}) async {
+  Future<void> start(SessionKind kind, List<SessionStep> steps, {String? childId, String? label}) async {
+    _label = label;
     final generation = ++_generation;
     _held = false;
     await ref.read(sessionAudioProvider).stop();
     final startedAt = ref.read(clockProvider)();
     _steps = List.of(steps);
-    state = SessionState(kind: kind, steps: List.of(_steps), running: true, childId: childId);
+    state = SessionState(kind: kind, steps: List.of(_steps), running: true, childId: childId, label: _label);
     final clips = childId == null
         ? const <ParentClip, String>{}
         : await ref.read(parentVoiceStoreProvider).clips(childId);
@@ -364,6 +385,7 @@ class SessionController extends Notifier<SessionState> {
         index: i,
         running: true,
         childId: childId,
+        label: _label,
       );
       // The parent tapped "next" during the last step: they chose to move on, so no countdown.
       final chosen = _skip;
@@ -378,7 +400,7 @@ class SessionController extends Notifier<SessionState> {
         if (i >= _steps.length) break;
       }
       final step = _steps[i];
-      state = SessionState(kind: kind, steps: List.of(_steps), index: i, running: true, childId: childId);
+      state = SessionState(kind: kind, steps: List.of(_steps), index: i, running: true, childId: childId, label: _label);
       if (step is ItemStep) playedItem = true;
       try {
         await _play(step, clips, generation);
@@ -391,6 +413,7 @@ class SessionController extends Notifier<SessionState> {
           steps: List.of(_steps),
           index: i,
           childId: childId,
+          label: _label,
           error:
               'Nie udało się odtworzyć zabawy. Sprawdź połączenie i dostęp, a potem uruchom plan ponownie.',
         );
@@ -403,6 +426,7 @@ class SessionController extends Notifier<SessionState> {
         steps: List.of(_steps),
         index: _steps.length,
         childId: childId,
+        label: _label,
         startedAt: startedAt,
         endedAt: ref.read(clockProvider)(),
       );
@@ -413,7 +437,13 @@ class SessionController extends Notifier<SessionState> {
     final audio = ref.read(sessionAudioProvider);
     switch (step) {
       case ItemStep(:final item, :final fadeOut):
-        await audio.playItem(item, fadeOut: fadeOut);
+        final plays = [for (final s in _steps) if (s is ItemStep) s];
+        final k = plays.indexWhere((s) => identical(s, step)) + 1;
+        await audio.playItem(
+          item,
+          fadeOut: fadeOut,
+          album: _label == null || k == 0 ? null : '$_label · $k z ${plays.length}',
+        );
       case LineStep(:final line, :final pauseAfter):
         await audio.sayLine(line);
         await _pause(pauseAfter, generation);

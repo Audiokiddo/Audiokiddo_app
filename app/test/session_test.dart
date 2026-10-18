@@ -25,7 +25,7 @@ class FakeSessionAudio implements SessionAudio {
   Completer<void>? _item;
 
   @override
-  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero}) {
+  Future<void> playItem(ContentItem item, {Duration fadeOut = Duration.zero, String? album}) {
     log.add(fadeOut > Duration.zero ? 'item:${item.id}:fade' : 'item:${item.id}');
     return (_item = Completer<void>()).future;
   }

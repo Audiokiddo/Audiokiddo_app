@@ -27,6 +27,7 @@ import 'plan.dart';
 import 'plan_editor.dart';
 import 'session.dart';
 import '../day/day_routine.dart';
+import '../day/play_moments.dart';
 
 /// The age plans are made for: with siblings the youngest of those listening, so everyone in
 /// the car or at the table can join in (Mój dzień, 2026-10-17; who listens: the Teraz card).
@@ -161,6 +162,12 @@ class _TripScreenState extends ConsumerState<TripScreen> {
         canPlay: (i) => ref.read(canPlayProvider(i)),
         downloaded: downloaded,
         variant: _variant,
+        // To kindergarten in the morning, home in the afternoon (Mój dzień).
+        startLine: momentStart(
+          PlayMoment.auto,
+          DayContext.of(ref.read(dayRoutineProvider).value, ref.read(clockProvider)()),
+          _variant,
+        ),
       );
     }
     final steps = _plan ?? const <SessionStep>[];
@@ -286,7 +293,9 @@ class _TripScreenState extends ConsumerState<TripScreen> {
             onPressed: items.isEmpty
                 ? null
                 : () {
-                    ref.read(sessionProvider.notifier).start(SessionKind.trip, steps, childId: child?.id);
+                    ref
+                        .read(sessionProvider.notifier)
+                        .start(SessionKind.trip, steps, childId: child?.id, label: PlayMoment.auto.label);
                     // Mój dzień learns the real hour of leaving from the car plans started.
                     unawaited(ref.read(tripLogProvider.notifier).record(ref.read(clockProvider)()));
                     context.pushReplacement('/sesja');
@@ -429,6 +438,13 @@ class BedtimeScreen extends ConsumerWidget {
 /// The line at the end of a trip, from the real time it took.
 String tripSummary(int minutes) => 'Trasa: $minutes min zabaw. Wpisuję do protokołu.';
 
+/// "Poranek z Szop’enem · 2 z 4": the moment and the play it is on.
+String _progress(SessionState session) {
+  final plays = [for (final s in session.steps) if (s is ItemStep) s];
+  final done = [for (final s in session.steps.take(session.index + 1)) if (s is ItemStep) s].length;
+  return plays.isEmpty ? session.label! : '${session.label} · ${done.clamp(1, plays.length)} z ${plays.length}';
+}
+
 class SessionScreen extends ConsumerWidget {
   const SessionScreen({super.key});
 
@@ -473,6 +489,16 @@ class SessionScreen extends ConsumerWidget {
     final info = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // "Poranek z Szop’enem · 2 z 4": which moment, and how far into it.
+        if (session.label != null && !session.finished)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AkSpace.s),
+            child: Text(
+              _progress(session),
+              style: text.titleSmall?.copyWith(color: fg.withValues(alpha: 0.85), fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
+            ),
+          ),
         SzopSticker(pose, height: landscape ? 110 : (small ? 120 : 170)),
         const SizedBox(height: AkSpace.m),
         Semantics(
@@ -483,7 +509,11 @@ class SessionScreen extends ConsumerWidget {
                 : session.finished
                 ? (night
                       ? l10n.sessionSleepWell
-                      : (dinner ? 'Smacznego! To już wszystko.' : l10n.sessionArrived))
+                      : (dinner
+                            ? (session.label == null || session.label!.startsWith('Kolacja')
+                                  ? 'Smacznego! To już wszystko.'
+                                  : 'To już wszystko. Brawo!')
+                            : l10n.sessionArrived))
                 : title(session.current),
             style: text.headlineMedium?.copyWith(color: fg, fontWeight: FontWeight.w800),
             textAlign: TextAlign.center,
@@ -968,7 +998,22 @@ class DinnerScreen extends ConsumerStatefulWidget {
 }
 
 class _DinnerScreenState extends ConsumerState<DinnerScreen> {
-  late int _minutes = widget.minutes ?? (widget.variant == 'rano' ? 15 : 25);
+  late final _moment = PlayMoment.of(widget.variant);
+  late final _day = DayContext.of(ref.read(dayRoutineProvider).value, ref.read(clockProvider)());
+  late int _minutes = _startMinutes();
+
+  /// On a kindergarten morning the warm-up ends before it is time to leave: no longer than
+  /// the minutes left until the leaving hour (minus five for shoes).
+  int _startMinutes() {
+    final wanted = widget.minutes ?? (widget.variant == 'rano' ? 15 : 25);
+    final routine = ref.read(dayRoutineProvider).value;
+    if (_moment != PlayMoment.rano || !_day.daycare || routine == null) return wanted;
+    final now = ref.read(clockProvider)();
+    final left = routine.leave - (now.hour * 60 + now.minute) - 5;
+    if (left <= 0) return wanted;
+    final options = durations.where((m) => m <= left).toList();
+    return options.isEmpty ? durations.first : (options.contains(wanted) ? wanted : options.last);
+  }
   List<SessionStep>? _plan;
   int _planFor = -1;
 
@@ -998,7 +1043,7 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
     final age = family == null || family.children.isEmpty ? 5 : _ageOf(ref);
     if (catalog != null && (_plan == null || _planFor != _minutes)) {
       _planFor = _minutes;
-      _plan = buildDinner(
+      _plan = buildMomentPlan(
         dinnerPicks(
           catalog,
           age: age,
@@ -1009,7 +1054,11 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
           },
           now: ref.read(clockProvider)(),
           minutes: _minutes,
+          moment: _moment.name,
         ),
+        _moment,
+        _day,
+        variant: ref.read(clockProvider)().difference(DateTime(2026)).inDays,
       );
     }
     final steps = _plan ?? const <SessionStep>[];
@@ -1020,7 +1069,20 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.xl),
         children: [
-          const Center(child: SzopSticker(SzopPose.zadowolony, height: 110)),
+          // Each moment has its own colour and its own Szop’en, who hosts it.
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: AkSpace.m),
+            decoration: BoxDecoration(color: _moment.color, borderRadius: BorderRadius.circular(AkRadius.card)),
+            child: Column(
+              children: [
+                SzopSticker(_moment.pose, height: 110),
+                Text(
+                  _moment.label,
+                  style: text.labelLarge?.copyWith(color: const Color(0xFF211C35), fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: AkSpace.m),
           Text(_words.$1, style: text.displaySmall, textAlign: TextAlign.center),
           const SizedBox(height: AkSpace.s),
@@ -1086,6 +1148,7 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
                       canPlay: (i) => ref.read(canPlayProvider(i)),
                       exclude: {for (final i in items) i.id},
                       dinner: true,
+                      moment: _moment.name,
                     ),
               onRemove: (pos) => setState(() => _plan = planRemove(steps, pos)),
               onReorder: (o, n) => setState(() => _plan = planReorder(steps, o, n)),
@@ -1102,7 +1165,9 @@ class _DinnerScreenState extends ConsumerState<DinnerScreen> {
             onPressed: items.isEmpty
                 ? null
                 : () {
-                    ref.read(sessionProvider.notifier).start(SessionKind.dinner, steps, childId: child?.id);
+                    ref
+                        .read(sessionProvider.notifier)
+                        .start(SessionKind.dinner, steps, childId: child?.id, label: _moment.label);
                     context.pushReplacement('/sesja');
                   },
             icon: const Icon(Icons.restaurant_rounded),
