@@ -10,6 +10,7 @@ import '../catalog/widgets/item_art.dart';
 import '../downloads/download_providers.dart';
 import '../family/family.dart';
 import '../personal/personal_repository.dart';
+import '../session/plan.dart';
 import 'playback_controller.dart';
 import 'player_providers.dart';
 
@@ -130,7 +131,7 @@ List<CarTab> carPlayTabs(
         CarRow(
           id: 'pack:${pack.id}',
           title: pack.title,
-          detail: plays.length == 1 ? '1 zabawa' : '${plays.length} zabaw',
+          detail: playsLabel(plays.length),
           item: plays.first,
           children: [for (final i in plays) _row(i)],
         ),

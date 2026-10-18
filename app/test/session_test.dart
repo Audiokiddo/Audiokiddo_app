@@ -128,6 +128,43 @@ void main() {
       final steps = buildTrip(catalog, minutes: 15, age: 8, canPlay: all, downloaded: {travel.id});
       expect((steps[1] as ItemStep).item.id, travel.id);
     });
+
+    test('too few free plays: the ride is still filled, repeats come after a window break', () {
+      final steps = buildTrip(catalog, minutes: 30, age: 6, canPlay: (i) => i.isFree);
+      final seconds = planSecondsLeft(steps, index: 0, started: false);
+      expect(seconds, greaterThanOrEqualTo(25 * 60));
+      expect(seconds, lessThanOrEqualTo(36 * 60));
+      final plays = playsFrom(steps, 0);
+      expect(plays.length, greaterThan({for (final i in plays) i.id}.length));
+      for (var k = 1; k < steps.length; k++) {
+        final step = steps[k];
+        if (step is! ItemStep) continue;
+        final earlier = playsFrom(steps.sublist(0, k), 0).any((i) => i.id == step.item.id);
+        if (earlier) expect(windowLines, contains((steps[k - 1] as LineStep).line));
+      }
+      // The full library needs no repeats.
+      final full = playsFrom(buildTrip(catalog, minutes: 30, age: 6, canPlay: all), 0);
+      expect(full.length, {for (final i in full) i.id}.length);
+    });
+
+    test('plays that come twice are told apart, and counted in Polish', () {
+      final a = catalog.items[0], b = catalog.items[1];
+      final plays = [a, b, a];
+      expect(nthPlayPos(plays, a.id, 0), 0);
+      expect(nthPlayPos(plays, a.id, 1), 2);
+      expect(nthPlayPos(plays, a.id, 2), -1);
+      expect(playOccurrence(plays, 2), 1);
+      expect([1, 2, 4, 5, 12, 14, 22, 25].map(playsLabel), [
+        '1 zabawa',
+        '2 zabawy',
+        '4 zabawy',
+        '5 zabaw',
+        '12 zabaw',
+        '14 zabaw',
+        '22 zabawy',
+        '25 zabaw',
+      ]);
+    });
   });
 
   test('bedtime: breaths, a quiet activity, a lullaby, goodnight', () {
