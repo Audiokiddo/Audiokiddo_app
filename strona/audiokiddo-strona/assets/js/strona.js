@@ -871,3 +871,53 @@
     if (current) present(current, false);
   }, 900);
 })();
+
+// 3.28: the minute of a play on the home page plays itself once it is in view: Szop'en speaks,
+// the child "types" and answers, and what the child did lights up beside the conversation.
+(function () {
+  var scene = document.querySelector('[data-ak-scene]');
+  if (!scene) return;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var msgs = Array.prototype.slice.call(scene.querySelectorAll('.ak-nb4-msg'));
+  var tiles = Array.prototype.slice.call(document.querySelectorAll('[data-skill-tile]'));
+  var again = scene.querySelector('.ak-nb4-again');
+  var timers = [];
+  function light(skill) {
+    tiles.forEach(function (t) { if (t.getAttribute('data-skill-tile') === skill) t.classList.add('is-lit'); });
+  }
+  function reset() {
+    timers.forEach(clearTimeout); timers = [];
+    msgs.forEach(function (m) { m.classList.remove('is-on', 'is-typing'); });
+    tiles.forEach(function (t) { t.classList.remove('is-lit'); });
+  }
+  function play() {
+    reset();
+    scene.classList.add('is-playing');
+    if (again) again.hidden = true;
+    var t = 300;
+    msgs.forEach(function (m) {
+      var kid = m.classList.contains('ak-nb4-kid');
+      var typing = kid ? 900 : 650;
+      timers.push(setTimeout(function () { m.classList.add('is-on', 'is-typing'); }, t));
+      t += typing;
+      timers.push(setTimeout(function () {
+        m.classList.remove('is-typing');
+        var skill = m.getAttribute('data-skill');
+        if (skill) light(skill);
+      }, t));
+      t += kid ? 700 : 1100;
+    });
+    timers.push(setTimeout(function () { if (again) again.hidden = false; }, t));
+  }
+  if (still || !('IntersectionObserver' in window)) {
+    msgs.forEach(function (m) { var s = m.getAttribute('data-skill'); if (s) light(s); });
+    return;
+  }
+  var started = false;
+  new IntersectionObserver(function (entries, obs) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting && !started) { started = true; play(); obs.disconnect(); }
+    });
+  }, { threshold: 0.35 }).observe(scene);
+  if (again) again.addEventListener('click', play);
+})();

@@ -49,36 +49,61 @@ $poses = ['dzien-auto', 'dzien-obiad', 'dzien-przedszkole', 'zestresowany', 'dzi
 
 <?php ak_statement('Odpalasz Audiokiddo. *Reszta już się dzieje.*', 'w-skrocie'); ?>
 
-<section class="ak-slide ak-a-sec ak-nb-sec" id="co-to" data-slide="Co to jest" aria-labelledby="ak-nb-h">
+<?php
+// "Not an audiobook", told by showing it (2026-10-18): one minute of a play as a conversation that
+// plays itself when it comes into view, and what the child did lights up beside it.
+$ak_scene = [
+    ['szop', 'Psst, detektywie! Ktoś zabrał dzwonki rowerowe z całego miasta. Pomożesz?', ''],
+    ['kid', 'Tak, pomogę!', 'odpowiada'],
+    ['szop', 'To w drogę! Maszerujemy w miejscu: raz, dwa, raz, dwa!', ''],
+    ['kid', 'maszeruje po pokoju', 'rusza'],
+    ['szop', 'Ciii… Słyszysz? Dzyń, dzyń! Kto wydaje taki dźwięk?', ''],
+    ['kid', 'Rower!', 'zgaduje'],
+    ['szop', 'Brawo! A jak nazwiemy naszego złodzieja?', ''],
+    ['kid', 'Pan Dzwoneczek!', 'wymysla'],
+];
+$ak_skills = [
+    ['odpowiada', 'speech', 'Odpowiada', 'na głos, pełnym zdaniem'],
+    ['rusza', 'run', 'Rusza się', 'maszeruje, skacze, szuka'],
+    ['zgaduje', 'puzzle', 'Zgaduje', 'dźwięki, zagadki, poszlaki'],
+    ['wymysla', 'bulb', 'Wymyśla', 'imiona, zakończenia, historie'],
+];
+?>
+<section class="ak-slide ak-a-sec ak-nb-sec ak-nb4" id="co-to" data-slide="Co to jest" aria-labelledby="ak-nb-h">
     <div class="ak-wrap">
-        <h2 id="ak-nb-h" class="ak-center" data-reveal>To nie jest <span class="ak-hl-word">audiobook.</span></h2>
-        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal>Słuchanie? Technicznie tak. Siedzenie spokojnie? Nie obiecujemy.</p>
-        <div class="ak-vs2">
-            <article class="ak-vs2-card ak-vs2-book" data-reveal>
-                <h3>Audiobook</h3>
-                <p>mówi dziecku, co zrobił bohater.</p>
-                <ul aria-label="Co robi dziecko">
-                    <li><?php echo ak_icon('ear', 34); // static ?><span>słucha</span></li>
+        <h2 id="ak-nb-h" class="ak-center" data-reveal>Tu dziecko gra <span class="ak-hl-word">główną rolę.</span></h2>
+        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal>Audiobook się słucha. W Audiokiddo głos mówi do dziecka, a dziecko odpowiada, rusza się i wymyśla. Tak wygląda jedna minuta zabawy:</p>
+        <div class="ak-nb4-in">
+            <div class="ak-nb4-scene" data-reveal data-ak-scene aria-label="Przykładowa minuta zabawy: rozmowa Szop’ena z dzieckiem">
+                <ol class="ak-nb4-chat">
+                    <?php foreach ($ak_scene as $i => [$who, $line, $skill]) : ?>
+                    <li class="ak-nb4-msg ak-nb4-<?php echo esc_attr($who); ?>"<?php echo $skill ? ' data-skill="' . esc_attr($skill) . '"' : ''; ?> style="--i:<?php echo (int) $i; ?>">
+                        <?php if ($who === 'szop') : ?>
+                        <img src="<?php echo esc_url(ak_asset('img/szop/nasluchuje.webp')); ?>" alt="" width="44" height="44" loading="lazy" decoding="async">
+                        <p><span class="ak-sr">Szop’en: </span><?php echo esc_html($line); ?></p>
+                        <?php else : ?>
+                        <p<?php echo $skill === 'rusza' ? ' class="ak-nb4-act"' : ''; ?>><span class="ak-sr">Dziecko: </span><?php echo $skill === 'rusza' ? ak_icon('run', 18) . ' ' . esc_html($line) : esc_html($line); // static icon ?></p>
+                        <span class="ak-nb4-kid" aria-hidden="true"><?php echo ak_icon('kid', 22); // static ?></span>
+                        <?php endif; ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ol>
+                <button type="button" class="ak-nb4-again" hidden>Jeszcze raz</button>
+            </div>
+            <div class="ak-nb4-side">
+                <p class="ak-nb4-side-h" data-reveal>W jednej zabawie dziecko:</p>
+                <ul class="ak-nb4-skills">
+                    <?php foreach ($ak_skills as $i => [$key, $icon, $title, $line]) : ?>
+                    <li data-reveal data-skill-tile="<?php echo esc_attr($key); ?>" style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
+                        <span class="ak-nb4-ico"><?php echo ak_icon($icon, 30); // static ?></span>
+                        <strong><?php echo esc_html($title); ?></strong>
+                        <span><?php echo esc_html($line); ?></span>
+                    </li>
+                    <?php endforeach; ?>
                 </ul>
-            </article>
-            <span class="ak-vs2-vs" aria-hidden="true">vs</span>
-            <article class="ak-vs2-card ak-vs2-play" data-reveal style="--d:.15s">
-                <h3>Audiokiddo</h3>
-                <p>mówi: „Bohaterem jesteś ty. Wstawaj, mamy sprawę.”</p>
-                <ul aria-label="Co robi dziecko">
-                    <li><?php echo ak_icon('speech', 34); // static ?><span>odpowiada</span></li>
-                    <li><?php echo ak_icon('run', 34); // static ?><span>rusza się</span></li>
-                    <li><?php echo ak_icon('puzzle', 34); // static ?><span>zgaduje</span></li>
-                    <li><?php echo ak_icon('bulb', 34); // static ?><span>wymyśla</span></li>
-                </ul>
-            </article>
+                <p class="ak-nb4-vs" data-reveal><span>Audiobook: dziecko słucha.</span> <strong>Audiokiddo: dziecko działa.</strong></p>
+            </div>
         </div>
-        <ul class="ak-nb3-says" data-reveal aria-label="Przykłady zadań z audiozabaw">
-            <?php foreach (['Maszeruj, dopóki go nie złapiemy!', 'Do której sali musimy wejść?', 'Kto wydaje taki dźwięk?'] as $said) : ?>
-            <li>„<?php echo esc_html($said); ?>”</li>
-            <?php endforeach; ?>
-        </ul>
-        <p class="ak-nb3-end ak-center" data-reveal>Dziecko ma tu dużo do roboty.</p>
     </div>
 </section>
 
