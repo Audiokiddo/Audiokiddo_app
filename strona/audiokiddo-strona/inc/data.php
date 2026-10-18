@@ -285,8 +285,8 @@ function ak_kid_can(): array
 function ak_ages(): array
 {
     return [
-        ['3–5 lat', 'sun', 'Dużo ruchu. Krótkie instrukcje.', ['wyobraznia', 'slowa-i-wiedza'], ['zabawy-dla-3-latka', 'zabawy-dla-4-latka', 'zabawy-dla-5-latka']],
-        ['5–7 lat', 'teal', 'Więcej zagadek, decyzji i pytań, na które dziecko zna odpowiedź szybciej od Ciebie.', ['slowa-i-wiedza', 'wyobraznia'], ['zabawy-dla-5-latka', 'zabawy-dla-6-latka', 'zabawy-dla-7-latka']],
+        ['3–4 lata', 'sun', 'Dużo ruchu. Krótkie instrukcje.', ['wyobraznia', 'slowa-i-wiedza'], ['zabawy-dla-3-latka', 'zabawy-dla-4-latka', 'zabawy-dla-przedszkolakow']],
+        ['5–6 lat', 'teal', 'Więcej zagadek, decyzji i pytań, na które dziecko zna odpowiedź szybciej od Ciebie.', ['slowa-i-wiedza', 'wyobraznia'], ['zabawy-dla-5-latka', 'zabawy-dla-6-latka', 'zabawy-dla-przedszkolakow']],
         ['7–9 lat', 'lav', 'Śledztwa, dłuższe fabuły i misje dla ludzi, którzy już potrafią powiedzieć „to nie ma sensu” i oczekują wyjaśnień.', ['detektyw', 'slowa-i-wiedza'], ['zabawy-dla-7-latka', 'zabawy-dla-8-latka', 'zabawy-dla-dzieci-7-9-lat']],
     ];
 }
@@ -384,7 +384,7 @@ function ak_facts(): array
     $p = ak_pricing();
     return [
         'Czym jest' => 'Audiokiddo to polska aplikacja z interaktywnymi audiozabawami dla dzieci w wieku 3–9 lat. Rodzic włącza zabawę, a głos prowadzi dziecko: zadaje pytania, daje misje, każe szukać, ruszać się i rozwiązywać zagadki. Dziecko nie patrzy w ekran.',
-        'Dla kogo' => 'Dla rodziców dzieci w wieku przedszkolnym i wczesnoszkolnym (3–5, 5–7 i 7–9 lat), którzy potrzebują zająć dziecko na kilkanaście minut bez tabletu i bajki: przy gotowaniu, w samochodzie, po przedszkolu, w deszczowy dzień.',
+        'Dla kogo' => 'Dla rodziców dzieci w wieku przedszkolnym i wczesnoszkolnym (3–4, 5–6 i 7–9 lat), którzy potrzebują zająć dziecko na kilkanaście minut bez tabletu i bajki: przy gotowaniu, w samochodzie, po przedszkolu, w deszczowy dzień.',
         'Jak działa' => 'Pobierasz aplikację Audiokiddo z App Store albo Google Play, wybierasz wiek i zabawę, naciskasz play. Większość zabaw dziecko robi samodzielnie; telefon może leżeć na stole.',
         'Ile kosztuje' => 'W aplikacji są darmowe zabawy. Pełna biblioteka w abonamencie kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Wszystkie pakiety są w abonamencie, a co tydzień dochodzą 2 nowe zabawy.',
         'Kto to robi' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy i świat marki, Dawid buduje technologię; oboje podkładają głosy. Maskotka marki to szop Szop’en.',
@@ -402,7 +402,7 @@ function ak_faq(): array
         ['Czym jest Audiokiddo?', 'Aplikacją z interaktywnymi audiozabawami dla dzieci 3–9 lat. Odpalasz zabawę, a głos prowadzi dziecko: zadaje pytania, daje misje, każe szukać, ruszać się i rozwiązywać zagadki. To nie jest audiobook: tu dziecko ma dużo do roboty.'],
         ['Czy muszę uczestniczyć?', 'Zwykle nie. Nikt nie sprawdza obecności. Większość zabaw dziecko robi samodzielnie. Chcesz dołączyć? Jasne. Nie chcesz? Też jasne.'],
         ['Czy dziecko patrzy w ekran?', 'Tylko tyle, ile potrzeba do obsługi. Główna akcja dzieje się poza nim: telefon może leżeć na stole albo w kieszeni.'],
-        ['Dla dzieci w jakim wieku?', 'Dla dzieci od 3 do 9 lat. Zabawy są podzielone na grupy 3–5, 5–7 i 7–9 lat; przy każdej widzisz wiek, czas trwania i to, czy potrzebujesz czegoś dodatkowego.'],
+        ['Dla dzieci w jakim wieku?', 'Dla dzieci od 3 do 9 lat. Zabawy są podzielone na grupy 3–4, 5–6 i 7–9 lat; przy każdej widzisz wiek, czas trwania i to, czy potrzebujesz czegoś dodatkowego.'],
         ['Ile kosztuje Audiokiddo?', 'Pobranie aplikacji jest darmowe i w środku czekają darmowe zabawy. Pełna biblioteka kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Abonament wybierasz w aplikacji.'],
         ['Czy mogę najpierw sprawdzić za darmo?', 'Tak. Pobierz aplikację, wybierz wiek dziecka i odpal darmowe zabawy. To normalne, pełne audiozabawy, a nie zwiastuny. Abonamentu nie kupujesz w ciemno.'],
         ['Czy działa w samochodzie?', 'Tak. Mamy specjalny tryb samochodowy „W drogę”. Pobrane wcześniej zabawy działają też w trudnych warunkach pt. brak zasięgu albo podróż samolotem.'],
