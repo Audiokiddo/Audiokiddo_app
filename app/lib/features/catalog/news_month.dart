@@ -58,16 +58,19 @@ class _NewsMonthState extends ConsumerState<NewsMonth> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Nowości', style: text.headlineLarge),
+        Text('Nowości', style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
         const SizedBox(height: 12),
-        SizedBox(
-          // The cover plus title and date, which grow with the phone's text size.
-          height: 190 + 104 * MediaQuery.textScalerOf(context).scale(1),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: plays.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
-            itemBuilder: (context, i) => _PremiereCard(item: plays[i], today: today),
+        // As tall as the tallest card, so no empty band under them (2026-10-18).
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final (i, item) in plays.indexed) ...[
+                if (i > 0) const SizedBox(width: 12),
+                _PremiereCard(item: item, today: today),
+              ],
+            ],
           ),
         ),
       ],
@@ -173,16 +176,23 @@ class _PremiereCardState extends ConsumerState<_PremiereCard> with SingleTickerP
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(18)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.lock_clock_rounded, color: Colors.white, size: 36),
-                  const SizedBox(height: 6),
-                  Text(
-                    dayAndMonth(item.releasedOn!),
-                    style: text.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                // Shrinks with very large text instead of overflowing the card.
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.lock_clock_rounded, color: Colors.white, size: 36),
+                      const SizedBox(height: 6),
+                      Text(
+                        dayAndMonth(item.releasedOn!),
+                        style: text.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

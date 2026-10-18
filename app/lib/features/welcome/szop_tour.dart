@@ -32,7 +32,8 @@ const tourStops = <TourStop>[
     slot: null,
     pose: SzopPose.prosi,
     title: 'Cześć, jestem Szop’en.',
-    body: 'Pokażę Ci w minutę, gdzie co jest. Stuknij „Dalej” albo gdziekolwiek na ekranie.',
+    body: 'Oprowadzę Cię po całej aplikacji, krok po kroku. Stuknij „Dalej” albo gdziekolwiek na ekranie. '
+        'Możesz to przerwać w każdej chwili i wrócić tu z Więcej.',
   ),
   (
     branch: 0,
@@ -40,8 +41,44 @@ const tourStops = <TourStop>[
     slot: null,
     pose: SzopPose.zadowolony,
     title: 'Nowości',
-    body: 'Premiery tego miesiąca: odkryte są w kolorze, a te, które dopiero przyjdą, czekają zakryte z datą. '
-        'Obok podejrzysz kolejny miesiąc.',
+    body: 'Premiery: wydane zabawy są w kolorze, a te, które dopiero przyjdą, czekają zakryte z datą. '
+        'W dniu premiery dziecko odkrywa kartę palcem. Przesuń rząd w bok, żeby zobaczyć kolejne.',
+  ),
+  (
+    branch: 0,
+    target: 'continue',
+    slot: null,
+    pose: SzopPose.nasluchuje,
+    title: 'Kontynuuj słuchanie',
+    body: 'Zabawa przerwana w połowie czeka tutaj i wraca od miejsca, w którym skończyliście. '
+        'Krzyżykiem ją schowasz, „Zobacz wszystkie” pokaże całą historię.',
+  ),
+  (
+    branch: 0,
+    target: 'moment',
+    slot: null,
+    pose: SzopPose.chytry,
+    title: 'Teraz',
+    body: 'Ta karta zmienia się z porą dnia: rano rozgrzewka, przed wyjazdem auto, po przedszkolu wyciszenie, '
+        'wieczorem Dobranoc. Dobiera się do Twojego dnia z „Mój dzień”.',
+  ),
+  (
+    branch: 0,
+    target: 'ages',
+    slot: null,
+    pose: SzopPose.zadowolony,
+    title: 'Dla jakiego wieku?',
+    body: 'Stuknij wiek dziecka, a zobaczysz tylko zabawy dla niego. Pod spodem rodzaje zabaw: darmowe, kreatywne, '
+        'ruchowe, logiczne i inne.',
+  ),
+  (
+    branch: 0,
+    target: 'modes',
+    slot: null,
+    pose: SzopPose.klaszcze,
+    title: 'Tryb podróży i Muszę coś zrobić',
+    body: 'W podróży powiedz, ile potrwa droga, a ułożę zabawy na całą trasę. „Muszę coś zrobić”: powiedz, ile '
+        'czasu potrzebujesz, a zajmę dziecko. Niżej są wszystkie plany na każdą porę.',
   ),
   (
     branch: 0,
@@ -49,25 +86,26 @@ const tourStops = <TourStop>[
     slot: 2,
     pose: SzopPose.klaszcze,
     title: 'Co teraz?',
-    body:
-        'Najszybsza droga: wybierz, ile macie czasu, a ja wylosuję zabawy po kolei. Jedno stuknięcie i gra.',
+    body: 'Duży przycisk na środku: gdy coś gra, wraca do odtwarzacza. Gdy nic nie gra, pokazuje plany na tę chwilę '
+        'i przycisk „Wylosuj mi zabawy”.',
   ),
   (
     branch: 1,
-    target: null,
+    target: 'library-search',
     slot: 1,
     pose: SzopPose.nasluchuje,
     title: 'Biblioteka',
-    body: 'Wszystkie zabawy według pakietów i wieku. Serduszkiem dodasz je do ulubionych.',
+    body: 'Na górze szukasz po tytule, pod spodem wybierasz wiek. Zakładka „Wszystkie zabawy” to jedna lista '
+        'od A do Z.',
   ),
   (
     branch: 1,
-    target: 'offline',
+    target: 'library-categories',
     slot: null,
     pose: SzopPose.zdziwiony,
-    title: 'Bez internetu',
-    body:
-        'Przed wyjazdem pobierz zabawy na telefon: zadziałają w aucie, samolocie i na działce, bez zasięgu.',
+    title: 'Kategorie',
+    body: 'Darmowe, kreatywne, ruchowe, logiczne, edukacyjne, fabularne i detektywistyczne. Przy każdej widać, '
+        'ile jest zabaw.',
   ),
   (
     branch: 1,
@@ -75,7 +113,16 @@ const tourStops = <TourStop>[
     slot: null,
     pose: SzopPose.chytry,
     title: 'Do druku',
-    body: 'Akta spraw Detektywa i karty do zabaw. Wydrukujesz je albo otworzysz w telefonie lub na tablecie.',
+    body: 'Przewodniki do pakietów, akta spraw detektywa i dyplomy. Otworzysz je na telefonie, wydrukujesz albo '
+        'wyślesz.',
+  ),
+  (
+    branch: 1,
+    target: 'offline',
+    slot: null,
+    pose: SzopPose.zdziwiony,
+    title: 'Bez internetu',
+    body: 'Przed wyjazdem pobierz zabawy: zadziałają w aucie, samolocie i na działce, bez zasięgu.',
   ),
   (
     branch: 1,
@@ -83,7 +130,8 @@ const tourStops = <TourStop>[
     slot: null,
     pose: SzopPose.zadowolony,
     title: 'Tryb dziecka',
-    body: 'Dajesz dziecku telefon, a ono widzi tylko zabawy: bez zakupów, linków i ustawień.',
+    body: 'Dajesz dziecku telefon, a ono widzi tylko zabawy: bez zakupów, linków i ustawień. Wyjdziesz, stukając '
+        'kłódkę i odpowiadając na pytanie dla dorosłych.',
   ),
   (
     branch: 2,
@@ -91,17 +139,50 @@ const tourStops = <TourStop>[
     slot: 3,
     pose: SzopPose.klaszcze,
     title: 'Abonament',
-    body:
-        'Abonament otwiera wszystkie zabawy, a co tydzień dokłada 2 nowe.',
+    body: 'Abonament otwiera wszystkie zabawy, a co tydzień dokłada 2 nowe. Darmowe zabawy działają bez niego '
+        'i bez konta. Gdy już masz abonament, w tym miejscu są pobrane zabawy.',
   ),
   (
     branch: 3,
-    target: 'downloads',
+    target: 'myday',
     slot: 4,
     pose: SzopPose.nasluchuje,
-    title: 'Więcej',
-    body:
-        'Tu są pobrane zabawy, profil dziecka, wygląd aplikacji i konto. Samouczek obejrzysz tu jeszcze raz.',
+    title: 'Mój dzień',
+    body: 'Cztery krótkie kroki: dni przedszkola i auta, godziny dnia, święta i powiadomienia. Na tej podstawie '
+        'podpowiadam na Starcie, co pasuje teraz, a wieczorem ekran sam ciemnieje.',
+  ),
+  (
+    branch: 3,
+    target: 'profile',
+    slot: null,
+    pose: SzopPose.klaszcze,
+    title: 'Profil dziecka',
+    body: 'Imię (powitam dziecko po imieniu), wiek, urodziny i postępy. Przy rodzeństwie każde dziecko ma swój profil.',
+  ),
+  (
+    branch: 3,
+    target: 'forchild',
+    slot: null,
+    pose: SzopPose.zadowolony,
+    title: 'Dla dziecka',
+    body: 'Album naklejek za skończone zabawy i mapa przygód z sekretami Szop’ena.',
+  ),
+  (
+    branch: 3,
+    target: 'settings',
+    slot: null,
+    pose: SzopPose.chytry,
+    title: 'Ustawienia i zgody',
+    body: 'Wygląd (jasny, ciemny, automatyczny), powiadomienia, karty na Starcie i to, jak często się odzywam.',
+  ),
+  (
+    branch: 3,
+    target: 'features',
+    slot: null,
+    pose: SzopPose.nasluchuje,
+    title: 'Co potrafi audiokiddo',
+    body: 'Tu jest zakładka „Nowości” z tym, co doszło w ostatniej wersji, i lista wszystkich funkcji. '
+        'Ten samouczek też włączysz stąd jeszcze raz.',
   ),
   (
     branch: 0,
@@ -109,8 +190,7 @@ const tourStops = <TourStop>[
     slot: null,
     pose: SzopPose.chytry,
     title: 'Gesty',
-    body:
-        'Od lewej krawędzi w prawo: wracasz (z zakładki na Start). Odtwarzacz pociągnij w dół, a się schowa. '
+    body: 'Od lewej krawędzi w prawo: wracasz (z zakładki na Start). Odtwarzacz pociągnij w dół, a się schowa. '
         'Pasek z grającą zabawą przesuń w bok, a zniknie. Dziecięcy ekran zamkniesz długim przytrzymaniem.',
   ),
   (
@@ -119,7 +199,7 @@ const tourStops = <TourStop>[
     slot: null,
     pose: SzopPose.klaszcze,
     title: 'Gotowe.',
-    body: 'Zacznijcie od darmowej zabawy na Starcie. Ja będę w pobliżu.',
+    body: 'Zacznijcie od darmowej zabawy z Nowości albo z kategorii „Darmowe”. Ja będę w pobliżu.',
   ),
 ];
 

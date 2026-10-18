@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:audiokiddo/features/about/whats_new.dart';
 import 'package:audiokiddo/core/audio/kiddo_voice.dart';
 import 'package:audiokiddo/core/widgets/ambient_motion.dart';
 import 'package:audiokiddo/core/platform/device_storage.dart';
@@ -88,6 +89,7 @@ List<Override> testOverrides(
   databaseProvider.overrideWithValue(db),
   appearanceDefaultProvider.overrideWithValue(ThemeMode.light),
   launchGreetingEnabledProvider.overrideWithValue(false),
+  whatsNewAutoShowProvider.overrideWithValue(false),
   kidsModeProvider.overrideWithValue(kidsMode ?? KidsModeController(db)),
   fileTransferProvider.overrideWithValue(FakeTransfer(downloadsDir ?? Directory.systemTemp)),
   contentUrlResolverProvider.overrideWithValue(const BaseUrlResolver('http://test.invalid')),

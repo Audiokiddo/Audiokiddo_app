@@ -6,6 +6,7 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/szop.dart';
 import '../kids_mode/kids_mode_setup.dart';
 import '../welcome/welcome_controller.dart';
+import 'whats_new.dart';
 
 /// "Co potrafi audiokiddo": every feature in one short list, each one tap away, and Szop’en's
 /// tour for those who prefer to be shown. Opened from Start and from Więcej.
@@ -92,7 +93,7 @@ class FeaturesScreen extends ConsumerWidget {
         Icons.print_rounded,
         'Do druku',
         'Akta sprawy z pakietu Detektyw do wydrukowania.',
-        () => context.push('/biblioteka?do_druku=1'),
+        () => context.push('/do-druku'),
       ),
       (
         Icons.mic_rounded,
@@ -127,67 +128,85 @@ class FeaturesScreen extends ConsumerWidget {
         null,
       ),
     ];
-    return Scaffold(
-      appBar: AppBar(title: const Text('Co potrafi audiokiddo')),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
-        children: [
-          Row(
-            children: [
-              const SzopSticker(SzopPose.chytry, height: 72),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Wszystko w jednym miejscu. Dotknij, żeby od razu przejść, albo daj się oprowadzić.',
-                  style: text.bodyLarge,
-                ),
-              ),
+    // Two tabs (2026-10-18): what is new in this version, like the iPhone's "Nowości", and
+    // every feature with the tour.
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Co potrafi audiokiddo'),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Nowości'),
+              Tab(text: 'Wszystkie funkcje'),
             ],
           ),
-          const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: () {
-              context.go('/');
-              ref.read(welcomeProvider).startTour();
-            },
-            icon: const Icon(Icons.tour_rounded),
-            label: const Text('Szop’en, oprowadź mnie'),
-          ),
-          const SizedBox(height: 16),
-          for (final (icon, title, body, onTap) in features)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Material(
-                color: context.palette.surface,
-                borderRadius: BorderRadius.circular(18),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(18),
-                  onTap: onTap,
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(icon, color: AkBrand.tealDeep, size: 28),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
+        ),
+        body: TabBarView(
+          children: [
+            const WhatsNewPager(),
+            ListView(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
+              children: [
+                Row(
+                  children: [
+                    const SzopSticker(SzopPose.chytry, height: 72),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Wszystko w jednym miejscu. Dotknij, żeby od razu przejść, albo daj się oprowadzić.',
+                        style: text.bodyLarge,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                FilledButton.icon(
+                  onPressed: () {
+                    context.go('/');
+                    ref.read(welcomeProvider).startTour();
+                  },
+                  icon: const Icon(Icons.tour_rounded),
+                  label: const Text('Szop’en, oprowadź mnie'),
+                ),
+                const SizedBox(height: 16),
+                for (final (icon, title, body, onTap) in features)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Material(
+                      color: context.palette.surface,
+                      borderRadius: BorderRadius.circular(18),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(18),
+                        onTap: onTap,
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(title, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
-                              const SizedBox(height: 2),
-                              Text(body, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+                              Icon(icon, color: AkBrand.tealDeep, size: 28),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(title, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+                                    const SizedBox(height: 2),
+                                    Text(body, style: text.bodySmall?.copyWith(color: context.palette.inkMuted)),
+                                  ],
+                                ),
+                              ),
+                              if (onTap != null) const Icon(Icons.chevron_right_rounded),
                             ],
                           ),
                         ),
-                        if (onTap != null) const Icon(Icons.chevron_right_rounded),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
+              ],
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

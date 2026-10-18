@@ -28,6 +28,7 @@ import '../features/welcome/welcome_screen.dart';
 import '../features/diploma/diploma_screen.dart';
 import '../features/discovery/parent_screens.dart';
 import '../features/pdf/printables_screen.dart';
+import '../features/about/whats_new.dart';
 import '../features/discovery/rescue_screen.dart';
 import '../features/discovery/routines_screen.dart';
 import '../features/discovery/queue_screen.dart';
@@ -148,6 +149,7 @@ GoRouter buildRouter(
     GoRoute(path: '/ustawienia', pageBuilder: (context, state) => swipePage(state, const SettingsScreen())),
     GoRoute(path: '/kolejka', pageBuilder: (context, state) => swipePage(state, const QueueScreen())),
     GoRoute(path: '/profil', pageBuilder: (context, state) => swipePage(state, const ProfileScreen())),
+    GoRoute(path: '/co-nowego', pageBuilder: (context, state) => swipePage(state, const WhatsNewScreen())),
     GoRoute(path: '/do-druku', pageBuilder: (context, state) => swipePage(state, const PrintablesScreen())),
     GoRoute(path: '/dla-dziecka', pageBuilder: (context, state) => swipePage(state, const ForChildScreen())),
     GoRoute(path: '/pobrane', pageBuilder: (context, state) => swipePage(state, const DownloadsScreen())),

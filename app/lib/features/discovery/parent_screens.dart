@@ -33,8 +33,15 @@ class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
 
   /// Szop’en's tour lights up the downloads.
-  static Widget _tile(String route, Widget child) =>
-      route == '/pobrane' ? TourTarget(id: 'downloads', child: child) : child;
+  static Widget _tile(String route, Widget child) => switch (route) {
+    '/pobrane' => TourTarget(id: 'downloads', child: child),
+    '/moj-dzien' => TourTarget(id: 'myday', child: child),
+    '/profil' => TourTarget(id: 'profile', child: child),
+    '/dla-dziecka' => TourTarget(id: 'forchild', child: child),
+    '/ustawienia' => TourTarget(id: 'settings', child: child),
+    '/funkcje' => TourTarget(id: 'features', child: child),
+    _ => child,
+  };
   static Widget _link(BuildContext context, IconData icon, String title, String route, {String? subtitle}) => _tile(
     route,
     ListTile(
@@ -84,7 +91,7 @@ class MoreScreen extends ConsumerWidget {
           subtitle: 'Wygląd, powiadomienia, karty na Starcie, Szop’en',
         ),
         const RefSection('Pomoc'),
-        _link(context, Icons.tour_rounded, 'Co potrafi audiokiddo', '/funkcje', subtitle: 'Wszystkie funkcje i samouczek z Szop’enem'),
+        _link(context, Icons.tour_rounded, 'Co potrafi audiokiddo', '/funkcje', subtitle: 'Nowości w tej wersji, wszystkie funkcje i samouczek'),
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.mail_outline_rounded, color: AkBrand.tealDeep),

@@ -264,19 +264,17 @@ class _Browse extends ConsumerWidget {
       // Search and age first, then kinds of play; packs, printables and tools further down,
       // the code to redeem at the very bottom (Nela, 2026-10-18).
       children: [
-        _SearchField(onTap: onSearch),
+        TourTarget(id: 'library-search', child: _SearchField(onTap: onSearch)),
         const SizedBox(height: 14),
         const AgeTiles(),
-        const SizedBox(height: 10),
-        _QuickChips(onFilter: onFilter),
         if (fresh.isNotEmpty) ...[
           const RefSection('Najnowsze'),
           _Covers(items: fresh.take(10).toList()),
         ],
         const RefSection('Kategorie'),
-        _CategoryList(onFilter: onFilter),
-        const SizedBox(height: 18),
-        const MyPacksTile(),
+        TourTarget(id: 'library-categories', child: _CategoryList(onFilter: onFilter)),
+        // No "Moje pakiety" (2026-10-18): the free plays are under "Darmowe", and with the
+        // subscription everything is open.
         if (toDiscover.isNotEmpty) ...[
           RefSection(owned.isEmpty ? 'Pakiety' : 'Do odkrycia'),
           for (final s in toDiscover) _CollectionRow(summary: s, product: byId[s.pack.storeProductId]),
@@ -285,7 +283,7 @@ class _Browse extends ConsumerWidget {
         const SizedBox(height: 14),
         _PrintBanner(catalog: catalog),
         const RefSection('Dla rodzica'),
-        const ModeTiles(),
+        TourTarget(id: 'parent-modes', child: const ModeTiles()),
         const SizedBox(height: 10),
         _ParentTools(onFilter: onFilter),
         const Padding(padding: EdgeInsets.only(top: 18), child: Center(child: RedeemAccessLink())),
@@ -644,36 +642,6 @@ class _CollectionRow extends StatelessWidget {
   }
 }
 
-/// One row of the filters parents reach for most, scrolled sideways.
-class _QuickChips extends ConsumerWidget {
-  const _QuickChips({required this.onFilter});
-
-  final ValueChanged<LibraryFilter> onFilter;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final chips = <(String, LibraryFilter)>[
-      ('3–5 lat', const LibraryFilter(age: 5, ageFrom: 3)),
-      ('5–7 lat', const LibraryFilter(age: 7, ageFrom: 5)),
-      ('7–9 lat', const LibraryFilter(age: 9, ageFrom: 7)),
-      ('Do 10 min', const LibraryFilter(maxMinutes: 10)),
-      ('Bez przygotowań', const LibraryFilter(noPrep: true)),
-      ('Na leżąco', const LibraryFilter(lyingDown: true)),
-      ('Gry z odpowiedziami', const LibraryFilter(kind: ContentKind.interactiveGame)),
-      if (ref.watch(hasSongsProvider)) ('Piosenki', const LibraryFilter(kind: ContentKind.song)),
-      ('Dostępne dla nas', const LibraryFilter(available: true)),
-    ];
-    return SizedBox(
-      height: 44 * MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 1.6),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: chips.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-        itemBuilder: (context, i) => ActionChip(label: Text(chips[i].$1), onPressed: () => onFilter(chips[i].$2)),
-      ),
-    );
-  }
-}
 
 /// One of the family's packs as a shelf: a header that opens the pack page, how far the child
 /// got, and its plays as covers, each straight to its page.

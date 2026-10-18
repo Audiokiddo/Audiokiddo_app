@@ -37,6 +37,7 @@ import '../welcome/szop_tour.dart';
 import 'widgets/catalog_loader.dart';
 import 'news_month.dart';
 import '../lord/szop_quota.dart';
+import '../about/whats_new.dart';
 import '../family/birthday.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -78,52 +79,61 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              // Nowości first, then the play in progress (Nela, 2026-10-18).
-              const SizedBox(height: 6),
-              TourTarget(id: 'hero', child: const NewsMonth()),
-              if (items.isNotEmpty && ref.watch(closedContinueProvider).value != items.first.id) ...[
-                RefSection('Kontynuuj słuchanie', action: 'Zobacz wszystkie', onTap: () => context.push('/historia')),
-                Row(
-                  children: [
-                    Expanded(child: AudioRow(item: items.first, subtitle: _remaining(ref, items.first))),
-                    IconButton(
-                      tooltip: 'Zamknij',
-                      onPressed: () => ref.read(closedContinueProvider.notifier).close(items.first.id),
-                      icon: const Icon(Icons.close_rounded),
-                    ),
-                  ],
+              // Nowości first, then the play in progress (Nela, 2026-10-18). Each part of Start
+              // sits on its own card so the sections do not run into each other.
+              StartSection(child: TourTarget(id: 'hero', child: const NewsMonth())),
+              if (items.isNotEmpty && ref.watch(closedContinueProvider).value != items.first.id)
+                StartSection(
+                  tourId: 'continue',
+                  title: 'Kontynuuj słuchanie',
+                  action: ('Zobacz wszystkie', () => context.push('/historia')),
+                  child: Row(
+                    children: [
+                      Expanded(child: AudioRow(item: items.first, subtitle: _remaining(ref, items.first))),
+                      IconButton(
+                        tooltip: 'Zamknij',
+                        onPressed: () => ref.read(closedContinueProvider.notifier).close(items.first.id),
+                        icon: const Icon(Icons.close_rounded),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
               const _SzopBubble(),
               const LaunchGreeting(),
+              const WhatsNewKeeper(),
               const AlertsKeeper(),
               const FirstPlayCard(),
               const AccessEndingBanner(),
               // Start in order of what a parent needs (Mój dzień, 2026-10-17): what fits now, the
               // play they were in the middle of, then plays; offers and extras further down.
               const BirthdayBanner(),
-              const MomentCard(),
+              TourTarget(id: 'moment', child: const MomentCard()),
               const LeaveHint(),
               const WinBackCard(),
               // Age and kind right under the big tiles, visible as soon as the app opens.
-              const SizedBox(height: 14),
-              const AgeTiles(),
-              const SizedBox(height: 10),
-              const _CategoryChips(),
-              const SizedBox(height: 18),
+              const StartSection(
+                tourId: 'ages',
+                title: 'Dla jakiego wieku?',
+                child: Column(children: [AgeTiles(), SizedBox(height: 12), _CategoryChips()]),
+              ),
               // The play the child keeps asking for ("mamo, włącz mi…"), one tap away.
               const FavoriteCard(),
 
               // Plays first, the way parents think: what now, then for which age and kind;
               // offers and helpers after them. No "your packs": only the subscription is sold.
-              const RefSection('Co robicie?'),
-              const ModeTiles(),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: () => context.push('/plany'),
-                  icon: const Icon(Icons.event_note_rounded),
-                  label: const Text('Wszystkie plany: poranek, auto, po przedszkolu, kolacja…'),
+              StartSection(
+                tourId: 'modes',
+                title: 'Co robicie?',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ModeTiles(),
+                    TextButton.icon(
+                      onPressed: () => context.push('/plany'),
+                      icon: const Icon(Icons.event_note_rounded),
+                      label: const Text('Wszystkie plany: poranek, auto, po przedszkolu, kolacja…'),
+                    ),
+                  ],
                 ),
               ),
               const PromotionBanner(),
@@ -273,6 +283,49 @@ class _SzopBubbleState extends ConsumerState<_SzopBubble> {
               ),
             ),
     );
+  }
+}
+
+/// One part of Start on its own white card with a clear title, so Nowości, the play in
+/// progress, ages and modes read as separate sections (2026-10-18).
+class StartSection extends StatelessWidget {
+  const StartSection({super.key, this.title, this.action, this.tourId, required this.child});
+
+  /// The stop of Szop’en's tour that lights this section up.
+  final String? tourId;
+  final String? title;
+  final (String, VoidCallback)? action;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final card = Container(
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      decoration: BoxDecoration(
+        color: context.palette.surface,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: akSoftShadow(context),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  Expanded(child: Text(title!, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800))),
+                  if (action case (final label, final onTap)) TextButton(onPressed: onTap, child: Text(label)),
+                ],
+              ),
+            ),
+          child,
+        ],
+      ),
+    );
+    return tourId == null ? card : TourTarget(id: tourId!, child: card);
   }
 }
 

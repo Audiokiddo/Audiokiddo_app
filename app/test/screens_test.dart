@@ -75,20 +75,14 @@ Future<void> goBack(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('"Moje pakiety" only in the library (Start sells nothing per pack): free plays', (tester) async {
+  testWidgets('no "Moje pakiety" anywhere: the free plays are under "Darmowe"', (tester) async {
     await pumpApp(tester);
     expect(find.text('Moje pakiety'), findsNothing, reason: 'Start has no pack shelf since 2026-10-13');
-    expect(find.text('Wasze pakiety'), findsNothing);
     await openLibrary(tester);
-    // Lower in the categories view since 2026-10-18.
-    await tester.scrollUntilVisible(find.text('Moje pakiety'), 200, scrollable: mainScroll);
-    expect(find.textContaining('do włączenia od razu · w tym darmowe'), findsOneWidget);
-    await tester.tap(find.text('Moje pakiety'));
-    await tester.pumpAndSettle();
-    expect(find.text('Wszystko tutaj możecie włączyć od razu.'), findsOneWidget);
-    expect(find.text('Darmowe zabawy z pakietów'), findsOneWidget);
-    expect(find.textContaining('za darmo'), findsWidgets);
-    expect(find.text('Wasz pakiet'), findsNothing);
+    expect(find.text('Moje pakiety'), findsNothing, reason: 'removed from the library on 2026-10-18');
+    expect(find.text('Do 10 min'), findsNothing, reason: 'the age tiles replace the quick chips');
+    await tester.scrollUntilVisible(find.text('Darmowe'), 200, scrollable: mainScroll);
+    expect(find.text('Darmowe'), findsOneWidget);
   });
 
   testWidgets('library opens on "Kategorie"; "Wszystkie zabawy" is one flat list with a search', (tester) async {
@@ -108,22 +102,6 @@ void main() {
     await tester.enterText(find.byType(TextField), 'zzzzqq');
     await tester.pumpAndSettle();
     expect(find.textContaining('Nie znaleźliśmy takiej zabawy'), findsOneWidget);
-  });
-
-  testWidgets('library: a subscriber opens "Moje pakiety" and sees every pack', (tester) async {
-    await pumpApp(
-      tester,
-      entitlements: const [
-        Entitlement(scope: Scopes.allContent, status: EntitlementStatus.active, source: EntitlementSource.appStore),
-      ],
-    );
-    await openLibrary(tester);
-    await tester.scrollUntilVisible(find.text('Moje pakiety'), 200, scrollable: mainScroll);
-    expect(find.textContaining('do włączenia od razu · 3 pakiety'), findsOneWidget);
-    await tester.tap(find.text('Moje pakiety'));
-    await tester.pumpAndSettle();
-    expect(find.text('Wasz pakiet'), findsWidgets);
-    expect(find.text('Darmowe zabawy z pakietów'), findsNothing);
   });
 
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {

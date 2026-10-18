@@ -61,9 +61,9 @@ void main() {
     await pump(tester);
     await tester.tap(find.byIcon(Icons.auto_stories_outlined));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('3–5 lat'));
+    await tester.ensureVisible(find.bySemanticsLabel('3–4 lata'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('3–5 lat'));
+    await tester.tap(find.bySemanticsLabel('3–4 lata'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Magiczny sklep'),
@@ -104,9 +104,9 @@ void main() {
       await tester.tap(find.byIcon(Icons.auto_stories_outlined));
       await tester.pumpAndSettle();
       // The quick filters on top of the library: an age band opens the list of plays.
-      await tester.ensureVisible(find.text('3–5 lat'));
+      await tester.ensureVisible(find.bySemanticsLabel('3–4 lata'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('3–5 lat'));
+      await tester.tap(find.bySemanticsLabel('3–4 lata'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
         find.text('Magiczny sklep'),
