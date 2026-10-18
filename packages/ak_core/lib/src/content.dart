@@ -98,7 +98,9 @@ class ContentItem {
   factory ContentItem.fromJson(JsonReader r) {
     final kind = r.enumValue('kind', ContentKind.values);
     final script = r.optObject('script');
-    if (kind == ContentKind.interactiveGame && script == null) {
+    // A planned premiere ("planned": true) is announced before its script exists: it shows as
+    // a face-down card in Nowości and is never playable until published with its script.
+    if (kind == ContentKind.interactiveGame && script == null && !r.boolean('planned')) {
       throw FormatError('${r.path}.script', 'interactive games need a script');
     }
     return ContentItem(

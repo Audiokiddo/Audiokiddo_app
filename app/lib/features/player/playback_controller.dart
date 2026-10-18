@@ -55,8 +55,22 @@ class PlaybackController {
       }),
     ]);
     _ticker = Timer.periodic(const Duration(seconds: 5), (_) {
-      if (handler.playbackState.value.playing) unawaited(_save());
+      if (!handler.playbackState.value.playing) return;
+      unawaited(_save());
+      _showTimeLeft();
     });
+  }
+
+  /// The lock screen, Control Center and the notification say how long is left
+  /// ("Do końca 12 min"), refreshed when the minute changes.
+  void _showTimeLeft() {
+    final media = _handler.mediaItem.value;
+    final duration = _handler.duration;
+    if (media == null || duration == null || media.id.startsWith(gameMediaPrefix)) return;
+    final minutes = ((duration - _handler.position).inSeconds / 60).ceil().clamp(0, 999);
+    final line = minutes <= 1 ? 'Zaraz koniec' : 'Do końca $minutes min';
+    if (media.artist == line) return;
+    _handler.mediaItem.add(media.copyWith(artist: line));
   }
 
   final Ref _ref;

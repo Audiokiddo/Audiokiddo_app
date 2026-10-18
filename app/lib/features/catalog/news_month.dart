@@ -44,7 +44,7 @@ class _NewsMonthState extends ConsumerState<NewsMonth> {
     final text = Theme.of(context).textTheme;
     final month = DateTime(today.year, today.month + _offset);
     final plays = premieresOf(full, month);
-    final waiting = plays.where((i) => i.releasedOn!.isAfter(today)).length;
+    final waiting = plays.where((i) => i.releasedOn!.isAfter(today) || !isReady(i)).length;
     final alertsOn = ref.watch(alertsOptInProvider).value ?? false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +116,7 @@ class _PremiereCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final out = !item.releasedOn!.isAfter(today);
+    final out = !item.releasedOn!.isAfter(today) && isReady(item);
     final fresh = out && today.difference(item.releasedOn!).inDays < 7;
     final text = Theme.of(context).textTheme;
     final cover = ClipRRect(
@@ -184,13 +184,17 @@ class _PremiereCard extends StatelessWidget {
                 : face,
             const SizedBox(height: 8),
             Text(
-              out ? item.title : 'Niespodzianka',
+              item.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             Text(
-              out ? 'Premiera ${dayAndMonth(item.releasedOn!)}' : 'Odkryjemy ${dayAndMonth(item.releasedOn!)}',
+              out
+                  ? 'Premiera ${dayAndMonth(item.releasedOn!)}'
+                  : item.releasedOn!.isAfter(today)
+                  ? 'Odkryjemy ${dayAndMonth(item.releasedOn!)}'
+                  : 'Już wkrótce',
               style: text.bodySmall,
             ),
           ],

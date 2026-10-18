@@ -11,7 +11,7 @@ ContentItem item({DateTime? release}) => ContentItem(
   ageMin: 3,
   durationSec: 60,
   access: ContentAccess.paid,
-  audio: const [],
+  audio: const [AssetRef(path: 'audio/time-test.m4a', bytes: 1, sha256: 'x')],
   releasedOn: release,
 );
 

@@ -75,7 +75,7 @@ void main() {
     final shown = await container.read(catalogProvider.future);
     expect(shown.item(items.first['id']! as String), isNull);
     await container.read(fullCatalogProvider.future);
-    expect(container.read(upcomingItemsProvider).single.id, items.first['id']);
+    expect(container.read(upcomingItemsProvider).map((i) => i.id), contains(items.first['id']));
   });
 
   test('access ending by itself is found; store subscriptions renew and are skipped', () {

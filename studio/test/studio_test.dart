@@ -120,12 +120,13 @@ void main() {
     final c = await loaded(io);
     addTearDown(c.dispose);
     final studio = c.read(studioProvider.notifier)..importCatalog(appCatalog);
+    final bundled = (jsonDecode(appCatalog) as Json)['version'] as int;
     final exported = jsonDecode(studio.exportForPublishing()) as Json;
-    expect(exported['version'], 2);
+    expect(exported['version'], bundled + 1);
     await Future<void>.delayed(const Duration(milliseconds: 500)); // autosave debounce
     final reloaded = await loaded(io);
     addTearDown(reloaded.dispose);
-    expect(reloaded.read(studioProvider).catalog['version'], 2);
+    expect(reloaded.read(studioProvider).catalog['version'], bundled + 1);
   });
 
   testWidgets('editing a title in the UI updates the catalog', (tester) async {

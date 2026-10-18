@@ -33,16 +33,21 @@ class RemoteCatalogSource implements CatalogSource {
       _refreshing = true;
       unawaited(_refresh(saved).whenComplete(() => _refreshing = false));
     }
+    final bundled = await fallback.load();
     if (saved != null) {
       try {
         final manifest = jsonDecode(saved) as Map<String, Object?>;
-        if (_usable(manifest)) return manifest;
+        // The server copy wins only when it is at least as new as the one in this app build:
+        // a catalog changed in the app but not yet published never goes back in time.
+        if (_usable(manifest) && _version(manifest) >= _version(bundled)) return manifest;
       } on Object {
         // A broken saved copy falls through to the bundled one.
       }
     }
-    return fallback.load();
+    return bundled;
   }
+
+  static int _version(Map<String, Object?> manifest) => (manifest['version'] as num?)?.toInt() ?? 0;
 
   Future<void> _refresh(String? saved) async {
     try {

@@ -500,8 +500,33 @@ class _NamePickerState extends ConsumerState<_NamePicker> {
             ),
           ),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.m, AkSpace.m),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: _list(context, shown, picked, text, palette, l10n)),
+              // A–Ż on the side: one tap (or a slide) shows the names starting with that letter.
+              if (recorded != null && recorded.names.isNotEmpty)
+                _LetterRail(
+                  letters: nameLetters(recorded.names),
+                  selected: _filter.text.trim().length == 1 ? _filter.text.trim().toUpperCase() : null,
+                  onLetter: (l) => setState(() => _filter.text = l),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _list(
+    BuildContext context,
+    List<String> shown,
+    String picked,
+    TextTheme text,
+    AkPalette palette,
+    AppLocalizations l10n,
+  ) => ListView(
+            padding: const EdgeInsets.fromLTRB(AkSpace.m, AkSpace.s, AkSpace.s, AkSpace.m),
             children: [
               if (shown.isEmpty && _filter.text.trim().isNotEmpty)
                 Padding(
@@ -541,9 +566,63 @@ class _NamePickerState extends ConsumerState<_NamePicker> {
                 style: text.bodySmall,
               ),
             ],
+          );
+}
+
+/// The first letters of the names Szop’en can say, A–Z (the search ignores Polish marks, so
+/// "S" also finds Szymon and Świętosław).
+List<String> nameLetters(Iterable<String> names) {
+  final letters = {
+    for (final n in names)
+      if (plainName(n).isNotEmpty) plainName(n)[0].toUpperCase(),
+  };
+  return letters.toList()..sort();
+}
+
+/// A narrow column of letters beside the names: tap one or slide along it.
+class _LetterRail extends StatelessWidget {
+  const _LetterRail({required this.letters, required this.selected, required this.onLetter});
+
+  final List<String> letters;
+  final String? selected;
+  final ValueChanged<String> onLetter;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) {
+      final each = box.maxHeight / letters.length;
+      void at(double dy) => onLetter(letters[(dy / each).floor().clamp(0, letters.length - 1)]);
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (d) => at(d.localPosition.dy),
+        onVerticalDragUpdate: (d) => at(d.localPosition.dy),
+        child: SizedBox(
+          width: 30,
+          child: Column(
+            children: [
+              for (final l in letters)
+                SizedBox(
+                  height: each,
+                  child: Center(
+                    child: Semantics(
+                      button: true,
+                      label: 'Imiona na literę $l',
+                      child: FittedBox(
+                        child: Text(
+                          l,
+                          style: TextStyle(
+                            fontWeight: l == selected ? FontWeight.w900 : FontWeight.w600,
+                            color: l == selected ? AkBrand.tealDeep : null,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
-      ],
-    );
-  }
+      );
+    },
+  );
 }

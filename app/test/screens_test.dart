@@ -125,6 +125,8 @@ void main() {
 
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
+    // The Teraz card can come first (it depends on the hour and the day).
+    await tester.scrollUntilVisible(find.text('Nowości'), 200, scrollable: mainScroll);
     expect(find.text('Nowości'), findsOneWidget);
     for (final label in [
       'Mam 20 minut',
@@ -145,7 +147,7 @@ void main() {
   });
   testWidgets('"Co teraz?" → "Jedziemy autem" opens the trip mode with the chosen time', (tester) async {
     await pumpApp(tester);
-    showQuickPick(tester.element(find.text('Nowości')));
+    showQuickPick(tester.element(find.byTooltip('Szukaj zabawy')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('45 min'));
     await tester.pumpAndSettle();
@@ -165,7 +167,7 @@ void main() {
     expect(find.byTooltip('Wróć'), findsOneWidget);
     await tester.tap(find.byTooltip('Wróć'));
     await tester.pumpAndSettle();
-    expect(find.text('Nowości'), findsOneWidget);
+    expect(find.byTooltip('Szukaj zabawy'), findsOneWidget);
   });
 
   testWidgets('rescue flow has time, mood and material selection', (tester) async {
@@ -334,7 +336,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('47'));
       await tester.pumpAndSettle();
-      expect(find.text('Nowości'), findsOneWidget);
+      expect(find.byTooltip('Szukaj zabawy'), findsOneWidget);
     });
   });
 }

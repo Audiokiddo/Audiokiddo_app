@@ -57,7 +57,8 @@ class StartCardClose extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => IconButton(
     tooltip: 'Ukryj tę kartę',
-    visualDensity: VisualDensity.compact,
+    // 48 × 48: easy to hit with a thumb (accessibility guideline).
+    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
     iconSize: 20,
     onPressed: () {
       final notifier = ref.read(hiddenStartCardsProvider.notifier);

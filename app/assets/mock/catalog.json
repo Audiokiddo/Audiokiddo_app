@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "version": 1,
+ "version": 3,
  "_comment": "Katalog przykładowy (Etap 1). Pliki, okładki, sumy kontrolne i skład próbki są tymczasowe.",
  "packs": [
   {
@@ -2157,7 +2157,7 @@
     }
    },
    "timing_sensitive": false,
-   "released": "2026-09-27"
+   "released": "2026-10-10"
   },
   {
    "id": "zgubiona-gwiazdka",
@@ -3127,6 +3127,130 @@
    },
    "timing_sensitive": false,
    "released": "2026-10-03"
+  },
+  {
+   "id": "kasztanowe-ludziki",
+   "kind": "interactive_game",
+   "title": "Kasztanowe ludziki",
+   "parent_description": "Dziecko razem z Szop’enem wymyśla kasztanowe ludziki: jak mają na imię, gdzie mieszkają i dokąd jadą na jesienną wycieczkę.",
+   "age_min": 3,
+   "duration_sec": 480,
+   "situations": [
+    "w_domu"
+   ],
+   "requirements": [],
+   "skills": [
+    "wyobraźnia"
+   ],
+   "access": "paid",
+   "audio": [],
+   "released": "2026-10-24",
+   "planned": true,
+   "age_max": 9
+  },
+  {
+   "id": "kto-zgubil-parasol",
+   "kind": "interactive_game",
+   "title": "Kto zgubił parasol?",
+   "parent_description": "Deszczowa zagadka z parku: dziecko słucha wskazówek i zgaduje, kto zostawił na ławce kolorowy parasol.",
+   "age_min": 3,
+   "duration_sec": 420,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "requirements": [],
+   "skills": [
+    "słuchanie",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "released": "2026-10-31",
+   "planned": true,
+   "age_max": 9
+  },
+  {
+   "id": "pociag-do-bajkowa",
+   "kind": "interactive_game",
+   "title": "Pociąg do Bajkowa",
+   "parent_description": "Podróż pociągiem do miasta z bajek: na każdej stacji dziecko decyduje, kogo zabieramy i co pakujemy.",
+   "age_min": 3,
+   "duration_sec": 600,
+   "situations": [
+    "podroz"
+   ],
+   "requirements": [],
+   "skills": [
+    "wyobraźnia"
+   ],
+   "access": "paid",
+   "audio": [],
+   "released": "2026-11-07",
+   "planned": true,
+   "age_max": 9
+  },
+  {
+   "id": "wyprawa-po-kapcie",
+   "kind": "interactive_game",
+   "title": "Wielka wyprawa po kapcie",
+   "parent_description": "Zaginął kapeć. Dziecko jako odkrywca przeszukuje dżunglę pod łóżkiem i odpowiada na zagadki strażników.",
+   "age_min": 3,
+   "duration_sec": 360,
+   "situations": [
+    "w_domu"
+   ],
+   "requirements": [],
+   "skills": [
+    "słuchanie",
+    "słownictwo"
+   ],
+   "access": "paid",
+   "audio": [],
+   "released": "2026-11-14",
+   "planned": true,
+   "age_max": 9
+  },
+  {
+   "id": "znikajace-rekawiczki",
+   "kind": "interactive_game",
+   "title": "Znikające rękawiczki",
+   "parent_description": "Nowa sprawa dla detektywów: z płotu znikają pojedyncze rękawiczki. Dziecko zbiera poszlaki i wskazuje winnego.",
+   "age_min": 7,
+   "duration_sec": 720,
+   "situations": [
+    "w_domu"
+   ],
+   "requirements": [],
+   "skills": [
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "released": "2026-11-21",
+   "planned": true
+  },
+  {
+   "id": "poczta-do-mikolaja",
+   "kind": "interactive_game",
+   "title": "Poczta do Mikołaja",
+   "parent_description": "Szop’en-listonosz pomaga dziecku ułożyć list do Mikołaja: co było dobre w tym roku i o czym marzy.",
+   "age_min": 3,
+   "duration_sec": 480,
+   "situations": [
+    "w_domu",
+    "przed_snem"
+   ],
+   "requirements": [],
+   "skills": [
+    "wyobraźnia",
+    "mówienie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "released": "2026-11-28",
+   "planned": true,
+   "age_max": 9
   }
  ],
  "shelves": [

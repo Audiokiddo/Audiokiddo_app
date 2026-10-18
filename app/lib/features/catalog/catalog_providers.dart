@@ -47,11 +47,16 @@ final catalogProvider = FutureProvider<Catalog>((ref) async {
   final today = ref.watch(calendarDayProvider);
   final released = [
     for (final i in full.items)
-      if (i.releasedOn == null || !i.releasedOn!.isAfter(today)) i,
+      // A planned premiere (no recording or script yet) is never playable, even after its
+      // date: it stays a face-down card in Nowości until the play is published for real.
+      if ((i.releasedOn == null || !i.releasedOn!.isAfter(today)) && isReady(i)) i,
   ];
   if (released.length == full.items.length) return full;
   return Catalog(version: full.version, packs: full.packs, items: released, shelves: full.shelves);
 });
+
+/// A play that can be played: it has a recording or a game script (not a planned premiere).
+bool isReady(ContentItem i) => i.audio.isNotEmpty || i.script != null;
 
 /// Plays announced with a future release date, soonest first ("Wkrótce").
 final upcomingItemsProvider = Provider<List<ContentItem>>((ref) {
