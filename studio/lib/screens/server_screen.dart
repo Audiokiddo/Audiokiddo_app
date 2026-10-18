@@ -519,12 +519,15 @@ class _PromotionsTabState extends ConsumerState<_PromotionsTab> {
 
   void _reload() => setState(() => _list = ref.read(studioServerProvider).promotions());
 
-  /// What a promotion can be about: the whole offer, the subscription, the sets or one pack.
-  Map<String, String> _targets() => {
-    '': 'Cała oferta',
-    'subscription': 'Abonament',
-    'bundle': 'Zestawy pakietów',
-    for (final p in ref.read(studioProvider).packs) '${p['id']}': 'Pakiet ${p['title']}',
+  /// What a promotion can be about: since 13.10 only the subscription is sold.
+  Map<String, String> _targets() => const {'': 'Cała oferta', 'subscription': 'Abonament'};
+
+  /// Names of older promotions' targets (sets and packs, no longer sold), for the list.
+  Map<String, String> _targetNames() => {
+    ..._targets(),
+    'bundle': 'Zestawy pakietów (już nie w sprzedaży)',
+    for (final p in ref.read(studioProvider).packs)
+      '${p['id']}': 'Pakiet ${p['title']} (już nie w sprzedaży)',
   };
 
   Future<void> _edit([Map<String, dynamic>? existing]) async {
@@ -572,7 +575,7 @@ class _PromotionsTabState extends ConsumerState<_PromotionsTab> {
                 title: Text('${p['title']}'),
                 subtitle: Text(
                   '${_fmt(p['starts_at'])} – ${_fmt(p['ends_at'])}'
-                  ' · ${_targets()[p['target'] ?? ''] ?? p['target']}'
+                  ' · ${_targetNames()[p['target'] ?? ''] ?? p['target']}'
                   '${_running(p, now) ? ' · TRWA' : ''}${p['active'] == false ? ' · wyłączona' : ''}',
                 ),
                 onTap: () => _edit(p),

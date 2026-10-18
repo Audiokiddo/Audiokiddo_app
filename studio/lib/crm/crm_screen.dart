@@ -17,6 +17,7 @@ import 'factory_tab.dart';
 import 'owners.dart';
 import 'task_board.dart';
 import 'task_prompt.dart';
+import 'weekly_plan.dart';
 
 /// The CRM: Dawid's daily workspace for growing AudioKiddo. The AI director (COO) reports and
 /// proposes; nothing it proposes happens before Dawid approves it under "Decyzje".
@@ -186,9 +187,8 @@ class _AdminSignInState extends ConsumerState<AdminSignIn> {
 
   Future<void> _forget() async => (await SharedPreferences.getInstance()).remove(_pendingKey);
 
-  void _snack(String text) => ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(text), duration: const Duration(seconds: 8), showCloseIcon: true));
+  void _snack(String text) => ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text(text), duration: const Duration(seconds: 8), showCloseIcon: true));
 
   Future<void> _send() async {
     final email = _email.text.trim().toLowerCase();
@@ -376,11 +376,7 @@ class _Dashboard extends ConsumerWidget {
               ),
               KpiTile('MRR brutto', zl(o['mrr_gross']), hint: 'netto ${zl(o['mrr_net'])}'),
               KpiTile('Płacące rodziny', '${o['paying_families']}'),
-              KpiTile(
-                'Abonamenty',
-                '${o['subs_yearly']} roczne · ${o['subs_monthly']} mies.',
-                hint: o['subs_multi_child'] == null ? null : 'w tym dla 2+ dzieci: ${o['subs_multi_child']}',
-              ),
+              KpiTile('Abonamenty', '${o['subs_yearly']} roczne · ${o['subs_monthly']} mies.'),
               KpiTile('Użytkownicy', '${o['users_total']}', hint: '+${o['users_7d']} w 7 dni'),
               KpiTile('Przychód 30 dni (brutto)', zl(o['revenue_30d_gross'])),
               KpiTile('Otwarte zadania', '${o['open_tasks']}'),
@@ -940,7 +936,9 @@ class _Calendar extends ConsumerWidget {
         return ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const Text('Plan: jeden nowy pakiet w miesiącu, 3 rolki w tygodniu, newsletter co 2 tygodnie.'),
+            const Text('Plan: 2 nowe zabawy co tydzień, 3 rolki w tygodniu, newsletter co 2 tygodnie.'),
+            const SizedBox(height: 12),
+            const WeeklyPlanCard(),
             const SizedBox(height: 12),
             CalendarMonth(
               items: list,
