@@ -140,3 +140,128 @@
     }, 0.5);
   });
 })();
+
+/* ---------- 3.35: first screen, how it works, moments, voices, film player, price tip ---------- */
+(function () {
+  'use strict';
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var watch = function (el, onIn, onOut, t) {
+    if (!('IntersectionObserver' in window)) { onIn(); return; }
+    new IntersectionObserver(function (es) { es.forEach(function (e) { e.isIntersecting ? onIn() : onOut && onOut(); }); }, { threshold: t || 0.3 }).observe(el);
+  };
+
+  // First screen: the phone shows one screen of the app after another.
+  var slides = document.querySelector('[data-slides]');
+  if (slides && !still) {
+    var imgs = slides.querySelectorAll('img'), cap = document.querySelector('[data-slides-cap]'), at = 0, tm = null;
+    var go = function (n) {
+      at = n;
+      imgs.forEach(function (im, i) { im.classList.toggle('is-on', i === n); });
+      if (cap) cap.textContent = imgs[n].getAttribute('data-cap') || '';
+    };
+    var run = function () { clearInterval(tm); tm = setInterval(function () { go((at + 1) % imgs.length); }, 3400); };
+    watch(slides, run, function () { clearInterval(tm); }, 0.2);
+  }
+
+  // How it works: the step in the middle of the screen decides which screen the phone shows.
+  document.querySelectorAll('[data-how]').forEach(function (box) {
+    var steps = box.querySelectorAll('[data-how-step]'), shots = box.querySelectorAll('.v2x-how-phone img'), dots = box.querySelectorAll('.v2x-how-dots i');
+    var show = function (n) {
+      steps.forEach(function (st, i) { st.classList.toggle('is-on', i === n); });
+      shots.forEach(function (im, i) { im.classList.toggle('is-on', i === n); });
+      dots.forEach(function (d, i) { d.classList.toggle('is-on', i === n); });
+    };
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) show(+e.target.getAttribute('data-how-step')); });
+    }, { rootMargin: '-42% 0px -42% 0px' });
+    steps.forEach(function (st) { io.observe(st); });
+  });
+
+  // Moments of the day: a list, one big card, changes by itself while in view.
+  document.querySelectorAll('[data-when]').forEach(function (box) {
+    var tabs = box.querySelectorAll('[data-when-tab]'), cards = box.querySelectorAll('.v2x-when-card'), at = 0, tm = null, hover = false;
+    var show = function (n, user) {
+      at = n;
+      tabs.forEach(function (t, i) { t.setAttribute('aria-selected', i === n ? 'true' : 'false'); t.tabIndex = i === n ? 0 : -1; });
+      cards.forEach(function (c, i) { c.classList.toggle('is-on', i === n); });
+      if (user) restart();
+    };
+    var restart = function () { clearInterval(tm); if (!still && !hover) tm = setInterval(function () { show((at + 1) % tabs.length); }, 6000); };
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { show(i, true); });
+      t.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return; e.preventDefault(); var n = (i + d + tabs.length) % tabs.length; tabs[n].focus(); show(n, true);
+      });
+    });
+    box.addEventListener('mouseenter', function () { hover = true; clearInterval(tm); box.classList.add('is-paused'); });
+    box.addEventListener('mouseleave', function () { hover = false; box.classList.remove('is-paused'); restart(); });
+    watch(box, restart, function () { clearInterval(tm); }, 0.25);
+    show(0);
+  });
+
+  // Voices: parents / specialists.
+  document.querySelectorAll('[data-voices]').forEach(function (box) {
+    var tabs = box.querySelectorAll('[data-voice-tab]'), sets = box.querySelectorAll('[data-voice-set]'), tabsBox = box.querySelector('.v2x-voice-tabs');
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () {
+        tabsBox.style.setProperty('--tab', i);
+        tabs.forEach(function (x, k) { x.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+        sets.forEach(function (st, k) { st.classList.toggle('is-on', k === i); });
+      });
+    });
+  });
+
+  // The film player: opens a little larger, with a yellow cross.
+  var lb = null, lastBtn = null;
+  var closeLb = function () {
+    if (!lb) return;
+    var box = lb; lb = null;
+    box.classList.remove('is-on');
+    var v = box.querySelector('video'); if (v) { v.pause(); }
+    setTimeout(function () { box.remove(); }, 350);
+    document.documentElement.style.overflow = '';
+    document.removeEventListener('keydown', onKey);
+    if (lastBtn) lastBtn.focus();
+  };
+  var onKey = function (e) { if (e.key === 'Escape') closeLb(); };
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-clip]');
+    if (!b) return;
+    e.preventDefault();
+    lastBtn = b;
+    document.querySelectorAll('.ak-play.is-playing').forEach(function (p) { p.click(); });
+    var wrap = document.createElement('div');
+    wrap.className = 'v2x-lb';
+    wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true'); wrap.setAttribute('aria-label', b.getAttribute('data-clip-title') || 'Film');
+    wrap.innerHTML = '<div class="v2x-lb-box"><button type="button" class="v2x-lb-x" aria-label="Zamknij film"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><video controls playsinline autoplay></video><p class="v2x-lb-t"></p></div>';
+    wrap.querySelector('video').src = b.getAttribute('data-clip');
+    wrap.querySelector('.v2x-lb-t').textContent = b.getAttribute('data-clip-title') || '';
+    wrap.addEventListener('click', function (ev) { if (ev.target === wrap) closeLb(); });
+    wrap.querySelector('.v2x-lb-x').addEventListener('click', closeLb);
+    document.body.appendChild(wrap);
+    document.documentElement.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+    requestAnimationFrame(function () { wrap.classList.add('is-on'); wrap.querySelector('.v2x-lb-x').focus(); });
+    lb = wrap;
+  });
+
+  // Price: Szop'en pops up beside the plans and whispers one tip after another.
+  document.querySelectorAll('[data-tip]').forEach(function (tip) {
+    var say = tip.querySelector('.v2x-tip-say'), span = say.querySelector('span'), tips = [];
+    try { tips = JSON.parse(tip.getAttribute('data-tips') || '[]'); } catch (e) {}
+    if (tips.length < 2) return;
+    var at = 1, tm = null;
+    var swap = function (n) {
+      if (still) { span.textContent = tips[n]; return; }
+      say.classList.add('is-swap');
+      setTimeout(function () { span.textContent = tips[n]; say.classList.remove('is-swap'); }, 260);
+    };
+    var run = function () { clearInterval(tm); if (!still) tm = setInterval(function () { at = (at + 1) % tips.length; swap(at); }, 4800); };
+    watch(tip.parentNode, function () { tip.classList.add('is-in'); run(); }, function () { clearInterval(tm); }, 0.35);
+    tip.parentNode.querySelectorAll('.v2-plan').forEach(function (pl, i) {
+      pl.addEventListener('mouseenter', function () { at = i === 1 ? 1 : 0; swap(at); run(); });
+    });
+  });
+})();
