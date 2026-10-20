@@ -68,31 +68,33 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 <div class="v2">
 
 <section class="v2-hero" id="start" aria-labelledby="ak-h1">
-    <div class="v2-wrap v2-center">
-        <h1 id="ak-h1" class="v2-h1" data-v style="--d:.08s">Zabawa, w której <span class="v2-grad">dziecko gra główną rolę.</span></h1>
-        <p class="v2-lead" data-v style="--d:.16s">Audiozabawy dla dzieci 3–9 lat. Szop’en pyta, dziecko odpowiada na głos. Ty odkładasz telefon.</p>
-        <div class="v2-cta" data-v style="--d:.24s">
-            <?php echo ak_app_cta('v2-btn v2-btn-sun', false, 'Wypróbuj za darmo'); // escaped inside ?>
-            <span class="v2-listen">
-                <?php echo ak_sample_button(ak_upload($packs['wyobraznia']['sample']), 'Posłuchaj fragmentu audiozabawy', 'v2-play-sm'); // escaped inside ?>
-                <span>Posłuchaj fragmentu</span>
-            </span>
-        </div>
-        <div class="v2-stage" data-hero-stage>
-            <span class="v2-glow" aria-hidden="true"></span>
-            <ul class="v2-float" aria-label="W skrócie">
-                <li class="v2-f1">Bez reklam</li>
-                <li class="v2-f2">Działa offline</li>
-                <li class="v2-f3">Dziecko słucha i działa</li>
+    <div class="v2-wrap v2x-hero">
+        <div class="v2x-hero-copy">
+            <h1 id="ak-h1" class="v2-h1" data-v>Zabawa, w której <span class="v2-grad">dziecko gra główną rolę.</span></h1>
+            <p class="v2-lead" data-v style="--d:.1s">Audiozabawy dla dzieci 3–9 lat. Szop’en pyta, dziecko odpowiada na głos. Ty odkładasz telefon.</p>
+            <div class="v2-cta" data-v style="--d:.2s">
+                <?php echo ak_app_cta('v2-btn v2-btn-sun', false, 'Wypróbuj za darmo'); // escaped inside ?>
+                <span class="v2-listen">
+                    <?php echo ak_sample_button(ak_upload($packs['wyobraznia']['sample']), 'Posłuchaj fragmentu audiozabawy', 'v2-play-sm'); // escaped inside ?>
+                    <span>Posłuchaj fragmentu</span>
+                </span>
+            </div>
+            <ul class="v2x-trust" data-v style="--d:.3s" aria-label="W skrócie">
+                <li>Bez reklam</li>
+                <li>Działa offline</li>
+                <li>Mikrofon nic nie nagrywa</li>
             </ul>
-            <div class="v2-phone v2x-slides" data-slides>
+        </div>
+        <div class="v2x-hero-stage" aria-label="Aplikacja Audiokiddo">
+            <span class="v2-glow" aria-hidden="true"></span>
+            <img class="v2x-hero-szop" src="<?php echo esc_url(ak_asset('img/szop/zza-lewej.webp')); ?>" alt="" width="300" height="300" aria-hidden="true">
+            <div class="v2x-hero-phone v2x-slides" data-slides>
                 <img class="is-on" src="<?php echo $v2('app-start.webp'); ?>" alt="Ekran Start aplikacji Audiokiddo: darmowe zabawy i nowości" width="600" height="1304" fetchpriority="high" data-cap="Ekran Start">
                 <img src="<?php echo esc_url(ak_asset('img/app/odtwarzacz.webp')); ?>" alt="Odtwarzacz zabawy w aplikacji Audiokiddo" width="600" height="1304" loading="lazy" data-cap="Odtwarzacz">
                 <img src="<?php echo esc_url(ak_asset('img/app/podroz.webp')); ?>" alt="Tryb W drodze w aplikacji Audiokiddo" width="600" height="1304" loading="lazy" data-cap="Tryb W drodze">
                 <img src="<?php echo esc_url(ak_asset('img/app/dobranoc.webp')); ?>" alt="Tryb Dobranoc w aplikacji Audiokiddo" width="600" height="1304" loading="lazy" data-cap="Dobranoc">
             </div>
             <p class="v2x-cap" aria-hidden="true"><i></i><span data-slides-cap>Ekran Start</span></p>
-            <img class="v2-hero-szop" src="<?php echo esc_url(ak_asset('img/szop/zza-prawej.webp')); ?>" alt="" width="300" height="300" aria-hidden="true">
         </div>
     </div>
 </section>

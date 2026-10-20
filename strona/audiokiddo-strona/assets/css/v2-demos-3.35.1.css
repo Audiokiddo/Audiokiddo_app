@@ -403,3 +403,39 @@
   .v2x-when-szop { justify-self: end; width: 200px; margin-right: -6px; }
   .v2x-when-stage { min-height: 500px; }
 }
+
+/* First screen v2: words on the left, the whole phone on the right, Szop'en peeking from behind it */
+.v2-hero { padding: clamp(40px, 6vw, 80px) 0 clamp(48px, 6vw, 80px); }
+.v2x-hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 5vw, 72px); align-items: center; }
+.v2x-hero-copy { text-align: left; }
+.v2x-hero-copy .v2-h1 { font-size: clamp(40px, 5.4vw, 74px); }
+.v2x-hero-copy .v2-lead { margin: 22px 0 0; max-width: 26em; text-align: left; }
+.v2x-hero-copy .v2-cta { justify-content: flex-start; margin-top: 30px; }
+.v2x-trust { list-style: none; display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 30px 0 0; padding: 0; }
+.v2x-trust li { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: var(--muted); }
+.v2x-trust li::before { content: ""; flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.2l2.6 2.5L12 5.4' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 13px no-repeat; }
+.v2x-hero-stage { position: relative; display: grid; justify-items: center; padding-top: 18px; }
+.v2x-hero-stage .v2-glow { top: 8%; }
+.v2x-hero-phone { position: relative; left: auto; top: auto; translate: none; transform: none; width: min(100%, clamp(250px, 24vw, 330px)); }
+.v2x-hero-szop { position: absolute; z-index: 0; left: calc(50% - clamp(125px, 12vw, 165px) - clamp(95px, 9vw, 130px)); bottom: 12%; width: clamp(130px, 13vw, 180px); height: auto; filter: drop-shadow(0 16px 24px rgba(29, 26, 43, .2)); animation: v2x-peek 5s ease-in-out infinite; }
+@keyframes v2x-peek { 0%, 100% { transform: translateX(0) rotate(0); } 50% { transform: translateX(12px) rotate(3deg); } }
+.v2x-hero-phone { z-index: 1; }
+.v2x-cap { top: 6px; }
+@media (max-width: 900px) {
+  .v2x-hero { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+  .v2x-hero-copy, .v2x-hero-copy .v2-lead { text-align: center; margin-left: auto; margin-right: auto; }
+  .v2x-hero-copy .v2-cta { justify-content: center; }
+  .v2x-trust { justify-content: center; gap: 8px 16px; }
+  .v2x-hero-phone { width: min(70vw, 270px); }
+  .v2x-hero-szop { left: calc(50% - min(35vw, 135px) - 78px); width: 120px; bottom: 8%; }
+}
+@media (max-width: 760px) {
+  .v2x-hero-copy .v2-cta { flex-direction: column; align-items: center; }
+  .v2x-hero-copy .v2-cta .v2-btn { width: 100%; }
+}
+.v2x-hero-phone { aspect-ratio: 600 / 1304; padding: 11px; border-radius: 54px; background: #121016; box-shadow: 0 0 0 2px #2E2A36, 0 40px 80px rgba(29, 26, 43, .28); }
+.v2x-hero-phone img { border-radius: 44px; object-fit: cover; object-position: top; }
+@media (max-width: 760px) { .v2x-hero-phone { border-radius: 44px; padding: 9px; } .v2x-hero-phone img { inset: 9px; width: calc(100% - 18px); height: calc(100% - 18px); border-radius: 36px; } }
+.v2x-hero-phone { width: min(100%, clamp(240px, 21vw, 292px)); }
+.v2x-hero-szop { left: calc(50% - clamp(120px, 10.5vw, 146px) - clamp(95px, 9vw, 130px)); }
+@media (max-width: 900px) { .v2x-hero-phone { width: min(70vw, 270px); } }
