@@ -70,8 +70,9 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 <section class="v2-hero" id="start" aria-labelledby="ak-h1">
     <div class="v2-wrap v2x-hero">
         <div class="v2x-hero-copy">
-            <h1 id="ak-h1" class="v2-h1" data-v>Zabawa, w której <span class="v2-grad">dziecko gra główną rolę.</span></h1>
-            <p class="v2-lead" data-v style="--d:.1s">Audiozabawy dla dzieci 3–9 lat. Szop’en pyta, dziecko odpowiada na głos. Ty odkładasz telefon.</p>
+            <p class="v2-kicker v2x-hero-kicker" data-v>Audiozabawy dla dzieci 3–9 lat</p>
+            <h1 id="ak-h1" class="v2-h1" data-v style="--d:.05s">Dziecko potrzebuje zajęcia. <span class="v2-grad">Ty nie musisz go wymyślać.</span></h1>
+            <p class="v2-lead v2x-hero-lead" data-v style="--d:.12s"><strong>Odpalasz Audiokiddo. Reszta już się dzieje.</strong> Włącz zabawę w aplikacji i odłóż telefon. Głos poprowadzi dziecko, a Ty możesz odpocząć.</p>
             <div class="v2-cta" data-v style="--d:.2s">
                 <?php echo ak_app_cta('v2-btn v2-btn-sun', false, 'Wypróbuj za darmo'); // escaped inside ?>
                 <span class="v2-listen">
@@ -330,15 +331,22 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 </section>
 <?php endif; ?>
 
-<section class="v2-sec v2-soft" id="pytania" aria-labelledby="v2-faq-h">
-    <div class="v2-wrap v2-narrow">
-        <h2 id="v2-faq-h" class="v2-h2 v2-center" data-v>Pytania rodziców.</h2>
-        <div class="v2-faq v2x-faq">
-            <?php foreach (ak_home_faq() as $i => [$q, $a]) : ?>
-            <details class="v2x-q v2-t-<?php echo esc_attr($faq_tones[$i % 4]); ?>" data-v style="--d:<?php echo esc_attr((string) (0.06 * $i)); ?>s"><summary><img src="<?php echo $szop_url($faq_poses[$i % count($faq_poses)]); ?>" alt="" width="56" height="56" loading="lazy"><span class="v2x-q-t"><?php echo esc_html($q); ?></span><span class="v2x-q-i" aria-hidden="true"></span></summary><div><p><?php echo esc_html($a); ?></p></div></details>
-            <?php endforeach; ?>
+<section class="v2-sec v2-soft v2y-faq" id="pytania" aria-labelledby="v2-faq-h">
+    <div class="v2-wrap">
+        <div class="v2y-faq-grid">
+            <div class="v2y-faq-intro">
+                <p class="v2-kicker">Pytania rodziców</p>
+                <h2 id="v2-faq-h" class="v2-h2" data-v>Zanim zapytasz, sprawdź tutaj.</h2>
+                <p class="v2-sub" data-v style="--d:.1s">Pięć rzeczy, o które rodzice pytają najczęściej. Reszta jest na osobnej stronie.</p>
+                <p class="v2y-faq-links" data-v style="--d:.15s"><a class="v2-link" href="<?php echo esc_url(ak_info_url('pytania')); ?>">Wszystkie pytania <?php echo $arrow; // static ?></a></p>
+                <img class="v2y-faq-szop" src="<?php echo $szop_url('p/mysli'); ?>" alt="" width="240" height="240" loading="lazy" decoding="async" data-v>
+            </div>
+            <div class="v2y-list">
+                <?php foreach (ak_home_faq() as $i => [$q, $a]) : ?>
+                <details class="v2y-q" data-v style="--d:<?php echo esc_attr((string) (0.05 * $i)); ?>s"><summary><span class="v2y-q-n" aria-hidden="true"><?php echo (int) $i + 1; ?></span><span class="v2y-q-t"><?php echo esc_html($q); ?></span><span class="v2y-q-i" aria-hidden="true"></span></summary><div><p><?php echo esc_html($a); ?></p></div></details>
+                <?php endforeach; ?>
+            </div>
         </div>
-        <p class="v2-center v2-faq-more"><a class="v2-link" href="<?php echo esc_url(ak_info_url('pytania')); ?>">Wszystkie pytania <?php echo $arrow; // static ?></a></p>
     </div>
 </section>
 
