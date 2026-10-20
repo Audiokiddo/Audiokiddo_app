@@ -18,10 +18,10 @@ $trip_steps = [
     ['Jedziecie', 'Jednym przyciskiem otwiera się nawigacja w Google Maps, a zabawy grają dalej w tle.'],
 ];
 $features = [
-    ['zadowolony', 'sun', 'Wita dziecko po imieniu', 'Szop’en zna imię dziecka i mówi do niego jak kolega, nie jak lektor.', 'hello'],
-    ['nasluchuje', 'teal', 'Czeka na odpowiedź', 'Dziecko odpowiada na głos albo klaszcze. Mikrofon tylko słucha, nic nie nagrywa.', 'ear'],
-    ['klaszcze', 'lav', 'Nagradza za każdą zabawę', 'Każda zabawa to krok na mapie przygód. Co kilka kroków czeka skrzynia Szop’ena.', 'map'],
-    ['zdziwiony', 'night', 'Zna porę dnia', 'Rano, w drodze, przy obiedzie i na dobranoc podsuwa inne zabawy.', 'day'],
+    ['p/mruga', 'sun', 'Wita dziecko po imieniu', 'Szop’en zna imię dziecka i mówi do niego jak kolega, nie jak lektor.', 'hello'],
+    ['p/zerka', 'teal', 'Czeka na odpowiedź', 'Dziecko odpowiada na głos albo klaszcze. Mikrofon tylko słucha, nic nie nagrywa.', 'ear'],
+    ['p/medal', 'lav', 'Nagradza za każdą zabawę', 'Każda zabawa to krok na mapie przygód. Co kilka kroków czeka skrzynia Szop’ena.', 'map'],
+    ['p/kawa-usmiech', 'night', 'Zna porę dnia', 'Rano, w drodze, przy obiedzie i na dobranoc podsuwa inne zabawy.', 'day'],
 ];
 ?>
 
@@ -100,7 +100,7 @@ $features = [
                                 <span><b>Zgubiona Gwiazdka</b>Audiokiddo · gra w tle</span>
                                 <span class="v2d-eq"><i></i><i></i><i></i><i></i></span>
                             </div>
-                            <div class="v2d-toast"><img src="<?php echo $szop('nasluchuje'); ?>" alt="" width="60" height="60" loading="lazy"><span><b>Przerwa na okno</b>Co widać za szybą?</span></div>
+                            <div class="v2d-toast"><img src="<?php echo $szop('p/zerka'); ?>" alt="" width="60" height="60" loading="lazy"><span><b>Przerwa na okno</b>Co widać za szybą?</span></div>
                         </div>
                     </div>
                 </div>

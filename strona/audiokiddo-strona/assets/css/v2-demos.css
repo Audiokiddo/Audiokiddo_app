@@ -439,3 +439,20 @@
 .v2x-hero-phone { width: min(100%, clamp(240px, 21vw, 292px)); }
 .v2x-hero-szop { left: calc(50% - clamp(120px, 10.5vw, 146px) - clamp(95px, 9vw, 130px)); }
 @media (max-width: 900px) { .v2x-hero-phone { width: min(70vw, 270px); } }
+
+/* 3.36: the sly Szop'en in many poses */
+.v2x-how-szop { opacity: 0; transform: translateY(24px) scale(.9); transition: opacity .5s var(--ease), transform .8s cubic-bezier(.34, 1.56, .64, 1); animation: none; width: 46%; right: -12%; bottom: 4%; }
+.v2x-how-szop.is-on { opacity: 1; transform: none; }
+.v2x-hero-szop { width: clamp(150px, 15vw, 210px); bottom: 4%; left: calc(50% - clamp(120px, 10.5vw, 146px) - clamp(120px, 12vw, 175px)); animation: none; }
+.v2x-hero-szop { transform: translateX(var(--sx, 0)); }
+.v2x-deco { position: absolute; height: auto; pointer-events: none; filter: drop-shadow(0 12px 18px rgba(29, 26, 43, .18)); }
+.v2-sec .v2-wrap { position: relative; }
+.v2x-deco-det { width: clamp(120px, 14vw, 190px); right: 2%; top: -10px; transform: rotate(6deg); }
+.v2x-deco-party { width: clamp(150px, 17vw, 230px); right: 3%; top: -20px; transform: rotate(-4deg); }
+.v2x-deco-fan { width: clamp(110px, 12vw, 160px); left: 3%; top: 10px; transform: rotate(-6deg); }
+.v2x-news .v2-head { position: relative; }
+@media (max-width: 900px) { .v2x-deco { display: none; } .v2x-how-szop { display: none; } }
+.v2x-tip img { width: 160px; }
+.v2x-gift-szop { max-width: 250px; }
+.v2x-faq summary img { object-fit: contain; padding: 4px; }
+.v2x-when-szop { object-fit: contain; }

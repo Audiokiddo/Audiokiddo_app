@@ -165,10 +165,11 @@
 
   // How it works: the step in the middle of the screen decides which screen the phone shows.
   document.querySelectorAll('[data-how]').forEach(function (box) {
-    var steps = box.querySelectorAll('[data-how-step]'), shots = box.querySelectorAll('.v2x-how-phone img'), dots = box.querySelectorAll('.v2x-how-dots i');
+    var steps = box.querySelectorAll('[data-how-step]'), shots = box.querySelectorAll('.v2x-how-phone img'), szops = box.querySelectorAll('.v2x-how-szop'), dots = box.querySelectorAll('.v2x-how-dots i');
     var show = function (n) {
       steps.forEach(function (st, i) { st.classList.toggle('is-on', i === n); });
       shots.forEach(function (im, i) { im.classList.toggle('is-on', i === n); });
+      szops.forEach(function (im, i) { im.classList.toggle('is-on', i === n); });
       dots.forEach(function (d, i) { d.classList.toggle('is-on', i === n); });
     };
     if (!('IntersectionObserver' in window)) return;

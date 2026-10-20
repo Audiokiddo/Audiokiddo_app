@@ -55,13 +55,13 @@ $steps = [
 ];
 $moments = [
     ['dzien-auto', 'W samochodzie', 'Trasa z Szop’enem: zabawy na całą drogę, z przerwami na okno. Wpisujesz, dokąd jedziecie, a aplikacja liczy czas.', 'app/podroz.webp', 'teal'],
-    ['dzien-obiad', 'Gdy gotujesz', 'Ty masz nóż w ręce, dziecko ma zadanie. Stukasz „Co teraz?”, a Szop’en dobiera zabawy do czasu, jaki masz.', 'v2/app-coteraz.webp', 'sun'],
+    ['p/kucharz', 'Gdy gotujesz', 'Ty masz nóż w ręce, dziecko ma zadanie. Stukasz „Co teraz?”, a Szop’en dobiera zabawy do czasu, jaki masz.', 'v2/app-coteraz.webp', 'sun'],
     ['dzien-przedszkole', 'Po przedszkolu', 'Kwadrans spokoju, kiedy obojgu brakuje sił. Zabawa, w której dziecko się rusza i mówi, zamiast zapadać w kanapę.', 'app/start.webp', 'lav'],
-    ['dzien-nuda', 'Gdy się nudzi', 'Zamiast „nudzi mi się” dziecko słyszy pytanie i ma co robić. Szop’en zaczyna, dziecko dokończy.', 'app/odtwarzacz.webp', 'coral'],
-    ['dzien-zero-mocy', 'Gdy brakuje Ci sił', 'Włączasz jedną zabawę i odpoczywasz, a dziecko gra. Nie musisz niczego wymyślać ani tłumaczyć.', 'app/mikrofon.webp', 'sun'],
+    ['p/znudzony-lezy', 'Gdy się nudzi', 'Zamiast „nudzi mi się” dziecko słyszy pytanie i ma co robić. Szop’en zaczyna, dziecko dokończy.', 'app/odtwarzacz.webp', 'coral'],
+    ['p/zmeczony-kawa', 'Gdy brakuje Ci sił', 'Włączasz jedną zabawę i odpoczywasz, a dziecko gra. Nie musisz niczego wymyślać ani tłumaczyć.', 'app/mikrofon.webp', 'sun'],
     ['dzien-sen', 'Na dobranoc', 'Wyciszenie, spokojna zabawa i kołysanka. Zawsze ta sama kolejność, bo dzieci lubią rytuały.', 'app/dobranoc.webp', 'night'],
 ];
-$faq_poses = ['zdziwiony', 'chytry', 'nasluchuje', 'zadowolony', 'prosi', 'znudzony'];
+$faq_poses = ['p/zdziwiony', 'p/mysli', 'p/zerka', 'p/mruga', 'p/rece-zalozone', 'p/mysli-siedzi'];
 $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 ?>
 
@@ -87,7 +87,7 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
         </div>
         <div class="v2x-hero-stage" aria-label="Aplikacja Audiokiddo">
             <span class="v2-glow" aria-hidden="true"></span>
-            <img class="v2x-hero-szop" src="<?php echo esc_url(ak_asset('img/szop/zza-lewej.webp')); ?>" alt="" width="300" height="300" aria-hidden="true">
+            <img class="v2x-hero-szop" src="<?php echo esc_url(ak_asset('img/szop/p/luzak.webp')); ?>" alt="" width="300" height="300" aria-hidden="true">
             <div class="v2x-hero-phone v2x-slides" data-slides>
                 <img class="is-on" src="<?php echo $v2('app-start.webp'); ?>" alt="Ekran Start aplikacji Audiokiddo: darmowe zabawy i nowości" width="600" height="1304" fetchpriority="high" data-cap="Ekran Start">
                 <img src="<?php echo esc_url(ak_asset('img/app/odtwarzacz.webp')); ?>" alt="Odtwarzacz zabawy w aplikacji Audiokiddo" width="600" height="1304" loading="lazy" data-cap="Odtwarzacz">
@@ -101,6 +101,7 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 
 <section class="v2-sec" id="pakiety" aria-labelledby="v2-hear-h">
     <div class="v2-wrap v2-center">
+        <img class="v2x-deco v2x-deco-det" src="<?php echo $szop_url('p/detektyw'); ?>" alt="" width="200" height="200" loading="lazy" aria-hidden="true">
         <p class="v2-kicker">Posłuchaj</p>
         <h2 id="v2-hear-h" class="v2-h2" data-v>Usłysz, zanim pobierzesz.</h2>
         <p class="v2-sub" data-v style="--d:.1s">Trzy prawdziwe fragmenty z biblioteki. Najlepiej posłuchać razem z dzieckiem.</p>
@@ -154,7 +155,7 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
                     <img class="<?php echo $i === 0 ? 'is-on' : ''; ?>" src="<?php echo esc_url(ak_asset('img/' . $img)); ?>" alt="" width="600" height="1304" loading="lazy" decoding="async">
                     <?php endforeach; ?>
                 </div>
-                <img class="v2x-how-szop" src="<?php echo $szop_url('zadowolony'); ?>" alt="" width="200" height="200" loading="lazy">
+                <?php foreach (["wskazuje", "megafon", "relaks"] as $i => $pose) : ?><img class="v2x-how-szop<?php echo $i === 0 ? ' is-on' : ''; ?>" src="<?php echo $szop_url('p/' . $pose); ?>" alt="" width="200" height="200" loading="lazy"><?php endforeach; ?>
                 <p class="v2x-how-dots"><?php foreach ($steps as $i => $_) : ?><i<?php echo $i === 0 ? ' class="is-on"' : ''; ?>></i><?php endforeach; ?></p>
             </div>
         </div>
@@ -197,6 +198,7 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 <section class="v2-sec v2-dark v2x-news" id="nowosci" aria-labelledby="v2-new-h">
     <div class="v2-wrap">
         <div class="v2-head">
+            <img class="v2x-deco v2x-deco-party" src="<?php echo $szop_url('p/impreza'); ?>" alt="" width="260" height="200" loading="lazy" aria-hidden="true">
             <p class="v2-kicker">Nowości</p>
             <h2 id="v2-new-h" class="v2-h2" data-v>Co tydzień coś nowego.</h2>
             <p class="v2-sub" data-v style="--d:.1s">W abonamencie co tydzień dochodzą dwie zabawy. Te zakryte czekają na premierę<?php echo $next ? ', najbliższa ' . esc_html($day($next[1])) : ''; ?>.</p>
@@ -218,6 +220,7 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 
 <section class="v2-sec v2-soft v2x-voices" id="opinie" aria-labelledby="v2-rev-h">
     <div class="v2-wrap v2-center">
+        <img class="v2x-deco v2x-deco-fan" src="<?php echo $szop_url('p/kibic'); ?>" alt="" width="200" height="200" loading="lazy" aria-hidden="true">
         <p class="v2-kicker">Rodzice i specjaliści</p>
         <h2 id="v2-rev-h" class="v2-h2" data-v>Dzieci mówią „jeszcze raz”.</h2>
         <?php
@@ -303,7 +306,7 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
         </div>
         <aside class="v2x-tip" data-tip aria-label="Szop’en podpowiada" data-tips="<?php echo esc_attr(wp_json_encode($tips)); ?>">
             <p class="v2x-tip-say" aria-live="polite"><span><?php echo esc_html($tips[1]); ?></span></p>
-            <img src="<?php echo $szop_url('prosi'); ?>" alt="" width="220" height="220" loading="lazy" decoding="async">
+            <img src="<?php echo $szop_url('p/mruga'); ?>" alt="" width="220" height="220" loading="lazy" decoding="async">
         </aside>
         </div>
         <p class="v2-note" data-v>Płatność BLIK-iem lub kartą. Dostęp włącza się sam. <?php echo ak_app_cta('v2-link', false, 'Albo zacznij od darmowych zabaw'); // escaped inside ?></p>
@@ -314,7 +317,7 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 <section class="v2-sec v2x-gift" id="start-aplikacji" aria-labelledby="v2-gift-h">
     <div class="v2-wrap">
         <div class="v2x-gift-card" data-v>
-            <img class="v2x-gift-szop" src="<?php echo $szop_url('prezent'); ?>" alt="" width="360" height="360" loading="lazy" decoding="async">
+            <img class="v2x-gift-szop" src="<?php echo $szop_url('p/kwiaty'); ?>" alt="" width="360" height="360" loading="lazy" decoding="async">
             <div class="v2x-gift-txt">
                 <p class="v2-kicker">Prezent na start</p>
                 <h2 id="v2-gift-h" class="v2-h2">Zabawy na start. <span class="v2-grad">Za darmo.</span></h2>
@@ -341,7 +344,7 @@ $faq_tones = ['sun', 'teal', 'lav', 'coral'];
 
 <section class="v2-sec v2-end" id="o-nas" aria-labelledby="v2-end-h">
     <div class="v2-wrap v2-center">
-        <img class="v2-end-szop" src="<?php echo esc_url(ak_asset('img/szop/klaszcze.webp')); ?>" alt="" width="420" height="392" loading="lazy" data-v>
+        <img class="v2-end-szop" src="<?php echo esc_url(ak_asset('img/szop/p/klaszcze.webp')); ?>" alt="" width="420" height="392" loading="lazy" data-v>
         <h2 id="v2-end-h" class="v2-h2" data-v style="--d:.08s">Następnym razem, gdy usłyszysz „nudzi mi się”, <span class="v2-grad">miej gotową odpowiedź.</span></h2>
         <div class="v2-cta" data-v style="--d:.16s">
             <?php echo ak_app_cta('v2-btn v2-btn-sun', false, 'Wypróbuj za darmo'); // escaped inside ?>
