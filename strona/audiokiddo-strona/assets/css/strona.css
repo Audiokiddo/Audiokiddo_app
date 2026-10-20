@@ -2666,35 +2666,6 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
    3.21: "how it works" as three short cards on a line; the free plays as a test of three
    questions beside the button.
    ============================================================================================= */
-.ak-how4 .ak-a-eyebrow { margin-bottom: 8px !important; }
-.ak-how4-steps { list-style: none; counter-reset: h4; padding: 0; margin: clamp(26px, 4vw, 44px) auto 0; max-width: 980px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; position: relative; }
-.ak-how4-steps::before { content: ""; position: absolute; left: 16%; right: 16%; top: 58px; border-top: 3px dashed var(--line); }
-.ak-how4-steps li { counter-increment: h4; position: relative; display: grid; justify-items: center; gap: 6px; padding: 22px 18px 24px; border-radius: 30px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); text-align: center; transition: transform .3s var(--spring), box-shadow .3s; }
-.ak-how4-steps li:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
-.ak-how4-steps li::before { content: counter(h4); position: absolute; left: 16px; top: 14px; font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: 30px; line-height: 1; color: var(--deep); opacity: .5; }
-.ak-how4-ico { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 26px; background: var(--tone); color: var(--deep); margin-bottom: 8px; }
-.ak-how4-steps li.ak-c-teal .ak-how4-ico { background: var(--teal-light); }
-.ak-how4-steps strong { font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.1; }
-.ak-how4-steps li > span:last-child { font-size: 15.5px; line-height: 1.4; color: var(--muted); max-width: 24ch; }
-.ak-how4-can { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 12px; max-width: 980px; margin: 22px auto 0; font-weight: 700; }
-.ak-how4-can .ak-chips-row { margin: 0; justify-content: center; }
-.ak-how4-can .ak-chips-row li { background: var(--teal-soft); color: var(--teal-deep); }
-.ak-how4 .ak-how4-off { max-width: 720px; margin: 18px auto 0 !important; justify-content: center; }
-.ak-how4-most { position: relative; max-width: 980px; margin: clamp(60px, 8vw, 84px) auto 18px; background: var(--lav-deep); color: #F1ECF6; padding-left: clamp(150px, 17vw, 190px); }
-.ak-how4-most > img { position: absolute; left: 18px; bottom: 0; width: clamp(120px, 14vw, 160px); height: auto; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .25)); }
-.ak-how4-most .ak-most-cta small { color: #E4DCEC; }
-@media (max-width: 760px) {
-  .ak-how4-steps { grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 440px; }
-  .ak-how4-steps::before { display: none; }
-  .ak-how4-steps li { grid-template-columns: 60px minmax(0, 1fr); justify-items: start; text-align: left; column-gap: 14px; row-gap: 2px; padding: 14px 44px 14px 14px; border-radius: 24px; }
-  .ak-how4-steps li::before { left: auto; right: 16px; top: 50%; translate: 0 -50%; }
-  .ak-how4-ico { grid-row: span 2; width: 60px; height: 60px; border-radius: 20px; margin: 0; }
-  .ak-how4-steps strong { align-self: end; font-size: 21px; }
-  .ak-how4-steps li > span:last-child { align-self: start; max-width: none; font-size: 14.5px; }
-  .ak-how4-can { flex-direction: column; gap: 8px; }
-  .ak-how4-most { flex-direction: column; text-align: center; padding: 96px 20px 22px; margin-top: 96px; }
-  .ak-how4-most > img { left: 50%; bottom: auto; top: -70px; translate: -50% 0; width: 140px; }
-}
 
 .ak-try2-in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 5vw, 64px); align-items: center; }
 .ak-try2-lead { font-size: clamp(17px, 1.8vw, 20px); line-height: 1.5; max-width: 34ch; }
@@ -2714,20 +2685,11 @@ body.ak-peeking .ak-guide, body.ak-hero-szop .ak-guide { opacity: 0; transform: 
   .ak-try2 .ak-a-eyebrow, .ak-try2 h2, .ak-try2-lead { text-align: center; margin-inline: auto; }
 }
 @media (max-width: 860px) { .ak-try2-test { order: 0; } }
-.ak-how4-most { overflow: visible; }
-.ak-how4-most > img { z-index: 1; }
 
 /* =============================================================================================
    3.22: the steps name the app and carry Nela's wording; offline and the car side by side; the
    free plays are the three plays you can play for nothing, one from each pack.
    ============================================================================================= */
-.ak-how4-steps li > span:last-child { max-width: 30ch; }
-.ak-how4-more { list-style: none; padding: 0; margin: 20px auto 0; max-width: 980px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.ak-how4-more li { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 22px; background: var(--teal-light); color: var(--ink); font-size: 15px; line-height: 1.45; }
-.ak-how4-more li + li { background: var(--sun-soft); }
-.ak-how4-more .ak-ico { flex: none; color: var(--teal-deep); }
-.ak-how4-more li + li .ak-ico { color: var(--sun-deep); }
-@media (max-width: 760px) { .ak-how4-more { grid-template-columns: minmax(0, 1fr); max-width: 440px; } }
 
 .ak-try3-sec .ak-a-eyebrow, .ak-try3 .ak-a-eyebrow { margin-bottom: 8px !important; }
 .ak-view-start .ak-try.ak-try3 .ak-a-lead { max-width: 640px; color: var(--ink); }
@@ -2753,22 +2715,10 @@ ul.ak-try3 li > div { padding: 16px 18px 20px; }
 }
 
 /* 3.23: three things the app does beyond the phone (offline, a speaker, the car); a shorter page */
-.ak-how4-more { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.ak-how4-more li { align-items: flex-start; font-size: 14.5px; }
-.ak-how4-more li:nth-child(2) { background: var(--lav-soft); }
-.ak-how4-more li:nth-child(2) .ak-ico { color: var(--lav-deep); }
-.ak-how4-more li:nth-child(3) { background: var(--sun-soft); }
-.ak-how4-more li:nth-child(3) .ak-ico { color: var(--sun-deep); }
-@media (max-width: 860px) { .ak-how4-more { grid-template-columns: minmax(0, 1fr); max-width: 440px; } }
 .ak-faq-links { display: grid; gap: 10px; justify-items: center; }
 
 /* 3.24: a shorter page on phones: rows to swipe instead of stacks, tighter blocks */
-.ak-how4-more li { padding: 12px 16px; }
 @media (max-width: 760px) {
-  .ak-how4-more { gap: 8px; }
-  .ak-how4-more li { font-size: 14px; padding: 10px 14px; border-radius: 18px; align-items: center; }
-  .ak-how4-most { margin-top: 84px; padding-bottom: 20px; }
-  .ak-how4-most .ak-most-cta small { display: none; }
 
   .ak-a-quotes, .ak-a-pros, .ak-view-start .ak-packs, .ak-ages2 { display: flex !important; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; margin-inline: -16px; padding: 4px 16px 14px; scrollbar-width: none; max-width: none; }
   .ak-a-quotes::-webkit-scrollbar, .ak-a-pros::-webkit-scrollbar, .ak-view-start .ak-packs::-webkit-scrollbar, .ak-ages2::-webkit-scrollbar { display: none; }
@@ -2850,11 +2800,6 @@ ul.ak-try3 li > div { padding: 16px 18px 20px; }
 .ak-lib3-ages { margin: clamp(20px, 3vw, 30px) auto 0 !important; max-width: 560px; font-size: 16px; color: var(--muted); }
 .ak-lib3-ages strong { color: var(--ink); }
 
-.ak-tab1 { background: var(--lav-soft); }
-.ak-view-start .ak-tab1.ak-a-sec { background: var(--lav-soft) !important; }
-.ak-tab1-in { max-width: 720px; text-align: center; }
-.ak-tab1 .ak-a-lead { color: var(--ink); }
-.ak-tab1 .ak-rule-szop { background: #fff; }
 
 @media (max-width: 760px) {
   /* stacks again: a sideways row catches the finger when scrolling down */
@@ -2883,70 +2828,1049 @@ ul.ak-try3 li > div { padding: 16px 18px 20px; }
 @media (max-width: 900px) { .ak-fn-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .ak-fn-grid { grid-template-columns: 1fr; } }
 
-/* 3.28: "not an audiobook" shown as one minute of a play: a small chat window that plays by itself
-   (the newest lines at the bottom, like a messenger), a progress bar, and the four things the
-   child did beside it; a tile jumps to its moment. */
-.ak-nb4-in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(22px, 4vw, 52px); align-items: center; max-width: 1060px; margin: clamp(24px, 4vw, 40px) auto 0; }
-.ak-nb4-scene { display: grid; grid-template-rows: auto 1fr auto; border-radius: 32px; background: var(--paper); box-shadow: var(--shadow-big); overflow: hidden; }
-.ak-nb4-top { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--lav-deep); color: #fff; }
-.ak-nb4-top img { width: 48px; height: 48px; border-radius: 50%; background: var(--sun-soft); object-fit: contain; flex: none; }
-.ak-nb4-top p { margin: 0; flex: 1; display: grid; line-height: 1.25; }
-.ak-nb4-top strong { font-size: 16px; }
-.ak-nb4-top small { font-size: 13px; opacity: .85; }
-.ak-nb4-top .ak-play { flex: none; }
-.ak-nb4-view { height: 360px; overflow-y: auto; scroll-behavior: smooth; padding: 16px; background: linear-gradient(180deg, var(--cream), var(--paper)); scrollbar-width: none; }
-.ak-nb4-view::-webkit-scrollbar { display: none; }
-.ak-nb4-chat { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; min-height: 100%; justify-content: flex-end; }
-.ak-nb4-msg { display: flex; }
-.ak-nb4-msg p { margin: 0; padding: 11px 15px; font-size: clamp(15px, 1.45vw, 16.5px); line-height: 1.4; max-width: 82%; }
-.ak-nb4-szop p { background: var(--teal-light); color: var(--ink); border-radius: 20px 20px 20px 6px; }
-.ak-nb4-msg.ak-nb4-kid { justify-content: flex-end; }
-.ak-nb4-kid p { background: var(--lav-deep); color: #fff; font-weight: 700; border-radius: 20px 20px 6px 20px; }
-.ak-nb4-kid p.ak-nb4-act { display: inline-flex; align-items: center; gap: 6px; background: var(--sun-soft); color: var(--ink); font-style: italic; font-weight: 600; box-shadow: inset 0 0 0 2px var(--sun); }
-.ak-nb4-kid p.ak-nb4-act svg { flex: none; }
-.ak-nb4-msg.is-now p { box-shadow: 0 0 0 3px var(--sun); }
-.ak-js .ak-nb4-scene.is-playing .ak-nb4-msg { display: none; }
-.ak-js .ak-nb4-scene.is-playing .ak-nb4-msg.is-on { display: flex; animation: ak-nb4-in .4s var(--ease) both; }
-@keyframes ak-nb4-in { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
-.ak-nb4-msg.is-typing p { color: transparent; position: relative; min-width: 62px; }
-.ak-nb4-msg.is-typing p svg { visibility: hidden; }
-.ak-nb4-msg.is-typing p::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -15px; border-radius: 50%; background: var(--ink); box-shadow: 12px 0 0 var(--ink), 24px 0 0 var(--ink); animation: ak-nb4-dots 1s infinite ease-in-out; }
-.ak-nb4-kid.is-typing p::after { background: #fff; box-shadow: 12px 0 0 #fff, 24px 0 0 #fff; }
-.ak-nb4-kid.is-typing p.ak-nb4-act::after { background: var(--ink); box-shadow: 12px 0 0 var(--ink), 24px 0 0 var(--ink); }
-@keyframes ak-nb4-dots { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
-.ak-nb4-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line, #ece8f2); }
-.ak-nb4-steps { flex: 1; display: flex; gap: 4px; }
-.ak-nb4-steps i { flex: 1; height: 5px; border-radius: 3px; background: var(--lav-soft); transition: background .3s var(--ease); }
-.ak-nb4-steps i.is-on { background: var(--lav-deep); }
-.ak-nb4-again { border: 0; border-radius: 999px; padding: 8px 16px; background: var(--sun); color: var(--ink); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
-.ak-nb4-again:hover { background: var(--sun-deep); color: #fff; }
-.ak-site .ak-nb4-side-h { margin: 0 0 12px; font-weight: 700; color: var(--lav-deep); }
-.ak-nb4-skills { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.ak-nb4-skills button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: grid; justify-items: center; align-content: center; text-align: center; gap: 10px; min-height: 150px; padding: 18px 12px; border-radius: 24px; background: var(--paper); box-shadow: var(--shadow); transition: background .35s var(--ease), transform .35s var(--ease), box-shadow .35s var(--ease); }
-.ak-nb4-skills button:hover { transform: translateY(-2px); }
-.ak-nb4-skills button:focus-visible { outline: 3px solid var(--lav-deep); outline-offset: 3px; }
-.ak-nb4-skills strong { font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-size: clamp(18px, 2vw, 24px); font-weight: 800; }
-.ak-nb4-skills button > span:last-child { font-size: 14px; line-height: 1.35; color: var(--ink-soft, #5b5370); }
-.ak-nb4-ico { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 22px; background: var(--lav-soft); color: var(--lav-deep); transition: background .35s var(--ease), color .35s var(--ease); }
-.ak-nb4-skills button.is-lit { background: var(--sun); box-shadow: 0 14px 28px rgba(242, 160, 7, .28); }
-.ak-nb4-skills button.is-lit .ak-nb4-ico { background: var(--ink); color: var(--sun); }
-.ak-nb4-skills button.is-now { animation: ak-nb4-pop .55s var(--spring) both; }
-@keyframes ak-nb4-pop { 0% { transform: scale(1); } 45% { transform: scale(1.08) rotate(-2deg); } 100% { transform: translateY(-4px) rotate(-1deg); } }
-.ak-nb4-vs { margin: clamp(20px, 3vw, 32px) 0 0 !important; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; font-size: 15px; }
-.ak-nb4-vs span, .ak-nb4-vs strong { padding: 8px 14px; border-radius: 999px; }
-.ak-nb4-vs span { background: var(--lav-soft); color: var(--ink); text-decoration: line-through; text-decoration-color: rgba(36, 27, 58, .35); }
-.ak-nb4-vs strong { background: var(--teal-light); color: var(--ink); }
-@media (max-width: 860px) {
-  .ak-nb4-in { grid-template-columns: minmax(0, 1fr); }
-  .ak-nb4-side { order: -1; }
-  .ak-nb4-skills { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-  .ak-nb4-skills button { min-height: 0; padding: 10px 4px; gap: 6px; border-radius: 18px; }
-  .ak-nb4-skills strong { font-size: 14px; }
-  .ak-nb4-ico { width: 40px; height: 40px; border-radius: 14px; }
-  .ak-nb4-view { height: 300px; }
-  .ak-nb4-vs { justify-content: center; }
+/* 3.29: "Tu dziecko gra główną rolę": a switch between an audiobook and a play. Each row turns
+   over to what the child does in a play; it flips by itself once, slowly, when it comes into view. */
+.ak-ab-box { max-width: 880px; margin: clamp(22px, 3vw, 36px) auto 0; padding: clamp(18px, 3vw, 32px); border-radius: 34px; background: var(--lav-soft); box-shadow: var(--shadow); transition: background .8s var(--ease); }
+.ak-ab-box[data-mode="play"] { background: var(--sun-soft); }
+.ak-ab-switch { position: relative; display: grid; grid-template-columns: 1fr 1fr; max-width: 420px; margin: 0 auto; padding: 6px; border-radius: 999px; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); }
+.ak-ab-switch button { all: unset; position: relative; z-index: 2; padding: 12px 10px; border-radius: 999px; text-align: center; font-weight: 800; font-size: clamp(15px, 1.6vw, 18px); color: var(--muted); cursor: pointer; transition: color .4s var(--ease); }
+.ak-ab-switch button[aria-checked="true"] { color: #fff; }
+.ak-ab-switch button:focus-visible { outline: 3px solid var(--lav-deep); outline-offset: 2px; }
+.ak-ab-knob { position: absolute; z-index: 1; top: 6px; bottom: 6px; left: 6px; width: calc(50% - 6px); border-radius: 999px; background: var(--lav-deep); transition: transform .7s var(--spring), background .7s var(--ease); }
+.ak-ab-box[data-mode="play"] .ak-ab-knob { transform: translateX(100%); background: var(--ink); }
+.ak-ab-stage { display: grid; grid-template-columns: clamp(110px, 16vw, 170px) minmax(0, 1fr); gap: clamp(14px, 3vw, 32px); align-items: center; margin-top: clamp(16px, 2.4vw, 26px); }
+.ak-ab-szop { position: relative; aspect-ratio: 1; }
+.ak-ab-szop img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 12px 14px rgba(36, 27, 58, .18)); transition: opacity .6s var(--ease), transform .8s var(--bouncy); }
+.ak-ab-box[data-mode="book"] .ak-ab-szop .ak-ab-play, .ak-ab-box[data-mode="play"] .ak-ab-szop .ak-ab-book { opacity: 0; transform: scale(.7) rotate(-8deg); }
+.ak-ab-rows { margin: 0; display: grid; gap: 8px; }
+.ak-ab-rows > div { display: grid; grid-template-columns: minmax(96px, 30%) minmax(0, 1fr); align-items: center; gap: 12px; padding: 12px 16px; border-radius: 18px; background: var(--paper); }
+.ak-ab-rows dt { font-weight: 700; font-size: 14px; color: var(--muted); }
+.ak-ab-rows dd { position: relative; margin: 0; min-height: 1.5em; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.35; color: var(--ink); }
+.ak-ab-rows dd > * { display: block; transition: opacity .45s var(--ease) calc(var(--i) * .25s), transform .55s var(--spring) calc(var(--i) * .25s); }
+.ak-ab-rows .ak-ab-play { position: absolute; inset: 0; font-weight: 800; }
+.ak-ab-box[data-mode="book"] .ak-ab-rows .ak-ab-play { opacity: 0; transform: translateY(12px); }
+.ak-ab-box[data-mode="play"] .ak-ab-rows .ak-ab-book { opacity: 0; transform: translateY(-12px); }
+.ak-ab-gives { display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: stretch; max-width: 880px; margin: 16px auto 0; }
+.ak-ab-give { padding: 16px 18px; border-radius: 22px; }
+.ak-ab-kid { background: var(--teal-soft); }
+.ak-ab-you { background: var(--sun-soft); }
+.ak-ab-give p { margin: 0; font-size: 15px; line-height: 1.45; color: var(--ink); }
+.ak-ab-give .ak-ab-give-h { margin-bottom: 4px; font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: 20px; }
+.ak-role-listen { display: flex; align-items: center; gap: 12px; padding: 8px 18px 8px 8px; border-radius: 999px; background: var(--paper); box-shadow: var(--shadow); align-self: center; }
+.ak-role-listen span { display: grid; line-height: 1.25; }
+.ak-role-listen small { color: var(--muted); font-size: 13px; }
+@media (max-width: 860px) { .ak-ab-gives { grid-template-columns: 1fr 1fr; } .ak-role-listen { grid-column: 1 / -1; justify-self: center; } }
+@media (max-width: 760px) {
+  .ak-ab-box { margin-top: 12px; padding: 12px; border-radius: 24px; }
+  .ak-ab-switch button { padding: 10px 6px; font-size: 15px; }
+  .ak-ab-stage { grid-template-columns: minmax(0, 1fr); margin-top: 10px; gap: 8px; }
+  .ak-ab-szop { width: 80px; margin: 0 auto; }
+  .ak-ab-rows { gap: 6px; }
+  .ak-ab-rows > div { grid-template-columns: 82px minmax(0, 1fr); gap: 8px; padding: 8px 12px; border-radius: 14px; }
+  .ak-ab-rows dt { font-size: 12px; }
+  .ak-ab-rows dd { font-size: 14px; }
+  .ak-ab-gives { gap: 8px; margin-top: 10px; }
+  .ak-ab-give { padding: 10px 12px; border-radius: 16px; }
+  .ak-ab-give p { font-size: 13px; }
+  .ak-ab-give .ak-ab-give-h { font-size: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ak-nb4-skills button, .ak-nb4-ico, .ak-nb4-steps i { transition: none; }
-  .ak-nb4-view { scroll-behavior: auto; }
+  .ak-ab-box, .ak-ab-knob, .ak-ab-szop img, .ak-ab-rows dd > * { transition: none; }
+}
+
+/* 3.29: one day with the app. A phone drawn in CSS stays beside the chapters of a family's day and
+   changes as the parent scrolls (computers) or swipes (phones). Nothing moves by itself. */
+.ak-day-in { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(32px, 6vw, 88px); max-width: 1000px; margin: clamp(24px, 3vw, 40px) auto 0; }
+.ak-day-stage { position: sticky; top: calc(50vh - min(300px, 34vw)); align-self: start; display: grid; justify-items: center; gap: 12px; }
+.ak-day-phone { width: clamp(240px, 25vw, 290px); aspect-ratio: 9 / 18.5; padding: 10px; border-radius: 46px; background: var(--ink); box-shadow: var(--shadow-big), inset 0 0 0 2px rgba(255, 255, 255, .08); transform: rotate(-2deg); }
+.ak-day-screen { position: relative; height: 100%; border-radius: 37px; overflow: hidden; background: var(--paper); }
+.ak-day-notch { position: absolute; z-index: 3; top: 9px; left: 50%; width: 30%; height: 22px; border-radius: 999px; background: var(--ink); transform: translateX(-50%); }
+.ak-day-count { margin: 0; font-weight: 700; font-size: 14px; color: var(--muted); }
+.ak-day-scr { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 44px 16px 22px; text-align: center; opacity: 0; visibility: hidden; transform: translateY(16px) scale(.98); transition: opacity .5s var(--ease), transform .7s var(--spring), visibility 0s .5s; }
+.ak-day-scr.is-on { opacity: 1; visibility: visible; transform: none; transition: opacity .5s var(--ease), transform .7s var(--spring), visibility 0s; }
+.ak-day-scr p { margin: 0; }
+.ak-day-scr img { display: block; }
+.ak-day-tag { padding: 5px 12px; border-radius: 999px; background: rgba(255, 255, 255, .7); font-size: 12px; font-weight: 700; color: var(--sun-deep); }
+.ak-day-q { font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: 20px; line-height: 1.1; color: var(--ink); }
+.ak-day-big { font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: 46px; line-height: 1; color: var(--ink); }
+.ak-day-big small { font-size: 18px; }
+.ak-day-bubble { max-width: 94%; padding: 10px 14px; border-radius: 18px; background: var(--paper); box-shadow: 0 8px 18px rgba(36, 27, 58, .12); font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--ink); }
+.ak-day-ok { padding: 6px 12px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 12px; font-weight: 700; }
+.ak-day-ok::before { content: "✓ "; color: var(--sun); }
+.ak-day-scr ul { margin: 0; padding: 0; list-style: none; }
+
+.ak-scr-dzien { background: var(--sun-soft); }
+.ak-scr-dzien img { width: 128px; height: auto; }
+.ak-scr-dzien.is-on .ak-day-bubble { animation: ak-say .6s .5s var(--bouncy) both; }
+.ak-day-modes { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-top: 4px !important; }
+.ak-day-modes li { padding: 5px 9px; border-radius: 999px; background: rgba(255, 255, 255, .75); font-size: 11.5px; font-weight: 600; color: var(--ink); }
+.ak-day-modes li.is-on { background: var(--sun); }
+
+.ak-scr-droga { background: var(--teal-soft); }
+.ak-day-slider { position: relative; width: 82%; height: 8px; border-radius: 999px; background: rgba(29, 26, 43, .12); }
+.ak-day-slider i { position: absolute; inset: 0 40% 0 0; border-radius: inherit; background: var(--teal-deep); transform-origin: left; }
+.ak-scr-droga.is-on .ak-day-slider i { animation: ak-day-grow 1.2s .3s var(--spring) both; }
+.ak-day-list { width: 100%; display: grid; gap: 6px; margin-top: 4px !important; }
+.ak-day-list li { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 14px; background: #fff; font-size: 12.5px; font-weight: 600; color: var(--ink); text-align: left; }
+.ak-day-list img { width: 34px; height: 34px; border-radius: 9px; }
+.ak-day-list em { margin-left: auto; font-style: normal; font-weight: 500; color: var(--muted); }
+.ak-day-list .ak-day-break { justify-content: center; padding: 3px; background: none; border: 1.5px dashed rgba(29, 26, 43, .2); font-weight: 500; font-size: 11.5px; color: var(--muted); }
+@keyframes ak-day-grow { from { transform: scaleX(.15); } }
+
+.ak-scr-musze { background: var(--lav-soft); }
+.ak-day-ring { position: relative; width: 132px; height: 132px; display: grid; place-items: center; }
+.ak-day-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.ak-day-ring circle { fill: none; stroke: rgba(29, 26, 43, .1); stroke-width: 10; }
+.ak-day-ring .ak-day-ring-fill { stroke: var(--lav-deep); stroke-linecap: round; stroke-dasharray: 326.7; stroke-dashoffset: 109; }
+.ak-scr-musze.is-on .ak-day-ring-fill { animation: ak-day-ring 1.4s .3s var(--spring) both; }
+.ak-day-ring span { font-family: "AK Baloo", "AK Baloo Fallback", system-ui, sans-serif; font-size: 40px; font-weight: 800; line-height: .9; color: var(--ink); display: grid; }
+.ak-day-ring small { font-size: 14px; }
+.ak-day-pills { display: flex; gap: 6px; }
+.ak-day-pills li { padding: 6px 14px; border-radius: 999px; background: #fff; font-weight: 700; font-size: 13px; color: var(--ink); }
+.ak-day-pills li.is-on { background: var(--lav-deep); color: #fff; }
+@keyframes ak-day-ring { from { stroke-dashoffset: 326.7; } }
+
+.ak-scr-wybor { background: #E3F1DD; }
+.ak-day-from-szop { align-self: flex-start; border-bottom-left-radius: 6px; text-align: left; }
+.ak-day-kid { align-self: flex-end; display: grid; justify-items: end; gap: 2px; padding: 10px 14px; border-radius: 18px 18px 6px 18px; background: var(--teal-deep); color: #fff; font-family: "AK Baloo", "AK Baloo Fallback", system-ui, sans-serif; font-weight: 800; font-size: 26px; line-height: 1; }
+.ak-day-kid small { font-family: "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 500; font-size: 11px; color: rgba(255, 255, 255, .8); }
+.ak-day-waves { display: flex; align-items: center; gap: 3px; height: 16px; margin-bottom: 4px; }
+.ak-day-waves i { width: 3px; height: 40%; border-radius: 2px; background: var(--sun); }
+.ak-scr-wybor.is-on .ak-day-waves i { animation: ak-day-wave .9s ease-in-out 4 alternate; }
+.ak-day-waves i:nth-child(2) { animation-delay: .15s !important; } .ak-day-waves i:nth-child(3) { animation-delay: .3s !important; }
+.ak-day-waves i:nth-child(4) { animation-delay: .45s !important; } .ak-day-waves i:nth-child(5) { animation-delay: .6s !important; }
+.ak-day-mic { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--sun); color: var(--ink); }
+.ak-scr-wybor.is-on .ak-day-kid { animation: ak-say .6s .8s var(--bouncy) both; }
+.ak-scr-wybor.is-on .ak-day-mic { animation: ak-day-pulse 1.6s 1s ease-out 2; }
+.ak-scr-wybor.is-on .ak-day-heard { animation: ak-say .5s 2.2s var(--ease) both; }
+.ak-day-heard { font-size: 13px; color: var(--ink); }
+@keyframes ak-day-wave { to { height: 100%; } }
+@keyframes ak-day-pulse { 0% { box-shadow: 0 0 0 0 rgba(250, 193, 24, .6); } 70% { box-shadow: 0 0 0 18px rgba(250, 193, 24, 0); } 100% { box-shadow: 0 0 0 0 rgba(250, 193, 24, 0); } }
+
+.ak-scr-czas { justify-content: flex-start; padding-top: 58px; background: linear-gradient(170deg, #4A3860, #1D1A2B 75%); }
+.ak-day-clock { font-size: 58px; font-weight: 700; letter-spacing: -.03em; line-height: 1; color: #fff; }
+.ak-day-date { font-size: 14px; color: rgba(255, 255, 255, .75); }
+.ak-day-live { display: flex; align-items: center; gap: 10px; width: 100%; margin-top: auto; padding: 12px; border-radius: 22px; background: rgba(255, 255, 255, .16); text-align: left; color: #fff; }
+.ak-day-live img { width: 42px; height: 42px; flex: none; }
+.ak-day-live div { flex: 1; display: grid; gap: 3px; }
+.ak-day-live small { font-size: 11px; color: rgba(255, 255, 255, .8); }
+.ak-day-live strong { font-size: 15px; }
+.ak-day-bar { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, .25); overflow: hidden; }
+.ak-day-bar i { display: block; height: 100%; width: 75%; border-radius: inherit; background: var(--sun); transform-origin: left; }
+.ak-scr-czas.is-on .ak-day-bar i { animation: ak-day-grow 3s .3s var(--ease) both; }
+
+.ak-scr-sen { background: linear-gradient(180deg, #2E2550, #4A3860); color: #fff; }
+.ak-scr-sen img { width: 110px; height: auto; }
+.ak-scr-sen .ak-day-q { color: #fff; }
+.ak-day-sleep { padding: 10px 20px; border-radius: 999px; background: var(--sun); color: var(--ink); font-weight: 700; font-size: 14px; }
+.ak-day-voice { font-size: 12px; color: rgba(255, 255, 255, .8); }
+.ak-day-stars i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #fff; opacity: .7; }
+.ak-day-stars i:nth-child(1) { top: 16%; left: 18%; } .ak-day-stars i:nth-child(2) { top: 22%; left: 78%; } .ak-day-stars i:nth-child(3) { top: 34%; left: 10%; }
+.ak-day-stars i:nth-child(4) { top: 12%; left: 60%; } .ak-day-stars i:nth-child(5) { top: 40%; left: 86%; }
+.ak-scr-sen.is-on .ak-day-stars i { animation: ak-day-twinkle 2.4s ease-in-out infinite alternate; }
+.ak-scr-sen.is-on .ak-day-stars i:nth-child(2n) { animation-delay: .8s; }
+@keyframes ak-day-twinkle { to { opacity: .15; transform: scale(.6); } }
+
+.ak-scr-nagrody { background: var(--teal-light); }
+.ak-day-stickers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 86%; }
+.ak-day-stickers li { aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: #fff; font-weight: 800; font-size: 20px; color: rgba(29, 26, 43, .25); }
+.ak-day-stickers img { width: 78%; height: auto; }
+.ak-scr-nagrody.is-on .is-new { animation: ak-day-stick .8s .8s var(--bouncy) both; box-shadow: 0 0 0 3px var(--sun); }
+.ak-day-goal { display: grid; gap: 4px; width: 100%; font-size: 12px; font-weight: 700; color: var(--ink); }
+.ak-day-goal .ak-day-bar { background: rgba(29, 26, 43, .12); }
+.ak-scr-nagrody.is-on .ak-day-goal .ak-day-bar i { animation: ak-day-grow 1.6s .3s var(--ease) both; }
+.ak-day-cars { font-size: 11.5px; font-weight: 700; color: var(--teal-deep); }
+.ak-day-diploma { display: grid; gap: 2px; width: 100%; padding: 10px; border-radius: 16px; background: #fff; border: 2px dashed var(--sun-deep); color: var(--ink); font-size: 13px; }
+.ak-day-diploma small { color: var(--muted); }
+@keyframes ak-day-stick { from { opacity: 0; transform: scale(1.8) rotate(-20deg); } }
+
+.ak-scr-nowe { background: var(--cream); }
+.ak-day-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; perspective: 600px; }
+.ak-day-card { position: relative; aspect-ratio: 3 / 4; border-radius: 16px; background: #fff; box-shadow: 0 8px 16px rgba(36, 27, 58, .1); display: grid; align-content: center; justify-items: center; gap: 6px; padding: 8px; }
+.ak-day-card img { width: 100%; height: auto; border-radius: 12px; }
+.ak-day-card small { font-size: 11px; font-weight: 600; color: var(--muted); }
+.ak-day-flip { padding: 0; background: none; box-shadow: none; transform-style: preserve-3d; }
+.ak-day-flip > span { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; border-radius: 16px; backface-visibility: hidden; }
+.ak-day-back { background: var(--lav-deep); color: #fff; font-family: "AK Baloo", "AK Baloo Fallback", system-ui, sans-serif; font-size: 44px; font-weight: 800; line-height: 1; }
+.ak-day-back small { font-family: "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-size: 12px; color: var(--sun); }
+.ak-day-front { background: #fff; padding: 8px; transform: rotateY(180deg); box-shadow: 0 8px 16px rgba(36, 27, 58, .1); }
+.ak-scr-nowe.is-on .ak-day-flip { animation: ak-day-turn 1s 1.6s var(--spring) both; }
+@keyframes ak-day-turn { to { transform: rotateY(180deg); } }
+
+
+/* The chapters: one moment of the day per screen height; the one in the middle is lit. */
+.ak-day-chapters { list-style: none; margin: 0; padding: 0; counter-reset: none; }
+.ak-day-ch { min-height: 58vh; display: flex; flex-direction: column; justify-content: center; padding: 0 0 0 28px; border-left: 3px solid var(--line); opacity: .32; transition: opacity .5s var(--ease), border-color .5s var(--ease); }
+.ak-day-ch:first-child { min-height: 40vh; }
+.ak-day-ch:last-child { min-height: 46vh; }
+.ak-day-ch.is-on { opacity: 1; border-left-color: var(--sun); }
+.ak-day-time { align-self: flex-start; margin-bottom: 10px; padding: 4px 12px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: 14px; }
+.ak-day-ch h3 { margin: 0 0 8px; font-size: clamp(26px, 3vw, 38px); }
+.ak-day-ch p { margin: 0; max-width: 34em; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.55; color: var(--muted); }
+.ak-day-ch.is-on p { color: var(--ink); }
+.ak-day-nav { display: none; }
+
+.ak-day-calm { max-width: 1000px; margin: clamp(28px, 4vw, 48px) auto 0; padding: clamp(18px, 3vw, 28px); border-radius: 28px; background: var(--lav-soft); }
+.ak-day-calm-h { margin: 0 0 12px; font-weight: 700; color: var(--lav-deep); }
+.ak-day-calm ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+.ak-day-calm li { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; line-height: 1.4; color: var(--ink); }
+.ak-day-calm li svg { flex: none; color: var(--lav-deep); margin-top: 1px; }
+.ak-day-calm strong { display: block; }
+
+@media (max-width: 760px) {
+  .ak-day-in { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 8px; }
+  .ak-day-stage { position: static; gap: 6px; }
+  .ak-day-phone { width: min(236px, 64vw); height: min(36vh, 310px); aspect-ratio: auto; padding: 7px; border-radius: 34px; transform: none; }
+  .ak-day-choice span { padding: 14px 6px; }
+  .ak-day-chapters { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px 4px; scroll-padding: 0 16px; }
+  .ak-day-chapters::-webkit-scrollbar { display: none; }
+  .ak-day-ch, .ak-day-ch:first-child, .ak-day-ch:last-child { flex: 0 0 86%; min-height: 0; justify-content: flex-start; padding: 14px 16px; border: 0; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1.5px var(--line); scroll-snap-align: center; opacity: .55; }
+  .ak-day-ch.is-on { opacity: 1; box-shadow: var(--shadow); }
+  .ak-day-time { margin-bottom: 6px; font-size: 12px; padding: 3px 10px; }
+  .ak-day-ch h3 { font-size: 21px; margin-bottom: 4px; }
+  .ak-day-ch p { font-size: 14px; line-height: 1.45; }
+  .ak-day-nav { position: absolute; top: calc(min(36vh, 310px) / 2 - 22px); left: 0; right: 0; display: flex; justify-content: space-between; pointer-events: none; }
+  .ak-day-nav button { pointer-events: auto; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--paper); box-shadow: var(--shadow); font-size: 26px; line-height: 1; color: var(--ink); cursor: pointer; }
+  .ak-day-calm { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ak-day-scr, .ak-day-scr.is-on, .ak-day-ch { transition: none; transform: none; }
+  .ak-day-scr.is-on *, .ak-day-scr.is-on *::before { animation: none !important; }
+  .ak-scr-nowe .ak-day-flip { transform: rotateY(180deg); }
+}
+
+/* 3.29: selling on the page. Small proof under the first buttons, and the price card that buys a
+   month or a year here (paid once) with the three steps to the app. */
+.ak-hero-trust { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.ak-hero-trust li { display: inline-flex; align-items: center; gap: 6px; }
+.ak-hero-trust li::before { content: "✓"; color: var(--teal-deep); font-weight: 800; }
+.ak-a-plan:has(input[value="year"]:checked) [data-for="month"],
+.ak-a-plan:has(input[value="month"]:checked) [data-for="year"] { display: none; }
+.ak-a-plan-buy { margin-top: 6px; }
+.ak-a-plan-note { margin: 10px 0 0 !important; font-size: 14px; color: var(--muted); }
+.ak-a-plan-note strong { color: var(--ink); }
+@media (max-width: 760px) {
+  .ak-hero-trust { justify-content: center; margin-top: 12px; font-size: 12.5px; gap: 4px 12px; }
+}
+
+.ak-a-plan-free { display: block; margin: 14px auto 0; text-align: center; }
+.ak-end-buy { min-height: 56px; }
+
+/* 3.29: the library: five kinds of plays, each with Szop'en's own word on it. */
+.ak-lib4-row { list-style: none; margin: clamp(22px, 3vw, 36px) auto 0; padding: 0; max-width: 1180px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 18px); }
+.ak-lib4-row li { display: flex; flex-direction: column; gap: 8px; padding: 12px 12px 16px; border-radius: 26px; background: var(--paper); box-shadow: var(--shadow); transition: transform .35s var(--spring); }
+.ak-lib4-row li:hover { transform: translateY(-6px) rotate(-1deg); }
+.ak-lib4-row img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 18px; }
+.ak-lib4-row h3 { margin: 4px 4px 0 !important; font-size: clamp(20px, 1.9vw, 24px); }
+.ak-lib4-quip { position: relative; margin: 0; padding: 10px 12px; border-radius: 16px 16px 16px 4px; background: var(--sun-soft); font-size: 14px; font-weight: 600; line-height: 1.4; color: var(--ink); }
+.ak-lib4-row li.ak-c-teal .ak-lib4-quip { background: var(--teal-soft); }
+.ak-lib4-row li.ak-c-lav .ak-lib4-quip { background: var(--lav-soft); }
+.ak-lib4-eg { margin: auto 4px 0; font-size: 12.5px; color: var(--muted); }
+@media (max-width: 1000px) { .ak-lib4-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .ak-lib4-row { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 14px -16px 0; padding: 4px 16px 10px; gap: 10px; }
+  .ak-lib4-row::-webkit-scrollbar { display: none; }
+  .ak-lib4-row li { flex: 0 0 72%; scroll-snap-align: center; }
+  .ak-lib4-row li:hover { transform: none; }
+}
+
+/* 3.29: the free plays as admission tickets: cover, name, and a torn-off stub "0 zł, wstęp wolny". */
+.ak-tix-in { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(18px, 4vw, 48px); align-items: center; max-width: 980px; margin: clamp(22px, 3vw, 36px) auto 0; }
+.ak-tix-szop { margin: 0; display: grid; justify-items: center; gap: 10px; max-width: 220px; }
+.ak-tix-szop img { width: clamp(130px, 15vw, 180px); height: auto; filter: drop-shadow(0 12px 14px rgba(36, 27, 58, .18)); }
+.ak-tix-szop figcaption { padding: 10px 14px; border-radius: 18px 18px 18px 6px; background: var(--paper); box-shadow: var(--shadow); font-weight: 600; font-size: 14px; line-height: 1.4; }
+.ak-tix { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ak-tix-one { position: relative; display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 10px; border-radius: 20px; background: var(--paper); box-shadow: var(--shadow); transition: transform .35s var(--spring); }
+.ak-tix-one:nth-child(2) { rotate: .8deg; } .ak-tix-one:nth-child(3) { rotate: -.6deg; }
+.ak-tix-one:hover { transform: translateX(6px) scale(1.01); }
+.ak-tix-one img { width: 84px; height: 84px; border-radius: 14px; object-fit: cover; }
+.ak-tix-body h3 { margin: 0 !important; font-size: clamp(18px, 1.8vw, 22px); }
+.ak-tix-pack, .ak-tix-meta { margin: 0 !important; font-size: 13px; color: var(--muted); }
+.ak-tix-stub { position: relative; align-self: stretch; display: grid; place-content: center; justify-items: center; min-width: 96px; margin: -10px -10px -10px 0; padding: 0 14px; border-left: 2px dashed var(--line); border-radius: 0 20px 20px 0; background: var(--sun); color: var(--ink); }
+.ak-tix-one.ak-c-teal .ak-tix-stub { background: var(--teal-light); }
+.ak-tix-one.ak-c-lav .ak-tix-stub { background: var(--lav-soft); }
+.ak-tix-stub::before, .ak-tix-stub::after { content: ""; position: absolute; left: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--cream); }
+.ak-tix-stub::before { top: -8px; } .ak-tix-stub::after { bottom: -8px; }
+.ak-tix-stub strong { font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-size: 26px; font-weight: 800; line-height: 1; }
+.ak-tix-stub small { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+@media (max-width: 760px) {
+  .ak-tix-in { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 12px; }
+  .ak-tix-szop { grid-template-columns: 70px minmax(0, 1fr); align-items: center; max-width: none; }
+  .ak-tix-szop img { width: 70px; }
+  .ak-tix-szop figcaption { font-size: 13px; }
+  .ak-tix { gap: 8px; }
+  .ak-tix-one { grid-template-columns: 60px minmax(0, 1fr) auto; gap: 10px; padding: 8px; }
+  .ak-tix-one img { width: 60px; height: 60px; }
+  .ak-tix-stub { min-width: 74px; margin: -8px -8px -8px 0; padding: 0 8px; }
+  .ak-tix-stub strong { font-size: 20px; }
+  .ak-tix-stub small { font-size: 9.5px; }
+}
+@media (max-width: 760px) {
+  #co-to .ak-role-listen, #darmowe-zabawy .ak-try3-see { display: none; }
+  #darmowe-zabawy .ak-a-lead { font-size: 15px; }
+}
+
+/* 3.29.2: the day's screens told apart: the car's own screen, plays coming one after another,
+   a hint at the right time on the lock screen, a bedtime routine and rewards to unlock. */
+.ak-scr-droga { padding: 40px 10px 16px; background: #1D1A2B; }
+.ak-day-dash { width: 100%; display: grid; gap: 10px; padding: 12px; border-radius: 20px; background: #2B2740; color: #fff; text-align: left; }
+.ak-day-dash-top { display: flex; justify-content: space-between; margin: 0; font-size: 11px; font-weight: 700; color: rgba(255, 255, 255, .7); }
+.ak-day-nosig { padding: 2px 8px; border-radius: 999px; background: rgba(250, 193, 24, .2); color: var(--sun); }
+.ak-day-route { position: relative; height: 8px; margin: 8px 4px; border-radius: 999px; background: rgba(255, 255, 255, .15); }
+.ak-day-route b { position: absolute; top: -3px; width: 14px; height: 14px; border-radius: 50%; background: #2B2740; box-shadow: inset 0 0 0 3px var(--sun); transform: translateX(-50%); }
+.ak-day-car { position: absolute; top: -9px; left: 8%; width: 26px; height: 26px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 4px rgba(61, 173, 177, .3); }
+.ak-scr-droga.is-on .ak-day-car { animation: ak-day-drive 4.5s .3s var(--ease) both; }
+.ak-day-dash-eta { margin: 0; font-size: 13px; color: rgba(255, 255, 255, .85); }
+.ak-day-dash-eta strong { color: #fff; font-size: 18px; }
+.ak-day-playing { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 14px; background: rgba(255, 255, 255, .08); }
+.ak-day-playing img { width: 40px; height: 40px; border-radius: 10px; }
+.ak-day-playing span { display: grid; font-weight: 700; font-size: 13px; }
+.ak-day-playing small { font-weight: 500; font-size: 10.5px; color: rgba(255, 255, 255, .6); }
+.ak-day-break2 { margin: 0; padding: 6px 10px; border-radius: 999px; background: var(--sun); color: var(--ink); font-size: 11.5px; font-weight: 700; text-align: center; }
+@keyframes ak-day-drive { from { left: 0; } to { left: 52%; } }
+
+.ak-scr-musze { background: var(--lav-soft); }
+.ak-day-tag-lav { color: var(--lav-deep); }
+.ak-day-stack { position: relative; width: 100%; height: 150px; }
+.ak-day-sc { position: absolute; left: 0; right: 0; display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 16px; background: #fff; box-shadow: 0 8px 18px rgba(36, 27, 58, .12); text-align: left; transition: transform .6s var(--spring), opacity .6s; }
+.ak-day-sc img { width: 40px; height: 40px; border-radius: 10px; }
+.ak-day-sc span { display: grid; font-weight: 700; font-size: 13px; color: var(--ink); }
+.ak-day-sc small { font-weight: 600; font-size: 10.5px; color: var(--lav-deep); }
+.ak-day-sc1 { top: 0; z-index: 3; box-shadow: 0 0 0 2px var(--lav-deep), 0 8px 18px rgba(36, 27, 58, .12); }
+.ak-day-sc2 { top: 50px; z-index: 2; transform: scale(.95); opacity: .9; }
+.ak-day-sc3 { top: 100px; z-index: 1; transform: scale(.9); opacity: .75; }
+.ak-scr-musze.is-on .ak-day-sc1 { animation: ak-day-out 1s 2.6s var(--ease) both; }
+.ak-scr-musze.is-on .ak-day-sc2 { animation: ak-day-up 1s 2.6s var(--spring) both; }
+.ak-scr-musze.is-on .ak-day-bubble { animation: ak-say .6s 3.2s var(--bouncy) both; }
+@keyframes ak-day-out { to { transform: translateX(-120%) rotate(-6deg); opacity: 0; } }
+@keyframes ak-day-up { to { transform: translateY(-50px) scale(1); opacity: 1; box-shadow: 0 0 0 2px var(--lav-deep), 0 8px 18px rgba(36, 27, 58, .12); } }
+
+.ak-scr-czas { justify-content: flex-start; gap: 10px; padding-top: 52px; }
+.ak-scr-czas .ak-day-clock { font-size: 50px; }
+.ak-day-note { display: flex; gap: 8px; width: 100%; padding: 10px; border-radius: 18px; background: rgba(255, 255, 255, .92); color: var(--ink); text-align: left; font-size: 11.5px; line-height: 1.35; }
+.ak-day-note img { width: 36px; height: 36px; flex: none; }
+.ak-day-note small { display: block; color: var(--muted); font-size: 10px; }
+.ak-day-note strong { display: block; font-size: 13px; }
+.ak-scr-czas.is-on .ak-day-note { animation: ak-day-drop .7s .4s var(--bouncy) both; }
+.ak-scr-czas .ak-day-live { margin-top: auto; }
+.ak-scr-czas.is-on .ak-day-live { animation: ak-say .6s 2s var(--ease) both; }
+@keyframes ak-day-drop { from { opacity: 0; transform: translateY(-30px) scale(.95); } }
+
+.ak-day-steps { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; gap: 6px; text-align: left; }
+.ak-day-steps li { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 14px; background: rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .85); font-size: 12.5px; font-weight: 600; }
+.ak-day-steps li::before { content: ""; flex: none; width: 16px; height: 16px; border-radius: 50%; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .5); }
+.ak-day-steps li.is-done::before { content: "✓"; display: grid; place-items: center; font-size: 11px; background: var(--teal); box-shadow: none; color: #fff; }
+.ak-day-steps li.is-now { background: var(--sun); color: var(--ink); }
+.ak-day-steps li.is-now::before { box-shadow: inset 0 0 0 5px var(--ink); }
+.ak-scr-sen.is-on .ak-day-steps li { animation: ak-say .5s var(--ease) both; }
+.ak-scr-sen.is-on .ak-day-steps li:nth-child(2) { animation-delay: .25s; }
+.ak-scr-sen.is-on .ak-day-steps li:nth-child(3) { animation-delay: .5s; }
+.ak-scr-sen.is-on .ak-day-steps li:nth-child(4) { animation-delay: .75s; }
+.ak-day-own { padding: 6px 12px; border-radius: 999px; border: 1.5px dashed rgba(255, 255, 255, .5); color: #fff; font-size: 12px; font-weight: 700; }
+
+.ak-day-prizes { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ak-day-prizes li { position: relative; display: grid; justify-items: center; gap: 4px; padding: 10px 6px; border-radius: 16px; background: rgba(255, 255, 255, .55); color: rgba(29, 26, 43, .4); font-size: 11.5px; font-weight: 700; }
+.ak-day-prizes li img { width: 34px; height: 34px; }
+.ak-day-prizes li:not(.is-got)::after { content: "🔒"; position: absolute; top: 4px; right: 6px; font-size: 11px; }
+.ak-day-prizes li.is-got { background: #fff; color: var(--ink); }
+.ak-day-prizes li.is-got svg { color: var(--sun-deep); }
+.ak-scr-nagrody.is-on .ak-day-prizes .is-new { animation: ak-day-stick .8s 1.2s var(--bouncy) both; box-shadow: 0 0 0 3px var(--sun); }
+.ak-scr-nagrody .ak-day-goal span:first-child { font-size: 11.5px; }
+
+@media (max-width: 760px) {
+}
+.ak-day-calm ul { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .ak-day-calm ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* 3.29.2: the free plays stand out: the brightest section on the page, tickets that slide in one
+   by one, "0 zł" stamped on each, Szop'en bobbing with his gift, and one dark button to act. */
+.ak-view-start #darmowe-zabawy.ak-a-sec, #darmowe-zabawy { background: radial-gradient(circle at 15% 20%, #FFE7A0 0, transparent 40%), linear-gradient(160deg, #FAC118 0%, #FFD45C 55%, #FFE9A8 100%) !important; }
+#darmowe-zabawy .ak-a-eyebrow { display: table; margin-inline: auto; padding: 6px 14px; border-radius: 999px; background: #fff; color: var(--lav-deep) !important; box-shadow: 0 4px 12px rgba(120, 80, 0, .15); }
+#darmowe-zabawy h2 .ak-hl-word { background-image: linear-gradient(transparent 58%, #fff 58%, #fff 92%, transparent 92%); }
+#darmowe-zabawy .ak-a-lead, #darmowe-zabawy .ak-try3-see, #darmowe-zabawy .ak-small { color: var(--ink) !important; }
+#darmowe-zabawy .ak-tix-one { box-shadow: 0 14px 30px rgba(120, 80, 0, .22); }
+#darmowe-zabawy .ak-tix-one.ak-c-sun .ak-tix-stub { background: #FFF3C4 !important; }
+#darmowe-zabawy .ak-tix-one.ak-c-teal .ak-tix-stub { background: #CDEDEA !important; }
+#darmowe-zabawy .ak-tix-one.ak-c-lav .ak-tix-stub { background: #EBDDF7 !important; }
+#darmowe-zabawy .ak-tix-stub { color: var(--lav-deep); border-left-color: rgba(104, 80, 130, .35); }
+#darmowe-zabawy .ak-tix-stub strong { color: var(--lav-deep); }
+#darmowe-zabawy .ak-tix-stub::before, #darmowe-zabawy .ak-tix-stub::after { background: #FFD45C; }
+#darmowe-zabawy .ak-tix-szop figcaption { background: #fff; }
+#darmowe-zabawy .ak-try3-btns .ak-btn { min-height: 60px; padding-inline: 34px; font-size: 18px; font-weight: 700; background: var(--lav-deep) !important; color: #fff !important; box-shadow: 0 14px 30px rgba(104, 80, 130, .4); }
+.ak-js #darmowe-zabawy .ak-tix-one { opacity: 0; transform: translateX(60px) rotate(2deg); }
+.ak-js #darmowe-zabawy .ak-tix-stub strong, .ak-js #darmowe-zabawy .ak-tix-stub small { opacity: 0; }
+#darmowe-zabawy.is-on .ak-tix-one { animation: ak-tix-in .8s var(--spring) both; }
+#darmowe-zabawy.is-on .ak-tix-one:nth-child(2) { animation-delay: .25s; }
+#darmowe-zabawy.is-on .ak-tix-one:nth-child(3) { animation-delay: .5s; }
+#darmowe-zabawy.is-on .ak-tix-stub strong, #darmowe-zabawy.is-on .ak-tix-stub small { animation: ak-tix-stamp .5s var(--bouncy) both; }
+#darmowe-zabawy.is-on .ak-tix-one:nth-child(1) .ak-tix-stub > * { animation-delay: 1s; }
+#darmowe-zabawy.is-on .ak-tix-one:nth-child(2) .ak-tix-stub > * { animation-delay: 1.3s; }
+#darmowe-zabawy.is-on .ak-tix-one:nth-child(3) .ak-tix-stub > * { animation-delay: 1.6s; }
+#darmowe-zabawy.is-on .ak-tix-szop img { animation: ak-tix-bob 2.6s 1.8s ease-in-out infinite; }
+#darmowe-zabawy.is-on .ak-try3-btns .ak-btn { animation: ak-tix-pulse 2.4s 2.2s ease-in-out 3; }
+@keyframes ak-tix-in { to { opacity: 1; transform: none; } }
+@keyframes ak-tix-stamp { from { opacity: 0; transform: scale(2.2) rotate(-14deg); } to { opacity: 1; transform: rotate(-6deg); } }
+@keyframes ak-tix-bob { 50% { transform: translateY(-8px) rotate(-3deg); } }
+@keyframes ak-tix-pulse { 0%, 100% { transform: none; } 50% { transform: scale(1.05); } }
+@media (prefers-reduced-motion: reduce) {
+  .ak-js #darmowe-zabawy .ak-tix-one, .ak-js #darmowe-zabawy .ak-tix-stub > * { opacity: 1; transform: none; animation: none !important; }
+}
+.ak-scr-musze.is-on .ak-day-sc3 { animation: ak-day-up3 1s 2.6s var(--spring) both; }
+@keyframes ak-day-up3 { to { transform: translateY(-50px) scale(.95); opacity: .9; } }
+@media (max-width: 760px) { @keyframes ak-day-up3 { to { transform: translateY(-38px) scale(.95); opacity: .9; } } }
+
+/* 3.29.4: dots under the phone (replace "n / 8"), and on phones the day as Apple would show it:
+   the phone big and still on top, swipe it or the cards, dots to see where you are. */
+.ak-day-dots { display: flex; justify-content: center; gap: 8px; margin-top: 6px; }
+.ak-day-dot { all: unset; box-sizing: border-box; width: 9px; height: 9px; border-radius: 999px; background: rgba(29, 26, 43, .2); cursor: pointer; transition: width .35s var(--spring), background .3s; }
+.ak-day-dot::before { content: ""; position: absolute; inset: -10px; }
+.ak-day-dot { position: relative; }
+.ak-day-dot.is-on { width: 26px; background: var(--ink); }
+.ak-day-dot:focus-visible { outline: 3px solid var(--lav-deep); outline-offset: 3px; }
+.ak-day-count { display: none; }
+@media (max-width: 760px) {
+  .ak-day-in { gap: 6px; }
+  .ak-day-stage { gap: 10px; }
+  .ak-day-phone { height: min(48vh, 430px); touch-action: pan-y; }
+  .ak-day-nav { top: calc(min(48vh, 430px) / 2 - 22px); }
+  .ak-day-dots { margin-top: 0; }
+  .ak-day-chapters { gap: 12px; margin: 0 -16px; padding: 4px 16px 10px; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
+  .ak-day-ch, .ak-day-ch:first-child, .ak-day-ch:last-child { flex: 0 0 86%; padding: 16px 18px 18px; border-radius: 24px; scroll-snap-stop: always; opacity: .5; transform: scale(.97); transition: opacity .35s var(--ease), transform .45s var(--spring), box-shadow .35s; }
+  .ak-day-ch.is-on { opacity: 1; transform: none; }
+  .ak-day-time { margin-bottom: 8px; font-size: 12px; }
+  .ak-day-ch h3 { font-size: 22px; margin-bottom: 6px; }
+  .ak-day-ch p { font-size: 15.5px; line-height: 1.5; }
+}
+/* Tickets wait 60 px to the right before they slide in: they must not widen the page meanwhile. */
+#darmowe-zabawy { overflow-x: clip; }
+@media (max-width: 760px) { .ak-x-hero .ak-hero-trust { order: 7; margin-top: 14px; } }
+
+#darmowe-zabawy .ak-tix-one.ak-c-sun .ak-tix-stub::before, #darmowe-zabawy .ak-tix-one.ak-c-sun .ak-tix-stub::after,
+#darmowe-zabawy .ak-tix-one.ak-c-teal .ak-tix-stub::before, #darmowe-zabawy .ak-tix-one.ak-c-teal .ak-tix-stub::after,
+#darmowe-zabawy .ak-tix-one.ak-c-lav .ak-tix-stub::before, #darmowe-zabawy .ak-tix-one.ak-c-lav .ak-tix-stub::after { background: #FFD966; }
+#darmowe-zabawy .ak-tix-stub small { color: var(--lav-deep); }
+
+/* 3.29.7: "Zabawy bez ekranu na start. Za darmo.": the section that makes people sign up, so the
+   loudest one on the page: saturated purple-to-teal, floating printouts, a pulsing 0 zł, rising dots,
+   a shimmering yellow button. White text on the deep colour. */
+.ak-free-hot .ak-free-in { position: relative; overflow: hidden; isolation: isolate; color: #fff; background: linear-gradient(125deg, #5B3F86 0%, #7B57B4 38%, #2A9AA0 100%); box-shadow: 0 30px 70px rgba(91, 63, 134, .35); }
+.ak-free-hot .ak-free-in > * { position: relative; z-index: 2; }
+.ak-free-blob { position: absolute !important; z-index: 0 !important; border-radius: 50%; filter: blur(2px); opacity: .55; }
+.ak-free-blob-1 { width: 380px; height: 380px; top: -140px; right: -80px; background: radial-gradient(circle at 30% 30%, #FFE08A, #FAC118 60%, transparent 70%); animation: ak-free-drift 9s ease-in-out infinite alternate; }
+.ak-free-blob-2 { width: 300px; height: 300px; bottom: -120px; left: 22%; background: radial-gradient(circle at 60% 40%, #FF8A5B, transparent 68%); animation: ak-free-drift 11s ease-in-out infinite alternate-reverse; }
+.ak-free-dots { position: absolute !important; inset: 0; z-index: 1 !important; pointer-events: none; }
+.ak-free-dots i { position: absolute; bottom: -20px; width: 10px; height: 10px; border-radius: 50%; background: #FFE08A; opacity: 0; animation: ak-free-rise 7s linear infinite; }
+.ak-free-dots i:nth-child(1) { left: 8%; animation-delay: 0s; } .ak-free-dots i:nth-child(2) { left: 22%; animation-delay: 1.5s; background: #fff; }
+.ak-free-dots i:nth-child(3) { left: 38%; animation-delay: 3s; } .ak-free-dots i:nth-child(4) { left: 55%; animation-delay: .8s; background: #FF8A5B; }
+.ak-free-dots i:nth-child(5) { left: 70%; animation-delay: 2.4s; background: #fff; } .ak-free-dots i:nth-child(6) { left: 84%; animation-delay: 4s; }
+.ak-free-dots i:nth-child(7) { left: 94%; animation-delay: 5.2s; background: #FF8A5B; }
+.ak-free-hot h2, .ak-site .ak-free-hot h2 { color: #fff; }
+.ak-free-hot .ak-hl-word { background-image: linear-gradient(transparent 58%, rgba(250, 193, 24, .95) 58%, rgba(250, 193, 24, .95) 92%, transparent 92%); color: #fff; }
+.ak-free-hot .ak-sub { color: rgba(255, 255, 255, .92); }
+.ak-free-tag2 { display: inline-block; margin: 0 0 12px; padding: 6px 14px; border-radius: 999px; background: var(--sun); color: var(--ink); font-weight: 800; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; animation: ak-free-wiggle 3.2s ease-in-out infinite; }
+.ak-free-steps { list-style: none; margin: 16px 0 18px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ak-free-steps li { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px 7px 8px; border-radius: 999px; background: rgba(255, 255, 255, .16); font-size: 14px; font-weight: 600; color: #fff; backdrop-filter: blur(4px); }
+.ak-free-steps span { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--sun); color: var(--ink); font-weight: 800; font-size: 13px; }
+.ak-free-hot .ak-signup-row input[type=email] { background: #fff; color: var(--ink); border: 0; box-shadow: 0 10px 24px rgba(29, 26, 43, .2); }
+.ak-free-hot .ak-signup-row .ak-btn { position: relative; overflow: hidden; box-shadow: 0 12px 28px rgba(250, 193, 24, .5); animation: ak-free-pulse 2.6s ease-in-out infinite; }
+.ak-free-hot .ak-signup-row .ak-btn::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .7), transparent); transform: skewX(-20deg); animation: ak-free-shine 3.4s ease-in-out infinite; }
+.ak-free-hot .ak-signup-ok, .ak-free-hot .ak-signup-ok span { color: rgba(255, 255, 255, .88); }
+.ak-free-hot .ak-signup-ok a, .ak-free-hot .ak-small a { color: #FFE08A; }
+.ak-free-hot .ak-free-proof { color: #fff; }
+.ak-free-hot .ak-free-proof li::before { color: #FFE08A; }
+.ak-free-hot .ak-small, .ak-free-hot .ak-signup-msg { color: rgba(255, 255, 255, .85); }
+.ak-free-hot .ak-badge { background: var(--sun); color: var(--ink); animation: ak-free-badge 2.4s ease-in-out infinite; box-shadow: 0 10px 24px rgba(0, 0, 0, .25); }
+.ak-free-hot .ak-druk-fan img { animation: ak-free-float 5.5s ease-in-out infinite; }
+.ak-free-hot .ak-druk-fan img:nth-child(2) { animation-delay: -1.8s; }
+.ak-free-hot .ak-druk-fan img:nth-child(3) { animation-delay: -3.6s; }
+@keyframes ak-free-drift { to { transform: translate(40px, 30px) scale(1.12); } }
+@keyframes ak-free-rise { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: .9; } 100% { transform: translateY(-420px); opacity: 0; } }
+@keyframes ak-free-wiggle { 0%, 88%, 100% { transform: rotate(0); } 92% { transform: rotate(-4deg); } 96% { transform: rotate(4deg); } }
+@keyframes ak-free-pulse { 0%, 100% { transform: none; } 50% { transform: scale(1.04); } }
+@keyframes ak-free-shine { 0%, 55% { left: -60%; } 100% { left: 140%; } }
+@keyframes ak-free-badge { 0%, 100% { transform: rotate(8deg) scale(1); } 50% { transform: rotate(-6deg) scale(1.12); } }
+@keyframes ak-free-float { 50% { translate: 0 -10px; } }
+@media (max-width: 760px) {
+  .ak-free-hot .ak-free-in { box-shadow: 0 18px 40px rgba(91, 63, 134, .3); }
+  .ak-free-steps { gap: 6px; margin: 10px 0 12px; }
+  .ak-free-steps li { padding: 5px 10px 5px 6px; font-size: 12px; }
+  .ak-free-steps li:nth-child(3) { display: none; }
+  .ak-free-tag2 { margin-bottom: 8px; font-size: 11.5px; }
+  .ak-free-blob-1 { width: 240px; height: 240px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ak-free-hot *, .ak-free-hot *::after { animation: none !important; }
+}
+
+/* 3.29.8: the price in one screen of a MacBook: price and button on the left, what is in it on the
+   right, Szop'en in the corner. Items come in one by one, the "-90 zł" and the button move. */
+#cennik.ak-a-sec { padding-block: clamp(36px, 5vh, 56px); }
+#cennik h2 { margin-bottom: 0; font-size: clamp(28px, 3.6vw, 44px); }
+#cennik .ak-a-plan-wrap { position: relative; max-width: 900px; margin: clamp(18px, 3vh, 32px) auto 0; }
+#cennik .ak-plan-szop { position: absolute; z-index: 3; right: -10px; top: -78px; margin: 0; pointer-events: none; }
+#cennik .ak-plan-szop img { width: clamp(96px, 9vw, 120px); animation: ak-plan-bob 4.6s ease-in-out infinite; }
+#cennik .ak-plan-szop figcaption { position: absolute; right: 100%; top: 4px; margin: 0 6px 0 0; max-width: 200px; width: max-content; font-size: 13px; padding: 9px 12px; }
+.ak-plan2 { max-width: none !important; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); align-items: center; padding: clamp(18px, 2.6vw, 30px) !important; border-radius: 32px !important; margin: 0 !important; background: linear-gradient(135deg, #fff 55%, #FFF6D6) !important; }
+.ak-plan2-left { display: grid; gap: 10px; align-content: center; }
+.ak-plan2-left .ak-a-plan-price strong { font-size: clamp(40px, 5vw, 54px); }
+.ak-plan2-left .ak-a-plan-price small { margin-top: 2px; }
+.ak-plan2-left .ak-a-toggle span { min-height: 40px; }
+.ak-plan2-left .ak-btn-wide { min-height: 52px; font-size: 16px; }
+.ak-plan2-left .ak-a-plan-note { margin: 0 !important; font-size: 13.5px; }
+.ak-plan2-left .ak-a-plan-free { text-align: center; font-size: 14px; margin: 0; }
+.ak-plan2-right { padding: clamp(14px, 2vw, 22px); border-radius: 24px; background: var(--teal-soft); }
+.ak-plan2-h { margin: 0 0 10px; font-family: "AK Baloo", "AK Baloo Fallback", "AK Poppins", "AK Poppins Fallback", system-ui, sans-serif; font-weight: 800; font-size: 22px; color: var(--teal-deep); }
+.ak-plan2-right .ak-a-plan-list { gap: 9px; }
+.ak-plan2-right .ak-a-plan-list li { font-size: 15.5px; font-weight: 600; line-height: 1.3; }
+.ak-plan2-chip { display: inline-block; margin: 14px 0 0; padding: 7px 14px; border-radius: 999px; background: var(--sun); color: var(--ink); font-weight: 800; font-size: 14px; animation: ak-plan-wobble 3.6s ease-in-out infinite; }
+.ak-plan2:has(input[value="month"]:checked) .ak-plan2-chip { display: none; }
+.ak-js #cennik.is-on .ak-plan2-right .ak-a-plan-list li { animation: ak-plan-in .6s var(--spring) both; }
+.ak-js #cennik .ak-plan2-right .ak-a-plan-list li { opacity: 0; transform: translateX(18px); }
+.ak-js #cennik.is-on .ak-plan2-right .ak-a-plan-list li:nth-child(2) { animation-delay: .12s; }
+.ak-js #cennik.is-on .ak-plan2-right .ak-a-plan-list li:nth-child(3) { animation-delay: .24s; }
+.ak-js #cennik.is-on .ak-plan2-right .ak-a-plan-list li:nth-child(4) { animation-delay: .36s; }
+.ak-js #cennik.is-on .ak-plan2-right .ak-a-plan-list li:nth-child(5) { animation-delay: .48s; }
+.ak-plan2 .ak-a-toggle em { animation: ak-plan-wobble 3s ease-in-out infinite; }
+.ak-plan2-left .ak-a-plan-buy { position: relative; overflow: hidden; animation: ak-plan-pulse 2.8s ease-in-out infinite; box-shadow: 0 12px 26px rgba(250, 193, 24, .45); }
+.ak-plan2-left .ak-a-plan-buy::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .65), transparent); transform: skewX(-20deg); animation: ak-free-shine 3.6s ease-in-out infinite; }
+@keyframes ak-plan-in { to { opacity: 1; transform: none; } }
+@keyframes ak-plan-bob { 50% { transform: translateY(-7px) rotate(-2deg); } }
+@keyframes ak-plan-wobble { 0%, 85%, 100% { transform: rotate(0); } 90% { transform: rotate(-3deg) scale(1.05); } 95% { transform: rotate(3deg) scale(1.05); } }
+@keyframes ak-plan-pulse { 0%, 100% { transform: none; } 50% { transform: scale(1.03); } }
+@media (max-width: 860px) {
+  .ak-plan2 { grid-template-columns: minmax(0, 1fr); }
+  #cennik .ak-plan-szop { position: static; display: flex; justify-content: center; margin: 0 0 -12px; }
+  #cennik .ak-plan-szop figcaption { position: static; width: auto; margin: 0 0 30px 8px; max-width: 190px; }
+  .ak-plan2-right { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ak-js #cennik .ak-plan2-right .ak-a-plan-list li { opacity: 1; transform: none; animation: none !important; }
+  #cennik *, #cennik *::after { animation: none !important; }
+}
+@media (min-width: 861px) { #cennik .ak-plan-szop figcaption { display: none; } #cennik .ak-plan-szop { top: -70px; right: 6px; } }
+
+/* 3.29.9: the two sentences of a row (audiobook / play) share one cell, so the row is as tall as
+   the longer one and nothing runs out of its frame on phones. */
+.ak-ab-rows dd { display: grid; min-height: 0; }
+.ak-ab-rows dd > * { grid-area: 1 / 1; }
+.ak-ab-rows .ak-ab-play { position: static; inset: auto; }
+.ak-ab-rows > div { align-items: start; }
+.ak-ab-rows dt { padding-top: 2px; }
+@media (max-width: 760px) {
+  .ak-ab-rows > div { grid-template-columns: 74px minmax(0, 1fr); }
+  .ak-ab-rows dd { overflow-wrap: anywhere; }
+}
+
+/* 3.29.9: "Kiedy odpalić Audiokiddo?" as five big cards (was ten buttons): Szop'en in a different
+   place each time, one line from him. On phones a row to swipe with the next card peeking. */
+.ak-when5-row { list-style: none; margin: clamp(22px, 3vw, 38px) auto 0; padding: 0; max-width: 1180px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(10px, 1.4vw, 18px); }
+.ak-when5-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 18px 14px 20px; border-radius: 28px; box-shadow: var(--shadow); transition: transform .45s var(--spring); }
+.ak-when5-card:hover { transform: translateY(-8px) rotate(-1deg); }
+.ak-w-teal { background: var(--teal-soft); } .ak-w-sun { background: var(--sun-soft); } .ak-w-lav { background: var(--lav-soft); }
+.ak-w-mint { background: #DDEFD9; } .ak-w-peach { background: #FFE3D3; }
+.ak-when5-card img { width: clamp(110px, 11vw, 150px); height: auto; filter: drop-shadow(0 10px 12px rgba(36, 27, 58, .16)); transition: transform .6s var(--bouncy); }
+.ak-when5-card:hover img { transform: scale(1.1) rotate(4deg); }
+.ak-when5-card h3 { margin: 4px 0 0 !important; font-size: clamp(19px, 1.8vw, 23px); line-height: 1.12; }
+.ak-when5-card p { margin: 0; font-size: 14.5px; line-height: 1.45; color: var(--ink); }
+.ak-when5-hint { display: none; margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+.ak-when5-more { margin-top: 18px; }
+.ak-js .ak-when5-card { opacity: 0; transform: translateY(30px) scale(.96); }
+.ak-js .ak-when5.is-on .ak-when5-card { animation: ak-when5-in .7s calc(var(--i) * .12s) var(--spring) both; }
+@keyframes ak-when5-in { to { opacity: 1; transform: none; } }
+@media (max-width: 1000px) { .ak-when5-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .ak-when5-row { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 14px -16px 0; padding: 4px 16px 10px; gap: 12px; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .ak-when5-row::-webkit-scrollbar { display: none; }
+  .ak-when5-card { flex: 0 0 74%; scroll-snap-align: center; scroll-snap-stop: always; padding: 14px 14px 18px; }
+  .ak-when5-card:hover { transform: none; }
+  .ak-when5-card img { width: 112px; }
+  .ak-when5-hint { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ak-js .ak-when5-card { opacity: 1; transform: none; animation: none !important; }
+}
+
+/* 3.30.0: on phones each section fits one screen (iPhone 15 Pro: about 680 px under the header):
+   smaller headings, pictures and gaps, and only what sells stays in view. */
+@media (max-width: 760px) {
+  .ak-view-start .ak-a-sec.ak-day, .ak-view-start .ak-a-sec.ak-ab, .ak-view-start .ak-lib4, .ak-view-start #darmowe-zabawy.ak-a-sec,
+  .ak-view-start #cennik.ak-a-sec, .ak-view-start .ak-a-voices { padding-block: 18px 16px !important; min-height: 0 !important; }
+  .ak-view-start .ak-a-sec h2 { font-size: clamp(22px, 6.4vw, 27px); margin-bottom: 6px; line-height: 1.1; }
+
+  /* Od pobudki do dobranoc */
+  .ak-day-phone { height: min(33dvh, 270px); padding: 6px; }
+  .ak-day-stage { gap: 6px; }
+  .ak-day-in { margin-top: 4px; }
+  .ak-day-nav { top: calc(min(33dvh, 270px) / 2 - 20px); }
+  .ak-day-nav button { width: 38px; height: 38px; font-size: 22px; }
+  .ak-day-ch, .ak-day-ch:first-child, .ak-day-ch:last-child { padding: 12px 14px 14px; }
+  .ak-day-time { margin-bottom: 4px; padding: 2px 9px; }
+  .ak-day-ch h3 { font-size: 19px; margin-bottom: 3px; }
+  .ak-day-ch p { font-size: 14px; line-height: 1.42; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* Tu dziecko gra główną rolę */
+  .ak-ab .ak-nb-lead { display: none; }
+  .ak-ab-box { margin-top: 8px; padding: 10px; }
+  .ak-ab-switch button { padding: 8px 6px; font-size: 14px; }
+  .ak-ab-szop { width: 54px; }
+  .ak-ab-stage { margin-top: 6px; gap: 4px; }
+  .ak-ab-rows { gap: 5px; }
+  .ak-ab-rows > div { padding: 6px 10px; }
+  .ak-ab-rows dd { font-size: 13.5px; line-height: 1.3; }
+  .ak-ab-gives { margin-top: 8px; }
+  .ak-ab-give { padding: 8px 10px; }
+  .ak-ab-give p { font-size: 12.5px; line-height: 1.35; }
+  .ak-ab-give .ak-ab-give-h { font-size: 15px; margin-bottom: 2px; }
+
+  /* Pięć rodzajów zabaw */
+  .ak-lib4 .ak-a-eyebrow { display: none; }
+  .ak-lib4-row { margin-top: 8px; padding-bottom: 6px; }
+  .ak-lib4-row li { padding: 10px 10px 12px; gap: 5px; }
+  .ak-lib4-row img { aspect-ratio: 16 / 10; }
+  .ak-lib4-quip { font-size: 13px; padding: 7px 10px; }
+  .ak-lib3-ages { font-size: 13px; margin-top: 4px; }
+
+  /* Darmowe zabawy w aplikacji */
+  #darmowe-zabawy .ak-a-eyebrow { margin-bottom: 4px; }
+  #darmowe-zabawy .ak-a-lead { display: none; }
+  #darmowe-zabawy .ak-tix-szop { display: none; }
+  .ak-tix-in { margin-top: 8px; }
+  .ak-tix-one { padding: 6px; }
+  .ak-tix-one img { width: 54px; height: 54px; }
+  .ak-tix-body h3 { font-size: 17px; }
+  #darmowe-zabawy .ak-try3-see { display: none; }
+  #darmowe-zabawy .ak-try3-btns .ak-btn { min-height: 52px; font-size: 16px; }
+  #darmowe-zabawy .ak-small { font-size: 12.5px; margin-top: 6px; }
+
+  /* Cennik */
+  #cennik .ak-plan-szop img { width: 76px; }
+  #cennik .ak-plan-szop { margin-bottom: -6px; }
+  #cennik .ak-plan-szop figcaption { display: none; }
+  #cennik .ak-a-plan-wrap { margin-top: 8px; }
+  .ak-plan2 { padding: 14px !important; gap: 8px !important; border-radius: 26px !important; }
+  .ak-plan2-left { gap: 7px; }
+  .ak-plan2-left .ak-a-plan-price strong { font-size: 40px; }
+
+  /* Opinie */
+  .ak-a-voices .ak-a-lead { display: none; }
+
+  /* Zapis na e-mail */
+  .ak-free-hot .ak-druk-fan { max-width: 130px; margin: 0 auto; }
+  .ak-free-hot .ak-free-steps, .ak-free-hot .ak-free-proof { display: none; }
+  .ak-free-hot .ak-sub { font-size: 14.5px; line-height: 1.4; margin: 4px 0 8px; }
+  .ak-free-hot h2 { margin-top: 0; }
+  .ak-free-hot .ak-signup-ok span { font-size: 12px; line-height: 1.35; }
+  .ak-free-hot .ak-small { margin: 4px 0 0; }
+}
+@media (max-width: 760px) {
+  /* Opinie: the parents' words as a row to swipe, the specialists as a single line below */
+  .ak-view-start .ak-a-quotes { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 10px -16px 0; padding: 4px 16px 8px; scrollbar-width: none; }
+  .ak-a-quotes::-webkit-scrollbar { display: none; }
+  .ak-view-start .ak-a-quote { flex: 0 0 82%; scroll-snap-align: center; margin: 0; padding: 14px; }
+  .ak-view-start .ak-a-quote blockquote p { font-size: 14.5px; line-height: 1.4; }
+  .ak-view-start .ak-a-pros { display: flex; overflow-x: auto; gap: 8px; scroll-snap-type: x mandatory; margin: 6px -16px 0; padding: 2px 16px; scrollbar-width: none; }
+  .ak-a-pros::-webkit-scrollbar { display: none; }
+  .ak-view-start .ak-a-pros li { flex: 0 0 78%; scroll-snap-align: center; padding: 8px 10px; }
+  .ak-view-start .ak-a-pros q { font-size: 13px; line-height: 1.35; }
+  .ak-a-voices .ak-center { margin: 6px 0 0; }
+  /* Zapis na e-mail: still tighter */
+  .ak-free-hot .ak-druk-fan { max-width: 100px; }
+  .ak-free-hot .ak-badge { width: 60px; height: 60px; font-size: 17px; right: -12px; top: -10px; }
+  .ak-free-hot .ak-free-tag2 { display: none; }
+  .ak-free-hot .ak-free-in { padding: 14px 16px 16px; }
+  .ak-free-hot h2, .ak-site .ak-free-hot h2 { font-size: clamp(22px, 6.2vw, 26px); }
+}
+@media (max-width: 760px) {
+  .ak-view-start .ak-a-quote { padding: 11px 13px; }
+  .ak-view-start .ak-a-quote blockquote p { font-size: 14px; }
+  .ak-view-start .ak-a-pros li { padding: 6px 10px; }
+  .ak-a-voices .ak-center { margin: 2px 0 0; }
+}
+
+@media (max-width: 760px) {
+  /* The menu meets the bar: no gap, no side margins, no page showing between them. */
+  .ak-site .ak-nav { left: 0; right: 0; top: calc(100% - 1px); border-radius: 0 0 22px 22px; border-top: 0; }
+
+  /* Rows to swipe sideways: only sideways. A row with overflow-x also scrolled up and down by a few
+     pixels (cards that rise on entry and their shadows are taller than the row); now it does not. */
+  .ak-packs, .ak-when5-row, .ak-lib4-row, .ak-day-chapters, .ak-a-quotes, .ak-a-pros, .ak-videos { overflow-y: hidden; overscroll-behavior-x: contain; }
+  .ak-view-start .ak-home-packs .ak-packs { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 14px -16px 0; padding: 6px 16px 14px; scrollbar-width: none; }
+  .ak-home-packs .ak-packs::-webkit-scrollbar { display: none; }
+  .ak-view-start .ak-home-packs .ak-pack { flex: 0 0 70%; scroll-snap-align: center; scroll-snap-stop: always; display: flex; flex-direction: column; gap: 6px; }
+  .ak-view-start .ak-home-packs .ak-pack-cover { max-width: none; width: 100%; }
+  .ak-home-packs > p { font-size: 14.5px; }
+  .ak-home-packs .ak-btn { display: none; }
+}
+/* "Przesuń" hint under the packs: a hand-sized arrow that nudges the way (phones) */
+.ak-home-packs .ak-swipe-hint { display: none; }
+@media (max-width: 760px) {
+  .ak-home-packs .ak-swipe-hint { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 0 8px; font-size: 13px; font-weight: 700; color: var(--lav-deep); }
+  .ak-swipe-hint svg { animation: ak-swipe-nudge 1.6s ease-in-out infinite; }
+}
+@keyframes ak-swipe-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(8px); } }
+@media (prefers-reduced-motion: reduce) { .ak-swipe-hint svg { animation: none; } }
+@media (max-width: 760px) {
+  /* Cards beside the one in view are always there (they used to wait, transparent, until enough of
+     them showed, so nobody saw there was more to swipe to). */
+  .ak-js .ak-packs [data-reveal], .ak-js .ak-lib4-row [data-reveal], .ak-js .ak-a-quotes [data-reveal], .ak-js .ak-a-pros[data-reveal],
+  .ak-js .ak-videos [data-reveal], .ak-js .ak-a-pros [data-reveal] { opacity: 1 !important; transform: none !important; transition: none; }
+  .ak-js .ak-when5-card { opacity: 1; transform: none; }
+}
+
+/* Pressing "Kup dostęp": at once a screen says it is working (the order page takes a moment) */
+.ak-go { position: fixed; z-index: 99999; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 24px; background: rgba(104, 80, 130, .96); color: #fff; text-align: center; animation: ak-say .25s var(--ease); }
+.ak-go img { width: 110px; height: auto; animation: ak-go-bob 1.2s ease-in-out infinite; }
+.ak-go strong { font-size: 20px; font-weight: 800; }
+.ak-go small { font-size: 14px; opacity: .85; }
+.ak-go-bar { width: min(260px, 70vw); height: 6px; border-radius: 6px; background: rgba(255, 255, 255, .25); overflow: hidden; }
+.ak-go-bar i { display: block; height: 100%; width: 40%; border-radius: inherit; background: var(--sun); animation: ak-go-run 1.4s ease-in-out infinite; }
+@keyframes ak-go-run { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+@keyframes ak-go-bob { 50% { transform: translateY(-8px) rotate(-3deg); } }
+@media (prefers-reduced-motion: reduce) { .ak-go img, .ak-go-bar i { animation: none; } }
+
+@media (max-width: 760px) {
+  /* The phone: the same screen as on a computer, made smaller (a real phone's shape), not squeezed. */
+  .ak-view-start .ak-day h2[data-reveal] { transform: none !important; opacity: 1 !important; margin-bottom: 10px; }
+  .ak-day-stage { gap: 2px; }
+  .ak-day-phone { width: 240px; height: 493px; aspect-ratio: auto; padding: 10px; border-radius: 46px; transform: scale(.66); transform-origin: top center; margin: 0 auto calc(493px * -.34); }
+  .ak-day-screen { border-radius: 37px; }
+  .ak-day-nav { top: calc(493px * .33 - 20px); }
+  .ak-day-dots { margin-top: 2px; }
+}
+@media (max-width: 760px) {
+  /* Screen-reader labels inside a sideways row are absolutely placed: the row must be their frame,
+     or they stick out of it and widen the whole page. */
+  .ak-when5-row, .ak-lib4-row, .ak-a-quotes, .ak-a-pros, .ak-videos, .ak-packs, .ak-day-chapters { position: relative; }
+  html, body { overflow-x: clip; }
+}
+/* Numbers dead centre in their circles (the circle's height is the line height) */
+.ak-free-steps span { display: block; text-align: center; line-height: 24px; height: 24px; width: 24px; padding: 0; }
+
+/* 3.30.9 - Od pobudki do dobranoc on a phone: nothing jumps while the cards are swiped */
+.ak-day-scr { transform: none; transition: opacity .12s linear, visibility 0s .12s; }
+.ak-day-scr.is-on { transform: none; transition: opacity .28s linear .1s, visibility 0s; }
+@media (max-width: 760px) {
+  .ak-day-chapters { align-items: stretch; scroll-snap-type: x mandatory; scroll-behavior: auto; }
+  .ak-day-ch, .ak-day-ch:first-child, .ak-day-ch:last-child { transform: none !important; scroll-snap-stop: normal; transition: opacity .2s linear, box-shadow .2s; will-change: auto; }
+  .ak-day-phone { will-change: transform; backface-visibility: hidden; }
+  .ak-day-screen { isolation: isolate; contain: paint; }
+}
+@media (max-width: 760px) {
+  /* A sideways swipe works on the phone, the dots and the cards alike */
+  .ak-day-stage, .ak-day-phone, .ak-day-dots { touch-action: pan-y; }
+  .ak-day-chapters { touch-action: pan-x pan-y; }
+}
+
+/* 3.30.10 - the children's films open large on a phone */
+.ak-film-open { overflow: hidden; }
+.ak-film { position: fixed; inset: 0; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: max(64px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom)); background: rgba(14, 12, 22, .96); animation: ak-film-in .25s ease-out; }
+.ak-film video { width: 100%; max-height: calc(100dvh - 150px); background: #000; object-fit: contain; }
+.ak-film-cap { margin: 0; padding: 0 20px; text-align: center; font-size: 17px; font-weight: 600; color: #fff; }
+.ak-film-x { position: absolute; top: max(14px, env(safe-area-inset-top)); right: 14px; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px 0 14px; border: 0; border-radius: 999px; background: #fff; color: var(--ink, #1D1A2B); font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; }
+@keyframes ak-film-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .ak-film { animation: none; } }
+
+/* 3.30.10 - more air between the sections on a phone */
+@media (max-width: 760px) {
+  .ak-view-start .ak-a-sec.ak-day, .ak-view-start .ak-a-sec.ak-ab, .ak-view-start .ak-lib4, .ak-view-start #darmowe-zabawy.ak-a-sec,
+  .ak-view-start #cennik.ak-a-sec, .ak-view-start .ak-a-voices, .ak-view-start .ak-action, .ak-view-start .ak-a-sec { padding-block: 40px 36px !important; }
+  .ak-view-start .ak-a-sec h2 { margin-bottom: 14px; }
+  #cennik .ak-plan-szop { margin-bottom: 8px; }
+  #cennik .ak-a-plan-wrap { margin-top: 14px; }
+  #cennik .ak-packs-intro, #cennik h3 { margin-top: 30px; }
+  .ak-view-start .ak-a-lead { margin-top: 18px; }
+}
+@media (max-width: 760px) {
+  .ak-view-start .ak-home-packs { margin-top: 44px; }
+  .ak-view-start .ak-home-packs p { margin: 8px 0 12px; line-height: 1.5; }
+  .ak-view-start .ak-swipe-hint { margin: 10px 0 12px; }
+}
+
+/* 3.30.12 - the phone's screens change without a blank moment: the new screen fades in over the old one,
+   which only leaves once the new one is fully there; the small animations inside start at once */
+.ak-day-scr { opacity: 0; visibility: hidden; z-index: 1; transition: opacity 0s .28s, visibility 0s .28s; }
+.ak-day-scr.is-on { opacity: 1; visibility: visible; z-index: 2; transition: opacity .26s ease-out, visibility 0s; }
+@media (max-width: 760px) {
+  .ak-day-scr.is-on, .ak-day-scr.is-on * { animation-delay: 0s !important; }
+  .ak-day-scr.is-on * { animation-duration: .4s !important; }
+  .ak-day-scr.is-on .ak-day-ring-fill, .ak-day-scr.is-on .ak-day-bar i, .ak-day-scr.is-on .ak-day-slider i { animation-duration: .8s !important; }
+}
+
+/* 3.30.13 - the phone's screens slide into each other (direction follows the swipe); the old one stays
+   whole underneath until the new one has covered it, so nothing flickers or goes blank */
+.ak-day-scr { transition: none !important; opacity: 0; visibility: hidden; z-index: 1; transform: none; }
+.ak-day-scr.is-prev { opacity: 1; visibility: visible; z-index: 1; animation: ak-day-out .36s cubic-bezier(.3, .7, .2, 1) both; }
+.ak-day-scr.is-on { opacity: 1; visibility: visible; z-index: 2; animation: ak-day-in .34s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes ak-day-in { from { opacity: 0; transform: translateX(var(--dx, 26px)) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes ak-day-out { to { transform: translateX(calc(var(--dx, 26px) * -.5)) scale(.985); } }
+@media (prefers-reduced-motion: reduce) { .ak-day-scr.is-on, .ak-day-scr.is-prev { animation: none; } }
+
+/* 3.30.18 - an illustration under the heading of a few pages */
+.ak-hero-fig { margin: 0 auto; padding: 0 16px; max-width: 980px; }
+.ak-hero-fig img { display: block; width: 100%; height: auto; border-radius: 26px; box-shadow: 0 14px 40px rgba(36, 27, 58, .12); }
+@media (max-width: 760px) { .ak-hero-fig { margin-top: 6px; } .ak-hero-fig img { border-radius: 20px; } }
+
+/* 3.30.19 - tables in articles: a clear card with a coloured header row */
+.ak-prose table { width: 100%; margin: 1.4em 0; border-collapse: separate; border-spacing: 0; table-layout: fixed; border-radius: 18px; overflow: hidden; box-shadow: 0 0 0 1.5px var(--line, #DCD6E6); font-size: 16px; line-height: 1.45; background: #fff; }
+.ak-prose th, .ak-prose td { padding: 12px 14px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line, #DCD6E6); }
+.ak-prose thead th { background: var(--teal-soft, #E3F2F1); color: var(--ink, #1D1A2B); font-weight: 800; font-size: 15px; }
+.ak-prose thead th:empty { background: var(--teal-soft, #E3F2F1); }
+.ak-prose tbody th, .ak-prose tbody td:first-child { font-weight: 700; color: var(--ink, #1D1A2B); background: #FAF8FD; }
+.ak-prose tbody tr:last-child td { border-bottom: 0; }
+.ak-prose tbody td:last-child { background: #FFFAE8; }
+.ak-prose th:first-child, .ak-prose td:first-child { width: 28%; }
+@media (max-width: 640px) { .ak-prose table { font-size: 14px; } .ak-prose th, .ak-prose td { padding: 10px 9px; } .ak-prose thead th { font-size: 13.5px; } }
+
+/* 3.30.21 - the app box inside the rankings */
+.ak-getapp { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 16px; align-items: center; margin: 2em 0; padding: 18px 20px; border-radius: 24px; background: #FFF6D6; box-shadow: inset 0 0 0 1.5px rgba(250, 193, 24, .7); }
+.ak-getapp img { width: 84px; height: auto; }
+.ak-getapp-h { margin: 0 0 4px; font-family: "AK Baloo", "AK Baloo Fallback", system-ui, sans-serif; font-weight: 800; font-size: 20px; line-height: 1.2; color: var(--ink, #1D1A2B); }
+.ak-getapp p { margin: 0 0 10px; font-size: 15.5px; line-height: 1.5; }
+.ak-getapp .ak-stores { margin: 0; justify-content: flex-start; }
+@media (max-width: 560px) { .ak-getapp { grid-template-columns: 1fr; text-align: left; } .ak-getapp img { width: 64px; } }
+
+/* 3.30.22 - a ghost button on a dark box keeps its white text on hover (it turned white-on-white) */
+.ak-guide-cta .ak-btn-ghost:hover, .ak-btn-ghost-light:hover { background: rgba(255, 255, 255, .16); color: #fff !important; }
+
+/* 3.30.25 - the cards of the day section: opaque, so a neighbour's text never shows through while swiping
+   (only their contents dim); and no heavy hints on the phone while it scrolls */
+.ak-day-ch, .ak-day-ch:first-child, .ak-day-ch:last-child { opacity: 1 !important; }
+.ak-day-ch:not(.is-on) > * { opacity: .5; transition: opacity .2s linear; }
+.ak-day-ch.is-on > * { opacity: 1; transition: opacity .2s linear; }
+@media (max-width: 760px) {
+  .ak-day-phone { will-change: auto; backface-visibility: visible; }
+  .ak-day-screen { contain: none; isolation: auto; }
+  .ak-day-chapters { scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
+  .ak-day-ch { background: #fff; }
+}
+
+/* 3.30.25 - speed: the sections below the first screens are laid out and painted only when they come
+   near (content-visibility), so the first paint does not wait for the whole page's styles */
+.ak-view-start #kiedy, .ak-view-start #w-akcji, .ak-view-start #biblioteka, .ak-view-start #darmowe-zabawy,
+.ak-view-start #opinie, .ak-view-start #cennik, .ak-view-start #o-nas, .ak-view-start #pytania,
+.ak-view-start #koniec, .ak-view-start .ak-foot { content-visibility: auto; contain-intrinsic-size: auto 720px; }
+
+/* 3.30.27 - phones: the screens of the phone slide with the swipe (position follows the cards),
+   no fading, no two screens on top of each other */
+@media (max-width: 760px) {
+  .ak-day-screen { overflow: hidden; }
+  .ak-day-screen .ak-day-scr, .ak-day-screen .ak-day-scr.is-on, .ak-day-screen .ak-day-scr.is-prev {
+    opacity: 1 !important; visibility: visible !important; z-index: 1 !important; animation: none !important; transition: none !important;
+    transform: translate3d(calc((var(--i, 0) - var(--p, 0)) * 100%), 0, 0) !important; will-change: transform;
+  }
+}
+
+/* 3.30.28 - the "thank you" card after signing up is white, so its words are dark wherever it sits (it showed white on white in the dark boxes) */
+.ak-signup-done, .ak-free-hot .ak-signup-done, .ak-guide-cta .ak-signup-done { color: var(--ink, #1D1A2B); }
+.ak-signup-done p, .ak-signup-done .ak-signup-done-h, .ak-free-hot .ak-signup-done p, .ak-guide-cta .ak-signup-done p { color: var(--ink, #1D1A2B) !important; }
+.ak-signup-done a:not(.ak-btn) { color: var(--teal-deep, #1D7478) !important; }
+.ak-signup-done .ak-btn-teal, .ak-signup-done .ak-btn-teal:hover { color: #fff !important; }
+
+/* 3.30.43: a section of its own for the samples near the top (the packs' players, bigger).
+   Named ak-hear: ak-sample is the old card of the pack pages. */
+.ak-hear .ak-packs { margin-top: 26px; }
+.ak-hear .ak-pack-next { display: none; }
+
+/* 3.30.43: "Od pobudki do dobranoc" on a phone: one chapter card at a time, no cut-off neighbours
+   at the edges (dots and arrows show there are more). */
+@media (max-width: 760px) {
+  .ak-day-chapters { margin: 0; padding: 4px 0 10px; gap: 12px; scroll-padding: 0; }
+  .ak-day-ch, .ak-day-ch:first-child, .ak-day-ch:last-child { flex: 0 0 100%; min-height: 150px; opacity: 1; transform: none; box-sizing: border-box; scroll-snap-align: center; }
+  .ak-day-ch.is-on { box-shadow: var(--shadow); }
+  .ak-day-ch p { font-size: 15.5px; line-height: 1.5; }
+}
+
+/* 3.30.44: phones. The phone of "Od pobudki do dobranoc" is bigger (it was a third of the screen),
+   its screens fade instead of sliding while the page scrolls, and a CTA sticks to the corner once the
+   first screen is behind the visitor. */
+@media (max-width: 760px) {
+  .ak-day-phone { transform: scale(.9); margin: 0 auto calc(493px * -.1); }
+  .ak-day-nav { top: calc(493px * .45 - 20px); }
+  .ak-day-scr, .ak-day-scr.is-on { transform: none !important; }
+  .ak-day-scr { transition: opacity .2s linear !important; }
+  .ak-day-ch p { font-size: 15px; line-height: 1.45; }
+}
+
+/* 3.30.45: on phones the screens of the phone fade into each other one at a time (the sliding strip
+   showed two screens at once during the change and broke while the page scrolled). */
+@media (max-width: 760px) {
+  .ak-day-screen .ak-day-scr, .ak-day-screen .ak-day-scr.is-on, .ak-day-screen .ak-day-scr.is-prev {
+    transform: none !important; animation: none !important; will-change: auto !important;
+    visibility: visible !important; transition: opacity .25s ease !important;
+  }
+  .ak-day-screen .ak-day-scr { opacity: 0 !important; z-index: 1 !important; pointer-events: none; }
+  .ak-day-screen .ak-day-scr.is-on { opacity: 1 !important; z-index: 2 !important; }
+}
+
+/* 3.30.46: "Pięć rodzajów zabaw" on a phone: no cropped covers; a plain list a parent reads in seconds
+   (an icon, the kind of play, what the child does). Szop’en's jokes stay on bigger screens. */
+.ak-lib4-does { display: none; }
+@media (max-width: 760px) {
+  .ak-lib4-row { display: grid; grid-template-columns: 1fr; overflow: visible; margin: 14px 0 0; padding: 0; gap: 10px; scroll-snap-type: none; }
+  .ak-lib4-row li { flex: none; display: grid; grid-template-columns: 52px 1fr; column-gap: 14px; row-gap: 2px; align-items: center; padding: 14px 16px; border-radius: 22px; }
+  .ak-lib4-row li::before { grid-row: 1 / span 2; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; background: var(--sun-soft); content: "🏃"; }
+  .ak-lib4-row li:nth-child(2)::before { content: "🧩"; background: var(--teal-soft); }
+  .ak-lib4-row li:nth-child(3)::before { content: "🎨"; background: var(--lav-soft); }
+  .ak-lib4-row li:nth-child(4)::before { content: "🧭"; background: var(--sun-soft); }
+  .ak-lib4-row li:nth-child(5)::before { content: "🔍"; background: var(--teal-soft); }
+  .ak-lib4-row img, .ak-lib4-quip { display: none; }
+  .ak-lib4-row h3 { margin: 0 !important; font-size: 19px; align-self: end; }
+  .ak-lib4-does { display: block; margin: 0; font-size: 14.5px; line-height: 1.4; color: var(--muted); align-self: start; }
+  .ak-js .ak-lib4-row [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* 3.30.47: no emoji icons in the phone list (they looked generated): the kinds of play are plain
+   text rows with a bar in the brand colour on the left. */
+@media (max-width: 760px) {
+  .ak-lib4-row li, .ak-lib4-row li:nth-child(n) { display: block; padding: 14px 18px 14px 20px; border-left: 6px solid var(--sun); border-radius: 18px; }
+  .ak-lib4-row li::before, .ak-lib4-row li:nth-child(n)::before { content: none; display: none; }
+  .ak-lib4-row li.ak-c-teal { border-left-color: var(--teal); }
+  .ak-lib4-row li.ak-c-lav { border-left-color: var(--lav-deep, #8C6CD0); }
+  .ak-lib4-row h3 { margin: 0 0 4px !important; font-size: 20px; }
+  .ak-lib4-does { margin: 0; }
+}
+
+/* 3.31.0: the home page rebuilt from a parent's view (2026-10-20). The first screen says what it is,
+   lets the parent hear it and gives one way in; then three steps instead of the comparison table. */
+.ak-v2-hero { min-height: 0 !important; padding: clamp(28px, 6vw, 72px) 0 clamp(36px, 6vw, 72px) !important; background: radial-gradient(120% 90% at 85% 10%, var(--teal-soft) 0%, transparent 55%), radial-gradient(90% 70% at 0% 100%, var(--sun-soft) 0%, transparent 60%), var(--paper); }
+.ak-v2-hero-in { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(20px, 4vw, 56px); align-items: center; }
+.ak-v2-hero-txt { text-align: left; }
+.ak-v2-eyebrow { display: inline-block; margin: 0 0 14px; padding: 6px 14px; border-radius: 999px; background: var(--paper); box-shadow: 0 0 0 1.5px var(--line); font-size: 14px; font-weight: 700; color: var(--teal-deep); }
+.ak-v2-hero h1 { margin: 0 !important; font-size: clamp(32px, 5vw, 60px); line-height: 1.06; }
+.ak-v2-sub { margin: 16px 0 0; max-width: 34em; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.5; color: var(--muted); }
+.ak-v2-listen { display: flex; align-items: center; gap: 14px; max-width: 460px; margin-top: 22px; padding: 10px 18px 10px 10px; border-radius: 999px; background: var(--paper); box-shadow: var(--shadow); }
+.ak-v2-listen .ak-play { flex: none; width: 58px; height: 58px; }
+.ak-v2-listen > span { flex: 1; min-width: 0; }
+.ak-v2-listen strong { display: block; font-size: 17px; line-height: 1.2; }
+.ak-v2-listen small { display: block; margin-top: 2px; font-size: 13px; color: var(--muted); }
+.ak-v2-listen:has(.ak-play.is-playing) .ak-h6-eq b { opacity: 1; animation: ak-h6-eq .9s ease-in-out infinite alternate; }
+.ak-v2-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 22px; }
+.ak-v2-cta .ak-btn { min-width: 260px; }
+.ak-v2-how { font-weight: 700; color: var(--teal-deep); text-decoration: underline; text-underline-offset: 4px; }
+.ak-v2-trust { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; }
+.ak-v2-trust li { padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, .7); box-shadow: 0 0 0 1px var(--line); font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.ak-v2-trust li::before { content: "✓ "; color: var(--teal-deep); font-weight: 800; }
+.ak-v2-szop { position: relative; margin: 0; justify-self: center; width: min(440px, 100%); }
+.ak-v2-szop img { display: block; width: 100%; height: auto; filter: drop-shadow(0 24px 28px rgba(36, 27, 58, .16)); }
+.ak-v2-szop figcaption { position: absolute; right: -2%; top: -2%; max-width: 200px; padding: 10px 14px; border-radius: 20px 20px 20px 6px; background: var(--paper); box-shadow: var(--shadow); font-size: 14px; font-weight: 700; line-height: 1.3; }
+
+.ak-v2-steps-sec { min-height: 0 !important; }
+.ak-v2-steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2vw, 22px); margin: clamp(20px, 3vw, 34px) 0 0; padding: 0; counter-reset: none; }
+.ak-v2-steps li { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 22px 18px 22px; border-radius: 26px; background: var(--paper); box-shadow: var(--shadow); }
+.ak-v2-steps img { width: 120px; height: 120px; object-fit: contain; }
+.ak-v2-steps h3 { margin: 4px 0 0 !important; font-size: clamp(20px, 2vw, 24px); }
+.ak-v2-steps p { margin: 0; font-size: 15.5px; line-height: 1.45; color: var(--muted); }
+.ak-v2-step-n { position: absolute; left: 16px; top: 14px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--sun); font-weight: 800; color: var(--ink); }
+.ak-v2-gives { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.ak-v2-gives p { margin: 0; padding: 14px 18px; border-radius: 20px; background: var(--teal-soft); font-size: 15.5px; line-height: 1.45; }
+.ak-v2-gives p + p { background: var(--sun-soft); }
+
+@media (max-width: 760px) {
+  .ak-v2-hero { padding: 18px 0 34px !important; }
+  .ak-v2-hero-in { grid-template-columns: 1fr; gap: 0; }
+  .ak-v2-hero-txt { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .ak-v2-eyebrow { margin-bottom: 12px; font-size: 13px; }
+  .ak-v2-hero h1 { font-size: clamp(30px, 8.4vw, 36px); }
+  .ak-v2-sub { margin-top: 12px; font-size: 16px; }
+  .ak-v2-listen { width: 100%; margin-top: 18px; text-align: left; }
+  .ak-v2-cta { width: 100%; flex-direction: column; gap: 12px; margin-top: 16px; }
+  .ak-v2-cta .ak-btn { width: 100%; min-width: 0; }
+  .ak-v2-trust { justify-content: center; margin-top: 14px; gap: 6px; }
+  .ak-v2-trust li { font-size: 12.5px; padding: 5px 10px; }
+  .ak-v2-szop { width: min(220px, 60vw); margin-top: 22px; }
+  .ak-v2-szop figcaption { right: -30%; top: 4%; max-width: 150px; font-size: 12.5px; }
+  .ak-v2-steps { grid-template-columns: 1fr; gap: 10px; }
+  .ak-v2-steps li { display: grid; grid-template-columns: 76px 1fr; column-gap: 14px; text-align: left; align-items: center; padding: 14px 16px; }
+  .ak-v2-steps img { grid-row: 1 / span 2; width: 76px; height: 76px; }
+  .ak-v2-steps h3 { margin: 0 !important; font-size: 19px; align-self: end; }
+  .ak-v2-steps p { font-size: 14.5px; align-self: start; }
+  .ak-v2-step-n { left: auto; right: 12px; top: 12px; width: 26px; height: 26px; font-size: 13px; }
+  .ak-v2-gives { grid-template-columns: 1fr; gap: 8px; }
+  .ak-v2-gives p { font-size: 14.5px; }
+}
+
+/* 3.31.1: phones. The price card shows what is included again (it was hidden) and the "free first"
+   link is readable; "Kiedy odpalić" is a list without cut-off cards; a little more air under the title. */
+.ak-v2-sub { margin-top: 20px; }
+#cennik .ak-a-plan-free, #cennik .ak-plan2-left .ak-a-plan-free { color: var(--teal-deep) !important; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 760px) {
+  .ak-v2-sub { margin-top: 18px; }
+  .ak-plan2-right { display: block !important; margin-top: 12px; }
+  .ak-plan2-right .ak-a-plan-list li { font-size: 15px; }
+  .ak-when5-row { display: grid !important; grid-template-columns: 1fr; gap: 10px; overflow: visible !important; margin: 16px 0 0 !important; padding: 0 !important; scroll-snap-type: none !important; }
+  .ak-when5-card { display: grid !important; grid-template-columns: 72px 1fr; column-gap: 14px; align-items: center; text-align: left !important; padding: 12px 16px !important; flex: none !important; }
+  .ak-when5-card img { grid-row: 1 / span 2; width: 72px !important; height: 72px; object-fit: contain; }
+  .ak-when5-card h3 { margin: 0 !important; font-size: 18px !important; align-self: end; }
+  .ak-when5-card p { font-size: 14.5px !important; align-self: start; }
+  .ak-when5-hint { display: none !important; }
+  .ak-js .ak-when5-card { opacity: 1 !important; transform: none !important; animation: none !important; }
+}
+
+/* 3.32.0: the first screen, designed (2026-10-20). One composition instead of a stack of pieces:
+   a left-aligned headline with a marker, the player card as the picture (cover, waveform, one big
+   button) with Szop’en leaning over it, one way in and a quiet line of facts. */
+.ak-v3-hero { position: relative; min-height: 0 !important; padding: clamp(28px, 6vw, 84px) 0 clamp(40px, 6vw, 84px) !important; background:
+  radial-gradient(60% 50% at 92% 18%, rgba(140, 108, 208, .16), transparent 70%),
+  radial-gradient(55% 45% at 4% 96%, rgba(250, 193, 25, .18), transparent 70%), var(--paper); }
+.ak-v3-in { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); column-gap: clamp(24px, 5vw, 72px); align-items: center; }
+.ak-v3-txt { display: contents; }
+.ak-v3-txt > * { grid-column: 1; }
+.ak-v3-visual { grid-column: 2; grid-row: 1 / span 5; position: relative; padding-top: clamp(120px, 15vw, 210px); }
+.ak-v3-kicker { margin: 0 0 14px; font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-deep); }
+.ak-v3-hero h1 { margin: 0 !important; font-size: clamp(36px, 5.2vw, 66px); line-height: 1.04; letter-spacing: -.01em; text-align: left; }
+.ak-v3-mark { background: linear-gradient(transparent 60%, var(--sun) 60%, var(--sun) 90%, transparent 90%); -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .06em; }
+.ak-v3-sub { margin: 18px 0 0; max-width: 30em; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.5; color: var(--muted); text-align: left; }
+.ak-v3-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-top: 28px; }
+.ak-v3-cta .ak-btn { padding-left: 30px; padding-right: 30px; }
+.ak-v3-link { font-weight: 700; color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--sun); padding-bottom: 2px; }
+.ak-v3-trust { margin: 18px 0 0; font-size: 14px; font-weight: 600; color: var(--muted); text-align: left; }
+.ak-v3-trust span { margin: 0 6px; color: var(--sun); font-weight: 900; }
+
+.ak-v3-szop { position: absolute; z-index: 1; right: 4%; top: 0; width: clamp(150px, 22vw, 300px); height: auto; filter: drop-shadow(0 18px 22px rgba(36, 27, 58, .18)); }
+.ak-v3-bubble { position: absolute; z-index: 3; left: 0; top: clamp(16px, 3vw, 44px); max-width: 210px; margin: 0; padding: 11px 15px; border-radius: 20px 20px 6px 20px; background: #fff; box-shadow: 0 10px 30px rgba(36, 27, 58, .12); font-size: 14.5px; font-weight: 700; line-height: 1.3; color: var(--ink); }
+.ak-v3-card { position: relative; z-index: 2; display: flex; align-items: center; gap: 16px; padding: 14px 16px 14px 14px; border-radius: 30px; color: #fff;
+  background: linear-gradient(135deg, #6A46A0 0%, #432B73 100%); box-shadow: 0 24px 50px rgba(67, 43, 115, .35); }
+.ak-v3-cover { flex: none; width: clamp(76px, 8vw, 104px); height: auto; aspect-ratio: 1; border-radius: 20px; object-fit: cover; box-shadow: 0 6px 16px rgba(0, 0, 0, .25); }
+.ak-v3-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ak-v3-meta small { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .75; }
+.ak-v3-meta strong { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.2; }
+.ak-v3-wave { display: flex; align-items: center; gap: 3px; height: 26px; margin-top: 8px; }
+.ak-v3-wave i { flex: 1; max-width: 4px; height: var(--h); border-radius: 2px; background: rgba(255, 255, 255, .45); }
+.ak-v3-card:has(.is-playing) .ak-v3-wave i { background: var(--sun); animation: ak-v3-wave .8s ease-in-out infinite alternate; }
+.ak-v3-card:has(.is-playing) .ak-v3-wave i:nth-child(3n) { animation-delay: -.3s; }
+.ak-v3-card:has(.is-playing) .ak-v3-wave i:nth-child(3n+1) { animation-delay: -.55s; }
+@keyframes ak-v3-wave { to { transform: scaleY(.4); } }
+.ak-v3-card .ak-play { width: 62px; height: 62px; background: var(--sun) !important; color: var(--ink) !important; box-shadow: 0 8px 18px rgba(0, 0, 0, .25); }
+.ak-v3-card .ak-play .ak-play-ring circle { stroke: var(--ink); }
+
+@media (max-width: 760px) {
+  .ak-v3-hero { padding: 20px 0 30px !important; }
+  .ak-v3-in { grid-template-columns: minmax(0, 1fr); }
+  .ak-v3-txt > *, .ak-v3-visual { grid-column: 1; grid-row: auto; }
+  .ak-v3-kicker { order: 1; margin-bottom: 10px; font-size: 12px; }
+  .ak-v3-hero h1 { order: 2; font-size: clamp(31px, 9vw, 38px); }
+  .ak-v3-sub { order: 3; margin-top: 14px; font-size: 16px; }
+  .ak-v3-visual { order: 4; padding-top: 104px; margin-top: 10px; }
+  .ak-v3-cta { order: 5; margin-top: 20px; flex-direction: column; align-items: stretch; gap: 12px; }
+  .ak-v3-cta .ak-btn { width: 100%; justify-content: center; }
+  .ak-v3-link { align-self: center; }
+  .ak-v3-trust { order: 6; margin-top: 14px; font-size: 12.5px; text-align: center; }
+  .ak-v3-szop { width: 136px; right: 0; }
+  .ak-v3-bubble { top: 18px; max-width: 170px; font-size: 13px; padding: 9px 12px; }
+  .ak-v3-card { gap: 12px; padding: 12px; border-radius: 24px; }
+  .ak-v3-cover { width: 72px; border-radius: 16px; }
+  .ak-v3-meta small { font-size: 11px; }
+  .ak-v3-meta strong { font-size: 16px; }
+  .ak-v3-wave { height: 20px; margin-top: 6px; gap: 2px; }
+  .ak-v3-card .ak-play { width: 56px; height: 56px; }
+}
+@media (prefers-reduced-motion: reduce) { .ak-v3-card:has(.is-playing) .ak-v3-wave i { animation: none; } }
+.ak-v3-hero h1 + .ak-v3-sub, .ak-v3-sub { margin-top: 22px !important; }
+.ak-v3-trust { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0; }
+.ak-v3-trust li { display: inline-flex; align-items: center; gap: 6px; }
+.ak-v3-trust li::before { content: ""; width: 16px; height: 16px; border-radius: 50%; background: var(--teal-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.2l2.6 2.5L12 5.4' fill='none' stroke='%231B7C77' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 12px no-repeat; }
+.ak-v2-steps-sec .ak-v3-kicker { margin-bottom: 10px; }
+.ak-v2-steps-sec h2 { line-height: 1.15; }
+@media (max-width: 760px) {
+  .ak-v3-trust { justify-content: center; gap: 6px 14px; }
 }

@@ -14,10 +14,10 @@ function ak_guide_topics(): array
 {
     return [
         'zagadki' => ['Zagadki dla dzieci', [
-            'zagadki-dla-dzieci', 'zagadki-o-zwierzetach', 'zagadki-logiczne-dla-dzieci', 'zagadki-zimowe-i-swiateczne',
+            'zagadki-dla-dzieci', 'zagadki-o-zwierzetach', 'zagadki-logiczne-dla-dzieci', 'zagadki-dla-dzieci-9-10-lat', 'zagadki-zimowe-i-swiateczne',
         ]],
         'podroz' => ['W podróży', [
-            'jak-zajac-dziecko-w-samochodzie', 'zabawy-w-pociagu-z-dzieckiem', 'jak-zajac-dziecko-w-samolocie',
+            'jak-zajac-dziecko-w-samochodzie', 'zabawy-w-pociagu-z-dzieckiem', 'jak-zajac-dziecko-w-samolocie', 'jak-zajac-dziecko-w-restauracji',
         ]],
         'detektyw' => ['Detektywi i szyfry', [
             'gra-detektywistyczna-dla-dzieci', 'szyfry-dla-dzieci',
@@ -29,8 +29,12 @@ function ak_guide_topics(): array
             'zabawy-bez-ekranu', 'zabawy-dla-dzieci-w-domu', 'zabawy-ruchowe-dla-dzieci-w-domu', 'dziecko-sie-nudzi',
             'samodzielna-zabawa-dziecka', 'jak-zajac-dziecko-gdy-pracujesz', 'zabawy-wyciszajace-przed-snem',
         ]],
+        'rankingi' => ['Rankingi i porównania', [
+            'aplikacje-z-audiobookami-dla-dzieci', 'aplikacje-dla-dzieci-bez-reklam', 'toniebox-czy-warto-alternatywy', 'prezent-dla-5-latka', 'gry-w-samochodzie-dla-dzieci',
+            'prezent-dla-4-latka', 'prezent-dla-6-latka', 'prezent-dla-7-latka', 'gdzie-sluchac-sluchowisk-dla-dzieci',
+        ]],
         'wiek' => ['Według wieku', [
-            'zabawy-dla-przedszkolakow', 'zabawy-dla-3-latka', 'zabawy-dla-4-latka', 'zabawy-dla-5-latka',
+            'zabawy-dla-przedszkolakow', 'zabawy-dla-3-latka', 'zabawy-dla-4-latka', 'zabawy-dla-5-latka', 'zabawy-na-urodziny-5-latka',
             'zabawy-dla-6-latka', 'zabawy-dla-dzieci-7-9-lat', 'zabawy-dla-7-latka', 'zabawy-dla-8-latka',
         ]],
     ];

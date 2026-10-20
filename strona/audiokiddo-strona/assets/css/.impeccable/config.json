@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "bounce-easing",
+        "value": "ak-co-wobble",
+        "createdAt": "2026-10-18T22:56:24.074Z",
+        "reason": "assistant: short ±5° nudge on the year-saving badge every 3 s, ease-in-out, disabled under prefers-reduced-motion; not a bounce curve. Not yet confirmed by user"
+      }
+    ]
+  }
+}

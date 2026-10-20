@@ -153,10 +153,53 @@
 
   // Children's videos: the poster turns into the film, with sound
   function stopVideos() { $$('.ak-video video').forEach(function (v) { v.pause(); }); }
+  // On a phone the film opens large over the page, with a clear way to close it.
+  function openFilm(btn) {
+    var cap = btn.parentNode.querySelector('figcaption');
+    var box = document.createElement('div');
+    box.className = 'ak-film';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', cap ? cap.textContent : 'Film');
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'ak-film-x';
+    close.setAttribute('aria-label', 'Zamknij film');
+    close.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg><span>Zamknij</span>';
+    var video = document.createElement('video');
+    video.src = btn.getAttribute('data-src');
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.poster = $('img', btn).src;
+    var text = document.createElement('p');
+    text.className = 'ak-film-cap';
+    text.textContent = cap ? cap.textContent : '';
+    box.appendChild(close);
+    box.appendChild(video);
+    box.appendChild(text);
+    document.body.appendChild(box);
+    document.documentElement.classList.add('ak-film-open');
+    function shut() {
+      video.pause();
+      box.remove();
+      document.documentElement.classList.remove('ak-film-open');
+      document.removeEventListener('keydown', onKey);
+      btn.focus();
+    }
+    function onKey(e) { if (e.key === 'Escape') shut(); }
+    close.addEventListener('click', shut);
+    box.addEventListener('click', function (e) { if (e.target === box) shut(); });
+    document.addEventListener('keydown', onKey);
+    close.focus();
+    video.play().catch(function () { /* the controls are there */ });
+  }
   $$('.ak-video-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
       stopAudio();
       stopVideos();
+      if (window.matchMedia('(max-width: 760px)').matches) { openFilm(btn); return; }
       var video = document.createElement('video');
       video.src = btn.getAttribute('data-src');
       video.controls = true;
@@ -278,6 +321,149 @@
         if (entry.isIntersecting && !dayHand) dayTimer = setInterval(dayStep, 5200);
       });
     }, { threshold: 0.5 }).observe(dayTabs);
+  }
+  // One day with the app: the chapter closest to the middle of the screen (computers) or of the
+  // row of cards (phones, swiped sideways) decides what the phone shows. Measured on every scroll
+  // frame, in any scrolling container, and again every moment while the section is in view, so a
+  // fast scroll, a momentum scroll or an odd browser never leaves the phone behind. Dots show where
+  // we are and take you to a moment; on phones a swipe on the phone itself moves on too.
+  var day = $('.ak-day');
+  if (day) {
+    var dayList = $('.ak-day-chapters', day);
+    var dayChs = $$('.ak-day-ch', day);
+    var dayScrs = $$('.ak-day-scr', day);
+    var dayDots = $$('.ak-day-dot', day);
+    var dayAt = -1;
+    var dayWant = -1;
+    var dayHold = 0;
+    var dayPrevTimer = 0;
+    var dayFrame = 0;
+    var dayVisible = false;
+    function dayShow(i) {
+      if (i === dayAt || i < 0) return;
+      var prevAt = dayAt;
+      dayAt = i;
+      var scr = dayChs[i].getAttribute('data-scr');
+      // The screen that was showing stays under the new one while it slides in, then goes: the phone is
+      // never blank in between.
+      var from = prevAt;
+      var leaving = dayScrs.filter(function (s) { return s.classList.contains('is-on') && s.getAttribute('data-scr') !== scr; })[0];
+      var screenBox = $('.ak-day-screen', day);
+      if (screenBox) screenBox.style.setProperty('--dx', (from < 0 || i >= from ? 1 : -1) * 26 + 'px');
+      dayScrs.forEach(function (s) { s.classList.remove('is-prev'); });
+      if (leaving) {
+        leaving.classList.add('is-prev');
+        window.clearTimeout(dayPrevTimer);
+        dayPrevTimer = window.setTimeout(function () { leaving.classList.remove('is-prev'); }, 420);
+      }
+      dayChs.forEach(function (c, k) { c.classList.toggle('is-on', k === i); });
+      dayScrs.forEach(function (s) { s.classList.toggle('is-on', s.getAttribute('data-scr') === scr); });
+      dayDots.forEach(function (d, k) { d.classList.toggle('is-on', k === i); d.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+    }
+    // The offsets of the cards are measured once (and again on resize), so picking the nearest card
+    // while swiping reads only the scroll position and does no layout work.
+    var dayMid = [];
+    function dayMeasure() {
+      dayMid = dayChs.map(function (c) { return c.offsetLeft + c.offsetWidth / 2; });
+    }
+    dayMeasure();
+    // On phones the phone's screens ride along with the cards: each screen sits at its card's place
+    // and slides with the swipe (position = scroll progress), so nothing fades or overlaps.
+    var dayScreenBox = $('.ak-day-screen', day);
+    var dayScrFor = dayChs.map(function (c) { return dayScrs.filter(function (sc) { return sc.getAttribute('data-scr') === c.getAttribute('data-scr'); })[0]; });
+    dayScrFor.forEach(function (sc, k) { if (sc) sc.style.setProperty('--i', k); });
+    var dayProgFrame = 0;
+    function dayProgress() {
+      dayProgFrame = 0;
+      if (!dayScreenBox || !phone.matches || dayMid.length < 2) return;
+      var mid = dayList.scrollLeft + dayList.clientWidth / 2;
+      var i = 0;
+      while (i < dayMid.length - 2 && mid >= dayMid[i + 1]) i++;
+      var span = dayMid[i + 1] - dayMid[i] || 1;
+      var p = Math.max(0, Math.min(dayMid.length - 1, i + (mid - dayMid[i]) / span));
+      dayScreenBox.style.setProperty('--p', p.toFixed(3));
+    }
+    function dayProgressLater() { if (!dayProgFrame) dayProgFrame = window.requestAnimationFrame(dayProgress); }
+    dayList.addEventListener('scroll', dayProgressLater, { passive: true });
+    window.addEventListener('resize', function () { dayMeasure(); dayProgressLater(); });
+    window.addEventListener('load', dayProgressLater);
+    window.setTimeout(dayProgress, 0);
+    window.addEventListener('resize', dayMeasure);
+    window.addEventListener('load', dayMeasure);
+    function dayPick() {
+      dayFrame = 0;
+      var best = -1;
+      var gap = Infinity;
+      var cards = phone.matches;
+      if (cards) {
+        if (!dayMid.length || dayMid[0] === 0 && dayMid[1] === 0) dayMeasure();
+        var mid = dayList.scrollLeft + dayList.clientWidth / 2;
+        dayMid.forEach(function (m, k) { var d = Math.abs(m - mid); if (d < gap) { gap = d; best = k; } });
+      } else {
+        var vmid = window.innerHeight / 2;
+        dayChs.forEach(function (c, k) {
+          var r = c.getBoundingClientRect();
+          var d = Math.abs(r.top + r.height / 2 - vmid);
+          if (d < gap) { gap = d; best = k; }
+        });
+      }
+      // On phones the screen follows the card once the swipe has settled on it (two looks in a row),
+      // so a quick flick across several cards does not flash every screen on the way.
+      if (cards && best !== dayAt && best !== dayWant) { dayWant = best; window.clearTimeout(dayHold); dayHold = window.setTimeout(function () { dayPick(); }, 70); return; }
+      dayWant = -1;
+      dayShow(best);
+    }
+    function dayLater() { if (!dayFrame) dayFrame = window.requestAnimationFrame(dayPick); }
+    window.addEventListener('scroll', function () { if (!phone.matches) dayLater(); }, { passive: true, capture: true });
+    window.addEventListener('resize', dayLater);
+        dayList.addEventListener('scroll', dayLater, { passive: true });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) { dayVisible = entries[0].isIntersecting; if (dayVisible) dayLater(); }, { threshold: 0 }).observe(day);
+    } else {
+      dayVisible = true;
+    }
+    setInterval(function () { if (dayVisible && !document.hidden) dayPick(); }, 250);
+    dayPick();
+    function dayGo(i) {
+      i = clamp(i, 0, dayChs.length - 1);
+      var c = dayChs[i];
+      if (phone.matches) {
+        dayList.scrollTo({ left: c.offsetLeft - (dayList.clientWidth - c.offsetWidth) / 2, behavior: still ? 'auto' : 'smooth' });
+      } else {
+        var y = c.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight - c.offsetHeight) / 2;
+        window.scrollTo({ top: y, behavior: still ? 'auto' : 'smooth' });
+      }
+      dayShow(i);
+    }
+    dayDots.forEach(function (d) { d.addEventListener('click', function () { dayGo(Number(d.getAttribute('data-i'))); }); });
+    var dayPrev = $('.ak-day-prev', day);
+    var dayNext = $('.ak-day-next', day);
+    if (dayPrev) dayPrev.addEventListener('click', function () { dayGo(dayAt - 1); });
+    if (dayNext) dayNext.addEventListener('click', function () { dayGo(dayAt + 1); });
+    // A swipe on the phone itself, left or right, moves on (phones).
+    var swipeFrom = null;
+    var stage = $('.ak-day-stage', day) || $('.ak-day-phone', day);
+    if (stage) {
+      stage.addEventListener('touchstart', function (e) { swipeFrom = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }, { passive: true });
+      stage.addEventListener('touchend', function (e) {
+        if (!swipeFrom || !phone.matches) return;
+        var dx = e.changedTouches[0].clientX - swipeFrom.x;
+        var dy = e.changedTouches[0].clientY - swipeFrom.y;
+        swipeFrom = null;
+        if (Math.abs(dx) > 24 && Math.abs(dx) > Math.abs(dy) * 1.1) dayGo(dayAt + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+    // Arrow keys when a dot has focus.
+    dayDots.forEach(function (d, k) {
+      d.addEventListener('keydown', function (e) {
+        var step = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        var n = clamp(k + step, 0, dayDots.length - 1);
+        dayDots[n].focus();
+        dayGo(n);
+      });
+    });
   }
   // The quarter of an hour: the clock runs while the section is in view, each third shows what
   // the child and the parent are doing; the buttons under it jump to a third.
@@ -495,7 +681,8 @@
   // After WooCommerce adds to the cart: the button itself says so and WooCommerce's own link
   // to the cart sits under it; the cart in the bar and the dock bounces. Nothing floats over
   // the page.
-  if (window.jQuery) {
+  function wooEvents() {
+    if (!window.jQuery) return;
     // While WooCommerce works on it, the button says so in Szop's words.
     window.jQuery(document.body).on('adding_to_cart', function (e, button) {
       var el = button && button.get ? button.get(0) : null;
@@ -520,6 +707,8 @@
       });
     });
   }
+  // The shop's scripts come after the first paint (inc/delay.php): the events are attached when they are in.
+  if (window.jQuery) wooEvents(); else document.addEventListener('ak-scripts-in', wooEvents, { once: true });
 
   // "Pobierz Audiokiddo" goes straight to the store of the phone in hand; on a computer it
   // stays on the section with both store buttons.
@@ -559,6 +748,8 @@
         $('.ak-signup-dl', done).href = data.download;
         done.hidden = false;
         if (window.dataLayer) window.dataLayer.push({ event: 'generate_lead', lead_source: form.id });
+        // Also straight to Google Analytics (the Site Kit tag), so the key event counts without a GTM trigger.
+        if (typeof window.gtag === 'function') window.gtag('event', 'generate_lead', { lead_source: form.id });
       }).catch(function (err) {
         msg.textContent = (err && err.message) || 'Coś się wysypało po drodze. Spróbuj jeszcze raz za chwilę.';
         form.classList.add('is-error');
@@ -872,77 +1063,88 @@
   }, 900);
 })();
 
-// 3.28: the minute of a play on the home page plays itself once it is in view: Szop'en speaks,
-// the child "types" and answers, the newest line stays in sight like in a messenger, the bar
-// under it fills, and what the child did lights up beside it. A tile jumps to its moment.
+// 3.29: "Tu dziecko gra główną rolę": the switch between an audiobook and a play. It shows the
+// audiobook first and turns to the play by itself once, a moment after the box is in view; the
+// buttons take over after that.
 (function () {
-  var scene = document.querySelector('[data-ak-scene]');
-  if (!scene) return;
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var view = scene.querySelector('.ak-nb4-view');
-  var msgs = Array.prototype.slice.call(scene.querySelectorAll('.ak-nb4-msg'));
-  var steps = Array.prototype.slice.call(scene.querySelectorAll('.ak-nb4-steps i'));
-  var tiles = Array.prototype.slice.call(document.querySelectorAll('[data-skill-tile]'));
-  var again = scene.querySelector('[data-ak-again]');
-  var timers = [];
-  function follow() { view.scrollTop = view.scrollHeight; }
-  function lightUpTo(n) {
-    var seen = {};
-    msgs.forEach(function (m, i) { var s = m.getAttribute('data-skill'); if (s && i <= n) seen[s] = true; });
-    tiles.forEach(function (t) {
-      var k = t.getAttribute('data-skill-tile');
-      t.classList.toggle('is-lit', !!seen[k]);
-      t.classList.toggle('is-now', n >= 0 && msgs[n] && msgs[n].getAttribute('data-skill') === k);
-    });
+  var box = document.querySelector('[data-ak-ab]');
+  if (!box) return;
+  var btns = Array.prototype.slice.call(box.querySelectorAll('[data-to]'));
+  var timer = null;
+  function set(mode) {
+    box.setAttribute('data-mode', mode);
+    btns.forEach(function (b) { b.setAttribute('aria-checked', b.getAttribute('data-to') === mode ? 'true' : 'false'); });
   }
-  function show(n, typing) {
-    msgs.forEach(function (m, i) {
-      m.classList.toggle('is-on', i <= n);
-      m.classList.toggle('is-typing', i === n && !!typing);
-      m.classList.toggle('is-now', i === n && !typing && m.classList.contains('ak-nb4-kid'));
-    });
-    steps.forEach(function (s, i) { s.classList.toggle('is-on', i <= n); });
-    lightUpTo(typing ? n - 1 : n);
-    follow();
-  }
-  function stop() { timers.forEach(clearTimeout); timers = []; }
-  function play(from) {
-    stop();
-    scene.classList.add('is-playing');
-    if (again) again.textContent = 'Od początku';
-    var t = 250;
-    for (var i = from; i < msgs.length; i++) {
-      (function (i) {
-        var kid = msgs[i].classList.contains('ak-nb4-kid');
-        timers.push(setTimeout(function () { show(i, true); }, t));
-        t += kid ? 700 : 500;
-        timers.push(setTimeout(function () { show(i, false); }, t));
-        t += kid ? 650 : 1500;
-      })(i);
-    }
-  }
-  function jump(skill) {
-    var n = -1;
-    msgs.forEach(function (m, i) { if (n < 0 && m.getAttribute('data-skill') === skill) n = i; });
-    if (n < 0) return;
-    stop();
-    scene.classList.add('is-playing');
-    show(n, false);
-    if (!still) timers.push(setTimeout(function () { play(n + 1); }, 2200));
-  }
-  tiles.forEach(function (t) { t.addEventListener('click', function () { jump(t.getAttribute('data-skill-tile')); }); });
-  if (again) again.addEventListener('click', function () { play(0); });
-  if (still || !('IntersectionObserver' in window)) {
-    show(msgs.length - 1, false);
-    if (again) again.hidden = true;
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () { clearTimeout(timer); set(b.getAttribute('data-to')); });
+  });
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+    set('play');
     return;
   }
-  scene.classList.add('is-playing');
-  show(-1, false);
-  var started = false;
   new IntersectionObserver(function (entries, obs) {
     entries.forEach(function (e) {
-      if (e.isIntersecting && !started) { started = true; play(0); obs.disconnect(); }
+      if (e.isIntersecting) { obs.disconnect(); timer = setTimeout(function () { set('play'); }, 1800); }
     });
-  }, { threshold: 0.4 }).observe(scene);
+  }, { threshold: 0.5 }).observe(box);
+})();
+
+// 3.29.2: the free plays come in when their section is in view (on phones too).
+(function () {
+  var free = document.getElementById('darmowe-zabawy');
+  if (!free) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+    free.classList.add('is-on');
+    return;
+  }
+  new IntersectionObserver(function (entries, obs) {
+    entries.forEach(function (e) { if (e.isIntersecting) { free.classList.add('is-on'); obs.disconnect(); } });
+  }, { threshold: 0.3 }).observe(free);
+})();
+
+// 3.29.8: the price card's list comes in when the section is in view.
+(function () {
+  var sec = document.getElementById('cennik');
+  if (!sec) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+    sec.classList.add('is-on');
+    return;
+  }
+  new IntersectionObserver(function (entries, obs) {
+    entries.forEach(function (e) { if (e.isIntersecting) { sec.classList.add('is-on'); obs.disconnect(); } });
+  }, { threshold: 0.25 }).observe(sec);
+})();
+
+// 3.29.9: the five moments come in one after another when the section is in view.
+(function () {
+  var sec = document.getElementById('kiedy');
+  if (!sec) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+    sec.classList.add('is-on');
+    return;
+  }
+  new IntersectionObserver(function (entries, obs) {
+    entries.forEach(function (e) { if (e.isIntersecting) { sec.classList.add('is-on'); obs.disconnect(); } });
+  }, { threshold: 0.2 }).observe(sec);
+})();
+
+// 3.30.0: "Kup dostęp" leads to the order page, which the server takes a few seconds to make. At once
+// a screen says so, so nobody presses again or leaves (it goes when the new page comes).
+(function () {
+  var shown = false;
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a[href*="add-to-cart=998"]') : null;
+    if (!a || shown || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
+    shown = true;
+    var go = document.createElement('div');
+    go.className = 'ak-go';
+    go.setAttribute('role', 'status');
+    go.innerHTML = '<img src="' + (window.akGoImg || '') + '" alt="" width="110" height="110"><strong>Przygotowujemy Twoje zamówienie</strong><span class="ak-go-bar"><i></i></span><small>To chwila. Szop pakuje Twój dostęp.</small>';
+    var img = go.querySelector('img');
+    if (!img.getAttribute('src')) img.remove();
+    document.body.appendChild(go);
+    // Back button after the page came: the screen must not stay
+    window.addEventListener('pageshow', function (ev) { if (ev.persisted && go.parentNode) { go.remove(); shown = false; } });
+    setTimeout(function () { if (go.parentNode) { go.remove(); shown = false; } }, 20000);
+  });
 })();

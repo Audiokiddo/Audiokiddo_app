@@ -63,6 +63,7 @@ $linked = [];
             <p class="ak-byline">Nela i Dawid, twórcy Audiokiddo · aktualizacja <?php echo esc_html(wp_date('j F Y', (int) filemtime(AK_DIR . 'inc/landings.php'))); ?></p>
         </div>
     </header>
+    <?php echo ak_hero_figure($slug); // escaped inside ?>
 
     <div class="ak-wrap ak-narrow ak-prose">
         <aside class="ak-tldr"><p class="ak-tldr-h">Najważniejsze w skrócie</p><ul><?php foreach ($g['tldr'] as $t) : ?><li><?php echo esc_html($t); ?></li><?php endforeach; ?></ul></aside>
@@ -74,6 +75,16 @@ $linked = [];
             <li><h3><?php echo esc_html($name); ?><?php if ($age) : ?> <small><?php echo esc_html($age); ?></small><?php endif; ?></h3><p><?php echo ak_autolink($how, $slug, $linked); // escaped inside ?></p></li>
             <?php endforeach; ?>
         </ol>
+        <?php endif; ?>
+        <?php if (ak_guide_topic($slug) === 'rankingi') : ?>
+        <aside class="ak-getapp" aria-label="Aplikacja Audiokiddo">
+            <img src="<?php echo esc_url(ak_asset('img/szop/klaszcze.webp')); ?>" alt="" width="96" height="96" loading="lazy">
+            <div>
+                <p class="ak-getapp-h">Audiokiddo: audiozabawy, w których dziecko działa</p>
+                <p><?php echo ak_app_live() ? 'Aplikację z interaktywnymi audiozabawami dla dzieci 3–9 lat pobierzesz z App Store i Google Play. Są w niej darmowe zabawy, bez reklam.' : 'Aplikacja z interaktywnymi audiozabawami dla dzieci 3–9 lat będzie w App Store i Google Play. Zapisz się, a odbierzesz darmowe zabawy na start, bez reklam.'; ?></p>
+                <?php ak_store_buttons('ak-stores-left'); ?>
+            </div>
+        </aside>
         <?php endif; ?>
 
         <?php foreach ($g['riddles'] ?? [] as [$group, $list]) : ?>

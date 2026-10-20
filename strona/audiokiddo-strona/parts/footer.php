@@ -23,17 +23,18 @@ $links = array_filter([
             <a href="<?php echo esc_url(ak_info_url('jak-to-dziala')); ?>">Jak działa Audiokiddo</a>
             <a href="<?php echo esc_url(home_url('/#kiedy')); ?>">Kiedy odpalić audiozabawę</a>
             <a href="<?php echo esc_url(ak_info_url('abonament')); ?>">Abonament i cennik</a>
-            <a href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Pakiety audiozabaw</a>
             <a href="<?php echo esc_url(home_url('/#pobierz')); ?>">Darmowe zabawy</a>
             <a href="<?php echo esc_url(ak_blog_url()); ?>">Blog</a>
             <a href="<?php echo esc_url(ak_info_url('pytania')); ?>">Pytania i odpowiedzi</a>
             <a href="<?php echo esc_url(ak_info_url('logopedzi-i-pedagodzy')); ?>">Dla logopedów i pedagogów</a>
             <a href="<?php echo esc_url(ak_info_url('o-nas')); ?>">O nas</a>
+            <a href="<?php echo esc_url(ak_info_url('opinie')); ?>">Opinie o Audiokiddo</a>
+            <a href="<?php echo esc_url(ak_info_url('dla-mediow')); ?>">Dla mediów</a>
             <?php if (ak_has_woo()) : ?><a href="<?php echo esc_url(ak_cart_url()); ?>">Koszyk</a><?php endif; ?>
         </nav>
         <nav aria-label="Pomysły na zabawy">
             <p class="ak-foot-h">Pomysły na zabawy</p>
-            <?php foreach (array_intersect_key(ak_landings(), array_flip(['zabawy-bez-ekranu', 'dziecko-sie-nudzi', 'samodzielna-zabawa-dziecka', 'jak-zajac-dziecko-gdy-pracujesz', 'jak-zajac-dziecko-w-samochodzie', 'zabawy-dla-dzieci-w-domu', 'zabawy-logopedyczne', 'zagadki-dla-dzieci'])) as $slug => $guide) : ?><a href="<?php echo esc_url(ak_landing_url($slug)); ?>"><?php echo esc_html($guide['anchor']); ?></a><?php endforeach; ?>
+            <?php foreach (array_intersect_key(ak_landings(), array_flip(['zabawy-bez-ekranu', 'dziecko-sie-nudzi', 'samodzielna-zabawa-dziecka', 'jak-zajac-dziecko-gdy-pracujesz', 'jak-zajac-dziecko-w-samochodzie', 'zabawy-dla-dzieci-w-domu', 'zabawy-logopedyczne', 'zagadki-dla-dzieci', 'zagadki-logiczne-dla-dzieci', 'zabawy-dla-5-latka', 'gra-detektywistyczna-dla-dzieci', 'aplikacje-z-audiobookami-dla-dzieci', 'prezent-dla-5-latka', 'gry-w-samochodzie-dla-dzieci'])) as $slug => $guide) : ?><a href="<?php echo esc_url(ak_landing_url($slug)); ?>"><?php echo esc_html($guide['anchor']); ?></a><?php endforeach; ?>
             <a href="<?php echo esc_url(ak_landing_url()); ?>">Wszystkie poradniki</a>
         </nav>
         <div>

@@ -43,6 +43,9 @@ function ak_settings_fields(): array
             'ml_account' => ['MailerLite: numer konta', 'text', 'Z kodu formularza: ml(\'account\', \'…\'). Zapis na stronie idzie przez serwer, bez skryptu MailerLite.'],
             'ml_form_id' => ['MailerLite: numer formularza', 'text', 'Z adresu formularza w MailerLite: /forms/<numer>/overview. Zapisani trafiają do jego grup i automatyzacji.'],
         ],
+        'Poczta ze sklepu (Supabase)' => [
+            'mail_key' => ['Klucz poczty', 'text', 'Ten sam klucz jest w sekretach Supabase (AK_MAIL_KEY). Dzięki niemu mail po zakupie wychodzi z serwera strony. Nie zmieniaj bez potrzeby.'],
+        ],
         'Teksty na stronie głównej' => [
             'when_lead' => ['Linia pod „Kiedy odpalić Audiokiddo?”', 'text', 'Puste: „Szop ma kilka typów.” Propozycja z raportu (czeka na zgodę Neli): „Najlepiej działa w aucie, przy kolacji i na kanapie po przedszkolu.”'],
         ],

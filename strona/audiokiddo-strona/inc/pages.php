@@ -43,10 +43,10 @@ function ak_info_pages(): array
         ],
         'o-nas' => [
             'anchor' => 'O nas',
-            'title' => 'O nas: Nela i Dawid, rodzice, którzy tworzą Audiokiddo',
-            'desc' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Razem piszemy i montujemy audiozabawy. Nasze zasady: bez reklam i bez twarzy dzieci.',
+            'title' => 'O nas: Dawid i Nela, rodzice, którzy prowadzą Audiokiddo',
+            'desc' => 'Projekt Audiokiddo prowadzą na równi Dawid Kubiak i Nela Mariak, para rodziców z Polski. Razem piszemy i montujemy audiozabawy. Nasze zasady: bez reklam i bez twarzy dzieci.',
             'h1' => 'Kto stoi za Audiokiddo',
-            'lead' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy, produkt i cały świat marki, Dawid buduje technologię. Nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami: piszemy, montujemy i odpisujemy na maile.',
+            'lead' => 'Projekt Audiokiddo prowadzą na równi Dawid Kubiak i Nela Mariak, para rodziców z Polski. Nela wymyśla zabawy, produkt i cały świat marki, Dawid buduje technologię. Nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami: piszemy, montujemy i odpisujemy na maile.',
         ],
         'zabawy-do-druku' => [
             'anchor' => 'Zabawy do druku',
@@ -54,6 +54,20 @@ function ak_info_pages(): array
             'desc' => 'Karty ratunkowe Szop’ena: 36 zabaw bez ekranu do wydrukowania, na kuchnię, auto, deszcz i wieczór, plus mini śledztwo. Darmowy PDF dla dzieci 3–9 lat.',
             'h1' => 'Zabawy dla dzieci do druku: Karty ratunkowe Szop’ena',
             'lead' => '36 zabaw bez ekranu na chwile, kiedy słyszysz „nudzi mi się”. Drukujesz, wycinasz, wrzucasz do słoika, a dziecko losuje kartę. Do tego bonus: mini śledztwo „Kto zjadł ostatnie ciastko?”. Za darmo, w zamian za zapis do newslettera.',
+        ],
+        'opinie' => [
+            'anchor' => 'Opinie o Audiokiddo',
+            'title' => 'Opinie o Audiokiddo: rodzice, logopedzi i fizjoterapeuci',
+            'desc' => 'Opinie o audiozabawach Audiokiddo: co piszą rodzice 4, 5 i 6-latków oraz logopeda i fizjoterapeutka dziecięca. Prawdziwe wiadomości, od osób, które znamy z imienia.',
+            'h1' => 'Opinie o Audiokiddo',
+            'lead' => 'Zbieramy je z wiadomości od rodziców i od specjalistów, którzy znają nasze zabawy. Nie wymyślamy ich i nie kupujemy. Poniżej to, co dostaliśmy, razem z imieniem i pakietem, którego dotyczy.',
+        ],
+        'dla-mediow' => [
+            'anchor' => 'Dla mediów',
+            'title' => 'Audiokiddo dla mediów: opis marki, założyciele, materiały',
+            'desc' => 'Informacje dla dziennikarzy i blogerów: czym jest Audiokiddo, kto prowadzi projekt (Dawid Kubiak i Nela Mariak), gotowe opisy do skopiowania, logo i kontakt.',
+            'h1' => 'Audiokiddo dla mediów',
+            'lead' => 'Piszesz o aplikacjach, rodzicielstwie albo ekranach i dzieciach? Tu jest wszystko, czego potrzebujesz: krótki i długi opis marki, informacja o założycielach (projekt prowadzą na równi Dawid Kubiak i Nela Mariak), logo i kontakt.',
         ],
         'logopedzi-i-pedagodzy' => [
             'anchor' => 'Dla logopedów i pedagogów',

@@ -1,0 +1,229 @@
+/* The order page for a month or a year of Audiokiddo (inc/checkout.php). Phone first; a second
+   column from 900 px. Only under body.ak-co, so the rest of the shop keeps its look. */
+.ak-co { --ink: #1D1A2B; --muted: #625C70; --line: #DCD6E6; --sun: #FAC118; --teal: #1D7478; --lav: #685082; --soft: #F4F0FA; }
+.ak-co, .ak-co * { box-sizing: border-box; }
+.ak-co .woocommerce { max-width: 1040px; margin-inline: auto; padding: 8px 14px 110px; font-family: "Poppins", system-ui, -apple-system, sans-serif; color: var(--ink); }
+.ak-co .woocommerce-notices-wrapper:empty { display: none; }
+.ak-co .woocommerce-info, .ak-co .woocommerce-message { display: none; }
+
+/* Head: steps, what is bought, a year instead of a month, trust */
+.ak-co-head { display: grid; gap: 12px; margin: 0 0 18px; }
+.ak-co-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; counter-reset: none; }
+.ak-co-steps li { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 6px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 13px; font-weight: 600; text-align: center; }
+.ak-co-steps span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); font-size: 12px; font-weight: 800; }
+.ak-co-steps li.is-now { background: var(--lav); color: #fff; }
+.ak-co-steps li.is-now span { background: var(--sun); color: var(--ink); box-shadow: none; }
+
+.ak-co-card { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px; border-radius: 22px; background: linear-gradient(135deg, #FFF6D6, #fff 70%); box-shadow: 0 10px 28px rgba(36, 27, 58, .1), 0 0 0 1px rgba(250, 193, 24, .5); }
+.ak-co-card img { width: 64px; height: 64px; border-radius: 16px; display: block; }
+.ak-co-card p { margin: 0; }
+.ak-co-card-h { font-weight: 800; font-size: 16px; line-height: 1.2; }
+.ak-co-card-sub { margin-top: 2px !important; font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.ak-co-card-price { font-weight: 800; font-size: 19px; white-space: nowrap; }
+
+.ak-co-up { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 20px; background: #FEF0C0; box-shadow: inset 0 0 0 2px var(--sun); color: var(--ink) !important; text-decoration: none !important; transition: transform .3s cubic-bezier(.16, 1, .3, 1); }
+.ak-co-up:active { transform: scale(.98); }
+.ak-co-up-badge { display: grid; place-items: center; min-width: 54px; height: 54px; padding: 0 6px; border-radius: 16px; background: var(--teal); color: #fff; font-weight: 800; font-size: 15px; animation: ak-co-wobble 3s ease-in-out infinite; }
+.ak-co-up-txt { display: grid; gap: 1px; line-height: 1.25; }
+.ak-co-up-txt strong { font-size: 15px; }
+.ak-co-up-txt small { font-size: 12.5px; color: #5B4B1E; }
+.ak-co-up-go { padding: 9px 16px; border-radius: 999px; background: var(--sun); font-weight: 800; font-size: 14px; }
+
+.ak-co-get { border-radius: 18px; background: var(--soft); padding: 0 14px; }
+.ak-co-get summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; min-height: 46px; font-weight: 700; font-size: 14.5px; }
+.ak-co-get summary::-webkit-details-marker { display: none; }
+.ak-co-get summary::after { content: "+"; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #fff; font-size: 18px; line-height: 1; transition: transform .3s; }
+.ak-co-get[open] summary::after { transform: rotate(45deg); }
+.ak-co-get ul { margin: 0; padding: 0 0 14px; list-style: none; display: grid; gap: 7px; font-size: 14.5px; }
+.ak-co-get li::before { content: "✓ "; color: var(--teal); font-weight: 800; }
+
+.ak-co-trust { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.ak-co-trust li { display: inline-flex; align-items: center; gap: 6px; }
+.ak-co-trust svg { color: var(--teal); flex: none; }
+
+/* The form: big fields, 16 px (a phone does not zoom in), names side by side when there is room */
+.ak-co form.checkout { display: block; }
+.ak-co .col2-set { width: 100%; float: none; }
+.ak-co .col2-set .col-1, .ak-co .col2-set .col-2 { float: none; width: 100%; max-width: none; padding: 0; }
+.ak-co .woocommerce-billing-fields > h3, .ak-co #order_review_heading { margin: 0 0 12px; font-family: "Baloo 2", "Poppins", system-ui, sans-serif; font-weight: 800; font-size: 21px; color: var(--ink); }
+.ak-co .woocommerce-billing-fields__field-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+.ak-co .form-row { float: none; width: auto; margin: 0 0 14px; padding: 0; }
+.ak-co .form-row-wide, .ak-co #billing_tax_no_field, .ak-co #newsletter_signup_field { grid-column: 1 / -1; }
+.ak-co .form-row label { display: block; margin: 0 0 6px; font-size: 13.5px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.ak-co .form-row .required { color: #D14B3C; text-decoration: none; }
+.ak-co .form-row .optional { color: var(--muted); font-weight: 500; }
+.ak-co input.input-text, .ak-co textarea, .ak-co select { width: 100%; height: 54px; padding: 0 16px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; font-size: 16px; color: var(--ink); box-shadow: none; transition: border-color .2s, box-shadow .2s; }
+.ak-co input.input-text:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 4px rgba(29, 116, 120, .15); }
+.ak-co .woocommerce-invalid input.input-text { border-color: #D14B3C; box-shadow: 0 0 0 4px rgba(209, 75, 60, .12); }
+.ak-co .woocommerce-validated input.input-text { border-color: #5FAE7A; }
+.ak-co .form-row .description, .ak-co span.description { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+.ak-co #billing_email_field { order: -1; }
+
+/* Invoice: a link instead of an empty field nobody needs */
+.ak-co #billing_tax_no_field { display: none; }
+.ak-co #billing_tax_no_field.is-open { display: block; }
+.ak-co .ak-co-invoice { grid-column: 1 / -1; margin: -4px 0 14px; padding: 0; border: 0; background: none; color: var(--teal); font: inherit; font-size: 13.5px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; text-align: left; }
+
+/* The newsletter box: quiet, unchecked */
+.ak-co #newsletter_signup_field { padding: 12px 14px; border-radius: 16px; background: var(--soft); }
+.ak-co #newsletter_signup_field label { display: flex; align-items: flex-start; gap: 10px; margin: 0; font-weight: 500; font-size: 13.5px; }
+.ak-co #newsletter_signup_field input[type=checkbox] { width: 22px; height: 22px; flex: none; margin: 1px 0 0; accent-color: var(--teal); }
+
+/* The order and the payment */
+.ak-co #order_review { margin-top: 22px; padding: 16px; border-radius: 24px; background: #fff; box-shadow: 0 12px 34px rgba(36, 27, 58, .1), 0 0 0 1px var(--line); }
+.ak-co table.shop_table { width: 100%; margin: 0 0 14px; border: 0; border-collapse: collapse; font-size: 14.5px; }
+.ak-co table.shop_table th, .ak-co table.shop_table td { padding: 9px 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; font-weight: 500; }
+.ak-co table.shop_table td:last-child, .ak-co table.shop_table th:last-child { text-align: right; }
+.ak-co table.shop_table tr.order-total th, .ak-co table.shop_table tr.order-total td { padding-top: 12px; border-bottom: 0; font-size: 18px; font-weight: 800; }
+.ak-co .shop_table .product-name { font-weight: 600; }
+.ak-co #payment { background: none; border-radius: 0; }
+.ak-co #payment ul.payment_methods { margin: 0 0 12px; padding: 0; border: 0; list-style: none; display: grid; gap: 8px; }
+.ak-co #payment ul.payment_methods > li { margin: 0; padding: 0; border-radius: 16px; border: 1.5px solid var(--line); background: #fff; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+.ak-co #payment ul.payment_methods > li:has(input:checked) { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(29, 116, 120, .12); }
+.ak-co #payment ul.payment_methods > li > label { display: flex; align-items: center; gap: 10px; margin: 0; padding: 14px; font-weight: 700; font-size: 15px; cursor: pointer; }
+.ak-co #payment ul.payment_methods input[type=radio] { width: 20px; height: 20px; accent-color: var(--teal); margin: 0; }
+.ak-co #payment ul.payment_methods img { max-height: 22px; width: auto; margin-left: auto; }
+.ak-co #payment div.payment_box { margin: 0; padding: 0 14px 14px; background: none; color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+.ak-co #payment div.payment_box::before { display: none; }
+.ak-co .woocommerce-privacy-policy-text, .ak-co .woocommerce-terms-and-conditions-wrapper { font-size: 12px; line-height: 1.45; color: var(--muted); }
+.ak-co .woocommerce-privacy-policy-text a, .ak-co .woocommerce-terms-and-conditions-wrapper a { color: var(--teal); }
+.ak-co #place_order { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 60px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--sun); color: var(--ink); font-size: 18px; font-weight: 800; letter-spacing: 0; box-shadow: 0 14px 30px rgba(250, 193, 24, .5); position: relative; overflow: hidden; cursor: pointer; animation: ak-co-pulse 2.8s ease-in-out infinite; }
+.ak-co #place_order::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .7), transparent); transform: skewX(-20deg); animation: ak-co-shine 3.6s ease-in-out infinite; }
+.ak-co #place_order:disabled, .ak-co #place_order.processing { animation: none; opacity: .7; }
+
+/* After the form */
+.ak-co-after { margin: 26px 0 0; padding: 18px 16px; border-radius: 24px; background: var(--soft); }
+.ak-co-after h2 { margin: 0 0 12px; font-family: "Baloo 2", "Poppins", system-ui, sans-serif; font-size: 21px; font-weight: 800; }
+.ak-co-next { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 10px; }
+.ak-co-next li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; line-height: 1.4; color: var(--muted); }
+.ak-co-next li > span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--sun); color: var(--ink); font-weight: 800; }
+.ak-co-next strong { display: block; color: var(--ink); font-size: 15px; }
+.ak-co-faq { display: grid; gap: 8px; }
+.ak-co-faq details { border-radius: 16px; background: #fff; padding: 0 14px; }
+.ak-co-faq summary { cursor: pointer; list-style: none; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 700; font-size: 14.5px; }
+.ak-co-faq summary::-webkit-details-marker { display: none; }
+.ak-co-faq summary::after { content: "+"; font-size: 20px; color: var(--teal); transition: transform .3s; }
+.ak-co-faq details[open] summary::after { transform: rotate(45deg); }
+.ak-co-faq p { margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.ak-co-faq a, .ak-co-help a { color: var(--teal); font-weight: 700; }
+.ak-co-help { margin: 14px 0 0; text-align: center; font-size: 14px; color: var(--muted); }
+
+/* The bar at the bottom of a phone: what is to pay and the button, while the real one is out of view */
+.ak-paybar { position: fixed; z-index: 9990; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 12px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px); box-shadow: 0 -10px 30px rgba(36, 27, 58, .14); transform: translateY(110%); transition: transform .35s cubic-bezier(.16, 1, .3, 1); }
+.ak-paybar.is-on { transform: none; }
+.ak-paybar div { display: grid; line-height: 1.15; min-width: 0; }
+.ak-paybar small { font-size: 11.5px; color: var(--muted); }
+.ak-paybar strong { font-size: 19px; font-weight: 800; }
+.ak-paybar button { flex: 1; min-height: 52px; border: 0; border-radius: 999px; background: var(--sun); color: var(--ink); font: inherit; font-size: 16px; font-weight: 800; box-shadow: 0 8px 20px rgba(250, 193, 24, .5); cursor: pointer; }
+.ak-paybar button:active { transform: scale(.98); }
+
+/* Pressing "Kup" or "Zmień na rok": at once something says it is working (the page takes a moment) */
+.ak-go { position: fixed; z-index: 99999; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 24px; background: rgba(104, 80, 130, .96); color: #fff; text-align: center; font-family: "Poppins", system-ui, sans-serif; }
+.ak-go strong { font-size: 20px; font-weight: 800; }
+.ak-go small { font-size: 14px; opacity: .85; }
+.ak-go-bar { width: min(260px, 70vw); height: 6px; border-radius: 6px; background: rgba(255, 255, 255, .25); overflow: hidden; }
+.ak-go-bar i { display: block; height: 100%; width: 40%; border-radius: inherit; background: var(--sun, #FAC118); animation: ak-go-run 1.4s ease-in-out infinite; }
+
+@keyframes ak-co-pulse { 0%, 100% { transform: none; } 50% { transform: scale(1.015); } }
+@keyframes ak-co-shine { 0%, 55% { left: -60%; } 100% { left: 140%; } }
+@keyframes ak-co-wobble { 0%, 85%, 100% { transform: rotate(0); } 90% { transform: rotate(-5deg) scale(1.06); } 95% { transform: rotate(5deg) scale(1.06); } }
+@keyframes ak-go-run { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+
+@media (max-width: 480px) {
+  .ak-co .woocommerce-billing-fields__field-wrapper { grid-template-columns: 1fr; }
+  .ak-co-steps li { font-size: 12px; padding: 8px 4px; gap: 5px; }
+  .ak-co-card { grid-template-columns: 56px minmax(0, 1fr); }
+  .ak-co-card img { width: 56px; height: 56px; }
+  .ak-co-card-price { grid-column: 2; font-size: 20px; }
+}
+@media (min-width: 900px) {
+  .ak-co .woocommerce { padding-bottom: 60px; }
+  .ak-co-head { grid-template-columns: 1fr 1fr; align-items: start; gap: 14px 24px; }
+  .ak-co-steps, .ak-co-trust { grid-column: 1 / -1; }
+  .ak-co form.checkout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr); gap: 0 32px; align-items: start; }
+  .ak-co form.checkout #customer_details { grid-column: 1; grid-row: 1 / span 2; }
+  .ak-co form.checkout #order_review_heading { grid-column: 2; grid-row: 1; margin: 0; }
+  .ak-co form.checkout #order_review { grid-column: 2; grid-row: 2; position: sticky; top: 90px; margin-top: 12px; }
+  .ak-paybar { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ak-co *, .ak-co *::after, .ak-go * { animation: none !important; }
+}
+
+/* ---- Fixes from the first look on a phone (2026-10-19) ---- */
+/* The theme leaves a band above the page and empty paragraphs from WordPress' paragraph maker */
+.ak-co .site-content { padding-top: 0 !important; }
+.ak-co .e-con-inner { padding-top: 0 !important; }
+.ak-co .elementor-widget-container > p:empty, .ak-co .site-content p:empty, .ak-co-head p:empty, .ak-co-card p:empty { display: none; }
+.ak-co .woocommerce { padding-top: 14px; }
+
+/* Numbers dead centre in their circles: the circle's own height is the line height */
+.ak-co-steps span, .ak-co-next li > span { display: block; text-align: center; line-height: 22px; height: 22px; width: 22px; padding: 0; }
+.ak-co-next li > span { line-height: 30px; height: 30px; width: 30px; }
+.ak-co-steps span { font-variant-numeric: lining-nums; }
+
+/* The product card keeps its three parts in their places */
+.ak-co-card { align-items: center; }
+.ak-co-card-txt { min-width: 0; }
+.ak-co-card-h { overflow-wrap: break-word; }
+
+/* The cookie button must not hide the pay bar */
+.ak-co .cky-btn-revisit-wrapper { bottom: 84px !important; }
+
+/* The form without the theme's grey box */
+.ak-co #customer_details, .ak-co .woocommerce-billing-fields, .ak-co .woocommerce-additional-fields { background: none !important; padding: 0 !important; box-shadow: none !important; border: 0 !important; }
+.ak-co input::placeholder { color: #9A93AA; opacity: 1; }
+.ak-co #newsletter_signup_field label { display: flex; flex-wrap: nowrap; }
+.ak-co #newsletter_signup_field .optional { display: none; }
+
+/* The payment ways: the circle beside the name, the explanation under both */
+.ak-co #payment ul.payment_methods > li { display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: center; column-gap: 0; padding: 0 14px 0 14px; }
+.ak-co #payment ul.payment_methods > li > input[type=radio] { grid-column: 1; grid-row: 1; margin: 0; }
+.ak-co #payment ul.payment_methods > li > label { grid-column: 2; grid-row: 1; padding: 14px 0 14px 10px; }
+.ak-co #payment ul.payment_methods > li > .payment_box { grid-column: 1 / -1; padding: 0 0 14px; }
+
+/* The order table as plain rows (the theme's cell borders left short stray lines) */
+.ak-co table.shop_table, .ak-co table.shop_table tbody, .ak-co table.shop_table tfoot { display: block; width: 100%; }
+.ak-co table.shop_table thead { display: none; }
+.ak-co table.shop_table tr { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.ak-co table.shop_table th, .ak-co table.shop_table td { display: block; padding: 0 !important; border: 0 !important; background: none !important; }
+.ak-co table.shop_table tr.order-total { border-bottom: 0; padding-top: 12px; }
+.ak-co table.shop_table .amount { color: var(--ink); font-weight: 700; }
+
+/* The pay button: sentence case, whatever the theme says */
+.ak-co #place_order { text-transform: none; }
+.ak-co-steps span, .ak-co-next li > span { font-family: "Poppins", system-ui, sans-serif; }
+/* A little room at the sides: the form no longer touches the screen's edge */
+.ak-co .woocommerce { padding-left: 20px; padding-right: 20px; }
+.ak-co #order_review { padding: 18px; }
+.ak-co-after { padding: 20px 18px; }
+@media (min-width: 900px) { .ak-co .woocommerce { padding-left: 24px; padding-right: 24px; } }
+
+/* The newsletter box: the one thing on the page that asks for a tick, so it is easy to see and kind */
+.ak-co #newsletter_signup_field { background: #FFF6D6; box-shadow: inset 0 0 0 1.5px rgba(250, 193, 24, .7); padding: 14px 16px; }
+.ak-co #newsletter_signup_field label { font-size: 14px; line-height: 1.45; color: var(--ink); }
+.ak-co #newsletter_signup_field label strong { display: block; margin-bottom: 2px; font-size: 15px; }
+.ak-co #newsletter_signup_field input[type=checkbox] { width: 24px; height: 24px; margin-top: 2px; }
+
+.ak-co #newsletter_signup_field { box-sizing: border-box; margin-left: 0; margin-right: 0; }
+/* No tinted panel behind the fields: they sit on the page itself, with room at the sides */
+.ak-co form.checkout, .ak-co form.checkout .col2-set, .ak-co #customer_details, .ak-co .woocommerce-billing-fields, .ak-co .woocommerce-billing-fields__field-wrapper, .ak-co .woocommerce-additional-fields { background: #fff !important; box-shadow: none !important; border: 0 !important; outline: 0 !important; }
+.ak-co .woocommerce-billing-fields__field-wrapper { padding: 0 !important; }
+.ak-co #newsletter_signup_field { margin: 4px 0 18px; }
+/* Room between the pay card and "what next" (the card's shadow and the theme's float ran into it) */
+.ak-co-after { clear: both; position: relative; margin: 44px 0 0 !important; padding: 26px 18px 20px; }
+.ak-co #order_review { margin-bottom: 0; }
+/* The theme floats the form and makes the order card sticky: on a phone both flow normally, so what follows starts below the card */
+.ak-co form.checkout { float: none !important; width: 100%; display: flow-root; }
+@media (max-width: 899px) { .ak-co #order_review { position: static !important; float: none !important; width: auto !important; } }
+.ak-co-after { margin-top: 36px !important; }
+
+/* Computers: the form is two columns again (the flow-root above is for phones) with room between them */
+@media (min-width: 900px) {
+  .ak-co form.checkout { display: grid !important; column-gap: 48px; }
+  .ak-co form.checkout #customer_details { padding-right: 8px !important; }
+}
+@media (min-width: 900px) {
+  .ak-co form.checkout #customer_details, .ak-co form.checkout #order_review_heading, .ak-co form.checkout #order_review { float: none !important; width: auto !important; max-width: none !important; min-width: 0; }
+  .ak-co form.checkout #customer_details .col-1, .ak-co form.checkout #customer_details .col-2 { width: 100% !important; float: none !important; }
+}

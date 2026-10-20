@@ -53,6 +53,9 @@ function ak_view(): string
 add_filter('template_include', function ($template) {
     $files = ['start' => 'start.php', 'blog' => 'blog.php', 'search' => 'blog.php', 'post' => 'single.php', '404' => 'notfound.php', 'guide' => 'guide.php', 'info' => 'info.php', 'product' => 'product.php'];
     $view = ak_view();
+    if ($view === 'start' && ak_preview_v2()) {
+        return AK_DIR . 'templates/start2.php';
+    }
     return $view ? AK_DIR . 'templates/' . $files[$view] : $template;
 }, 99);
 
@@ -129,14 +132,26 @@ add_action('wp_enqueue_scripts', function () {
         return;
     }
     ak_strip_foreign_assets();
-    wp_enqueue_style('audiokiddo-strona', ak_asset('css/strona.css'), [], AK_VERSION);
+    // Like the script, the styles get the version in their file name: the server keeps them in
+    // browsers for a year and ignores ?ver (2026-10-20: phones showed new pages in old styles).
+    wp_enqueue_style('audiokiddo-strona', ak_asset(ak_versioned('css/strona', 'css')), [], AK_VERSION);
+    if (ak_view() === 'start' && ak_preview_v2()) {
+        wp_enqueue_style('audiokiddo-v2', ak_asset(ak_versioned('css/v2', 'css')), ['audiokiddo-strona'], AK_VERSION);
+        wp_enqueue_script('audiokiddo-v2', ak_asset(ak_versioned('js/v2', 'js')), [], AK_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
+        wp_enqueue_style('audiokiddo-v2-demos', ak_asset(ak_versioned('css/v2-demos', 'css')), ['audiokiddo-v2'], AK_VERSION);
+        wp_enqueue_script('audiokiddo-v2-demos', ak_asset(ak_versioned('js/v2-demos', 'js')), ['audiokiddo-v2'], AK_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
+    }
     $deps = [];
     if (ak_has_woo()) {
         wp_enqueue_script('wc-add-to-cart');
         wp_enqueue_script('wc-cart-fragments');
         $deps = ['jquery'];
     }
-    wp_enqueue_script('audiokiddo-strona', ak_asset('js/strona.js'), $deps, AK_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
+    // The server lets browsers keep a script for a year and query strings do not reach it (?ver is
+    // stripped), so a new version of the script must have a new name: tool/strona_zip.sh writes
+    // strona-<version>.js next to strona.js (2026-10-19: visitors kept the old script for days).
+    $script = is_file(AK_DIR . 'assets/js/strona-' . AK_VERSION . '.js') ? 'js/strona-' . AK_VERSION . '.js' : 'js/strona.js';
+    wp_enqueue_script('audiokiddo-strona', ak_asset($script), $deps, AK_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
 }, 100);
 
 add_action('wp_head', function () {
@@ -160,7 +175,7 @@ add_action('wp_head', function () {
     echo '<meta name="theme-color" content="#FFFFFF">' . "\n";
     // Things wait hidden for their entrance only when the script runs; if it does not come
     // within 3 seconds, everything is shown as it is.
-    echo "<script>document.documentElement.classList.add('ak-js');setTimeout(function(){if(!window.akReady)document.documentElement.classList.remove('ak-js')},3000);</script>\n";
+    echo "<script>document.documentElement.classList.add('ak-js');setTimeout(function(){if(!window.akReady)document.documentElement.classList.remove('ak-js')},3000);window.akGoImg=" . wp_json_encode(ak_asset('img/szop/zadowolony.webp')) . ";</script>\n";
 }, 2);
 
 add_filter('body_class', function ($classes) {
@@ -188,3 +203,15 @@ add_action('template_redirect', function () {
     }
 }, 1);
 
+/** The calm home page (templates/start2.php), the home page since 2026-10-20; the old one stays at ?podglad=stara. */
+function ak_preview_v2(): bool
+{
+    return !(isset($_GET['podglad']) && $_GET['podglad'] === 'stara'); // phpcs:ignore WordPress.Security.NonceVerification
+}
+
+/** "css/strona" + "css" → the copy with the version in its name when the package has one. */
+function ak_versioned(string $base, string $ext): string
+{
+    $named = $base . '-' . AK_VERSION . '.' . $ext;
+    return is_file(AK_DIR . 'assets/' . $named) ? $named : $base . '.' . $ext;
+}

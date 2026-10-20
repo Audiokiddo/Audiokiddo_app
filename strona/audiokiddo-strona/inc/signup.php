@@ -21,6 +21,13 @@ function ak_printable_url(string $material = 'karty'): string
     return home_url('/do-druku/' . $file . '?t=' . ak_printable_token(gmdate('Y-m')));
 }
 
+/** The link in the welcome e-mail: it works as long as the e-mail lives (not only two months). */
+function ak_printable_mail_url(string $material = 'karty'): string
+{
+    $file = AK_PRINTABLES[$material] ?? AK_PRINTABLE;
+    return home_url('/do-druku/' . $file . '?t=' . ak_printable_token('mail'));
+}
+
 function ak_printable_token(string $month): string
 {
     return substr(hash_hmac('sha256', 'karty|' . $month, wp_salt('auth')), 0, 20);
@@ -35,7 +42,7 @@ add_action('init', function () {
         return;
     }
     $token = (string) ($_GET['t'] ?? '');
-    $months = [gmdate('Y-m'), gmdate('Y-m', strtotime('first day of last month'))];
+    $months = [gmdate('Y-m'), gmdate('Y-m', strtotime('first day of last month')), 'mail'];
     $ok = false;
     foreach ($months as $month) {
         $ok = $ok || hash_equals(ak_printable_token($month), $token);
@@ -116,7 +123,87 @@ function ak_signup_handle(array $in): array
         error_log('Audiokiddo zapis: MailerLite ' . $code . ' ' . substr((string) wp_remote_retrieve_body($response), 0, 300));
         return ['status' => 502, 'body' => ['ok' => false, 'message' => 'Coś się wysypało po drodze. Spróbuj jeszcze raz za chwilę albo napisz: ' . ak_opt('contact_email')]];
     }
+    ak_send_welcome($email, (string) ($in['material'] ?? 'karty'));
     return ['status' => 200, 'body' => ['ok' => true, 'download' => ak_printable_url((string) ($in['material'] ?? 'karty'))]];
+}
+
+/**
+ * The welcome e-mail, sent by the site itself (not by a MailerLite automation: the free plan
+ * allows one, and this way the words and the buttons live in our code). The cards are a
+ * button, one play to try right now without the app, and what comes next: the store buttons
+ * when the app is out, a promise to write the day it is out when it is not. Once a day per address.
+ */
+function ak_send_welcome(string $email, string $material): void
+{
+    $key = 'ak_welcome_' . md5(strtolower($email));
+    if (get_transient($key)) {
+        return;
+    }
+    set_transient($key, 1, DAY_IN_SECONDS);
+    $road = $material === 'droga';
+    $contact = (string) ak_opt('contact_email');
+    $font = 'Arial,Helvetica,sans-serif';
+    $p = static fn(string $t): string => '<p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#211C35">' . $t . '</p>';
+    $h = static fn(string $t): string => '<h2 style="font-family:' . $font . ';font-size:22px;line-height:1.25;color:#1D7478;margin:26px 0 10px">' . esc_html($t) . '</h2>';
+    $img = static fn(string $file, string $alt): string => '<p style="margin:0 0 18px"><img src="' . esc_url(AK_URL . 'assets/img/mail/' . $file)
+        . '" width="544" alt="' . esc_attr($alt) . '" style="display:block;width:100%;max-width:544px;height:auto;border-radius:16px"></p>';
+    $button = static fn(string $label, string $url, string $bg = '#FAC118', string $fg = '#211C35'): string =>
+        '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0 20px"><tr><td bgcolor="' . $bg . '" style="background:' . $bg . ';border-radius:999px"><a href="' . esc_url($url)
+        . '" style="display:inline-block;font-family:' . $font . ';font-size:17px;font-weight:bold;color:' . $fg . ';text-decoration:none;padding:15px 30px;border-radius:999px">' . esc_html($label) . '</a></td></tr></table>';
+    $box = static fn(string $inner): string => '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 18px"><tr><td bgcolor="#FFF3CC" style="background:#FFF3CC;border-left:5px solid #FAC118;border-radius:12px;padding:16px 18px;font-size:16px;line-height:1.6;color:#211C35">'
+        . $inner . '</td></tr></table>';
+
+    $body = $p($road
+        ? 'Dziękujemy, że jesteś z nami! Twoje <strong>5 zabaw na drogę</strong> czeka pod przyciskiem. Wydrukuj je przed wyjazdem i włóż do schowka w aucie.'
+        : 'Dziękujemy, że jesteś z nami! Twoje <strong>karty ratunkowe Szop\'ena</strong> czekają pod przyciskiem. Wydrukuj je na zwykłej drukarce (najlepiej na grubszym papierze) i wytnij po przerywanych liniach.');
+    $body .= $img('m2-karty.jpg', 'Szop\'en z kartami do druku');
+    $body .= $button($road ? 'Pobierz 5 zabaw na drogę (PDF)' : 'Pobierz karty (PDF)', ak_printable_mail_url($material));
+
+    $body .= $h('Zabawa na dziś, bez aplikacji i bez ekranu');
+    $body .= $img('m3-detektyw-dzwiekow.jpg', 'Dziecko z zamkniętymi oczami zgaduje dźwięki, obok Szop\'en');
+    $body .= $box('<strong>Detektyw dźwięków</strong> (od 4 lat, 10 minut, nic nie trzeba przygotowywać)<br>'
+        . '1. Dziecko zamyka oczy i nasłuchuje.<br>'
+        . '2. Ty robisz dźwięk w domu: stukasz łyżką w szklankę, szeleścisz papierem, zamykasz drzwi szafki.<br>'
+        . '3. Dziecko zgaduje, co to było. Za dobrą odpowiedź dostaje pieczątkę (kropkę długopisem na dłoni).<br>'
+        . '4. Po pięciu dźwiękach zamieńcie się rolami: teraz dziecko wymyśla zagadkę dla Ciebie.');
+    $body .= $p('Tak właśnie działa Audiokiddo: dziecko nie ogląda, tylko działa, a głos prowadzi zabawę.');
+
+    $body .= $h('A co z aplikacją?');
+    if (ak_app_live()) {
+        $body .= $p('Aplikacja Audiokiddo jest już w sklepach, a pierwsze zabawy są w niej za darmo. Pobierz ją i wybierz wiek dziecka.');
+        if ((string) ak_opt('app_store_url') !== '') {
+            $body .= $button('Pobierz w App Store', (string) ak_opt('app_store_url'), '#211C35', '#ffffff');
+        }
+        if ((string) ak_opt('google_play_url') !== '') {
+            $body .= $button('Pobierz w Google Play', (string) ak_opt('google_play_url'), '#211C35', '#ffffff');
+        }
+    } else {
+        $body .= $img('m4-aplikacja-wkrotce.jpg', 'Szop\'en zerka zza telefonu, aplikacja już niedługo');
+        $body .= $p('Aplikacja Audiokiddo trafia do App Store i Google Play lada dzień. Napiszemy do Ciebie w dniu premiery, a w środku będą na Ciebie czekać darmowe zabawy na start.');
+    }
+    $body .= $p('Piszemy rzadko i konkretnie: nowa zabawa, pomysł na deszczowy dzień, czasem zniżka. Jeśli nie chcesz dostawać naszych listów, odpisz na tę wiadomość słowem „wypisz”, a zajmiemy się resztą.');
+    $body .= $p('Pozdrawiamy,<br><strong>Dawid i Nela z Audiokiddo</strong>');
+
+    $html = '<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>Audiokiddo</title></head>'
+        . '<body bgcolor="#FFF8E7" style="margin:0;background:#FFF8E7;font-family:' . $font . ';color:#211C35">'
+        . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#FFF8E7"><tr><td align="center" style="padding:24px 12px">'
+        . '<table role="presentation" width="100%" bgcolor="#ffffff" style="max-width:600px;background:#ffffff;border-radius:22px;border:1px solid #F0E3BE" cellpadding="0" cellspacing="0">'
+        . '<tr><td style="font-size:0;line-height:0"><img src="' . esc_url(AK_URL . 'assets/img/mail/m1-naglowek.jpg') . '" width="600" alt="Audiokiddo" style="display:block;width:100%;height:auto;border-radius:22px 22px 0 0"></td></tr>'
+        . '<tr><td style="padding:26px 28px 8px">' . $body . '</td></tr>'
+        . '<tr><td bgcolor="#F1EDF7" style="background:#F1EDF7;border-radius:0 0 22px 22px;padding:18px 28px;font-size:13px;line-height:1.5;color:#5B5570"><strong style="color:#685082">Audiokiddo</strong> · audiozabawy pełne przygód · <a href="https://audiokiddo.pl" style="color:#1D7478">audiokiddo.pl</a><br>'
+        . 'Dostajesz tę wiadomość, bo zapisałeś się na audiokiddo.pl. Pytania: <a href="mailto:' . esc_attr($contact) . '" style="color:#1D7478">' . esc_html($contact) . '</a>.</td></tr>'
+        . '</table></td></tr></table></body></html>';
+
+    wp_mail(
+        $email,
+        $road ? 'Twoje 5 zabaw na drogę od Audiokiddo' : 'Twoje karty Szop\'ena i zabawa na dziś',
+        $html,
+        [
+            'Content-Type: text/html; charset=UTF-8',
+            'From: Audiokiddo <' . $contact . '>',
+            'Reply-To: Audiokiddo <' . $contact . '>',
+        ]
+    );
 }
 
 /**
@@ -147,7 +234,7 @@ function ak_signup_form(string $source = 'druk', string $button = 'Wyślij mi ka
             <p>Zabawy na drogę pobierzesz od razu. Wydrukuj je przed wyjazdem i włóż do schowka w aucie.</p>
             <a class="ak-btn ak-btn-teal ak-signup-dl" href="#" target="_blank" rel="noopener">Pobierz 5 zabaw na drogę (PDF)</a>
             <?php else : ?>
-            <p>Karty są do pobrania od razu. Na maila wyślemy też 3 audiozabawy na start (zajrzyj do Ofert i Spamu, Szop bywa nieśmiały).</p>
+            <p>Karty są do pobrania od razu. Na maila wyślemy też link do kart i zabawę na dziś (zajrzyj do Ofert i Spamu, Szop bywa nieśmiały).</p>
             <a class="ak-btn ak-btn-teal ak-signup-dl" href="#" target="_blank" rel="noopener">Pobierz karty (PDF)</a>
             <?php endif; ?>
         </div>
@@ -179,4 +266,42 @@ function ak_road_signup(): void
         <?php ak_signup_form('droga', 'Wyślij mi 5 zabaw'); ?>
     </aside>
     <?php
+}
+
+
+/**
+ * The shop's mail from Supabase (e.g. "how to open your purchase in the app") goes out through
+ * WordPress, the same way as the welcome mail: the SMTP route from Supabase to our mail server
+ * does not answer. It is admin-ajax (like the sign-up: a security plugin closes the REST API to
+ * visitors) and opens only with the shared key (Settings: Poczta ze sklepu = Supabase secret AK_MAIL_KEY).
+ */
+add_action('wp_ajax_nopriv_ak_mail_relay', 'ak_mail_relay');
+add_action('wp_ajax_ak_mail_relay', 'ak_mail_relay');
+
+function ak_mail_relay(): void
+{
+    $key = (string) ak_opt('mail_key');
+    $given = (string) ($_SERVER['HTTP_X_AK_KEY'] ?? '');
+    if (strlen($key) < 20 || !hash_equals($key, $given)) {
+        wp_send_json(['sent' => false, 'error' => 'auth'], 401);
+    }
+    $to = sanitize_email((string) ($_POST['to'] ?? ''));
+    $subject = sanitize_text_field(wp_unslash((string) ($_POST['subject'] ?? '')));
+    $html = wp_unslash((string) ($_POST['html'] ?? ''));
+    if (!is_email($to) || $subject === '' || $html === '') {
+        wp_send_json(['sent' => false, 'error' => 'params'], 400);
+    }
+    $contact = (string) ak_opt('contact_email');
+    $headers = [
+        'Content-Type: text/html; charset=UTF-8',
+        'From: Audiokiddo <' . $contact . '>',
+        'Reply-To: Audiokiddo <' . $contact . '>',
+    ];
+    $unsubscribe = esc_url_raw((string) ($_POST['unsubscribe'] ?? ''));
+    if ($unsubscribe !== '') {
+        $headers[] = 'List-Unsubscribe: <' . $unsubscribe . '>';
+        $headers[] = 'List-Unsubscribe-Post: List-Unsubscribe=One-Click';
+    }
+    $sent = wp_mail($to, $subject, $html, $headers);
+    wp_send_json(['sent' => (bool) $sent], $sent ? 200 : 502);
 }

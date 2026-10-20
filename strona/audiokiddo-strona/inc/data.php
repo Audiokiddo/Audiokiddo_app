@@ -30,6 +30,7 @@ function ak_defaults(): array
         'testimonials_url' => '',
         'photo_nela' => '',
         'photo_dawid' => '',
+        'mail_key' => '',
         'contact_email' => 'kontakt@audiokiddo.pl',
         'contact_url' => '/kontakt/',
         'privacy_url' => '/polityka-prywatnosci/',
@@ -62,6 +63,37 @@ function ak_asset(string $path): string
 }
 
 /** A picture from assets/img/site (made by tool/site_old_assets.py). */
+/** Illustration at the top of a few pages: page slug → [file in img/site, alt text]. */
+function ak_hero_image(string $slug): ?array
+{
+    return [
+        'zagadki-dla-dzieci-9-10-lat' => ['seo-zagadki-9-10', 'Duży znak zapytania z kolorowych puzzli, lupa i szop Szop’en w kapeluszu detektywa.'],
+        'jak-zajac-dziecko-w-restauracji' => ['seo-restauracja', 'Stolik w restauracji z serwetką pokrytą kolorowymi rysunkami, kredkami i szopem Szop’enem w roli kelnera.'],
+        'zabawy-na-urodziny-5-latka' => ['seo-urodziny-5', 'Pokój urodzinowy z balonami, tortem z pięcioma świeczkami, tańczącymi dziećmi i szopem Szop’enem w czapeczce.'],
+        'aplikacje-z-audiobookami-dla-dzieci' => ['seo-audiobooki', 'Szop Szop’en ze słuchawkami na pufie, a nad nim fruwające książki zamieniające się w fale dźwięku, telefon i głośnik na półce.'],
+        'gdzie-sluchac-sluchowisk-dla-dzieci' => ['seo-audiobooki', 'Szop Szop’en ze słuchawkami na pufie, a nad nim fruwające książki zamieniające się w fale dźwięku, telefon i głośnik na półce.'],
+        'aplikacje-dla-dzieci-bez-reklam' => ['seo-bez-reklam', 'Telefon, wokół którego znikają okna reklam, tarcza z haczykiem i serduszkiem oraz szop Szop’en pilnujący porządku.'],
+        'toniebox-czy-warto-alternatywy' => ['seo-toniebox', 'Trzy sposoby słuchania bajek na półce: kostka z figurką, odtwarzacz na karty i telefon z głośnikiem, a obok szop Szop’en.'],
+        'gry-w-samochodzie-dla-dzieci' => ['seo-samochod', 'Samochód jadący krętą drogą, dziecko wskazujące coś przez okno i szop Szop’en z chorągiewką na bagażniku dachowym.'],
+        'prezent-dla-5-latka' => ['seo-prezenty', 'Stos kolorowych prezentów z klockami, grą i lupą oraz szop Szop’en z kokardą trzymający prezent.'],
+        'prezent-dla-4-latka' => ['seo-prezenty', 'Stos kolorowych prezentów z klockami, grą i lupą oraz szop Szop’en z kokardą trzymający prezent.'],
+        'prezent-dla-6-latka' => ['seo-prezenty', 'Stos kolorowych prezentów z klockami, grą i lupą oraz szop Szop’en z kokardą trzymający prezent.'],
+        'prezent-dla-7-latka' => ['seo-prezenty', 'Stos kolorowych prezentów z klockami, grą i lupą oraz szop Szop’en z kokardą trzymający prezent.'],
+        'opinie' => ['seo-opinie', 'Kolorowe dymki z sercami i gwiazdkami oraz szop Szop’en trzymający serce.'],
+        'dla-mediow' => ['seo-dla-mediow', 'Materiały dla prasy: laptop, aparat, notes i mikrofon oraz szop Szop’en z identyfikatorem prasowym.'],
+    ][$slug] ?? null;
+}
+
+/** The picture block for a page, or ''. */
+function ak_hero_figure(string $slug): string
+{
+    $h = ak_hero_image($slug);
+    if (!$h) {
+        return '';
+    }
+    return '<figure class="ak-hero-fig"><img src="' . esc_url(ak_img($h[0])) . '" alt="' . esc_attr($h[1]) . '" width="1200" height="800" decoding="async"></figure>';
+}
+
 function ak_img(string $name): string
 {
     return ak_asset('img/site/' . $name . '.webp');
@@ -196,6 +228,45 @@ function ak_pricing(): array
         'save' => $save > 0 ? number_format($save, 2, ',', '') : '',
         'percent' => $m > 0 && $save > 0 ? (int) round($save / ($m * 12) * 100) : 0,
     ];
+}
+
+/**
+ * The subscription sold on the website (2026-10-18): one payment for a month or a year, no
+ * automatic renewal; the months count from the first sign-in in the app (store_products
+ * woo:9980 and woo:9981 in Supabase). Null when the product is not on sale (draft, no shop).
+ */
+function ak_web_plans(): array
+{
+    return ['month' => 9980, 'year' => 9981];
+}
+
+function ak_buy_url(string $plan): ?string
+{
+    $id = ak_web_plans()[$plan] ?? 0;
+    if (!$id || !function_exists('wc_get_product') || !function_exists('wc_get_checkout_url')) {
+        return null;
+    }
+    $product = wc_get_product($id);
+    if (!$product || $product->get_status() !== 'publish' || !$product->is_purchasable()) {
+        return null;
+    }
+    return add_query_arg('add-to-cart', $id, wc_get_checkout_url());
+}
+
+/** Which website plan an order holds ('month', 'year') or null for anything else. */
+function ak_order_plan(?WC_Order $order): ?string
+{
+    if (!$order) {
+        return null;
+    }
+    $ids = array_flip(ak_web_plans());
+    foreach ($order->get_items() as $item) {
+        $pid = method_exists($item, 'get_product_id') ? (int) $item->get_product_id() : 0;
+        if (isset($ids[$pid])) {
+            return $ids[$pid];
+        }
+    }
+    return null;
 }
 
 /**
@@ -387,7 +458,7 @@ function ak_facts(): array
         'Dla kogo' => 'Dla rodziców dzieci w wieku przedszkolnym i wczesnoszkolnym (3–4, 5–6 i 7–9 lat), którzy potrzebują zająć dziecko na kilkanaście minut bez tabletu i bajki: przy gotowaniu, w samochodzie, po przedszkolu, w deszczowy dzień.',
         'Jak działa' => 'Pobierasz aplikację Audiokiddo z App Store albo Google Play, wybierasz wiek i zabawę, naciskasz play. Większość zabaw dziecko robi samodzielnie; telefon może leżeć na stole.',
         'Ile kosztuje' => 'W aplikacji są darmowe zabawy. Pełna biblioteka w abonamencie kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Wszystkie pakiety są w abonamencie, a co tydzień dochodzą 2 nowe zabawy.',
-        'Kto to robi' => 'Audiokiddo tworzą Nela Mariak i Dawid Kubiak, para rodziców z Polski. Nela wymyśla zabawy i świat marki, Dawid buduje technologię; oboje podkładają głosy. Maskotka marki to szop Szop’en.',
+        'Kto to robi' => 'Projekt Audiokiddo prowadzą na równi Dawid Kubiak i Nela Mariak, para rodziców z Polski i współzałożyciele marki. Nela wymyśla zabawy i świat marki, Dawid buduje technologię; oboje podkładają głosy. Maskotka marki to szop Szop’en.',
         'Bez ekranu i bezpiecznie' => 'Zabawy są tylko do słuchania, bez reklam. Po pobraniu działają bez internetu, także w samochodzie i samolocie. Marka nie publikuje twarzy dzieci.',
         'Co ćwiczy' => 'Uważne słuchanie, mowę i słownictwo, wyobraźnię, logiczne myślenie, koncentrację i ruch. Audiozabawy polecają pedagodzy, logopedzi i fizjoterapeuci dziecięcy.',
     ];
@@ -403,15 +474,17 @@ function ak_faq(): array
         ['Czy muszę uczestniczyć?', 'Zwykle nie. Nikt nie sprawdza obecności. Większość zabaw dziecko robi samodzielnie. Chcesz dołączyć? Jasne. Nie chcesz? Też jasne.'],
         ['Czy dziecko patrzy w ekran?', 'Tylko tyle, ile potrzeba do obsługi. Główna akcja dzieje się poza nim: telefon może leżeć na stole albo w kieszeni.'],
         ['Dla dzieci w jakim wieku?', 'Dla dzieci od 3 do 9 lat. Zabawy są podzielone na grupy 3–4, 5–6 i 7–9 lat; przy każdej widzisz wiek, czas trwania i to, czy potrzebujesz czegoś dodatkowego.'],
-        ['Ile kosztuje Audiokiddo?', 'Pobranie aplikacji jest darmowe i w środku czekają darmowe zabawy. Pełna biblioteka kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Abonament wybierasz w aplikacji.'],
+        ['Ile kosztuje Audiokiddo?', 'Pobranie aplikacji jest darmowe i w środku czekają darmowe zabawy. Pełna biblioteka kosztuje ' . $p['month'] . ' zł miesięcznie albo ' . $p['year'] . ' zł rocznie (około ' . $p['year_month'] . ' zł miesięcznie). Dostęp kupisz tutaj na stronie (BLIK, karta, Apple Pay) albo w aplikacji.'],
         ['Czy mogę najpierw sprawdzić za darmo?', 'Tak. Pobierz aplikację, wybierz wiek dziecka i odpal darmowe zabawy. To normalne, pełne audiozabawy, a nie zwiastuny. Abonamentu nie kupujesz w ciemno.'],
         ['Czy działa w samochodzie?', 'Tak. Mamy specjalny tryb samochodowy „W drogę”. Pobrane wcześniej zabawy działają też w trudnych warunkach pt. brak zasięgu albo podróż samolotem.'],
         ['Czy mogę anulować?', 'Tak, w każdej chwili w ustawieniach subskrypcji App Store albo Google Play. Nie wyślemy Ci szopa pod chatę.'],
+        ['Kupuję na stronie. Jak włączę dostęp w aplikacji?', 'Zaloguj się w aplikacji adresem e-mail z zamówienia. Dostęp włączy się sam, a miesiące liczymy od pierwszego logowania, nie od dnia zakupu.'],
+        ['Kupiłem dostęp na stronie. Jak go włączyć?', 'Pobierz aplikację Audiokiddo i zaloguj się tym samym adresem e-mail, którego użyłeś przy zakupie. Dostęp włączy się sam, a miesiące liczą się od tego dnia, nie od dnia zakupu. Podałeś inny adres? W aplikacji wpisz numer zamówienia z maila.'],
         ['Nie lubię subskrypcji. Da się bez niej?', 'Z każdego pakietu jedną zabawę posłuchasz za darmo, bez abonamentu. Całą bibliotekę i 2 nowe zabawy co tydzień daje abonament, który anulujesz w każdej chwili. Pakiety kupione wcześniej na audiokiddo.pl zostają Twoje.'],
         ['Czy Audiokiddo jest bezpieczne dla dzieci?', 'Tak. Bez reklam i bez treści nieodpowiednich dla dzieci. Zakupy i linki są za bramką dla rodzica, a mikrofon działa tylko po Twojej zgodzie i nic nie jest nagrywane.'],
         ['Czy mogę używać Audiokiddo w przedszkolu lub szkole?', 'Tak. Audiozabawy dobrze sprawdzają się w przedszkolu i w klasach 1–3, gdy słucha cała grupa. Dla placówek przygotowujemy osobną ofertę: napisz do nas.'],
-        ['Kupiłem pakiet na stronie. Gdzie go znajdę?', 'Linki do pobrania przychodzą mailem od razu po zakupie (sprawdź też Spam i Oferty). Te same pakiety odblokujesz w aplikacji, logując się tym samym adresem e-mail. Problem? Napisz na ' . ak_opt('contact_email') . '.'],
-        ['Kto tworzy audiozabawy?', 'Nela i Dawid, para rodziców, która stworzyła Audiokiddo. Razem piszemy zabawy i je montujemy, a nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami, po polsku.'],
+        ['Kupiłem abonament na stronie. Jak go włączyć w aplikacji?', 'Potwierdzenie przychodzi mailem od razu po zakupie (sprawdź też Spam i Oferty). W aplikacji zaloguj się tym samym adresem e-mail albo wpisz numer zamówienia w Więcej, w „Masz już dostęp z audiokiddo.pl?”. Problem? Napisz na ' . ak_opt('contact_email') . '.'],
+        ['Kto tworzy audiozabawy?', 'Projekt prowadzą na równi Dawid Kubiak i Nela Mariak, para rodziców, która stworzyła Audiokiddo. Razem piszemy zabawy i je montujemy, a nasze głosy usłyszysz w zabawach. Od pomysłu do realizacji robimy wszystko sami, po polsku.'],
         ['Czy działa w słuchawkach?', 'Tak, w słuchawkach i na głośniku Bluetooth. W zabawach, w których dziecko odpowiada głosem, telefon musi je słyszeć, więc najlepiej leży blisko dziecka. Gdy go nie usłyszy, zabawa nie stoi: głos po chwili sam prowadzi dalej.'],
     ];
 }
@@ -421,7 +494,7 @@ function ak_people(): array
 {
     return [
         'nela' => ['name' => 'Nela', 'full' => 'Nela Mariak', 'role' => 'Animatorka, miłośniczka kreatywnych rozwiązań, współzałożycielka AudioKiddo', 'photo' => ak_opt('photo_nela') ?: ak_img('nela')],
-        'dawid' => ['name' => 'Dawid', 'full' => 'Dawid Kubiak', 'role' => 'Lektor, 100 bajkowych głosów w jednym ciele', 'photo' => ak_opt('photo_dawid') ?: ak_img('dawid')],
+        'dawid' => ['name' => 'Dawid', 'full' => 'Dawid Kubiak', 'role' => 'Współzałożyciel AudioKiddo, lektor, 100 bajkowych głosów w jednym ciele', 'photo' => ak_opt('photo_dawid') ?: ak_img('dawid')],
         'razem' => ['name' => 'Nela i Dawid', 'full' => 'Nela i Dawid', 'role' => 'para, która tworzy AudioKiddo', 'photo' => ''],
     ];
 }
@@ -567,7 +640,6 @@ function ak_app_feature_list(): array
         ['W drogę', 'Zabawy na całą trasę z przerwami na okno. Ustawiasz własny czas podróży. Działa z CarPlay i Android Auto.'],
         ['Dobranoc', 'Wieczorny rytuał jednym przyciskiem: trzy oddechy, spokojna zabawa, kołysanka.'],
         ['Szop’en mówi po imieniu', 'Jeśli zna imię dziecka, wita je na początku trasy, na dobranoc i przy dyplomie.'],
-        ['Tryb dziecka', 'Telefon pokazuje tylko zabawy. Wyjście tylko dla dorosłego.'],
         ['Bez internetu', 'Pobierasz zabawy przed wyjazdem i grasz bez zasięgu.'],
         ['Do druku', 'Akta detektywa, karty i przewodniki do wydrukowania.'],
         ['Twój głos', 'Nagrywasz własne „dobranoc” albo powitanie, a aplikacja odtworzy je dziecku.'],

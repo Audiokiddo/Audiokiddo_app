@@ -165,12 +165,20 @@ function wc_get_product($id)
 {
     // Prices as in the shop on audiokiddo.pl.
     $all = [372 => ['Pakiet Wyobraźnia', 49.99, 69.99], 373 => ['Pakiet Słowa i Wiedza', 49.99, 69.99], 7339 => ['Pakiet Detektyw', 69.99, 99.99],
-        371 => ['Zestaw dwóch zabaw', 89.99, 139.98], 6235 => ['Zestaw trzech zabaw', 159.99, 239.97]];
+        371 => ['Zestaw dwóch zabaw', 89.99, 139.98], 6235 => ['Zestaw trzech zabaw', 159.99, 239.97],
+        9980 => ['Audiokiddo: dostęp na 1 miesiąc', 29.99, 29.99], 9981 => ['Audiokiddo: dostęp na 12 miesięcy', 269.99, 269.99]];
     return isset($all[$id]) ? new Fake_Product($id, ...$all[$id]) : false;
 }
 function wc_get_price_to_display($product, $args = []) { return (float) ($args['price'] ?? $product->get_price()); }
 function wc_get_cart_url() { return 'https://audiokiddo.pl/koszyk/'; }
+function wc_get_checkout_url() { return 'https://audiokiddo.pl/zamowienie/'; }
+function add_query_arg($k, $v, $url) { return $url . (str_contains($url, '?') ? '&' : '?') . rawurlencode($k) . '=' . rawurlencode((string) $v); }
 function checked($a, $b = true, $echo = true) { $r = $a == $b ? " checked='checked'" : ''; if ($echo) { echo $r; } return $r; }
+
+function is_user_logged_in() { return false; }
+function wp_doing_ajax() { return false; }
+function is_feed() { return false; }
+function is_preview() { return false; }
 
 // --- Render ---------------------------------------------------------------------------------
 require $root . '/strona/audiokiddo-strona/audiokiddo-strona.php';
@@ -187,7 +195,7 @@ foreach ($argv as $arg) {
 }
 if ($only === null) {
     foreach (['start', 'blog', 'post', 'notfound', 'guide:pomysly-na-zabawy', 'guide:zabawy-bez-ekranu', 'guide:zagadki-dla-dzieci', 'guide:zabawy-dla-przedszkolakow', 'guide:zabawy-dla-5-latka', 'guide:dziecko-sie-nudzi', 'guide:samodzielna-zabawa-dziecka', 'guide:jak-zajac-dziecko-gdy-pracujesz',
-        'info:jak-to-dziala', 'info:abonament', 'info:pakiety', 'info:pytania', 'info:logopedzi-i-pedagodzy', 'info:o-nas', 'info:zabawy-do-druku', 'product:7339', 'product:372', 'product:6235'] as $view) {
+        'info:jak-to-dziala', 'info:abonament', 'info:pakiety', 'info:pytania', 'info:logopedzi-i-pedagodzy', 'info:o-nas', 'info:zabawy-do-druku', 'info:opinie', 'info:dla-mediow', 'guide:zagadki-dla-dzieci-9-10-lat', 'guide:jak-zajac-dziecko-w-restauracji', 'guide:zabawy-na-urodziny-5-latka', 'guide:aplikacje-z-audiobookami-dla-dzieci', 'guide:toniebox-czy-warto-alternatywy', 'guide:prezent-dla-5-latka', 'guide:gry-w-samochodzie-dla-dzieci', 'guide:aplikacje-dla-dzieci-bez-reklam', 'guide:prezent-dla-4-latka', 'guide:prezent-dla-6-latka', 'guide:prezent-dla-7-latka', 'guide:gdzie-sluchac-sluchowisk-dla-dzieci', 'product:7339', 'product:372', 'product:6235'] as $view) {
         $html = shell_exec(sprintf('%s %s --view=%s 2>&1', escapeshellarg(PHP_BINARY), escapeshellarg(__FILE__), $view));
         $name = $view === 'post' ? 'wpis' : str_replace(['guide:', 'info:', 'product:'], ['', '', 'produkt-'], $view);
         file_put_contents("$out/$name.html", $html);

@@ -82,8 +82,11 @@ function ak_peek(string $section): void
 function ak_leadmagnet(bool $slide = false): void
 {
     ?>
-    <section class="ak-free<?php echo $slide ? ' ak-slide' : ''; ?>" id="start-aplikacji"<?php echo $slide ? ' data-slide="Na maila"' : ''; ?> aria-labelledby="ak-free-h">
+    <section class="ak-free ak-free-hot<?php echo $slide ? ' ak-slide' : ''; ?>" id="start-aplikacji"<?php echo $slide ? ' data-slide="Na maila"' : ''; ?> aria-labelledby="ak-free-h">
         <div class="ak-wrap ak-free-in">
+            <span class="ak-free-blob ak-free-blob-1" aria-hidden="true"></span>
+            <span class="ak-free-blob ak-free-blob-2" aria-hidden="true"></span>
+            <span class="ak-free-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
             <div class="ak-free-img ak-druk-fan ak-druk-fan-sm" data-reveal="left" aria-hidden="true">
                 <img src="<?php echo esc_url(ak_asset('druk/podglad-akta.webp')); ?>" alt="" width="909" height="1287" loading="lazy">
                 <img src="<?php echo esc_url(ak_asset('druk/podglad-karty.webp')); ?>" alt="" width="909" height="1287" loading="lazy">
@@ -91,13 +94,19 @@ function ak_leadmagnet(bool $slide = false): void
                 <span class="ak-badge">0 zł</span>
             </div>
             <div data-reveal="right">
+                <p class="ak-free-tag2">Prezent na start</p>
                 <?php if (ak_app_live()) : ?>
                 <h2 id="ak-free-h">Karty ratunkowe Szop’ena <span class="ak-hl-word">za darmo</span></h2>
                 <p class="ak-sub">Zabawy bez ekranu do wydrukowania: na obiad, auto, deszcz i wieczór. Wpisz e-mail, pobierz od razu, a raz na jakiś czas napiszemy, co nowego.</p>
                 <?php else : ?>
-                <h2 id="ak-free-h">Zabawy bez ekranu na start. <span class="ak-hl-word">Za darmo.</span></h2>
+                <h2 id="ak-free-h">Zabawy na start. <span class="ak-hl-word">Za darmo.</span></h2>
                 <p class="ak-sub">Zostaw e-mail. Karty do druku pobierzesz od razu, audiozabawy przyjdą mailem, a my damy znać, gdy aplikacja pojawi się w App Store i Google Play.</p>
                 <?php endif; ?>
+                <ol class="ak-free-steps">
+                    <li><span>1</span>Wpisujesz e-mail</li>
+                    <li><span>2</span>Karty do druku pobierasz od razu</li>
+                    <li><span>3</span>3 audiozabawy lecą na maila</li>
+                </ol>
                 <?php ak_signup_form('newsletter', ak_app_live() ? 'Chcę karty' : 'Wyślij mi zabawy'); ?>
                 <ul class="ak-free-proof"><li>Za 0 zł</li><li>Bez reklam</li><li>Wypisujesz się jednym kliknięciem</li></ul>
                 <p class="ak-small"><a href="<?php echo esc_url(ak_info_url('zabawy-do-druku')); ?>">Zobacz, co jest w środku →</a></p>

@@ -31,7 +31,7 @@ function ak_seo_title(): string
 {
     switch (ak_view()) {
         case 'start':
-            return 'Audiokiddo – interaktywne audiozabawy dla dzieci 3–9 lat, bez ekranu';
+            return 'Audiokiddo – interaktywne audiozabawy dla dzieci 3–9 lat, w których dziecko odpowiada na głos';
         case 'search':
             return 'Szukasz: ' . get_search_query() . ' | Audiokiddo';
         case '404':
@@ -191,7 +191,7 @@ function ak_schema(): array
             'logo' => ['@type' => 'ImageObject', 'url' => ak_asset('img/logo.png'), 'width' => 150, 'height' => 31],
             'image' => ak_asset('img/site/og.jpg'),
             'email' => ak_opt('contact_email'),
-            'description' => ak_facts()['Czym jest'],
+            'description' => ak_facts()['Czym jest'] . ' Projekt prowadzą na równi Dawid Kubiak i Nela Mariak.',
             'slogan' => 'Dziecko potrzebuje zajęcia. Ty nie musisz go wymyślać.',
             'foundingLocation' => ['@type' => 'Country', 'name' => 'Polska'],
             'areaServed' => ['@type' => 'Country', 'name' => 'Polska'],
@@ -205,8 +205,8 @@ function ak_schema(): array
                 'areaServed' => 'PL',
             ],
             'founder' => [
-                ['@type' => 'Person', '@id' => home_url('/#nela'), 'name' => 'Nela Mariak', 'jobTitle' => 'Współzałożycielka, autorka zabaw i świata marki'],
-                ['@type' => 'Person', '@id' => home_url('/#dawid'), 'name' => 'Dawid Kubiak', 'jobTitle' => 'Współzałożyciel, technologia i lektor'],
+                ['@type' => 'Person', '@id' => home_url('/#nela'), 'name' => 'Nela Mariak', 'jobTitle' => 'Współzałożycielka i współprowadząca Audiokiddo, autorka zabaw i świata marki'],
+                ['@type' => 'Person', '@id' => home_url('/#dawid'), 'name' => 'Dawid Kubiak', 'jobTitle' => 'Współzałożyciel i współprowadzący Audiokiddo, technologia i głosy'],
             ],
             'sameAs' => ak_same_as(),
         ],
@@ -515,7 +515,7 @@ function ak_llms_txt(): string
     $lines[] = '## Kontakt';
     $lines[] = '- Strona: ' . home_url('/');
     $lines[] = '- E-mail: ' . ak_opt('contact_email');
-    $lines[] = '- Twórcy: Nela Mariak i Dawid Kubiak';
+    $lines[] = '- Projekt prowadzą na równi Dawid Kubiak i Nela Mariak (współzałożyciele Audiokiddo)';
     foreach (ak_same_as() as $url) {
         $lines[] = '- ' . $url;
     }

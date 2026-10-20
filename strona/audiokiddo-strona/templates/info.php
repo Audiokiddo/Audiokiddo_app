@@ -29,12 +29,15 @@ require AK_DIR . 'parts/header.php';
                 'pytania' => ['zdziwiony', 'Pytaj śmiało. Na anulowanie też mamy odpowiedź.'],
                 'logopedzi-i-pedagodzy' => ['nasluchuje', 'Ja tylko pilnuję porządku. Fachowcy mówią niżej.'],
                 'o-nas' => ['zadowolony', 'To moi ludzie. Ja tu tylko pilnuję jakości.'],
+                'opinie' => ['klaszcze', 'To nie ja to napisałem. Przysięgam.'],
+                'dla-mediow' => ['chytry', 'Pisz śmiało. Na pytania o mnie odpowiada dział maskotek.'],
                 'zabawy-do-druku' => ['chytry', 'Wydrukuj. Wytnij. Losuj. Ja już wylosowałem drzemkę.'],
             ][$slug];
             ak_szop($hero_szop[0], $hero_szop[1], 'ak-szop-info');
             ?>
         </div>
     </header>
+    <?php echo ak_hero_figure($slug); // escaped inside ?>
 
 <?php if ($slug === 'jak-to-dziala') : ?>
     <section class="ak-slide ak-app ak-info-sec" aria-labelledby="ak-steps-h">
@@ -317,6 +320,81 @@ require AK_DIR . 'parts/header.php';
             </div>
         </div>
     </section>
+<?php elseif ($slug === 'opinie') : ?>
+    <section class="ak-info-sec" aria-label="Opinie rodziców">
+        <div class="ak-wrap">
+            <div class="ak-experts">
+                <?php foreach (ak_reviews() as $i => $r) : ?>
+                <figure class="ak-expert ak-c-<?php echo esc_attr($r['color']); ?>" data-reveal style="--d:<?php echo esc_attr(0.08 * $i); ?>s">
+                    <img src="<?php echo esc_url(ak_img($r['photo'])); ?>" alt="<?php echo esc_attr($r['name'] . ', ' . $r['who']); ?>" width="560" height="726" loading="lazy">
+                    <div>
+                        <blockquote><p><?php echo ak_bold($r['text']); // escaped in ak_bold ?></p></blockquote>
+                        <figcaption><strong><?php echo esc_html($r['name']); ?></strong><span><?php echo esc_html($r['who'] . ' · ' . $r['about']); ?></span></figcaption>
+                    </div>
+                </figure>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <section class="ak-info-sec" aria-labelledby="ak-spec-h">
+        <div class="ak-wrap">
+            <h2 id="ak-spec-h" data-reveal>Co mówią <span class="ak-hl-word">specjaliści</span></h2>
+            <div class="ak-experts">
+                <?php foreach (ak_specialists() as $i => $s) : ?>
+                <figure class="ak-expert ak-c-<?php echo esc_attr($s['color']); ?>" data-reveal style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
+                    <img src="<?php echo esc_url(ak_img($s['photo'])); ?>" alt="<?php echo esc_attr($s['name']); ?>" width="560" height="726" loading="lazy">
+                    <div>
+                        <blockquote><p><?php echo ak_bold($s['text']); // escaped in ak_bold ?></p></blockquote>
+                        <figcaption><strong><?php echo esc_html($s['name']); ?></strong><span><?php echo esc_html($s['role']); ?></span></figcaption>
+                    </div>
+                </figure>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <section class="ak-info-sec" aria-labelledby="ak-mine-h">
+        <div class="ak-wrap ak-narrow">
+            <h2 id="ak-mine-h" data-reveal>Chcesz napisać <span class="ak-hl-word">swoją?</span></h2>
+            <p data-reveal>Jeśli bawisz się z dzieckiem w Audiokiddo, napisz do nas: <a href="mailto:<?php echo esc_attr(ak_opt('contact_email')); ?>"><?php echo esc_html(ak_opt('contact_email')); ?></a>. Dodamy opinię tylko za zgodą i z imieniem, bez zdjęć dzieci.</p>
+        </div>
+    </section>
+<?php elseif ($slug === 'dla-mediow') : ?>
+    <section class="ak-info-sec" aria-label="Założyciele">
+        <div class="ak-wrap">
+            <div class="ak-team">
+                <?php foreach (['dawid', 'nela'] as $i => $key) : $p = ak_people()[$key]; ?>
+                <figure class="ak-person ak-person-<?php echo esc_attr($key); ?>" data-reveal style="--d:<?php echo esc_attr(0.12 * $i); ?>s">
+                    <div class="ak-person-img"><img src="<?php echo esc_url($p['photo']); ?>" alt="<?php echo esc_attr($p['full']); ?>, Audiokiddo" width="469" height="397" loading="lazy"></div>
+                    <figcaption><strong><?php echo esc_html($p['full']); ?></strong><span><?php echo esc_html($p['role']); ?></span></figcaption>
+                </figure>
+                <?php endforeach; ?>
+            </div>
+            <p class="ak-center" data-reveal>Projekt prowadzą na równi Dawid Kubiak i Nela Mariak, współzałożyciele Audiokiddo. Prosimy, żeby w tekstach wymieniać oboje.</p>
+        </div>
+    </section>
+    <section class="ak-info-sec" aria-labelledby="ak-press-h">
+        <div class="ak-wrap ak-narrow">
+            <h2 id="ak-press-h" data-reveal>Opis marki <span class="ak-hl-word">do skopiowania</span></h2>
+            <h3>Krótko (ok. 50 słów)</h3>
+            <p data-reveal>Audiokiddo to polska aplikacja z interaktywnymi audiozabawami dla dzieci w wieku 3–9 lat. Głos prowadzi dziecko przez misje, zagadki i ruch, a telefon leży na stole. Projekt prowadzą na równi Dawid Kubiak i Nela Mariak, rodzice, którzy sami piszą, montują i nagrywają zabawy. Bez reklam i bez patrzenia w ekran.</p>
+            <h3>Dłużej</h3>
+            <?php foreach (ak_facts() as $label => $text) : ?>
+            <p data-reveal><strong><?php echo esc_html($label); ?>.</strong> <?php echo esc_html($text); ?></p>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <section class="ak-info-sec" aria-labelledby="ak-assets-h">
+        <div class="ak-wrap ak-narrow">
+            <h2 id="ak-assets-h" data-reveal>Materiały i <span class="ak-hl-word">kontakt</span></h2>
+            <ul class="ak-ticks" data-reveal>
+                <li>Nazwa: Audiokiddo (też zapisywana AudioKiddo). Maskotka: szop Szop’en.</li>
+                <li>Logo: <a href="<?php echo esc_url(ak_asset('img/logo.png')); ?>">plik PNG</a>. Grafika do podglądu: <a href="<?php echo esc_url(ak_asset('img/site/og.jpg')); ?>">obraz główny</a>.</li>
+                <li>Zasada marki: nie publikujemy twarzy dzieci i nie pokazujemy reklam w aplikacji.</li>
+                <li>Darmowy materiał dla czytelników: <a href="<?php echo esc_url(ak_info_url('zabawy-do-druku')); ?>">36 kart zabaw do druku</a>.</li>
+                <li>Pytania do redakcji i prośby o komentarz: <a href="mailto:<?php echo esc_attr(ak_opt('contact_email')); ?>"><?php echo esc_html(ak_opt('contact_email')); ?></a>, odpisujemy sami.</li>
+            </ul>
+        </div>
+    </section>
 <?php elseif ($slug === 'logopedzi-i-pedagodzy') : ?>
     <section class="ak-info-sec" aria-label="Opinie specjalistów">
         <div class="ak-wrap">
@@ -380,6 +458,8 @@ require AK_DIR . 'parts/header.php';
             'abonament' => ['Nie musisz płacić, żeby sprawdzić Audiokiddo.', 'Najpierw pobierz aplikację i odpal darmowe zabawy. Abonament wybierzesz w aplikacji, kiedy dzieciak poprosi o więcej.', ak_info_url('pytania'), 'Pytania o płatności'],
             'pakiety' => ['Wszystkie pakiety w jednym abonamencie.', 'Plus 2 nowe zabawy co tydzień i darmowe zabawy na start w aplikacji.', ak_info_url('abonament'), 'Zobacz abonament'],
             'pytania' => ['Najszybciej sprawdzisz to w praktyce.', 'Pobierz Audiokiddo i odpal darmową zabawę. Pięć minut i wiesz, czy dziecko się wkręci.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
+            'opinie' => ['Sprawdź sam, zanim uwierzysz.', 'Pobierz Audiokiddo i odpal darmową zabawę. Pięć minut i wiesz, czy dziecko się wkręci.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
+            'dla-mediow' => ['Chcesz sprawdzić aplikację?', 'Napisz do nas, a przygotujemy dostęp do testów i odpowiemy na pytania.', ak_info_url('o-nas'), 'Poznaj Dawida i Nelę'],
             'o-nas' => ['Zobacz, co zrobiliśmy.', 'Pobierz Audiokiddo i odpal darmową zabawę. Szop’en już czeka.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
             'zabawy-do-druku' => ['Karty czyta dorosły. Audiokiddo czyta samo.', 'Gdy nie masz siły czytać kart, odpal audiozabawę: głos poprowadzi dziecko przez misję, a Ty odpoczniesz.', ak_info_url('jak-to-dziala'), 'Jak to działa'],
             'logopedzi-i-pedagodzy' => ['Sprawdź zabawy, które polecają specjaliści.', 'Darmowe zabawy na start w aplikacji, pełna biblioteka w abonamencie.', ak_landing_url('zabawy-logopedyczne'), 'Zabawy logopedyczne'],

@@ -1,6 +1,9 @@
 <?php
 /**
- * Template: AudioKiddo: Start (the home page). Nela's sixteen blocks in her order and her words
+ * Template: AudioKiddo: Start (the home page). Rebuilt 2026-10-20 from a parent's view: what it is and
+ * how it sounds on the first screen, three steps, samples, proof, moments, reviews, free plays,
+ * the price, then the app tour and the rest for the curious.
+ * Earlier: Nela's sixteen blocks in her order and her words
  * (2026-10): the first screen, what it is not, when to play it, how it works, proof, ages and
  * the library, the free plays, parents, the price, the tablet and privacy, the two of us, the
  * questions, the last call. Two big sentences between them light up on scroll (strona.js).
@@ -22,150 +25,73 @@ $play = '<svg class="ak-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="
 $poses = ['dzien-auto', 'dzien-obiad', 'dzien-przedszkole', 'zestresowany', 'dzien-sen', 'dzien-nuda', 'zdziwiony', 'znudzony', 'dzien-zero-mocy', 'nasluchuje'];
 ?>
 
-<section class="ak-slide ak-hero ak-a-hero ak-x-hero ak-h5 ak-h6" id="start" data-slide="Start" aria-labelledby="ak-h1">
-    <div class="ak-wrap ak-x-hero-in">
-        <div class="ak-x-hero-txt">
-            <h1 id="ak-h1">Dziecko potrzebuje zajęcia. <span class="ak-hl-word">Ty nie musisz go wymyślać.</span></h1>
-            <p class="ak-hero-sub ak-a-sub">Włącz zabawę w aplikacji i odłóż telefon. Głos poprowadzi dziecko, a Ty możesz odpocząć.</p>
-            <div class="ak-hero-btns ak-a-btns">
-                <?php echo ak_app_cta('ak-btn ak-btn-sun', true, 'Pobierz aplikację'); // escaped inside ?>
-                <a class="ak-btn ak-btn-ghost ak-h7-what" href="#co-to">Pokaż mi, co to w ogóle jest</a>
-                <a class="ak-more ak-hero-features" href="<?php echo esc_url(ak_info_url('jak-to-dziala') . '#funkcje'); ?>">Zobacz, co potrafi aplikacja</a>
+<?php $first = $packs['wyobraznia']; // the hero's sample: a play from 3 years, so every parent can try it ?>
+<section class="ak-slide ak-hero ak-v3-hero" id="start" data-slide="Start" aria-labelledby="ak-h1">
+    <div class="ak-wrap ak-v3-in">
+        <div class="ak-v3-txt">
+            <p class="ak-v3-kicker">Audiozabawy dla dzieci 3–9 lat</p>
+            <h1 id="ak-h1">Dziecko potrzebuje zajęcia. <span class="ak-v3-mark">Ty nie musisz go wymyślać.</span></h1>
+            <p class="ak-v3-sub">Włączasz zabawę i odkładasz telefon. Szop’en pyta, a dziecko odpowiada na głos, rusza się i zgaduje.</p>
+            <div class="ak-v3-cta">
+                <?php echo ak_app_cta('ak-btn ak-btn-sun', true, 'Wypróbuj za darmo'); // escaped inside ?>
+                <a class="ak-v3-link" href="#jak">Jak to działa</a>
+            </div>
+            <ul class="ak-v3-trust"><li>Bez reklam</li><li>Bez ekranu</li><li>Działa offline</li></ul>
+        </div>
+        <div class="ak-v3-visual">
+            <img class="ak-v3-szop skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/szop/sluchawki-520.webp')); ?>" alt="Szop’en, maskotka Audiokiddo, zakłada dziecku słuchawki" width="520" height="506" fetchpriority="high">
+            <p class="ak-v3-bubble"><span class="ak-sr">Szop’en: </span>Dobra. Od tej chwili ten dzieciak to mój problem.</p>
+            <div class="ak-v3-card">
+                <img class="ak-v3-cover" src="<?php echo esc_url(ak_asset('img/covers/pakiet-wyobraznia.webp')); ?>" alt="" width="520" height="520">
+                <div class="ak-v3-meta">
+                    <small>Posłuchaj fragmentu</small>
+                    <strong>Pakiet <?php echo esc_html($first['title']); ?></strong>
+                    <span class="ak-v3-wave" aria-hidden="true"><i style="--h:30%"></i><i style="--h:55%"></i><i style="--h:80%"></i><i style="--h:45%"></i><i style="--h:95%"></i><i style="--h:60%"></i><i style="--h:35%"></i><i style="--h:70%"></i><i style="--h:100%"></i><i style="--h:50%"></i><i style="--h:40%"></i><i style="--h:85%"></i><i style="--h:65%"></i><i style="--h:30%"></i><i style="--h:75%"></i><i style="--h:90%"></i><i style="--h:45%"></i><i style="--h:60%"></i><i style="--h:35%"></i><i style="--h:80%"></i><i style="--h:55%"></i><i style="--h:40%"></i><i style="--h:70%"></i><i style="--h:50%"></i></span>
+                </div>
+                <?php echo ak_sample_button(ak_upload($first['sample']), 'Posłuchaj fragmentu audiozabawy', 'ak-v3-play'); // escaped inside ?>
             </div>
         </div>
-        <?php // Szop'en is on the job from the first screen: a child in headphones, his line, a fragment to play. ?>
-        <figure class="ak-h5-szop">
-            <span class="ak-h5-rings" aria-hidden="true"><i></i><i></i><i></i></span>
-            <picture><source type="image/avif" srcset="<?php echo esc_url(ak_asset('img/szop/sluchawki-520.avif')); ?> 520w, <?php echo esc_url(ak_asset('img/szop/sluchawki.avif')); ?> 760w" sizes="(max-width: 960px) 290px, 460px"><img class="skip-lazy" data-no-lazy="1" src="<?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?>" srcset="<?php echo esc_url(ak_asset('img/szop/sluchawki-520.webp')); ?> 520w, <?php echo esc_url(ak_asset('img/szop/sluchawki.webp')); ?> 760w" sizes="(max-width: 960px) 290px, 460px" alt="Szop’en, maskotka Audiokiddo, zakłada dziecku słuchawki: audiozabawa bez ekranu" width="760" height="740" fetchpriority="high"></picture>
-            <figcaption><span class="ak-sr">Szop’en: </span>Dobra. Od tej chwili ten dzieciak to mój problem.</figcaption>
-            <div class="ak-h6-player ak-c-<?php echo esc_attr($heard['color']); ?>">
-                <?php echo ak_sample_button(ak_upload($heard['sample']), 'Posłuchaj fragmentu audiozabawy', 'ak-play-small'); // escaped inside ?>
-                <span><strong>Posłuchaj, jak to brzmi</strong><small>Fragment pakietu <?php echo esc_html($heard['title']); ?></small></span>
-                <i class="ak-h6-eq" aria-hidden="true"><b></b><b></b><b></b><b></b></i>
-            </div>
-        </figure>
     </div>
 </section>
-
-<?php ak_statement('Odpalasz Audiokiddo. *Reszta już się dzieje.*', 'w-skrocie'); ?>
 
 <?php
-// "Not an audiobook", told by showing it (2026-10-18): one minute of a play as a conversation that
-// plays itself when it comes into view, and what the child did lights up beside it.
-$ak_scene = [
-    ['szop', 'Psst, detektywie! Ktoś zabrał dzwonki rowerowe z całego miasta. Pomożesz?', ''],
-    ['kid', 'Tak, pomogę!', 'odpowiada'],
-    ['szop', 'To w drogę! Maszerujemy w miejscu: raz, dwa, raz, dwa!', ''],
-    ['kid', 'maszeruje po pokoju', 'rusza'],
-    ['szop', 'Ciii… Słyszysz? Dzyń, dzyń! Kto wydaje taki dźwięk?', ''],
-    ['kid', 'Rower!', 'zgaduje'],
-    ['szop', 'Brawo! A jak nazwiemy naszego złodzieja?', ''],
-    ['kid', 'Pan Dzwoneczek!', 'wymysla'],
-];
-$ak_skills = [
-    ['odpowiada', 'speech', 'Odpowiada', 'na głos, pełnym zdaniem'],
-    ['rusza', 'run', 'Rusza się', 'maszeruje, skacze, szuka'],
-    ['zgaduje', 'puzzle', 'Zgaduje', 'dźwięki, zagadki, poszlaki'],
-    ['wymysla', 'bulb', 'Wymyśla', 'imiona, zakończenia, historie'],
+// Three steps a parent understands in five seconds (2026-10-20, the page rebuilt from a parent's view).
+$steps = [
+    ['nasluchuje', 'Włączasz', 'Wybierasz zabawę w aplikacji i odkładasz telefon. Nic nie trzeba szykować.'],
+    ['klaszcze', 'Dziecko się bawi', 'Szop’en pyta i czeka na odpowiedź. Dziecko mówi, rusza się, zgaduje i decyduje, co dalej.'],
+    ['dzien-obiad', 'Ty robisz swoje', 'Kwadrans na obiad, drogę albo rozmowę. Bez ekranu przed oczami dziecka.'],
 ];
 ?>
-<section class="ak-slide ak-a-sec ak-nb-sec ak-nb4" id="co-to" data-slide="Co to jest" aria-labelledby="ak-nb-h">
+<section class="ak-slide ak-a-sec ak-v2-steps-sec" id="jak" data-slide="Jak to działa" aria-labelledby="ak-jak-h">
     <div class="ak-wrap">
-        <h2 id="ak-nb-h" class="ak-center" data-reveal>Tu dziecko gra <span class="ak-hl-word">główną rolę.</span></h2>
-        <p class="ak-a-lead ak-center ak-nb-lead" data-reveal>Głos mówi do dziecka, a dziecko działa. Zobacz minutę zabawy:</p>
-        <div class="ak-nb4-in">
-            <div class="ak-nb4-scene" data-reveal data-ak-scene>
-                <div class="ak-nb4-top">
-                    <img src="<?php echo esc_url(ak_asset('img/szop/nasluchuje.webp')); ?>" alt="" width="48" height="48" loading="lazy" decoding="async">
-                    <p><strong>Znikające dzwonki rowerowe</strong><small>Pakiet Detektyw · fragment zabawy</small></p>
-                    <?php echo ak_sample_button(ak_upload($packs['detektyw']['sample']), 'Posłuchaj prawdziwego fragmentu tej zabawy', 'ak-play-small'); // escaped inside ?>
-                </div>
-                <div class="ak-nb4-view" aria-label="Przykładowa minuta zabawy: rozmowa Szop’ena z dzieckiem">
-                    <ol class="ak-nb4-chat">
-                        <?php foreach ($ak_scene as $i => [$who, $line, $skill]) : ?>
-                        <li class="ak-nb4-msg ak-nb4-<?php echo esc_attr($who); ?>"<?php echo $skill ? ' data-skill="' . esc_attr($skill) . '"' : ''; ?>>
-                            <?php if ($who === 'szop') : ?>
-                            <p><span class="ak-sr">Szop’en: </span><?php echo esc_html($line); ?></p>
-                            <?php else : ?>
-                            <p<?php echo $skill === 'rusza' ? ' class="ak-nb4-act"' : ''; ?>><span class="ak-sr">Dziecko: </span><?php echo $skill === 'rusza' ? ak_icon('run', 18) . ' ' . esc_html($line) : esc_html($line); // static icon ?></p>
-                            <?php endif; ?>
-                        </li>
-                        <?php endforeach; ?>
-                    </ol>
-                </div>
-                <div class="ak-nb4-bar">
-                    <span class="ak-nb4-steps" aria-hidden="true"><?php foreach ($ak_scene as $i => $m) : ?><i></i><?php endforeach; ?></span>
-                    <button type="button" class="ak-nb4-again" data-ak-again>Odtwórz</button>
-                </div>
-            </div>
-            <div class="ak-nb4-side">
-                <ul class="ak-nb4-skills">
-                    <?php foreach ($ak_skills as $i => [$key, $icon, $title, $line]) : ?>
-                    <li data-reveal style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
-                        <button type="button" data-skill-tile="<?php echo esc_attr($key); ?>" aria-label="<?php echo esc_attr($title . ': pokaż w scence'); ?>">
-                            <span class="ak-nb4-ico"><?php echo ak_icon($icon, 34); // static ?></span>
-                            <strong><?php echo esc_html($title); ?></strong>
-                        </button>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="ak-slide ak-a-sec ak-when3" id="kiedy" data-slide="Kiedy" aria-labelledby="ak-when-h">
-    <div class="ak-wrap">
-        <h2 id="ak-when-h" class="ak-center" data-reveal>Kiedy odpalić <span class="ak-hl-word">Audiokiddo?</span></h2>
-        <p class="ak-a-lead ak-center" data-reveal><?php echo esc_html((string) (ak_opt('when_lead') ?: 'Szop ma kilka typów.')); ?></p>
-        <div class="ak-when3-in" data-reveal>
-            <div class="ak-a-times ak-when3-tabs" role="tablist" aria-label="Kiedy odpalić Audiokiddo">
-                <?php foreach (ak_situations() as $i => [, , $short]) : ?>
-                <button type="button" role="tab" id="ak-mtab-<?php echo (int) $i; ?>" aria-controls="ak-moment-<?php echo (int) $i; ?>" aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>" tabindex="<?php echo $i === 0 ? '0' : '-1'; ?>"><?php echo esc_html($short); ?></button>
-                <?php endforeach; ?>
-            </div>
-            <div class="ak-when3-stage">
-                <?php foreach (ak_situations() as $i => [$when, $line]) : ?>
-                <div class="ak-when3-panel<?php echo $i === 0 ? ' is-on' : ''; ?>" role="tabpanel" id="ak-moment-<?php echo (int) $i; ?>" aria-labelledby="ak-mtab-<?php echo (int) $i; ?>">
-                    <img src="<?php echo esc_url(ak_asset('img/szop/' . $poses[$i] . '.webp')); ?>" alt="" width="360" height="360" loading="lazy" decoding="async">
-                    <p><strong><?php echo esc_html($when); ?></strong><?php echo esc_html($line); ?></p>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="ak-slide ak-a-sec ak-how4" id="jak-to-dziala" data-slide="Jak to działa" aria-labelledby="ak-how-h">
-    <div class="ak-wrap">
-        <p class="ak-a-eyebrow ak-center" data-reveal>Jak to działa?</p>
-        <h2 id="ak-how-h" class="ak-center" data-reveal>Pobierasz. Wybierasz. <span class="ak-hl-word">Dziecko działa.</span></h2>
-        <ol class="ak-how4-steps">
-            <?php foreach (ak_steps_short() as $i => [$title, $line, $icon, $tone]) : ?>
-            <li class="ak-c-<?php echo esc_attr($tone); ?>" data-reveal style="--d:<?php echo esc_attr(0.12 * $i); ?>s">
-                <span class="ak-how4-ico"><?php echo ak_icon($icon, 34); // static ?></span>
-                <strong><?php echo esc_html($title); ?></strong>
-                <span><?php echo esc_html($line); ?></span>
+        <span id="co-to" aria-hidden="true"></span>
+        <p class="ak-v3-kicker ak-center">Jak to działa</p>
+        <h2 id="ak-jak-h" class="ak-center">To nie audiobook. <span class="ak-v3-mark">Dziecko gra główną rolę.</span></h2>
+        <ol class="ak-v2-steps">
+            <?php foreach ($steps as $i => [$pose, $title, $text]) : ?>
+            <li>
+                <span class="ak-v2-step-n" aria-hidden="true"><?php echo (int) $i + 1; ?></span>
+                <img src="<?php echo esc_url(ak_asset('img/szop/' . $pose . '.webp')); ?>" alt="" width="160" height="160" loading="lazy" decoding="async">
+                <h3><?php echo esc_html($title); ?></h3>
+                <p><?php echo esc_html($text); ?></p>
             </li>
             <?php endforeach; ?>
         </ol>
-        <ul class="ak-how4-more" data-reveal>
-            <li><?php echo ak_icon('offline', 24); // static ?><span><strong>Bez internetu.</strong> Pobierasz zabawy i grasz offline: w samolocie albo w aucie bez zasięgu.</span></li>
-            <li><?php echo ak_icon('speaker', 24); // static ?><span><strong>Na głośniku.</strong> Jednym dotknięciem przełączasz dźwięk na głośnik Bluetooth albo AirPlay.</span></li>
-            <li><?php echo ak_icon('car', 24); // static ?><span><strong>W samochodzie.</strong> Działa z Apple CarPlay i Android Auto.</span></li>
-        </ul>
-        <div class="ak-most ak-how4-most" data-reveal>
-            <img src="<?php echo esc_url(ak_asset('img/szop/mikrofon-540.webp')); ?>" alt="" width="504" height="540" loading="lazy" decoding="async">
-            <div>
-                <p class="ak-most-h">I najważniejsze</p>
-                <p>Większość audiozabaw tworzymy tak, żeby dziecko mogło bawić się samodzielnie. Chcesz dołączyć? Jasne. Nie chcesz? Też jasne. <strong>Właśnie po to tu jesteśmy.</strong></p>
-            </div>
-            <div class="ak-most-cta">
-                <?php echo ak_app_cta(); // escaped inside ?>
-                <small>Pierwsze zabawy sprawdzisz za darmo w aplikacji.</small>
-            </div>
+        <div class="ak-v2-gives">
+            <p><strong>Dziecku daje:</strong> mówi pełnym zdaniem, ćwiczy uwagę i logikę, wymyśla własne zakończenia.</p>
+            <p><strong>Tobie daje:</strong> 15–30 minut na swoje sprawy i dziecko, które samo prosi „jeszcze raz”.</p>
         </div>
-        <p class="ak-center" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_info_url('jak-to-dziala')); ?>">Zobacz dokładnie, jak to działa <?php echo $arrow; // static ?></a></p>
+    </div>
+</section>
+
+<section class="ak-slide ak-a-sec ak-hear" id="probka" data-slide="Posłuchaj" aria-labelledby="ak-sample-h">
+    <div class="ak-wrap">
+        <span id="pakiety" aria-hidden="true"></span>
+        <p class="ak-a-eyebrow ak-center" data-reveal>Posłuchaj sam</p>
+        <h2 id="ak-sample-h" class="ak-center" data-reveal>Włącz fragment. <span class="ak-hl-word">Tak brzmi zabawa.</span></h2>
+        <p class="ak-a-lead ak-center" data-reveal>Trzy pakiety, trzy prawdziwe fragmenty. Włącz razem z dzieckiem.</p>
+        <?php ak_pack_cards('ak-packs-compact ak-hear-cards', true); ?>
+        <p class="ak-small ak-center" data-reveal>Wszystkie pakiety są w abonamencie. Z każdego jedna zabawa jest za darmo.</p>
     </div>
 </section>
 
@@ -183,52 +109,37 @@ $ak_skills = [
             </figure>
             <?php endforeach; ?>
         </div>
-        <p class="ak-a-lead ak-center" data-reveal>Tak. Telefon nadal leży tam, gdzie go położyłaś.</p>
+        <p class="ak-a-lead ak-center" data-reveal>Tak. Telefon nadal leży tam, gdzie leżał.</p>
     </div>
 </section>
 
-<section class="ak-slide ak-a-sec ak-lib3" id="biblioteka" data-slide="Biblioteka" aria-labelledby="ak-lib-h">
+<section class="ak-slide ak-a-sec ak-when5" id="kiedy" data-slide="Kiedy" aria-labelledby="ak-when-h">
     <div class="ak-wrap">
-        <h2 id="ak-lib-h" class="ak-center" data-reveal>W bibliotece: <span class="ak-hl-word">ruch, logika, wyobraźnia, fabuła i zagadki</span></h2>
-        <ul class="ak-lib3-row" data-reveal>
-            <?php foreach (ak_library() as [$kind, , , , $cover]) : ?>
-            <li><img src="<?php echo esc_url(ak_asset('img/covers/' . $cover . '.webp')); ?>" alt="" width="520" height="520" loading="lazy" decoding="async"><span><?php echo esc_html(strtok($kind, ' ')); ?></span></li>
-            <?php endforeach; ?>
-        </ul>
-        <p class="ak-lib3-ages ak-center" id="wiek" data-reveal>Dla dzieci <strong>3–5</strong>, <strong>5–7</strong> i <strong>7–9 lat</strong>. Przy każdej zabawie widzisz wiek i czas trwania.</p>
-    </div>
-</section>
-
-<section class="ak-slide ak-a-sec ak-try ak-try3" id="darmowe-zabawy" data-slide="Darmowe zabawy" aria-labelledby="ak-try-h">
-    <div class="ak-wrap">
-        <p class="ak-a-eyebrow ak-center" data-reveal>Darmowe zabawy w aplikacji</p>
-        <h2 id="ak-try-h" class="ak-center" data-reveal>Najpierw sprawdź. <span class="ak-hl-word">Potem zdecyduj.</span></h2>
-        <p class="ak-a-lead ak-center" data-reveal>Nie musisz kupować abonamentu w ciemno. Po pobraniu aplikacji odpalasz za darmo <strong>jedną pełną zabawę z każdego pakietu.</strong></p>
-        <ul class="ak-try3">
-            <?php foreach (ak_free_plays() as $i => [$title, $pack_name, $seconds, $color, $cover, $age]) : ?>
-            <li class="ak-c-<?php echo esc_attr($color); ?>" data-reveal style="--d:<?php echo esc_attr(0.1 * $i); ?>s">
-                <figure>
-                    <img src="<?php echo esc_url(ak_asset('img/covers/' . $cover . '.webp')); ?>" alt="Okładka audiozabawy <?php echo esc_attr($title); ?>" width="520" height="520" loading="lazy" decoding="async">
-                    <span class="ak-try3-free">0 zł</span>
-                </figure>
-                <div>
-                    <p class="ak-try3-pack">Pakiet <?php echo esc_html($pack_name); ?></p>
-                    <h3><?php echo esc_html($title); ?></h3>
-                    <p class="ak-try3-meta"><?php echo esc_html(ak_minutes($seconds) . ' · ' . $age); ?></p>
-                </div>
+        <h2 id="ak-when-h" class="ak-center" data-reveal>Kiedy odpalić <span class="ak-hl-word">Audiokiddo?</span></h2>
+        <p class="ak-a-lead ak-center" data-reveal>Pięć chwil, w których rodzice sięgają po Szop’ena najczęściej.</p>
+        <?php
+        // Five moments instead of ten (2026-10-19: too many examples): [label, Szop'en's line, picture, colour].
+        $when5 = [
+            ['W samochodzie', 'Pierwsze „daleko jeszcze?” padło, zanim wyjechaliście z miasta.', 'dzien-auto', 'teal'],
+            ['Robisz obiad', 'Ty masz nóż w ręce. Dziecko pyta: „co mam robić?”.', 'dzien-obiad', 'sun'],
+            ['Po przedszkolu', 'Ty po całym dniu. Ono po całym dniu. Tylko ono ma jeszcze energię.', 'dzien-przedszkole', 'lav'],
+            ['„Nudzi mi się”', 'W końcu problem, na który mamy gotową odpowiedź.', 'dzien-nuda', 'mint'],
+            ['Zero mocy', 'O 18:37 nie masz ochoty po raz czwarty być smokiem.', 'dzien-zero-mocy', 'peach'],
+        ];
+        ?>
+        <ul class="ak-when5-row" data-ak-when5>
+            <?php foreach ($when5 as $i => [$label, $line, $pose, $tone]) : ?>
+            <li class="ak-when5-card ak-w-<?php echo esc_attr($tone); ?>" style="--i:<?php echo (int) $i; ?>">
+                <img src="<?php echo esc_url(ak_asset('img/szop/' . $pose . '.webp')); ?>" alt="" width="360" height="360" loading="lazy" decoding="async">
+                <h3><?php echo esc_html($label); ?></h3>
+                <p><span class="ak-sr">Szop’en: </span><?php echo esc_html($line); ?></p>
             </li>
             <?php endforeach; ?>
         </ul>
-        <p class="ak-try3-see ak-center" data-reveal>To normalne, pełne audiozabawy. Zobaczysz, czy dziecko się wkręci i czy prosi o kolejną. Dopiero wtedy decydujesz.</p>
-        <div class="ak-try-btns ak-try3-btns" data-reveal>
-            <?php echo ak_app_cta(); // escaped inside ?>
-            <?php if ($live) : ak_store_buttons(); endif; ?>
-        </div>
-        <p class="ak-small ak-center" data-reveal><?php echo $live ? 'Darmowe zabawy czekają w aplikacji. Bez kupowania abonamentu na start.' : 'Aplikacja wchodzi do App Store i Google Play lada dzień. Zostaw e-mail niżej, a damy znać pierwszego dnia.'; ?></p>
+        <p class="ak-when5-hint ak-center" aria-hidden="true">Przesuń, żeby zobaczyć więcej</p>
+        <p class="ak-center ak-when5-more" data-reveal><a class="ak-link-more" href="<?php echo esc_url(ak_landing_url()); ?>">Pomysły na zabawy na każdą sytuację <?php echo $arrow; // static ?></a></p>
     </div>
 </section>
-
-<?php if (!$live) : ak_leadmagnet(true); endif; ?>
 
 <section class="ak-slide ak-a-sec ak-a-voices" id="opinie" data-slide="Opinie" aria-labelledby="ak-rev-h">
     <div class="ak-wrap">
@@ -250,50 +161,91 @@ $ak_skills = [
     </div>
 </section>
 
+<section class="ak-slide ak-a-sec ak-try ak-try3" id="darmowe-zabawy" data-slide="Darmowe zabawy" aria-labelledby="ak-try-h">
+    <div class="ak-wrap">
+        <p class="ak-a-eyebrow ak-center" data-reveal>Darmowe zabawy w aplikacji</p>
+        <h2 id="ak-try-h" class="ak-center" data-reveal>Najpierw sprawdź. <span class="ak-hl-word">Potem zdecyduj.</span></h2>
+        <p class="ak-a-lead ak-center" data-reveal>Nie musisz kupować abonamentu w ciemno. Po pobraniu aplikacji odpalasz za darmo <strong>jedną pełną zabawę z każdego pakietu.</strong></p>
+        <div class="ak-tix-in">
+            <figure class="ak-tix-szop" data-reveal>
+                <img src="<?php echo esc_url(ak_asset('img/szop/prezent.webp')); ?>" alt="" width="392" height="400" loading="lazy" decoding="async">
+                <figcaption><span class="ak-sr">Szop’en: </span>Bez konta i bez karty. Ja też nie mam karty, więc wiem, jak to jest.</figcaption>
+            </figure>
+            <ul class="ak-tix">
+                <?php foreach (ak_free_plays() as $i => [$title, $pack_name, $seconds, $color, $cover, $age]) : ?>
+                <li class="ak-tix-one ak-c-<?php echo esc_attr($color); ?>" data-reveal style="--d:<?php echo esc_attr(0.12 * $i); ?>s">
+                    <img src="<?php echo esc_url(ak_asset('img/covers/' . $cover . '.webp')); ?>" alt="Okładka audiozabawy <?php echo esc_attr($title); ?>" width="520" height="520" loading="lazy" decoding="async">
+                    <div class="ak-tix-body">
+                        <p class="ak-tix-pack">Pakiet <?php echo esc_html($pack_name); ?></p>
+                        <h3><?php echo esc_html($title); ?></h3>
+                        <p class="ak-tix-meta"><?php echo esc_html(ak_minutes($seconds) . ' · ' . $age); ?></p>
+                    </div>
+                    <span class="ak-tix-stub"><strong>0 zł</strong><small>wstęp wolny</small></span>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <p class="ak-try3-see ak-center" data-reveal>Pełne zabawy, nie zwiastuny. Jeśli dziecko poprosi o kolejną, już wiesz.</p>
+        <div class="ak-try-btns ak-try3-btns" data-reveal>
+            <?php echo ak_app_cta(); // escaped inside ?>
+            <?php if ($live) : ak_store_buttons(); endif; ?>
+        </div>
+        <p class="ak-small ak-center" data-reveal><?php echo $live ? 'Darmowe zabawy czekają w aplikacji. Bez kupowania abonamentu na start.' : 'Aplikacja wchodzi do App Store i Google Play lada dzień. Zostaw e-mail niżej, a damy znać pierwszego dnia.'; ?></p>
+    </div>
+</section>
+
+<?php if (!$live) : ak_leadmagnet(true); endif; ?>
+
 <section class="ak-slide ak-a-sec ak-a-price" id="cennik" data-slide="Cennik" aria-labelledby="ak-price-h">
     <div class="ak-wrap">
         <h2 id="ak-price-h" class="ak-center" data-reveal>Pełna biblioteka. <span class="ak-hl-word">Bez liczenia zabaw na sztuki.</span></h2>
-        <p class="ak-a-lead ak-center" data-reveal>Najpierw możesz sprawdzić darmowe zabawy w aplikacji. Jeśli dzieciak chce więcej, wybierasz dostęp miesięczny albo roczny.</p>
         <div class="ak-a-plan-wrap" data-reveal>
         <figure class="ak-plan-szop">
             <img src="<?php echo esc_url(ak_asset('img/szop/prezent.webp')); ?>" alt="" width="392" height="400" loading="lazy" decoding="async">
             <figcaption><span class="ak-sr">Szop’en: </span>Roczny wychodzi najtaniej. Sam bym wziął, ale szopom nie dają karty.</figcaption>
         </figure>
-        <div class="ak-a-plan" id="pobierz">
+        <div class="ak-a-plan ak-plan2" id="pobierz">
+            <div class="ak-plan2-left">
             <div class="ak-a-toggle" role="radiogroup" aria-label="Okres rozliczenia">
                 <label><input type="radio" name="ak-plan" value="year" checked><span>Rocznie<?php if ($price['save']) : ?> <em>−<?php echo esc_html((string) round(ak_price_num($price['save']))); ?> zł</em><?php endif; ?></span></label>
                 <label><input type="radio" name="ak-plan" value="month"><span>Miesięcznie</span></label>
             </div>
-            <p class="ak-a-plan-price" data-for="year"><strong><?php echo esc_html($price['year_month']); ?> zł</strong> / miesiąc<small><?php echo esc_html($price['year']); ?> zł płatne raz w roku</small></p>
+            <p class="ak-a-plan-price" data-for="year"><strong><?php echo esc_html($price['year_month']); ?> zł</strong> / miesiąc<small>przy dostępie na rok</small></p>
             <p class="ak-a-plan-price" data-for="month"><strong><?php echo esc_html($price['month']); ?> zł</strong> / miesiąc<small>bez deklaracji na cały rok</small></p>
-            <ul class="ak-a-plan-list">
-                <li><?php echo ak_icon('star', 22); // static ?>Pełna biblioteka audiozabaw</li>
-                <li><?php echo ak_icon('kid', 22); // static ?>Wszystkie grupy wiekowe 3–9 lat</li>
-                <li><?php echo ak_icon('play', 22); // static ?>Co tydzień 2 nowe zabawy</li>
-                <li><?php echo ak_icon('offline', 22); // static ?>Zabawy do pobrania offline</li>
-                <li><?php echo ak_icon('clock', 22); // static ?>Anulujesz, kiedy chcesz</li>
-            </ul>
+            <?php
+            // The website sells a month or a year paid once (ak_web_plans); until those products
+            // are on sale the card keeps leading to the app.
+            $buy = ['year' => ak_buy_url('year'), 'month' => ak_buy_url('month')];
+            $per_day = ak_price_num($price['year']) > 0 ? number_format(ak_price_num($price['year']) / 365 * 100, 0) : '';
+            ?>
+            <?php if ($buy['year'] && $buy['month']) : ?>
+            <a class="ak-btn ak-btn-sun ak-btn-wide ak-a-plan-buy" data-for="year" href="<?php echo esc_url($buy['year']); ?>">Kup dostęp na rok</a>
+            <a class="ak-btn ak-btn-sun ak-btn-wide ak-a-plan-buy" data-for="month" href="<?php echo esc_url($buy['month']); ?>">Kup dostęp na miesiąc</a>
+            <p class="ak-a-plan-note ak-center">Płatność BLIK-iem lub kartą. Dostęp włącza się sam.</p>
+            <?php echo ak_app_cta('ak-more ak-a-plan-free', true, 'Albo zacznij od darmowych zabaw'); // escaped inside ?>
+            <?php else : ?>
             <?php echo ak_app_cta('ak-btn ak-btn-sun ak-btn-wide'); // escaped inside ?>
             <?php if ($live) : ak_store_buttons('ak-stores-center'); endif; ?>
             <p class="ak-small ak-center"><?php echo $live ? 'Subskrypcję wybierzesz w aplikacji. Darmowe zabawy czekają od razu.' : 'Aplikacja startuje wkrótce. Zostaw e-mail wyżej, a damy znać pierwszego dnia.'; ?></p>
+            <?php endif; ?>
+            </div>
+            <div class="ak-plan2-right">
+                <p class="ak-plan2-h">W cenie</p>
+            <ul class="ak-a-plan-list">
+                <li><?php echo ak_icon('star', 22); // static ?>Cała biblioteka audiozabaw</li>
+                <li><?php echo ak_icon('play', 22); // static ?>2 nowe zabawy co tydzień</li>
+                <li><?php echo ak_icon('offline', 22); // static ?>Bez internetu: auto, samolot</li>
+                <li><?php echo ak_icon('kid', 22); // static ?>Kilkoro dzieci, wiek 3–9 lat</li>
+                <li><?php echo ak_icon('heart', 22); // static ?>Drugi rodzic w tym samym dostępie</li>
+            </ul>
+                <p class="ak-plan2-chip" data-for="year">To tylko <?php echo esc_html($per_day ?? '74'); ?> groszy dziennie</p>
+            </div>
         </div>
-        </div>
-        <div class="ak-home-packs" id="pakiety" data-reveal>
-            <h3>Pakiety: <span class="ak-hl-word">wszystkie w abonamencie</span></h3>
-            <p>Każdy pakiet to seria zabaw wokół jednego tematu. W abonamencie masz wszystkie naraz, a co tydzień dochodzą 2 nowe zabawy. Z każdego pakietu jedna zabawa jest za darmo.</p>
-            <?php ak_pack_cards('ak-packs-compact', true); ?>
-            <a class="ak-btn ak-btn-ghost" href="<?php echo esc_url(ak_info_url('pakiety')); ?>">Co jest w pakietach</a>
         </div>
     </div>
 </section>
 
-<section class="ak-slide ak-a-sec ak-tab1" id="zasady" data-slide="Tablet" aria-labelledby="ak-tab-h">
-    <div class="ak-wrap ak-tab1-in" data-reveal>
-        <h2 id="ak-tab-h">Tak, wiemy, że <span class="ak-hl-word">istnieje tablet.</span></h2>
-        <p class="ak-a-lead">Nie przyjechaliśmy go skonfiskować. Audiokiddo jest po prostu jeszcze jedną opcją. Taką, przy której dziecko <strong>robi coś w prawdziwym świecie.</strong></p>
-        <p class="ak-rule-szop"><span class="ak-sr">Szop’en: </span>„Tablet i ja mamy skomplikowane relacje zawodowe.”</p>
-    </div>
-</section>
+<?php require AK_DIR . 'parts/app-tour.php'; // what the app does, on a phone ?>
 
 <section class="ak-slide ak-a-sec ak-us" id="o-nas" data-slide="O nas" aria-labelledby="ak-us-h">
     <div class="ak-wrap ak-us-in">
@@ -304,7 +256,7 @@ $ak_skills = [
         </div>
         <div data-reveal="right">
             <h2 id="ak-us-h">Dwie osoby uznały, że dobrym pomysłem będzie zrobienie aplikacji dla dzieci. <span class="ak-hl-word">Potem same zostały rodzicami.</span></h2>
-            <p>Dawid buduje technologię, Nela wymyśla zabawy, oboje podkładamy głosy. <strong>No więc budujemy dalej.</strong></p>
+            <p>Projekt prowadzimy na równi: Dawid buduje technologię, Nela wymyśla zabawy, oboje podkładamy głosy. <strong>No więc budujemy dalej.</strong></p>
             <a class="ak-link-more" href="<?php echo esc_url(ak_info_url('o-nas')); ?>">Poznaj nas <?php echo $arrow; // static ?></a>
         </div>
     </div>
@@ -342,6 +294,7 @@ $ak_skills = [
         <div class="ak-end-btns" data-reveal>
             <?php if (!$live) : echo ak_app_cta(); endif; // escaped inside ?>
             <?php ak_store_buttons('ak-stores-center'); ?>
+            <?php if (ak_buy_url('year')) : ?><a class="ak-btn ak-btn-teal ak-end-buy" href="#cennik">Kup dostęp do całej biblioteki</a><?php endif; ?>
         </div>
     </div>
 </section>

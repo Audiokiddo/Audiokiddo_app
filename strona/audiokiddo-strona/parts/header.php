@@ -8,8 +8,8 @@ $count = ak_cart_count();
 $links = [
     '#jak-to-dziala' => 'Jak to działa',
     '#kiedy' => 'Kiedy odpalić',
-    '#cennik' => 'Cennik',
-    '#pakiety' => 'Pakiety',
+    '#w-drodze' => 'W drodze',
+    '#cennik' => 'Abonament',
     '#opinie' => 'Opinie',
     '#o-nas' => 'O nas',
 ];
@@ -17,7 +17,6 @@ $links = [
 $pages = $home === '' ? [] : [
     '#jak-to-dziala' => ak_info_url('jak-to-dziala'),
     '#cennik' => ak_info_url('abonament'),
-    '#pakiety' => ak_info_url('pakiety'),
     '#pytania' => ak_info_url('pytania'),
     '#o-nas' => ak_info_url('o-nas'),
 ];
