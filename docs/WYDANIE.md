@@ -74,12 +74,14 @@ Wysyłka: aplikacja **Transporter** (z App Store) albo Xcode → Organizer → D
 
 ## 5. Produkty w sklepach
 
+> **Aktualizacja 9.10.2026:** jeden abonament (miesięczny 29,99 zł i roczny 269,99 zł), bez planów dla 2 i 3–5 dzieci i bez limitu profili (strategia z 8.10.2026). Produkty w App Store Connect (grupa „AudioKiddo”, Polska): `sub.monthly`, `sub.yearly` oraz pakiety i zestawy. Aktualna kolejność kroków: `docs/PUBLIKACJA.md`, etap 6.
+
 Identyfikatory muszą być **identyczne** w App Store Connect, Play Console i w aplikacji (`app/lib/features/purchases/offer_catalog.dart`, katalog treści). Ceny jak na audiokiddo.pl, pojedyncze zabawy tańsze, żeby pakiet był bardziej opłacalny.
 
 | ID produktu | Typ | Nazwa | Cena |
 |---|---|---|---|
-| `pl.audiokiddo.sub.monthly` | Subskrypcja auto-odnawialna (grupa „AudioKiddo”) | AudioKiddo miesięcznie | 24,99 zł, oferta wstępna: 7 dni za darmo |
-| `pl.audiokiddo.sub.yearly` | Subskrypcja auto-odnawialna (grupa „AudioKiddo”) | AudioKiddo rocznie | 149,99 zł, oferta wstępna: 7 dni za darmo |
+| `pl.audiokiddo.sub.monthly` | Subskrypcja auto-odnawialna (grupa „AudioKiddo”) | AudioKiddo miesięcznie | 29,99 zł (bez oferty wstępnej: darmowe demonstracje zamiast próby z kartą) |
+| `pl.audiokiddo.sub.yearly` | Subskrypcja auto-odnawialna (grupa „AudioKiddo”) | AudioKiddo rocznie | 269,99 zł (około 22,50 zł miesięcznie, „1 Year Upfront”), bez oferty wstępnej |
 | `pl.audiokiddo.pack.wyobraznia` | Jednorazowy (non-consumable) | Pakiet Wyobraźnia | 49,99 zł |
 | `pl.audiokiddo.pack.slowa_i_wiedza` | Jednorazowy (non-consumable) | Pakiet Słowa i Wiedza | 49,99 zł |
 | `pl.audiokiddo.pack.detektyw` | Jednorazowy (non-consumable) | Pakiet Detektyw | 69,99 zł |

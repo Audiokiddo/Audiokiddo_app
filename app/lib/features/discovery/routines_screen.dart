@@ -82,11 +82,7 @@ class _RoutinesScreenState extends ConsumerState<RoutinesScreen> {
                       padding: const EdgeInsets.all(18),
                       child: Row(
                         children: [
-                          Icon(
-                            row.$3,
-                            size: 36,
-                            color: row.$4 == referencePurple ? Colors.white : referencePurple,
-                          ),
+                          Icon(row.$3, size: 36, color: row.$4 == referencePurple ? Colors.white : referencePurple),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Column(
@@ -94,15 +90,13 @@ class _RoutinesScreenState extends ConsumerState<RoutinesScreen> {
                               children: [
                                 Text(
                                   row.$1,
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: row.$4 == referencePurple ? Colors.white : referencePurple,
-                                  ),
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(color: row.$4 == referencePurple ? Colors.white : referencePurple),
                                 ),
                                 Text(
                                   row.$2,
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: row.$4 == referencePurple ? Colors.white : referencePurple,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(color: row.$4 == referencePurple ? Colors.white : referencePurple),
                                 ),
                               ],
                             ),

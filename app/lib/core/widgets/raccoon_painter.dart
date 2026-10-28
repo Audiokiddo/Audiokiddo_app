@@ -98,9 +98,7 @@ class RaccoonPainter extends CustomPainter {
     if (outfit == GoldenOutfit.official) {
       shape(
         c,
-        Path()..addRRect(
-          RRect.fromRectAndRadius(const Rect.fromLTWH(112, 143, 22, 26), const Radius.circular(4)),
-        ),
+        Path()..addRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(112, 143, 22, 26), const Radius.circular(4))),
         const Color(0xFFF47760),
       );
       line(

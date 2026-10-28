@@ -7,6 +7,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../insights/events.dart';
+
 import '../../core/storage/database.dart';
 import '../../core/storage/storage_providers.dart';
 import '../downloads/download_providers.dart';
@@ -127,12 +129,24 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     final runner = _runner = ScriptRunner(
       script,
       resumeFrom: saved,
-      unavailable: {
-        if (!_micUsable) FallbackReason.noMicrophone,
-        if (!_foreground) FallbackReason.screenLocked,
-      },
+      unavailable: {if (!_micUsable) FallbackReason.noMicrophone, if (!_foreground) FallbackReason.screenLocked},
     )..setSpeechAvailable(available: _speechUsable);
     state = GameUiState(phase: GamePhase.playing, itemId: item.id, title: item.title);
+    final played = ref.read(familyProvider).value?.results.any((r) => r.itemId == item.id) ?? false;
+    final count = await countPlayStart(ref.read(databaseProvider), item.id);
+    _playing = (item.id, startedAt, count.number);
+    ref.track(
+      AppEvent.playStart,
+      itemId: item.id,
+      props: {
+        'free': item.isFree,
+        'pack': ?item.packId,
+        'game': true,
+        'duration_total': item.durationSec,
+        if (played) 'replay': true,
+        ...count.props,
+      },
+    );
     try {
       var command = runner.start();
       while (generation == _generation) {
@@ -148,6 +162,16 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         if (event == null) return;
         if (command is Finish) {
           await _stopMicrophone();
+          _playing = null;
+          ref.track(
+            AppEvent.playComplete,
+            itemId: item.id,
+            props: {
+              'game': true,
+              'duration_listened': DateTime.now().difference(startedAt).inSeconds,
+              'play_number': count.number,
+            },
+          );
           // Games that keep a `score` variable report correct answers to the parent.
           await ref
               .read(familyProvider.notifier)
@@ -183,9 +207,21 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     if (clip != null && generation == _generation) await store.play(clip);
   }
 
+  /// The game now on (id, start, play number) until it finishes, for play_exit.
+  (String, DateTime, int)? _playing;
+
   /// Leaves the game (long press on the game screen).
   Future<void> stop() async {
     _generation++;
+    if (_playing case (final id, final at, final number)) {
+      _playing = null;
+      // Games branch, so the second is time in the game rather than a point in one recording.
+      ref.track(
+        AppEvent.playExit,
+        itemId: id,
+        props: {'game': true, 'exit_second': DateTime.now().difference(at).inSeconds, 'play_number': number},
+      );
+    }
     await ref.read(parentVoiceStoreProvider).stopPlayback();
     _input?.complete(const InputTimedOut());
     _input = null;
@@ -243,9 +279,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
         _lastPrompt = asset;
         _set(GamePhase.playing);
         // Save at every instruction: after any interruption the child hears it again.
-        await ref
-            .read(databaseProvider)
-            .writeValue(_snapshotKey(item.id), jsonEncode(_runner!.snapshot().toJson()));
+        await ref.read(databaseProvider).writeValue(_snapshotKey(item.id), jsonEncode(_runner!.snapshot().toJson()));
         final completed = await _audio.playSegment(media, await _uri(asset));
         return completed ? const SegmentFinished() : null;
       case WaitFor(:final duration, :final loopAsset):
@@ -258,9 +292,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       // loudness detector, so any word it catches is the answer.
       case Listen(input: InputKind.voiceActivity, :final window) when _speechUsable:
         return await _listenForWords(window, const [], generation, anySpeech: true) ??
-            (generation == _generation
-                ? await _listen({InputKind.voiceActivity}, window, generation, media)
-                : null);
+            (generation == _generation ? await _listen({InputKind.voiceActivity}, window, generation, media) : null);
       case Listen(:final input, :final window, :final minCount):
         return _listen({input}, window, generation, media, minClaps: minCount ?? 1);
       case ListenForChoice(:final inputs, :final window, :final vocabulary)
@@ -322,9 +354,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
       speech
           .listen(
             window: scaled,
-            vocabulary: anySpeech
-                ? const []
-                : [...vocabulary, 'jeszcze raz', 'powtórz', 'czy możesz powtórzyć'],
+            vocabulary: anySpeech ? const [] : [...vocabulary, 'jeszcze raz', 'powtórz', 'czy możesz powtórzyć'],
             onHeard: (transcripts) {
               if (_input != completer) return; // a late result from an earlier question
               if (transcripts.any(
@@ -417,10 +447,7 @@ class GameController extends Notifier<GameUiState> with WidgetsBindingObserver {
     if (!enabled) return;
     try {
       final samples = await ref.read(microphoneInputProvider).start();
-      _detector = SoundDetector(
-        sampleRate: micSampleRate,
-        voiceMinDuration: const Duration(milliseconds: 120),
-      );
+      _detector = SoundDetector(sampleRate: micSampleRate, voiceMinDuration: const Duration(milliseconds: 120));
       _mic = samples.listen(_onSamples, onError: (Object _) => _onMicrophoneLost());
     } on Exception catch (e) {
       debugPrint('microphone unavailable: $e');

@@ -74,17 +74,19 @@ Future<void> goBack(WidgetTester tester) async {
 void main() {
   testWidgets('home: what to play today, six kinds of play, quick situations', (tester) async {
     await pumpApp(tester);
-    expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
-    for (final label in ['Mam 20 minut', 'W podróży']) {
+    expect(find.text('Co dziś robimy?'), findsOneWidget);
+    for (final label in ['Mam 20 minut', 'W podróży', 'Na dobranoc', 'Bez przygotowań']) {
       await tester.scrollUntilVisible(find.text(label), 200, scrollable: mainScroll);
       expect(find.text(label), findsOneWidget);
     }
-    await tester.scrollUntilVisible(find.text('Kontynuuj słuchanie'), 200, scrollable: mainScroll);
+    expect(find.text('Kontynuuj słuchanie'), findsNothing, reason: 'nothing to continue yet, so no empty block');
     // Categories deliberately live below the recommendations, not above practical situations.
-    await tester.scrollUntilVisible(find.text('Przygody\ni wyobraźnia'), 200, scrollable: mainScroll);
-    for (final label in ['Przygody\ni wyobraźnia', 'Zagadki\ni detektywi', 'Piosenki', 'Ruch i energia']) {
+    await tester.scrollUntilVisible(find.text('Kreatywne'), 200, scrollable: mainScroll);
+    await tester.scrollUntilVisible(find.text('Fabularne'), 200, scrollable: mainScroll);
+    for (final label in ['Kreatywne', 'Ruchowe', 'Logiczne', 'Edukacyjne', 'Fabularne']) {
       expect(find.text(label), findsOneWidget);
     }
+    expect(find.text('Piosenki'), findsNothing, reason: 'no songs in the catalog yet, so no empty tile');
   });
   testWidgets('search from Start has a visible back action', (tester) async {
     await pumpApp(tester);
@@ -93,7 +95,7 @@ void main() {
     expect(find.byTooltip('Wróć'), findsOneWidget);
     await tester.tap(find.byTooltip('Wróć'));
     await tester.pumpAndSettle();
-    expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
+    expect(find.text('Co dziś robimy?'), findsOneWidget);
   });
 
   testWidgets('rescue flow has time, mood and material selection', (tester) async {
@@ -108,7 +110,10 @@ void main() {
   testWidgets('category shortcut opens the filtered library', (tester) async {
     await pumpApp(tester);
     await openLibrary(tester);
-    await tester.tap(find.text('Przygody\ni wyobraźnia'));
+    await tester.scrollUntilVisible(find.text('Fabularne'), 200, scrollable: mainScroll);
+    await Scrollable.ensureVisible(tester.element(find.text('Fabularne')), alignment: .5);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Fabularne'));
     await tester.pumpAndSettle();
     expect(find.text('Magiczny sklep'), findsOneWidget);
   });
@@ -144,6 +149,28 @@ void main() {
     expect(find.text('Odblokuj'), findsOneWidget, reason: 'other packs stay locked');
   });
 
+  testWidgets('an owned case file can be printed or sent, one or all at once', (tester) async {
+    await pumpApp(
+      tester,
+      entitlements: [
+        Entitlement(
+          scope: Scopes.pack('detektyw'),
+          status: EntitlementStatus.active,
+          source: EntitlementSource.woocommerce,
+        ),
+      ],
+    );
+    await openLibrary(tester);
+    await openItem(tester, 'Złodziej naszyjnika');
+    await tester.scrollUntilVisible(find.text('Ta sprawa: drukuj lub wyślij'), 200, scrollable: mainScroll);
+    expect(find.text('Wydrukuj wszystkie naraz'), findsOneWidget);
+    expect(
+      find.text('Rozwiązuj w telefonie'),
+      findsNothing,
+      reason: 'the case is solved away from the phone',
+    );
+  });
+
   testWidgets('screens have no overflow with large text', (tester) async {
     await pumpApp(tester, textScale: 1.6);
     await tester.drag(mainScroll, const Offset(0, -4000));
@@ -155,15 +182,14 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('favourite appears on the Moje tab', (tester) async {
+  testWidgets('favourite appears on the Ulubione screen', (tester) async {
     await pumpApp(tester);
     await openLibrary(tester);
     await openItem(tester, 'Magiczny sklep');
     await tester.tap(find.byTooltip('Dodaj do ulubionych'));
     await tester.pumpAndSettle();
     expect(find.byTooltip('Usuń z ulubionych'), findsOneWidget);
-    await goBack(tester);
-    await tester.tap(find.byIcon(Icons.favorite_border_rounded));
+    GoRouter.of(tester.element(find.byType(Scaffold).first)).go('/ulubione');
     await tester.pumpAndSettle();
     expect(find.text('Magiczny sklep'), findsOneWidget);
   });
@@ -179,26 +205,26 @@ void main() {
     setUp(() => debugGateChallengeFactory = () => GateChallenge.fixed(47, [74, 47, 12, 33]));
     tearDown(() => debugGateChallengeFactory = null);
 
-    testWidgets('unlock asks an adult first, then shows store prices', (tester) async {
+    testWidgets('unlock shows store prices', (tester) async {
       await pumpApp(tester);
       await openLibrary(tester);
       await openItem(tester, 'Zaginiony skarb');
       await tester.tap(find.text('Odblokuj'));
       await tester.pumpAndSettle();
-      expect(find.text('czterdzieści siedem'), findsOneWidget);
-
-      await tester.tap(find.text('74'));
-      await tester.pumpAndSettle();
-      expect(find.text('To nie ta liczba. Spróbuj jeszcze raz.'), findsOneWidget);
-
-      await tester.tap(find.text('47'));
-      await tester.pumpAndSettle();
+      expect(find.text('czterdzieści siedem'), findsNothing, reason: 'looking at prices needs no gate');
       expect(find.text('Odblokuj zabawy'), findsOneWidget);
       expect(find.textContaining('7 dni za darmo, zanim dojedziemy'), findsOneWidget, reason: 'the car gag');
       await tester.drag(mainScroll, const Offset(0, -350));
       await tester.pumpAndSettle();
-      expect(find.text('7 dni za darmo, potem 149,99 zł / rok'), findsOneWidget);
-      expect(find.text('49,99 zł'), findsWidgets);
+      await tester.scrollUntilVisible(find.text('Wypróbuj 7 dni za darmo'), 200, scrollable: mainScroll);
+      expect(find.textContaining('Potem 269,99 zł za rok'), findsOneWidget);
+      // Buying for good is folded under the subscription.
+      await tester.scrollUntilVisible(find.text('Na zawsze, bez subskrypcji'), 200, scrollable: mainScroll);
+      await Scrollable.ensureVisible(tester.element(find.text('Na zawsze, bez subskrypcji')), alignment: .3);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Na zawsze, bez subskrypcji'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('49,99 zł'), findsWidgets);
       await tester.scrollUntilVisible(
         find.textContaining('odnawia się automatycznie'),
         200,
@@ -243,7 +269,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('47'));
       await tester.pumpAndSettle();
-      expect(find.text('Co dziś\nrobimy?'), findsOneWidget);
+      expect(find.text('Co dziś robimy?'), findsOneWidget);
     });
   });
 }

@@ -4,10 +4,12 @@ import 'dart:io';
 import 'package:audiokiddo_studio/io/studio_io.dart';
 import 'package:audiokiddo_studio/main.dart';
 import 'package:audiokiddo_studio/screens/script_editor.dart';
+import 'package:audiokiddo_studio/server/studio_server.dart';
 import 'package:audiokiddo_studio/state/studio_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase/supabase.dart';
 
 final appCatalog = File('../app/assets/mock/catalog.json').readAsStringSync();
 
@@ -19,6 +21,9 @@ class FakeIo implements StudioIo {
 
   @override
   Future<String?> readDraft() async => draft;
+
+  @override
+  Future<String?> readStarterCatalog() async => null;
   @override
   Future<void> writeDraft(String json) async => draft = json;
   @override
@@ -129,10 +134,16 @@ void main() {
     addTearDown(tester.view.reset);
     final io = FakeIo()..draft = appCatalog;
     await tester.pumpWidget(
-      ProviderScope(overrides: [studioIoProvider.overrideWithValue(io)], child: const StudioApp()),
+      ProviderScope(
+        overrides: [
+          studioIoProvider.overrideWithValue(io),
+          studioAccessProvider.overrideWith(() => StudioAccess(true)),
+        ],
+        child: const StudioApp(),
+      ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Katalog poprawny'), findsOneWidget);
+    expect(find.text('Katalog gotowy'), findsOneWidget);
 
     await tester.tap(find.text('Magiczny sklep'));
     await tester.pumpAndSettle();
@@ -156,5 +167,128 @@ void main() {
     final v = c.read(validationProvider);
     expect(v.itemErrors['mikstura'], 'Opis dla rodzica: nie może być puste');
     expect(v.itemErrors['mistrz-kuchni'], 'Wiek od: może być najwyżej 18');
+  });
+
+  testWidgets('without an owner signed in Studio shows only the sign-in', (tester) async {
+    tester.view.physicalSize = const Size(1600, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final server = StudioServer(
+      SupabaseClient(
+        'http://localhost',
+        'test',
+        authOptions: const AuthClientOptions(autoRefreshToken: false),
+      ),
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          studioIoProvider.overrideWithValue(FakeIo()..draft = appCatalog),
+          studioServerProvider.overrideWithValue(server),
+        ],
+        child: const StudioApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Wyślij kod'), findsOneWidget);
+    expect(find.text('Studio · tylko dla właścicieli'), findsOneWidget);
+    expect(find.text('Treści'), findsNothing);
+    expect(find.text('Magiczny sklep'), findsNothing);
+  });
+
+  testWidgets('on a phone the side panel is a menu and the top bar is slim', (tester) async {
+    tester.view.physicalSize = const Size(390, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final io = FakeIo()..draft = appCatalog;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          studioIoProvider.overrideWithValue(io),
+          studioAccessProvider.overrideWith(() => StudioAccess(true)),
+        ],
+        child: const StudioApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(NavigationRail), findsNothing, reason: 'no panel taking room');
+    expect(find.byType(NavigationBar), findsOneWidget, reason: 'places at the thumb, like an app');
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.descendant(of: find.byType(NavigationBar), matching: find.text('Pakiety')));
+    await tester.pumpAndSettle();
+    expect(find.text('Dodaj pakiet'), findsOneWidget);
+    // The rest of the places are under "Więcej".
+    await tester.tap(find.text('Więcej'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Półki'));
+    await tester.pumpAndSettle();
+    expect(find.text('Dodaj półkę'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pump(const Duration(seconds: 1));
+  });
+
+  testWidgets('a sideways phone uses a thinner top bar and shows no overflow', (tester) async {
+    tester.view.physicalSize = const Size(844, 390);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final io = FakeIo()..draft = appCatalog;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          studioIoProvider.overrideWithValue(io),
+          studioAccessProvider.overrideWith(() => StudioAccess(true)),
+        ],
+        child: const StudioApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(AppBar)).height, lessThanOrEqualTo(40));
+    expect(tester.takeException(), isNull);
+    await tester.pump(const Duration(milliseconds: 500));
+  });
+
+  testWidgets('every place fits an iPhone', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          studioIoProvider.overrideWithValue(FakeIo()..draft = appCatalog),
+          studioAccessProvider.overrideWith(() => StudioAccess(true)),
+          studioServerProvider.overrideWithValue(
+            StudioServer(
+              SupabaseClient(
+                'http://localhost',
+                'test',
+                authOptions: const AuthClientOptions(autoRefreshToken: false),
+              ),
+            ),
+          ),
+        ],
+        child: const StudioApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final bar = find.byType(NavigationBar);
+    for (final place in ['Treści', 'Pakiety', 'CRM', 'Serwer']) {
+      await tester.tap(find.descendant(of: bar, matching: find.text(place)));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: place);
+    }
+    for (final place in ['Półki', 'Publikacja']) {
+      await tester.tap(find.text('Więcej'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(place).last);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: place);
+    }
+    // A play opens in full screen with a way back.
+    await tester.tap(find.descendant(of: bar, matching: find.text('Treści')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Magiczny sklep').first);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull, reason: 'editor');
+    await tester.pump(const Duration(seconds: 1));
   });
 }

@@ -46,27 +46,19 @@ class DevToolsScreen extends ConsumerWidget {
             onChanged: (m) => m == null ? null : setMode(m),
             child: Column(
               children: [
-                for (final m in DevAccessMode.values)
-                  RadioListTile<DevAccessMode>(value: m, title: Text(m.label)),
+                for (final m in DevAccessMode.values) RadioListTile<DevAccessMode>(value: m, title: Text(m.label)),
               ],
             ),
           ),
           const SizedBox(height: AkSpace.m),
-          Text(
-            lease == null
-                ? l10n.devLeaseNone
-                : l10n.devLeaseUntil(lease.toLocal().toString().substring(0, 16)),
-          ),
+          Text(lease == null ? l10n.devLeaseNone : l10n.devLeaseUntil(lease.toLocal().toString().substring(0, 16))),
           const SizedBox(height: AkSpace.m),
           OutlinedButton(
             onPressed: () => ref.read(accessProvider.notifier).expireLeaseForTesting(),
             child: Text(l10n.devExpireLease),
           ),
           const SizedBox(height: AkSpace.s),
-          FilledButton(
-            onPressed: () => ref.read(accessProvider.notifier).refresh(),
-            child: Text(l10n.devRefresh),
-          ),
+          FilledButton(onPressed: () => ref.read(accessProvider.notifier).refresh(), child: Text(l10n.devRefresh)),
           if (ref.watch(storeGatewayProvider) case final FakeStoreGateway store) ...[
             const SizedBox(height: AkSpace.l),
             Text(l10n.devStoreOutcome, style: Theme.of(context).textTheme.titleMedium),

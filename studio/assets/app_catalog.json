@@ -1,0 +1,3215 @@
+{
+ "schema_version": 1,
+ "version": 1,
+ "_comment": "Katalog przykładowy (Etap 1). Pliki, okładki, sumy kontrolne i skład próbki są tymczasowe.",
+ "packs": [
+  {
+   "id": "wyobraznia",
+   "title": "Wyobraźnia",
+   "age_min": 3,
+   "color": "lavender",
+   "description": "Profesor Fantazjusz i Czarodziejka Nela zabierają dziecko do krainy wyobraźni: tworzy własne historie, odpowiada na pytania i wykonuje zadania.",
+   "store_product_id": "pl.audiokiddo.pack.wyobraznia",
+   "released": "2026-09-01",
+   "guide": {
+    "path": "pdf/wyobraznia/przewodnik.pdf",
+    "bytes": 496711,
+    "sha256": "c525b15c41df534c42967bf7657836c8acad2a5c6b43f447341c621b403a937f"
+   }
+  },
+  {
+   "id": "slowa-i-wiedza",
+   "title": "Słowa i Wiedza",
+   "age_min": 3,
+   "color": "teal",
+   "description": "Zagadki, łamigłówki i zabawy słowne: słownictwo, skojarzenia i logiczne myślenie.",
+   "store_product_id": "pl.audiokiddo.pack.slowa_i_wiedza",
+   "released": "2026-09-01",
+   "guide": {
+    "path": "pdf/slowa-i-wiedza/przewodnik.pdf",
+    "bytes": 526777,
+    "sha256": "abd38b65c27952eff4f7a91f5bc6ee8c597c31ad896a51c9b7449b935652a8b3"
+   }
+  },
+  {
+   "id": "detektyw",
+   "title": "Detektyw",
+   "age_min": 7,
+   "color": "sun",
+   "description": "Detektywistyczne przygody z Maxem i Milą oraz akta spraw do wydrukowania.",
+   "store_product_id": "pl.audiokiddo.pack.detektyw",
+   "released": "2026-09-01",
+   "guide": {
+    "path": "pdf/detektyw/przewodnik.pdf",
+    "bytes": 526663,
+    "sha256": "8700915e670c866930fb07f4ec7c6325900f53f6518eab1f2b9ce0db5ba0fcb2"
+   }
+  }
+ ],
+ "items": [
+  {
+   "id": "magiczny-sklep",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Magiczny sklep",
+   "parent_description": "Dziecko trafia do magicznego sklepu i wymyśla, do czego służą niezwykłe przedmioty.",
+   "age_min": 3,
+   "duration_sec": 357,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "free",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/magiczny-sklep.m4a",
+     "bytes": 4414364,
+     "sha256": "3e0716deea785f2157d47946fc2def6f0aff4740deea0212cf050c2d52a375c6"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.magiczny_sklep",
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "zaginiony-skarb",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Zaginiony skarb",
+   "parent_description": "Wyprawa poszukiwacza przygód: zagadki i decyzje w drodze do skarbu.",
+   "age_min": 3,
+   "duration_sec": 456,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/zaginiony-skarb.m4a",
+     "bytes": 5649089,
+     "sha256": "e23aa0acb992bb3bcec949cc458d330e2438e620a8d07e491e5127e6bd48c5c9"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.zaginiony_skarb",
+   "preview": {
+    "path": "previews/wyobraznia/zaginiony-skarb.m4a",
+    "bytes": 373187,
+    "sha256": "ebf4d17b0e93ae66d6d68eda2c601f49d431601dae4d1e99e343288f1a071103"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "podroz-na-inna-planete",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Podróż na inną planetę",
+   "parent_description": "Dziecko tworzy własną planetę: jej nazwę, mieszkańców i zwyczaje.",
+   "age_min": 3,
+   "duration_sec": 292,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/podroz-na-inna-planete.m4a",
+     "bytes": 3627345,
+     "sha256": "5b8c7ec84196688faee1a679d7a0afefd129725f362ed4fb42a838e2d6c42b2f"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.podroz_na_inna_planete",
+   "preview": {
+    "path": "previews/wyobraznia/podroz-na-inna-planete.m4a",
+    "bytes": 372357,
+    "sha256": "6daeb114af750f317b4cc46c7376cb4cc98b3ce83cf29ff82d5213d41d6f8e1f"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "wymysl-znaczenie",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Wymyśl znaczenie",
+   "parent_description": "Zabawa słowami: własne definicje dla nieznanych wyrazów.",
+   "age_min": 3,
+   "duration_sec": 390,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/wymysl-znaczenie.m4a",
+     "bytes": 4858356,
+     "sha256": "e8e512faf1b6dde5267a4689285bcf89ffce67757c72f2b4e35d5c9fe858331d"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.wymysl_znaczenie",
+   "preview": {
+    "path": "previews/wyobraznia/wymysl-znaczenie.m4a",
+    "bytes": 372439,
+    "sha256": "20127e28a15bbd9d769644556230b2b3ae63cea7dfa7998b8887399aad2ad994"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "mikstura",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Mikstura",
+   "parent_description": "Młody alchemik wybiera składniki i tworzy własną miksturę.",
+   "age_min": 3,
+   "duration_sec": 406,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/mikstura.m4a",
+     "bytes": 5061857,
+     "sha256": "cee3f7430efff567e73b558b0e154d8684914a92018c9f22ff3e1c41605164ab"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.mikstura",
+   "preview": {
+    "path": "previews/wyobraznia/mikstura.m4a",
+    "bytes": 372849,
+    "sha256": "06fbbc6ab98bc58ea5e91d54e615c3ed3870a683da0355d1f10d3d0bbff66d3f"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "moj-superbohater",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Mój superbohater",
+   "parent_description": "Projektowanie wymarzonego bohatera: supermoce, wygląd, zadania.",
+   "age_min": 3,
+   "duration_sec": 471,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/moj-superbohater.m4a",
+     "bytes": 5877906,
+     "sha256": "d28c391bf557ecfe6b6d4268b80ffea6d74e7e474dee2e64235058f530ab9b88"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.moj_superbohater",
+   "preview": {
+    "path": "previews/wyobraznia/moj-superbohater.m4a",
+    "bytes": 372440,
+    "sha256": "53e277b2b51ae986b3f6429833f474ff172978886098123543ce92f6dc4d0ba2"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "dokoncz-historie",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Dokończ historię",
+   "parent_description": "Prowadzący zaczyna opowieść, dziecko wymyśla jej ciąg dalszy.",
+   "age_min": 3,
+   "duration_sec": 361,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/dokoncz-historie.m4a",
+     "bytes": 4540942,
+     "sha256": "27d20ef313fc3d546539ec3a6f832621ae0b0ae1b4931d874831c858d32de4c7"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.dokoncz_historie",
+   "preview": {
+    "path": "previews/wyobraznia/dokoncz-historie.m4a",
+    "bytes": 372234,
+    "sha256": "939d336e808443b220d3267b2fb04baf96bb2bc25544028812e2ce646d83813a"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "mistrz-kuchni",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Mistrz kuchni",
+   "parent_description": "Dziecko jako szef kuchni tworzy własne danie.",
+   "age_min": 3,
+   "duration_sec": 327,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/mistrz-kuchni.m4a",
+     "bytes": 4059654,
+     "sha256": "c4898ba90aa77053346d4d3387210a4898349b153b6908848539c4ef35fc4593"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.mistrz_kuchni",
+   "preview": {
+    "path": "previews/wyobraznia/mistrz-kuchni.m4a",
+    "bytes": 372294,
+    "sha256": "9e868712349101c6a93a4549740831777ccf0abd49a3bf4d746b2bcf2e516d06"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "magiczny-teatr",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Magiczny teatr",
+   "parent_description": "Reżyserowanie spektaklu: fabuła, postacie i scenografia.",
+   "age_min": 3,
+   "duration_sec": 525,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/magiczny-teatr.m4a",
+     "bytes": 6532840,
+     "sha256": "9c462696323ddede3dd1dc15c6d2b858bbd59b0282e629474285582e08d61808"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.magiczny_teatr",
+   "preview": {
+    "path": "previews/wyobraznia/magiczny-teatr.m4a",
+    "bytes": 372286,
+    "sha256": "89ac0ed2863ec94009be898e285bc076887cb25256bccbc353c5df25ac91cbb9"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "co-oni-odpowiedzieli",
+   "kind": "audio_game",
+   "pack_id": "wyobraznia",
+   "title": "Co oni odpowiedzieli?",
+   "parent_description": "Co powie książka albo pingwin? Zabawne odpowiedzi w różnych rolach.",
+   "age_min": 3,
+   "duration_sec": 441,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "przed_snem"
+   ],
+   "skills": [
+    "wyobraźnia",
+    "opowiadanie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/wyobraznia/co-oni-odpowiedzieli.m4a",
+     "bytes": 5495384,
+     "sha256": "cd5cdb821f643e91fad618391b66c18d05d6549348eaeea3825a258f2417a013"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.co_oni_odpowiedzieli",
+   "preview": {
+    "path": "previews/wyobraznia/co-oni-odpowiedzieli.m4a",
+    "bytes": 371923,
+    "sha256": "fd2c750b1eff2fa5f7259e847c471f93e3fc9f1ef267f1d7eaffc5da9d215182"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "co-to-za-przedmiot",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Co to za przedmiot?",
+   "parent_description": "Dziecko słucha krótkich opisów i zgaduje, o jaki przedmiot chodzi.",
+   "age_min": 3,
+   "duration_sec": 409,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/co-to-za-przedmiot.m4a",
+     "bytes": 5148597,
+     "sha256": "b9942b8b1da831ebd0440a5b9d0ab2e73703d63bd9b4a4be85c534cf6c984527"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.co_to_za_przedmiot",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-co-to-za-przedmiot.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/co-to-za-przedmiot.m4a",
+    "bytes": 372805,
+    "sha256": "65fb1b0a17ec1645467eb37dc0371cbf676dd7c012340052b105a17dc33fde4c"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "co-to-za-dzwiek",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Co to za dźwięk?",
+   "parent_description": "Rozpoznawanie odgłosów natury, zwierząt i codzienności.",
+   "age_min": 3,
+   "duration_sec": 426,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "free",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/co-to-za-dzwiek.m4a",
+     "bytes": 5311555,
+     "sha256": "8a1e82421b853d607c2924cb7a71db7f188e16b4f62539b0b9774af30f8ba0d3"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.co_to_za_dzwiek",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-co-to-za-dzwiek.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "szybkie-skojarzenia",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Szybkie skojarzenia",
+   "parent_description": "Na usłyszane słowo dziecko odpowiada pierwszym skojarzeniem.",
+   "age_min": 3,
+   "duration_sec": 244,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/szybkie-skojarzenia.m4a",
+     "bytes": 3058638,
+     "sha256": "fdd1d64126481857e6383ebaaf3fa212270d80d1ed716db8b57a23e6fa734262"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.szybkie_skojarzenia",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-szybkie-skojarzenia.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/szybkie-skojarzenia.m4a",
+    "bytes": 373187,
+    "sha256": "11df91fa1e5c8a654980d0c208208efcbbb314a5e637e425e7c91ee6f535d578"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "co-tu-nie-pasuje",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Co tu nie pasuje?",
+   "parent_description": "Z trzech elementów trzeba wskazać ten, który odstaje, i powiedzieć dlaczego.",
+   "age_min": 3,
+   "duration_sec": 254,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/co-tu-nie-pasuje.m4a",
+     "bytes": 3178818,
+     "sha256": "4edbb13a7eedfd128129f129aa7417e64dc5b8772259a45c463ce7fddf3c9a67"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.co_tu_nie_pasuje",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-co-tu-nie-pasuje.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/co-tu-nie-pasuje.m4a",
+    "bytes": 372138,
+    "sha256": "ad15cd473d4011fcb4238bb36a2180b42e322e74a93c00c5edbd2cb7f502feda"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "wymien-trzy",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Wymień trzy",
+   "parent_description": "Trzy pasujące odpowiedzi na każde pytanie, np. zwierzęta z zoo.",
+   "age_min": 3,
+   "duration_sec": 411,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/wymien-trzy.m4a",
+     "bytes": 5110206,
+     "sha256": "573aab9b5674d1e53d8ab363bad32bdb5a1f1fb4570913142b7a75f1f52b8839"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.wymien_trzy",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-wymien-trzy.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/wymien-trzy.m4a",
+    "bytes": 371361,
+    "sha256": "5e57721d729fa8e9feee929d3eedf647763516735b88ccecba36b42cfb47ad2b"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "znajdz-przeciwienstwo",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Znajdź przeciwieństwo",
+   "parent_description": "Prowadzący podaje słowo, dziecko szuka jego przeciwieństwa.",
+   "age_min": 3,
+   "duration_sec": 401,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/znajdz-przeciwienstwo.m4a",
+     "bytes": 5012580,
+     "sha256": "4b92a8f92aa778b89073ce60a9daeebae2097d808b95b9fa19804bae2e69a512"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.znajdz_przeciwienstwo",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-znajdz-przeciwienstwo.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/znajdz-przeciwienstwo.m4a",
+    "bytes": 372605,
+    "sha256": "75e04732246547f2c87a27c45ac139d0a7b0cccd4bf36b31ce1a3a69ca9d4a9e"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "znajdz-synonimy",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Znajdź synonimy",
+   "parent_description": "Szukanie słów o podobnym znaczeniu.",
+   "age_min": 3,
+   "duration_sec": 242,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/znajdz-synonimy.m4a",
+     "bytes": 2994434,
+     "sha256": "ce0fa5f0471dc5b9a805b7e27e4a39988ab821909ace9dd035b72ceb725e0367"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.znajdz_synonimy",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-znajdz-synonimy.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/znajdz-synonimy.m4a",
+    "bytes": 372521,
+    "sha256": "198c57ba3ae7715cec096fde5069f36838dfe417a422036f1094e2e290b3f6ed"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "uloz-zdanie",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Ułóż zdanie",
+   "parent_description": "Z rozsypanych słów dziecko układa poprawne zdanie.",
+   "age_min": 3,
+   "duration_sec": 361,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/uloz-zdanie.m4a",
+     "bytes": 4492698,
+     "sha256": "77c32f17752fa6b0c7c3a94fe6efee23f88b8dca30065f59408c010294dff461"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.uloz_zdanie",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-uloz-zdanie.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/uloz-zdanie.m4a",
+    "bytes": 372494,
+    "sha256": "e3b087dd5da46795513817ecc1c370965923758e89c1c48c08acbc4c06cd606b"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "dokoncz-zgodnie-z-prawda",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Dokończ zgodnie z prawdą",
+   "parent_description": "Prowadzący zaczyna zdanie, dziecko kończy je prawdziwie.",
+   "age_min": 3,
+   "duration_sec": 423,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a",
+     "bytes": 5291654,
+     "sha256": "6e9c14d3731781f67eea5694370f572ebb44e395e728021e2b804d6198011de1"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.dokoncz_zgodnie_z_prawda",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-dokoncz-zgodnie-z-prawda.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/dokoncz-zgodnie-z-prawda.m4a",
+    "bytes": 372792,
+    "sha256": "e9987766ca5150b42db7235d2a9c94e56310e3fbaba7a735f1aeaa2cd66a5de2"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "kto-to-powiedzial",
+   "kind": "audio_game",
+   "pack_id": "slowa-i-wiedza",
+   "title": "Kto to powiedział?",
+   "parent_description": "Kto mógł wypowiedzieć to zdanie: lekarz czy kucharz?",
+   "age_min": 3,
+   "duration_sec": 426,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "skills": [
+    "słownictwo",
+    "logiczne myślenie"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/slowa-i-wiedza/kto-to-powiedzial.m4a",
+     "bytes": 5317513,
+     "sha256": "ad639bd5c33e50c16840c1822233856d98763e87099fd9670ed5885af169f9d9"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.kto_to_powiedzial",
+   "pdf": [
+    {
+     "path": "pdf/slowa-i-wiedza/dyplom-kto-to-powiedzial.pdf",
+     "bytes": 67371,
+     "sha256": "d774b7659d54cab9d32ddfacaba0065dfae97c8ee1b13e5209b3456bc6500f26"
+    }
+   ],
+   "preview": {
+    "path": "previews/slowa-i-wiedza/kto-to-powiedzial.m4a",
+    "bytes": 372856,
+    "sha256": "6e20a2804f795b36906a808646f636c42850b9bbe14ec1a71824d7d535a4a29e"
+   },
+   "released": "2026-09-01",
+   "age_max": 9
+  },
+  {
+   "id": "zlodziej-naszyjnika",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Złodziej naszyjnika",
+   "subtitle": "Max i Mila",
+   "parent_description": "Max i Mila dostają ostrzeżenie o planowanej kradzieży na balu. Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 7,
+   "duration_sec": 1080,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "free",
+   "audio": [
+    {
+     "path": "audio/detektyw/zlodziej-naszyjnika.m4a",
+     "bytes": 13467130,
+     "sha256": "3f4e09bb39c5f4d34757311f779827685272bdcec8cbb72ae9a986b9c18ab6e6"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/zlodziej-naszyjnika.pdf",
+     "bytes": 2817542,
+     "sha256": "8963f2f669ae5d70c459f01573e6339f6a14d8260417f99884df23bd7cd919b6"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.zlodziej_naszyjnika",
+   "released": "2026-09-01"
+  },
+  {
+   "id": "znikajace-dzwonki",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Znikające dzwonki rowerowe",
+   "subtitle": "Max i Mila",
+   "parent_description": "Ktoś zabiera dzwonki rowerowe z całego miasta. Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 7,
+   "duration_sec": 875,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/detektyw/znikajace-dzwonki.m4a",
+     "bytes": 10838754,
+     "sha256": "7bccfef739a924576dd660c6163bf6d25c4549d8c20deecc5376f9c30058ab08"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/znikajace-dzwonki.pdf",
+     "bytes": 1860998,
+     "sha256": "565c05abe22b50a832215476408c9c4c6b3bea78bef522b27c9e5f50d31bcd50"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.znikajace_dzwonki",
+   "preview": {
+    "path": "previews/detektyw/znikajace-dzwonki.m4a",
+    "bytes": 372975,
+    "sha256": "ae80767dcd411f1e2bac2b88b0b4886d88f58314073637d3f7fc9bc3394ab785"
+   },
+   "released": "2026-09-01"
+  },
+  {
+   "id": "na-ratunek-budce-z-lodami",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Na ratunek budce z lodami",
+   "subtitle": "Max i Mila",
+   "parent_description": "Z budki z lodami zniknęła książka z przepisami. Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 7,
+   "duration_sec": 742,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/detektyw/na-ratunek-budce-z-lodami.m4a",
+     "bytes": 9250761,
+     "sha256": "8a6ba8bf57c553aa6d967809112204230db59b5cfb5d36c0c948ae74c941167d"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/na-ratunek-budce-z-lodami.pdf",
+     "bytes": 3667643,
+     "sha256": "abfd157ebd770bcb84c0c98e79e0f583f292ecd56901162ec41db46a0f79c02f"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.na_ratunek_budce_z_lodami",
+   "preview": {
+    "path": "previews/detektyw/na-ratunek-budce-z-lodami.m4a",
+    "bytes": 373679,
+    "sha256": "85b6ac359f743e27056bcc06de527bbf79beb245516c87639d42d04ba8c14d60"
+   },
+   "released": "2026-09-01"
+  },
+  {
+   "id": "tajemnicze-znaki",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Tajemnicze znaki i inne poszlaki",
+   "subtitle": "Max i Mila",
+   "parent_description": "W mieście pojawiają się tajemnicze znaki. Dokąd prowadzą? Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 7,
+   "duration_sec": 967,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/detektyw/tajemnicze-znaki.m4a",
+     "bytes": 12062156,
+     "sha256": "345f210dcfb060b0768da58a378a7445a56fc7805d70bab132c1d1c9befddea5"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/tajemnicze-znaki.pdf",
+     "bytes": 1924368,
+     "sha256": "f5959aaadcb010133bb904d33282113a03acf04f5433fcf7a120796c2c186a82"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.tajemnicze_znaki",
+   "preview": {
+    "path": "previews/detektyw/tajemnicze-znaki.m4a",
+    "bytes": 372272,
+    "sha256": "9357b7329777a10e6ca8af43e24433a4f9d711afa569216a22dbfc8e5027769b"
+   },
+   "released": "2026-09-01"
+  },
+  {
+   "id": "gadajacy-smietnik",
+   "kind": "audio_game",
+   "pack_id": "detektyw",
+   "title": "Gadający śmietnik",
+   "subtitle": "Max i Mila",
+   "parent_description": "Max i Mila trafiają na gadający śmietnik. Kto go zbudował i po co? Do zabawy przydają się wydrukowane akta sprawy.",
+   "age_min": 7,
+   "duration_sec": 1155,
+   "situations": [
+    "w_domu",
+    "podroz"
+   ],
+   "skills": [
+    "logiczne myślenie",
+    "koncentracja"
+   ],
+   "requirements": [
+    "wydruk_pdf",
+    "kartka_i_olowek"
+   ],
+   "access": "paid",
+   "audio": [
+    {
+     "path": "audio/detektyw/gadajacy-smietnik.m4a",
+     "bytes": 14259806,
+     "sha256": "c810e1b9e6622c64b6a39066bd239c563bc144a010d628b9f366b8696ef96774"
+    }
+   ],
+   "pdf": [
+    {
+     "path": "pdf/detektyw/gadajacy-smietnik.pdf",
+     "bytes": 1459952,
+     "sha256": "e4e88fe7bcd78ceca1e01aada46568ce4d3557cb1a5ef3e3551dd7b05114165d"
+    }
+   ],
+   "store_product_id": "pl.audiokiddo.item.gadajacy_smietnik",
+   "preview": {
+    "path": "previews/detektyw/gadajacy-smietnik.m4a",
+    "bytes": 373330,
+    "sha256": "f0e387485407888c37a11920ad75858155401373bf990e68bc11bf6397f3a421"
+   },
+   "released": "2026-09-01"
+  },
+  {
+   "id": "zgadnij-dzwiek",
+   "kind": "interactive_game",
+   "title": "Zgadnij dźwięk",
+   "parent_description": "Dziecko słucha odgłosów i mówi, co to. Aplikacja nie ocenia odpowiedzi: po chwili podaje rozwiązanie. Z mikrofonem (opcjonalnie) zauważa, że dziecko coś powiedziało, i szybciej przechodzi dalej.",
+   "age_min": 3,
+   "duration_sec": 180,
+   "situations": [
+    "podroz",
+    "w_domu"
+   ],
+   "requirements": [
+    "mikrofon"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "free",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "zgadnij-dzwiek",
+    "version": 1,
+    "min_engine_version": 1,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/zgadnij-dzwiek/intro.m4a",
+      "bytes": 54020,
+      "sha256": "75d1618e099e6066f6aa592962a65caa324865c9a86805760d2d367c04523e41"
+     },
+     "heard_you": {
+      "path": "games/zgadnij-dzwiek/heard_you.m4a",
+      "bytes": 28537,
+      "sha256": "4b0f7bf552460813c80e172d714c221b344c8f839205d8f0c06a445b3ed9100e"
+     },
+     "thinking": {
+      "path": "games/zgadnij-dzwiek/thinking.m4a",
+      "bytes": 9380,
+      "sha256": "26ae42ae1d4ad5d2dba33cdd352ff7ed607b01721ee9f6271c97b87d62a263d9"
+     },
+     "outro": {
+      "path": "games/zgadnij-dzwiek/outro.m4a",
+      "bytes": 28779,
+      "sha256": "0addfc9a97dfdac5e6eefd10b6ad1779974502f6222e22e4440bb26c53ba752d"
+     },
+     "q_dzwonek": {
+      "path": "games/zgadnij-dzwiek/q_dzwonek.m4a",
+      "bytes": 32784,
+      "sha256": "b58317fa146e297fdbc5da477cdc7571ce6d51e69203e52f453812894ee6aac3"
+     },
+     "a_dzwonek": {
+      "path": "games/zgadnij-dzwiek/a_dzwonek.m4a",
+      "bytes": 28609,
+      "sha256": "df02da4b438916bfd3e4284dd1f80b7b394a921c1b2881db07b5791549717f94"
+     },
+     "q_deszcz": {
+      "path": "games/zgadnij-dzwiek/q_deszcz.m4a",
+      "bytes": 53288,
+      "sha256": "de30a8a1db58e2650cb42aa4f2c6fda1b309b057e4680a1336feea190f64fdbb"
+     },
+     "a_deszcz": {
+      "path": "games/zgadnij-dzwiek/a_deszcz.m4a",
+      "bytes": 26120,
+      "sha256": "7838c6ee4909f18e01528a07f9f08e73ffc765cac973bf1d0dbde66fa9bacc53"
+     },
+     "q_zegar": {
+      "path": "games/zgadnij-dzwiek/q_zegar.m4a",
+      "bytes": 30123,
+      "sha256": "9e0693f1d7d1f4167cbe06b72b9ae744167c6750361d1fae7b685679dd4e7f20"
+     },
+     "a_zegar": {
+      "path": "games/zgadnij-dzwiek/a_zegar.m4a",
+      "bytes": 29936,
+      "sha256": "b889caee76020ea1a38eebad8125ccf3151f19802d2ad42e9ab81c306159fc4f"
+     }
+    },
+    "variables": {},
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "q_dzwonek"
+     },
+     "q_dzwonek": {
+      "type": "play",
+      "asset": "q_dzwonek",
+      "next": "listen_dzwonek"
+     },
+     "listen_dzwonek": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 6000,
+      "on_detected": "ack_dzwonek",
+      "on_timeout": "a_dzwonek",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 6000,
+        "next": "a_dzwonek",
+        "loop_asset": "thinking"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "ack_dzwonek": {
+      "type": "play",
+      "asset": "heard_you",
+      "next": "a_dzwonek"
+     },
+     "a_dzwonek": {
+      "type": "play",
+      "asset": "a_dzwonek",
+      "next": "q_deszcz"
+     },
+     "q_deszcz": {
+      "type": "play",
+      "asset": "q_deszcz",
+      "next": "listen_deszcz"
+     },
+     "listen_deszcz": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 6000,
+      "on_detected": "ack_deszcz",
+      "on_timeout": "a_deszcz",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 6000,
+        "next": "a_deszcz",
+        "loop_asset": "thinking"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "ack_deszcz": {
+      "type": "play",
+      "asset": "heard_you",
+      "next": "a_deszcz"
+     },
+     "a_deszcz": {
+      "type": "play",
+      "asset": "a_deszcz",
+      "next": "q_zegar"
+     },
+     "q_zegar": {
+      "type": "play",
+      "asset": "q_zegar",
+      "next": "listen_zegar"
+     },
+     "listen_zegar": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 6000,
+      "on_detected": "ack_zegar",
+      "on_timeout": "a_zegar",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 6000,
+        "next": "a_zegar",
+        "loop_asset": "thinking"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "ack_zegar": {
+      "type": "play",
+      "asset": "heard_you",
+      "next": "a_zegar"
+     },
+     "a_zegar": {
+      "type": "play",
+      "asset": "a_zegar",
+      "next": "end"
+     },
+     "end": {
+      "type": "end",
+      "asset": "outro"
+     }
+    }
+   },
+   "timing_sensitive": false,
+   "released": "2026-09-01"
+  },
+  {
+   "id": "zamrozony-taniec",
+   "kind": "interactive_game",
+   "title": "Zamrożony taniec",
+   "parent_description": "Gdy gra muzyka, dziecko tańczy; na „stop” zamienia się w posąg. Telefon leży, aplikacja niczego nie mierzy.",
+   "age_min": 3,
+   "duration_sec": 120,
+   "situations": [
+    "w_domu"
+   ],
+   "requirements": [
+    "miejsce_do_ruchu"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "zamrozony-taniec",
+    "version": 1,
+    "min_engine_version": 1,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/zamrozony-taniec/intro.m4a",
+      "bytes": 65312,
+      "sha256": "c0dd11f6a028706d7046611b76161b5ca8a04500682587c3ae7568eb3741adff"
+     },
+     "stop": {
+      "path": "games/zamrozony-taniec/stop.m4a",
+      "bytes": 22875,
+      "sha256": "2d61b7b07ca34c4005d0afa4db3d396745879520ece391582825ca2481bc275b"
+     },
+     "go": {
+      "path": "games/zamrozony-taniec/go.m4a",
+      "bytes": 10119,
+      "sha256": "f393a04dc24780db7b7515eddd4b28367add9b35a2885773f731095ed2c0c1a2"
+     },
+     "outro": {
+      "path": "games/zamrozony-taniec/outro.m4a",
+      "bytes": 26103,
+      "sha256": "53db03cdecc9e317f4e67e6d0fce222592a4287c6ebc7b862aea2b46161d45d2"
+     },
+     "music_1": {
+      "path": "games/zamrozony-taniec/music_1.m4a",
+      "bytes": 100287,
+      "sha256": "9848fbefcfd23fffe271e92f8d5f37214119e865eb8a50893e677f162f0d137c"
+     },
+     "music_2": {
+      "path": "games/zamrozony-taniec/music_2.m4a",
+      "bytes": 66752,
+      "sha256": "7dfeb1a0079be17284058c59cec94e63918b332217bdc29ad0d05ba83bab50b0"
+     },
+     "music_3": {
+      "path": "games/zamrozony-taniec/music_3.m4a",
+      "bytes": 125136,
+      "sha256": "506d42da100070adfab3f13e88b23ab8a61cec2a72f90a6d71c6502ed3643fdd"
+     }
+    },
+    "variables": {},
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "music_1"
+     },
+     "music_1": {
+      "type": "play",
+      "asset": "music_1",
+      "next": "stop_1"
+     },
+     "stop_1": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_1"
+     },
+     "freeze_1": {
+      "type": "wait",
+      "duration_ms": 5000,
+      "next": "go_1"
+     },
+     "go_1": {
+      "type": "play",
+      "asset": "go",
+      "next": "music_2"
+     },
+     "music_2": {
+      "type": "play",
+      "asset": "music_2",
+      "next": "stop_2"
+     },
+     "stop_2": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_2"
+     },
+     "freeze_2": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "next": "go_2"
+     },
+     "go_2": {
+      "type": "play",
+      "asset": "go",
+      "next": "music_3"
+     },
+     "music_3": {
+      "type": "play",
+      "asset": "music_3",
+      "next": "stop_3"
+     },
+     "stop_3": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_3"
+     },
+     "freeze_3": {
+      "type": "wait",
+      "duration_ms": 5000,
+      "next": "end"
+     },
+     "end": {
+      "type": "end",
+      "asset": "outro"
+     }
+    }
+   },
+   "timing_sensitive": false,
+   "released": "2026-09-01"
+  },
+  {
+   "id": "zamrozone-raczki",
+   "kind": "interactive_game",
+   "title": "Zamrożone rączki (w podróży)",
+   "parent_description": "Wersja do samochodu: tańczą tylko rączki i minki, bez wstawania z fotelika.",
+   "age_min": 3,
+   "duration_sec": 120,
+   "situations": [
+    "podroz"
+   ],
+   "requirements": [],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "zamrozone-raczki",
+    "version": 1,
+    "min_engine_version": 1,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/zamrozone-raczki/intro.m4a",
+      "bytes": 59789,
+      "sha256": "e9f5504948c7fd4d468a3701594459d030f526768cc170c2a5d3af3563aaf3f1"
+     },
+     "stop": {
+      "path": "games/zamrozone-raczki/stop.m4a",
+      "bytes": 22875,
+      "sha256": "2d61b7b07ca34c4005d0afa4db3d396745879520ece391582825ca2481bc275b"
+     },
+     "go": {
+      "path": "games/zamrozone-raczki/go.m4a",
+      "bytes": 10119,
+      "sha256": "f393a04dc24780db7b7515eddd4b28367add9b35a2885773f731095ed2c0c1a2"
+     },
+     "outro": {
+      "path": "games/zamrozone-raczki/outro.m4a",
+      "bytes": 26103,
+      "sha256": "53db03cdecc9e317f4e67e6d0fce222592a4287c6ebc7b862aea2b46161d45d2"
+     },
+     "music_1": {
+      "path": "games/zamrozone-raczki/music_1.m4a",
+      "bytes": 100287,
+      "sha256": "9848fbefcfd23fffe271e92f8d5f37214119e865eb8a50893e677f162f0d137c"
+     },
+     "music_2": {
+      "path": "games/zamrozone-raczki/music_2.m4a",
+      "bytes": 66752,
+      "sha256": "7dfeb1a0079be17284058c59cec94e63918b332217bdc29ad0d05ba83bab50b0"
+     },
+     "music_3": {
+      "path": "games/zamrozone-raczki/music_3.m4a",
+      "bytes": 125136,
+      "sha256": "506d42da100070adfab3f13e88b23ab8a61cec2a72f90a6d71c6502ed3643fdd"
+     }
+    },
+    "variables": {},
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "music_1"
+     },
+     "music_1": {
+      "type": "play",
+      "asset": "music_1",
+      "next": "stop_1"
+     },
+     "stop_1": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_1"
+     },
+     "freeze_1": {
+      "type": "wait",
+      "duration_ms": 5000,
+      "next": "go_1"
+     },
+     "go_1": {
+      "type": "play",
+      "asset": "go",
+      "next": "music_2"
+     },
+     "music_2": {
+      "type": "play",
+      "asset": "music_2",
+      "next": "stop_2"
+     },
+     "stop_2": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_2"
+     },
+     "freeze_2": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "next": "go_2"
+     },
+     "go_2": {
+      "type": "play",
+      "asset": "go",
+      "next": "music_3"
+     },
+     "music_3": {
+      "type": "play",
+      "asset": "music_3",
+      "next": "stop_3"
+     },
+     "stop_3": {
+      "type": "play",
+      "asset": "stop",
+      "next": "freeze_3"
+     },
+     "freeze_3": {
+      "type": "wait",
+      "duration_ms": 5000,
+      "next": "end"
+     },
+     "end": {
+      "type": "end",
+      "asset": "outro"
+     }
+    }
+   },
+   "timing_sensitive": false,
+   "released": "2026-09-01"
+  },
+  {
+   "id": "echo-rytmu",
+   "kind": "interactive_game",
+   "title": "Echo rytmu",
+   "parent_description": "Aplikacja klaszcze rytm, dziecko go powtarza. Z mikrofonem (opcjonalnie) aplikacja słyszy klaskanie, ale nie ocenia, czy rytm był dokładny. Bez mikrofonu daje czas i przypomina rytm.",
+   "age_min": 3,
+   "duration_sec": 120,
+   "situations": [
+    "w_domu"
+   ],
+   "requirements": [
+    "mikrofon"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "paid",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "echo-rytmu",
+    "version": 1,
+    "min_engine_version": 1,
+    "timing_sensitive": true,
+    "assets": {
+     "intro": {
+      "path": "games/echo-rytmu/intro.m4a",
+      "bytes": 39617,
+      "sha256": "6b84c6c9c3ef06e0386c22a1698e2bb44d4eba84e27bbaf15bb13623607ab853"
+     },
+     "your_turn": {
+      "path": "games/echo-rytmu/your_turn.m4a",
+      "bytes": 7992,
+      "sha256": "67d99b1ff23611ba08dd06257da64921fb1b9d9e10dc30e793172ea2d193d205"
+     },
+     "heard_claps": {
+      "path": "games/echo-rytmu/heard_claps.m4a",
+      "bytes": 13008,
+      "sha256": "ef0d7f05d7b1d1e30d72d81010daea364ff21bc31d6a1c1c231bf732fa322b44"
+     },
+     "again": {
+      "path": "games/echo-rytmu/again.m4a",
+      "bytes": 24143,
+      "sha256": "e0e1b9180035fd33525ce485f50a97a3cced16b7c1670402d4ea105287d2a1d1"
+     },
+     "outro": {
+      "path": "games/echo-rytmu/outro.m4a",
+      "bytes": 23088,
+      "sha256": "79cb1b5621098c6ef7d4495442d996c05651f34cd858f80661157dc107514f29"
+     },
+     "rhythm_1": {
+      "path": "games/echo-rytmu/rhythm_1.m4a",
+      "bytes": 7356,
+      "sha256": "53b9fcbc37a30a741fdd091821e8655cee60c7efc3e0fc76eaac5448064e3150"
+     },
+     "rhythm_2": {
+      "path": "games/echo-rytmu/rhythm_2.m4a",
+      "bytes": 10290,
+      "sha256": "f676eb0f359e34b39025ba7ba8267be735b3b97ac391614c74e2d7c5a7768300"
+     },
+     "rhythm_3": {
+      "path": "games/echo-rytmu/rhythm_3.m4a",
+      "bytes": 10682,
+      "sha256": "b5624b98800096445ac7e6e6f736aceee9ed67635a77103e1787e79a6c26c4d2"
+     }
+    },
+    "variables": {},
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "rhythm_1"
+     },
+     "rhythm_1": {
+      "type": "play",
+      "asset": "rhythm_1",
+      "next": "turn_1"
+     },
+     "turn_1": {
+      "type": "play",
+      "asset": "your_turn",
+      "next": "listen_1"
+     },
+     "listen_1": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 5000,
+      "min_count": 3,
+      "on_detected": "heard_1",
+      "on_timeout": "again_1",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 5000,
+        "next": "again_1"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "heard_1": {
+      "type": "play",
+      "asset": "heard_claps",
+      "next": "again_1"
+     },
+     "again_1": {
+      "type": "play",
+      "asset": "again",
+      "next": "replay_1"
+     },
+     "replay_1": {
+      "type": "play",
+      "asset": "rhythm_1",
+      "next": "rhythm_2"
+     },
+     "rhythm_2": {
+      "type": "play",
+      "asset": "rhythm_2",
+      "next": "turn_2"
+     },
+     "turn_2": {
+      "type": "play",
+      "asset": "your_turn",
+      "next": "listen_2"
+     },
+     "listen_2": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 5000,
+      "min_count": 4,
+      "on_detected": "heard_2",
+      "on_timeout": "again_2",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 5000,
+        "next": "again_2"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "heard_2": {
+      "type": "play",
+      "asset": "heard_claps",
+      "next": "again_2"
+     },
+     "again_2": {
+      "type": "play",
+      "asset": "again",
+      "next": "replay_2"
+     },
+     "replay_2": {
+      "type": "play",
+      "asset": "rhythm_2",
+      "next": "rhythm_3"
+     },
+     "rhythm_3": {
+      "type": "play",
+      "asset": "rhythm_3",
+      "next": "turn_3"
+     },
+     "turn_3": {
+      "type": "play",
+      "asset": "your_turn",
+      "next": "listen_3"
+     },
+     "listen_3": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 5000,
+      "min_count": 4,
+      "on_detected": "heard_3",
+      "on_timeout": "again_3",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 5000,
+        "next": "again_3"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "heard_3": {
+      "type": "play",
+      "asset": "heard_claps",
+      "next": "again_3"
+     },
+     "again_3": {
+      "type": "play",
+      "asset": "again",
+      "next": "replay_3"
+     },
+     "replay_3": {
+      "type": "play",
+      "asset": "rhythm_3",
+      "next": "end"
+     },
+     "end": {
+      "type": "end",
+      "asset": "outro"
+     }
+    }
+   },
+   "timing_sensitive": true,
+   "released": "2026-09-01"
+  },
+  {
+   "id": "prawda-czy-nie",
+   "kind": "interactive_game",
+   "title": "Prawda czy nie?",
+   "parent_description": "Dziecko słucha zdań i odpowiada bez dotykania telefonu: klaśnięcie to „prawda”, głośne „nie” to nieprawda. Z mikrofonem (opcjonalnie) aplikacja reaguje na odpowiedź i liczy punkty; bez mikrofonu daje czas do namysłu i podaje rozwiązanie.",
+   "age_min": 3,
+   "duration_sec": 240,
+   "situations": [
+    "podroz",
+    "w_domu",
+    "czekanie"
+   ],
+   "requirements": [
+    "mikrofon"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "free",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "prawda-czy-nie",
+    "version": 1,
+    "min_engine_version": 2,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/prawda-czy-nie/intro.m4a",
+      "bytes": 94619,
+      "sha256": "0d8dc446743bb5fcba1c7b0a4b8b3b13b8bcf0f54f34f8145878a8eac3f52408"
+     },
+     "correct": {
+      "path": "games/prawda-czy-nie/correct.m4a",
+      "bytes": 16074,
+      "sha256": "f1e97048c21930b7c8a9135fd938f320bcb60f60ce8c1ed2279f9235a4cc60bf"
+     },
+     "oops": {
+      "path": "games/prawda-czy-nie/oops.m4a",
+      "bytes": 17173,
+      "sha256": "88786084ef22831c9c9cc343f482e611b53302a4db9cd3ba9eb4f9c8cc5ce48a"
+     },
+     "not_heard": {
+      "path": "games/prawda-czy-nie/not_heard.m4a",
+      "bytes": 26712,
+      "sha256": "57f4ed211158fe7616018537b4d3c54acd30028bfd0a03d3f8683ce08369b387"
+     },
+     "think": {
+      "path": "games/prawda-czy-nie/think.m4a",
+      "bytes": 18956,
+      "sha256": "9b320ed4637047a34693da58aafb70889f5c7b758e54865f172c5c22853a2279"
+     },
+     "thinking": {
+      "path": "games/prawda-czy-nie/thinking.m4a",
+      "bytes": 9380,
+      "sha256": "26ae42ae1d4ad5d2dba33cdd352ff7ed607b01721ee9f6271c97b87d62a263d9"
+     },
+     "outro_great": {
+      "path": "games/prawda-czy-nie/outro_great.m4a",
+      "bytes": 44312,
+      "sha256": "7e8305aa00fa465a0d8d132efe4245a9536adc56c0685356b852e9e865e330ee"
+     },
+     "outro_good": {
+      "path": "games/prawda-czy-nie/outro_good.m4a",
+      "bytes": 44370,
+      "sha256": "1362c3a9da6ded1f13fd3b77466fcfaef20f21dedf5abad2a47c603e70b34780"
+     },
+     "q_krowa": {
+      "path": "games/prawda-czy-nie/q_krowa.m4a",
+      "bytes": 17683,
+      "sha256": "6e07956759bbcacc10f9b675d358147ab382b6a9dcd444c4c43b15746821dbca"
+     },
+     "a_krowa": {
+      "path": "games/prawda-czy-nie/a_krowa.m4a",
+      "bytes": 19098,
+      "sha256": "e391cdd6d2d8edc6f4b5d6eec5afa87f18a754838bbf603c2a77bf3df2def189"
+     },
+     "q_ryby": {
+      "path": "games/prawda-czy-nie/q_ryby.m4a",
+      "bytes": 22480,
+      "sha256": "aa4a77a25320a7c3dc9f1c093825ee6e2419b56c984a8c2ee89afcd24388ae5d"
+     },
+     "a_ryby": {
+      "path": "games/prawda-czy-nie/a_ryby.m4a",
+      "bytes": 18819,
+      "sha256": "843d667f4ba2b09dc4a500c185dd849a7c88382d42cb91bd5b89345a03507304"
+     },
+     "q_snieg": {
+      "path": "games/prawda-czy-nie/q_snieg.m4a",
+      "bytes": 18278,
+      "sha256": "25a2cd64d12dc016a3125c9bcf5b2270d6603eacf69eb31102593ded1813a70d"
+     },
+     "a_snieg": {
+      "path": "games/prawda-czy-nie/a_snieg.m4a",
+      "bytes": 22304,
+      "sha256": "b9e69928ba48c35fd959d5114c0a3b838337c65e1e66ade9f31195d1c9a0763d"
+     },
+     "q_slon": {
+      "path": "games/prawda-czy-nie/q_slon.m4a",
+      "bytes": 23610,
+      "sha256": "fcec9b19d76c0ea80681ddaa0e3c26dae5218a545302d179b9979925014c630f"
+     },
+     "a_slon": {
+      "path": "games/prawda-czy-nie/a_slon.m4a",
+      "bytes": 28894,
+      "sha256": "ee3e0b209bc52d61ef6e33f41bc130ec7d41c1ac747eec7343443d7430b11292"
+     },
+     "q_lato": {
+      "path": "games/prawda-czy-nie/q_lato.m4a",
+      "bytes": 22656,
+      "sha256": "05581698c3cebce404ee95fe095a670b3de387d200adba5a3cfcf0424a5651c9"
+     },
+     "a_lato": {
+      "path": "games/prawda-czy-nie/a_lato.m4a",
+      "bytes": 25128,
+      "sha256": "e0cf5aacf3339880c138285a448f4dd70a80e363a28628436164d26f797f30c8"
+     },
+     "q_auta": {
+      "path": "games/prawda-czy-nie/q_auta.m4a",
+      "bytes": 23606,
+      "sha256": "fa6a85a6487338a975fcd64d5c64bc86fbc34fa16cdce1ccab49acb202febba9"
+     },
+     "a_auta": {
+      "path": "games/prawda-czy-nie/a_auta.m4a",
+      "bytes": 21884,
+      "sha256": "1d07ebf06d7299d2f4fe2ae78353ed286afe0b33c77b6142f95f0e3875f03fc9"
+     }
+    },
+    "variables": {
+     "score": 0
+    },
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "q_krowa"
+     },
+     "q_krowa": {
+      "type": "play",
+      "asset": "q_krowa",
+      "next": "answer_krowa"
+     },
+     "answer_krowa": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "right_krowa",
+       "voice_activity": "wrong_krowa"
+      },
+      "on_timeout": "missed_krowa",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_krowa"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_krowa": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_krowa"
+     },
+     "right_krowa": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_krowa"
+     },
+     "praise_krowa": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_krowa"
+     },
+     "wrong_krowa": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_krowa"
+     },
+     "missed_krowa": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_krowa"
+     },
+     "a_krowa": {
+      "type": "play",
+      "asset": "a_krowa",
+      "next": "q_ryby"
+     },
+     "q_ryby": {
+      "type": "play",
+      "asset": "q_ryby",
+      "next": "answer_ryby"
+     },
+     "answer_ryby": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "wrong_ryby",
+       "voice_activity": "right_ryby"
+      },
+      "on_timeout": "missed_ryby",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_ryby"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_ryby": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_ryby"
+     },
+     "right_ryby": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_ryby"
+     },
+     "praise_ryby": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_ryby"
+     },
+     "wrong_ryby": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_ryby"
+     },
+     "missed_ryby": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_ryby"
+     },
+     "a_ryby": {
+      "type": "play",
+      "asset": "a_ryby",
+      "next": "q_snieg"
+     },
+     "q_snieg": {
+      "type": "play",
+      "asset": "q_snieg",
+      "next": "answer_snieg"
+     },
+     "answer_snieg": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "right_snieg",
+       "voice_activity": "wrong_snieg"
+      },
+      "on_timeout": "missed_snieg",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_snieg"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_snieg": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_snieg"
+     },
+     "right_snieg": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_snieg"
+     },
+     "praise_snieg": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_snieg"
+     },
+     "wrong_snieg": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_snieg"
+     },
+     "missed_snieg": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_snieg"
+     },
+     "a_snieg": {
+      "type": "play",
+      "asset": "a_snieg",
+      "next": "q_slon"
+     },
+     "q_slon": {
+      "type": "play",
+      "asset": "q_slon",
+      "next": "answer_slon"
+     },
+     "answer_slon": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "wrong_slon",
+       "voice_activity": "right_slon"
+      },
+      "on_timeout": "missed_slon",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_slon"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_slon": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_slon"
+     },
+     "right_slon": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_slon"
+     },
+     "praise_slon": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_slon"
+     },
+     "wrong_slon": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_slon"
+     },
+     "missed_slon": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_slon"
+     },
+     "a_slon": {
+      "type": "play",
+      "asset": "a_slon",
+      "next": "q_lato"
+     },
+     "q_lato": {
+      "type": "play",
+      "asset": "q_lato",
+      "next": "answer_lato"
+     },
+     "answer_lato": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "right_lato",
+       "voice_activity": "wrong_lato"
+      },
+      "on_timeout": "missed_lato",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_lato"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_lato": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_lato"
+     },
+     "right_lato": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_lato"
+     },
+     "praise_lato": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_lato"
+     },
+     "wrong_lato": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_lato"
+     },
+     "missed_lato": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_lato"
+     },
+     "a_lato": {
+      "type": "play",
+      "asset": "a_lato",
+      "next": "q_auta"
+     },
+     "q_auta": {
+      "type": "play",
+      "asset": "q_auta",
+      "next": "answer_auta"
+     },
+     "answer_auta": {
+      "type": "choice",
+      "window_ms": 7000,
+      "options": {
+       "clap": "wrong_auta",
+       "voice_activity": "right_auta"
+      },
+      "on_timeout": "missed_auta",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "think",
+        "next": "pause_auta"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "pause_auta": {
+      "type": "wait",
+      "duration_ms": 4000,
+      "loop_asset": "thinking",
+      "next": "a_auta"
+     },
+     "right_auta": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "praise_auta"
+     },
+     "praise_auta": {
+      "type": "play",
+      "asset": "correct",
+      "next": "a_auta"
+     },
+     "wrong_auta": {
+      "type": "play",
+      "asset": "oops",
+      "next": "a_auta"
+     },
+     "missed_auta": {
+      "type": "play",
+      "asset": "not_heard",
+      "next": "a_auta"
+     },
+     "a_auta": {
+      "type": "play",
+      "asset": "a_auta",
+      "next": "score"
+     },
+     "score": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": 4
+      },
+      "then": "end_great",
+      "else": "end_good"
+     },
+     "end_great": {
+      "type": "end",
+      "asset": "outro_great"
+     },
+     "end_good": {
+      "type": "end",
+      "asset": "outro_good"
+     }
+    }
+   },
+   "timing_sensitive": false,
+   "released": "2026-09-27"
+  },
+  {
+   "id": "zgubiona-gwiazdka",
+   "kind": "interactive_game",
+   "title": "Zgubiona Gwiazdka",
+   "parent_description": "Bajka, w której dziecko wybiera drogę: mówi „las” albo „rzeka”, „góra” albo „dziupla”, rozwiązuje zagadki i klaszcze. Pięć różnych zakończeń, więc warto wracać. Słowa rozpoznaje sam telefon, bez internetu i bez nagrywania. Gdy telefon nie rozpoznaje słów, pyta o klaśnięcie; bez mikrofonu narratorka wybiera drogę sama.",
+   "age_min": 3,
+   "duration_sec": 480,
+   "situations": [
+    "w_domu",
+    "przed_snem",
+    "podroz"
+   ],
+   "requirements": [
+    "mikrofon"
+   ],
+   "skills": [
+    "słuchanie"
+   ],
+   "access": "free",
+   "audio": [],
+   "script": {
+    "schema_version": 1,
+    "id": "zgubiona-gwiazdka",
+    "version": 1,
+    "min_engine_version": 3,
+    "timing_sensitive": false,
+    "assets": {
+     "intro": {
+      "path": "games/zgubiona-gwiazdka/intro.m4a",
+      "bytes": 172101,
+      "sha256": "afeee13aebf590ae02d806582256c54afedfc8e8e6d98576df737f37cd4e0d3b"
+     },
+     "ready_self": {
+      "path": "games/zgubiona-gwiazdka/ready_self.m4a",
+      "bytes": 23634,
+      "sha256": "a76b52d4d3b8c390ba031e4b54c34c3bcd01fda03b6b1bfda83b49341ee6ebaf"
+     },
+     "go": {
+      "path": "games/zgubiona-gwiazdka/go.m4a",
+      "bytes": 17621,
+      "sha256": "fd5f9d44e73c9b1ae5df93eac6577f9afd636ce48f9b8465b2899d18e755a4b9"
+     },
+     "cross": {
+      "path": "games/zgubiona-gwiazdka/cross.m4a",
+      "bytes": 103101,
+      "sha256": "28fd8f138c38f8aacfb59cc38b0b015c0bbb0378271ff5249380f459f896be2d"
+     },
+     "cross_again": {
+      "path": "games/zgubiona-gwiazdka/cross_again.m4a",
+      "bytes": 40498,
+      "sha256": "3a86719df47ecff503bcd7918c6035e0d35237ce1a1fe3f7ae677308786ff270"
+     },
+     "cross_auto": {
+      "path": "games/zgubiona-gwiazdka/cross_auto.m4a",
+      "bytes": 46726,
+      "sha256": "f47c414e99d656b5d4dfb1d80de012489370888aa45b3ec6815c873a2e6f884b"
+     },
+     "cross_claps": {
+      "path": "games/zgubiona-gwiazdka/cross_claps.m4a",
+      "bytes": 55632,
+      "sha256": "b6fa1c816ffa2e241bd8006e7197c56d3a52c4a5d9aa8b99566e791a4b7fd19e"
+     },
+     "forest": {
+      "path": "games/zgubiona-gwiazdka/forest.m4a",
+      "bytes": 130588,
+      "sha256": "47f64fd490fe8071f95ffc8ecced77ea723776851bc6f07bbf46bf70fe21eb3d"
+     },
+     "riddle_praise": {
+      "path": "games/zgubiona-gwiazdka/riddle_praise.m4a",
+      "bytes": 44536,
+      "sha256": "73563db83db516a51ab53e5cb1b7820961171cbc4fc35aad86b16a1c6e55086e"
+     },
+     "riddle_wrong": {
+      "path": "games/zgubiona-gwiazdka/riddle_wrong.m4a",
+      "bytes": 43830,
+      "sha256": "25d8507dfbe0c617880490c7af2193f53ce2f18edbe39b28a9b79d9ba7547d68"
+     },
+     "riddle_hint_say": {
+      "path": "games/zgubiona-gwiazdka/riddle_hint_say.m4a",
+      "bytes": 50734,
+      "sha256": "28b0f2d7530bf46d58cd544214438303d67bec4b88b286db694d1f75a587aeb1"
+     },
+     "riddle_tell": {
+      "path": "games/zgubiona-gwiazdka/riddle_tell.m4a",
+      "bytes": 17666,
+      "sha256": "f8df1cd165b1ea329c6e6fa88619005a3c21ef7befe3496c2bd4f54982e2f02b"
+     },
+     "owl": {
+      "path": "games/zgubiona-gwiazdka/owl.m4a",
+      "bytes": 101698,
+      "sha256": "b4368a7413ee9b04ca67ea8b60768fc2d95a442e522a7c83c6f797caac21f4c7"
+     },
+     "owl_again": {
+      "path": "games/zgubiona-gwiazdka/owl_again.m4a",
+      "bytes": 40541,
+      "sha256": "73d077291b5b53d63a528833a1a01ca873c9911c85e4c330e42e118b80e01f97"
+     },
+     "owl_auto": {
+      "path": "games/zgubiona-gwiazdka/owl_auto.m4a",
+      "bytes": 26028,
+      "sha256": "b9d86fe5b33e172733648c453de57886243a82ad1a8aa5d0d80331cc590b963b"
+     },
+     "owl_claps": {
+      "path": "games/zgubiona-gwiazdka/owl_claps.m4a",
+      "bytes": 48433,
+      "sha256": "6534c904c0651f5a5782792bbf91168d31410fd6166d3003bead2356652171e0"
+     },
+     "mountain": {
+      "path": "games/zgubiona-gwiazdka/mountain.m4a",
+      "bytes": 133460,
+      "sha256": "b494c8e55b609d43c16035eb6eb2e2f8f4225eda677d55532b2856e3b614f662"
+     },
+     "wind_claps_self": {
+      "path": "games/zgubiona-gwiazdka/wind_claps_self.m4a",
+      "bytes": 32773,
+      "sha256": "ab918dac4acd898737dfdc5c425c91e4dca4897965c57ad03a646d1febdf19f3"
+     },
+     "wind_ok": {
+      "path": "games/zgubiona-gwiazdka/wind_ok.m4a",
+      "bytes": 53246,
+      "sha256": "d56e18daf9f4554945dd92802d1bb4fce46e18d42a541ae2fce1251e42b68210"
+     },
+     "wind_help": {
+      "path": "games/zgubiona-gwiazdka/wind_help.m4a",
+      "bytes": 50480,
+      "sha256": "8b21119178850203034ade77f2b2096c0c416e0de1373dd4a71afd918a4134dd"
+     },
+     "ending_wind": {
+      "path": "games/zgubiona-gwiazdka/ending_wind.m4a",
+      "bytes": 193925,
+      "sha256": "6698aa5f54a3b7c8dc938e8434fd3074aff7bcb04638a8830fb4e2d71740891b"
+     },
+     "hollow": {
+      "path": "games/zgubiona-gwiazdka/hollow.m4a",
+      "bytes": 146440,
+      "sha256": "4cb1d2dc753ef15b67bd5e887209d3a775a710d46c022f642fa1d676baba713f"
+     },
+     "hollow_again": {
+      "path": "games/zgubiona-gwiazdka/hollow_again.m4a",
+      "bytes": 51850,
+      "sha256": "03955cdf64715ee765356bd70be456eddafb91d5e6f64f4c028ece70f90e64f7"
+     },
+     "hollow_auto": {
+      "path": "games/zgubiona-gwiazdka/hollow_auto.m4a",
+      "bytes": 26124,
+      "sha256": "905311525010d821bd324fa1af0782f279b489dead7b3abdb8cc0ae4f5983f11"
+     },
+     "hollow_claps": {
+      "path": "games/zgubiona-gwiazdka/hollow_claps.m4a",
+      "bytes": 55882,
+      "sha256": "9b0a40b8430d0a521cf7bdaadfd7e5ace2cb613ab9c926997ea1df59342c044c"
+     },
+     "wake": {
+      "path": "games/zgubiona-gwiazdka/wake.m4a",
+      "bytes": 92964,
+      "sha256": "14754bea2ac4af56a0122f6789b63534f2638aa134e17ad125c95e1d1ef1c78a"
+     },
+     "ending_squirrel": {
+      "path": "games/zgubiona-gwiazdka/ending_squirrel.m4a",
+      "bytes": 224429,
+      "sha256": "dd0e71740fae7577fc77d938faa709e854affe6499c2d721271f33f4fefbb810"
+     },
+     "lullaby": {
+      "path": "games/zgubiona-gwiazdka/lullaby.m4a",
+      "bytes": 86679,
+      "sha256": "72028456a513e22668df1b8cbb0fe69cdcb716e959783d32fd7d37446fc39eee"
+     },
+     "ending_lullaby": {
+      "path": "games/zgubiona-gwiazdka/ending_lullaby.m4a",
+      "bytes": 174521,
+      "sha256": "052180287938cdd984b7d6706987b46a5e04602f0a4a0b63476a4594de8f691b"
+     },
+     "river": {
+      "path": "games/zgubiona-gwiazdka/river.m4a",
+      "bytes": 111943,
+      "sha256": "12814fd16aada49a6393afea0df65dcc663f55248684a8ed5e4c9636f4ccaf6e"
+     },
+     "frog": {
+      "path": "games/zgubiona-gwiazdka/frog.m4a",
+      "bytes": 64325,
+      "sha256": "443ea4f15372808443e6e25d3f29c57c3e55effa4e9da4fe0dda30c84730b919"
+     },
+     "frog_again": {
+      "path": "games/zgubiona-gwiazdka/frog_again.m4a",
+      "bytes": 41826,
+      "sha256": "f53f757e0adf6eda09c94ae757b2f816036545251a23ceb225848d243b7b74d3"
+     },
+     "frog_auto": {
+      "path": "games/zgubiona-gwiazdka/frog_auto.m4a",
+      "bytes": 22350,
+      "sha256": "c8387567361e1a4fa52bf61445fae839616ef2f058d2e796a32c5564fe7f3099"
+     },
+     "frog_claps": {
+      "path": "games/zgubiona-gwiazdka/frog_claps.m4a",
+      "bytes": 57236,
+      "sha256": "26b0c0dbf0ac1579af9132fbe940c4aea018aac1596612f9488235ca10b61e2c"
+     },
+     "stones": {
+      "path": "games/zgubiona-gwiazdka/stones.m4a",
+      "bytes": 50396,
+      "sha256": "9bdf52cca4e5469ea3bf3e51ad75e19d590ab9e82360e587ce1117564aa2414b"
+     },
+     "stones_claps_self": {
+      "path": "games/zgubiona-gwiazdka/stones_claps_self.m4a",
+      "bytes": 30670,
+      "sha256": "566a784bcc05f2fe219baba87757069cd6329528dbd582f6e566b44cfd5d5b8c"
+     },
+     "stones_ok": {
+      "path": "games/zgubiona-gwiazdka/stones_ok.m4a",
+      "bytes": 37318,
+      "sha256": "07eb7282a2b2555c37c77ce917ca188ccb71327531d6f09f892fa16b9d702516"
+     },
+     "stones_help": {
+      "path": "games/zgubiona-gwiazdka/stones_help.m4a",
+      "bytes": 43864,
+      "sha256": "d48211b6e5976e66a8f1b05ac39a1b9d2a242733015b8722e50239b1f201f00c"
+     },
+     "island": {
+      "path": "games/zgubiona-gwiazdka/island.m4a",
+      "bytes": 99495,
+      "sha256": "d6e59b6ff2e37bda21ffb606e03b0f983a6a3522479c81f75d449b14a7d9c11e"
+     },
+     "shine_self": {
+      "path": "games/zgubiona-gwiazdka/shine_self.m4a",
+      "bytes": 26939,
+      "sha256": "88fef6f5f1d0ed6efcf4767ed2d843e2c71f5d0852325a7e8102ae83f38089f2"
+     },
+     "shine_help": {
+      "path": "games/zgubiona-gwiazdka/shine_help.m4a",
+      "bytes": 20991,
+      "sha256": "d7be2ac7abfc5d5fd3389292cc06540e4b368893aaf5981653fdb7847d7e23d7"
+     },
+     "ending_fireflies": {
+      "path": "games/zgubiona-gwiazdka/ending_fireflies.m4a",
+      "bytes": 190177,
+      "sha256": "1f488e8efdf00cc0679d8b3cba71f5f3fe66e9c0bf33003b4681a53a3e51e8ea"
+     },
+     "boat": {
+      "path": "games/zgubiona-gwiazdka/boat.m4a",
+      "bytes": 63492,
+      "sha256": "4fe95a9a632820be22efea432bde7229598b546f5eb94ebf2abe27f2494f219a"
+     },
+     "row_self": {
+      "path": "games/zgubiona-gwiazdka/row_self.m4a",
+      "bytes": 25988,
+      "sha256": "b9ce3c8ad0e08af7452161d45f569007badfbcb16f537d3b5cd81077cd0bb682"
+     },
+     "row_ok": {
+      "path": "games/zgubiona-gwiazdka/row_ok.m4a",
+      "bytes": 27656,
+      "sha256": "6a4e03c0fb09326e5e694991162aa376048a187ab6e415fcfd777ac22f675158"
+     },
+     "row_help": {
+      "path": "games/zgubiona-gwiazdka/row_help.m4a",
+      "bytes": 20570,
+      "sha256": "fdc50dc0b89f45940f7b74639e7fd62d5502ed4eb2bafb336562916e4254c3eb"
+     },
+     "ducks": {
+      "path": "games/zgubiona-gwiazdka/ducks.m4a",
+      "bytes": 77552,
+      "sha256": "777f383ee2153b50cb1c7ccc535a43b37a9766513ae79c1cbbbaa02476580016"
+     },
+     "count_praise": {
+      "path": "games/zgubiona-gwiazdka/count_praise.m4a",
+      "bytes": 36674,
+      "sha256": "da8afa5ea527c266fb86ae4bbfa27c0c9c99e0202d17acbfc5e5678e32184eeb"
+     },
+     "count_wrong": {
+      "path": "games/zgubiona-gwiazdka/count_wrong.m4a",
+      "bytes": 45701,
+      "sha256": "7da8b9aa7a8adecfa590e7ebd01a47b9e15bd5152c9c791604eff55673935d90"
+     },
+     "count_tell": {
+      "path": "games/zgubiona-gwiazdka/count_tell.m4a",
+      "bytes": 34080,
+      "sha256": "d5fab2358dc074f2d3aeee0125e7fb40837cf54d71323f60611ec16296f3792c"
+     },
+     "ending_moon": {
+      "path": "games/zgubiona-gwiazdka/ending_moon.m4a",
+      "bytes": 189185,
+      "sha256": "d5eef6753b424822cfbdf8b6bbbca38a342192a5b707d50ca3a0a021090608ee"
+     }
+    },
+    "variables": {
+     "score": 0
+    },
+    "start": "intro",
+    "steps": {
+     "intro": {
+      "type": "play",
+      "asset": "intro",
+      "next": "ready"
+     },
+     "ready": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 7000,
+      "on_detected": "go",
+      "on_timeout": "go",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "ready_self",
+        "next": "cross"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "go": {
+      "type": "play",
+      "asset": "go",
+      "next": "cross"
+     },
+     "cross": {
+      "type": "play",
+      "asset": "cross",
+      "next": "cross_answer"
+     },
+     "cross_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "forest": [
+        "las",
+        "do lasu",
+        "lasek",
+        "lasu"
+       ],
+       "river": [
+        "rzeka",
+        "nad rzekę",
+        "rzekę",
+        "rzeczka",
+        "rzeki"
+       ]
+      },
+      "on_timeout": "cross_retry",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "cross_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "cross_claps"
+       }
+      }
+     },
+     "cross_retry": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "cross_again",
+      "else": "cross_auto"
+     },
+     "cross_again": {
+      "type": "play",
+      "asset": "cross_again",
+      "next": "cross_answer"
+     },
+     "cross_auto": {
+      "type": "play",
+      "asset": "cross_auto",
+      "next": "forest"
+     },
+     "cross_claps": {
+      "type": "play",
+      "asset": "cross_claps",
+      "next": "cross_clap_answer"
+     },
+     "cross_clap_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "options": {
+       "clap": "forest",
+       "voice_activity": "river"
+      },
+      "on_timeout": "cross_auto",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "cross_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "forest": {
+      "type": "play",
+      "asset": "forest",
+      "next": "riddle"
+     },
+     "riddle": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "riddle_right": [
+        "pies",
+        "piesek",
+        "psiak",
+        "pieska",
+        "psa"
+       ],
+       "riddle_wrong": [
+        "kot",
+        "kotek",
+        "krowa",
+        "kaczka",
+        "kura",
+        "żaba",
+        "koń",
+        "owca"
+       ]
+      },
+      "on_timeout": "riddle_hint",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 4000,
+        "next": "riddle_tell"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "riddle_right": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "riddle_praise"
+     },
+     "riddle_praise": {
+      "type": "play",
+      "asset": "riddle_praise",
+      "next": "owl"
+     },
+     "riddle_wrong": {
+      "type": "play",
+      "asset": "riddle_wrong",
+      "next": "owl"
+     },
+     "riddle_hint": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "riddle_hint_say",
+      "else": "riddle_tell"
+     },
+     "riddle_hint_say": {
+      "type": "play",
+      "asset": "riddle_hint_say",
+      "next": "riddle"
+     },
+     "riddle_tell": {
+      "type": "play",
+      "asset": "riddle_tell",
+      "next": "owl"
+     },
+     "owl": {
+      "type": "play",
+      "asset": "owl",
+      "next": "owl_answer"
+     },
+     "owl_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "mountain": [
+        "góra",
+        "na górę",
+        "górę",
+        "góry",
+        "górka"
+       ],
+       "hollow": [
+        "dziupla",
+        "dziuplę",
+        "do dziupli",
+        "dziupli"
+       ]
+      },
+      "on_timeout": "owl_retry",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "owl_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "owl_claps"
+       }
+      }
+     },
+     "owl_retry": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "owl_again",
+      "else": "owl_auto"
+     },
+     "owl_again": {
+      "type": "play",
+      "asset": "owl_again",
+      "next": "owl_answer"
+     },
+     "owl_auto": {
+      "type": "play",
+      "asset": "owl_auto",
+      "next": "hollow"
+     },
+     "owl_claps": {
+      "type": "play",
+      "asset": "owl_claps",
+      "next": "owl_clap_answer"
+     },
+     "owl_clap_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "options": {
+       "clap": "mountain",
+       "voice_activity": "hollow"
+      },
+      "on_timeout": "owl_auto",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "owl_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "mountain": {
+      "type": "play",
+      "asset": "mountain",
+      "next": "wind_claps"
+     },
+     "wind_claps": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 8000,
+      "on_detected": "wind_ok",
+      "on_timeout": "wind_help",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "wind_claps_self",
+        "next": "ending_wind"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      },
+      "min_count": 3
+     },
+     "wind_ok": {
+      "type": "play",
+      "asset": "wind_ok",
+      "next": "ending_wind"
+     },
+     "wind_help": {
+      "type": "play",
+      "asset": "wind_help",
+      "next": "ending_wind"
+     },
+     "ending_wind": {
+      "type": "end",
+      "asset": "ending_wind"
+     },
+     "hollow": {
+      "type": "play",
+      "asset": "hollow",
+      "next": "hollow_answer"
+     },
+     "hollow_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "wake": [
+        "budzimy",
+        "obudź",
+        "obudzić",
+        "budzić",
+        "pobudka",
+        "budzimy ją"
+       ],
+       "lullaby": [
+        "kołysanka",
+        "kołysankę",
+        "śpiewamy",
+        "śpiewać",
+        "lulu"
+       ]
+      },
+      "on_timeout": "hollow_retry",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "hollow_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "hollow_claps"
+       }
+      }
+     },
+     "hollow_retry": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "hollow_again",
+      "else": "hollow_auto"
+     },
+     "hollow_again": {
+      "type": "play",
+      "asset": "hollow_again",
+      "next": "hollow_answer"
+     },
+     "hollow_auto": {
+      "type": "play",
+      "asset": "hollow_auto",
+      "next": "lullaby"
+     },
+     "hollow_claps": {
+      "type": "play",
+      "asset": "hollow_claps",
+      "next": "hollow_clap_answer"
+     },
+     "hollow_clap_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "options": {
+       "clap": "wake",
+       "voice_activity": "lullaby"
+      },
+      "on_timeout": "hollow_auto",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "hollow_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "wake": {
+      "type": "play",
+      "asset": "wake",
+      "next": "ending_squirrel"
+     },
+     "ending_squirrel": {
+      "type": "end",
+      "asset": "ending_squirrel"
+     },
+     "lullaby": {
+      "type": "play",
+      "asset": "lullaby",
+      "next": "ending_lullaby"
+     },
+     "ending_lullaby": {
+      "type": "end",
+      "asset": "ending_lullaby"
+     },
+     "river": {
+      "type": "play",
+      "asset": "river",
+      "next": "frog"
+     },
+     "frog": {
+      "type": "play",
+      "asset": "frog",
+      "next": "frog_answer"
+     },
+     "frog_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "stones": [
+        "kamienie",
+        "po kamieniach",
+        "kamień",
+        "skaczemy",
+        "skakać"
+       ],
+       "boat": [
+        "łódka",
+        "łódką",
+        "łódź",
+        "łódkę",
+        "płyniemy"
+       ]
+      },
+      "on_timeout": "frog_retry",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "frog_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone",
+       "no_speech": {
+        "type": "goto",
+        "target": "frog_claps"
+       }
+      }
+     },
+     "frog_retry": {
+      "type": "branch",
+      "if": {
+       "var": "score",
+       "gt": -1
+      },
+      "max_visits": 1,
+      "then": "frog_again",
+      "else": "frog_auto"
+     },
+     "frog_again": {
+      "type": "play",
+      "asset": "frog_again",
+      "next": "frog_answer"
+     },
+     "frog_auto": {
+      "type": "play",
+      "asset": "frog_auto",
+      "next": "boat"
+     },
+     "frog_claps": {
+      "type": "play",
+      "asset": "frog_claps",
+      "next": "frog_clap_answer"
+     },
+     "frog_clap_answer": {
+      "type": "choice",
+      "window_ms": 8000,
+      "options": {
+       "clap": "stones",
+       "voice_activity": "boat"
+      },
+      "on_timeout": "frog_auto",
+      "fallback": {
+       "no_microphone": {
+        "type": "goto",
+        "target": "frog_auto"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "stones": {
+      "type": "play",
+      "asset": "stones",
+      "next": "stones_claps"
+     },
+     "stones_claps": {
+      "type": "input",
+      "input": "clap",
+      "window_ms": 9000,
+      "on_detected": "stones_ok",
+      "on_timeout": "stones_help",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "stones_claps_self",
+        "next": "island"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      },
+      "min_count": 3
+     },
+     "stones_ok": {
+      "type": "play",
+      "asset": "stones_ok",
+      "next": "island"
+     },
+     "stones_help": {
+      "type": "play",
+      "asset": "stones_help",
+      "next": "island"
+     },
+     "island": {
+      "type": "play",
+      "asset": "island",
+      "next": "shine"
+     },
+     "shine": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 8000,
+      "on_detected": "ending_fireflies",
+      "on_timeout": "shine_help",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "shine_self",
+        "next": "ending_fireflies"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "shine_help": {
+      "type": "play",
+      "asset": "shine_help",
+      "next": "ending_fireflies"
+     },
+     "ending_fireflies": {
+      "type": "end",
+      "asset": "ending_fireflies"
+     },
+     "boat": {
+      "type": "play",
+      "asset": "boat",
+      "next": "row"
+     },
+     "row": {
+      "type": "input",
+      "input": "voice_activity",
+      "window_ms": 8000,
+      "on_detected": "row_ok",
+      "on_timeout": "row_help",
+      "fallback": {
+       "no_microphone": {
+        "type": "play",
+        "asset": "row_self",
+        "next": "ducks"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "row_ok": {
+      "type": "play",
+      "asset": "row_ok",
+      "next": "ducks"
+     },
+     "row_help": {
+      "type": "play",
+      "asset": "row_help",
+      "next": "ducks"
+     },
+     "ducks": {
+      "type": "play",
+      "asset": "ducks",
+      "next": "count"
+     },
+     "count": {
+      "type": "choice",
+      "window_ms": 8000,
+      "words": {
+       "count_right": [
+        "trzy",
+        "3",
+        "trzech",
+        "trzej"
+       ],
+       "count_wrong": [
+        "jeden",
+        "jedna",
+        "dwa",
+        "dwie",
+        "cztery",
+        "pięć",
+        "sześć"
+       ]
+      },
+      "on_timeout": "count_tell",
+      "fallback": {
+       "no_microphone": {
+        "type": "wait",
+        "duration_ms": 4000,
+        "next": "count_tell"
+       },
+       "screen_locked": "same_as_no_microphone",
+       "input_error": "same_as_no_microphone"
+      }
+     },
+     "count_right": {
+      "type": "set",
+      "var": "score",
+      "op": "inc",
+      "next": "count_praise"
+     },
+     "count_praise": {
+      "type": "play",
+      "asset": "count_praise",
+      "next": "ending_moon"
+     },
+     "count_wrong": {
+      "type": "play",
+      "asset": "count_wrong",
+      "next": "ending_moon"
+     },
+     "count_tell": {
+      "type": "play",
+      "asset": "count_tell",
+      "next": "ending_moon"
+     },
+     "ending_moon": {
+      "type": "end",
+      "asset": "ending_moon"
+     }
+    }
+   },
+   "timing_sensitive": false,
+   "released": "2026-10-03"
+  }
+ ],
+ "shelves": [
+  {
+   "id": "featured",
+   "title": "Zabawa dnia",
+   "kind": "featured",
+   "item_ids": [
+    "zaginiony-skarb"
+   ]
+  },
+  {
+   "id": "podroz",
+   "title": "Na drogę",
+   "kind": "row",
+   "item_ids": [
+    "co-to-za-dzwiek",
+    "szybkie-skojarzenia",
+    "zaginiony-skarb",
+    "wymien-trzy",
+    "mikstura"
+   ]
+  },
+  {
+   "id": "detektywi",
+   "title": "Sprawy dla detektywów",
+   "kind": "row",
+   "item_ids": [
+    "zlodziej-naszyjnika",
+    "znikajace-dzwonki",
+    "na-ratunek-budce-z-lodami",
+    "tajemnicze-znaki",
+    "gadajacy-smietnik"
+   ]
+  },
+  {
+   "id": "piosenki",
+   "title": "Piosenki",
+   "kind": "row",
+   "item_ids": []
+  },
+  {
+   "id": "gry",
+   "title": "Gry bez ekranu",
+   "kind": "row",
+   "item_ids": [
+    "zgadnij-dzwiek",
+    "zamrozony-taniec",
+    "zamrozone-raczki",
+    "echo-rytmu",
+    "prawda-czy-nie",
+    "zgubiona-gwiazdka"
+   ]
+  },
+  {
+   "id": "jesien",
+   "title": "Jesienne wieczory",
+   "subtitle": "Krótkie dni, długie historie. Na ciemne popołudnia pod kocem.",
+   "season_from": "10-01",
+   "season_to": "11-30",
+   "item_ids": [
+    "zaginiony-skarb",
+    "magiczny-teatr",
+    "podroz-na-inna-planete",
+    "tajemnicze-znaki",
+    "mikstura"
+   ],
+   "kind": "row"
+  },
+  {
+   "id": "zima",
+   "title": "Zimowe wieczory w domu",
+   "subtitle": "Za oknem ciemno i zimno, w domu zagadki i historie.",
+   "season_from": "12-01",
+   "season_to": "02-28",
+   "item_ids": [
+    "magiczny-sklep",
+    "mistrz-kuchni",
+    "dokoncz-historie",
+    "co-to-za-dzwiek",
+    "znikajace-dzwonki"
+   ],
+   "kind": "row"
+  },
+  {
+   "id": "wiosna",
+   "title": "Wiosenne zagadki",
+   "subtitle": "Więcej światła, więcej ciekawości i ruchu.",
+   "season_from": "03-01",
+   "season_to": "06-14",
+   "item_ids": [
+    "co-to-za-przedmiot",
+    "wymien-trzy",
+    "znajdz-przeciwienstwo",
+    "zgadnij-dzwiek",
+    "echo-rytmu",
+    "zamrozony-taniec"
+   ],
+   "kind": "row"
+  },
+  {
+   "id": "wakacje",
+   "title": "Wakacje w drodze",
+   "subtitle": "Na długie trasy: bez ekranu i bez „daleko jeszcze?”.",
+   "season_from": "06-15",
+   "season_to": "08-24",
+   "item_ids": [
+    "zamrozone-raczki",
+    "szybkie-skojarzenia",
+    "prawda-czy-nie",
+    "co-tu-nie-pasuje",
+    "zaginiony-skarb",
+    "gadajacy-smietnik"
+   ],
+   "kind": "row"
+  },
+  {
+   "id": "przedszkole",
+   "title": "Nowy rok w przedszkolu",
+   "subtitle": "Słówka, skojarzenia i pierwsze zagadki na dobry start.",
+   "season_from": "08-25",
+   "season_to": "09-30",
+   "item_ids": [
+    "uloz-zdanie",
+    "kto-to-powiedzial",
+    "znajdz-synonimy",
+    "dokoncz-zgodnie-z-prawda",
+    "co-oni-odpowiedzieli",
+    "zlodziej-naszyjnika"
+   ],
+   "kind": "row"
+  }
+ ]
+}

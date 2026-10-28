@@ -31,10 +31,7 @@ Map<CarShelf, List<ContentItem>> carShelves(
 }) {
   final listenable = [
     for (final i in catalog.items)
-      if (i.kind != ContentKind.interactiveGame &&
-          i.audio.isNotEmpty &&
-          canPlay(i) &&
-          (age == null || i.ageMin <= age))
+      if (i.kind != ContentKind.interactiveGame && i.audio.isNotEmpty && canPlay(i) && (age == null || i.ageMin <= age))
         i,
   ];
   int downloadedFirst(ContentItem a, ContentItem b) =>
@@ -69,12 +66,7 @@ class CarLibrary {
     final catalog = await _container.read(catalogProvider.future);
     final downloaded = {...?_container.read(downloadSummaryProvider).value?.itemIds};
     final age = _container.read(familyProvider).value?.active?.age;
-    return carShelves(
-      catalog,
-      canPlay: (i) => _container.read(canPlayProvider(i)),
-      downloaded: downloaded,
-      age: age,
-    );
+    return carShelves(catalog, canPlay: (i) => _container.read(canPlayProvider(i)), downloaded: downloaded, age: age);
   }
 
   Future<List<MediaItem>> children(String parentId) async {
@@ -97,6 +89,31 @@ class CarLibrary {
           duration: Duration(seconds: item.durationSec),
           playable: true,
         ),
+    ];
+  }
+
+  /// The shelves for CarPlay: title and at most 20 plays each, with the cover file if the
+  /// cover is on the phone (CarPlay shows only local pictures).
+  Future<List<Map<String, Object?>>> carPlayShelves() async {
+    final shelves = await _shelves();
+    return [
+      for (final shelf in CarShelf.values)
+        if (shelves[shelf]!.isNotEmpty)
+          {
+            'title': shelf.title,
+            'items': [
+              for (final item in shelves[shelf]!.take(20))
+                {
+                  'id': item.id,
+                  'title': item.title,
+                  'detail': '${(item.durationSec / 60).ceil()} min',
+                  'image': switch (await coverArtUri(item)) {
+                    final uri? when uri.scheme == 'file' => uri.toFilePath(),
+                    _ => null,
+                  },
+                },
+            ],
+          },
     ];
   }
 

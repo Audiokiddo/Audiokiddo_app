@@ -391,6 +391,8 @@
   "accountErrorInvalidEmail": "Sprawdź adres e-mail.",
   "accountErrorTooMany": "Za dużo prób. Odczekaj chwilę i spróbuj ponownie.",
   "accountErrorWrongCode": "Kod jest nieprawidłowy albo wygasł. Wyślij nowy.",
+  "accountErrorWrongPassword": "Nieprawidłowy e-mail albo hasło. Nie pamiętasz hasła? Zaloguj się kodem. Konto usunięte? Załóż je na nowo.",
+  "accountErrorWeakPassword": "Hasło musi mieć co najmniej 8 znaków.",
   "accountErrorOffline": "Brak połączenia z internetem.",
   "accountErrorServer": "Coś poszło nie tak po naszej stronie. Spróbuj za chwilę.",
   "paywallHaveAccess": "Masz już dostęp? Zaloguj się",
@@ -422,7 +424,7 @@
   "onboardingAccountTitle": "Konto rodzica",
   "onboardingAccountBody": "Opcjonalnie. Zaloguj się, jeśli masz już pakiety przypisane do adresu e-mail albo chcesz zachować dostęp po zmianie telefonu.",
   "onboardingAccountDone": "Zalogowano",
-  "onboardingStartWithoutAccount": "Zacznij bez konta",
+  "onboardingStartWithoutAccount": "Dalej",
   "introSkip": "Pomiń",
   "introVolumeTitle": "Podgłośnij!",
   "introVolumeBody": "Żeby dobrze słyszeć Szop’ena.",
@@ -899,6 +901,17 @@
       }
     }
   },
+  "sessionUpNext": "Następna za {seconds} s",
+  "@sessionUpNext": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionHeldInfo": "Wstrzymane. Następna zabawa poczeka na Ciebie.",
+  "sessionHold": "Zatrzymaj",
+  "sessionResume": "Graj dalej",
   "sessionSkip": "Dalej",
   "sessionStop": "Zakończ",
   "sessionDone": "Gotowe",

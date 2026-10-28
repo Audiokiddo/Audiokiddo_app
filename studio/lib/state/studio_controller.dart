@@ -52,13 +52,34 @@ class StudioController extends Notifier<StudioState> {
   }
 
   Future<void> _loadDraft() async {
-    final raw = await _io.readDraft();
+    var raw = await _io.readDraft();
+    // No draft yet (or only an empty "Nowa zabawa"): start from the catalog the app ships with.
+    if (raw == null || _onlyPlaceholders(raw)) raw = await _io.readStarterCatalog() ?? raw;
     if (!ref.mounted) return;
     state = StudioState(
       catalog: raw == null ? emptyCatalog() : jsonDecode(raw) as Json,
       revision: state.revision + 1,
       loaded: true,
     );
+  }
+
+  static bool _onlyPlaceholders(String raw) {
+    try {
+      final c = jsonDecode(raw) as Json;
+      final items = (c['items'] as List? ?? const []).cast<Json>();
+      return (c['packs'] as List? ?? const []).isEmpty &&
+          items.every((i) => '${i['id']}'.startsWith('nowa-pozycja'));
+    } on Object {
+      return true;
+    }
+  }
+
+  /// Starts over from the catalog built into the app (the draft is replaced).
+  Future<bool> loadStarter() async {
+    final raw = await _io.readStarterCatalog();
+    if (raw == null) return false;
+    importCatalog(raw);
+    return true;
   }
 
   /// Replaces the draft with an imported manifest. Throws [FormatException] for non-JSON.

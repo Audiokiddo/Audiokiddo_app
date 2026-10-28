@@ -83,11 +83,13 @@ class LabeledDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: 12),
     child: DropdownButtonFormField<T>(
+      // Long names are cut with "…" instead of pushing past a phone's edge.
+      isExpanded: true,
       initialValue: options.containsKey(value) ? value : null,
       decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
       items: [
         for (final MapEntry(:key, value: text) in options.entries)
-          DropdownMenuItem(value: key, child: Text(text)),
+          DropdownMenuItem(value: key, child: Text(text, overflow: TextOverflow.ellipsis)),
       ],
       onChanged: (v) {
         if (v != null) onChanged(v);

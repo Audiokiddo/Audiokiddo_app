@@ -25,10 +25,9 @@ class PersonalRepository {
   Stream<Set<String>> watchFavorites() =>
       _db.select(_db.favorites).watch().map((rows) => {for (final r in rows) r.itemId});
 
-  Stream<List<String>> watchFavoritesOrdered() =>
-      (_db.select(_db.favorites)..orderBy([(t) => OrderingTerm.desc(t.createdAt)])).watch().map(
-        (rows) => [for (final r in rows) r.itemId],
-      );
+  Stream<List<String>> watchFavoritesOrdered() => (_db.select(
+    _db.favorites,
+  )..orderBy([(t) => OrderingTerm.desc(t.createdAt)])).watch().map((rows) => [for (final r in rows) r.itemId]);
 
   Future<void> setFavorite(String itemId, {required bool favorite}) async {
     if (favorite) {
@@ -76,17 +75,13 @@ final personalRepositoryProvider = Provider<PersonalRepository>(
   (ref) => PersonalRepository(ref.watch(databaseProvider)),
 );
 
-final favoritesProvider = StreamProvider<Set<String>>(
-  (ref) => ref.watch(personalRepositoryProvider).watchFavorites(),
-);
+final favoritesProvider = StreamProvider<Set<String>>((ref) => ref.watch(personalRepositoryProvider).watchFavorites());
 
 final favoritesOrderedProvider = StreamProvider<List<String>>(
   (ref) => ref.watch(personalRepositoryProvider).watchFavoritesOrdered(),
 );
 
-final recentProvider = StreamProvider<List<String>>(
-  (ref) => ref.watch(personalRepositoryProvider).watchRecent(),
-);
+final recentProvider = StreamProvider<List<String>>((ref) => ref.watch(personalRepositoryProvider).watchRecent());
 
 final progressProvider = StreamProvider.family<PlaybackProgressData?, String>(
   (ref, itemId) => ref.watch(personalRepositoryProvider).watchProgress(itemId),

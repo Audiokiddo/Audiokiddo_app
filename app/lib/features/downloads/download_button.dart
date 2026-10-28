@@ -19,9 +19,7 @@ class DownloadControl extends ConsumerWidget {
     if (result is DownloadNotEnoughSpace && context.mounted) {
       final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.notEnoughSpace(formatBytes(result.neededBytes), formatBytes(result.freeBytes))),
-        ),
+        SnackBar(content: Text(l10n.notEnoughSpace(formatBytes(result.neededBytes), formatBytes(result.freeBytes)))),
       );
     }
   }
@@ -74,10 +72,7 @@ class DownloadControl extends ConsumerWidget {
       DownloadPhase.failed => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            l10n.downloadFailed,
-            style: text.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error),
-          ),
+          Text(l10n.downloadFailed, style: text.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error)),
           const SizedBox(height: AkSpace.s),
           OutlinedButton.icon(
             onPressed: () async {

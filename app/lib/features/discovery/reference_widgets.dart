@@ -12,6 +12,7 @@ import '../catalog/catalog_providers.dart';
 import '../catalog/seasonal.dart';
 import '../catalog/widgets/content_cover.dart';
 import '../home/quick_pick.dart';
+import '../personal/personal_repository.dart';
 import '../purchases/preview_player.dart';
 import '../../l10n/app_localizations.dart';
 import '../catalog/widgets/labels.dart';
@@ -26,6 +27,7 @@ Color categoryColor(PlayCategory c) => switch (c) {
   PlayCategory.songs => AkBrand.sun,
   PlayCategory.movement => referenceMint,
   PlayCategory.creative => referenceLilac,
+  PlayCategory.education => AkBrand.sun,
   PlayCategory.calm => referencePurple,
 };
 IconData categoryIcon(PlayCategory c) => switch (c) {
@@ -34,6 +36,7 @@ IconData categoryIcon(PlayCategory c) => switch (c) {
   PlayCategory.songs => Icons.music_note_rounded,
   PlayCategory.movement => Icons.directions_run_rounded,
   PlayCategory.creative => Icons.brush_rounded,
+  PlayCategory.education => Icons.menu_book_rounded,
   PlayCategory.calm => Icons.bedtime_rounded,
 };
 PlayCategory itemCategory(ContentItem i) =>
@@ -154,46 +157,90 @@ class _Scene extends CustomPainter {
   bool shouldRepaint(_Scene old) => old.category != category || old.seed != seed;
 }
 
-class CategoryTile extends StatelessWidget {
+/// The kinds of play that have at least one play in the catalog (songs return with songs).
+final shownCategoriesProvider = Provider<List<PlayCategory>>((ref) {
+  final items = ref.watch(catalogProvider).value?.items ?? const <ContentItem>[];
+  return [
+    for (final c in PlayCategory.shown)
+      if (items.any(c.matches)) c,
+  ];
+});
+
+/// Whether the catalog has songs at all (their filters hide until it does).
+final hasSongsProvider = Provider<bool>(
+  (ref) => ref.watch(catalogProvider).value?.items.any((i) => i.kind == ContentKind.song) ?? false,
+);
+
+/// Tile colours, foreground and icon per kind of play.
+const categoryLook = <PlayCategory, (Color, Color, IconData)>{
+  PlayCategory.creative: (Color(0xFF7B5BA6), Colors.white, Icons.palette_rounded),
+  PlayCategory.movement: (AkBrand.teal, Color(0xFF0E3437), Icons.directions_run_rounded),
+  PlayCategory.detective: (referenceLilac, Color(0xFF211C35), Icons.extension_rounded),
+  PlayCategory.education: (AkBrand.sun, Color(0xFF211C35), Icons.school_rounded),
+  PlayCategory.adventure: (referenceMint, Color(0xFF211C35), Icons.auto_stories_rounded),
+  PlayCategory.songs: (Color(0xFFFFD3C2), Color(0xFF211C35), Icons.music_note_rounded),
+  PlayCategory.calm: (referencePurple, Colors.white, Icons.nightlight_round),
+};
+
+/// A kind of play as a colour tile: icon, name and how many plays it holds.
+class CategoryTile extends ConsumerWidget {
   const CategoryTile({super.key, required this.category, required this.onTap});
   final PlayCategory category;
   final VoidCallback onTap;
   @override
-  Widget build(BuildContext context) => Pressable(
-    onTap: onTap,
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Stack(
-        children: [
-          Positioned.fill(child: ArtScene(category: category)),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, categoryColor(category)],
+  Widget build(BuildContext context, WidgetRef ref) {
+    final (bg, fg, icon) = categoryLook[category]!;
+    final count = ref.watch(catalogProvider).value?.items.where(category.matches).length;
+    final text = Theme.of(context).textTheme;
+    return Pressable(
+      onTap: onTap,
+      child: Semantics(
+        button: true,
+        label: '${category.label}${count == null ? '' : ', ${playsLabel(count)}'}',
+        excludeSemantics: true,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 92),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(22)),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: Colors.white.withValues(alpha: .35), shape: BoxShape.circle),
+                child: Icon(icon, color: fg, size: 26),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      category.label,
+                      style: text.titleSmall?.copyWith(color: fg, fontWeight: FontWeight.w800),
+                    ),
+                    if (count != null)
+                      Text(playsLabel(count), style: text.bodySmall?.copyWith(color: fg.withValues(alpha: .85))),
+                  ],
                 ),
               ),
-            ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 90, 12, 14),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                category.label,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: category == PlayCategory.calm ? Colors.white : const Color(0xFF211C35),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
-    ),
-  );
+    );
+  }
+}
+
+/// "1 zabawa", "3 zabawy", "9 zabaw".
+String playsLabel(int n) {
+  final word = n == 1
+      ? 'zabawa'
+      : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14))
+      ? 'zabawy'
+      : 'zabaw';
+  return '$n $word';
 }
 
 class TwoColumns extends StatelessWidget {
@@ -231,10 +278,7 @@ class RefSection extends StatelessWidget {
     child: Row(
       children: [
         Expanded(
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
+          child: Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
         ),
         if (action != null)
           TextButton(
@@ -262,12 +306,7 @@ class AudioRow extends ConsumerWidget {
             // The title next to it opens the same page and carries the label for VoiceOver.
             excludeFromSemantics: true,
             onTap: () => context.push('/zabawa/${item.id}'),
-            child: ContentCover(
-              item: item,
-              size: 64,
-              locked: !playable,
-              fresh: ref.watch(isNewItemProvider(item)),
-            ),
+            child: ContentCover(item: item, size: 64, locked: !playable, fresh: ref.watch(isNewItemProvider(item))),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -283,6 +322,7 @@ class AudioRow extends ConsumerWidget {
                         '${(item.durationSec / 60).ceil()} min · ${item.ageMin}${item.ageMax == null ? '+' : '–${item.ageMax}'} lat',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                  ListenedBar(item: item),
                 ],
               ),
             ),
@@ -302,6 +342,60 @@ class AudioRow extends ConsumerWidget {
                       icon: const Icon(Icons.lock_outline_rounded, size: 22),
                     )),
         ],
+      ),
+    );
+  }
+}
+
+/// How much of a play the family has heard: a thin bar and "Słuchane 4 z 12 min" (or "Do końca").
+/// Nothing for plays never started.
+class ListenedBar extends ConsumerWidget {
+  const ListenedBar({super.key, required this.item, this.compact = false});
+
+  final ContentItem item;
+
+  /// Under a cover in a row: the bar only.
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final p = ref.watch(progressProvider(item.id)).value;
+    if (p == null || (p.positionMs <= 0 && !p.completed)) return const SizedBox.shrink();
+    final total = p.durationMs > 0 ? p.durationMs : item.durationSec * 1000;
+    final value = p.completed ? 1.0 : (p.positionMs / total).clamp(0.0, 1.0);
+    final heard = (p.positionMs / 60000).ceil();
+    final minutes = (total / 60000).ceil();
+    final label = p.completed ? 'Wysłuchane do końca' : 'Słuchane $heard z $minutes min';
+    final bar = ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: LinearProgressIndicator(
+        value: value,
+        minHeight: 4,
+        color: AkBrand.teal,
+        backgroundColor: AkBrand.teal.withValues(alpha: .18),
+      ),
+    );
+    return Semantics(
+      label: label,
+      excludeSemantics: true,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: compact
+            ? bar
+            : Row(
+                children: [
+                  SizedBox(width: 72, child: bar),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.palette.inkMuted),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -354,11 +448,7 @@ class MetaStrip extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  value,
-                  maxLines: 2,
-                  style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700, height: 1.1),
-                ),
+                Text(value, maxLines: 2, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700, height: 1.1)),
                 Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: text.bodySmall),
               ],
             ),
@@ -427,6 +517,67 @@ class SimilarPlays extends ConsumerWidget {
   }
 }
 
+/// What to play next, in the player: the rest of this pack first, then the other packs, then
+/// songs and games. Two rows at first; "Rozwiń więcej" shows the rest.
+class PlaysByPack extends ConsumerStatefulWidget {
+  const PlaysByPack({super.key, required this.item, required this.title});
+
+  final ContentItem item;
+  final String title;
+
+  @override
+  ConsumerState<PlaysByPack> createState() => _PlaysByPackState();
+}
+
+class _PlaysByPackState extends ConsumerState<PlaysByPack> {
+  bool _expanded = false;
+
+  static const _rowsFirst = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    final catalog = ref.watch(catalogProvider).value;
+    if (catalog == null) return const SizedBox.shrink();
+    final item = widget.item;
+    bool listed(ContentItem i) => i.id != item.id && (i.audio.isNotEmpty || i.script != null);
+    final packs = [
+      ...catalog.packs.where((p) => p.id == item.packId),
+      ...catalog.packs.where((p) => p.id != item.packId),
+    ];
+    final rows = <(String, List<ContentItem>)>[
+      for (final pack in packs)
+        if (catalog.itemsInPack(pack.id).where(listed).toList() case final items when items.isNotEmpty)
+          (pack.id == item.packId ? 'Dalej w pakiecie ${pack.title}' : 'Pakiet ${pack.title}', items),
+      if (catalog.items.where((i) => i.packId == null && listed(i)).toList() case final loose when loose.isNotEmpty)
+        ('Piosenki i gry', loose),
+    ];
+    final shown = _expanded ? rows : rows.take(_rowsFirst).toList();
+    final text = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RefSection(widget.title),
+        for (final (label, items) in shown) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(label, style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+          ),
+          CoverRow(items: items, size: 128),
+          const SizedBox(height: 16),
+        ],
+        if (rows.length > _rowsFirst)
+          Center(
+            child: OutlinedButton.icon(
+              onPressed: () => setState(() => _expanded = !_expanded),
+              icon: Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded),
+              label: Text(_expanded ? 'Zwiń' : 'Rozwiń więcej (${rows.length - _rowsFirst})'),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 /// A horizontal row of covers with titles, each opening its play.
 class CoverRow extends ConsumerWidget {
   const CoverRow({super.key, required this.items, this.size = 112});
@@ -459,6 +610,7 @@ class CoverRow extends ConsumerWidget {
                     locked: !ref.watch(canPlayProvider(item)),
                     fresh: ref.watch(isNewItemProvider(item)),
                   ),
+                  ListenedBar(item: item, compact: true),
                   const SizedBox(height: 6),
                   Text(item.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: text.bodySmall),
                 ],

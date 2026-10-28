@@ -5,9 +5,11 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../catalog/widgets/item_art.dart';
+import '../../core/storage/storage_providers.dart';
 import '../downloads/download_providers.dart';
 import '../personal/personal_repository.dart';
 import 'audio_handler.dart';
+import '../insights/events.dart';
 import 'player_providers.dart';
 import '../family/family.dart';
 
@@ -25,6 +27,10 @@ class PlaybackController {
           .map((s) => (s.playing, s.processingState))
           .distinct()
           .listen((s) => unawaited(_save(completed: s.$2 == AudioProcessingState.completed))),
+      // The play was left for another one or the session ended: where the family stopped.
+      handler.mediaItem.map((m) => m?.id).distinct().listen((id) {
+        if (_open != null && _open!.id != id) _closeOpen();
+      }),
     ]);
     _ticker = Timer.periodic(const Duration(seconds: 5), (_) {
       if (handler.playbackState.value.playing) unawaited(_save());
@@ -34,6 +40,31 @@ class PlaybackController {
   final Ref _ref;
   final _subscriptions = <StreamSubscription<void>>[];
   late final Timer _ticker;
+
+  /// The play heard to the end most recently, and when.
+  (String, DateTime)? _lastCompleted;
+
+  /// The play now on, until it ends or is left (for play_exit).
+  _OpenPlay? _open;
+
+  /// Reports a play left before its end: the second and share heard (the drop-off map).
+  void _closeOpen() {
+    final open = _open;
+    _open = null;
+    if (open == null || open.completed) return;
+    final total = open.duration?.inSeconds ?? 0;
+    _ref
+        .read(eventSinkProvider)
+        .track(
+          AppEvent.playExit,
+          itemId: open.id,
+          props: {
+            'exit_second': open.position.inSeconds,
+            if (total > 0) 'pct': (100 * open.position.inSeconds / total).clamp(0, 100).round(),
+            'play_number': open.playNumber,
+          },
+        );
+  }
 
   AkAudioHandler get _handler => _ref.read(audioHandlerProvider);
 
@@ -49,6 +80,28 @@ class PlaybackController {
       throw const PlaybackSourceUnavailable();
     }
     final progress = await _ref.read(personalRepositoryProvider).progress(item.id);
+    // For the statistics: a replay (heard to the end before) and moving straight on to the next
+    // play after finishing one.
+    final last = _lastCompleted;
+    final next = last != null && last.$1 != item.id && DateTime.now().difference(last.$2).inMinutes < 10;
+    final count = await countPlayStart(_ref.read(databaseProvider), item.id);
+    _closeOpen();
+    _ref
+        .read(eventSinkProvider)
+        .track(
+          AppEvent.playStart,
+          itemId: item.id,
+          props: {
+            'free': item.isFree,
+            'pack': ?item.packId,
+            'duration_total': item.durationSec,
+            if (progress?.completed ?? false) 'replay': true,
+            if (next) 'next': true,
+            if (next) 'previous_item': last.$1,
+            ...count.props,
+          },
+        );
+    _open = _OpenPlay(item.id, count.number);
     await _handler.playItem(
       MediaItem(
         id: item.id,
@@ -68,7 +121,22 @@ class PlaybackController {
     if (media == null || duration == null || duration == Duration.zero) return;
     if (media.id.startsWith(gameMediaPrefix)) return; // games have no resume point
     final position = completed ? duration : _handler.position;
+    final open = _open;
+    if (open != null && open.id == media.id) {
+      open
+        ..position = position
+        ..duration = duration;
+    }
     if (completed) {
+      _lastCompleted = (media.id, DateTime.now());
+      if (open != null && open.id == media.id) open.completed = true;
+      _ref
+          .read(eventSinkProvider)
+          .track(
+            AppEvent.playComplete,
+            itemId: media.id,
+            props: {'duration_listened': duration.inSeconds, 'play_number': ?open?.playNumber},
+          );
       // Counts towards the listening child's plan and progress.
       unawaited(_ref.read(familyProvider.notifier).record(itemId: media.id, seconds: duration.inSeconds));
     }
@@ -88,6 +156,16 @@ class PlaybackController {
       unawaited(s.cancel());
     }
   }
+}
+
+class _OpenPlay {
+  _OpenPlay(this.id, this.playNumber);
+
+  final String id;
+  final int playNumber;
+  Duration position = Duration.zero;
+  Duration? duration;
+  bool completed = false;
 }
 
 /// Media ids of game sessions start with this, so their segments are not saved as progress.

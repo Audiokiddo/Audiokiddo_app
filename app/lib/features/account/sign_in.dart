@@ -10,21 +10,29 @@ import '../../l10n/app_localizations.dart';
 import '../access/access_controller.dart';
 import '../purchases/purchase_controller.dart';
 import '../parental_gate/parental_gate.dart';
+import 'account_data.dart';
 import 'account_service.dart';
 
 String accountErrorText(AppLocalizations l10n, AccountError error) => switch (error) {
   AccountError.invalidEmail => l10n.accountErrorInvalidEmail,
   AccountError.tooManyRequests => l10n.accountErrorTooMany,
   AccountError.wrongCode => l10n.accountErrorWrongCode,
+  AccountError.wrongPassword => l10n.accountErrorWrongPassword,
+  AccountError.weakPassword => l10n.accountErrorWeakPassword,
   AccountError.offline => l10n.accountErrorOffline,
   AccountError.server => l10n.accountErrorServer,
   AccountError.notConfigured => l10n.signInNotConfigured,
   AccountError.canceled => '',
+  AccountError.noAccount => 'Nie ma konta z tym adresem e-mail. Jeśli je usunąłeś, załóż konto na nowo.',
+  AccountError.accountExists => 'Konto z tym adresem już istnieje. Zaloguj się hasłem albo kodem.',
 };
 
 /// After any sign-in: assign shop purchases made with this e-mail (not fatal if it fails,
 /// the account screen can retry) and recompute what the device may play.
 Future<void> afterSignIn(WidgetRef ref) async {
+  // Another account than last time: the previous family's data leaves the phone.
+  final user = ref.read(accountServiceProvider).current;
+  if (user != null) await claimFamilyDataFor(ref, user.id);
   try {
     await ref.read(accountServiceProvider).syncWebPurchases();
   } on AccountException {
@@ -39,10 +47,13 @@ Future<void> afterSignIn(WidgetRef ref) async {
 /// "Continue with Apple / Google / e-mail", Apple-style: full-width, same height, Apple on
 /// top (App Store guideline 4.8 wants it at least as prominent as Google).
 class SignInOptions extends ConsumerStatefulWidget {
-  const SignInOptions({super.key, this.askAdultFirst = false});
+  const SignInOptions({super.key, this.askAdultFirst = false, this.showEmail = true});
 
   /// Onboarding: show the parental gate before the first sign-in attempt.
   final bool askAdultFirst;
+
+  /// The e-mail button (off where the e-mail form is already on screen).
+  final bool showEmail;
 
   @override
   ConsumerState<SignInOptions> createState() => _SignInOptionsState();
@@ -97,22 +108,26 @@ class _SignInOptionsState extends ConsumerState<SignInOptions> {
           ),
           const SizedBox(height: 12),
         ],
-        _ProviderButton(
-          label: l10n.signInGoogle,
-          background: Colors.white,
-          foreground: const Color(0xFF1F1F1F),
-          border: const Color(0xFF747775),
-          leading: const GoogleLogo(size: 20),
-          onPressed: _busy ? null : () => _run((a) => a.signInWithGoogle()),
-        ),
-        const SizedBox(height: 12),
-        _ProviderButton(
-          label: l10n.signInEmail,
-          background: context.palette.primary,
-          foreground: context.palette.onPrimary,
-          leading: Icon(Icons.mail_rounded, size: 22, color: context.palette.onPrimary),
-          onPressed: _busy ? null : _email,
-        ),
+        if (account.googleAvailable) ...[
+          _ProviderButton(
+            label: l10n.signInGoogle,
+            background: Colors.white,
+            foreground: const Color(0xFF1F1F1F),
+            border: const Color(0xFF747775),
+            leading: const GoogleLogo(size: 20),
+            onPressed: _busy ? null : () => _run((a) => a.signInWithGoogle()),
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (widget.showEmail) ...[
+          _ProviderButton(
+            label: l10n.signInEmail,
+            background: context.palette.primary,
+            foreground: context.palette.onPrimary,
+            leading: Icon(Icons.mail_rounded, size: 22, color: context.palette.onPrimary),
+            onPressed: _busy ? null : _email,
+          ),
+        ],
         if (_busy) ...[const SizedBox(height: AkSpace.m), const Center(child: CircularProgressIndicator())],
       ],
     );
@@ -225,9 +240,34 @@ final _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
 /// E-mail → one-time code → signed in. Used in a sheet (onboarding, account screen).
 class EmailSignInForm extends ConsumerStatefulWidget {
-  const EmailSignInForm({super.key, this.onSignedIn});
+  const EmailSignInForm({
+    super.key,
+    this.onSignedIn,
+    this.title,
+    this.body,
+    this.sendLabel,
+    this.consent,
+    this.autofocus = true,
+    this.offerPassword = false,
+    this.email,
+  });
 
   final VoidCallback? onSignedIn;
+
+  /// Already given on the sign-in screen's first step: shown, not asked again.
+  final String? email;
+
+  /// Replace the default "Logowanie e-mailem" texts (the sign-in screen's two tabs).
+  final String? title;
+  final String? body;
+  final String? sendLabel;
+
+  /// Shown above the send button; the code is sent only once it is ticked (new accounts).
+  final Widget Function(bool value, ValueChanged<bool> onChanged)? consent;
+  final bool autofocus;
+
+  /// Registration: e-mail and a required password; the code only confirms the e-mail.
+  final bool offerPassword;
 
   @override
   ConsumerState<EmailSignInForm> createState() => _EmailSignInFormState();
@@ -236,19 +276,22 @@ class EmailSignInForm extends ConsumerStatefulWidget {
 class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   static const resendAfter = 60;
 
-  final _email = TextEditingController();
+  late final _email = TextEditingController(text: widget.email);
   final _code = TextEditingController();
+  final _password = TextEditingController();
   String? _sentTo;
   bool _busy = false;
   String? _error;
   int _resendIn = 0;
   Timer? _timer;
+  bool _consented = false;
 
   @override
   void dispose() {
     _timer?.cancel();
     _email.dispose();
     _code.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -267,13 +310,32 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   }
 
   Future<void> _sendCode() async {
+    // In the order of the fields on screen: the password above, the consent below it.
+    if (widget.offerPassword && _password.text.length < minPasswordLength) {
+      setState(() => _error = AppLocalizations.of(context).accountErrorWeakPassword);
+      return;
+    }
+    if (widget.consent != null && !_consented) {
+      setState(() => _error = 'Zaznacz zgodę na regulamin i politykę prywatności.');
+      return;
+    }
     final email = _email.text.trim();
     if (!_emailPattern.hasMatch(email)) {
       setState(() => _error = AppLocalizations.of(context).accountErrorInvalidEmail);
       return;
     }
     await _run(() async {
-      await ref.read(accountServiceProvider).sendCode(email);
+      final account = ref.read(accountServiceProvider);
+      if (widget.offerPassword) {
+        // Registration: signed in at once, or a code confirms the e-mail first.
+        if (!await account.signUp(email, _password.text)) {
+          await afterSignIn(ref);
+          widget.onSignedIn?.call();
+          return;
+        }
+      } else {
+        await account.sendCode(email);
+      }
       _code.clear();
       setState(() => _sentTo = email);
       _startCooldown();
@@ -291,7 +353,12 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
   }
 
   Future<void> _verify() => _run(() async {
-    await ref.read(accountServiceProvider).verifyCode(_sentTo!, _code.text);
+    final account = ref.read(accountServiceProvider);
+    if (widget.offerPassword) {
+      await account.verifySignUp(_sentTo!, _code.text);
+    } else {
+      await account.verifyCode(_sentTo!, _code.text);
+    }
     await afterSignIn(ref);
     widget.onSignedIn?.call();
   });
@@ -306,20 +373,21 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
       padding: const EdgeInsets.fromLTRB(AkSpace.l, 0, AkSpace.l, AkSpace.l),
       children: [
         Text(
-          l10n.signInEmailTitle,
+          widget.title ?? l10n.signInEmailTitle,
           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AkSpace.s),
         if (sentTo == null) ...[
           Text(
-            l10n.signInEmailBody,
+            widget.body ?? l10n.signInEmailBody,
             style: theme.textTheme.bodyMedium?.copyWith(color: context.palette.inkMuted),
           ),
           const SizedBox(height: AkSpace.m),
           TextField(
             controller: _email,
             enabled: !_busy,
-            autofocus: true,
+            readOnly: widget.email != null,
+            autofocus: widget.autofocus && widget.email == null,
             keyboardType: TextInputType.emailAddress,
             autofillHints: const [AutofillHints.email],
             autocorrect: false,
@@ -327,8 +395,16 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
             onSubmitted: (_) => _sendCode(),
             decoration: InputDecoration(labelText: l10n.accountEmailLabel, errorText: _error),
           ),
+          if (widget.offerPassword) ...[
+            const SizedBox(height: AkSpace.s),
+            PasswordField(controller: _password, label: 'Hasło (min. 8 znaków)', enabled: !_busy),
+          ],
+          if (widget.consent case final consent?) ...[
+            const SizedBox(height: AkSpace.s),
+            consent(_consented, (v) => setState(() => _consented = v)),
+          ],
           const SizedBox(height: AkSpace.m),
-          FilledButton(onPressed: _busy ? null : _sendCode, child: Text(l10n.accountSendCode)),
+          FilledButton(onPressed: _busy ? null : _sendCode, child: Text(widget.sendLabel ?? l10n.accountSendCode)),
         ] else ...[
           Text(l10n.accountCodeSent(sentTo), style: theme.textTheme.bodyMedium),
           const SizedBox(height: AkSpace.m),
@@ -360,6 +436,142 @@ class _EmailSignInFormState extends ConsumerState<EmailSignInForm> {
             child: Text(l10n.accountChangeEmail),
           ),
         ],
+        if (_busy)
+          const Padding(
+            padding: EdgeInsets.all(AkSpace.m),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+      ],
+    );
+  }
+}
+
+/// A password field with a show/hide button.
+class PasswordField extends StatefulWidget {
+  const PasswordField({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.enabled = true,
+    this.onSubmitted,
+    this.autofocus = false,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final bool enabled;
+  final bool autofocus;
+  final ValueChanged<String>? onSubmitted;
+
+  @override
+  State<PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  bool _hidden = true;
+
+  @override
+  Widget build(BuildContext context) => TextField(
+    controller: widget.controller,
+    enabled: widget.enabled,
+    autofocus: widget.autofocus,
+    obscureText: _hidden,
+    autocorrect: false,
+    enableSuggestions: false,
+    autofillHints: const [AutofillHints.password],
+    onSubmitted: widget.onSubmitted,
+    decoration: InputDecoration(
+      labelText: widget.label,
+      suffixIcon: IconButton(
+        tooltip: _hidden ? 'Pokaż hasło' : 'Ukryj hasło',
+        onPressed: () => setState(() => _hidden = !_hidden),
+        icon: Icon(_hidden ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+      ),
+    ),
+  );
+}
+
+/// E-mail and password. "Nie pamiętam hasła" hands over to the code sign-in ([onForgot]);
+/// a new password is then set in the account screen.
+class PasswordSignInForm extends ConsumerStatefulWidget {
+  const PasswordSignInForm({super.key, required this.onForgot, this.email});
+
+  final VoidCallback onForgot;
+
+  /// Already given on the sign-in screen's first step.
+  final String? email;
+
+  @override
+  ConsumerState<PasswordSignInForm> createState() => _PasswordSignInFormState();
+}
+
+class _PasswordSignInFormState extends ConsumerState<PasswordSignInForm> {
+  late final _email = TextEditingController(text: widget.email);
+  final _password = TextEditingController();
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    final l10n = AppLocalizations.of(context);
+    if (!_emailPattern.hasMatch(_email.text.trim())) {
+      setState(() => _error = l10n.accountErrorInvalidEmail);
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await ref.read(accountServiceProvider).signInWithPassword(_email.text, _password.text);
+      await afterSignIn(ref);
+    } on AccountException catch (e) {
+      if (mounted) setState(() => _error = accountErrorText(l10n, e.error));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Zaloguj się hasłem', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+        const SizedBox(height: AkSpace.m),
+        if (widget.email == null) ...[
+          TextField(
+            controller: _email,
+            enabled: !_busy,
+            keyboardType: TextInputType.emailAddress,
+            autofillHints: const [AutofillHints.email],
+            autocorrect: false,
+            decoration: InputDecoration(labelText: l10n.accountEmailLabel),
+          ),
+          const SizedBox(height: AkSpace.s),
+        ],
+        PasswordField(
+          controller: _password,
+          label: 'Hasło',
+          enabled: !_busy,
+          autofocus: widget.email != null,
+          onSubmitted: (_) => _signIn(),
+        ),
+        if (_error != null) ...[
+          const SizedBox(height: AkSpace.s),
+          Text(_error!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error)),
+        ],
+        const SizedBox(height: AkSpace.m),
+        FilledButton(onPressed: _busy ? null : _signIn, child: const Text('Zaloguj')),
+        TextButton(onPressed: _busy ? null : widget.onForgot, child: const Text('Nie pamiętam hasła')),
         if (_busy)
           const Padding(
             padding: EdgeInsets.all(AkSpace.m),

@@ -15,8 +15,7 @@ Set<String> completedPacks(List<ActivityResult> results, Catalog catalog) {
   };
   return {
     for (final p in catalog.packs)
-      if (catalog.itemsInPack(p.id).isNotEmpty && catalog.itemsInPack(p.id).every((i) => done.contains(i.id)))
-        p.id,
+      if (catalog.itemsInPack(p.id).isNotEmpty && catalog.itemsInPack(p.id).every((i) => done.contains(i.id))) p.id,
   };
 }
 
@@ -35,10 +34,7 @@ Future<DateTime> awardDiploma(WidgetRef ref, String childId, String packId) asyn
   current[packId] = day;
   await ref
       .read(databaseProvider)
-      .writeValue(
-        'diplomas_$childId',
-        jsonEncode({for (final e in current.entries) e.key: e.value.toIso8601String()}),
-      );
+      .writeValue('diplomas_$childId', jsonEncode({for (final e in current.entries) e.key: e.value.toIso8601String()}));
   ref.invalidate(diplomasProvider(childId));
   return day;
 }
@@ -62,7 +58,8 @@ String bonusTranscript(String packId) => switch (packId) {
   'wyobraznia' =>
     'Dziś w nocy twoje łóżko zamieni się w statek. Dokąd popłyniesz? Opowiedz o tym rodzicom przy śniadaniu.',
   'slowa-i-wiedza' => 'Ma cztery nogi, ale nie chodzi. Stoi w kuchni i czeka na obiad. Co to? To stół.',
-  'detektyw' => 'Tajne zadanie: znajdź w domu trzy rzeczy, które zaczynają się na literę K. Szepnij je rodzicowi do ucha.',
+  'detektyw' =>
+    'Tajne zadanie: znajdź w domu trzy rzeczy, które zaczynają się na literę K. Szepnij je rodzicowi do ucha.',
   _ => 'Jesteś prawdziwym mistrzem słuchania. Przybij piątkę rodzicowi.',
 };
 

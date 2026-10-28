@@ -87,8 +87,7 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
       await browse?.call(parentMediaId) ?? const [];
 
   @override
-  Future<void> playFromMediaId(String mediaId, [Map<String, dynamic>? extras]) async =>
-      playById?.call(mediaId);
+  Future<void> playFromMediaId(String mediaId, [Map<String, dynamic>? extras]) async => playById?.call(mediaId);
 
   Timer? _fadeTicker;
 
@@ -118,10 +117,7 @@ class AkAudioHandler extends BaseAudioHandler with SeekHandler implements GameAu
     _clearFade();
     await _player.setVolume(1);
     // Publish the item only once it loaded, so a failed start does not linger in the mini player.
-    final duration = await _player.setAudioSource(
-      AudioSource.uri(source, tag: media),
-      initialPosition: start,
-    );
+    final duration = await _player.setAudioSource(AudioSource.uri(source, tag: media), initialPosition: start);
     mediaItem.add(duration == null ? media : media.copyWith(duration: duration));
     // just_audio's play() completes only when playback stops, so it is not awaited.
     unawaited(_player.play());
