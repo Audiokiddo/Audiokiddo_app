@@ -51,7 +51,7 @@ Pytania i pomysły: kontakt@audiokiddo.pl
 |---|---|---|
 | Podtytuł | 30 | Audiozabawy bez ekranu 3–9 lat |
 | Tekst promocyjny | 170 | Włącz zabawę, połóż telefon, a dziecko słucha, szuka i odpowiada na głos. Nowość: akta sprawy Detektywa i album naklejek z Szop’enem. |
-| Słowa kluczowe | 100 | `bajki,zagadki,przedszkolak,słuchowisko,dobranoc,logopedia,maluch,podróż,auto,rodzina,mowa,nauka` |
+| Słowa kluczowe | 100 | `bajki,zagadki,przedszkolak,słuchowisko,dobranoc,rymy,maluch,podróż,auto,rodzina,mowa,nauka` |
 | Prawa autorskie | | 2026 Nela Mariak |
 | Kategoria Kids | | 6–8 lat (decyzja do potwierdzenia, potem trudno zmienić) |
 | Klasyfikacja wiekowa | | wszędzie „Brak”; nieograniczony dostęp do sieci: Nie; treści użytkowników: Nie |

@@ -777,3 +777,17 @@ begin
   assert (select count(*) from public.crm_items where data->>'key' like 's-%') = 19, 'added once';
 end $$;
 select 'social content tests passed';
+
+-- The Care pilot tasks.
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' like 'care-%') = 9, 'nine care tasks';
+  assert (select (data->>'hours')::numeric from public.crm_items where data->>'key' = 'care-nagranie') = 6, 'recording hours';
+  assert (select owner from public.crm_items where data->>'key' = 'care-audyt') = 'Dawid', 'audit owner';
+end $$;
+\ir ../migrations/20261029000001_care_pilot.sql
+do $$
+begin
+  assert (select count(*) from public.crm_items where data->>'key' like 'care-%') = 9, 'added once';
+end $$;
+select 'care pilot tests passed';
