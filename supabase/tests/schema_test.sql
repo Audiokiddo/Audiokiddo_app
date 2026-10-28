@@ -785,7 +785,7 @@ begin
   assert (select (data->>'hours')::numeric from public.crm_items where data->>'key' = 'care-nagranie') = 6, 'recording hours';
   assert (select owner from public.crm_items where data->>'key' = 'care-audyt') = 'Dawid', 'audit owner';
 end $$;
-\ir ../migrations/20261029000001_care_pilot.sql
+\ir ../migrations/20261101000001_care_pilot.sql
 do $$
 begin
   assert (select count(*) from public.crm_items where data->>'key' like 'care-%') = 9, 'added once';

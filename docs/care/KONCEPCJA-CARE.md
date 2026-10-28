@@ -73,4 +73,4 @@ Zasady: bez nagrań, diagnoz, imion i wieku w miesiącach; pilot bez mikrofonu; 
 
 ## 8. Kolejne kroki
 
-Zadania są w CRM (migracja `20261029000001_care_pilot.sql`, klucze `care-*`): rozmowa z logopedą 29.10, lista słów 5.11, audyt danych 3.11, opinia prawnika 12.11, czytanie próbne 10.11, karta dla gabinetów 17.11, nagranie 24.11, test z rodzinami 3.12, start pilota 7.12.
+Zadania są w CRM (migracja `20261101000001_care_pilot.sql`, klucze `care-*`): rozmowa z logopedą 29.10, lista słów 5.11, audyt danych 3.11, opinia prawnika 12.11, czytanie próbne 10.11, karta dla gabinetów 17.11, nagranie 24.11, test z rodzinami 3.12, start pilota 7.12.
